@@ -1,0 +1,184 @@
+<html data-theme="dark">
+<head>
+  <link rel="stylesheet" href="yn_style.css">
+  <!-- 引入 Prism CSS -->
+  <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-tomorrow.min.css"-->
+  <!-- 引入 Prism JS -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
+</head>
+<body class="noselect df-ct">
+  <!--杂色质感-->
+  <div id="noise" class="noise"></div>
+  <div id="watermark" class="watermark"></div>
+  <!--全局tips-->
+  <div id="tips-all" class="ww tips-all" style="display: none;">
+      <div id="tips-box" class="tips-box" >
+          温馨提示
+      </div>
+  </div>
+  <div class="df-ffc" style="padding: 60px; gap: 20px;" >
+    <div class="df-ffc" style="gap: 10px; width: 650px; align-items: center;">
+      <div style="width: 90px; height: 40px;">
+        <svg width="100%" height="100%" viewBox="0 0 350 156" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" fill="var(--mainColor)" clip-rule="evenodd" 
+          d="M312 17.9812V19.068C312 24.0333 313.756 28.2715 317.267 31.7826C320.778 35.2937 325.016 37.0492 329.981 37.0492H331.068C336.033 37.0492 340.272 35.2937 343.783 31.7826C347.294 28.2715 349.049 24.0333 349.049 19.068V17.9812C349.049 13.0159 347.294 8.77766 343.783 5.26658C340.272 1.75553 336.033 0 331.068 0H329.981C325.016 0 320.778 1.75553 317.267 5.26658C313.756 8.77766 312 13.0159 312 17.9812ZM321.754 27.2951C319.482 25.0232 318.346 22.2809 318.346 19.068V17.9812C318.346 14.7683 319.482 12.026 321.754 9.75411C324.026 7.48225 326.768 6.34632 329.981 6.34632H331.068C334.281 6.34632 337.023 7.48225 339.295 9.75411C341.567 12.026 342.703 14.7683 342.703 17.9812V19.068C342.703 22.2809 341.567 25.0232 339.295 27.2951C337.023 29.567 334.281 30.7029 331.068 30.7029H329.981C326.768 30.7029 324.026 29.567 321.754 27.2951ZM334.362 9.44696C335.231 9.44696 336.215 9.65174 337.315 10.0613V17.0984C335.9 16.2283 334.916 15.7933 334.362 15.7933H329.42C328.969 15.7933 328.587 15.9517 328.274 16.2686C327.953 16.5922 327.793 16.9878 327.793 17.4554V19.5936C327.793 20.0613 327.953 20.4569 328.274 20.7805C328.587 21.0974 328.969 21.2558 329.42 21.2558H334.362C334.573 21.2558 334.98 21.1125 335.581 20.826C336.095 20.5812 336.673 20.2545 337.315 19.846V26.9651C336.218 27.3898 335.234 27.6021 334.362 27.6021H329.42C327.204 27.6021 325.318 26.8164 323.763 25.2449C322.219 23.6848 321.447 21.8011 321.447 19.5936V17.4554C321.447 15.248 322.219 13.3642 323.763 11.8041C325.318 10.2327 327.204 9.44696 329.42 9.44696H334.362ZM122.739 45.4885C128.057 42.2516 132.787 37.5808 136.93 31.4761L117.07 18C114.879 21.2287 112.61 23.5578 110.261 24.9875C108.344 26.1544 106.257 26.7379 104 26.738H19V50.738H104C110.743 50.738 116.99 48.9882 122.739 45.4885ZM142 130.903C133.053 146.968 122.208 155 109.465 155H13.438L44.6292 93.6444C45.3056 92.3138 44.339 90.738 42.8464 90.738H0V66.738H150V90.738H77.3239C74.6893 90.738 72.2779 92.2173 71.084 94.5658L52.562 131H109.465C111.218 131 113.223 129.773 115.479 127.319C117.022 125.641 118.548 123.535 120.058 121L142 130.903ZM293.34 122.276C286.316 129.324 276.482 132.737 263.839 132.514L264.226 108.388C270.543 108.499 274.93 107.322 277.387 104.857C279.76 102.475 280.947 98.1599 280.947 91.9118V43.3934H258.855V156H235.803V19.2634H302C303.105 19.2634 304 20.1588 304 21.2634V91.9118C304 105.023 300.447 115.145 293.34 122.276ZM176.971 156H215.5C199.5 146.5 187.5 133 186.465 124.711C186.04 123.495 186.988 122.276 188.276 122.276L229.079 121.552V19H160C158.895 19 158 19.8954 158 21V116.525C158 131.036 164.324 144.194 176.971 156ZM206.026 97.4225H181.053V84.3412C181.053 83.2367 181.948 82.3412 183.053 82.3412H204.026C205.131 82.3412 206.026 83.2367 206.026 84.3412V97.4225ZM204.026 58.2112H183.053C181.948 58.2112 181.053 57.3158 181.053 56.2112V43.13H206.026V56.2112C206.026 57.3158 205.131 58.2112 204.026 58.2112Z"
+          />
+        </svg>        
+      </div>
+      <div class="df-lc" style="gap: 4px;">
+        云即·系列工具【UI控件库】
+      </div>
+      <div class="df-ffc w100" style="white-space: wrap; gap: 4px; font-size: 12px; padding: 6px; box-sizing: border-box; opacity: 0.6; border: 1px var(--boxBod) dashed; border-radius: 10px;"> 
+      <li>需同时引入<i>yn_style.css</i>和<i>yn_comp.js</i>，并核查是否存在变量名冲突</li>
+      <li>复制的代码</li>
+    </div>
+    </div>
+    <!--控件预览-->
+    <div class="df" style="flex-wrap: wrap; gap: 10px; width: 650px;">
+      <div class="df-ffc" style="padding: 10px; gap: 10px; width: 650px; box-sizing: border-box; background: var(--boxGry); border-radius: 10px;">
+        <div data-copy="HTML_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+          <div style="width: 14px; height: 14px; flex: 0 0 auto; flex: 0 0 auto; display: var(--btn-df,none);">
+            <btn-copy></btn-copy>
+          </div>
+          HTML_main:
+          <pre style="height: 120px; max-height: 50vh;"><code class="language-html">
+&lt;html data-theme="dark"&gt;
+&lt;head&gt;
+  &lt;link rel="stylesheet" href="yn_style.css"&gt;
+  &lt;!-- 引入 Prism JS --&gt;
+  &lt;script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body class="noselect df-ct"&gt;
+  &lt;script src="yn_comp.js">&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+          </code></pre>
+        </div>
+      </div>
+      <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+        <div data-copy="theme" class="df-lc" style="gap: 4px;">
+          <div style="width: 14px; height: 14px; flex: 0 0 auto; flex: 0 0 auto; display: var(--btn-df,none);">
+            <btn-copy></btn-copy>
+          </div>
+          theme:
+          <div id="btn-theme" style="width: 14px; height: 14px;">
+            <input id="theme" type="checkbox" checked="true" style="display: none;"></input>
+            <label for="theme" class="btn-theme" style="position: relative;">
+              <btn-theme></btn-theme>
+            </label>
+          </div>
+        </div>
+        <div data-copy="switch" class="df-lc" style="gap: 4px;">
+          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+            <btn-copy></btn-copy>
+          </div>
+          switch:
+          <input id="switch" type="checkbox">
+          <label for="switch" class="switch"></label>
+        </div>
+        <div data-copy="input-range-int" class="df-lc" style="gap: 4px;">
+          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+            <btn-copy></btn-copy>
+          </div>
+          input-range-int:
+          <div class="df-lc fl1" style="flex: 1;">
+            <input data-input="range" type="range" min="0" max="100" value="50" oninput="this.nextElementSibling.value = this.value">
+            <input data-input="value" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" 
+            onkeydown="
+            if(window.event.key === 'Enter'){this.blur()};" 
+            oninput="
+            inputMust(this,['int',this.previousElementSibling.min,this.previousElementSibling.max]); 
+            this.previousElementSibling.value = this.value;"/>
+          </div>
+        </div>
+      </div>
+      <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+        <div data-copy="input-text" class="df-lc" style="gap: 4px;">
+          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+            <btn-copy></btn-copy>
+          </div>
+          input-text:
+          <input type="text"
+          onkeydown="
+          if(window.event.key === 'Enter'){this.blur()};" >
+        </div>
+        <div data-copy="input-text-must" class="df-lc" style="gap: 4px;">
+          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+            <btn-copy></btn-copy>
+          </div>
+          input-text-must:
+          <input type="text" value="此处不能为空"
+          onkeydown="
+          if(window.event.key === 'Enter'){this.blur()};" 
+          onchange="inputMust(this,['text','此处不能为空']);">
+        </div>
+        <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">
+          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+            <btn-copy></btn-copy>
+          </div>
+          input-text-max:
+          <div class="pos-r df-lc fl1">
+            <input type="text" maxlength="10" style="padding-right: 4ch;"
+            onkeydown="
+            if(window.event.key === 'Enter'){this.blur()};"
+            oninput="if(!USER_KEYING){this.nextElementSibling.querySelectorAll('span')[0].innerHTML = this.value.length;};">
+            <div class="pos-a" style="right: 2px; font-size: 9px; opacity: 0.6;">
+              <span>0</span>/10
+            </div>
+          </div>
+        </div>
+        <div data-copy="textarea" class="df-lc" style="gap: 4px;">
+          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+            <btn-copy></btn-copy>
+          </div>
+          textarea:
+          <div data-resize class="pos-r fl1" >
+            <textarea style="height:10ch;"
+            onkeydown="
+            if (event.key === 'Tab') {
+              event.preventDefault(); // 阻止默认Tab行为
+              const start = this.selectionStart;
+              const end = this.selectionEnd;
+              const selectedText = this.value.substring(start, end);
+              const before = this.value.substring(0, start);
+              const after = this.value.substring(end, this.value.length);
+              this.value = before + '\t' + selectedText + after; // 用4个空格替换Tab
+              this.selectionStart = this.selectionEnd = start + 4; // 设置光标位置
+            }" ></textarea>
+            <!--清空-->
+            <div class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;"
+            onclick="this.previousElementSibling.value = '';">
+              <btn-close></btn-close>
+            </div>
+            <!--调整大小-->
+            <div class="btn-resize"></div>
+          </div>
+        </div>
+      </div>
+      <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+        <div data-copy="TV" class="df-lc" style="gap: 4px;">
+          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+            <btn-copy></btn-copy>
+          </div>
+          TV:
+          <div class="TV df-lc">
+            <div data-TV="true" class="df" style="--tv-w:-29ch;/*按文字总字节取负值（既偏移量）*/ --tv-s:15s;/*TV宽度加上父容器宽度除以30（既30px/s）*/">
+              <div style="min-width: 7ch;" >💬公告:</div>
+              <div style="min-width: 22ch;">公告内容公告内容公告内容</div>  
+            </div>  
+          </div>
+        </div>
+      </div>
+      <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+      </div>
+    </div>
+    
+  </div>
+  
+  <script src="yn_comp.js"></script>
+  <script>
+    
+  </script>
+</body>
+</html>

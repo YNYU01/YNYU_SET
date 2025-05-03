@@ -1,0 +1,605 @@
+/*主题*/
+:root{
+  /*控件*/
+  --mainFontSize:14px;
+  --mainFontSize-mini:12px;
+  --swi-h:18px;
+  --swi-w:calc(var(--swi-h)*2);
+  --txta-mh:50vh;
+}
+
+html[data-theme="dark"]{
+  --mainColor: #acacac;
+  --mainColor2: #fff;
+  --themeColor: #2f9f6c;
+  --themeColor2: #c89cff;
+  --code1:#48a67b;
+  --code2:#9377b6;
+  --boxBod: #5d5d5d;
+  --boxBak: #202020;
+  --boxGry: #393939;
+  --liColor: #d03b3b;
+  --swi-af:var(--themeColor);
+  --swi-bod:var(--boxBod);
+  --swi-bak:var(--boxGry);
+  --range-af:var(--themeColor);
+}
+html[data-theme="light"]{
+  --mainColor: #2b2b2b;
+  --mainColor2: #000;
+  --themeColor: #18e7a6;
+  --themeColor2: #8753ff;
+  --code1:#03954c;
+  --code2:#822eec;
+  --boxBod: #aeaeae;
+  --boxBak: #eeeeee;
+  --boxGry: #dddddd;
+  --liColor: #d03b3b;
+  --swi-af:var(--themeColor);
+  --swi-bod:var(--boxBod);
+  --swi-bak:var(--boxBak);
+  --range-af:var(--themeColor);
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: var(--mainFontSize);
+  color: var(--mainColor);
+  position: relative;
+  background:var(--boxBak);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.01em;
+  overflow: hidden;
+}
+/*清除|设置默认参数*/
+html,body{
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.noselect {
+  -webkit-user-select: none;/* Safari */
+  -moz-user-select: none;/* Firefox */
+  -ms-user-select: none;/* IE/Edge */
+  user-select: none;/* 标准语法 */
+}
+
+a{
+  text-decoration: none;
+}
+
+li{
+  list-style:none;
+  position: relative;
+  padding-left: 12px;
+}
+li::before{
+  content: '';
+  position: absolute;
+  left: 2px;
+  top:4px;
+  width: 0px;
+  height: 0px;
+  border: 0.8ch transparent solid;
+  border-radius: 2px;
+  border-left-color: var(--themeColor2);
+  transform: scaleX(1.5);
+}
+li::after{
+  content: '；';
+}
+li a,li i,li span{
+  margin: 0 4px;
+  color: var(--themeColor2);
+}
+
+/*隐藏调整大小的图标*/
+textarea::-webkit-resizer{
+  display: none;
+}
+
+.btn-resize{
+  display: var(--resize,none);
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  right: 3px;
+  bottom: 3px;
+  position: absolute;
+  background: linear-gradient(to top left,
+  transparent 20%,
+  var(--boxBod) 21%,
+  var(--boxBod) 25%,
+  transparent 26%,
+  transparent 45%,
+  var(--boxBod) 46%,
+  var(--boxBod) 50%,
+  transparent 51%);
+}
+
+[data-resize]{
+  --resize: block;
+}
+/* 整个滚动条 */
+.scrollbar::-webkit-scrollbar,
+pre::-webkit-scrollbar,
+textarea::-webkit-scrollbar {
+  width: 6px; /* 滚动条宽度 */
+  height: 6px;
+}
+.scrollbar::-webkit-scrollbar:hover,
+pre::-webkit-scrollbar:hover,
+textarea::-webkit-scrollbar:hover {
+  cursor: default;
+}
+
+/*滚动条上的按钮（上下箭头）*/
+.scrollbar::-webkit-scrollbar-button,
+pre::-webkit-scrollbar-button,
+textarea::-webkit-scrollbar-button {
+  display: none;
+}
+
+/*滚动条右下角*/
+.scrollbar::-webkit-scrollbar-corner,
+pre::-webkit-scrollbar-corner,
+textarea::-webkit-scrollbar-corner {
+  display: none;
+}
+
+/* 滚动条轨道 */
+.scrollbar::-webkit-scrollbar-track,
+pre::-webkit-scrollbar-track {
+  background: transparent; /* 轨道颜色 */
+}
+.scrollbar::-webkit-scrollbar-track:hover,
+pre::-webkit-scrollbar-track:hover,
+textarea::-webkit-scrollbar-track:hover {
+  cursor: default;
+}
+
+/* 滚动条滑块 */
+.scrollbar::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb,
+textarea::-webkit-scrollbar-thumb {
+  background: var(--scroll-af,var(--boxBod)); /* 滑块颜色 */
+  border-radius: 4px; /* 滑块圆角 */
+}
+.scrollbar::-webkit-scrollbar-thumb:hover,
+pre::-webkit-scrollbar-thumb:hover,
+textarea::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+}
+
+.hasscrollbar{
+  scrollbar-width: thin;
+  scrollbar-color: var(--boxGry) var(--boxBak);
+  scrollbar-gutter:both-edges;
+}
+
+/*隐藏默认滚动条*/
+.noscrollbar {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.noscrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+pre{
+  margin: 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+  overflow: scroll;
+  font-size: var(--mainFontSize-mini);
+  background: var(--boxBak);
+  color: var(--mainColor);
+}
+
+code{
+  line-height: 1.5em;
+  font-size: 12px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/*prismjs代码高亮库专用 START*/
+.attr-name{
+  color: var(--code1);
+}
+
+.attr-value{
+  color: var(--code2);
+}
+
+.punctuation{
+  color: var(--mainColor);
+}
+
+.attr-equals{
+  color: var(--mainColor);
+}
+
+.comment{
+  color: var(--mainColor);
+  opacity: 0.5;
+}
+/*prismjs代码高亮库专用 END*/
+
+input[type="checkbox"]{
+  display: none;
+}
+
+/* 隐藏range控件默认样式 */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+}
+
+/* 定义range控件轨道的样式 */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--boxBod);
+}
+
+/* 定义range控件容器的样式 */
+input[type="range" i]::-webkit-slider-container {
+  height: 20px;
+  overflow: hidden;
+}
+
+/* 定义range控件拇指的样式 */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 8px;
+  height: 16px;
+  border-radius: 4px;
+  background-color: var(--range-af,var(--boxBod));
+  margin-top: -8px;
+}
+
+
+/*布局相关*/
+.df{
+  display: flex;
+}
+
+.df-ffc{
+  display: flex;
+  flex-flow: column;
+}
+
+.df-grid{
+  display: grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr)) ;
+  grid-gap: 10px;
+}
+
+.df-lc{
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.df-rc{
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.df-cc{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.df-ct{
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+.df-ss{
+  display: flex;
+  justify-content: space-between;
+  align-items: space-between;
+}
+
+.df-cs{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.df-sc{
+  display: flex;
+  justify-content: center;
+  align-items: space-between;
+}
+
+.ovh{
+  overflow: hidden;
+}
+
+.ovy{
+  overflow-y: scroll;
+}
+
+.fl1{
+  flex: 1;
+  width: 0;
+}
+
+.wh100{
+  width: 100%;
+  height: 100%;
+}
+
+.w100{
+  width: 100%;
+}
+
+.h100{
+  height: 100%;
+}
+
+.pos-r{
+  position: relative;
+}
+
+.pos-a{
+  position: absolute;
+}
+
+.pos-a-cc{
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%)
+}
+
+.txt-c{
+  text-align: center;
+}
+
+/*纯CSS控件*/
+input[type="range"],
+input[type="text"],
+input[type="number"],
+input[type="search"]{
+  flex: 1;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="search"]{
+  padding: 2px;
+  box-sizing: border-box;
+}
+textarea{
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 4ch;
+  max-height: var(--txta-mh,50vh);
+  padding: 4px 4px;
+  box-sizing: border-box;
+}
+
+textarea,
+input[type="text"],
+input[type="number"],
+input[type="search"]{
+  font-size: var(--mainFontSize-mini);
+  background: var(--boxBak);
+  color: var(--mainColor);
+  border: 1px solid var(--boxBod,transparent);
+  border-radius: 4px;
+  position: relative;
+}
+textarea:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus{
+  border: 1px solid var(--mainColor,transparent);
+  outline: none;
+}
+
+input[type="file" i]::after{
+  content: var(--file-type,'选择文件');
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 10ch;
+  height: 100%;
+  background: var(--boxBak);
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  border-right: 1px solid var(--boxBod);
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.switch{
+  display: block;
+  width: var(--swi-w,36px);
+  height: var(--swi-h,18px);
+  border: 1px solid var(--swi-bod,transparent);
+  position: relative;
+  background: var(--swi-bak,rgba(128,128,128,0.5));
+  flex: 0 0 auto;
+  border-radius:var(--swi-r,10px) ;
+}
+.switch::after{
+  content: '';
+  position: absolute;
+  width: calc(50% - 4px);
+  height: calc(100% - 4px);
+  box-sizing: border-box;
+  top: 2px;
+  left: 2px;
+  flex: 0 0 auto;
+  border-radius:50%;
+  transition:transform 0.2s ease-out;
+  background:var(--swi-af,var(--mainColor));
+}
+input[type="checkbox"]:checked+.switch::after {
+  transform: translateX(var(--swi-h,18px));
+}
+
+.btn-text {
+  cursor: pointer;
+  color: var(--mainColor);
+  z-index: 2;
+}
+
+.btn-text:hover {
+  opacity: 0.5;
+}
+
+.TV{
+  width: 100%;
+  height: 18px;
+  display: flex;     
+  overflow: hidden; 
+  position: relative;
+}
+
+[data-TV="true"]{
+  position: absolute;
+  left: 100%;
+  animation: tvMove var(--tv-s,10s) linear infinite
+}
+
+[data-TV="false"]{
+  margin: auto;
+}
+
+[data-copy]{
+  --btn-df:flex;
+}
+
+btn-copy:hover{
+  --add:var(--mainColor);
+}
+
+.noise{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: url("yn_img/noise.png") 0 0/100px 100px,url("yn_img/noise.png") 0 0/200px 200px;
+  opacity: 0.07;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.btn-theme {
+  --theme-l:rgba(0,0,0,0);
+  --theme-d:var(--mainColor);
+}
+
+.btn-theme:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+input[type="checkbox"]:checked+.btn-theme {
+  --theme-l:var(--mainColor);
+  --theme-d:rgba(0,0,0,0);
+}
+
+/*常用动画*/
+@keyframes loadOp {/*透明度*/
+  0%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}
+
+@keyframes loadRo {/*旋转*/
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes loadUp {/*假进度条*/
+  0%{
+    width: 0%;
+  }
+  50%{
+    width: 80%;
+  }
+  80%{
+    width: 84%;
+  }
+  94%{
+    width: 90%;
+  }
+  95%{
+    width: 90%;
+  }
+  100%{
+    width: 100%;
+  }
+}
+
+@keyframes lightup {/*闪烁灯*/
+  0%{
+    background: repeating-radial-gradient(
+      circle at center,  
+      rgba(125, 248, 252, 0) 0,
+      rgba(125, 247, 252, 0) 4px,
+      rgba(119, 119, 119, 0) 8px
+    ),var(--boxBak);
+}
+  50%{
+    background: repeating-radial-gradient(
+      circle at center,  
+      rgba(125, 248, 252, 0.705) 0,
+      rgba(125, 247, 252, 0.6) 4px,
+      rgba(119, 119, 119, 0.2) 8px
+    ),var(--boxBak);
+  }
+  100%{
+    background: repeating-radial-gradient(
+      circle at center,  
+      rgba(125, 248, 252, 0) 0,
+      rgba(125, 247, 252, 0) 4px,
+      rgba(119, 119, 119, 0) 8px
+    ),var(--boxBak);
+  }
+}
+
+@keyframes boxUp{/*从底部入场*/
+  0%{
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  100%{
+    transform: translateY(0);
+    opacity: 1
+  }
+}
+
+@keyframes tvMove {/*公告*/
+  0%{
+      left: 100%;
+  }
+  100%{
+      left: var(--tv-w,-150px);
+  }
+}
