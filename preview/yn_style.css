@@ -363,6 +363,10 @@ input[type="range"]::-webkit-slider-thumb {
   overflow-y: scroll;
 }
 
+.fl0{
+  flex: 0 0 auto;
+}
+
 .fl1{
   flex: 1;
   width: 0;
@@ -694,6 +698,6 @@ input[type="checkbox"]:checked+.btn-theme {
 /*自适应*/
 @media (max-width:750px) {
   :root{
-    --layout-w:300px;
+    --layout-w:320px;
   }
 }
