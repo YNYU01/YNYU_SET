@@ -20,7 +20,7 @@
           温馨提示
       </div>
   </div>
-  <div class="df-ffc" style="padding: 60px; gap: 20px;" >
+  <div class="df-ffc" style="margin-top: 40px; gap: 20px;" >
     <div class="df-ffc ww" style="gap: 10px; align-items: center;">
       <div style="width: 90px; height: 40px;">
         <svg width="100%" height="100%" viewBox="0 0 350 156" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,164 +38,157 @@
     </div>
     </div>
     <!--控件预览-->
-    <div class="df ww" style="flex-wrap: wrap; gap: 10px;">
-      <div class="df-ffc ww" style="padding: 10px; gap: 10px; box-sizing: border-box; background: var(--boxGry); border-radius: 10px;">
-        <div data-copy="HTML_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
-          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
-            <btn-copy></btn-copy>
-          </div>
-          HTML_main:
-          <pre style="height: 120px; max-height: 50vh;"><code class="language-html">
-&lt;html data-theme="dark"&gt;
-&lt;head&gt;
-  &lt;link rel="stylesheet" href="yn_style.css"&gt;
-  &lt;!-- 引入 Prism JS --&gt;
-  &lt;script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"&gt;&lt;/script&gt;
-&lt;/head&gt;
-&lt;body class="noselect df-ct"&gt;
-  &lt;script src="yn_comp.js">&lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-          </code></pre>
-        </div>
-      </div>
-      <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
-        <div data-copy="theme" class="df-lc" style="gap: 4px;">
-          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
-            <btn-copy></btn-copy>
-          </div>
-          theme:
-          <div id="btn-theme" style="width: 14px; height: 14px;">
-            <input id="theme" type="checkbox" checked="true" style="display: none;">
-            <label for="theme" class="btn-theme" style="position: relative;">
-              <btn-theme></btn-theme>
-            </label>
+    <div class="ovy noscrollbar" style="height: calc(100vh - 240px);">
+      <div class="df ww" style="flex-wrap: wrap; gap: 10px;">
+        <div class="df-ffc ww" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
+          <div data-copy="HTML_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+            <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
+              <btn-copy></btn-copy>
+            </div>
+            HTML_main:
+            <div data-code="pre">
+              <pre style="height: 120px; max-height: 50vh;"><code data-code="HTML_main" class="language-html"></code></pre>
+            </div>
           </div>
         </div>
-        <div data-copy="check" class="df-lc" style="gap: 4px;">
-          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
-            <btn-copy></btn-copy>
+        <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+          <div data-copy="theme" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
+              <btn-copy></btn-copy>
+            </div>
+            theme:
+            <div id="btn-theme" style="width: 14px; height: 14px;">
+              <input id="theme" type="checkbox" checked="true" style="display: none;">
+              <label for="theme" class="btn-theme" style="position: relative;">
+                <btn-theme></btn-theme>
+              </label>
+            </div>
           </div>
-          check:
-          <div style="width: 14px; height: 14px;">
-            <input id="check-1" type="checkbox" checked="true" style="display: none;"
+          <div data-copy="check" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
+              <btn-copy></btn-copy>
+            </div>
+            check:
+            <div style="width: 14px; height: 14px;">
+              <input id="check-1" type="checkbox" checked="true" style="display: none;"
+              onchange="if(this.checked){
+                this.parentNode.parentNode.style.opacity = 1;
+              }else{
+                this.parentNode.parentNode.style.opacity = 0.4;
+              }">
+              <label for="check-1" class="check">
+                <btn-check></btn-check>
+              </label>
+            </div>
+          </div>
+          <div data-copy="switch" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
+              <btn-copy></btn-copy>
+            </div>
+            switch:
+            <input id="switch" type="checkbox" checked="true" style="display: none;"
             onchange="if(this.checked){
-              this.parentNode.parentNode.style.opacity = 1;
+              ROOT.style.setProperty('--btn-copy-df','flex');
             }else{
-              this.parentNode.parentNode.style.opacity = 0.4;
+              ROOT.style.setProperty('--btn-copy-df','none');
             }">
-            <label for="check-1" class="check">
-              <btn-check></btn-check>
-            </label>
+            <label for="switch" class="switch"></label>
+          </div>
+          <div data-copy="input-range-int" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
+              <btn-copy></btn-copy>
+            </div>
+            input-range-int:
+            <div class="df-lc fl1" style="flex: 1;">
+              <input data-input="range" type="range" min="0" max="100" value="50" oninput="this.nextElementSibling.value = this.value">
+              <input data-input="value" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" 
+              onkeydown="
+              if(window.event.key === 'Enter'){this.blur()};" 
+              oninput="
+              inputMust(this,['int',this.previousElementSibling.min,this.previousElementSibling.max]); 
+              this.previousElementSibling.value = this.value;"/>
+            </div>
           </div>
         </div>
-        <div data-copy="switch" class="df-lc" style="gap: 4px;">
-          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
-            <btn-copy></btn-copy>
+        <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+          <div data-copy="input-text" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
+              <btn-copy></btn-copy>
+            </div>
+            input-text:
+            <input type="text"
+            onkeydown="
+            if(window.event.key === 'Enter'){this.blur()};" >
           </div>
-          switch:
-          <input id="switch" type="checkbox" checked="true" style="display: none;"
-          onchange="if(this.checked){
-            ROOT.style.setProperty('--btn-copy-df','flex');
-          }else{
-            ROOT.style.setProperty('--btn-copy-df','none');
-          }">
-          <label for="switch" class="switch"></label>
-        </div>
-        <div data-copy="input-range-int" class="df-lc" style="gap: 4px;">
-          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
-            <btn-copy></btn-copy>
-          </div>
-          input-range-int:
-          <div class="df-lc fl1" style="flex: 1;">
-            <input data-input="range" type="range" min="0" max="100" value="50" oninput="this.nextElementSibling.value = this.value">
-            <input data-input="value" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" 
+          <div data-copy="input-text-must" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
+              <btn-copy></btn-copy>
+            </div>
+            input-text-must:
+            <input type="text" value="此处不能为空"
             onkeydown="
             if(window.event.key === 'Enter'){this.blur()};" 
-            oninput="
-            inputMust(this,['int',this.previousElementSibling.min,this.previousElementSibling.max]); 
-            this.previousElementSibling.value = this.value;"/>
+            onchange="inputMust(this,['text','此处不能为空']);">
           </div>
-        </div>
-      </div>
-      <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
-        <div data-copy="input-text" class="df-lc" style="gap: 4px;">
-          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
-            <btn-copy></btn-copy>
+          <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
+              <btn-copy></btn-copy>
+            </div>
+            input-text-max:
+            <div class="pos-r df-lc fl1">
+              <input type="text" maxlength="10" 
+              onkeydown="
+              if(window.event.key === 'Enter'){this.blur()};"
+              oninput="if(!USER_KEYING){this.nextElementSibling.querySelectorAll('span')[0].innerHTML = this.value.length;};">
+              <div class="pos-a" style="right: 2px; font-size: 9px; opacity: 0.6;">
+                <span>0</span>/10
+              </div>
+            </div>
           </div>
-          input-text:
-          <input type="text"
-          onkeydown="
-          if(window.event.key === 'Enter'){this.blur()};" >
-        </div>
-        <div data-copy="input-text-must" class="df-lc" style="gap: 4px;">
-          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
-            <btn-copy></btn-copy>
-          </div>
-          input-text-must:
-          <input type="text" value="此处不能为空"
-          onkeydown="
-          if(window.event.key === 'Enter'){this.blur()};" 
-          onchange="inputMust(this,['text','此处不能为空']);">
-        </div>
-        <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">
-          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
-            <btn-copy></btn-copy>
-          </div>
-          input-text-max:
-          <div class="pos-r df-lc fl1">
-            <input type="text" maxlength="10" 
-            onkeydown="
-            if(window.event.key === 'Enter'){this.blur()};"
-            oninput="if(!USER_KEYING){this.nextElementSibling.querySelectorAll('span')[0].innerHTML = this.value.length;};">
-            <div class="pos-a" style="right: 2px; font-size: 9px; opacity: 0.6;">
-              <span>0</span>/10
+          <div data-copy="textarea" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
+              <btn-copy></btn-copy>
+            </div>
+            textarea:
+            <div data-resize class="pos-r fl1" >
+              <textarea style="height:10ch;"
+              onkeydown="
+              if (event.key === 'Tab') {
+                event.preventDefault(); // 阻止默认Tab行为
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                const selectedText = this.value.substring(start, end);
+                const before = this.value.substring(0, start);
+                const after = this.value.substring(end, this.value.length);
+                this.value = before + '\t' + selectedText + after; // 用4个空格替换Tab
+                this.selectionStart = this.selectionEnd = start + 4; // 设置光标位置
+              }" ></textarea>
+              <!--清空-->
+              <div class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;"
+              onclick="this.previousElementSibling.value = '';">
+                <btn-close></btn-close>
+              </div>
+              <!--调整大小-->
+              <div class="btn-resize"></div>
             </div>
           </div>
         </div>
-        <div data-copy="textarea" class="df-lc" style="gap: 4px;">
-          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
-            <btn-copy></btn-copy>
-          </div>
-          textarea:
-          <div data-resize class="pos-r fl1" >
-            <textarea style="height:10ch;"
-            onkeydown="
-            if (event.key === 'Tab') {
-              event.preventDefault(); // 阻止默认Tab行为
-              const start = this.selectionStart;
-              const end = this.selectionEnd;
-              const selectedText = this.value.substring(start, end);
-              const before = this.value.substring(0, start);
-              const after = this.value.substring(end, this.value.length);
-              this.value = before + '\t' + selectedText + after; // 用4个空格替换Tab
-              this.selectionStart = this.selectionEnd = start + 4; // 设置光标位置
-            }" ></textarea>
-            <!--清空-->
-            <div class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;"
-            onclick="this.previousElementSibling.value = '';">
-              <btn-close></btn-close>
+        <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+          <div data-copy="TV" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
+              <btn-copy></btn-copy>
             </div>
-            <!--调整大小-->
-            <div class="btn-resize"></div>
+            TV:
+            <div class="TV df-lc">
+              <div data-TV="true" class="df" style="--tv-w:-29ch;/*按文字总字节取负值（既偏移量）*/ --tv-s:15s;/*TV宽度加上父容器宽度除以30（既30px/s）*/">
+                <div style="min-width: 7ch;" >💬公告:</div>
+                <div style="min-width: 22ch;">公告内容公告内容公告内容</div>  
+              </div>  
+            </div>
           </div>
         </div>
-      </div>
-      <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
-        <div data-copy="TV" class="df-lc" style="gap: 4px;">
-          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
-            <btn-copy></btn-copy>
-          </div>
-          TV:
-          <div class="TV df-lc">
-            <div data-TV="true" class="df" style="--tv-w:-29ch;/*按文字总字节取负值（既偏移量）*/ --tv-s:15s;/*TV宽度加上父容器宽度除以30（既30px/s）*/">
-              <div style="min-width: 7ch;" >💬公告:</div>
-              <div style="min-width: 22ch;">公告内容公告内容公告内容</div>  
-            </div>  
-          </div>
+        <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
         </div>
-      </div>
-      <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
       </div>
     </div>
     
@@ -203,7 +196,7 @@
   
   <script src="yn_comp.js"></script>
   <script>
-    
+    document.querySelector('[data-code="HTML_main"]').innerHTML = HTML_MAIN.replace(/</g,'&lt;').replace(/>/g,'&gt;')
   </script>
 </body>
 </html>

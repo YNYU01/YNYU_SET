@@ -99,6 +99,7 @@ li a,li i,li span{
 }
 
 /*隐藏调整大小的图标*/
+pre::-webkit-resizer,
 textarea::-webkit-resizer{
   display: none;
 }
@@ -193,20 +194,49 @@ body::-webkit-scrollbar,
   display: none;
 }
 
+[data-code="pre"]{
+  width: 100%;
+  position: relative;
+}
+
+[data-code="pre"]::after{
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(to top left,
+  transparent 20%,
+  var(--boxBod) 21%,
+  var(--boxBod) 25%,
+  transparent 26%,
+  transparent 45%,
+  var(--boxBod) 46%,
+  var(--boxBod) 50%,
+  transparent 51%);
+}
+
 pre{
+  position: relative;
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 80px;
   margin: 0;
-  padding: 0 20px;
+  padding: 10px 20px;
   box-sizing: border-box;
   overflow: scroll;
   font-size: var(--mainFontSize-mini);
   background: var(--boxBak);
   color: var(--mainColor);
+  resize: both;
 }
 
 code{
   line-height: 1.5em;
   font-size: 12px;
   font-family: 'Courier New', Courier, monospace;
+  
 }
 
 /*prismjs代码高亮库专用 START*/
@@ -541,9 +571,10 @@ input[type="checkbox"]:checked+.btn-theme {
   align-items: center;
   position: absolute;
   width: 100%;
-  bottom: 40px;
+  bottom: 80px;
   margin: auto;
   animation: boxUp 0.2s;
+  z-index: 20;
 }
 
 .tips-all-text{

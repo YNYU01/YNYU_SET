@@ -1,4 +1,17 @@
-const ROOT = document.documentElement
+const ROOT = document.documentElement;
+const HTML_MAIN = `<html data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <meta name="description" content="网页内容简介，转发时显示">
+  <link rel="stylesheet" href="yn_style.css">
+  <!-- 引入 Prism JS -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
+</head>
+<body class="noselect df-ct">
+  <script src="yn_comp.js"></script>
+</body>
+</html>`
 let TIPS = document.getElementById('tips-all');
 let TIPS_TEXT = document.getElementById('tips-all-text');
 let TIPS_TIMES = [];
@@ -291,16 +304,7 @@ function copy(node,type,other){
     let htmlcode = node.innerHTML.split(key + ':')[1];
     
     if(key === "HTML_main"){
-      htmlcode = `<html data-theme="dark">
-<head>
-  <link rel="stylesheet" href="yn_style.css">
-  <!-- 引入 Prism JS -->
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
-</head>
-<body class="noselect df-ct">
-  <script src="yn_comp.js"></script>
-</body>
-</html>`
+      htmlcode = HTML_MAIN
     } else {
       COMPS.forEach(item => {
         if(htmlcode.split('<'+ item + '>').length > 1){
@@ -355,11 +359,11 @@ function tipsAll(string,time,num){
   }
 
   setTimeout(()=>{
-    TIPS.style.animation = "overOp 0.2s"
-    setTimeout(()=>{
+    TIPS.style.animation = "overOp 0.2s"//退场
+    setTimeout(()=>{//重置
       TIPS.style.display = "none";
       TIPS_TEXT.innerHTML = '';
-      TIPS.animation = "boxUp 0.2s"
-    },200)
+      TIPS.style.animation = "boxUp 0.2s"
+    },190)//必须小于上一个动画的时长，不然会播两个动画
   },time)
 }
