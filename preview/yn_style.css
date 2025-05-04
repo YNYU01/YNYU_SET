@@ -1,11 +1,13 @@
 /*主题*/
 :root{
+  --layout-w:650px;/*版心宽度*/
   /*控件*/
   --mainFontSize:14px;
   --mainFontSize-mini:12px;
   --swi-h:18px;
   --swi-w:calc(var(--swi-h)*2);
   --txta-mh:50vh;
+  --btn-copy-df:flex;
 }
 
 html[data-theme="dark"]{
@@ -336,6 +338,10 @@ input[type="range"]::-webkit-slider-thumb {
   width: 0;
 }
 
+.ww{
+  width: var(--layout-w,100%);
+}
+
 .wh100{
   width: 100%;
   height: 100%;
@@ -379,7 +385,7 @@ input[type="search"]{
 input[type="text"],
 input[type="number"],
 input[type="search"]{
-  padding: 2px;
+  padding: 2px 4px;
   box-sizing: border-box;
 }
 textarea{
@@ -454,6 +460,17 @@ input[type="checkbox"]:checked+.switch::after {
   transform: translateX(var(--swi-h,18px));
 }
 
+.check{
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  cursor: pointer
+}
+
+input[type="checkbox"]:checked + .check{
+  --check:var(--mainColor);
+}
+
 .btn-text {
   cursor: pointer;
   color: var(--mainColor);
@@ -482,8 +499,9 @@ input[type="checkbox"]:checked+.switch::after {
   margin: auto;
 }
 
-[data-copy]{
-  --btn-df:flex;
+[data-copy="btn"]{
+  display: var(--btn-copy-df,none);
+  animation: toBig 0.3s;
 }
 
 btn-copy:hover{
@@ -517,6 +535,23 @@ input[type="checkbox"]:checked+.btn-theme {
   --theme-d:rgba(0,0,0,0);
 }
 
+#tips-all{
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  bottom: 40px;
+  margin: auto;
+  animation: boxUp 0.2s;
+}
+
+.tips-all-text{
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 4px 8px;
+  border-radius: 8px;
+}
 /*常用动画*/
 @keyframes loadOp {/*透明度*/
   0%{
@@ -524,6 +559,15 @@ input[type="checkbox"]:checked+.btn-theme {
   }
   100%{
     opacity: 1;
+  }
+}
+
+@keyframes overOp {/*透明度*/
+  0%{
+    opacity: 1;
+  }
+  100%{
+    opacity: 0;
   }
 }
 
@@ -601,5 +645,24 @@ input[type="checkbox"]:checked+.btn-theme {
   }
   100%{
       left: var(--tv-w,-150px);
+  }
+}
+
+@keyframes toBig {
+  0%{
+    transform: scale(0.6);
+  }
+  96%{
+    transform: scale(1.1);
+  }
+  100%{
+    transform: scale(1);
+  }
+}
+
+/*自适应*/
+@media (max-width:750px) {
+  :root{
+    --layout-w:300px;
   }
 }

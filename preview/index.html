@@ -1,8 +1,6 @@
 <html data-theme="dark">
 <head>
   <link rel="stylesheet" href="yn_style.css">
-  <!-- 引入 Prism CSS -->
-  <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-tomorrow.min.css"-->
   <!-- 引入 Prism JS -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
@@ -12,13 +10,13 @@
   <div id="noise" class="noise"></div>
   <div id="watermark" class="watermark"></div>
   <!--全局tips-->
-  <div id="tips-all" class="ww tips-all" style="display: none;">
-      <div id="tips-box" class="tips-box" >
+  <div id="tips-all">
+      <div id="tips-all-text" class="tips-all-text" >
           温馨提示
       </div>
   </div>
   <div class="df-ffc" style="padding: 60px; gap: 20px;" >
-    <div class="df-ffc" style="gap: 10px; width: 650px; align-items: center;">
+    <div class="df-ffc ww" style="gap: 10px; align-items: center;">
       <div style="width: 90px; height: 40px;">
         <svg width="100%" height="100%" viewBox="0 0 350 156" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" fill="var(--mainColor)" clip-rule="evenodd" 
@@ -31,14 +29,14 @@
       </div>
       <div class="df-ffc w100" style="white-space: wrap; gap: 4px; font-size: 12px; padding: 6px; box-sizing: border-box; opacity: 0.6; border: 1px var(--boxBod) dashed; border-radius: 10px;"> 
       <li>需同时引入<i>yn_style.css</i>和<i>yn_comp.js</i>，并核查是否存在变量名冲突</li>
-      <li>复制的代码</li>
+      <li>复制的代码需检查ID是否冲突</li>
     </div>
     </div>
     <!--控件预览-->
-    <div class="df" style="flex-wrap: wrap; gap: 10px; width: 650px;">
-      <div class="df-ffc" style="padding: 10px; gap: 10px; width: 650px; box-sizing: border-box; background: var(--boxGry); border-radius: 10px;">
+    <div class="df ww" style="flex-wrap: wrap; gap: 10px;">
+      <div class="df-ffc ww" style="padding: 10px; gap: 10px; box-sizing: border-box; background: var(--boxGry); border-radius: 10px;">
         <div data-copy="HTML_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
-          <div style="width: 14px; height: 14px; flex: 0 0 auto; flex: 0 0 auto; display: var(--btn-df,none);">
+          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
             <btn-copy></btn-copy>
           </div>
           HTML_main:
@@ -58,27 +56,49 @@
       </div>
       <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
         <div data-copy="theme" class="df-lc" style="gap: 4px;">
-          <div style="width: 14px; height: 14px; flex: 0 0 auto; flex: 0 0 auto; display: var(--btn-df,none);">
+          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
             <btn-copy></btn-copy>
           </div>
           theme:
           <div id="btn-theme" style="width: 14px; height: 14px;">
-            <input id="theme" type="checkbox" checked="true" style="display: none;"></input>
+            <input id="theme" type="checkbox" checked="true" style="display: none;">
             <label for="theme" class="btn-theme" style="position: relative;">
               <btn-theme></btn-theme>
             </label>
           </div>
         </div>
+        <div data-copy="check" class="df-lc" style="gap: 4px;">
+          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
+            <btn-copy></btn-copy>
+          </div>
+          check:
+          <div style="width: 14px; height: 14px;">
+            <input id="check-1" type="checkbox" checked="true" style="display: none;"
+            onchange="if(this.checked){
+              this.parentNode.parentNode.style.opacity = 1;
+            }else{
+              this.parentNode.parentNode.style.opacity = 0.4;
+            }">
+            <label for="check-1" class="check">
+              <btn-check></btn-check>
+            </label>
+          </div>
+        </div>
         <div data-copy="switch" class="df-lc" style="gap: 4px;">
-          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
             <btn-copy></btn-copy>
           </div>
           switch:
-          <input id="switch" type="checkbox">
+          <input id="switch" type="checkbox" checked="true" style="display: none;"
+          onchange="if(this.checked){
+            ROOT.style.setProperty('--btn-copy-df','flex');
+          }else{
+            ROOT.style.setProperty('--btn-copy-df','none');
+          }">
           <label for="switch" class="switch"></label>
         </div>
         <div data-copy="input-range-int" class="df-lc" style="gap: 4px;">
-          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
             <btn-copy></btn-copy>
           </div>
           input-range-int:
@@ -95,7 +115,7 @@
       </div>
       <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
         <div data-copy="input-text" class="df-lc" style="gap: 4px;">
-          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
             <btn-copy></btn-copy>
           </div>
           input-text:
@@ -104,7 +124,7 @@
           if(window.event.key === 'Enter'){this.blur()};" >
         </div>
         <div data-copy="input-text-must" class="df-lc" style="gap: 4px;">
-          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
             <btn-copy></btn-copy>
           </div>
           input-text-must:
@@ -114,12 +134,12 @@
           onchange="inputMust(this,['text','此处不能为空']);">
         </div>
         <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">
-          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
             <btn-copy></btn-copy>
           </div>
           input-text-max:
           <div class="pos-r df-lc fl1">
-            <input type="text" maxlength="10" style="padding-right: 4ch;"
+            <input type="text" maxlength="10" 
             onkeydown="
             if(window.event.key === 'Enter'){this.blur()};"
             oninput="if(!USER_KEYING){this.nextElementSibling.querySelectorAll('span')[0].innerHTML = this.value.length;};">
@@ -129,7 +149,7 @@
           </div>
         </div>
         <div data-copy="textarea" class="df-lc" style="gap: 4px;">
-          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
             <btn-copy></btn-copy>
           </div>
           textarea:
@@ -158,7 +178,7 @@
       </div>
       <div class="df-ffc" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
         <div data-copy="TV" class="df-lc" style="gap: 4px;">
-          <div style="width: 14px; height: 14px; flex: 0 0 auto; display: var(--btn-df,none);">
+          <div data-copy="btn" style="width: 14px; height: 14px; flex: 0 0 auto; ">
             <btn-copy></btn-copy>
           </div>
           TV:

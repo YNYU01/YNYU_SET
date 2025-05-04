@@ -1,7 +1,10 @@
 const ROOT = document.documentElement
+let TIPS = document.getElementById('tips-all');
+let TIPS_TEXT = document.getElementById('tips-all-text');
+let TIPS_TIMES = [];
 let USER_KEYING = false;
 let THEME_SWITCH = document.getElementById("theme");
-let COMPS = ['btn-theme','btn-close','btn-copy'];
+let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-check'];
 
 window.onload = ()=>{
   if(localStorage.getItem('userTheme') == 'light'){
@@ -123,10 +126,36 @@ class btncopy extends HTMLElement {
 };
 customElements.define('btn-copy', btncopy);
 
+class btnshow extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="12px" height="12px" viewBox="0 0 10 10">
+      <path class="path1" d="M5.5,2L8,2L8,4.5L10,4.5L10,0L5.5,0L5.5,2Z" fill="var(--boxBod)" fill-opacity="1"></path>
+      <path class="path2" d="M4.5,8L2,8L2,5.5L0,5.5L0,10L4.5,10L4.5,8Z" fill="var(--boxBod)" fill-opacity="1"></path>
+    </svg>
+    `;
+  }
+};
+customElements.define('btn-show', btnshow);
+
+class btncheck extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 18 18">
+      <circle cx="9" cy="9" r="8" stroke="var(--mainColor)" stroke-width="1" fill="rgba(0,0,0,0)"></circle>
+      <circle cx="9" cy="9" r="5" fill="var(--check,transparent)"></circle>
+    </svg>
+    `;
+  }
+};
+customElements.define('btn-check', btncheck);
+
 /**
  * 使输入的内容保持正确的范围
  * @param {Element} node 
- * @param {Array} info -形式为[格式要求,值]的数组：['int',min,max] | ['text',any] | ['hex','#000000'] 
+ * @param {Array} info -形式为[格式要求,极值/默认值]的数组：['int',min,max] | ['text',any] | ['hex','#000000'] 
  */
 function inputMust(node,info){
   let type = info[0];
@@ -150,6 +179,61 @@ function inputMust(node,info){
       let maxlength = node.getAttribute("maxlength")
       nullText = maxlength ? nullText.substring(0,maxlength) : nullText
       node.value = nullText
+    }
+  }
+  if(type === "hex"){
+    let values = '#' +  node.value.replace(/[#]/g,'');
+    if (values == '#' || values.replace(/[0-9a-fA-F]/g,'').trim().length > 1) {
+    node.value = "#000000";
+    tipsAll('请输入正确的色值','1000');
+    } else {
+        if (node.value.length < 7) {
+        if (node.value[0] == '#') {
+            var a = node.value.replace(/[#]/g,'');
+            if (a.length == 3) {
+            node.value = "#" + a + a
+            }
+            if (a.length == 2) {
+            node.value = "#" + a + a + a
+            }
+            if (a.length == 1) {
+            node.value = "#" + a + a + a + a + a + a
+            }
+            if (a.length == 4) {
+            node.value = "#" + a + "00"
+            }
+            if (a.length == 5) {
+            node.value = "#" + a + "0"
+            }
+        } else {
+            var c = node.value.replace(/[#]/g,'')
+            if (c.length == 3) {
+            node.value = "#" + c + c
+            }
+            if (c.length == 2) {
+            node.value = "#" + c + c + c
+            }
+            if (c.length == 1) {
+            node.value = "#" + c + c + c + c + c + c
+            }
+            if (c.length == 4) {
+            node.value = "#" + c + "00"
+            }
+            if (c.length == 5) {
+            node.value = "#" + c + "0"
+            }
+            if (c.length == 6) {
+            node.value = "#" + c
+            }
+        }
+        } else {
+            if (node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().length >= 6) {
+                node.value = '#' + node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().substring(0, 6);
+            } else {
+                node.value = "#000000"
+                tipsAll('请输入正确的色值','1000');
+            }
+        }
     }
   }
 }
@@ -185,9 +269,11 @@ function setTheme(isLight){
   if(isLight){
     ROOT.setAttribute("data-theme","light");
     localStorage.setItem('userTheme','light');
+    tipsAll('已切换为亮色主题',2000,6);
   }else{
     ROOT.setAttribute("data-theme","dark");
     localStorage.setItem('userTheme','dark');
+    tipsAll('已切换为暗色主题',2000,6);
   }
 }
 
@@ -195,9 +281,11 @@ function setTheme(isLight){
  * 
  * @param {Element} node - 包裹了需要被复制的内容的容器，也可以是{id:xxx}
  * @param {any} type - egcode | inputvalue | self | topng
+ * @param {string?} other - 通过其他方法得到的用于复制的字符串
  */
-function copy(node,type){
+function copy(node,type,other){
   node = node.innerHTML ? node : document.getElementById(node.id);
+  let copyText = '';
   if(type === 'egcode'){
     let key = node.getAttribute('data-copy');
     let htmlcode = node.innerHTML.split(key + ':')[1];
@@ -223,7 +311,55 @@ function copy(node,type){
       })
     }
     //console.log(htmlcode)
-    navigator.clipboard.writeText(htmlcode.trim()) .then(function() {});
+    copyText = htmlcode.trim()
   }
+  if(other){
+    copyText = other;
+  }
+  navigator.clipboard.writeText(copyText) 
+  .then(function() {
+    tipsAll('复制成功',2000)
+  });
+}
+
+//全局提示
+/**
+ * 
+ * @param {string} string - 全局提示内容
+ * @param {number} time - 提示停留时间
+ * @param {number?} num  - 提示次数（如有）
+ */
+function tipsAll(string,time,num){
   
+  if(num){
+      if(TIPS_TIMES.some(item => item.split('#')[0] == string )){
+      //console.log(TIPS_TIMES)
+      TIPS_TIMES.forEach((item,index)=> {
+        if(item.split('#')[0] == string){
+          if( item.split('#')[1]*1 > 1){
+            TIPS_TIMES[index] = item.split('#')[0] + '#' + (item.split('#')[1]*1 - 1);
+            //console.log(item.split('#')[0] + '#' + (item.split('#')[1]*1 - 1))
+            TIPS.style.display = "flex";
+            TIPS_TEXT.innerHTML = string;
+          }
+        }
+      })
+      } else {
+        TIPS_TIMES.push(string + '#' + num);
+        TIPS.style.display = "flex";
+        TIPS_TEXT.innerHTML = string;
+      }
+  } else {
+    TIPS.style.display = "flex";
+    TIPS_TEXT.innerHTML = string;
+  }
+
+  setTimeout(()=>{
+    TIPS.style.animation = "overOp 0.2s"
+    setTimeout(()=>{
+      TIPS.style.display = "none";
+      TIPS_TEXT.innerHTML = '';
+      TIPS.animation = "boxUp 0.2s"
+    },200)
+  },time)
 }
