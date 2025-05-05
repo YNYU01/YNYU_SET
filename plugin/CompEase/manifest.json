@@ -1,0 +1,23 @@
+{
+  "name": "『云即·工具集』仅表单功能版",
+  "id": "1492123582254730819",
+  "api": "1.0.0",
+  "main": "code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "permissions": ["currentuser"],
+  "editorType": [
+    "figma"
+  ],
+  "ui": "ui.html",
+  "networkAccess": {
+    "allowedDomains": [
+      "https://cdn.jsdelivr.net",
+      "https://cdnjs.cloudflare.com",
+      "https://www.xiaohongshu.com",
+      "https://choosealicense.com",
+      "https://*.ynyuset.cn"
+    ]
+  }
+}
