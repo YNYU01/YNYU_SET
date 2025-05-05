@@ -12,8 +12,8 @@ class close extends HTMLElement {
     this.innerHTML = `
       <div class="wh100 btn-text" style="background:rgba(0,0,0,0.5); padding:20%; box-sizing: border-box; flex:0 0 auto; border-radius: 50%;">
         <svg width="100%" height="100%" viewBox="0 0 8 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1.52515" y="0.318024" width="8" height="1" transform="rotate(45 1.52515 0.318024)" fill="let(--mainColor)"/>
-          <rect x="7.18188" y="1.02512" width="8" height="1" transform="rotate(135 7.18188 1.02512)" fill="let(--mainColor)"/>
+          <rect x="1.52515" y="0.318024" width="8" height="1" transform="rotate(45 1.52515 0.318024)" fill="var(--mainColor)"/>
+          <rect x="7.18188" y="1.02512" width="8" height="1" transform="rotate(135 7.18188 1.02512)" fill="var(--mainColor)"/>
         </svg>
       </div>
     `;
