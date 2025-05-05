@@ -78,11 +78,12 @@ li{
   position: relative;
   padding-left: 12px;
 }
-li::before{
+
+li[data-li-style="1"]::before{
   content: '';
   position: absolute;
   left: 2px;
-  top:4px;
+  top: 0.5ch;
   width: 0px;
   height: 0px;
   border: 0.8ch transparent solid;
@@ -90,7 +91,19 @@ li::before{
   border-left-color: var(--themeColor2);
   transform: scaleX(1.5);
 }
-li::after{
+
+li[data-li-style="2"]::before{
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 1ch;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--boxBod);
+}
+
+li::after,li[data-li]::after{
   content: '；';
 }
 li a,li i,li span{
@@ -194,12 +207,12 @@ body::-webkit-scrollbar,
   display: none;
 }
 
-[data-code="pre"]{
+[data-resize="pre"]{
   width: 100%;
   position: relative;
 }
 
-[data-code="pre"]::after{
+[data-resize]::after{
   content: '';
   position: absolute;
   bottom: 2px;
@@ -294,6 +307,7 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 4px;
   background-color: var(--range-af,var(--boxBod));
   margin-top: -8px;
+  cursor: pointer;
 }
 
 
@@ -489,6 +503,7 @@ input[type="file" i]::after{
   border-radius:50%;
   transition:transform 0.2s ease-out;
   background:var(--swi-af,var(--mainColor));
+  cursor: pointer;
 }
 input[type="checkbox"]:checked+.switch::after {
   transform: translateX(var(--swi-h,18px));
@@ -587,6 +602,7 @@ input[type="checkbox"]:checked+.btn-theme {
   padding: 4px 8px;
   border-radius: 8px;
 }
+
 /*常用动画*/
 @keyframes loadOp {/*透明度*/
   0%{

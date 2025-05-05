@@ -33,8 +33,8 @@
         云即·系列工具【UI控件库】
       </div>
       <div class="df-ffc w100" style="white-space: wrap; gap: 4px; font-size: 12px; padding: 6px; box-sizing: border-box; opacity: 0.6; border: 1px var(--boxBod) dashed; border-radius: 10px;"> 
-      <li>需同时引入<i>yn_style.css</i>和<i>yn_comp.js</i>，并核查是否存在变量名冲突</li>
-      <li>复制的代码需检查ID是否冲突</li>
+      <li data-li-style="1">需同时引入<i>yn_style.css</i>和<i>yn_comp.js</i>，并核查是否存在变量名冲突</li>
+      <li data-li-style="1">复制的代码需检查ID是否冲突</li>
     </div>
     </div>
     <!--控件预览-->
@@ -46,7 +46,7 @@
               <btn-copy></btn-copy>
             </div>
             HTML_main:
-            <div data-code="pre">
+            <div data-resize="pre">
               <pre style="height: 120px; max-height: 50vh;"><code data-code="HTML_main" class="language-html"></code></pre>
             </div>
           </div>
@@ -100,14 +100,19 @@
             </div>
             input-range-int:
             <div class="df-lc fl1" style="flex: 1;">
-              <input data-input="range" type="range" min="0" max="100" value="50" oninput="this.nextElementSibling.value = this.value">
-              <input data-input="value" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" 
-              onkeydown="
-              if(window.event.key === 'Enter'){this.blur()};" 
-              oninput="
-              inputMust(this,['int',this.previousElementSibling.min,this.previousElementSibling.max]); 
-              this.previousElementSibling.value = this.value;"/>
+              <input data-input="range" type="range" min="0" max="100" value="50">
+              <input data-input="value" data-input-must="`int`,`0`,`100`" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" >
             </div>
+          </div>
+          <div data-copy="input-color" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            input-color:
+            <div class="df fl1" style="gap: 4px;">
+              <div data-input="color" style="height:20px; cursor: pointer; border: 1px solid var(--boxBod); border-radius: 5px;" ><btn-color></btn-color></div>
+              <input type="text" data-input="hex" value="#888888" style="width: 80px; flex: 0 0 auto;">
+            </div> 
           </div>
         </div>
         <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
@@ -116,19 +121,14 @@
               <btn-copy></btn-copy>
             </div>
             input-text:
-            <input type="text"
-            onkeydown="
-            if(window.event.key === 'Enter'){this.blur()};" >
+            <input type="text" data-input>
           </div>
           <div data-copy="input-text-must" class="df-lc" style="gap: 4px;">
             <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             input-text-must:
-            <input type="text" value="此处不能为空"
-            onkeydown="
-            if(window.event.key === 'Enter'){this.blur()};" 
-            onchange="inputMust(this,['text','此处不能为空']);">
+            <input type="text" data-input data-input-must="`text`,`此处不能为空`" value="此处不能为空">
           </div>
           <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">
             <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
@@ -151,25 +151,28 @@
             </div>
             textarea:
             <div data-resize class="pos-r fl1" >
-              <textarea style="height:10ch;"
-              onkeydown="
-              if (event.key === 'Tab') {
-                event.preventDefault(); // 阻止默认Tab行为
-                const start = this.selectionStart;
-                const end = this.selectionEnd;
-                const selectedText = this.value.substring(start, end);
-                const before = this.value.substring(0, start);
-                const after = this.value.substring(end, this.value.length);
-                this.value = before + '\t' + selectedText + after; // 用4个空格替换Tab
-                this.selectionStart = this.selectionEnd = start + 4; // 设置光标位置
-              }" ></textarea>
+              <textarea data-textarea style="height:10ch;"></textarea>
               <!--清空-->
-              <div class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;"
-              onclick="this.previousElementSibling.value = '';">
+              <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
                 <btn-close></btn-close>
               </div>
-              <!--调整大小-->
-              <div class="btn-resize"></div>
+            </div>
+          </div>
+          <div data-copy="textarea-eg" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            textarea-eg:
+            <div data-resize class="pos-r fl1" >
+              <textarea data-textarea="eg" data-eg="示例文案\n示例文案" style="height:14ch;"></textarea>
+              <!--清空-->
+              <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
+                <btn-close></btn-close>
+              </div>
+              <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: wrap; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
+                <li data-li-style="2">双击填充示例</li>
+                <li data-li-style="2">其他输入说明其他输入说明其他输入说明，其他输入说明其他输入说明</li>
+              </div>
             </div>
           </div>
         </div>

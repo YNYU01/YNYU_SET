@@ -11,7 +11,16 @@ const HTML_MAIN = `<html data-theme="dark">
 <body class="noselect df-ct">
   <script src="yn_comp.js"></script>
 </body>
-</html>`
+</html>`;
+let INPUT = document.querySelectorAll('[data-input]');
+let INPUT_MUST = document.querySelectorAll('[data-input-must]');
+let INPUT_RANGE = document.querySelectorAll('[data-input="range]');
+let INPUT_VALUE = document.querySelectorAll('[data-input="value"]');
+let INPUT_COLOR = document.querySelectorAll('[data-input="color"]');
+let INPUT_HEX = document.querySelectorAll('[data-input="hex"]');
+let TEXTAREA = document.querySelectorAll('[data-textarea]');
+let TEXTAREA_EG = document.querySelectorAll('[data-textarea="eg"]');
+let CLOSE_CLEAR = document.querySelectorAll('[data-close="clear"]');
 let TIPS = document.getElementById('tips-all');
 let TIPS_TEXT = document.getElementById('tips-all-text');
 let TIPS_TIMES = [];
@@ -34,6 +43,7 @@ window.onload = ()=>{
 window.onresize = ()=>{
   reTV()
 }
+
 THEME_SWITCH.onchange = ()=>{
   if(THEME_SWITCH.checked){
     setTheme(false)
@@ -41,6 +51,93 @@ THEME_SWITCH.onchange = ()=>{
     setTheme(true)
   }
 }
+
+CLOSE_CLEAR.forEach(item => {//清空输入内容
+  item.addEventListener('click',() => {
+    let hasvalue = [...item.parentNode.querySelectorAll('textarea'),...item.parentNode.querySelectorAll('input[type="text"]')];
+    hasvalue.forEach(items => {
+      items.value = '';
+      if(items.getAttribute('data-textarea') == 'eg'){
+        items.parentNode.querySelector('[data-textarea="tips"]').style.display = "block";
+      }
+    })
+  })
+})
+
+INPUT.forEach(item => {
+  item.addEventListener('keydown',(event) => {
+    if (event.key === 'Enter') {
+      item.blur()
+    }
+  })
+})
+
+INPUT_MUST.forEach(item => {
+  item.addEventListener('change',() => {
+    inputMust(item,item.getAttribute('data-input-must').split("`,`").map(item => item.replace(/`/g,"")))
+  })
+})
+
+INPUT_RANGE.forEach(item => {
+  item.addEventListener('input',() => {
+    item.nextElementSibling.value = item.value;
+  })
+})
+
+INPUT_VALUE.forEach(item => {
+  item.addEventListener('input',() => {
+    inputMust(item,item.getAttribute('data-input-must').split("`,`").map(item => item.replace(/`/g,"")))
+    item.previousElementSibling.value = item.value;
+  })
+})
+
+INPUT_COLOR.forEach(item => {
+  item.addEventListener('click',() => {
+    console.log("pickcolor")
+  })
+})
+
+INPUT_HEX.forEach(item => {
+  item.addEventListener('change',() => {
+    inputMust(item,['hex','#888888'])
+  })
+})
+
+TEXTAREA.forEach(item => {//调整输入逻辑
+  item.addEventListener('keydown',(event) => {
+    if (event.key === 'Tab') {
+      event.preventDefault(); // 阻止默认Tab行为
+      const start = item.selectionStart;
+      const end = item.selectionEnd;
+      const selectedText = item.value.substring(start, end);
+      const before = item.value.substring(0, start);
+      const after = item.value.substring(end, item.value.length);
+      item.value = before + '\t' + selectedText + after; // 用4个空格替换Tab
+      item.selectionStart = item.selectionEnd = start + 4; // 设置光标位置
+    }
+  })
+})
+
+TEXTAREA_EG.forEach(item => {//调整输入逻辑
+  let tips = item.parentNode.querySelector('[data-textarea="tips"]');
+  item.addEventListener('focus',() => { 
+    tips.style.display = "none";
+  })
+  item.addEventListener('blur',() => {
+    if(item.value == ''){
+      tips.style.display = "flex";
+    }else{
+      tips.style.display = "none";
+    }
+  })
+  item.addEventListener('dblclick',() => {
+    let egtext = item.getAttribute('data-eg');
+    egtext = egtext.replace(/\\n/g,'\n').replace(/\\t/g,'\t');//.replace(/\&nbsp;/g,'&nbsp;')
+    if(egtext){
+      item.value = egtext;
+    }
+  })
+})
 
 document.addEventListener('keydown',(event) => {
   if (event.isComposing) {
@@ -165,6 +262,18 @@ class btncheck extends HTMLElement {
 };
 customElements.define('btn-check', btncheck);
 
+class btncolor extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 28 20">
+      <rect x="3" y="3" width="22" height="14" rx="2"  fill="var(--input-color,#888)"></rect>
+    </svg>
+    `;
+  }
+};
+customElements.define('btn-color', btncolor);
+
 /**
  * 使输入的内容保持正确的范围
  * @param {Element} node 
@@ -197,7 +306,7 @@ function inputMust(node,info){
   if(type === "hex"){
     let values = '#' +  node.value.replace(/[#]/g,'');
     if (values == '#' || values.replace(/[0-9a-fA-F]/g,'').trim().length > 1) {
-    node.value = "#000000";
+    node.value = info[1];
     tipsAll('请输入正确的色值','1000');
     } else {
         if (node.value.length < 7) {
@@ -243,7 +352,7 @@ function inputMust(node,info){
             if (node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().length >= 6) {
                 node.value = '#' + node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().substring(0, 6);
             } else {
-                node.value = "#000000"
+                node.value = info[1]
                 tipsAll('请输入正确的色值','1000');
             }
         }
