@@ -14,7 +14,7 @@ const HTML_MAIN = `<html data-theme="dark">
 </html>`;
 let INPUT = document.querySelectorAll('[data-input]');
 let INPUT_MUST = document.querySelectorAll('[data-input-must]');
-let INPUT_RANGE = document.querySelectorAll('[data-input="range]');
+let INPUT_RANGE = document.querySelectorAll('[data-input="range"]');
 let INPUT_VALUE = document.querySelectorAll('[data-input="value"]');
 let INPUT_COLOR = document.querySelectorAll('[data-input="color"]');
 let INPUT_HEX = document.querySelectorAll('[data-input="hex"]');
@@ -26,7 +26,7 @@ let TIPS_TEXT = document.getElementById('tips-all-text');
 let TIPS_TIMES = [];
 let USER_KEYING = false;
 let THEME_SWITCH = document.getElementById("theme");
-let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-check'];
+let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check'];
 
 window.onload = ()=>{
   if(localStorage.getItem('userTheme') == 'light'){
@@ -100,6 +100,7 @@ INPUT_COLOR.forEach(item => {
 INPUT_HEX.forEach(item => {
   item.addEventListener('change',() => {
     inputMust(item,['hex','#888888'])
+    item.parentNode.style.setProperty("--input-color",item.value)
   })
 })
 
@@ -131,10 +132,12 @@ TEXTAREA_EG.forEach(item => {//调整输入逻辑
     }
   })
   item.addEventListener('dblclick',() => {
-    let egtext = item.getAttribute('data-eg');
-    egtext = egtext.replace(/\\n/g,'\n').replace(/\\t/g,'\t');//.replace(/\&nbsp;/g,'&nbsp;')
-    if(egtext){
-      item.value = egtext;
+    if (item.value == '' ) {
+      let egtext = item.getAttribute('data-eg');
+      egtext = egtext.replace(/\\n/g,'\n').replace(/\\t/g,'\t');//.replace(/\&nbsp;/g,'&nbsp;')
+      if(egtext){
+        item.value = egtext;
+      }
     }
   })
 })
@@ -207,7 +210,7 @@ class btnclose extends HTMLElement {
   constructor() {
     super();
     this.innerHTML = `
-      <div class="wh100 btn-text" style="border:1px var(--boxBod) solid; padding:20%; box-sizing: border-box; flex:0 0 auto; border-radius: 50%;">
+      <div class="wh100 btn-op" style="border:1px var(--boxBod) solid; padding:20%; box-sizing: border-box; flex:0 0 auto; border-radius: 50%;">
         <svg width="100%" height="100%" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="1.52515" y="0.318024" width="8" height="1" transform="rotate(45 1.52515 0.318024)" fill="var(--mainColor)"/>
           <rect x="7.18188" y="1.02512" width="8" height="1" transform="rotate(135 7.18188 1.02512)" fill="var(--mainColor)"/>
@@ -221,7 +224,7 @@ customElements.define('btn-close', btnclose);
 class btncopy extends HTMLElement {
   constructor() {
     super();
-    this.className = 'btn-text'
+    this.className = 'btn-op'
     this.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 11 11">  
       <path  fill-rule="evenodd" fill="var(--add,transparent)" fill-opacity="1"
@@ -261,6 +264,26 @@ class btncheck extends HTMLElement {
   }
 };
 customElements.define('btn-check', btncheck);
+
+class btninfo extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <div class="wh100 fl0" >
+      <svg width="100%" height="100%" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(7,3.5),scale(0.9)">
+          <rect x="1" y="0" width="2" height="2" rx="1" fill="var(--icon-info,var(--mainColor))"/>
+          <rect x="0" y="4" width="2" height="2" rx="1" fill="var(--icon-info,var(--mainColor))"/>
+          <rect x="1" y="4" width="2" height="8" rx="1" fill="var(--icon-info,var(--mainColor))"/>
+          <rect x="0" y="10" width="4.5" height="2" rx="1" fill="var(--icon-info,var(--mainColor))"/>
+        </g>
+        <circle cx="9" cy="9" r="8" stroke="var(--icon-info,var(--mainColor))" stroke-width="1.5" fill="rgba(0,0,0,0)"></circle>
+      </svg>
+    </div>
+    `;
+  }
+};
+customElements.define('btn-info', btninfo);
 
 class btncolor extends HTMLElement {
   constructor() {

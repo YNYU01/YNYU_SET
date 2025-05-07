@@ -25,6 +25,7 @@ html[data-theme="dark"]{
   --swi-bod:var(--boxBod);
   --swi-bak:var(--boxGry);
   --range-af:var(--themeColor);
+  --icon-info:#949494;
 }
 html[data-theme="light"]{
   --mainColor: #2b2b2b;
@@ -41,6 +42,7 @@ html[data-theme="light"]{
   --swi-bod:var(--boxBod);
   --swi-bak:var(--boxBak);
   --range-af:var(--themeColor);
+  --icon-info:#575757;
 }
 
 body {
@@ -306,7 +308,7 @@ input[type="range"]::-webkit-slider-thumb {
   height: 16px;
   border-radius: 4px;
   background-color: var(--range-af,var(--boxBod));
-  margin-top: -8px;
+  margin-top: -7px;
   cursor: pointer;
 }
 
@@ -520,13 +522,13 @@ input[type="checkbox"]:checked + .check{
   --check:var(--mainColor);
 }
 
-.btn-text {
+.btn-op {
   cursor: pointer;
   color: var(--mainColor);
   z-index: 2;
 }
 
-.btn-text:hover {
+.btn-op:hover {
   opacity: 0.5;
 }
 
@@ -602,6 +604,45 @@ input[type="checkbox"]:checked+.btn-theme {
   padding: 4px 8px;
   border-radius: 8px;
 }
+
+[data-tips]{
+  position: relative;
+  --tips-df:none;
+}
+
+[data-tips]::after{
+  content: var(--tips-text,'说明文案文案');
+  font-size: 12px;
+  color: #ffffff;
+  position: absolute;
+  padding: 2px 4px;
+  display: var(--tips-df);
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: translateX(var(--x,0));
+  animation: boxUp 0.2s;
+}
+
+[data-tips]:hover{
+  --tips-df:flex;
+}
+
+[data-tips-y="top"]::after{
+  top: var(--tips-gap,-22);
+}
+
+[data-tips-y="bottom"]::after{
+  top: var(--tips-gap,-22);
+}
+
+[data-tips-x="center"]::after{
+  --x:calc(-50% + 8px)
+}
+
+[data-tips-x="right"]::after{
+  --x:calc(-100% + 16px)
+}
+
 
 /*常用动画*/
 @keyframes loadOp {/*透明度*/
@@ -681,11 +722,11 @@ input[type="checkbox"]:checked+.btn-theme {
 
 @keyframes boxUp{/*从底部入场*/
   0%{
-    transform: translateY(10px);
+    transform: translate(var(--x,0),10px);
     opacity: 0;
   }
   100%{
-    transform: translateY(0);
+    transform: translate(var(--x,0),0);
     opacity: 1
   }
 }
