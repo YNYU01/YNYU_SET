@@ -1,197 +1,3 @@
-const ROOT = document.documentElement;
-const HTML_MAIN = `<html data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <meta name="description" content="网页内容简介，转发时显示">
-  <link rel="stylesheet" href="yn_style.css">
-  <!-- 引入 Prism JS -->
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
-</head>
-<body class="noselect df-ct">
-  <script src="yn_comp.js"></script>
-</body>
-</html>`;
-let TV = document.querySelectorAll('[data-TV]');
-let TV_MOVE = false;
-let INPUT = document.querySelectorAll('[data-input]');
-let INPUT_MUST = document.querySelectorAll('[data-input-must]');
-let INPUT_RANGE = document.querySelectorAll('input[type="range"]');
-let INPUT_VALUE = document.querySelectorAll('[data-input="value"]');
-let INPUT_COLOR = document.querySelectorAll('[data-input="colorpick"]');
-let INPUT_HEX = document.querySelectorAll('[data-input="hex"]');
-let INPUT_HSL_H = document.querySelectorAll('[data-input="hsl-h"]');
-let INPUT_COLORPICK_BOX = document.querySelectorAll('[data-input-color="box"]');
-let INPUT_COLORPICK_HSL = document.querySelectorAll('[data-input-color="hsl"]');
-let INPUT_COLORPICK_HSL_H = document.querySelectorAll('[data-input-color="hsl-h"]');
-let INPUT_COLORPICK_HEX = document.querySelectorAll('[data-input-color="hex"]');
-let TEXTAREA = document.querySelectorAll('[data-textarea]');
-let TEXTAREA_EG = document.querySelectorAll('[data-textarea="eg"]');
-let CLOSE_CLEAR = document.querySelectorAll('[data-close="clear"]');
-let TIPS = document.getElementById('tips-all');
-let TIPS_TEXT = document.getElementById('tips-all-text');
-let TIPS_TIMES = [];
-let USER_KEYING = false;
-let THEME_SWITCH = document.getElementById("theme");
-let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check'];
-
-window.onload = ()=>{
-  if(localStorage.getItem('userTheme') == 'light'){
-    THEME_SWITCH.checked = false;
-    setTheme(true);
-  }
-  if(!localStorage.getItem('userTheme')){
-    THEME_SWITCH.checked = true;
-    setTheme(true);
-    localStorage.setItem('userTheme','dark');
-  }
-}
-
-window.onresize = ()=>{
-  /*防抖*/
-  let MOVE_TIMEOUT;
-  if(MOVE_TIMEOUT){
-      clearTimeout(MOVE_TIMEOUT)
-  };
-  MOVE_TIMEOUT = setTimeout(()=>{
-      reTV();
-  },500)
-}
-
-THEME_SWITCH.onchange = ()=>{
-  if(THEME_SWITCH.checked){
-    setTheme(false)
-  }else{
-    setTheme(true)
-  }
-}
-
-CLOSE_CLEAR.forEach(item => {//清空输入内容
-  item.addEventListener('click',() => {
-    let hasvalue = [...item.parentNode.querySelectorAll('textarea'),...item.parentNode.querySelectorAll('input[type="text"]')];
-    hasvalue.forEach(items => {
-      items.value = '';
-      if(items.getAttribute('data-textarea') == 'eg'){
-        items.parentNode.querySelector('[data-textarea="tips"]').style.display = "block";
-      }
-    })
-  })
-})
-
-INPUT.forEach(item => {
-  item.addEventListener('keydown',(event) => {
-    if (event.key === 'Enter') {
-      item.blur()
-    }
-  })
-})
-
-INPUT_MUST.forEach(item => {
-  item.addEventListener('change',() => {
-    inputMust(item,item.getAttribute('data-input-must').split("`,`").map(item => item.replace(/`/g,"")))
-  })
-})
-
-INPUT_RANGE.forEach(item => {
-  item.addEventListener('input',() => {
-    item.nextElementSibling.value = item.value;
-  })
-})
-
-INPUT_VALUE.forEach(item => {
-  item.addEventListener('input',() => {
-    inputMust(item,item.getAttribute('data-input-must').split("`,`").map(item => item.replace(/`/g,"")))
-    item.previousElementSibling.value = item.value;
-  })
-})
-
-INPUT_COLOR.forEach(item => {
-  item.addEventListener('click',() => {
-    let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
-    if(colorbox){
-      colorbox.style.display = 'flex';
-    }
-  })
-})
-
-INPUT_COLORPICK_BOX.forEach(item => {
-  document.addEventListener('mousedown', function (event) {
-    if(!item.contains(event.target) && document.activeElement){
-      item.style.display = 'none';
-    }
-  })
-})
-
-INPUT_HEX.forEach(item => {
-  item.addEventListener('change',() => {
-    inputMust(item,['hex','#888888'])
-    item.parentNode.style.setProperty("--input-color",item.value)
-  })
-})
-
-INPUT_HSL_H.forEach(item => {
-  item.addEventListener('input',() => {
-    item.parentNode.parentNode.style.setProperty("--hsl-h",item.value)
-  });
-})
-
-TEXTAREA.forEach(item => {//调整输入逻辑
-  let otherscorll = document.querySelectorAll('[data-scorll]')
-  item.addEventListener('keydown',(event) => {
-    if (event.key === 'Tab') {
-      event.preventDefault(); // 阻止默认Tab行为
-      const start = item.selectionStart;
-      const end = item.selectionEnd;
-      const selectedText = item.value.substring(start, end);
-      const before = item.value.substring(0, start);
-      const after = item.value.substring(end, item.value.length);
-      item.value = before + '\t' + selectedText + after; // 用4个空格替换Tab
-      item.selectionStart = item.selectionEnd = start + 4; // 设置光标位置
-    }
-  });
-  item.addEventListener('focus',() => { 
-    otherscorll.forEach(items => {
-      items.style.overflowY = 'hidden';
-    })
-  })
-  item.addEventListener('blur',() => {
-    otherscorll.forEach(items => {
-      items.style.overflowY = 'scroll';
-    })
-  })
-})
-
-TEXTAREA_EG.forEach(item => {//调整输入逻辑
-  let tips = item.parentNode.querySelector('[data-textarea="tips"]');
-  item.addEventListener('focus',() => { 
-    tips.style.display = "none";
-  })
-  item.addEventListener('blur',() => {
-    if(item.value == ''){
-      tips.style.display = "flex";
-    }else{
-      tips.style.display = "none";
-    }
-  })
-  item.addEventListener('dblclick',() => {
-    if (item.value == '' ) {
-      let egtext = item.getAttribute('data-eg');
-      egtext = egtext.replace(/\\n/g,'\n').replace(/\\t/g,'\t');//.replace(/\&nbsp;/g,'&nbsp;')
-      if(egtext){
-        item.value = egtext;
-      }
-    }
-  })
-})
-
-document.addEventListener('keydown',(event) => {
-  if (event.isComposing) {
-    USER_KEYING = true;
-  } else {
-    USER_KEYING = false;
-  }
-})
-
 class btntheme extends HTMLElement {
   constructor() {
     super();
@@ -339,6 +145,250 @@ class btncolor extends HTMLElement {
 };
 customElements.define('btn-color', btncolor);
 
+class cardcolorpick extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <div data-input-color="box" class="df-ffc" style="gap: 4px; display: none; --hsl-h:0; --hsl-s:0%; --hsl-l:50%;">
+      <div data-input-color="hex"></div>
+      <div class="df-lc" style="gap: 4px;">
+        <input data-input="hsl-h" type="range" min="0" max="360" value="0">
+        <input data-input="value" data-input-color="hsl-h" data-input-must="\`int\`,\`0\`,\`360\`" type="text" class="txt-c" style="padding: 1px 1px; width: 22px; font-size: 10; flex: 0 0 auto;" value="0" >  
+      </div>
+    </div>
+    `;
+    this.className = 'pos-a'
+    this.style.top = 'var(--card-gap,24px)'
+  }
+};
+customElements.define('card-colorpick', cardcolorpick);
+
+const ROOT = document.documentElement;
+const HTML_MAIN = `<html data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <meta name="description" content="网页内容简介，转发时显示">
+  <link rel="stylesheet" href="yn_style.css">
+  <!-- 引入 Prism JS -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
+</head>
+<body class="noselect df-ct">
+  <script src="yn_comp.js"></script>
+</body>
+</html>`;
+let TV = document.querySelectorAll('[data-TV]');//轮播公告
+let TV_MOVE = false;//用于结合一定条件触发轮播
+let INPUT = document.querySelectorAll('[data-input]');//所有input类型组件
+let INPUT_MUST = document.querySelectorAll('[data-input-must]');//所有必填且为空时返回一个默认值的组件
+let INPUT_RANGE = document.querySelectorAll('input[type="range"]');//所有滑块类型,注意要进一步判断自定义属性的值
+let INPUT_VALUE = document.querySelectorAll('[data-input="value"]');
+let INPUT_COLOR = document.querySelectorAll('[data-input="colorpick"]');
+let INPUT_COLOR_TYPE = document.querySelectorAll('[data-input="colortype"]');
+let INPUT_HEX = document.querySelectorAll('[data-input="hex"]');
+let INPUT_RGB = document.querySelectorAll('[data-input="rgb"]');
+let INPUT_HSL_H = document.querySelectorAll('[data-input="hsl-h"]');
+let INPUT_COLORPICK_BOX = document.querySelectorAll('[data-input-color="box"]');
+let INPUT_COLORPICK_HSL = document.querySelectorAll('[data-input-color="hsl"]');
+let INPUT_COLORPICK_HSL_H = document.querySelectorAll('[data-input-color="hsl-h"]');
+let INPUT_COLORPICK_HEX = document.querySelectorAll('[data-input-color="hex"]');
+let TEXTAREA = document.querySelectorAll('[data-textarea]');
+let TEXTAREA_EG = document.querySelectorAll('[data-textarea="eg"]');
+let CLOSE_CLEAR = document.querySelectorAll('[data-close="clear"]');
+let TIPS = document.getElementById('tips-all');
+let TIPS_TEXT = document.getElementById('tips-all-text');
+let TIPS_TIMES = [];
+let USER_KEYING = false;
+let THEME_SWITCH = document.getElementById("theme");
+let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check','card-colorpick'];
+
+window.onload = ()=>{
+  if(localStorage.getItem('userTheme') == 'light'){
+    THEME_SWITCH.checked = false;
+    setTheme(true);
+  }
+  if(!localStorage.getItem('userTheme')){
+    THEME_SWITCH.checked = true;
+    setTheme(true);
+    localStorage.setItem('userTheme','dark');
+  }
+}
+
+window.onresize = ()=>{
+  /*防抖*/
+  let MOVE_TIMEOUT;
+  if(MOVE_TIMEOUT){
+      clearTimeout(MOVE_TIMEOUT)
+  };
+  MOVE_TIMEOUT = setTimeout(()=>{
+      reTV();
+  },500)
+}
+
+THEME_SWITCH.onchange = ()=>{
+  if(THEME_SWITCH.checked){
+    setTheme(false)
+  }else{
+    setTheme(true)
+  }
+}
+
+CLOSE_CLEAR.forEach(item => {//清空输入内容
+  item.addEventListener('click',() => {
+    let hasvalue = [...item.parentNode.querySelectorAll('textarea'),...item.parentNode.querySelectorAll('input[type="text"]')];
+    hasvalue.forEach(items => {
+      items.value = '';
+      if(items.getAttribute('data-textarea') == 'eg'){
+        items.parentNode.querySelector('[data-textarea="tips"]').style.display = "block";
+      }
+    })
+  })
+})
+
+INPUT.forEach(item => {
+  item.addEventListener('keydown',(event) => {
+    if (event.key === 'Enter') {
+      item.blur()
+    }
+  })
+})
+
+INPUT_MUST.forEach(item => {
+  item.addEventListener('change',() => {
+    inputMust(item,item.getAttribute('data-input-must').split("`,`").map(item => item.replace(/`/g,"")))
+  })
+})
+
+INPUT_RANGE.forEach(item => {
+  item.addEventListener('input',() => {
+    if(item.getAttribute('data-input') && item.nextElementSibling.getAttribute('data-input')){
+          item.nextElementSibling.value = item.value;
+    }
+  })
+})
+
+INPUT_VALUE.forEach(item => {
+  item.addEventListener('input',() => {
+    inputMust(item,item.getAttribute('data-input-must').split("`,`").map(item => item.replace(/`/g,"")))
+    item.previousElementSibling.value = item.value;
+  })
+})
+
+INPUT_COLOR.forEach(item => {
+  item.addEventListener('click',() => {
+    let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
+    if(colorbox){
+      colorbox.style.display = 'flex';
+    }
+  })
+})
+
+INPUT_COLOR_TYPE.forEach(item => {
+  item.addEventListener('change',() => {
+    if(item.checked){
+      item.previousElementSibling.setAttribute('data-input','rgb');
+      let HEX = hexTorgb(item.previousElementSibling.value);
+      item.previousElementSibling.value =  `rgb(${HEX[0]},${HEX[1]},${HEX[2]})`
+    } else {
+      item.previousElementSibling.setAttribute('data-input','hex');
+      let RGB = item.previousElementSibling.value.toLowerCase().replace('rgb(','').replace(')','').split(',')
+      item.previousElementSibling.value = rgbTohex(RGB[0] * 1,RGB[1] * 1,RGB[2] * 1);
+    }
+  })
+})
+
+INPUT_COLORPICK_BOX.forEach(item => {
+  document.addEventListener('mousedown', function (event) {
+    if(!item.contains(event.target) && document.activeElement){
+      item.style.display = 'none';
+    }
+  })
+})
+
+INPUT_HEX.forEach(item => {
+  item.addEventListener('change',() => {
+    let colortype = item.getAttribute('data-input');
+    let info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
+    //console.log(colortype,info)
+    inputMust(item,[colortype,info])
+    item.parentNode.style.setProperty("--input-color",item.value)
+  })
+})
+
+INPUT_RGB.forEach(item => {
+  item.addEventListener('change',() => {
+    let colortype = item.getAttribute('data-input');
+    let info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
+    console.log(colortype,info)
+    inputMust(item,[colortype,info])
+    item.parentNode.style.setProperty("--input-color",item.value)
+  })
+})
+
+INPUT_HSL_H.forEach(item => {
+  item.addEventListener('input',() => {
+    item.parentNode.parentNode.style.setProperty("--hsl-h",item.value)
+  });
+})
+
+TEXTAREA.forEach(item => {//调整输入逻辑
+  let otherscorll = document.querySelectorAll('[data-scorll]')
+  item.addEventListener('keydown',(event) => {
+    if (event.key === 'Tab') {
+      event.preventDefault(); // 阻止默认Tab行为
+      const start = item.selectionStart;
+      const end = item.selectionEnd;
+      const selectedText = item.value.substring(start, end);
+      const before = item.value.substring(0, start);
+      const after = item.value.substring(end, item.value.length);
+      item.value = before + '\t' + selectedText + after; // 用4个空格替换Tab
+      item.selectionStart = item.selectionEnd = start + 4; // 设置光标位置
+    }
+  });
+  item.addEventListener('focus',() => { 
+    otherscorll.forEach(items => {
+      items.style.overflowY = 'hidden';
+    })
+  })
+  item.addEventListener('blur',() => {
+    otherscorll.forEach(items => {
+      items.style.overflowY = 'scroll';
+    })
+  })
+})
+
+TEXTAREA_EG.forEach(item => {//调整输入逻辑
+  let tips = item.parentNode.querySelector('[data-textarea="tips"]');
+  item.addEventListener('focus',() => { 
+    tips.style.display = "none";
+  })
+  item.addEventListener('blur',() => {
+    if(item.value == ''){
+      tips.style.display = "flex";
+    }else{
+      tips.style.display = "none";
+    }
+  })
+  item.addEventListener('dblclick',() => {
+    if (item.value == '' ) {
+      let egtext = item.getAttribute('data-eg');
+      egtext = egtext.replace(/\\n/g,'\n').replace(/\\t/g,'\t');//.replace(/\&nbsp;/g,'&nbsp;')
+      if(egtext){
+        item.value = egtext;
+      }
+    }
+  })
+})
+
+document.addEventListener('keydown',(event) => {
+  if (event.isComposing) {
+    USER_KEYING = true;
+  } else {
+    USER_KEYING = false;
+  }
+})
+
+
 /**
  * 使输入的内容保持正确的范围
  * @param {Element} node 
@@ -369,58 +419,139 @@ function inputMust(node,info){
     }
   }
   if(type === "hex"){
-    let values = '#' +  node.value.replace(/[#]/g,'');
-    if (values == '#' || values.replace(/[0-9a-fA-F]/g,'').trim().length > 1) {
-    node.value = info[1];
-    tipsAll('请输入正确的色值','1000');
+    if(node.value.toLowerCase().split('rgb(').length > 1){//兼容rgb
+      let RGB = node.value.toLowerCase().replace('rgb(','').replace(')','').split(',')
+      RGB = RGB.map(item => item.replace(/[^0-9a-fA-F]/g,'').trim())
+      if(RGB.length == 3){
+        node.value = rgbTohex(RGB[0] * 1,RGB[1] * 1,RGB[2] * 1);
+      } else {
+        tipsAll('请输入正确的色值','1000');
+      }
     } else {
-        if (node.value.length < 7) {
-        if (node.value[0] == '#') {
-            var a = node.value.replace(/[#]/g,'');
-            if (a.length == 3) {
-            node.value = "#" + a + a
-            }
-            if (a.length == 2) {
-            node.value = "#" + a + a + a
-            }
-            if (a.length == 1) {
-            node.value = "#" + a + a + a + a + a + a
-            }
-            if (a.length == 4) {
-            node.value = "#" + a + "00"
-            }
-            if (a.length == 5) {
-            node.value = "#" + a + "0"
-            }
-        } else {
-            var c = node.value.replace(/[#]/g,'')
-            if (c.length == 3) {
-            node.value = "#" + c + c
-            }
-            if (c.length == 2) {
-            node.value = "#" + c + c + c
-            }
-            if (c.length == 1) {
-            node.value = "#" + c + c + c + c + c + c
-            }
-            if (c.length == 4) {
-            node.value = "#" + c + "00"
-            }
-            if (c.length == 5) {
-            node.value = "#" + c + "0"
-            }
-            if (c.length == 6) {
-            node.value = "#" + c
-            }
-        }
-        } else {
-            if (node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().length >= 6) {
-                node.value = '#' + node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().substring(0, 6);
-            } else {
-                node.value = info[1]
-                tipsAll('请输入正确的色值','1000');
-            }
-        }
+      let values = '#' +  node.value.replace(/[#]/g,'');
+      if (values == '#' || values.replace(/[0-9a-fA-F]/g,'').trim().length > 1) {
+      node.value = info[1];
+      tipsAll('请输入正确的色值','1000');
+      } else {
+          if (node.value.length < 7) {
+          if (node.value[0] == '#') {
+              var a = node.value.replace(/[#]/g,'');
+              if (a.length == 3) {
+              node.value = "#" + a + a
+              }
+              if (a.length == 2) {
+              node.value = "#" + a + a + a
+              }
+              if (a.length == 1) {
+              node.value = "#" + a + a + a + a + a + a
+              }
+              if (a.length == 4) {
+              node.value = "#" + a + "00"
+              }
+              if (a.length == 5) {
+              node.value = "#" + a + "0"
+              }
+          } else {
+              var c = node.value.replace(/[#]/g,'')
+              if (c.length == 3) {
+              node.value = "#" + c + c
+              }
+              if (c.length == 2) {
+              node.value = "#" + c + c + c
+              }
+              if (c.length == 1) {
+              node.value = "#" + c + c + c + c + c + c
+              }
+              if (c.length == 4) {
+              node.value = "#" + c + "00"
+              }
+              if (c.length == 5) {
+              node.value = "#" + c + "0"
+              }
+              if (c.length == 6) {
+              node.value = "#" + c
+              }
+          }
+          } else {
+              if (node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().length >= 6) {
+                  node.value = '#' + node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().substring(0, 6);
+              } else {
+                  node.value = info[1]
+                  tipsAll('请输入正确的色值','1000');
+              }
+          }
+      }
+    }
+  }
+  if(type === "rgb"){
+    if(node.value.toLowerCase().split('#').length > 1){//兼容HEX
+      let values = '#' +  node.value.replace(/[#]/g,'');
+      if (values == '#' || values.replace(/[0-9a-fA-F]/g,'').trim().length > 1) {
+      node.value = info[1];
+      tipsAll('请输入正确的色值','1000');
+      } else {
+          if (node.value.length < 7) {
+          if (node.value[0] == '#') {
+              var a = node.value.replace(/[#]/g,'');
+              if (a.length == 3) {
+              node.value = hexTorgb("#" + a + a);
+              }
+              if (a.length == 2) {
+              node.value = hexTorgb("#" + a + a + a);
+              }
+              if (a.length == 1) {
+              node.value = hexTorgb("#" + a + a + a + a + a + a);
+              }
+              if (a.length == 4) {
+              node.value = hexTorgb("#" + a + "00");
+              }
+              if (a.length == 5) {
+              node.value = hexTorgb("#" + a + "0");
+              }
+          } else {
+              var c = node.value.replace(/[#]/g,'')
+              if (c.length == 3) {
+              node.value = hexTorgb("#" + c + c);
+              }
+              if (c.length == 2) {
+              node.value = hexTorgb("#" + c + c + c);
+              }
+              if (c.length == 1) {
+              node.value = hexTorgb("#" + c + c + c + c + c + c);
+              }
+              if (c.length == 4) {
+              node.value = hexTorgb("#" + c + "00");
+              }
+              if (c.length == 5) {
+              node.value = hexTorgb("#" + c + "0");
+              }
+              if (c.length == 6) {
+              node.value = hexTorgb("#" + c);
+              }
+          }
+          } else {
+              if (node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().length >= 6) {
+                  node.value = hexTorgb('#' + node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().substring(0, 6));
+              } else {
+                  node.value = info[1]
+                  tipsAll('请输入正确的色值','1000');
+              }
+          }
+      }
+    } else if (node.value.toLowerCase().split('rgb(').length > 1){
+      let RGB = node.value.toLowerCase().replace('rgb(','').replace(')','').split(',')
+      RGB = RGB.map(item => item.replace(/[^0-9a-fA-F]/g,'').trim());
+      
+      if(RGB.length == 3){
+        RGB.forEach((item,index) => {
+          if(item * 1 >= 255){
+            RGB[index] = 255
+          }
+        });
+        node.value = `rgb(${RGB[0]},${RGB[1]},${RGB[2]})`
+      } else {
+        tipsAll('请输入正确的色值','1000');
+      }
     }
   }
 }
@@ -546,4 +677,18 @@ function tipsAll(string,time,num){
       TIPS.style.animation = "boxUp 0.2s"
     },190)//必须小于上一个动画的时长，不然会播两个动画
   },time)
+}
+
+function rgbTohex(r,g,b){
+  let R = r.toString(16).padStart(2,0);
+  let G = g.toString(16).padStart(2,0);
+  let B = b.toString(16).padStart(2,0);
+  return '#' + R + G + B;
+}
+
+function hexTorgb(hex){
+  let R = parseInt(hex[1] + hex[2], 16);
+  let G = parseInt(hex[3] + hex[4], 16);
+  let B = parseInt(hex[5] + hex[6], 16);
+  return [R,G,B]
 }
