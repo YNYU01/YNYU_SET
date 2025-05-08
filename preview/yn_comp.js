@@ -12,12 +12,19 @@ const HTML_MAIN = `<html data-theme="dark">
   <script src="yn_comp.js"></script>
 </body>
 </html>`;
+let TV = document.querySelectorAll('[data-TV]');
+let TV_MOVE = false;
 let INPUT = document.querySelectorAll('[data-input]');
 let INPUT_MUST = document.querySelectorAll('[data-input-must]');
-let INPUT_RANGE = document.querySelectorAll('[data-input="range"]');
+let INPUT_RANGE = document.querySelectorAll('input[type="range"]');
 let INPUT_VALUE = document.querySelectorAll('[data-input="value"]');
-let INPUT_COLOR = document.querySelectorAll('[data-input="color"]');
+let INPUT_COLOR = document.querySelectorAll('[data-input="colorpick"]');
 let INPUT_HEX = document.querySelectorAll('[data-input="hex"]');
+let INPUT_HSL_H = document.querySelectorAll('[data-input="hsl-h"]');
+let INPUT_COLORPICK_BOX = document.querySelectorAll('[data-input-color="box"]');
+let INPUT_COLORPICK_HSL = document.querySelectorAll('[data-input-color="hsl"]');
+let INPUT_COLORPICK_HSL_H = document.querySelectorAll('[data-input-color="hsl-h"]');
+let INPUT_COLORPICK_HEX = document.querySelectorAll('[data-input-color="hex"]');
 let TEXTAREA = document.querySelectorAll('[data-textarea]');
 let TEXTAREA_EG = document.querySelectorAll('[data-textarea="eg"]');
 let CLOSE_CLEAR = document.querySelectorAll('[data-close="clear"]');
@@ -41,7 +48,14 @@ window.onload = ()=>{
 }
 
 window.onresize = ()=>{
-  reTV()
+  /*防抖*/
+  let MOVE_TIMEOUT;
+  if(MOVE_TIMEOUT){
+      clearTimeout(MOVE_TIMEOUT)
+  };
+  MOVE_TIMEOUT = setTimeout(()=>{
+      reTV();
+  },500)
 }
 
 THEME_SWITCH.onchange = ()=>{
@@ -93,7 +107,18 @@ INPUT_VALUE.forEach(item => {
 
 INPUT_COLOR.forEach(item => {
   item.addEventListener('click',() => {
-    console.log("pickcolor")
+    let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
+    if(colorbox){
+      colorbox.style.display = 'flex';
+    }
+  })
+})
+
+INPUT_COLORPICK_BOX.forEach(item => {
+  document.addEventListener('mousedown', function (event) {
+    if(!item.contains(event.target) && document.activeElement){
+      item.style.display = 'none';
+    }
   })
 })
 
@@ -104,7 +129,14 @@ INPUT_HEX.forEach(item => {
   })
 })
 
+INPUT_HSL_H.forEach(item => {
+  item.addEventListener('input',() => {
+    item.parentNode.parentNode.style.setProperty("--hsl-h",item.value)
+  });
+})
+
 TEXTAREA.forEach(item => {//调整输入逻辑
+  let otherscorll = document.querySelectorAll('[data-scorll]')
   item.addEventListener('keydown',(event) => {
     if (event.key === 'Tab') {
       event.preventDefault(); // 阻止默认Tab行为
@@ -116,6 +148,16 @@ TEXTAREA.forEach(item => {//调整输入逻辑
       item.value = before + '\t' + selectedText + after; // 用4个空格替换Tab
       item.selectionStart = item.selectionEnd = start + 4; // 设置光标位置
     }
+  });
+  item.addEventListener('focus',() => { 
+    otherscorll.forEach(items => {
+      items.style.overflowY = 'hidden';
+    })
+  })
+  item.addEventListener('blur',() => {
+    otherscorll.forEach(items => {
+      items.style.overflowY = 'scroll';
+    })
   })
 })
 
@@ -384,11 +426,17 @@ function inputMust(node,info){
 }
 
 function reTV(){
-  let TV_MOVE = document.querySelectorAll('[data-TV="true"]');
-  TV_MOVE.forEach(item => {
+  if(window.innerWidth <= 750){
+    TV_MOVE = true;
+  } else {
+    TV_MOVE = false;
+  }
+  TV.forEach(item => {
     let long = item.offsetWidth + item.parentNode.offsetWidth;
-    item.style.setProperty('--tv-s',Math.floor(long/30) + 's')
+    item.style.setProperty('--tv-s',Math.floor(long/30) + 's');
+    item.setAttribute('data-tv',TV_MOVE)
   })
+
 }
 
 /**

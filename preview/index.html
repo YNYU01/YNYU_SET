@@ -20,7 +20,23 @@
           温馨提示
       </div>
   </div>
-  <div class="df-ffc" style="margin-top: 40px;" >
+  <div class="df-ffc pos-r">
+    <div class="df-sc" style="--swi-text:'Zh'; --swi-icon:''; padding: 10px 4px;">
+      <div></div>
+      <input id="language" type="checkbox" checked="true" style="display: none;"
+      onchange="if(this.checked){
+        this.parentNode.style.setProperty('--swi-text',`'Zh'`);
+      }else{
+        this.parentNode.style.setProperty('--swi-text',`'En'`);
+      }">
+      <label for="language" class="switch" style="--swi-h:20px; --swi-r:6px; --swi-af:var(--mainColor)">
+        <div class="pos-a" style="left: -22px; width: 18px; height: 18px; z-index: 2;">
+          <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
+            <path fill="var(--mainColor)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
+          </svg>
+        </div>
+      </label>  
+    </div>
     <div class="df-ffc ww" style="gap: 10px; align-items: center;">
       <div style="width: 90px; height: 40px;">
         <svg width="100%" height="100%" viewBox="0 0 350 156" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,9 +46,6 @@
         </svg>        
       </div>
       <div class="df-lc" style="gap: 4px;">
-        <div data-tips="auto" data-tips-y="top" data-tips-x="center" style="width: 16px; height: 16px;">
-          <btn-info class="btn-op"></btn-info>
-        </div>
         云即·系列工具【UI控件库】
       </div>
       <div class="df-ffc w100" style="white-space: wrap; gap: 4px; font-size: 12px; padding: 6px; box-sizing: border-box; opacity: 0.6; border: 1px var(--boxBod) dashed; border-radius: 10px;"> 
@@ -41,7 +54,7 @@
     </div>
     </div>
     <!--控件预览-->
-    <div class="ovy noscrollbar" style="height: calc(100vh - 240px); padding-top: 20px;">
+    <div class="noscrollbar" data-scorll style="overflow-y: scroll; height: calc(100vh - 240px); padding-top: 20px;">
       <div class="df ww" style="flex-wrap: wrap; gap: 10px;">
         <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
           <div data-copy="HTML_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
@@ -54,6 +67,36 @@
             HTML_main:
             <div data-resize="pre">
               <pre style="height: 120px; max-height: 50vh;"><code data-code="HTML_main" class="language-html"></code></pre>
+            </div>
+          </div>
+        </div>
+        <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
+          <div data-copy="TV" class="df-lc" style="gap: 4px;">
+            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+              <btn-info class="btn-op"></btn-info>
+            </div>
+            TV:
+            <div class="TV df-lc">
+              <div data-TV="false" class="df" style="--tv-w:-29ch;/*按文字总字节取负值（既偏移量）*/ --tv-s:15s;/*TV宽度加上父容器宽度除以30（既30px/s）*/">
+                <div style="min-width: 7ch;" >💬公告:</div>
+                <div style="min-width: 22ch;">公告内容公告内容公告内容</div>  
+              </div>  
+            </div>
+          </div>
+        </div>
+        <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
+          <div data-copy="HTML_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+              <btn-info class="btn-op"></btn-info>
+            </div>
+            tags:
+            <div>
             </div>
           </div>
         </div>
@@ -130,10 +173,18 @@
               <btn-info class="btn-op"></btn-info>
             </div>
             input-color:
-            <div class="df fl1" style="gap: 4px;">
-              <div data-input="color" style="height:20px; cursor: pointer; border: 1px solid var(--boxBod); border-radius: 5px;" ><btn-color></btn-color></div>
+            <div data-color="#888888" class="df fl1 pos-r" style="gap: 4px;">
+              <div data-input="colorpick" style="height:20px; cursor: pointer; border: 1px solid var(--boxBod); border-radius: 5px;" ><btn-color></btn-color></div>
               <input type="text" data-input="hex" value="#888888" style="width: 80px; flex: 0 0 auto;">
+              <div data-input-color="box" class="df-ffc" style="top:22px; gap: 4px; display: none; --hsl-h:0; --hsl-s:0%; --hsl-l:50%;">
+                <div data-input-color="hex"></div>
+                <div class="df-lc" style="gap: 4px;">
+                  <input data-input="hsl-h" type="range" min="0" max="360" value="0">
+                  <input data-input="value" data-input-color="hsl-h" data-input-must="`int`,`0`,`360`" type="text" class="txt-c" style="padding: 1px 1px; width: 22px; font-size: 10; flex: 0 0 auto;" value="0" >  
+                </div>
+              </div>
             </div> 
+            
           </div>
         </div>
         <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
@@ -213,21 +264,6 @@
           </div>
         </div>
         <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
-          <div data-copy="TV" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
-              <btn-copy></btn-copy>
-            </div>
-            <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
-              <btn-info class="btn-op"></btn-info>
-            </div>
-            TV:
-            <div class="TV df-lc">
-              <div data-TV="true" class="df" style="--tv-w:-29ch;/*按文字总字节取负值（既偏移量）*/ --tv-s:15s;/*TV宽度加上父容器宽度除以30（既30px/s）*/">
-                <div style="min-width: 7ch;" >💬公告:</div>
-                <div style="min-width: 22ch;">公告内容公告内容公告内容</div>  
-              </div>  
-            </div>
-          </div>
         </div>
         <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
         </div>
@@ -238,7 +274,7 @@
   
   <script src="yn_comp.js"></script>
   <script>
-    document.querySelector('[data-code="HTML_main"]').innerHTML = HTML_MAIN.replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    document.querySelector('[data-code="HTML_main"]').innerHTML = HTML_MAIN.replace(/</g,'&lt;').replace(/>/g,'&gt;');
   </script>
 </body>
 </html>

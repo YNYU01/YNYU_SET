@@ -5,14 +5,16 @@
   --mainFontSize:14px;
   --mainFontSize-mini:12px;
   --swi-h:18px;
-  --swi-w:calc(var(--swi-h)*2);
+  --swi-r:10px;
   --txta-mh:50vh;
   --btn-copy-df:flex;
+  --colorpick-w:120px;
 }
 
 html[data-theme="dark"]{
   --mainColor: #acacac;
   --mainColor2: #fff;
+  --mainColor3: #2b2b2b;
   --themeColor: #2f9f6c;
   --themeColor2: #c89cff;
   --code1:#48a67b;
@@ -30,6 +32,7 @@ html[data-theme="dark"]{
 html[data-theme="light"]{
   --mainColor: #2b2b2b;
   --mainColor2: #000;
+  --mainColor3: #acacac;
   --themeColor: #18e7a6;
   --themeColor2: #8753ff;
   --code1:#03954c;
@@ -286,22 +289,23 @@ input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   background-color: transparent;
+  margin: 0;
 }
 
 /* 定义range控件轨道的样式 */
-input[type="range"]::-webkit-slider-runnable-track {
+[data-input="range"]::-webkit-slider-runnable-track {
   height: 2px;
   background: var(--boxBod);
 }
 
 /* 定义range控件容器的样式 */
-input[type="range" i]::-webkit-slider-container {
+[data-input="range"]::-webkit-slider-container {
   height: 20px;
   overflow: hidden;
 }
 
 /* 定义range控件拇指的样式 */
-input[type="range"]::-webkit-slider-thumb {
+[data-input="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 8px;
@@ -359,13 +363,13 @@ input[type="range"]::-webkit-slider-thumb {
   align-items: space-between;
 }
 
-.df-cs{
+.df-sc{
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.df-sc{
+.df-cs{
   display: flex;
   justify-content: center;
   align-items: space-between;
@@ -425,7 +429,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 /*纯CSS控件*/
-input[type="range"],
+[data-input="range"],
 input[type="text"],
 input[type="number"],
 input[type="search"]{
@@ -485,16 +489,16 @@ input[type="file" i]::after{
 
 .switch{
   display: block;
-  width: var(--swi-w,36px);
-  height: var(--swi-h,18px);
+  width: calc(var(--swi-h)*2);
+  height: var(--swi-h);
   border: 1px solid var(--swi-bod,transparent);
   position: relative;
   background: var(--swi-bak,rgba(128,128,128,0.5));
   flex: 0 0 auto;
-  border-radius:var(--swi-r,10px) ;
+  border-radius:var(--swi-r) ;
 }
 .switch::after{
-  content: '';
+  content: var(--swi-icon,'');
   position: absolute;
   width: calc(50% - 4px);
   height: calc(100% - 4px);
@@ -502,13 +506,24 @@ input[type="file" i]::after{
   top: 2px;
   left: 2px;
   flex: 0 0 auto;
-  border-radius:50%;
+  border-radius:calc(var(--swi-r) - 2px);
   transition:transform 0.2s ease-out;
-  background:var(--swi-af,var(--mainColor));
+  background:var(--swi-af);
   cursor: pointer;
 }
 input[type="checkbox"]:checked+.switch::after {
   transform: translateX(var(--swi-h,18px));
+}
+.switch::before{
+  content: var(--swi-text,'');
+  position: absolute;
+  box-sizing: border-box;
+  top: calc(50% - 1ch);
+  left: 50%;
+  flex: 0 0 auto;
+}
+input[type="checkbox"]:checked+.switch::before {
+  left: 2px;
 }
 
 .check{
@@ -643,6 +658,103 @@ input[type="checkbox"]:checked+.btn-theme {
   --x:calc(-100% + 16px)
 }
 
+/*取色器模块*/
+[data-input-color="box"]{
+  position: absolute;
+  z-index: 20;
+  padding: 10px;
+  background:var(--boxBak);
+  border: 1px solid var(--boxBod);
+  border-radius: 4px;
+}
+
+[data-input="hsl-h"]{
+  width: calc(var(--colorpick-w) - 24px)
+}
+/* 定义range控件轨道的样式 */
+[data-input="hsl-h"]::-webkit-slider-runnable-track {
+  height: 12px;
+  border-radius: 1px;
+}
+
+/* 定义range控件容器的样式 */
+[data-input="hsl-h"]::-webkit-slider-container {
+  height: 20px;
+  overflow: hidden;
+}
+
+/* 定义range控件拇指的样式 */
+[data-input="hsl-h"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0px;
+  height: 18px;
+  border-radius: 0;
+  background-color: transparent;
+  border:3px transparent solid;
+  border-top:3px var(--mainColor) solid;
+  border-bottom:3px var(--mainColor) solid;
+  margin-top: -3px;
+}
+
+/* 定义range控件轨道的样式 */
+[data-input="hsl-h"]::-webkit-slider-runnable-track{
+  background: linear-gradient(to right,red,orange,yellow,green,cyan,blue,purple,red);
+}
+
+[data-input-color="hsl"]{
+  width: var(--colorpick-w);
+  height: var(--colorpick-w);
+  background: 
+  linear-gradient(to bottom,#fff,transparent),
+  linear-gradient(to right,#888,transparent),
+  linear-gradient(to left,hsl(var(--hsl-h),100%,50%),hsl(var(--hsl-h),0%,100%));
+  background-blend-mode: multiply;
+  position: relative;
+}
+
+[data-input-color="hsl"]::before{
+  content: '';
+  position: absolute;
+  width: var(--colorpick-w);
+  height: var(--colorpick-w);
+  background: linear-gradient(to bottom,#fff,#000);
+  mix-blend-mode:hard-light ;
+}
+
+[data-input-color="hex"]{
+  width: var(--colorpick-w);
+  height: var(--colorpick-w);
+  background: 
+  linear-gradient(to bottom,#fff,#000),
+  linear-gradient(to left,hsl(var(--hsl-h),100%,50%),hsl(var(--hsl-h),0%,100%));
+  background-blend-mode: multiply;
+  position: relative;
+}
+
+[data-input-color="hex"]::after{
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 4px var(--mainColor) solid;
+  bottom:var(--hsl-ll);
+  left:var(--hsl-ss);
+  transform: translate(-50%,50%);
+}
+
+[data-input-color="hsl"]::after{
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 4px var(--mainColor) solid;
+  bottom:var(--hsl-l);
+  left:var(--hsl-s);
+  transform: translate(-50%,50%);
+}
 
 /*常用动画*/
 @keyframes loadOp {/*透明度*/
