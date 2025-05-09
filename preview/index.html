@@ -100,7 +100,7 @@
             </div>
           </div>
         </div>
-        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px; z-index: 2;">
           <div data-copy="theme" class="df-lc" style="gap: 4px;">
             <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
@@ -173,14 +173,20 @@
               <btn-info class="btn-op"></btn-info>
             </div>
             input-color:
-            <div data-color="#888888" class="df-LC fl1 pos-r" style="gap: 4px;">
-              <div data-input="colorpick" style="height:20px; cursor: pointer; border: 1px solid var(--boxBod); border-radius: 5px;" ><btn-color></btn-color></div>
-              <input type="text" data-input="hex" value="#888888" style="width: 110px; flex: 0 0 auto;">
+            <div data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
+            data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
+            class="df-lc fl1 pos-r" style="gap: 4px;">
+              <div data-getcolor class="btn-op" style="width: 14px; height: 14px;">
+                <btn-getcolor></btn-getcolor>
+              </div>
+              <div data-input="colorpick" style="height:20px; cursor: pointer; border: 1px solid var(--boxBod); border-radius: 5px;" >
+                <btn-color></btn-color>
+              </div>
+              <input class="fl1" type="text" data-input="hex" value="#888888" >
               <input data-input="colortype" id="colortype" type="checkbox" style="display: none;">
               <label for="colortype" class="colortype"></label>
               <card-colorpick style="--card-gap:24px"></card-colorpick>
             </div> 
-            
           </div>
         </div>
         <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">

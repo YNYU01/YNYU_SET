@@ -145,12 +145,26 @@ class btncolor extends HTMLElement {
 };
 customElements.define('btn-color', btncolor);
 
+class btngetcolor extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M17.2451 0.843894C18.4624 1.72834 18.7323 3.43233 17.8479 4.64963L17.232 5.49736C16.9119 5.93789 16.48 6.28474 15.9811 6.503L15.6732 6.63776C15.3775 6.76713 15.1218 6.973 14.9313 7.23347L16.4451 8.33327C17.2597 8.92511 17.4403 10.0654 16.8484 10.88C16.2566 11.6946 15.1163 11.8752 14.3017 11.2833L13.759 10.889L10.0388 16.0093L9.88345 16.1982C9.49725 16.6142 8.95078 16.8532 8.37579 16.8495L8.13182 16.863C7.56808 16.9275 7.05142 17.2253 6.71355 17.6903L5.44098 19.4419L5.35853 19.5437C4.92661 20.0266 4.19086 20.1136 3.65542 19.7247L3.55299 19.643C3.10247 19.2399 2.9972 18.5715 3.30122 18.049L3.37261 17.9391L4.59525 16.2563C4.98389 15.7211 5.09173 15.0347 4.89147 14.4098L4.84661 14.2854C4.60525 13.6697 4.67383 12.9777 5.025 12.4233L5.09933 12.3144L8.76818 7.26298L8.22541 6.86864C7.41096 6.27677 7.23027 5.13646 7.82205 4.32193C8.41385 3.50739 9.55418 3.32688 10.3688 3.91857L11.8833 5.01894C12.0722 4.75741 12.188 4.44987 12.2198 4.12877L12.2528 3.79425C12.3065 3.25271 12.5037 2.73473 12.8235 2.29439L13.4394 1.44666C14.3237 0.229035 16.0277 -0.0406572 17.2451 0.843894ZM6.71736 13.49C6.7039 13.5086 6.70057 13.5335 6.70878 13.5549L6.7957 13.7991C6.93098 14.2211 6.99373 14.6572 6.98838 15.0907C7.43137 14.9303 7.90528 14.8463 8.38897 14.8493C8.4013 14.8493 8.41346 14.8437 8.42077 14.8338L12.1409 9.71342L10.3862 8.43855L6.71736 13.49Z" 
+      fill-rule="evenodd" clip-rule="evenodd" fill="var(--mainColor)"/>
+    </svg>
+    `;
+  }
+};
+customElements.define('btn-getcolor', btngetcolor);
+
 class cardcolorpick extends HTMLElement {
   constructor() {
     super();
     this.innerHTML = `
-    <div data-input-color="box" class="df-ffc" style="gap: 4px; display: none; --hsl-h:0; --hsl-s:0%; --hsl-l:50%;">
-      <div data-input-color="hex"></div>
+    <div data-input-color="box" class="df-ffc" style="gap: 4px; display: none; --hsl-h: 0; --hsl-s: 0; --hsl-l: 53; --hsv-s: 0; --hsv-v: 53;">
+      <div data-input-color="hsv"></div>
       <div class="df-lc" style="gap: 4px;">
         <input data-input="hsl-h" type="range" min="0" max="360" value="0">
         <input data-input="value" data-input-color="hsl-h" data-input-must="\`int\`,\`0\`,\`360\`" type="text" class="txt-c" style="padding: 1px 1px; width: 22px; font-size: 10; flex: 0 0 auto;" value="0" >  
@@ -159,9 +173,12 @@ class cardcolorpick extends HTMLElement {
     `;
     this.className = 'pos-a'
     this.style.top = 'var(--card-gap,24px)'
+    this.style.left = '18px'
   }
 };
 customElements.define('card-colorpick', cardcolorpick);
+
+
 
 const ROOT = document.documentElement;
 const HTML_MAIN = `<html data-theme="dark">
@@ -191,7 +208,7 @@ let INPUT_HSL_H = document.querySelectorAll('[data-input="hsl-h"]');
 let INPUT_COLORPICK_BOX = document.querySelectorAll('[data-input-color="box"]');
 let INPUT_COLORPICK_HSL = document.querySelectorAll('[data-input-color="hsl"]');
 let INPUT_COLORPICK_HSL_H = document.querySelectorAll('[data-input-color="hsl-h"]');
-let INPUT_COLORPICK_HEX = document.querySelectorAll('[data-input-color="hex"]');
+let INPUT_COLORPICK_HSV = document.querySelectorAll('[data-input-color="hsv"]');
 let TEXTAREA = document.querySelectorAll('[data-textarea]');
 let TEXTAREA_EG = document.querySelectorAll('[data-textarea="eg"]');
 let CLOSE_CLEAR = document.querySelectorAll('[data-close="clear"]');
@@ -212,7 +229,7 @@ window.onload = ()=>{
     setTheme(true);
     localStorage.setItem('userTheme','dark');
   }
-}
+};
 
 window.onresize = ()=>{
   /*防抖*/
@@ -223,7 +240,7 @@ window.onresize = ()=>{
   MOVE_TIMEOUT = setTimeout(()=>{
       reTV();
   },500)
-}
+};
 
 THEME_SWITCH.onchange = ()=>{
   if(THEME_SWITCH.checked){
@@ -231,7 +248,7 @@ THEME_SWITCH.onchange = ()=>{
   }else{
     setTheme(true)
   }
-}
+};
 
 CLOSE_CLEAR.forEach(item => {//清空输入内容
   item.addEventListener('click',() => {
@@ -243,7 +260,7 @@ CLOSE_CLEAR.forEach(item => {//清空输入内容
       }
     })
   })
-})
+});
 
 INPUT.forEach(item => {
   item.addEventListener('keydown',(event) => {
@@ -251,13 +268,13 @@ INPUT.forEach(item => {
       item.blur()
     }
   })
-})
+});
 
 INPUT_MUST.forEach(item => {
   item.addEventListener('change',() => {
     inputMust(item,item.getAttribute('data-input-must').split("`,`").map(item => item.replace(/`/g,"")))
   })
-})
+});
 
 INPUT_RANGE.forEach(item => {
   item.addEventListener('input',() => {
@@ -265,14 +282,14 @@ INPUT_RANGE.forEach(item => {
           item.nextElementSibling.value = item.value;
     }
   })
-})
+});
 
 INPUT_VALUE.forEach(item => {
   item.addEventListener('input',() => {
     inputMust(item,item.getAttribute('data-input-must').split("`,`").map(item => item.replace(/`/g,"")))
     item.previousElementSibling.value = item.value;
   })
-})
+});
 
 INPUT_COLOR.forEach(item => {
   item.addEventListener('click',() => {
@@ -281,7 +298,7 @@ INPUT_COLOR.forEach(item => {
       colorbox.style.display = 'flex';
     }
   })
-})
+});
 
 INPUT_COLOR_TYPE.forEach(item => {
   item.addEventListener('change',() => {
@@ -295,41 +312,199 @@ INPUT_COLOR_TYPE.forEach(item => {
       item.previousElementSibling.value = rgbTohex(RGB[0] * 1,RGB[1] * 1,RGB[2] * 1);
     }
   })
-})
+});
 
 INPUT_COLORPICK_BOX.forEach(item => {
   document.addEventListener('mousedown', function (event) {
-    if(!item.contains(event.target) && document.activeElement){
+    let inputs = item.parentNode.parentNode;
+    if(!item.contains(event.target) && !inputs.contains(event.target) && document.activeElement){
       item.style.display = 'none';
     }
   })
-})
+});
 
 INPUT_HEX.forEach(item => {
   item.addEventListener('change',() => {
     let colortype = item.getAttribute('data-input');
     let info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
-    //console.log(colortype,info)
     inputMust(item,[colortype,info])
-    item.parentNode.style.setProperty("--input-color",item.value)
+    item.parentNode.style.setProperty("--input-color",item.value);
+    let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
+    let colorrange = item.parentNode.querySelector('[data-input="hsl-h"]');
+    let colorvalue = item.parentNode.querySelector('[data-input-color="hsl-h"]');
+    let RGB = item.value.split('#').length > 1 ? hexTorgb(item.value) : item.value.toLowerCase().replace('rgb(','').replace(')','').split(',');
+    let HEX = item.value.split('#').length > 1 ? item.value : rgbTohex(RGB[0],RGB[1],RGB[2]);
+    let HSL = rgbTohsl(RGB[0],RGB[1],RGB[2]);
+    let HSV = hslTohsv(HSL[0],HSL[1],HSL[2]);
+    colorrange.value = HSL[0];
+    colorvalue.value = HSL[0];
+    colorbox.style.setProperty("--hsl-h",HSL[0]);
+    colorbox.style.setProperty("--hsl-s",HSL[1]);
+    colorbox.style.setProperty("--hsl-l",HSL[2]);
+    colorbox.style.setProperty("--hsv-s",HSV[1]);
+    colorbox.style.setProperty("--hsv-v",HSV[2]);
+    item.parentNode.setAttribute('data-color-hex',HEX);
+    item.parentNode.setAttribute('data-color-rgb',`rgb(${RGB[0]},${RGB[1]},${RGB[2]})`);
+    item.parentNode.setAttribute('data-color-hsl',`hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
+    item.parentNode.setAttribute('data-color-hsv',`hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
   })
-})
+});
 
 INPUT_RGB.forEach(item => {
   item.addEventListener('change',() => {
     let colortype = item.getAttribute('data-input');
     let info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
-    console.log(colortype,info)
     inputMust(item,[colortype,info])
-    item.parentNode.style.setProperty("--input-color",item.value)
+    item.parentNode.style.setProperty("--input-color",item.value);
+    let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
+    let colorrange = item.parentNode.querySelector('[data-input="hsl-h"]');
+    let colorvalue = item.parentNode.querySelector('[data-input-color="hsl-h"]');
+    let RGB = item.value.split('#').length > 1 ? hexTorgb(item.value) : item.value.toLowerCase().replace('rgb(','').replace(')','').split(',');
+    let HEX = item.value.split('#').length > 1 ? item.value : rgbTohex(RGB[0],RGB[1],RGB[2]);
+    let HSL = rgbTohsl(RGB[0],RGB[1],RGB[2]);
+    let HSV = hslTohsv(HSL[0],HSL[1],HSL[2]);
+    colorrange.value = HSL[0];
+    colorvalue.value = HSL[0];
+    colorbox.style.setProperty("--hsl-h",HSL[0]);
+    colorbox.style.setProperty("--hsl-s",HSL[1]);
+    colorbox.style.setProperty("--hsl-l",HSL[2]);
+    colorbox.style.setProperty("--hsv-s",HSV[1]);
+    colorbox.style.setProperty("--hsv-v",HSV[2]);
+    item.parentNode.setAttribute('data-color-hex',HEX);
+    item.parentNode.setAttribute('data-color-rgb',`rgb(${RGB[0]},${RGB[1]},${RGB[2]})`);
+    item.parentNode.setAttribute('data-color-hsl',`hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
+    item.parentNode.setAttribute('data-color-hsv',`hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
   })
-})
+});
 
 INPUT_HSL_H.forEach(item => {
   item.addEventListener('input',() => {
-    item.parentNode.parentNode.style.setProperty("--hsl-h",item.value)
+    item.parentNode.parentNode.style.setProperty("--hsl-h",item.value);
+    let colorcomp = item.parentNode.parentNode.parentNode.parentNode;
+    let oldHSL = colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
+    let newRGB = hslTorgb(item.value,oldHSL[1],oldHSL[2],255);
+    let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+    let newHSV = hslTohsv(item.value,oldHSL[1],oldHSL[2])
+    let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+    let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+    if(colorinput1){
+      colorinput1.value = newHEX;
+    }
+    if(colorinput2){
+      colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+    }
+    colorcomp.style.setProperty("--input-color",newHEX);
+    colorcomp.setAttribute('data-color-hex',newHEX);
+    colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+    colorcomp.setAttribute('data-color-hsl',`hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
+    colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
   });
-})
+});
+
+INPUT_COLORPICK_HSL_H.forEach(item => {
+  item.addEventListener('input',() => {
+    item.parentNode.parentNode.style.setProperty("--hsl-h",item.value);
+    let colorcomp = item.parentNode.parentNode.parentNode.parentNode;
+    let oldHSL = colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
+    let newRGB = hslTorgb(item.value,oldHSL[1],oldHSL[2],255);
+    let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+    let newHSV = hslTohsv(item.value,oldHSL[1],oldHSL[2])
+    let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+    let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+    if(colorinput1){
+      colorinput1.value = newHEX;
+    }
+    if(colorinput2){
+      colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+    }
+    colorcomp.style.setProperty("--input-color",newHEX);
+    colorcomp.setAttribute('data-color-hex',newHEX);
+    colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+    colorcomp.setAttribute('data-color-hsl',`hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
+    colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+  });
+});
+
+INPUT_COLORPICK_HSV.forEach(item => {
+  item.addEventListener('click',(event) => {
+    let x = event.clientX;
+    let y = event.clientY;
+    let w = item.offsetWidth;
+    let h = item.offsetHeight;
+    let startX = item.getBoundingClientRect().left;
+    let startY = item.getBoundingClientRect().top;
+    //console.log(x,y,w,h,startX,startY)
+    let hsvS = Math.floor((x - startX)/w * 100);
+    let hsvV = 100 - Math.floor((y - startY)/h * 100);
+    hsvS = hsvS <= 100 ? hsvS : 100;
+    hsvV = hsvV <= 100 ? hsvV : 100;
+    hsvS = hsvS >= 0 ? hsvS : 0;
+    hsvV = hsvV >= 0 ? hsvV : 0;
+    let colorcomp = item.parentNode.parentNode.parentNode;
+    let oldHSV = colorcomp.getAttribute('data-color-hsv').replace('hsv(','').replace(')','').split(',').map(item => item.replace('%',''));
+    let newHSL = hsvTohsl(oldHSV[0],hsvS,hsvV);
+    let newRGB = hslTorgb(newHSL[0],newHSL[1],newHSL[2],255);
+    let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+    let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+    let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+    if(colorinput1){
+      colorinput1.value = newHEX;
+    }
+    if(colorinput2){
+      colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+    }
+    item.parentNode.style.setProperty("--hsv-s",hsvS);
+    item.parentNode.style.setProperty("--hsv-v",hsvV);
+    item.parentNode.style.setProperty("--hsl-s",newHSL[1]);
+    item.parentNode.style.setProperty("--hsl-l",newHSL[2]);
+    colorcomp.style.setProperty("--input-color",newHEX);
+    colorcomp.setAttribute('data-color-hex',newHEX);
+    colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+    colorcomp.setAttribute('data-color-hsl',`hsl(${newHSL[0]},${newHSL[1]}%,${newHSL[2]}%)`);
+    colorcomp.setAttribute('data-color-hsv',`hsv(${oldHSV[0]},${hsvS}%,${hsvV}%)`);
+  });
+});
+
+INPUT_COLORPICK_HSL.forEach(item => {
+  item.addEventListener('click',(event) => {
+    let x = event.clientX;
+    let y = event.clientY;
+    let w = item.offsetWidth;
+    let h = item.offsetHeight;
+    let startX = item.getBoundingClientRect().left;
+    let startY = item.getBoundingClientRect().top;
+    //console.log(x,y,w,h,startX,startY)
+    let hslS = Math.floor((x - startX)/w * 100);
+    let hslL = 100 - Math.floor((y - startY)/h * 100);
+    hslS = hslS <= 100 ? hslS : 100;
+    hslL = hslL <= 100 ? hslL : 100;
+    hslS = hslS >= 0 ? hslS : 0;
+    hslL = hslL >= 0 ? hslL : 0;
+    let colorcomp = item.parentNode.parentNode.parentNode;
+    let oldHSL= colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
+    let newHSV = hslTohsv(oldHSL[0],hslS,hslL)
+    let newRGB = hslTorgb(oldHSL[0],hslS,hslL,255);
+    let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+    let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+    let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+    if(colorinput1){
+      colorinput1.value = newHEX;
+    }
+    if(colorinput2){
+      colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+    }
+    item.parentNode.style.setProperty("--hsl-s",hslS);
+    item.parentNode.style.setProperty("--hsl-l",hslL);
+    item.parentNode.style.setProperty("--hsv-s",newHSV[1]);
+    item.parentNode.style.setProperty("--hsv-v",newHSV[2]);
+    colorcomp.style.setProperty("--input-color",newHEX);
+    colorcomp.setAttribute('data-color-hex',newHEX);
+    colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+    colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+    colorcomp.setAttribute('data-color-hsl',`hsl(${oldHSL[0]},${hslS}%,${hslL}%)`);
+  });
+});
+
 
 TEXTAREA.forEach(item => {//调整输入逻辑
   let otherscorll = document.querySelectorAll('[data-scorll]')
@@ -423,7 +598,7 @@ function inputMust(node,info){
       let RGB = node.value.toLowerCase().replace('rgb(','').replace(')','').split(',')
       RGB = RGB.map(item => item.replace(/[^0-9a-fA-F]/g,'').trim())
       if(RGB.length == 3){
-        node.value = rgbTohex(RGB[0] * 1,RGB[1] * 1,RGB[2] * 1);
+        node.value = rgbTohex(RGB[0],RGB[1],RGB[2]);
       } else {
         tipsAll('请输入正确的色值','1000');
       }
@@ -637,9 +812,8 @@ function copy(node,type,other){
   });
 }
 
-//全局提示
 /**
- * 
+ * 全局提示
  * @param {string} string - 全局提示内容
  * @param {number} time - 提示停留时间
  * @param {number?} num  - 提示次数（如有）
@@ -679,16 +853,189 @@ function tipsAll(string,time,num){
   },time)
 }
 
+/**
+ * 
+ * @param {number} r 
+ * @param {number} g 
+ * @param {number} b 
+ * @returns '#' + R + G + B
+ */
 function rgbTohex(r,g,b){
+  r = r * 1;
+  g = g * 1;
+  b = b * 1;
   let R = r.toString(16).padStart(2,0);
   let G = g.toString(16).padStart(2,0);
   let B = b.toString(16).padStart(2,0);
   return '#' + R + G + B;
 }
 
+/**
+ * 
+ * @param {string} hex - '#' + R + G + B
+ * @returns {Array} [R,G,B]
+ */
 function hexTorgb(hex){
   let R = parseInt(hex[1] + hex[2], 16);
   let G = parseInt(hex[3] + hex[4], 16);
   let B = parseInt(hex[5] + hex[6], 16);
   return [R,G,B]
+}
+
+/**
+ * 
+ * @param {number} r - 浮点数或0-255
+ * @param {number} g - 浮点数或0-255
+ * @param {number} b - 浮点数或0-255
+ * @returns {Array} [H,S,L]
+ */
+function rgbTohsl(r,g,b){
+  /*转为浮点数*/
+  r = r * 1 <= 255 ? r/255 : 1;
+  g = g * 1 <= 255 ? g/255 : 1;
+  b = b * 1 <= 255 ? b/255 : 1;
+  /*不能为负数*/
+  r = r >= 0 ? r : 0;
+  g = g >= 0 ? g : 0;
+  b = b >= 0 ? b : 0;
+  let max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0; // 灰度色
+  } else {
+    let d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+    h /= 6;
+  }
+
+  h = Math.round(h * 360);
+  s = Math.round(s * 100);
+  l = Math.round(l * 100);
+
+  return [h, s, l];
+
+}
+
+/**
+ * 
+ * @param {number} h - 0-360 或 %360
+ * @param {number | string} s - 可带%，0-100 或 %100
+ * @param {number | string} l - 可带%，0-100 或 %100
+ * @param { 1 | 100 | 255} maxNum - 浮点数 | 百分数 | 十进制值（0-255）
+ * @returns [R,G,B]
+ */
+function hslTorgb(h, s, l,maxNum) {
+  //去掉符号
+  s = s * 1 !== 'NaN' ? s : s.replace("%","") * 1;
+  l = l * 1 !== 'NaN' ? l : l.replace("%","") * 1;
+  //约束取值
+  h = h >= 0 ? h : 360 + h%360;
+  s = s >= 0 ? s : 100 + s%100;
+  l = l >= 0 ? l : 100 + l%100;
+  h = h <= 360 ? h : h%360;
+  s = s <= 100 ? s : s%100;
+  l = l <= 100 ? l : l%100;
+  // 将色相h从角度转换为弧度
+  h /= 360;
+  s /= 100;
+  l /= 100;
+
+  let r, g, b;
+
+  if (s === 0) {
+      // 饱和度为0时是灰色，使用亮度作为RGB所有值
+      r = g = b = l;
+  } else {
+      const hue2rgb = (p, q, t) => {
+          if (t < 0) t += 1;
+          if (t > 1) t -= 1;
+          if (t < 1/6) return p + (q - p) * 6 * t;
+          if (t < 1/2) return q;
+          if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+          return p;
+      };
+
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+
+      r = hue2rgb(p, q, h + 1/3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1/3);
+  }
+
+ 
+  return [Math.round(r * maxNum),Math.round(g * maxNum),Math.round(b * maxNum)];
+}
+
+/**
+ * 
+ * @param {number} h - 0-360 或 %360
+ * @param {number | string} s - 可带%，0-100 或 %100
+ * @param {number | string} l - 可带%，0-100 或 %100
+ * @returns [H,S,V]
+ */
+function hslTohsv(h,s,l) {
+  //去掉符号
+  s = s * 1 !== 'NaN' ? s : s.replace("%","") * 1;
+  l = l * 1 !== 'NaN' ? l : l.replace("%","") * 1;
+  //转为浮点数
+  s /= 100;
+  l /= 100;
+
+  let v;
+  if (s === 0) {
+      // 如果饱和度为0，则HSV的饱和度也为0，明度等于HSL的亮度
+      v = l;
+      return [h,0,Math.floor(v * 100)];
+  } else {
+      if (l <= 0.5) {
+          v = l * (1 + s);
+      } else {
+          v = l + s - l * s;
+      }
+      let sv = (2 * (v - l)) / v;
+      if (l == 0){
+          sv = s
+      }
+      if (l == 1){
+          sv = 0
+      }
+      return [h,Math.floor(sv * 100),Math.floor(v * 100)]; // 返回HSV值，乘以100以匹配常见的百分比表示法
+  }
+}
+
+/**
+ * 
+ * @param {number} h - 0-360 或 %360
+ * @param {number | string} s - 可带%，0-100 或 %100
+ * @param {number | string} v - 可带%，0-100 或 %100
+ * @returns [H,S,l]
+ */
+function hsvTohsl(h, s, v) {
+  //去掉符号
+  s = s * 1 !== 'NaN' ? s : s.replace("%","")
+  v = v * 1 !== 'NaN' ? v : v.replace("%","")
+  //转为浮点数
+  s /= 100;
+  v /= 100;
+  let l = (2 - s) * v / 2;
+
+  if (l !== 0) {
+      if (l === 1) {
+          s = 0;
+      } else {
+          s = s * v / (l < 0.5 ? 2 * l : 2 - 2 * l);
+      }
+  } else {
+      s = 0;
+  }
+  return [h,Math.floor(s * 100),Math.floor(l * 100)]; // 返回HSL值，乘以100以匹配常见的百分比表示法
+
 }
