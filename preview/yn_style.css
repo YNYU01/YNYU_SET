@@ -446,6 +446,7 @@ input[type="search"]{
   padding: 2px 4px;
   box-sizing: border-box;
 }
+
 textarea{
   min-width: 100%;
   max-width: 100%;
@@ -632,6 +633,7 @@ input[type="checkbox"]:checked+.btn-theme {
 [data-tips]{
   position: relative;
   --tips-df:none;
+  flex: 0 0 auto;
 }
 
 [data-tips]::after{
@@ -901,5 +903,6 @@ input[type="checkbox"]:checked + .colortype{
 @media (max-width:750px) {
   :root{
     --layout-w:320px;
+    --colorpick-w:150px;
   }
 }

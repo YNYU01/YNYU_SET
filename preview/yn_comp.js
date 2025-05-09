@@ -129,6 +129,7 @@ class btninfo extends HTMLElement {
       </svg>
     </div>
     `;
+    this.className = 'btn-op wh100'
   }
 };
 customElements.define('btn-info', btninfo);
