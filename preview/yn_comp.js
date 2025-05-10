@@ -194,7 +194,7 @@ const HTML_MAIN = `<html data-theme="dark">
 </body>
 </html>`;
 
-let GETCOLOR = new EyeDropper();
+let GETCOLOR = null;
 let TV = document.querySelectorAll('[data-TV]');//轮播公告
 let TV_MOVE = false;//用于结合一定条件触发轮播
 let TAB_AUTO = document.querySelectorAll('[data-tab="auto"]');
@@ -234,6 +234,7 @@ window.onload = ()=>{
   } else {
     ROOT.style.setProperty('--colorcard-left','18px');
     ROOT.style.setProperty('--getcolor-df','block');
+    GETCOLOR = new EyeDropper()
     //console.log('该浏览器支持吸色管')
   }
   if(localStorage.getItem('userTheme') == 'light'){
@@ -617,29 +618,31 @@ INPUT_COLORPICK_HSL.forEach(item => {
 
 INPUT_GETCOLOR.forEach(item => {
   item.addEventListener('click', () => {
-    GETCOLOR.open()
-    .then(USER_COLOR => {
-        // returns hex color value (#RRGGBB) of the selected pixel
-        let newHEX = USER_COLOR.sRGBHex;
-        let newRGB = hexTorgb(newHEX);
-        let colorcomp = item.parentNode;
-        let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-        let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-        if(colorinput1){
-          colorinput1.value = newHEX;
-          let inputEvent = new Event('change',{bubbles:true});
-          colorinput1.dispatchEvent(inputEvent);
-        }
-        if(colorinput2){
-          colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
-          let inputEvent = new Event('change',{bubbles:true});
-          colorinput2.dispatchEvent(inputEvent);
-        }
-        
-    })
-    .catch(error => {
-        // handle the user choosing to exit eyedropper mode without a selection
-    });
+    if(GETCOLOR){
+      GETCOLOR.open()
+      .then(USER_COLOR => {
+          // returns hex color value (#RRGGBB) of the selected pixel
+          let newHEX = USER_COLOR.sRGBHex;
+          let newRGB = hexTorgb(newHEX);
+          let colorcomp = item.parentNode;
+          let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+          let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+          if(colorinput1){
+            colorinput1.value = newHEX;
+            let inputEvent = new Event('change',{bubbles:true});
+            colorinput1.dispatchEvent(inputEvent);
+          }
+          if(colorinput2){
+            colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
+            let inputEvent = new Event('change',{bubbles:true});
+            colorinput2.dispatchEvent(inputEvent);
+          }
+          
+      })
+      .catch(error => {
+          // handle the user choosing to exit eyedropper mode without a selection
+      });
+    }
   })
 });
 
