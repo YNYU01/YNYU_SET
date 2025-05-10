@@ -166,20 +166,18 @@ class cardcolorpick extends HTMLElement {
     this.innerHTML = `
     <div data-input-color="box" class="df-ffc" style="gap: 4px; display: none; --hsl-h: 0; --hsl-s: 0; --hsl-l: 53; --hsv-s: 0; --hsv-v: 53;">
       <div data-input-color="hsv"></div>
-      <div class="df-lc" style="gap: 4px;">
+      <div data-number-value="0" class="df-lc" style="gap: 4px;">
         <input data-input="hsl-h" type="range" min="0" max="360" value="0">
         <input data-input="value" data-input-color="hsl-h" data-input-must="\`int\`,\`0\`,\`360\`" type="text" class="txt-c" style="padding: 1px 1px; width: 22px; font-size: 10; flex: 0 0 auto;" value="0" >  
       </div>
     </div>
     `;
     this.className = 'pos-a'
-    this.style.top = 'var(--card-gap,24px)'
-    this.style.left = '18px'
+    this.style.top = 'var(--colorcard-top)'
+    this.style.left = 'var(--colorcard-left)'
   }
 };
 customElements.define('card-colorpick', cardcolorpick);
-
-
 
 const ROOT = document.documentElement;
 const HTML_MAIN = `<html data-theme="dark">
@@ -195,12 +193,19 @@ const HTML_MAIN = `<html data-theme="dark">
   <script src="yn_comp.js"></script>
 </body>
 </html>`;
+
+let GETCOLOR = new EyeDropper();
 let TV = document.querySelectorAll('[data-TV]');//轮播公告
 let TV_MOVE = false;//用于结合一定条件触发轮播
+let TAB_AUTO = document.querySelectorAll('[data-tab="auto"]');
+let SELECT_PICK = document.querySelectorAll('[data-select-pick]');
+let SELECT_OPTION = document.querySelectorAll('[data-option="option"]');
 let INPUT = document.querySelectorAll('[data-input]');//所有input类型组件
 let INPUT_MUST = document.querySelectorAll('[data-input-must]');//所有必填且为空时返回一个默认值的组件
+let INPUT_MAX = document.querySelectorAll('[data-input-max]');//所有设置最大输入字数的组件
 let INPUT_RANGE = document.querySelectorAll('input[type="range"]');//所有滑块类型,注意要进一步判断自定义属性的值
 let INPUT_VALUE = document.querySelectorAll('[data-input="value"]');
+let INPUT_GETCOLOR = document.querySelectorAll('[data-getcolor]')
 let INPUT_COLOR = document.querySelectorAll('[data-input="colorpick"]');
 let INPUT_COLOR_TYPE = document.querySelectorAll('[data-input="colortype"]');
 let INPUT_HEX = document.querySelectorAll('[data-input="hex"]');
@@ -218,9 +223,19 @@ let TIPS_TEXT = document.getElementById('tips-all-text');
 let TIPS_TIMES = [];
 let USER_KEYING = false;
 let THEME_SWITCH = document.getElementById("theme");
-let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check','card-colorpick'];
+let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check','btn-color','btn-getcolor','card-colorpick'];
 
 window.onload = ()=>{
+  reTV();
+  if (window.EyeDropper == undefined) {
+    //console.error('EyeDropper API is not supported on this platform');
+    ROOT.style.setProperty('--colorcard-left','0');
+    ROOT.style.setProperty('--getcolor-df','none');
+  } else {
+    ROOT.style.setProperty('--colorcard-left','18px');
+    ROOT.style.setProperty('--getcolor-df','block');
+    //console.log('该浏览器支持吸色管')
+  }
   if(localStorage.getItem('userTheme') == 'light'){
     THEME_SWITCH.checked = false;
     setTheme(true);
@@ -263,6 +278,79 @@ CLOSE_CLEAR.forEach(item => {//清空输入内容
   })
 });
 
+TAB_AUTO.forEach(item => {
+  let pagefor = document.querySelector(`[data-page="${item.getAttribute('data-tab-for')}"]`);
+  let tabsfor = pagefor.querySelectorAll('[data-page-id]');
+  //let tabs = Object.values(tabsfor).map(item => item.getAttribute('data-page-id'));
+  tabsfor.forEach(items => {
+    let id = `tab_${items.getAttribute('data-page-id')}`
+    let checked = items.getAttribute('data-page-main') === 'true' ? true : false;
+    let input = document.createElement('input');
+    input.type = 'checkbox'
+    input.id = id;
+    input.checked = checked;
+    input.style.display = 'none';
+    if(checked){
+      items.parentNode.setAttribute('data-tab-pick',id);
+      items.style.display = 'flex';
+    }
+    input.addEventListener('change',() => {
+      document.getElementById(items.parentNode.getAttribute('data-tab-pick')).checked = false;
+      document.querySelector(`[data-page-id="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`).style.display = 'none'
+      input.checked = true;
+      items.style.display = 'flex'
+      items.parentNode.setAttribute('data-tab-pick',id)
+    })
+    let label = document.createElement('label');
+    label.setAttribute('for',id);
+    label.className = items.getAttribute('data-page-tabclass');
+    label.innerHTML = items.getAttribute('data-page-id');
+    item.appendChild(input);
+    item.appendChild(label);
+  })
+});
+
+SELECT_PICK.forEach(item => {
+  let options = item.parentNode.querySelector('[data-select-options]');
+  //let pickoption = item.parentNode.querySelector('[data-select]');
+  let otherscroll = document.querySelectorAll('[data-scroll]')
+  item.addEventListener('change', () => {
+    if(item.checked){
+      options.style.display = 'flex';
+      otherscroll.forEach(items => {
+        items.style.overflowY = 'hidden';
+      })
+    } else {
+      options.style.display = 'none';
+      otherscroll.forEach(items => {
+        items.style.overflowY = 'scroll';
+      })
+    }
+  });
+  document.addEventListener('mousedown', function (event) {
+    let inputs = item.parentNode;
+    if(!item.contains(event.target) && !inputs.contains(event.target) && document.activeElement){
+      item.checked = false
+      options.style.display = 'none';
+      otherscroll.forEach(items => {
+        items.style.overflowY = 'scroll';
+      })
+    }
+  })
+});
+
+SELECT_OPTION.forEach(item => {
+  item.addEventListener('click',() => {
+    let select = item.parentNode.parentNode;
+    let oldOption = select.querySelector('[data-option-main="true"]');
+    let optionValue = item.getAttribute('data-option-value');
+    oldOption.setAttribute('data-option-main','false');
+    item.setAttribute('data-option-main','true');
+    select.setAttribute('data-select-value',optionValue);
+    select.querySelector('[data-select]').value = optionValue;
+  })
+})
+
 INPUT.forEach(item => {
   item.addEventListener('keydown',(event) => {
     if (event.key === 'Enter') {
@@ -274,13 +362,33 @@ INPUT.forEach(item => {
 INPUT_MUST.forEach(item => {
   item.addEventListener('change',() => {
     inputMust(item,item.getAttribute('data-input-must').split("`,`").map(item => item.replace(/`/g,"")))
+    item.parentNode.setAttribute('data-text-value',item.value);
+  })
+});
+
+INPUT_MAX.forEach(item => {
+  item.addEventListener('input',() => {
+    if(!USER_KEYING){
+      if(item.nextElementSibling){
+        item.nextElementSibling.querySelector('span').innerHTML = item.value.length;
+      } else {
+        let node = document.createElement('div')
+        node.className = 'pos-a';
+        node.style.right = '2px';
+        node.style.fontSize = '9px';
+        node.style.opacity = '0.6';
+        node.innerHTML = `<span>${item.value.length}</span>/${item.getAttribute('maxlength')}`
+        item.parentNode.appendChild(node)
+      }
+    };
   })
 });
 
 INPUT_RANGE.forEach(item => {
   item.addEventListener('input',() => {
     if(item.getAttribute('data-input') && item.nextElementSibling.getAttribute('data-input')){
-          item.nextElementSibling.value = item.value;
+      item.nextElementSibling.value = item.value;
+      item.parentNode.setAttribute('data-number-value',item.value);
     }
   })
 });
@@ -289,6 +397,7 @@ INPUT_VALUE.forEach(item => {
   item.addEventListener('input',() => {
     inputMust(item,item.getAttribute('data-input-must').split("`,`").map(item => item.replace(/`/g,"")))
     item.previousElementSibling.value = item.value;
+    item.parentNode.setAttribute('data-number-value',item.value);
   })
 });
 
@@ -506,9 +615,36 @@ INPUT_COLORPICK_HSL.forEach(item => {
   });
 });
 
+INPUT_GETCOLOR.forEach(item => {
+  item.addEventListener('click', () => {
+    GETCOLOR.open()
+    .then(USER_COLOR => {
+        // returns hex color value (#RRGGBB) of the selected pixel
+        let newHEX = USER_COLOR.sRGBHex;
+        let newRGB = hexTorgb(newHEX);
+        let colorcomp = item.parentNode;
+        let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+        let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+        if(colorinput1){
+          colorinput1.value = newHEX;
+          let inputEvent = new Event('change',{bubbles:true});
+          colorinput1.dispatchEvent(inputEvent);
+        }
+        if(colorinput2){
+          colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
+          let inputEvent = new Event('change',{bubbles:true});
+          colorinput2.dispatchEvent(inputEvent);
+        }
+        
+    })
+    .catch(error => {
+        // handle the user choosing to exit eyedropper mode without a selection
+    });
+  })
+});
 
 TEXTAREA.forEach(item => {//调整输入逻辑
-  let otherscorll = document.querySelectorAll('[data-scorll]')
+  let otherscroll = document.querySelectorAll('[data-scroll]')
   item.addEventListener('keydown',(event) => {
     if (event.key === 'Tab') {
       event.preventDefault(); // 阻止默认Tab行为
@@ -522,12 +658,12 @@ TEXTAREA.forEach(item => {//调整输入逻辑
     }
   });
   item.addEventListener('focus',() => { 
-    otherscorll.forEach(items => {
+    otherscroll.forEach(items => {
       items.style.overflowY = 'hidden';
     })
   })
   item.addEventListener('blur',() => {
-    otherscorll.forEach(items => {
+    otherscroll.forEach(items => {
       items.style.overflowY = 'scroll';
     })
   })
@@ -794,8 +930,8 @@ function copy(node,type,other){
       htmlcode = HTML_MAIN
     } else {
       COMPS.forEach(item => {
-        if(htmlcode.split('<'+ item + '>').length > 1){
-          let keys = new RegExp('<'+ item + '>[\\s\\S]*?<\/'+ item + '>','g');
+        if(htmlcode.split('<'+ item ).length > 1){
+          let keys = new RegExp('<'+ item + '[\\s\\S]*?<\/'+ item + '>','g');
           htmlcode = htmlcode.replace(keys,'<' + item + '><!--此处需引入css和js库--></'+ item + '>')
           //htmlcode = htmlcode.replace(/ +/g,' ')
         }
@@ -1021,8 +1157,8 @@ function hslTohsv(h,s,l) {
  */
 function hsvTohsl(h, s, v) {
   //去掉符号
-  s = s * 1 !== 'NaN' ? s : s.replace("%","")
-  v = v * 1 !== 'NaN' ? v : v.replace("%","")
+  s = s * 1 !== 'NaN' ? s : s.replace("%","");
+  v = v * 1 !== 'NaN' ? v : v.replace("%","");
   //转为浮点数
   s /= 100;
   v /= 100;

@@ -54,7 +54,7 @@
     </div>
     </div>
     <!--控件预览-->
-    <div class="noscrollbar" data-scorll style="overflow-y: scroll; height: calc(100vh - 240px); padding-top: 20px;">
+    <div class="noscrollbar" data-scroll style="overflow-y: scroll; height: calc(100vh - 240px); padding-top: 20px;">
       <div class="df ww" style="flex-wrap: wrap; gap: 10px;">
         <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
           <div data-copy="HTML_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
@@ -70,7 +70,7 @@
             </div>
           </div>
         </div>
-        <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
+        <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
           <div data-copy="TV" class="df-lc" style="gap: 4px;">
             <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
@@ -87,16 +87,59 @@
             </div>
           </div>
         </div>
-        <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
-          <div data-copy="HTML_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+          <div data-copy="tabs" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
             <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
-            tags:
-            <div>
+            tabs:
+            <div class="df-ffc fl1" style="gap: 4px;">
+              <div class="df" data-tab="auto" data-tab-for="page" data-tab-pick="" style="gap: 4px;">
+                <!--自动填充tab-->
+              </div>
+              <div data-page="page" style="height: 80px; border: 1px solid var(--boxBod); border-radius: 4px;">
+                <div data-page-id="tab1" data-page-main="true" data-page-tabclass="tab-eg btn-op" 
+                class="df-cc wh100" style="display: none;">
+                  示例页面1
+                </div>
+                <div data-page-id="tab2" data-page-main="false" data-page-tabclass="tab-eg btn-op" 
+                class="df-cc wh100" style="display: none;">
+                  示例页面2
+                </div>
+                <div data-page-id="tab3" data-page-main="false" data-page-tabclass="tab-eg btn-op" 
+                class="df-cc wh100" style="display: none;">
+                  示例页面3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px; z-index: 3;">
+          <div data-copy="select" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            select:
+            <div class="df-lc pos-r" data-select-value="选项1" style="gap: 4px; width: 120px;">
+              <input type="text" data-select readonly value="选项1">
+              <input id="select-show" data-select-pick type="checkbox" style="display: none;">
+              <label for="select-show" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
+              <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
+                <div data-option="type" >分类1</div>
+                <div data-option="option" data-option-main="true" data-option-value="选项1">选项1</div>
+                <div data-option="option" data-option-main="false" data-option-value="选项2">选项2</div>
+                <div data-option="type" >分类2</div>
+                <div data-option="option" data-option-main="false" data-option-value="选项3">选项3</div>
+                <div data-option="option" data-option-main="false" data-option-value="选项4">选项4</div>
+                <div data-option="option" data-option-main="false" data-option-value="选项5">选项5</div>
+                <div data-option="option" data-option-main="false" data-option-value="选项6">选项6</div>
+              </div>
             </div>
           </div>
         </div>
@@ -144,12 +187,7 @@
               <btn-info></btn-info>
             </div>
             switch:
-            <input id="switch" type="checkbox" checked="true" style="display: none;"
-            onchange="if(this.checked){
-              ROOT.style.setProperty('--btn-copy-df','flex');
-            }else{
-              ROOT.style.setProperty('--btn-copy-df','none');
-            }">
+            <input id="switch" type="checkbox" checked="true" style="display: none;">
             <label for="switch" class="switch"></label>
           </div>
           <div data-copy="input-range-int" class="df-lc" style="gap: 4px;">
@@ -160,7 +198,7 @@
               <btn-info></btn-info>
             </div>
             input-range-int:
-            <div class="df-lc fl1" style="flex: 1;">
+            <div data-number data-number-value="50" class="df-lc fl1" style="flex: 1;">
               <input data-input="range" type="range" min="0" max="100" value="50">
               <input data-input="value" data-input-must="`int`,`0`,`100`" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" >
             </div>
@@ -173,7 +211,7 @@
               <btn-info></btn-info>
             </div>
             input-color:
-            <div data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
+            <div data-color data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
             data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
             class="df-lc fl1 pos-r" style="gap: 4px;">
               <div data-getcolor class="btn-op" style="width: 14px; height: 14px;">
@@ -185,7 +223,8 @@
               <input class="fl1" type="text" data-input="hex" value="#888888" >
               <input data-input="colortype" id="colortype" type="checkbox" style="display: none;">
               <label for="colortype" class="colortype"></label>
-              <card-colorpick style="--card-gap:24px"></card-colorpick>
+              <card-colorpick></card-colorpick>
+              
             </div> 
           </div>
         </div>
@@ -208,7 +247,9 @@
               <btn-info></btn-info>
             </div>
             input-text-must:
-            <input type="text" data-input data-input-must="`text`,`此处不能为空`" value="此处不能为空">
+            <div data-text data-text-value="此处不能为空" class="fl0">
+              <input type="text" data-input data-input-must="`text`,`此处不能为空`" value="此处不能为空">
+            </div>
           </div>
           <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">
             <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
@@ -219,8 +260,7 @@
             </div>
             input-text-max:
             <div class="pos-r df-lc fl1">
-              <input type="text" maxlength="10" data-maxlength
-              oninput="if(!USER_KEYING){this.nextElementSibling.querySelectorAll('span')[0].innerHTML = this.value.length;};">
+              <input type="text" maxlength="10" data-input-max>
               <div class="pos-a" style="right: 2px; font-size: 9px; opacity: 0.6;">
                 <span>0</span>/10
               </div>
@@ -275,6 +315,62 @@
   <script src="yn_comp.js"></script>
   <script>
     document.querySelector('[data-code="HTML_main"]').innerHTML = HTML_MAIN.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    document.getElementById('switch').addEventListener('change',() => {
+      if(document.getElementById('switch').checked){
+        ROOT.style.setProperty('--btn-copy-df','flex');
+      }else{
+        ROOT.style.setProperty('--btn-copy-df','none');
+      }
+    })
+    
+    /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab等*/
+    let observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if(mutation.type === 'attributes'){
+          switch(mutation.attributeName){
+            case 'data-color-hex':getUserColor(mutation.target); break;
+            case 'data-number-value':getUserNumber(mutation.target); break;
+            case 'data-text-value':getUserText(mutation.target); break;
+          }
+        }
+      })
+    });
+
+    let userEvent_color = document.querySelectorAll('[data-color]');
+    userEvent_color.forEach(item => {
+      let config = {attributes:true,attributeFilter:['data-color-hex']};
+      observer.observe(item,config);
+    });
+    let userEvent_number = document.querySelectorAll('[data-number]');
+    userEvent_number.forEach(item => {
+      let config = {attributes:true,attributeFilter:['data-number-value']};
+      observer.observe(item,config);
+    });
+    let userEvent_text = document.querySelectorAll('[data-text]');
+    userEvent_text.forEach(item => {
+      let config = {attributes:true,attributeFilter:['data-text-value']};
+      observer.observe(item,config);
+    });
+
+    function getUserColor(node){
+      let color = {
+        HEX:node.getAttribute('data-color-hex'),
+        RGB:node.getAttribute('data-color-rgb'),
+        HSL:node.getAttribute('data-color-hsl'),
+        HSV:node.getAttribute('data-color-hsv'),
+      }
+      //console.log(color)
+    }
+
+    function getUserNumber(node){
+      let number = node.getAttribute('data-number-value')
+      //console.log(number)
+    }
+
+    function getUserText(node){
+      let text = node.getAttribute('data-text-value')
+      //console.log(text)
+    }
   </script>
 </body>
 </html>

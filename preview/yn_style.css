@@ -9,6 +9,9 @@
   --txta-mh:50vh;
   --btn-copy-df:flex;
   --colorpick-w:110px;
+  --colorcard-top:24px;
+  --colorcard-left:18px;
+  --getcolor-df:block;
 }
 
 html[data-theme="dark"]{
@@ -565,6 +568,91 @@ input[type="checkbox"]:checked + .check{
   position: relative;
 }
 
+.tab-eg{
+  padding: 2px 8px;
+  position: relative;
+}
+
+input[type="checkbox"]:checked + .tab-eg::after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: var(--code1);
+  left: 0;
+  bottom: 0;
+}
+
+/*下拉选项类*/
+[data-select]{
+  cursor: default;
+  width: 100%;
+}
+
+.show-next{
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.show-next::after{
+  content: '';
+  width: 8px;
+  height: 8px;
+  position: absolute;
+  opacity: var(--show-o,1);
+  top:calc(50% - 6px);
+  right: 4px;
+  border-radius: 2px;
+  background:linear-gradient(-45deg,var(--mainColor) 0%,var(--mainColor) 50%,rgba(0,0,0,0) 51%,rgba(0,0,0,0) 100%);
+  transform: rotate(var(--show-r,45deg)) translate(var(--show-t,0),var(--show-t,0));
+}
+
+.show-next:hover{
+  --show-o: 0.5;
+}
+
+input[type="checkbox"]:checked+.show-next {
+  --show-r:-135deg;
+  --show-t:-4px;
+}
+
+[data-select-options]{
+  box-sizing: border-box;
+  max-height: 30vh;
+  overflow: scroll;
+  background: var(--boxBak);
+  border: 1px solid var(--boxBod);
+  border-radius: 4px;
+}
+
+[data-option="type"]{
+  font-size: 11px;
+  padding: 1ch 0 0.5ch 1ch;
+  position: relative;
+  opacity: 0.6;
+}
+
+[data-option="option"]{
+  font-size: 10px;
+  padding: 0.5ch 0 0.5ch 3ch;
+  position: relative;
+}
+
+[data-option="option"]:hover{
+  background: var(--boxGry);
+}
+
+[data-option-main="true"]{
+  background: var(--themeColor);
+}
+
+[data-option-main="true"]:hover{
+  background: var(--themeColor);
+}
+
+
+
 [data-TV="true"]{
   position: absolute;
   left: 100%;
@@ -766,7 +854,11 @@ input[type="checkbox"]:checked+.btn-theme {
 }
 
 [data-getcolor]{
-  cursor: pointer;
+  display: var(--getcolor-df);
+}
+
+[data-getcolor]:hover{
+  --mainColor:var(--code2);
 }
 
 .colortype{
