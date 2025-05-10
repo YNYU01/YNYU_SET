@@ -12,6 +12,7 @@
   --colorcard-top:24px;
   --colorcard-left:18px;
   --getcolor-df:block;
+  --option-font:11px;
 }
 
 html[data-theme="dark"]{
@@ -627,14 +628,14 @@ input[type="checkbox"]:checked+.show-next {
 }
 
 [data-option="type"]{
-  font-size: 11px;
+  font-size: var(--option-font);
   padding: 1ch 0 0.5ch 1ch;
   position: relative;
   opacity: 0.6;
 }
 
 [data-option="option"]{
-  font-size: 10px;
+  font-size: calc(var(--option-font) - 1px);
   padding: 0.5ch 0 0.5ch 3ch;
   position: relative;
 }
@@ -996,5 +997,6 @@ input[type="checkbox"]:checked + .colortype{
   :root{
     --layout-w:320px;
     --colorpick-w:150px;
+    --option-font:14px;
   }
 }
