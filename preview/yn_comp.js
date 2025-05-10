@@ -227,7 +227,8 @@ let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check
 
 window.onload = ()=>{
   reTV();
-  if (window.EyeDropper == undefined) {
+  let mobileKeys = /mobile | android | iphone | ipad | blackberry | windows phone/i
+  if (window.EyeDropper == undefined || mobileKeys.test(navigator.userAgent.toLowerCase())) {
     //console.error('EyeDropper API is not supported on this platform');
     ROOT.style.setProperty('--colorcard-left','0');
     ROOT.style.setProperty('--getcolor-df','none');
