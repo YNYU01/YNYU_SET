@@ -195,6 +195,7 @@ const HTML_MAIN = `<html data-theme="dark">
 </html>`;
 
 let GETCOLOR = null;
+let MOBILE_KEYS = /mobile | android | iphone | ipad | blackberry | windows phone/i
 let TV = document.querySelectorAll('[data-TV]');//轮播公告
 let TV_MOVE = false;//用于结合一定条件触发轮播
 let TAB_AUTO = document.querySelectorAll('[data-tab="auto"]');
@@ -225,10 +226,10 @@ let USER_KEYING = false;
 let THEME_SWITCH = document.getElementById("theme");
 let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check','btn-color','btn-getcolor','card-colorpick'];
 
-window.onload = ()=>{
+window.addEventListener('load',()=>{
   reTV();
-  let mobileKeys = /mobile | android | iphone | ipad | blackberry | windows phone/i
-  if (window.EyeDropper == undefined || mobileKeys.test(navigator.userAgent.toLowerCase())) {
+  
+  if (window.EyeDropper == undefined || MOBILE_KEYS.test(navigator.userAgent.toLowerCase())) {
     //console.error('EyeDropper API is not supported on this platform');
     ROOT.style.setProperty('--colorcard-left','0');
     ROOT.style.setProperty('--getcolor-df','none');
@@ -247,9 +248,9 @@ window.onload = ()=>{
     setTheme(true);
     localStorage.setItem('userTheme','dark');
   }
-};
+});
 
-window.onresize = ()=>{
+window.addEventListener('resize',()=>{
   /*防抖*/
   let MOVE_TIMEOUT;
   if(MOVE_TIMEOUT){
@@ -258,7 +259,7 @@ window.onresize = ()=>{
   MOVE_TIMEOUT = setTimeout(()=>{
       reTV();
   },500)
-};
+});
 
 THEME_SWITCH.onchange = ()=>{
   if(THEME_SWITCH.checked){
@@ -281,11 +282,11 @@ CLOSE_CLEAR.forEach(item => {//清空输入内容
 });
 
 TAB_AUTO.forEach(item => {
-  let pagefor = document.querySelector(`[data-page="${item.getAttribute('data-tab-for')}"]`);
-  let tabsfor = pagefor.querySelectorAll('[data-page-id]');
+  let pagefor = document.querySelector(`[data-page-id="${item.getAttribute('data-tab-for')}"]`);
+  let tabsfor = pagefor.querySelectorAll('[data-page-name]');
   //let tabs = Object.values(tabsfor).map(item => item.getAttribute('data-page-id'));
   tabsfor.forEach(items => {
-    let id = `tab_${items.getAttribute('data-page-id')}`
+    let id = `tab_${items.getAttribute('data-page-name')}`
     let checked = items.getAttribute('data-page-main') === 'true' ? true : false;
     let input = document.createElement('input');
     input.type = 'checkbox'
@@ -298,7 +299,7 @@ TAB_AUTO.forEach(item => {
     }
     input.addEventListener('change',() => {
       document.getElementById(items.parentNode.getAttribute('data-tab-pick')).checked = false;
-      document.querySelector(`[data-page-id="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`).style.display = 'none'
+      document.querySelector(`[data-page-name="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`).style.display = 'none'
       input.checked = true;
       items.style.display = 'flex'
       items.parentNode.setAttribute('data-tab-pick',id)
@@ -306,7 +307,7 @@ TAB_AUTO.forEach(item => {
     let label = document.createElement('label');
     label.setAttribute('for',id);
     label.className = items.getAttribute('data-page-tabclass');
-    label.innerHTML = items.getAttribute('data-page-id');
+    label.innerHTML = items.getAttribute('data-page-name');
     item.appendChild(input);
     item.appendChild(label);
   })
@@ -314,7 +315,6 @@ TAB_AUTO.forEach(item => {
 
 SELECT_PICK.forEach(item => {
   let options = item.parentNode.querySelector('[data-select-options]');
-  //let pickoption = item.parentNode.querySelector('[data-select]');
   let otherscroll = document.querySelectorAll('[data-scroll]')
   item.addEventListener('change', () => {
     if(item.checked){
@@ -349,7 +349,7 @@ SELECT_OPTION.forEach(item => {
     oldOption.setAttribute('data-option-main','false');
     item.setAttribute('data-option-main','true');
     select.setAttribute('data-select-value',optionValue);
-    select.querySelector('[data-select]').value = optionValue;
+    select.querySelector('[data-select-input]').value = optionValue;
   })
 })
 

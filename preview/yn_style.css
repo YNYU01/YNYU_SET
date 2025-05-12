@@ -585,7 +585,7 @@ input[type="checkbox"]:checked + .tab-eg::after{
 }
 
 /*下拉选项类*/
-[data-select]{
+[data-select-input]{
   cursor: default;
   width: 100%;
 }
@@ -652,8 +652,6 @@ input[type="checkbox"]:checked+.show-next {
   background: var(--themeColor);
 }
 
-
-
 [data-TV="true"]{
   position: absolute;
   left: 100%;
@@ -664,7 +662,7 @@ input[type="checkbox"]:checked+.show-next {
   margin: auto;
 }
 
-[data-copy="btn"]{
+[data-copy-btn]{
   display: var(--btn-copy-df,none);
   animation: toBig 0.3s;
 }
@@ -742,6 +740,15 @@ input[type="checkbox"]:checked+.btn-theme {
   --tips-df:flex;
 }
 
+[data-tips="auto"]::after{
+
+}
+
+[data-tips="set"]::after{
+  width: var(--tips-w);
+  white-space: wrap;
+}
+
 [data-tips-y="top"]::after{
   top: var(--tips-gap,-22);
 }
@@ -756,6 +763,31 @@ input[type="checkbox"]:checked+.btn-theme {
 
 [data-tips-x="right"]::after{
   --x:calc(-100% + 16px)
+}
+
+[data-turnto]{
+  background: var(--turnto-bak,var(--themeColor));
+  border: var(--turnto-bod-w,0) solid var(--turnto-bod,transparent);
+  width: var(--turnto-w,26px);
+  height: var(--turnto-w,26px);
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1ch;
+  border-radius: var(--turnto-r,calc(var(--turnto-w)/2));
+}
+
+[data-turnto]:hover{
+  padding:0 1ch;
+  width: fit-content;
+  line-height: 1.5em;
+  font-weight: 700;
+  --text:var(--turnto-text,'立即前往')
+}
+
+[data-turnto]::before{
+  content: var(--text);
 }
 
 /*取色器模块*/

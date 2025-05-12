@@ -23,7 +23,7 @@
   <div class="df-ffc pos-r">
     <div class="df-sc" style="--swi-text:'Zh'; --swi-icon:''; padding: 10px 4px;">
       <div></div>
-      <input id="language" type="checkbox" checked="true" style="display: none;"
+      <input id="language" type="checkbox" checked="true"
       onchange="if(this.checked){
         this.parentNode.style.setProperty('--swi-text',`'Zh'`);
       }else{
@@ -58,10 +58,10 @@
       <div class="df ww" style="flex-wrap: wrap; gap: 10px;">
         <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
           <div data-copy="HTML_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="--tips-w:calc(var(--layout-w) - 40px); --tips-text:'包含css、js引入示例，以及复合组件传递关键参数要用到的函数示例'; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             HTML_main:
@@ -72,7 +72,7 @@
         </div>
         <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
           <div data-copy="TV" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
@@ -87,48 +87,18 @@
             </div>
           </div>
         </div>
-        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
-          <div data-copy="tabs" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
-              <btn-copy></btn-copy>
-            </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
-              <btn-info></btn-info>
-            </div>
-            tabs:
-            <div class="df-ffc fl1" style="gap: 4px;">
-              <div class="df" data-tab="auto" data-tab-for="page" data-tab-pick="" style="gap: 4px;">
-                <!--自动填充tab-->
-              </div>
-              <div data-page="page" style="height: 80px; border: 1px solid var(--boxBod); border-radius: 4px; background: var(--boxBak);">
-                <div data-page-id="tab1" data-page-main="true" data-page-tabclass="tab-eg btn-op" 
-                class="df-cc wh100" style="display: none;">
-                  示例页面1
-                </div>
-                <div data-page-id="tab2" data-page-main="false" data-page-tabclass="tab-eg btn-op" 
-                class="df-cc wh100" style="display: none;">
-                  示例页面2
-                </div>
-                <div data-page-id="tab3" data-page-main="false" data-page-tabclass="tab-eg btn-op" 
-                class="df-cc wh100" style="display: none;">
-                  示例页面3
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px; z-index: 3;">
           <div data-copy="select" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             select:
-            <div class="df-lc pos-r" data-select-value="选项1" style="gap: 4px; width: 120px;">
-              <input type="text" data-select readonly value="选项1">
-              <input id="select-show" data-select-pick type="checkbox" style="display: none;">
+            <div class="df-lc pos-r" data-select data-select-value="选项1" style="gap: 4px; width: 120px;">
+              <input type="text" data-select-input readonly value="选项1">
+              <input id="select-show" data-select-pick type="checkbox">
               <label for="select-show" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
               <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
                 <div data-option="type" >分类1</div>
@@ -143,9 +113,40 @@
             </div>
           </div>
         </div>
+        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+          <div data-copy="tabs" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            tabs:
+            <div class="df-ffc fl1" style="gap: 4px;">
+              <div class="df" data-tab="auto" data-tab-for="page" data-tab-pick="" style="gap: 4px;">
+                <!--自动填充tab-->
+              </div>
+              <!--可放任何位置，data-page-id能对应上data-tab-for即可-->
+              <div data-page-id="page" style="height: 80px; border: 1px solid var(--boxBod); border-radius: 4px; background: var(--boxBak);">
+                <div data-page-name="tab1" data-page-main="true" data-page-tabclass="tab-eg btn-op" 
+                class="df-cc wh100" style="display: none;">
+                  示例页面1
+                </div>
+                <div data-page-name="tab2" data-page-main="false" data-page-tabclass="tab-eg btn-op" 
+                class="df-cc wh100" style="display: none;">
+                  示例页面2
+                </div>
+                <div data-page-name="tab3" data-page-main="false" data-page-tabclass="tab-eg btn-op" 
+                class="df-cc wh100" style="display: none;">
+                  示例页面3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>        
         <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px; z-index: 2;">
           <div data-copy="theme" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
@@ -153,14 +154,14 @@
             </div>
             theme:
             <div id="btn-theme" style="width: 14px; height: 14px;">
-              <input id="theme" type="checkbox" checked="true" style="display: none;">
+              <input id="theme" type="checkbox" checked="true">
               <label for="theme" class="btn-theme" style="position: relative;">
                 <btn-theme></btn-theme>
               </label>
             </div>
           </div>
           <div data-copy="check" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
@@ -168,30 +169,27 @@
             </div>
             check:
             <div style="width: 14px; height: 14px;">
-              <input id="check-1" type="checkbox" checked="true" style="display: none;"
-              onchange="if(this.checked){
-                this.parentNode.parentNode.style.opacity = 1;
-              }else{
-                this.parentNode.parentNode.style.opacity = 0.4;
-              }">
-              <label for="check-1" class="check">
+              <input id="check" data-check data-check-for="check-1" type="checkbox" checked="true">
+              <label for="check" class="check">
                 <btn-check></btn-check>
               </label>
             </div>
+            <!--可放任何位置，data-check-id能对应上data-check-for即可-->
+            <div data-check-id="check-1">选项内容</div>
           </div>
           <div data-copy="switch" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             switch:
-            <input id="switch" type="checkbox" checked="true" style="display: none;">
+            <input id="switch" type="checkbox" checked="true">
             <label for="switch" class="switch"></label>
           </div>
           <div data-copy="input-range-int" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
@@ -204,7 +202,7 @@
             </div>
           </div>
           <div data-copy="input-color" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
@@ -221,7 +219,7 @@
                 <btn-color></btn-color>
               </div>
               <input class="fl1" type="text" data-input="hex" value="#888888" >
-              <input data-input="colortype" id="colortype" type="checkbox" style="display: none;">
+              <input data-input="colortype" id="colortype" type="checkbox">
               <label for="colortype" class="colortype"></label>
               <card-colorpick></card-colorpick>
               
@@ -230,7 +228,7 @@
         </div>
         <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
           <div data-copy="input-text" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
@@ -240,7 +238,7 @@
             <input type="text" data-input>
           </div>
           <div data-copy="input-text-must" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
@@ -252,7 +250,7 @@
             </div>
           </div>
           <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
@@ -267,7 +265,7 @@
             </div>
           </div>
           <div data-copy="textarea" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
@@ -283,7 +281,7 @@
             </div>
           </div>
           <div data-copy="textarea-eg" class="df-lc" style="gap: 4px;">
-            <div data-copy="btn" class="fl0" style="width: 14px; height: 14px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
             <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
@@ -304,6 +302,23 @@
           </div>
         </div>
         <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+          <div data-copy="turnto" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            turnto:
+            <div data-turnto class="df" style="--turnto-w:26px; --arrow-w: 10;">
+              <div class="pos-r" style="width: 77%; height: 77%;">
+                <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
+                  <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>                 
+              </div>
+            </div>
+          </div>
         </div>
         <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
         </div>
@@ -314,6 +329,30 @@
   
   <script src="yn_comp.js"></script>
   <script>
+    window.addEventListener('load',()=>{
+      if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase())){
+        document.querySelectorAll('[data-tips]').forEach(item => {
+          item.setAttribute('data-tips','set')
+        });
+      } else {
+        document.querySelectorAll('[data-tips]').forEach(item => {
+          item.setAttribute('data-tips','auto')
+        });
+      }
+    });
+
+    window.addEventListener('resize',()=>{
+      if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase())){
+        document.querySelectorAll('[data-tips]').forEach(item => {
+          item.setAttribute('data-tips','set')
+        })
+      } else {
+        document.querySelectorAll('[data-tips]').forEach(item => {
+          item.setAttribute('data-tips','auto')
+        });
+      }
+    });
+    
     document.querySelector('[data-code="HTML_main"]').innerHTML = HTML_MAIN.replace(/</g,'&lt;').replace(/>/g,'&gt;');
     document.getElementById('switch').addEventListener('change',() => {
       if(document.getElementById('switch').checked){
@@ -323,7 +362,7 @@
       }
     })
     
-    /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab等*/
+    /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
     let observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if(mutation.type === 'attributes'){
@@ -331,11 +370,11 @@
             case 'data-color-hex':getUserColor(mutation.target); break;
             case 'data-number-value':getUserNumber(mutation.target); break;
             case 'data-text-value':getUserText(mutation.target); break;
+            case 'data-select-value':getUserSelect(mutation.target); break;
           }
         }
       })
     });
-
     let userEvent_color = document.querySelectorAll('[data-color]');
     userEvent_color.forEach(item => {
       let config = {attributes:true,attributeFilter:['data-color-hex']};
@@ -349,6 +388,11 @@
     let userEvent_text = document.querySelectorAll('[data-text]');
     userEvent_text.forEach(item => {
       let config = {attributes:true,attributeFilter:['data-text-value']};
+      observer.observe(item,config);
+    });
+    let userEvent_select = document.querySelectorAll('[data-select]');
+    userEvent_select.forEach(item => {
+      let config = {attributes:true,attributeFilter:['data-select-value']};
       observer.observe(item,config);
     });
 
@@ -369,6 +413,11 @@
 
     function getUserText(node){
       let text = node.getAttribute('data-text-value')
+      //console.log(text)
+    }
+
+    function getUserSelect(node){
+      let select = node.getAttribute('data-select-value')
       //console.log(text)
     }
   </script>
