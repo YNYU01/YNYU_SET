@@ -1,3 +1,97 @@
-<div style="display: flex; flex-flow: column; justify-content: center; align-items: center;">YN+Design
-<img src="VI/logo_ynyuset.png" alt="">
-</div>
+<html data-theme="dark" data-language="Zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <meta name="description" content="网页内容简介，转发时显示">
+  <title>『云即』@YNYU</title>
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/YNYU01/listEase@c3e9f7dd256280ce4d7e531a7e65f1001ccdb1d4/img/Icon-ListEase_200-6.png" type="image/png">
+  <link rel="stylesheet" href="preview/yn_style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --banner-h:50px;
+    }
+    [data-language="Zh"]{
+      --banner-dark:url('yn_img/banner_top_zh_dark.jpg');
+      --banner-light:url('yn_img/banner_top_zh_light.jpg');
+    }
+    [data-language="En"]{
+      --banner-dark:url('yn_img/banner_top_en_dark.jpg');
+      --banner-light:url('yn_img/banner_top_en_light.jpg');
+    }
+    [data-theme="light"]{
+      --banner-bak:#1a1a1a;
+      --banner-top:var(--banner-dark)
+    }
+    [data-theme="dark"]{
+      --banner-bak:#eaeaea;
+      --banner-top:var(--banner-light)
+    }
+    [data-banner-top]{
+      width: 100vw;
+      height: var(--banner-h);
+      background: var(--banner-top),var(--banner-bak);
+      background-size:contain;
+      background-repeat: no-repeat;
+      background-position:0 50%;
+    }
+
+    .switch [data-swi-icon]{
+    transition:transform 0.2s ease-out;
+    }
+
+    input[type="checkbox"]:checked+.switch [data-swi-icon]{
+      transform: translateX(var(--swi-h,18px));
+    }
+
+    @media (max-width:750px) {
+      :root{
+      --banner-h:24px;
+    }
+    }
+  </style>
+</head>
+<body class="noselect df-ffc df-cc">
+  <div data-banner-top class="df-sc pos-r" style="--swi-text:'Zh';">
+    <div></div>
+    <input id="language" type="checkbox" checked="true"
+      onchange="if(this.checked){
+        this.parentNode.style.setProperty('--swi-text',`'Zh'`);
+        ROOT.setAttribute('data-language','Zh');
+      }else{
+        this.parentNode.style.setProperty('--swi-text',`'En'`);
+        ROOT.setAttribute('data-language','En');
+      }">
+      <label for="language" class="switch pos-a" style="--swi-h:20px; --swi-r:6px; --swi-af:var(--mainColor); right: 2%;">
+        <div class="pos-a" data-swi-icon style="top:2px; left: 1px; width: 14px; height: 14px; z-index: 2;">
+          <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
+            <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
+          </svg>
+        </div>
+      </label>  
+  </div>
+  <!--杂色质感-->
+  <div id="noise" class="noise"></div>
+  <div id="watermark" class="watermark"></div>
+  <!--全局tips-->
+  <div id="tips-all">
+      <div id="tips-all-text" class="tips-all-text" >
+          温馨提示
+      </div>
+  </div>
+  <div class="df-ffc pos-r">
+    <div style="height: 40px;"></div>
+    
+  </div>
+ 
+  <script>
+    window.addEventListener('load',()=>{
+
+    });
+
+    window.addEventListener('resize',()=>{
+    });
+    
+  </script>
+</body>
+</html>

@@ -507,7 +507,7 @@ input[type="file" i]::after{
   border-radius:var(--swi-r) ;
 }
 .switch::after{
-  content: var(--swi-icon,'');
+  content: '';
   position: absolute;
   width: calc(50% - 4px);
   height: calc(100% - 4px);
@@ -519,12 +519,11 @@ input[type="file" i]::after{
   background:var(--swi-af);
   cursor: pointer;
 }
-.switch::after,
-.switch [data-swi-icon]{
+.switch::after{
 transition:transform 0.2s ease-out;
 }
-input[type="checkbox"]:checked+.switch::after,
-input[type="checkbox"]:checked+.switch [data-swi-icon]{
+
+input[type="checkbox"]:checked+.switch::after{
   transform: translateX(var(--swi-h,18px));
 }
 
@@ -717,10 +716,15 @@ input[type="checkbox"]:checked+.btn-theme {
   border-radius: 8px;
 }
 
+[data-check-checked="false"]{
+  opacity: 0.6;
+}
+
 [data-tips]{
   position: relative;
   --tips-df:none;
   flex: 0 0 auto;
+  z-index: 2;
 }
 
 [data-tips]::after{

@@ -4,7 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
   <meta name="description" content="网页内容简介，转发时显示">
   <title>『云即』@YNYU</title>
-  <link rel="icon" href="https://cdn.jsdelivr.net/gh/YNYU01/listEase@c3e9f7dd256280ce4d7e531a7e65f1001ccdb1d4/img/Icon-ListEase_200-6.png" type="image/png">
+  <link rel="icon" href="..VI/ICON_YNYUSET.png" type="image/png">
   <link rel="stylesheet" href="yn_style.css">
   <!-- 引入 Prism JS -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
@@ -14,12 +14,12 @@
       --banner-h:50px;
     }
     [data-language="Zh"]{
-      --banner-dark:url('yn_img/banner_top_zh_dark.jpg');
-      --banner-light:url('yn_img/banner_top_zh_light.jpg');
+      --banner-dark:url('../VI/banner_top_zh_dark.jpg');
+      --banner-light:url('../VI/banner_top_zh_light.jpg');
     }
     [data-language="En"]{
-      --banner-dark:url('yn_img/banner_top_en_dark.jpg');
-      --banner-light:url('yn_img/banner_top_en_light.jpg');
+      --banner-dark:url('../VI/banner_top_en_dark.jpg');
+      --banner-light:url('../VI/banner_top_en_light.jpg');
     }
     [data-theme="light"]{
       --banner-bak:#1a1a1a;
@@ -37,6 +37,15 @@
       background-repeat: no-repeat;
       background-position:0 50%;
     }
+
+    .switch [data-swi-icon]{
+    transition:transform 0.2s ease-out;
+    }
+
+    input[type="checkbox"]:checked+.switch [data-swi-icon]{
+      transform: translateX(var(--swi-h,18px));
+    }
+
     @media (max-width:750px) {
       :root{
       --banner-h:24px;
@@ -45,7 +54,7 @@
   </style>
 </head>
 <body class="noselect df-ffc df-cc">
-  <div data-banner-top class="df-sc pos-r" style="--swi-text:'Zh'; --swi-icon:'';">
+  <div data-banner-top class="df-sc pos-r" style="--swi-text:'Zh';">
     <div></div>
     <input id="language" type="checkbox" checked="true"
       onchange="if(this.checked){
@@ -96,7 +105,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="--tips-w:calc(var(--layout-w) - 40px); --tips-text:'包含css、js引入示例，以及复合组件传递关键参数要用到的函数示例'; width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'包含css、js引入示例，以及复合组件传递关键参数要用到的函数示例'; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             HTML_main:
@@ -110,7 +119,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'用于需要滚动的公告类元素，可设置data-TV的布尔值，控制是否触发滚动'; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             TV:
@@ -127,7 +136,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'结构与原生下拉组件类似，主要为了支持移动端显示'; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             select:
@@ -153,7 +162,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'通过页面数量生成导航标签，可自行丰富样式，注意tab栏和page的相关自定义属性值要匹配'; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             tabs:
@@ -184,7 +193,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'通过css变量和自定义属性控制颜色变化，实现亮暗主题'; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             theme:
@@ -199,7 +208,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'基于原生checkbox，可借助自定义属性的布尔值变化丰富选中/未选中的样式'; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             check:
@@ -209,14 +218,14 @@
                 <btn-check></btn-check>
               </label>
             </div>
-            <!--可放任何位置，data-check-id能对应上data-check-for即可-->
-            <div data-check-id="check-1">选项内容</div>
+            <!--可放任何位置，data-check-name能对应上data-check-for即可-->
+            <div data-check-name="check-1" data-check-checked="true">选项内容</div>
           </div>
           <div data-copy="switch" class="df-lc" style="gap: 4px;">
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'基于原生checkbox，可通过CSS变量控制大小和圆角，可自行绑定事件'; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             switch:
@@ -227,7 +236,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'基于原生滑块，绑定一个输入框，添加事件绑定可能会冲突，建议通过监听自定义属性值触发函数'; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             input-range-int:
@@ -240,7 +249,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'带系统吸色器（兼容才会显示）、纯CSS取色盘（支持HSV、HSL）、可切换HEX/RGB两种输入方式，绑定较复杂，建议通过监听自定义属性值触发函数'; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             input-color:
@@ -266,7 +275,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:''; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             input-text:
@@ -276,7 +285,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:''; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             input-text-must:
@@ -288,7 +297,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:''; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             input-text-max:
@@ -303,7 +312,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:''; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             textarea:
@@ -319,7 +328,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:''; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             textarea-eg:
@@ -341,7 +350,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:''; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             turnto:
@@ -358,7 +367,7 @@
             <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
               <btn-copy></btn-copy>
             </div>
-            <div data-tips="auto" data-tips-y="top" data-tips-x="left" style="width: 14px; height: 14px;">
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:''; width: 14px; height: 14px;">
               <btn-info></btn-info>
             </div>
             back:
@@ -383,27 +392,10 @@
   <script src="yn_comp.js"></script>
   <script>
     window.addEventListener('load',()=>{
-      if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase())){
-        document.querySelectorAll('[data-tips]').forEach(item => {
-          item.setAttribute('data-tips','set')
-        });
-      } else {
-        document.querySelectorAll('[data-tips]').forEach(item => {
-          item.setAttribute('data-tips','auto')
-        });
-      }
+
     });
 
     window.addEventListener('resize',()=>{
-      if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase())){
-        document.querySelectorAll('[data-tips]').forEach(item => {
-          item.setAttribute('data-tips','set')
-        })
-      } else {
-        document.querySelectorAll('[data-tips]').forEach(item => {
-          item.setAttribute('data-tips','auto')
-        });
-      }
     });
     
     document.querySelector('[data-code="HTML_main"]').innerHTML = HTML_MAIN.replace(/</g,'&lt;').replace(/>/g,'&gt;');

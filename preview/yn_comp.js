@@ -201,6 +201,7 @@ let TAB_AUTO = document.querySelectorAll('[data-tab="auto"]');
 let SELECT_PICK = document.querySelectorAll('[data-select-pick]');
 let SELECT_OPTION = document.querySelectorAll('[data-option="option"]');
 let INPUT = document.querySelectorAll('[data-input]');//所有input类型组件
+let INPUT_CHECK = document.querySelectorAll('[data-check]');
 let INPUT_MUST = document.querySelectorAll('[data-input-must]');//所有必填且为空时返回一个默认值的组件
 let INPUT_MAX = document.querySelectorAll('[data-input-max]');//所有设置最大输入字数的组件
 let INPUT_RANGE = document.querySelectorAll('input[type="range"]');//所有滑块类型,注意要进一步判断自定义属性的值
@@ -358,6 +359,19 @@ INPUT.forEach(item => {
       item.blur()
     }
   })
+});
+
+INPUT_CHECK.forEach(item => {
+  item.addEventListener('change',(event) => {
+    let check = document.querySelector(`[data-check-name="${item.getAttribute('data-check-for')}"]`)
+    if(check){
+      if(item.checked){
+        check.setAttribute('data-check-checked','true');
+      } else {
+        check.setAttribute('data-check-checked','false');
+      }
+    }
+  });
 });
 
 INPUT_MUST.forEach(item => {
