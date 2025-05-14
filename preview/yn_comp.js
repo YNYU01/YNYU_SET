@@ -184,10 +184,9 @@ const HTML_MAIN = `<html data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <meta name="description" content="网页内容简介，转发时显示">
+  <meta name="description" content="about this web">
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/YNYU01/listEase@c3e9f7dd256280ce4d7e531a7e65f1001ccdb1d4/img/Icon-ListEase_200-6.png" type="image/png">
   <link rel="stylesheet" href="yn_style.css">
-  <!-- 引入 Prism JS -->
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
 </head>
 <body class="noselect df-ct">
   <script src="yn_comp.js"></script>

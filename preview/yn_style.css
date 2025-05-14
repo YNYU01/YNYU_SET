@@ -38,7 +38,7 @@ html[data-theme="light"]{
   --mainColor2: #000;
   --mainColor3: #d1d1d1;
   --themeColor: #18e7a6;
-  --themeColor2: #8753ff;
+  --themeColor2: #9a6ffd;
   --code1:#03954c;
   --code2:#822eec;
   --boxBod: #aeaeae;
@@ -776,6 +776,7 @@ input[type="checkbox"]:checked+.btn-theme {
   align-items: center;
   gap: 1ch;
   border-radius: var(--turnto-r,calc(var(--turnto-w)/2));
+  color: var(--mainColor);
 }
 
 [data-turnto]:hover{
@@ -788,6 +789,40 @@ input[type="checkbox"]:checked+.btn-theme {
 
 [data-turnto]::before{
   content: var(--text);
+}
+
+[data-theme="dark"] [data-turnto]{
+  --mainColor: #0f0f0f;
+}
+
+[data-back]{
+  background: var(--back-bak,var(--themeColor2));
+  border: var(--back-bod-w,0) solid var(--back-bod,transparent);
+  width: var(--back-w,26px);
+  height: var(--back-w,26px);
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1ch;
+  border-radius: var(--back-r,calc(var(--back-w)/2));
+  color: var(--mainColor);
+}
+
+[data-back]:hover{
+  padding:0 1ch;
+  width: fit-content;
+  line-height: 1.5em;
+  font-weight: 700;
+  --text:var(--back-text,'返回')
+}
+
+[data-back]::after{
+  content: var(--text);
+}
+
+[data-theme="dark"] [data-back]{
+  --mainColor: #0f0f0f;
 }
 
 /*取色器模块*/
