@@ -224,6 +224,7 @@ let TIPS_TEXT = document.getElementById('tips-all-text');
 let TIPS_TIMES = [];
 let USER_KEYING = false;
 let THEME_SWITCH = document.getElementById("theme");
+let LANGUAGE_SWITCH = document.getElementById("language");
 let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check','btn-color','btn-getcolor','card-colorpick'];
 
 window.addEventListener('load',()=>{
@@ -239,7 +240,8 @@ window.addEventListener('load',()=>{
     GETCOLOR = new EyeDropper()
     //console.log('该浏览器支持吸色管')
   }
-  if(localStorage.getItem('userTheme') == 'light'){
+
+   if(localStorage.getItem('userTheme') == 'light'){
     THEME_SWITCH.checked = false;
     setTheme(true);
   }
@@ -247,6 +249,16 @@ window.addEventListener('load',()=>{
     THEME_SWITCH.checked = true;
     setTheme(true);
     localStorage.setItem('userTheme','dark');
+  }
+
+  if(localStorage.getItem('userLanguage') == 'En'){
+    LANGUAGE_SWITCH.checked = false;
+    setLanguage(false);
+  }
+  if(!localStorage.getItem('userLanguage')){
+    LANGUAGE_SWITCH.checked = true;
+    setLanguage(true);
+    localStorage.setItem('userLanguage','Zh');
   }
 });
 
@@ -260,6 +272,14 @@ window.addEventListener('resize',()=>{
       reTV();
   },500)
 });
+
+LANGUAGE_SWITCH.onchange = ()=>{
+  if(LANGUAGE_SWITCH.checked){
+    setLanguage(true);
+  }else{
+    setLanguage(false);
+  }
+};
 
 THEME_SWITCH.onchange = ()=>{
   if(THEME_SWITCH.checked){
@@ -927,6 +947,20 @@ function setTheme(isLight){
     ROOT.setAttribute("data-theme","dark");
     localStorage.setItem('userTheme','dark');
     tipsAll('已切换为暗色主题',2000,6);
+  }
+}
+
+function setLanguage(isZh){
+  if(isZh){
+    ROOT.setAttribute("data-language","Zh");
+    LANGUAGE_SWITCH.parentNode.style.setProperty('--swi-text',`'Zh'`);
+    localStorage.setItem('userLanguage','Zh');
+    tipsAll('已切换为中文',2000,6);
+  }else{
+    ROOT.setAttribute("data-language","En");
+    LANGUAGE_SWITCH.parentNode.style.setProperty('--swi-text',`'En'`);
+    localStorage.setItem('userLanguage','En');
+    tipsAll('change for English',2000,6);
   }
 }
 
