@@ -223,8 +223,8 @@ let TIPS = document.getElementById('tips-all');
 let TIPS_TEXT = document.getElementById('tips-all-text');
 let TIPS_TIMES = [];
 let USER_KEYING = false;
-let THEME_SWITCH = document.getElementById("theme");
-let LANGUAGE_SWITCH = document.getElementById("language");
+let THEME_SWITCH = document.querySelectorAll("[data-theme-check]");
+let LANGUAGE_SWITCH = document.querySelectorAll("[data-language-check]");
 let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check','btn-color','btn-getcolor','card-colorpick'];
 
 window.addEventListener('load',()=>{
@@ -242,21 +242,35 @@ window.addEventListener('load',()=>{
   }
 
    if(localStorage.getItem('userTheme') == 'light'){
-    THEME_SWITCH.checked = false;
+    THEME_SWITCH.forEach(item => {
+      item.checked = false;
+    });
     setTheme(true);
   }
   if(!localStorage.getItem('userTheme')){
-    THEME_SWITCH.checked = true;
-    setTheme(true);
+    THEME_SWITCH.forEach(item => {
+      item.checked = true;
+    });
+    setTheme(false);
     localStorage.setItem('userTheme','dark');
   }
 
   if(localStorage.getItem('userLanguage') == 'En'){
-    LANGUAGE_SWITCH.checked = false;
+    LANGUAGE_SWITCH.forEach(item => {
+      item.checked = false;
+    });
     setLanguage(false);
   }
+  if(localStorage.getItem('userLanguage') == 'Zh'){
+    LANGUAGE_SWITCH.forEach(item => {
+      item.checked = true;
+    });
+    setLanguage(true);
+  }
   if(!localStorage.getItem('userLanguage')){
-    LANGUAGE_SWITCH.checked = true;
+    LANGUAGE_SWITCH.forEach(item => {
+      item.checked = true;
+    });
     setLanguage(true);
     localStorage.setItem('userLanguage','Zh');
   }
@@ -273,21 +287,25 @@ window.addEventListener('resize',()=>{
   },500)
 });
 
-LANGUAGE_SWITCH.onchange = ()=>{
-  if(LANGUAGE_SWITCH.checked){
-    setLanguage(true);
-  }else{
-    setLanguage(false);
-  }
-};
+LANGUAGE_SWITCH.forEach(item => {
+  item.addEventListener('change',()=>{
+    if(item.checked){
+      setLanguage(true);
+    }else{
+      setLanguage(false);
+    }
+  });
+});
 
-THEME_SWITCH.onchange = ()=>{
-  if(THEME_SWITCH.checked){
-    setTheme(false)
-  }else{
-    setTheme(true)
-  }
-};
+THEME_SWITCH.forEach(item => {
+  item.addEventListener('change',()=>{
+    if(item.checked){
+      setTheme(false)
+    }else{
+      setTheme(true)
+    }
+  });
+});
 
 CLOSE_CLEAR.forEach(item => {//清空输入内容
   item.addEventListener('click',() => {
@@ -941,26 +959,38 @@ function reTV(){
 function setTheme(isLight){
   if(isLight){
     ROOT.setAttribute("data-theme","light");
+    THEME_SWITCH.forEach(item => {
+      item.checked = false;
+    });
     localStorage.setItem('userTheme','light');
-    tipsAll('已切换为亮色主题',2000,6);
+    tipsAll('已切换为亮色主题',2000,3);
   }else{
     ROOT.setAttribute("data-theme","dark");
+    THEME_SWITCH.forEach(item => {
+      item.checked = true;
+    });
     localStorage.setItem('userTheme','dark');
-    tipsAll('已切换为暗色主题',2000,6);
+    tipsAll('已切换为暗色主题',2000,3);
   }
 }
 
 function setLanguage(isZh){
   if(isZh){
     ROOT.setAttribute("data-language","Zh");
-    LANGUAGE_SWITCH.parentNode.style.setProperty('--swi-text',`'Zh'`);
+    LANGUAGE_SWITCH.forEach(item => {
+      item.checked = true;
+      item.parentNode.style.setProperty('--swi-text',`'Zh'`);
+    });
     localStorage.setItem('userLanguage','Zh');
-    tipsAll('已切换为中文',2000,6);
+    tipsAll('已切换为中文',2000,3);
   }else{
     ROOT.setAttribute("data-language","En");
-    LANGUAGE_SWITCH.parentNode.style.setProperty('--swi-text',`'En'`);
+    LANGUAGE_SWITCH.forEach(item => {
+      item.checked = false;
+      item.parentNode.style.setProperty('--swi-text',`'En'`);
+    });
     localStorage.setItem('userLanguage','En');
-    tipsAll('change for English',2000,6);
+    tipsAll('Change to English',2000,3);
   }
 }
 

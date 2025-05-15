@@ -35,7 +35,7 @@
       background: var(--banner-top),var(--banner-bak);
       background-size:contain;
       background-repeat: no-repeat;
-      background-position:0 50%;
+      background-position:calc(10% - 8vw) 50%;
     }
 
     .switch [data-swi-icon]{
@@ -54,16 +54,34 @@
   </style>
 </head>
 <body class="noselect df-ffc df-cc">
-  <div data-banner-top class="df-sc pos-r" style="--swi-text:'Zh';">
+  <div data-banner-top class="df-sc pos-r">
     <div></div>
-    <input id="language" type="checkbox" checked="true">
-    <label for="language" class="switch pos-a" style="--swi-h:20px; --swi-r:6px; --swi-af:var(--mainColor); right: 2%;">
-      <div class="pos-a" data-swi-icon style="top:2px; left: 1px; width: 14px; height: 14px; z-index: 2;">
-        <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
-          <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
-        </svg>
+    <div class="df-cc pos-a" style="gap:4px; right: 2%;">
+      <div id="btn-theme" style="width: 22px; height: 22px; padding: 3px; box-sizing: border-box; background: var(--swi-bak); border-radius: 4px; border: 1px solid var(--swi-bod);">
+        <input id="theme-1" data-theme-check type="checkbox" checked="true">
+        <label for="theme-1" class="btn-theme" style="position: relative;">
+          <btn-theme></btn-theme>
+        </label>
       </div>
-    </label>  
+      <input id="language-1" data-language-check type="checkbox" checked="true">
+      <label for="language-1" class="switch pos-a" style="--swi-h:20px; --swi-r:6px; --swi-af:var(--mainColor); right: 2%;">
+        <div class="pos-a" data-swi-icon style="top:2px; left: 1px; width: 14px; height: 14px; z-index: 2;">
+          <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
+            <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
+          </svg>
+        </div>
+      </label>
+    </div>
+  </div>
+  <div class="df-lc w100" style="padding: 10px; box-sizing: border-box;">
+    <div data-back data-link-to="../index.html" data-link-isnew="true" class="df" style="--back-bak:#7263dfd5; --back-w:40px; --back-text:'返回首页';  --arrow-w: 4;">
+      <div class="pos-r" style="width: 77%; height: 77%; transform: rotate(180deg);">
+        <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
+          <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>                 
+      </div>
+    </div>
   </div>
   <!--杂色质感-->
   <div id="noise" class="noise"></div>
@@ -75,16 +93,7 @@
       </div>
   </div>
   <div class="df-ffc pos-r">
-    <div style="height: 40px;"></div>
     <div class="df-ffc ww" style="gap: 10px; align-items: center;">
-      <!--div style="width: 90px; height: 40px;">
-        <svg width="100%" height="100%" viewBox="0 0 350 156" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" fill="var(--mainColor)" clip-rule="evenodd" 
-          d="M312 17.9812V19.068C312 24.0333 313.756 28.2715 317.267 31.7826C320.778 35.2937 325.016 37.0492 329.981 37.0492H331.068C336.033 37.0492 340.272 35.2937 343.783 31.7826C347.294 28.2715 349.049 24.0333 349.049 19.068V17.9812C349.049 13.0159 347.294 8.77766 343.783 5.26658C340.272 1.75553 336.033 0 331.068 0H329.981C325.016 0 320.778 1.75553 317.267 5.26658C313.756 8.77766 312 13.0159 312 17.9812ZM321.754 27.2951C319.482 25.0232 318.346 22.2809 318.346 19.068V17.9812C318.346 14.7683 319.482 12.026 321.754 9.75411C324.026 7.48225 326.768 6.34632 329.981 6.34632H331.068C334.281 6.34632 337.023 7.48225 339.295 9.75411C341.567 12.026 342.703 14.7683 342.703 17.9812V19.068C342.703 22.2809 341.567 25.0232 339.295 27.2951C337.023 29.567 334.281 30.7029 331.068 30.7029H329.981C326.768 30.7029 324.026 29.567 321.754 27.2951ZM334.362 9.44696C335.231 9.44696 336.215 9.65174 337.315 10.0613V17.0984C335.9 16.2283 334.916 15.7933 334.362 15.7933H329.42C328.969 15.7933 328.587 15.9517 328.274 16.2686C327.953 16.5922 327.793 16.9878 327.793 17.4554V19.5936C327.793 20.0613 327.953 20.4569 328.274 20.7805C328.587 21.0974 328.969 21.2558 329.42 21.2558H334.362C334.573 21.2558 334.98 21.1125 335.581 20.826C336.095 20.5812 336.673 20.2545 337.315 19.846V26.9651C336.218 27.3898 335.234 27.6021 334.362 27.6021H329.42C327.204 27.6021 325.318 26.8164 323.763 25.2449C322.219 23.6848 321.447 21.8011 321.447 19.5936V17.4554C321.447 15.248 322.219 13.3642 323.763 11.8041C325.318 10.2327 327.204 9.44696 329.42 9.44696H334.362ZM122.739 45.4885C128.057 42.2516 132.787 37.5808 136.93 31.4761L117.07 18C114.879 21.2287 112.61 23.5578 110.261 24.9875C108.344 26.1544 106.257 26.7379 104 26.738H19V50.738H104C110.743 50.738 116.99 48.9882 122.739 45.4885ZM142 130.903C133.053 146.968 122.208 155 109.465 155H13.438L44.6292 93.6444C45.3056 92.3138 44.339 90.738 42.8464 90.738H0V66.738H150V90.738H77.3239C74.6893 90.738 72.2779 92.2173 71.084 94.5658L52.562 131H109.465C111.218 131 113.223 129.773 115.479 127.319C117.022 125.641 118.548 123.535 120.058 121L142 130.903ZM293.34 122.276C286.316 129.324 276.482 132.737 263.839 132.514L264.226 108.388C270.543 108.499 274.93 107.322 277.387 104.857C279.76 102.475 280.947 98.1599 280.947 91.9118V43.3934H258.855V156H235.803V19.2634H302C303.105 19.2634 304 20.1588 304 21.2634V91.9118C304 105.023 300.447 115.145 293.34 122.276ZM176.971 156H215.5C199.5 146.5 187.5 133 186.465 124.711C186.04 123.495 186.988 122.276 188.276 122.276L229.079 121.552V19H160C158.895 19 158 19.8954 158 21V116.525C158 131.036 164.324 144.194 176.971 156ZM206.026 97.4225H181.053V84.3412C181.053 83.2367 181.948 82.3412 183.053 82.3412H204.026C205.131 82.3412 206.026 83.2367 206.026 84.3412V97.4225ZM204.026 58.2112H183.053C181.948 58.2112 181.053 57.3158 181.053 56.2112V43.13H206.026V56.2112C206.026 57.3158 205.131 58.2112 204.026 58.2112Z"
-          />
-        </svg>        
-      </div-->
-      
       <div class="df-ffc w100" style="white-space: wrap; gap: 4px; font-size: 12px; padding: 6px; box-sizing: border-box; opacity: 0.6; border: 1px var(--boxBod) dashed; border-radius: 10px;"> 
       <li data-li-style="1">需同时引入<i>yn_style.css</i>和<i>yn_comp.js</i>，并核查是否存在变量名冲突</li>
       <li data-li-style="1">复制的代码需检查ID是否冲突</li>
@@ -191,7 +200,7 @@
             </div>
             theme:
             <div id="btn-theme" style="width: 14px; height: 14px;">
-              <input id="theme" type="checkbox" checked="true">
+              <input id="theme" data-theme-check type="checkbox" checked="true">
               <label for="theme" class="btn-theme" style="position: relative;">
                 <btn-theme></btn-theme>
               </label>
@@ -364,7 +373,7 @@
               <btn-info></btn-info>
             </div>
             back:
-            <div data-back class="df" style="--back-w:26px;  --arrow-w: 4;">
+            <div data-back data-link-to="" data-link-isnew="true" class="df" style="--back-w:26px;  --arrow-w: 4;">
               <div class="pos-r" style="width: 77%; height: 77%; transform: rotate(180deg);">
                 <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
@@ -398,6 +407,19 @@
       }else{
         ROOT.style.setProperty('--btn-copy-df','none');
       }
+    })
+
+    document.querySelectorAll('[data-back]').forEach(item => {
+      item.addEventListener('click',() => {
+        let isnew = item.getAttribute('data-link-isnew') == 'true' ? true : false;
+        let linkurl = item.getAttribute('data-link-to');
+        let link = document.createElement('a');
+        link.href = linkurl;
+        if(isnew){
+          link.target = '_blank';
+        }
+        link.click()
+      })
     })
     
     /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/

@@ -535,6 +535,7 @@ input[type="checkbox"]:checked+.switch::after{
   left: 50%;
   flex: 0 0 auto;
 }
+
 input[type="checkbox"]:checked+.switch::before {
   left: 2px;
 }
