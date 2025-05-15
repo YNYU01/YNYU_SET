@@ -180,18 +180,6 @@ class cardcolorpick extends HTMLElement {
 customElements.define('card-colorpick', cardcolorpick);
 
 const ROOT = document.documentElement;
-const HTML_MAIN = `<html data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <meta name="description" content="about this web">
-  <link rel="icon" href="https://cdn.jsdelivr.net/gh/YNYU01/listEase@c3e9f7dd256280ce4d7e531a7e65f1001ccdb1d4/img/Icon-ListEase_200-6.png" type="image/png">
-  <link rel="stylesheet" href="yn_style.css">
-</head>
-<body class="noselect df-ct">
-  <script src="yn_comp.js"></script>
-</body>
-</html>`;
 
 let GETCOLOR = null;
 let MOBILE_KEYS = /mobile | android | iphone | ipad | blackberry | windows phone/i
@@ -983,6 +971,10 @@ function setLanguage(isZh){
     });
     localStorage.setItem('userLanguage','Zh');
     tipsAll('已切换为中文',2000,3);
+    let texts = document.querySelectorAll('[data-zh-text]');
+    texts.forEach(item => {
+      item.textContent = item.getAttribute('data-zh-text');
+    })
   }else{
     ROOT.setAttribute("data-language","En");
     LANGUAGE_SWITCH.forEach(item => {
@@ -991,6 +983,11 @@ function setLanguage(isZh){
     });
     localStorage.setItem('userLanguage','En');
     tipsAll('Change to English',2000,3);
+    let texts = document.querySelectorAll('[data-en-text]');
+    texts.forEach(item => {
+      item.setAttribute('data-zh-text',item.textContent);
+      item.textContent = item.getAttribute('data-en-text');
+    })
   }
 }
 

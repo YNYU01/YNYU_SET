@@ -1,6 +1,6 @@
 /*主题*/
 :root{
-  --layout-w:650px;/*版心宽度*/
+  --layout-w:980px;/*版心宽度*/
   /*控件*/
   --mainFontSize:14px;
   --mainFontSize-mini:12px;
@@ -116,8 +116,18 @@ li::after,li[data-li]::after{
   content: '；';
 }
 li a,li i,li span{
+  display: inline-block;
   margin: 0 4px;
   color: var(--themeColor2);
+}
+
+[data-li-style="title"]{
+  width: fit-content;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: calc(1ch + 4px);
+  background: var(--mainColor);
+  color:var(--mainColor3);
 }
 
 /*隐藏调整大小的图标*/
@@ -1065,6 +1075,12 @@ input[type="checkbox"]:checked + .colortype{
 }
 
 /*自适应*/
+@media (max-width:1000px) {
+  :root{
+    --layout-w:650px;
+  }
+}
+
 @media (max-width:750px) {
   :root{
     --layout-w:320px;
