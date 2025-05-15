@@ -56,8 +56,8 @@ if(localStorage.getItem('userLanguage') == 'Zh'){
 } else {
   document.querySelector('[data-code="HTML_main"]').innerHTML = HTML_MAIN_EN.replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-document.getElementById('switch').addEventListener('change',() => {
-  if(document.getElementById('switch').checked){
+document.getElementById('switch').addEventListener('change',(event) => {
+  if(event.target.checked){
     ROOT.style.setProperty('--btn-copy-df','flex');
   }else{
     ROOT.style.setProperty('--btn-copy-df','none');

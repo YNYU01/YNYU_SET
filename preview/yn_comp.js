@@ -188,6 +188,7 @@ let TV_MOVE = false;//用于结合一定条件触发轮播
 let TAB_AUTO = document.querySelectorAll('[data-tab="auto"]');
 let SELECT_PICK = document.querySelectorAll('[data-select-pick]');
 let SELECT_OPTION = document.querySelectorAll('[data-option="option"]');
+let RADIO = document.querySelectorAll('[data-radio]');
 let INPUT = document.querySelectorAll('[data-input]');//所有input类型组件
 let INPUT_CHECK = document.querySelectorAll('[data-check]');
 let INPUT_MUST = document.querySelectorAll('[data-input-must]');//所有必填且为空时返回一个默认值的组件
@@ -257,10 +258,10 @@ window.addEventListener('load',()=>{
   }
   if(!localStorage.getItem('userLanguage')){
     LANGUAGE_SWITCH.forEach(item => {
-      item.checked = true;
+      item.checked = false;
     });
-    setLanguage(true);
-    localStorage.setItem('userLanguage','Zh');
+    setLanguage(false);
+    localStorage.setItem('userLanguage','En');
   }
 });
 
@@ -376,6 +377,17 @@ SELECT_OPTION.forEach(item => {
     item.setAttribute('data-option-main','true');
     select.setAttribute('data-select-value',optionValue);
     select.querySelector('[data-select-input]').value = optionValue;
+  })
+});
+
+RADIO.forEach(item => {
+  item.addEventListener('click',()=>{
+    let radio = item.parentNode;
+    let oldpick = radio.querySelector('[data-radio-main="true"]');
+    let data = item.getAttribute('data-radio-data');
+    oldpick.setAttribute('data-radio-main','false');
+    item.setAttribute('data-radio-main','true');
+    radio.setAttribute('data-radio-value',data);
   })
 })
 

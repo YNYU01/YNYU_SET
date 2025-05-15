@@ -5,64 +5,22 @@
   <meta name="description" content="网页内容简介，转发时显示">
   <title>『云即』@YNYU</title>
   <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET.png" type="image/png">
-  <link rel="stylesheet" href="preview/yn_style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --banner-h:50px;
-    }
-    [data-language="Zh"]{
-      --banner-dark:url('VI/banner_top_zh_dark.jpg');
-      --banner-light:url('VI/banner_top_zh_light.jpg');
-    }
-    [data-language="En"]{
-      --banner-dark:url('VI/banner_top_en_dark.jpg');
-      --banner-light:url('VI/banner_top_en_light.jpg');
-    }
-    [data-theme="light"]{
-      --banner-bak:#1a1a1a;
-      --banner-top:var(--banner-dark)
-    }
-    [data-theme="dark"]{
-      --banner-bak:#eaeaea;
-      --banner-top:var(--banner-light)
-    }
-    [data-banner-top]{
-      width: 100vw;
-      height: var(--banner-h);
-      background: var(--banner-top),var(--banner-bak);
-      background-size:contain;
-      background-repeat: no-repeat;
-      background-position:0 50%;
-    }
-
-    .switch [data-swi-icon]{
-    transition:transform 0.2s ease-out;
-    }
-
-    input[type="checkbox"]:checked+.switch [data-swi-icon]{
-      transform: translateX(var(--swi-h,18px));
-    }
-
-    @media (max-width:750px) {
-      :root{
-      --banner-h:24px;
-    }
-    }
-  </style>
+  <link rel="stylesheet" href="preview/yn_style.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"> 
 </head>
 <body class="noselect df-ffc df-cc">
   <div data-banner-top class="df-sc pos-r">
     <div></div>
     <div class="df-cc pos-a" style="gap:4px; right: 2%;">
-      <div id="btn-theme" style="width: 22px; height: 22px; padding: 3px; box-sizing: border-box; background: var(--swi-bak); border-radius: 4px; border: 1px solid var(--swi-bod);">
+      <div id="btn-theme" style="width: 22px; height: 22px; padding: 3px; box-sizing: border-box; background: var(--swi-bak); border-radius: 4px;">
         <input id="theme-1" data-theme-check type="checkbox" checked="true">
         <label for="theme-1" class="btn-theme" style="position: relative;">
           <btn-theme></btn-theme>
         </label>
       </div>
       <input id="language-1" data-language-check type="checkbox" checked="true" >
-      <label for="language-1" class="switch" style="--swi-h:20px; --swi-r:6px; --swi-af:var(--mainColor);">
+      <label for="language-1" class="switch" style="--swi-h:20px; --swi-r:6px; --swi-bod:transparent; --swi-af:var(--mainColor);">
         <div class="pos-a" data-swi-icon style="top:2px; left: 1px; width: 14px; height: 14px; z-index: 2;">
           <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
             <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
@@ -82,7 +40,34 @@
   </div>
   <div class="df-ffc pos-r">
     <div style="height: 40px;"></div>
-    
+    <!--svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="1001.28125" height="475.615966796875" viewBox="0 0 1001.28125 475.615966796875">
+      <defs>
+        <radialGradient cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" id="master_svg0_13_22338" gradientTransform="translate(670.8470458984375 168.1556396484375) rotate(90) scale(168.1556396484375 168.1556396484375)">
+          <stop offset="11.64383590221405%" stop-color="#FFFFFF" stop-opacity="1"/>
+          <stop offset="26.027396321296692%" stop-color="#FFFFFF" stop-opacity="1"/>
+          <stop offset="38.35616409778595%" stop-color="#47f8af" stop-opacity="1"/>
+          <stop offset="51.57139301300049%" stop-color="#FFFFFF" stop-opacity="1"/>
+          <stop offset="59.58904027938843%" stop-color="#d6a1e9" stop-opacity="0.834443986415863"/>
+          <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" id="master_svg1_13_22338" gradientTransform="translate(500.640625 237.80810546875) rotate(90) scale(237.8077392578125 500.640625)">
+          <stop offset="11.64383590221405%" stop-color="#FFFFFF" stop-opacity="1"/>
+          <stop offset="26.027396321296692%" stop-color="#FFFFFF" stop-opacity="1"/>
+          <stop offset="38.35616409778595%" stop-color="#47f8af" stop-opacity="1"/>
+          <stop offset="51.57139301300049%" stop-color="#FFFFFF" stop-opacity="1"/>
+          <stop offset="59.58904027938843%" stop-color="#d6a1e9" stop-opacity="0.834443986415863"/>
+          <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <g>
+        <g transform="matrix(0.7071067690849304,0.7071067690849304,-0.7071067690849304,0.7071067690849304,147.2349101298023,-355.4564961201977)">
+          <path d="M670.84740625,2.38964e-14L674.41440625,164.588L839.0024062499999,168.156L674.41440625,171.723L670.84740625,336.311L667.27940625,171.723L502.69140625000006,168.156L667.27940625,164.588L670.84740625,2.38964e-14Z" fill="url(#master_svg0_13_22338)" fill-opacity="1"/>
+        </g>
+        <g>
+          <path d="M0,237.8083662109375L497.65,242.8523662109375L502.694,475.6163662109375L507.739,242.8523662109375L1001.28,237.8083662109375L507.739,232.7633662109375L502.694,0.0003662109375L497.65,232.7633662109375L0,237.8083662109375Z" fill="url(#master_svg1_13_22338)" fill-opacity="1"/>
+        </g>
+      </g>
+    </svg-->
   </div>
   <script src="preview/yn_comp.js"></script>
   <script>
