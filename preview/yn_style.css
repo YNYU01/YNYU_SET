@@ -835,7 +835,7 @@ input[type="checkbox"]:checked+.btn-theme {
 }
 
 [data-theme="dark"] [data-turnto]{
-  --mainColor: #0f0f0f;
+  --mainColor: #242424;
 }
 
 [data-back]{
@@ -866,7 +866,7 @@ input[type="checkbox"]:checked+.btn-theme {
 }
 
 [data-theme="dark"] [data-back]{
-  --mainColor: #0f0f0f;
+  --mainColor: #242424;
 }
 
 /*取色器模块*/
