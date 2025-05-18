@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../style.css" rel="stylesheet">
   <!-- 引入 Prism JS -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
+  <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-tomorrow.min.css"-->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
 </head>
 <body class="noselect df-ffc df-cc">
@@ -55,8 +56,26 @@
       <div data-li-style="title" data-en-text="IMPORTANT" class="df" style="font-size: 12px; gap: 4px;">使用说明</div>
       <div class="df-ffc w100" style="white-space: wrap; gap: 4px; font-size: 12px; padding: 6px; box-sizing: border-box; opacity: 0.6; border: 1px var(--boxBod) dashed; border-radius: 10px;"> 
         
-        <li data-li-style="1">需同时引入<i><a href="yn_style.css" download>yn_style.css</a></i>和<i><a href="yn_comp.js" download>yn_comp.js</a></i>，并核查是否存在变量名冲突</li>
-        <li data-li-style="1">建议先复制HTML_main再开始复制的示例代码，同样也需检查ID或自定义属性是否冲突</li>
+        <li data-li-style="1">
+          <span data-en-text="Import these files">需同时引入</span>
+          <i><a href="yn_style.css" download>yn_style.css</a></i>
+          <span data-en-text="&">和</span>
+          <i><a href="yn_comp.js" download>yn_comp.js</a></i>
+          <span data-en-text=",and check whether there is a variable name conflict">
+            ，并核查是否存在变量名冲突
+          </span>
+        </li>
+        <li data-li-style="1">
+          <span data-en-text="It is recommended to copy the code of">
+            建议先复制
+          </span>
+          <span data-highlight>
+            HTML_main
+          </span>
+          <span data-en-text="before copying other sample codes. Also, check whether the ID or custom attribute conflicts">
+            部分的代码再复制其他示例代码，同样也需检查ID或自定义属性是否冲突
+          </span>
+        </li>
       </div>
     </div>
     <div class="df-ffc ww" style="gap: 10px;">
@@ -75,6 +94,20 @@
               HTML_main:
               <div data-resize="pre">
                 <pre style="height: 120px; max-height: 50vh;"><code data-code="HTML_main" class="language-html"></code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
+            <div data-copy="JS_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+                <btn-copy></btn-copy>
+              </div>
+              <div data-tips="set" data-tips-y="bottom" data-tips-x="left" style="--tips-w: 280px; --tips-text:'包含css、js引入示例，以及复合组件传递关键参数要用到的函数示例'; width: 14px; height: 14px;">
+                <btn-info></btn-info>
+              </div>
+              JS_main:
+              <div data-resize="pre">
+                <pre style="height: 120px; max-height: 50vh;"><code data-code="JS_main" class="language-javascript"></code></pre>
               </div>
             </div>
           </div>
@@ -359,7 +392,7 @@
                 <btn-info></btn-info>
               </div>
               turnto:
-              <div data-turnto class="df" style="--turnto-w:26px; --arrow-w: 4;">
+              <div data-turnto data-link data-link-to="" data-link-isnew="false" class="df" style="--turnto-w:26px; --arrow-w: 4;">
                 <div class="pos-r" style="width: 77%; height: 77%;">
                   <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
@@ -376,7 +409,7 @@
                 <btn-info></btn-info>
               </div>
               back:
-              <div data-back data-link-to="" data-link-isnew="true" class="df" style="--back-w:26px;  --arrow-w: 4;">
+              <div data-back data-link data-link-to="" data-link-isnew="false" class="df" style="--back-w:26px; --back-text:'返回';  --arrow-w: 4;">
                 <div class="pos-r" style="width: 77%; height: 77%; transform: rotate(180deg);">
                   <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
@@ -395,11 +428,13 @@
   </div>
   <div class="w100 fl0" style=" height: 20px;"></div>
   <script src="yn_comp.js"></script>
-  <script src="index.js"></script>
+  <script src="main.js"></script>
   <script>
+    /*
     document.getElementById('check-1').addEventListener('change',(event)=>{
       console.log(event.target.getAttribute('data-check-for'))
     })
+    */
   </script>
 </body>
 </html>

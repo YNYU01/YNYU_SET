@@ -17,7 +17,8 @@ const HTML_MAIN_ZH = `<!--
   <link rel="stylesheet" href="yn_style.css">
 </head>
 <body class="noselect df-ct">
-  <script src="yn_comp.js"></script>
+<script src="yn_comp.js"></script>
+<script src="main.js"></script>
 </body>
 </html>`;
 
@@ -43,39 +44,124 @@ const HTML_MAIN_EN = `<!--
 </body>
 </html>`;
 
+const JS_MAIN = `/*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
+let observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if(mutation.type === 'attributes'){
+      switch(mutation.attributeName){
+        case 'data-color-hex':getUserColor(mutation.target); break;
+        case 'data-number-value':getUserNumber(mutation.target); break;
+        case 'data-text-value':getUserText(mutation.target); break;
+        case 'data-select-value':getUserSelect(mutation.target); break;
+      }
+    }
+  })
+});
+let userEvent_color = document.querySelectorAll('[data-color]');
+userEvent_color.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-color-hex']};
+  observer.observe(item,config);
+});
+let userEvent_number = document.querySelectorAll('[data-number]');
+userEvent_number.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-number-value']};
+  observer.observe(item,config);
+});
+let userEvent_text = document.querySelectorAll('[data-text]');
+userEvent_text.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-text-value']};
+  observer.observe(item,config);
+});
+let userEvent_select = document.querySelectorAll('[data-select]');
+userEvent_select.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-select-value']};
+  observer.observe(item,config);
+});
+
+function getUserColor(node){
+  let color = {
+    HEX:node.getAttribute('data-color-hex'),
+    RGB:node.getAttribute('data-color-rgb'),
+    HSL:node.getAttribute('data-color-hsl'),
+    HSV:node.getAttribute('data-color-hsv'),
+  }
+  //console.log(color)
+}
+
+function getUserNumber(node){
+  let number = node.getAttribute('data-number-value')
+  //console.log(number)
+}
+
+function getUserText(node){
+  let text = node.getAttribute('data-text-value')
+  //console.log(text)
+}
+
+function getUserSelect(node){
+  let select = node.getAttribute('data-select-value')
+  //console.log(text)
+}
+`
+
+let copyBtn = document.querySelectorAll('btn-copy');
 
 window.addEventListener('load',()=>{
 
 });
 
 window.addEventListener('resize',()=>{
+
 });
+
+document.querySelector('[data-code="JS_main"]').innerHTML = JS_MAIN.replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
 if(localStorage.getItem('userLanguage') == 'Zh'){
   document.querySelector('[data-code="HTML_main"]').innerHTML = HTML_MAIN_ZH.replace(/</g,'&lt;').replace(/>/g,'&gt;');
 } else {
   document.querySelector('[data-code="HTML_main"]').innerHTML = HTML_MAIN_EN.replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+
+document.getElementById('language-1').addEventListener('change',(event) => {
+  if(event.target.checked){
+    document.querySelector('[data-code="HTML_main"]').innerHTML = HTML_MAIN_ZH.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    Prism.highlightElement(document.querySelector('[data-code="HTML_main"]'));
+  }else{
+    document.querySelector('[data-code="HTML_main"]').innerHTML = HTML_MAIN_EN.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    Prism.highlightElement(document.querySelector('[data-code="HTML_main"]'));
+  }
+})
+
 document.getElementById('switch').addEventListener('change',(event) => {
   if(event.target.checked){
     ROOT.style.setProperty('--btn-copy-df','flex');
   }else{
     ROOT.style.setProperty('--btn-copy-df','none');
   }
-})
+});
 
-document.querySelectorAll('[data-back]').forEach(item => {
-  item.addEventListener('click',() => {
-    let isnew = item.getAttribute('data-link-isnew') == 'true' ? true : false;
-    let linkurl = item.getAttribute('data-link-to');
-    let link = document.createElement('a');
-    link.href = linkurl;
-    if(isnew){
-      link.target = '_blank';
+copyBtn.forEach(item => {
+  item.addEventListener('click',()=>{
+    let node = item.parentNode.parentNode;
+    let key = node.getAttribute('data-copy');
+    let htmlcode = node.innerHTML.split(key + ':')[1];
+    let language = ROOT.getAttribute('[data-language]');
+    if(key === "HTML_main"){
+      htmlcode = language == 'Zh' ? HTML_MAIN_ZH : HTML_MAIN_EN;
+    } else if ( key === "JS_main"){
+      htmlcode = JS_MAIN;
+    } else {
+      let tips = language == 'Zh' ? '<!--自定义标签，需引入css和js库才能生效-->' : '<!--Importing css and js libraries to make it effective-->'
+      COMPS.forEach(item => {
+        if(htmlcode.split('<'+ item ).length > 1){
+          let keys = new RegExp('<'+ item + '[\\s\\S]*?<\/'+ item + '>','g');
+          htmlcode = htmlcode.replace(keys,'<' + item + '>' + tips + '</'+ item + '>')
+        }
+      })
     }
-    link.click()
+    copy(node,'text',htmlcode.trim())
   })
-})
+});
 
 /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
 let observer = new MutationObserver((mutations) => {

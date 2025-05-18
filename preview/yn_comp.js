@@ -82,7 +82,6 @@ class btncopy extends HTMLElement {
       />
     </svg>
     `;
-    this.setAttribute('onclick',`copy(this.parentNode.parentNode,'egcode')`)
   }
 };
 customElements.define('btn-copy', btncopy);
@@ -755,6 +754,20 @@ document.addEventListener('keydown',(event) => {
   }
 })
 
+document.querySelectorAll('[data-link]').forEach(item => {
+  item.addEventListener('click',()=>{
+    let isnew = item.getAttribute('data-link-isnew') == 'true' ? true : false;
+    let linkurl = item.getAttribute('data-link-to');
+    if(linkurl){
+      let link = document.createElement('a');
+      link.href = linkurl;
+      if(isnew){
+        link.target = '_blank';
+      }
+      link.click()
+    }
+  })
+});
 
 /**
  * 使输入的内容保持正确的范围
@@ -1006,36 +1019,34 @@ function setLanguage(isZh){
 /**
  * 
  * @param {Element} node - 包裹了需要被复制的内容的容器，也可以是{id:xxx}
- * @param {any} type - egcode | inputvalue | self | topng
- * @param {string?} other - 通过其他方法得到的用于复制的字符串
+ * @param {any} type - text | self | toimg
+ * @param {string?} other - 通过其他方法得到的用于复制的字符串或图片信息
  */
 function copy(node,type,other){
-  node = node.innerHTML ? node : document.getElementById(node.id);
   let copyText = '';
-  if(type === 'egcode'){
-    let key = node.getAttribute('data-copy');
-    let htmlcode = node.innerHTML.split(key + ':')[1];
-    
-    if(key === "HTML_main"){
-      htmlcode = HTML_MAIN
-    } else {
-      COMPS.forEach(item => {
-        if(htmlcode.split('<'+ item ).length > 1){
-          let keys = new RegExp('<'+ item + '[\\s\\S]*?<\/'+ item + '>','g');
-          htmlcode = htmlcode.replace(keys,'<' + item + '><!--此处需引入css和js库--></'+ item + '>')
-          //htmlcode = htmlcode.replace(/ +/g,' ')
-        }
-      })
+  node = node.innerHTML ? node : document.getElementById(node.id);
+  if(!node){
+    node = {
+      textContent:'',
+      innerHTML:''
     }
-    //console.log(htmlcode)
-    copyText = htmlcode.trim()
   }
-  if(other){
-    copyText = other;
-  }
+  if(type === 'text'){
+    if(other){
+      copyText = other;
+    } else {
+      copyText = node.textContent;
+    }
+  };
+  if(type === 'self'){
+    copyText = node.innerHTML;
+  };
+  if(type === 'toimg'){
+    
+  };
   navigator.clipboard.writeText(copyText) 
   .then(function() {
-    tipsAll('复制成功',2000)
+    tipsAll('复制成功',2000);
   });
 }
 

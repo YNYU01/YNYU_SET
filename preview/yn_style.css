@@ -115,7 +115,16 @@ li[data-li-style="2"]::before{
 li::after,li[data-li]::after{
   content: '；';
 }
-li a,li i,li span{
+
+[data-language="Zh"] li::after,li[data-li]::after{
+  content: '；';
+}
+
+[data-language="En"] li::after,li[data-li]::after{
+  content: ';';
+}
+
+li a,li i,li [data-highlight]{
   display: inline-block;
   margin: 0 4px;
   color: var(--themeColor2);
@@ -270,29 +279,6 @@ code{
   font-family: 'Courier New', Courier, monospace;
   
 }
-
-/*prismjs代码高亮库专用 START*/
-.attr-name{
-  color: var(--code1);
-}
-
-.attr-value{
-  color: var(--code2);
-}
-
-.punctuation{
-  color: var(--mainColor);
-}
-
-.attr-equals{
-  color: var(--mainColor);
-}
-
-.comment{
-  color: var(--mainColor);
-  opacity: 0.5;
-}
-/*prismjs代码高亮库专用 END*/
 
 input[type="checkbox"]{
   display: none;
