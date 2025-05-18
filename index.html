@@ -434,24 +434,40 @@
     
     
     worksName.forEach(item => {
+
       item.parentNode.addEventListener('mouseenter',()=>{
         item.style.animation = 'colormove1 1s';
         item.style.backgroundSize = '100%';
         item.style.backgroundPosition = '0%';
       });
-      item.parentNode.addEventListener('click',()=>{
-        item.style.animation = 'colormove1 1s';
-        item.style.backgroundSize = '100%';
-        item.style.backgroundPosition = '0%';
-      });
+
       item.parentNode.addEventListener('mouseleave',()=>{
         item.style.animation = 'colormove2 1s';
         item.style.backgroundSize = '0';
         item.style.backgroundPosition = '100%';
       });
-      item.parentNode.addEventListener('animationend',()=>{
-        item.style.animation = '';
-      });
+
+      if(ISMOBILE){
+        item.parentNode.addEventListener('animationend',()=>{
+          item.style.animation = '';
+        });
+
+        item.parentNode.addEventListener('touchstart',()=>{
+          item.setAttribute('data-touch','true')
+          item.style.animation = 'colormove1 1s';
+          item.style.backgroundSize = '100%';
+          item.style.backgroundPosition = '0%';
+          document.addEventListener('touchstart',(event)=>{
+            if(!item.contains(event.target) && item.getAttribute('data-touch') == 'true'){
+              item.style.animation = 'colormove2 1s';
+              item.style.backgroundSize = '0';
+              item.style.backgroundPosition = '100%';
+              item.setAttribute('data-touch','false')
+            }
+          });  
+        });
+      }
+      
     })
 
     worksNamePath.forEach(item => {

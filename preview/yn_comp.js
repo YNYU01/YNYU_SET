@@ -181,6 +181,7 @@ customElements.define('card-colorpick', cardcolorpick);
 const ROOT = document.documentElement;
 
 let GETCOLOR = null;
+let ISMOBILE = false;
 let MOBILE_KEYS = /mobile | android | iphone | ipad | blackberry | windows phone/i
 let TV = document.querySelectorAll('[data-TV]');//轮播公告
 let TV_MOVE = false;//用于结合一定条件触发轮播
@@ -217,8 +218,12 @@ let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check
 
 window.addEventListener('load',()=>{
   reTV();
+
+  if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase())){
+    ISMOBILE = true
+  }
   
-  if (window.EyeDropper == undefined || MOBILE_KEYS.test(navigator.userAgent.toLowerCase())) {
+  if (window.EyeDropper == undefined || ISMOBILE) {
     //console.error('EyeDropper API is not supported on this platform');
     ROOT.style.setProperty('--colorcard-left','0');
     ROOT.style.setProperty('--getcolor-df','none');
