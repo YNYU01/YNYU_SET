@@ -87,7 +87,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
 
 
 [data-language="Zh"] [data-worksname-list]{
-  --turnto-text:'查看';
+  --turnto-text:'详情';
 }
 
 [data-language="En"] [data-worksname-list]{
@@ -337,5 +337,19 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   }
   [data-worksname-turnto]{
     gap:10px;
+  }
+  [data-language="Zh"] [data-worksname-turnto] [data-turnto]{
+    padding:0 1ch;
+    width: fit-content;
+    line-height: 1.5em;
+    font-weight: 700;
+    --text:'详情';
+  }
+  [data-language="En"] [data-worksname-turnto] [data-turnto]{
+    padding:0 1ch;
+    width: fit-content;
+    line-height: 1.5em;
+    font-weight: 700;
+    --text:'view';
   }
 }
