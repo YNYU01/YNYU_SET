@@ -51,6 +51,10 @@
   content: var(--tips-text-en,'something there');
 }
 
+[data-language="En"] [data-back]:hover{
+  --text: var(--back-text-en,'Back');
+}
+
 [data-language="Zh"]{
   --banner-dark:url('../VI/banner_top_zh_dark.jpg');
   --banner-light:url('../VI/banner_top_zh_light.jpg');
@@ -365,7 +369,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   [data-worksname-list]{
     --turnto-w:26px;
     --arrow-w: 4;
-    --svg-h:48px;
+    --svg-h:40px;
     gap:10px;
   }
   [data-worksname-turnto]{
