@@ -29,7 +29,7 @@ const HTML_MAIN_EN = `<!--
 - Prohibit the use of this project for illegal activities. If such behavior occurs, it is not related to this project;
 - For commercial use or secondary editing, it is necessary to retain the copyright statement of this project and must continue to open source it;
 - For external libraries referenced in the project, it is necessary to comply with the corresponding open source protocols;
-- When using the code of this project, it is prohibited to delete this statement
+- When using the code of this project, it is prohibited to delete this statement;
 -->
 <html data-theme="dark">
 <head>
@@ -89,18 +89,18 @@ function getUserColor(node){
 }
 
 function getUserNumber(node){
-  let number = node.getAttribute('data-number-value')
-  //console.log(number)
+  let number = node.getAttribute('data-number-value');
+  //console.log(number);
 }
 
 function getUserText(node){
-  let text = node.getAttribute('data-text-value')
-  //console.log(text)
+  let text = node.getAttribute('data-text-value');
+  //console.log(text);
 }
 
 function getUserSelect(node){
-  let select = node.getAttribute('data-select-value')
-  //console.log(text)
+  let select = node.getAttribute('data-select-value');
+  //console.log(text);
 }
 `
 
@@ -208,16 +208,16 @@ function getUserColor(node){
 }
 
 function getUserNumber(node){
-  let number = node.getAttribute('data-number-value')
-  //console.log(number)
+  let number = node.getAttribute('data-number-value');
+  //console.log(number);
 }
 
 function getUserText(node){
-  let text = node.getAttribute('data-text-value')
-  //console.log(text)
+  let text = node.getAttribute('data-text-value');
+  //console.log(text);
 }
 
 function getUserSelect(node){
-  let select = node.getAttribute('data-select-value')
-  //console.log(text)
+  let select = node.getAttribute('data-select-value');
+  //console.log(text);
 }

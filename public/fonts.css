@@ -1,0 +1,13 @@
+@font-face {
+  font-family: zhuangyuanyasong;
+  src: url("../fonts/zhuangyuanyasong-Bold.woff") format('woff'),
+  url("../fonts/zhuangyuanyasong-Bold.woff2") format('woff2');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: zhuangyuanyasong;
+  src: url("../fonts/zhuangyuanyasong-Regular.woff") format('woff'),
+  url("../fonts/zhuangyuanyasong-Regular.woff2") format('woff2');
+  font-weight: 500;
+}

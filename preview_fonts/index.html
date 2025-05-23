@@ -1,0 +1,165 @@
+<html data-theme="dark" data-language="Zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <meta name="description" content="网页内容简介，转发时显示">
+  <title data-en-text="『YNYU_SET』 Font Library">『云即·字体库』</title>
+  <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
+  <link rel="stylesheet" href="../build/yn_style.css" rel="stylesheet">
+  <link rel="stylesheet" href="../public/fonts.css" rel="stylesheet">
+  <link rel="stylesheet" href="../public/style.css" rel="stylesheet">
+  <!-- 引入 Prism JS -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
+</head>
+<body class="noselect df-ffc df-cc">
+  <div data-banner-top class="df-sc pos-r">
+    <div></div>
+    <div class="df-cc pos-a" style="gap:4px; right: 2%;">
+      <div id="btn-theme" style="width: 22px; height: 22px; padding: 3px; box-sizing: border-box; background: var(--swi-bak); border-radius: 4px;">
+        <input id="theme-1" data-theme-check type="checkbox" checked="true">
+        <label for="theme-1" class="btn-theme" style="position: relative;">
+          <btn-theme></btn-theme>
+        </label>
+      </div>
+      <input id="language-1" data-language-check type="checkbox" checked="true">
+      <label for="language-1" class="switch pos-a" style="--swi-h:20px; --swi-bod:transparent; --swi-r:6px; --swi-af:var(--mainColor);">
+        <div class="pos-a" data-swi-icon style="top:2px; left: 1px; width: 14px; height: 14px; z-index: 2;">
+          <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
+            <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
+          </svg>
+        </div>
+      </label>
+    </div>
+  </div>
+  <div class="df-lc w100" style="padding: 10px; box-sizing: border-box;">
+    <div data-back data-link data-link-to="../index.html" data-link-isnew="false" class="df" style="--back-bak:#7263dfd5; --back-w:40px; --back-text:'返回首页';  --arrow-w: 4;">
+      <div class="pos-r" style="width: 77%; height: 77%; transform: rotate(180deg);">
+        <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
+          <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>                 
+      </div>
+    </div>
+  </div>
+  <!--杂色质感-->
+  <div id="noise" class="noise"></div>
+  <div id="watermark" class="watermark"></div>
+  <!--全局tips-->
+  <div id="tips-all">
+      <div id="tips-all-text" class="tips-all-text" >
+          温馨提示
+      </div>
+  </div>
+  <div class="df-ffc pos-r" style="gap: 20px; width: var(--layout-w);">
+    
+    <div class="df-ffc" style="gap:20px;">
+      <div class="df-lc" style="width: calc(var(--layout-w)/2);">
+        <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" 
+        style="--tips-w: 8ch; 
+        --tips-text:'修改字号'; 
+        --tips-text-en:'set font-size';
+        width: 20px; height: 20px;">
+          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill="var(--mainColor)" d="M13 6H11C11 4.89543 10.1046 4 9 4H8.5V14.5C8.5 15.3284 9.17157 16 10 16V18H4V16C4.82843 16 5.5 15.3284 5.5 14.5V4H5C3.89543 4 3 4.89543 3 6H1V1H13V6Z"/>
+            <path fill="var(--mainColor)" d="M19 11.5H17.667C17.6668 10.7637 17.0693 10.167 16.333 10.167H16V15.667C16 16.2192 16.4477 16.667 17 16.667V18H13V16.667C13.5523 16.667 14 16.2193 14 15.667V10.167H13.667C12.9307 10.167 12.3332 10.7637 12.333 11.5H11V8.16699H19V11.5Z"/>
+          </svg>            
+        </div>
+        <div data-egfont-size data-number data-number-value="70" class="df-lc fl1" style="flex: 1;">
+          <input data-input="range" type="range" min="10" max="200" value="70" style="padding: 0 10px;">
+          <input data-input="value" data-input-must="10-200" data-input-type="int" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="70">
+        </div>
+      </div>
+      <div class="pos-r df-lc w100" data-egfont-text data-text data-text-value="" >
+        <input type="text" data-input-must="Open Source & Design" value="Open Source & Design" style="height: 40px; padding-right: 4ch; font-size: 16px;" maxlength="30" data-input-max>
+        <div class="pos-a" style="right: 10px; font-size: 9px; opacity: 0.6;">
+          <span>26</span>/30
+        </div>
+      </div>
+    </div>
+    <div data-fontcard class="df-ffc">
+      <div data-egfont class="w100" style="font-family: 'zhuangyuanyasong'; font-weight: 500;">
+        Open Source & Design
+      </div>
+    </div>
+    <div data-fontcard class="df-ffc">
+      <div data-egfont class="w100" style="font-family: 'zhuangyuanyasong'; font-weight: 700;">
+        Open Source & Design
+      </div>
+    </div>
+    
+  </div>
+  <div class="w100 fl0" style=" height: 20px;"></div>
+  <script src="../build/yn_comp.js"></script>
+  <script>
+    /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
+    let observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if(mutation.type === 'attributes'){
+          switch(mutation.attributeName){
+            case 'data-color-hex':getUserColor(mutation.target); break;
+            case 'data-number-value':getUserNumber(mutation.target); break;
+            case 'data-text-value':getUserText(mutation.target); break;
+            case 'data-select-value':getUserSelect(mutation.target); break;
+          }
+        }
+      })
+    });
+    let userEvent_color = document.querySelectorAll('[data-color]');
+    userEvent_color.forEach(item => {
+      let config = {attributes:true,attributeFilter:['data-color-hex']};
+      observer.observe(item,config);
+    });
+    let userEvent_number = document.querySelectorAll('[data-number]');
+    userEvent_number.forEach(item => {
+      let config = {attributes:true,attributeFilter:['data-number-value']};
+      observer.observe(item,config);
+    });
+    let userEvent_text = document.querySelectorAll('[data-text]');
+    userEvent_text.forEach(item => {
+      let config = {attributes:true,attributeFilter:['data-text-value']};
+      observer.observe(item,config);
+    });
+    let userEvent_select = document.querySelectorAll('[data-select]');
+    userEvent_select.forEach(item => {
+      let config = {attributes:true,attributeFilter:['data-select-value']};
+      observer.observe(item,config);
+    });
+
+    function getUserColor(node){
+      let color = {
+        HEX:node.getAttribute('data-color-hex'),
+        RGB:node.getAttribute('data-color-rgb'),
+        HSL:node.getAttribute('data-color-hsl'),
+        HSV:node.getAttribute('data-color-hsv'),
+      }
+      //console.log(color)
+    }
+
+    function getUserNumber(node){
+      let number = node.getAttribute('data-number-value');
+      if(node.getAttribute('data-egfont-size') !== null){
+        ROOT.style.setProperty('--egfont-size',number + 'px');
+        //console.log(number + 'px')
+      }
+      //console.log(number)
+    }
+
+    function getUserText(node){
+      let text = node.getAttribute('data-text-value');
+      if(node.getAttribute('data-egfont-text') !== null){
+        let egfont = document.querySelectorAll('[data-egfont]');
+        egfont.forEach(item => {
+          item.textContent = text;
+        })
+      }
+      //console.log(text)
+    }
+
+    function getUserSelect(node){
+      let select = node.getAttribute('data-select-value');
+      //console.log(text)
+    }
+  </script>
+</body>
+</html>

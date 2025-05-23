@@ -1,5 +1,18 @@
 :root{
-  --banner-h:50px;
+  --banner-h: 50px;
+  --egfont-size: 70px;
+}
+
+.noise{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: url("../VI/noise.png") 0 0/100px 100px,url("../VI/noise.png") 0 0/200px 200px;
+  opacity: 0.07;
+  z-index: 1000;
+  pointer-events: none;
 }
 
 /*prismjs代码高亮库专用 START*/
@@ -33,13 +46,18 @@
 }
 /*prismjs代码高亮库专用 END*/
 
+
+[data-language="En"] [data-tips]::after{
+  content: var(--tips-text-en,'something there');
+}
+
 [data-language="Zh"]{
-  --banner-dark:url('VI/banner_top_zh_dark.jpg');
-  --banner-light:url('VI/banner_top_zh_light.jpg');
+  --banner-dark:url('../VI/banner_top_zh_dark.jpg');
+  --banner-light:url('../VI/banner_top_zh_light.jpg');
 }
 [data-language="En"]{
-  --banner-dark:url('VI/banner_top_en_dark.jpg');
-  --banner-light:url('VI/banner_top_en_light.jpg');
+  --banner-dark:url('../VI/banner_top_en_dark.jpg');
+  --banner-light:url('../VI/banner_top_en_light.jpg');
 }
 [data-theme="light"]{
   --banner-bak:#1a1a1a;
@@ -325,6 +343,21 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   display: none;
 }
 
+[data-egfont]{
+  white-space:initial;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  line-height: 1.2em;
+  font-size: var(--egfont-size);
+}
+
+[data-egfont-size]{
+  --range-af: var(--boxBak);
+  --range-bod: var(--mainColor);
+  --range-af-w: 16px;
+  --range-af-r:50%; 
+}
+
 @media (max-width:750px) {
   :root{
   --banner-h:24px;
@@ -343,6 +376,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
     width: fit-content;
     line-height: 1.5em;
     font-weight: 700;
+    font-size: 10px;
     --text:'详情';
   }
   [data-language="En"] [data-worksname-turnto] [data-turnto]{
@@ -352,4 +386,5 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
     font-weight: 700;
     --text:'view';
   }
+  
 }
