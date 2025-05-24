@@ -220,7 +220,8 @@ window.addEventListener('load',()=>{
   reTV();
 
   if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase())){
-    ISMOBILE = true
+    ISMOBILE = true;
+    ROOT.setAttribute('data-mobile','true');
   }
   
   if (window.EyeDropper == undefined || ISMOBILE) {

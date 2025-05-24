@@ -206,6 +206,7 @@ function addFontsCard(){
       let styleName = `<div data-en-text="${item.fontStyle[1]}">${item.fontStyle[0]}</div>`;
       let down = '<div style="width:14px; height:14px; display:var(--down-df,none)"><btn-down></btn-down></div>'
       egfontTitle.setAttribute('download','');
+      egfontTitle.setAttribute('data-any','pc');
       egfontTitle.href = item.download;
       egfontTitle.className = 'fontcard-title-style df-lc pos-a'
       egfontTitle.style.gap = '4px';
