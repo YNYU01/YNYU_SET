@@ -1024,7 +1024,7 @@ function setLanguage(isZh){
     tipsAll('已切换为中文',2000,3);
     let texts = document.querySelectorAll('[data-zh-text]');
     texts.forEach(item => {
-      item.textContent = item.getAttribute('data-zh-text');
+      item.innerHTML = item.getAttribute('data-zh-text');
     })
   }else{
     ROOT.setAttribute("data-language","En");
@@ -1036,8 +1036,8 @@ function setLanguage(isZh){
     tipsAll('Change to English',2000,3);
     let texts = document.querySelectorAll('[data-en-text]');
     texts.forEach(item => {
-      item.setAttribute('data-zh-text',item.textContent);
-      item.textContent = item.getAttribute('data-en-text');
+      item.setAttribute('data-zh-text',item.innerHTML);
+      item.innerHTML = item.getAttribute('data-en-text');
     })
   }
 }
@@ -1302,4 +1302,21 @@ function hsvTohsl(h, s, v) {
   }
   return [h,Math.floor(s * 100),Math.floor(l * 100)]; // 返回HSL值，乘以100以匹配常见的百分比表示法
 
+}
+
+/**
+ * 下拉组件拓展
+ * @param {Element} node1 - checkbox对象本身或ID
+ * @param {Element} node2 - 需要显影的对象本身或ID
+ * @param {string} display -显示后的display值
+ */
+function showNext(node1,node2,display){
+  node1 = node1.innerHTML ? node1 : document.getElementById(node1.id);
+  node2 = node2.innerHTML ? node2 : document.getElementById(node2.id);
+  display = display ? display : 'block';
+  if(node1.checked){
+    node2.style.display = 'none'
+  } else {
+    node2.style.display = display
+  };
 }

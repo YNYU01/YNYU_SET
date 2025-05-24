@@ -53,144 +53,48 @@
   </div>
   <div class="df-ffc pos-r" style="gap: 20px; width: var(--layout-w);">
     
-    <div class="df-ffc" style="gap:20px;">
-      <div class="df-lc" style="width: calc(var(--layout-w)/2);">
-        <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" 
-        style="--tips-w: 8ch; 
-        --tips-text:'修改字号'; 
-        --tips-text-en:'set font-size';
-        width: 20px; height: 20px;">
-          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill="var(--mainColor)" d="M13 6H11C11 4.89543 10.1046 4 9 4H8.5V14.5C8.5 15.3284 9.17157 16 10 16V18H4V16C4.82843 16 5.5 15.3284 5.5 14.5V4H5C3.89543 4 3 4.89543 3 6H1V1H13V6Z"/>
-            <path fill="var(--mainColor)" d="M19 11.5H17.667C17.6668 10.7637 17.0693 10.167 16.333 10.167H16V15.667C16 16.2192 16.4477 16.667 17 16.667V18H13V16.667C13.5523 16.667 14 16.2193 14 15.667V10.167H13.667C12.9307 10.167 12.3332 10.7637 12.333 11.5H11V8.16699H19V11.5Z"/>
-          </svg>            
+    <div class="df-ffc pos-r" style="gap:10px;">
+      <div class="df-lc" style="gap: 10px;">
+        <div class="pos-r df-lc w100" data-egfont-text data-text data-text-value="Open Source & Design" >
+          <input type="text" data-input-must="Open Source & Design" value="Open Source & Design" style="height: 40px; padding: 0 4ch 0 1ch; font-size: 16px;" maxlength="30" data-input-max>
+          <div class="pos-a" style="right: 10px; font-size: 9px; opacity: 0.6;">
+            <span>26</span>/30
+          </div>
         </div>
-        <div data-egfont-size data-number data-number-value="70" class="df-lc fl1" style="flex: 1;">
+        <input id="egfont-moreset" type="checkbox" checked onchange="showNext(this,this.parentNode.nextElementSibling,'flex')">
+        <label for="egfont-moreset" class="btn-op" >
+          <btn-set></btn-set>
+        </label>
+      </div>
+      <div class="df-sc pos-a w100" style="display: none; bottom: -44px; height: 40px; padding: 8px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 4px;">
+        <div data-egfont-size data-number data-number-value="70" class="df-lc" style="width: 200px; ">
+          <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" 
+          style="--tips-w: 8ch; 
+          --tips-text:'修改字号'; 
+          --tips-text-en:'set font-size';
+          width: 20px; height: 20px;">
+            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill="var(--mainColor)" d="M13 6H11C11 4.89543 10.1046 4 9 4H8.5V14.5C8.5 15.3284 9.17157 16 10 16V18H4V16C4.82843 16 5.5 15.3284 5.5 14.5V4H5C3.89543 4 3 4.89543 3 6H1V1H13V6Z"/>
+              <path fill="var(--mainColor)" d="M19 11.5H17.667C17.6668 10.7637 17.0693 10.167 16.333 10.167H16V15.667C16 16.2192 16.4477 16.667 17 16.667V18H13V16.667C13.5523 16.667 14 16.2193 14 15.667V10.167H13.667C12.9307 10.167 12.3332 10.7637 12.333 11.5H11V8.16699H19V11.5Z"/>
+            </svg>            
+          </div>
           <input data-input="range" type="range" min="10" max="200" value="70" style="padding: 0 10px;">
           <input data-input="value" data-input-must="10-200" data-input-type="int" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="70">
         </div>
-      </div>
-      <div class="pos-r df-lc w100" data-egfont-text data-text data-text-value="" >
-        <input type="text" data-input-must="Open Source & Design" value="Open Source & Design" style="height: 40px; padding-right: 4ch; font-size: 16px;" maxlength="30" data-input-max>
-        <div class="pos-a" style="right: 10px; font-size: 9px; opacity: 0.6;">
-          <span>26</span>/30
-        </div>
+        <div></div>
       </div>
     </div>
-    <div data-fontcard class="df-ffc">
-      <div data-egfont class="w100" style="font-family: 'zhuangyuanyasong'; font-weight: 500;">
-        Open Source & Design
-      </div>
-    </div>
-    <div data-fontcard class="df-ffc">
-      <div data-egfont class="w100" style="font-family: 'zhuangyuanyasong'; font-weight: 700;">
-        Open Source & Design
-      </div>
+    <div style="height: 10px;"></div>
+    <div data-fontcard-list class="df-ffc w100 ovy scrollbar" style=" height: calc(100vh - 300px); gap: 20px;">
+      <!--自动生成列表-->
     </div>
     
   </div>
   <div class="w100 fl0" style=" height: 20px;"></div>
   <script src="../build/yn_comp.js"></script>
+  <script src="main.js"></script>
   <script>
-    window.addEventListener('load',()=>{
-      if(ISMOBILE){
-        let egfontSizeInput = document.querySelector('[data-egfont-size]').querySelector('[data-input="value"]')
-        egfontSizeInput.value = egfontSizeInput.value >= 40 ? 40 : egfontSizeInput.value;
-        let inputEvent = new Event('change',{bubbles:true});
-        egfontSizeInput.dispatchEvent(inputEvent);
-      }
-    });
-
-    window.addEventListener('resize',()=>{
-      /*防抖*/
-      let MOVE_TIMEOUT;
-      if(MOVE_TIMEOUT){
-          clearTimeout(MOVE_TIMEOUT)
-      };
-      MOVE_TIMEOUT = setTimeout(()=>{
-        if(window.innerWidth <= 750){
-          let egfontSizeInput = document.querySelector('[data-egfont-size]').querySelector('[data-input="value"]')
-          egfontSizeInput.value = egfontSizeInput.value >= 40 ? 40 : egfontSizeInput.value;
-          let inputEvent = new Event('change',{bubbles:true});
-          egfontSizeInput.dispatchEvent(inputEvent);
-        } else {
-          let egfontSizeInput = document.querySelector('[data-egfont-size]').querySelector('[data-input="value"]')
-          egfontSizeInput.value = egfontSizeInput.value == 40 ? 70 : egfontSizeInput.value;
-          let inputEvent = new Event('change',{bubbles:true});
-          egfontSizeInput.dispatchEvent(inputEvent);
-        }
-      },500)
-    });
-
-
-    /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
-    let observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if(mutation.type === 'attributes'){
-          switch(mutation.attributeName){
-            case 'data-color-hex':getUserColor(mutation.target); break;
-            case 'data-number-value':getUserNumber(mutation.target); break;
-            case 'data-text-value':getUserText(mutation.target); break;
-            case 'data-select-value':getUserSelect(mutation.target); break;
-          }
-        }
-      })
-    });
-    let userEvent_color = document.querySelectorAll('[data-color]');
-    userEvent_color.forEach(item => {
-      let config = {attributes:true,attributeFilter:['data-color-hex']};
-      observer.observe(item,config);
-    });
-    let userEvent_number = document.querySelectorAll('[data-number]');
-    userEvent_number.forEach(item => {
-      let config = {attributes:true,attributeFilter:['data-number-value']};
-      observer.observe(item,config);
-    });
-    let userEvent_text = document.querySelectorAll('[data-text]');
-    userEvent_text.forEach(item => {
-      let config = {attributes:true,attributeFilter:['data-text-value']};
-      observer.observe(item,config);
-    });
-    let userEvent_select = document.querySelectorAll('[data-select]');
-    userEvent_select.forEach(item => {
-      let config = {attributes:true,attributeFilter:['data-select-value']};
-      observer.observe(item,config);
-    });
-
-    function getUserColor(node){
-      let color = {
-        HEX:node.getAttribute('data-color-hex'),
-        RGB:node.getAttribute('data-color-rgb'),
-        HSL:node.getAttribute('data-color-hsl'),
-        HSV:node.getAttribute('data-color-hsv'),
-      }
-      //console.log(color)
-    }
-
-    function getUserNumber(node){
-      let number = node.getAttribute('data-number-value');
-      if(node.getAttribute('data-egfont-size') !== null){
-        ROOT.style.setProperty('--egfont-size',number + 'px');
-        //console.log(number + 'px')
-      }
-      //console.log(number)
-    }
-
-    function getUserText(node){
-      let text = node.getAttribute('data-text-value');
-      if(node.getAttribute('data-egfont-text') !== null){
-        let egfont = document.querySelectorAll('[data-egfont]');
-        egfont.forEach(item => {
-          item.textContent = text;
-        })
-      }
-      //console.log(text)
-    }
-
-    function getUserSelect(node){
-      let select = node.getAttribute('data-select-value');
-      //console.log(text)
-    }
+    
   </script>
 </body>
 </html>
