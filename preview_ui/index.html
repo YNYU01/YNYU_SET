@@ -88,7 +88,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="bottom" data-tips-x="left" style="--tips-w: 280px; --tips-text:'包含css、js引入示例，以及复合组件传递关键参数要用到的函数示例'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="bottom" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               HTML_main:
@@ -102,7 +102,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="bottom" data-tips-x="left" style="--tips-w: 280px; --tips-text:'包含css、js引入示例，以及复合组件传递关键参数要用到的函数示例'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="bottom" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               JS_main:
@@ -116,7 +116,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'用于需要滚动的公告类元素，可设置data-TV的布尔值，控制是否触发滚动'; width: 14px; height: 14px;">
+              <div data-tips="set" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               TV:
@@ -129,11 +129,28 @@
             </div>
           </div>
           <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px; z-index: 3;">
+            <div data-copy="radio" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+                <btn-copy></btn-copy>
+              </div>
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+                <btn-info></btn-info>
+              </div>
+              radio:
+              <div class="df-ffc fl1" style="gap: 4px;">
+                <div class="df" data-radio-value="1" style="gap: 4px;">
+                  <div data-radio data-radio-data="1" data-radio-main="true" class="df-cc fl0">1</div>
+                  <div data-radio data-radio-data="2" data-radio-main="false" class="df-cc fl0">2</div>
+                  <div data-radio data-radio-data="3" data-radio-main="false" class="df-cc fl0">3</div>
+                  <div data-radio data-radio-data="4" data-radio-main="false" class="df-cc fl0">4</div>
+                </div>
+              </div>
+            </div>
             <div data-copy="select" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'结构与原生下拉组件类似，主要为了支持移动端显示,以及延展为详情展开等'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               select:
@@ -153,30 +170,13 @@
                 </div>
               </div>
             </div>
-            <div data-copy="radio" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'单选切换，可自行丰富样式，建议通过监听自定义属性值变化触发函数'; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              radio:
-              <div class="df-ffc fl1" style="gap: 4px;">
-                <div class="df" data-radio-value="1" style="gap: 4px;">
-                  <div data-radio data-radio-data="1" data-radio-main="true" class="df-cc fl0">1</div>
-                  <div data-radio data-radio-data="2" data-radio-main="false" class="df-cc fl0">2</div>
-                  <div data-radio data-radio-data="3" data-radio-main="false" class="df-cc fl0">3</div>
-                  <div data-radio data-radio-data="4" data-radio-main="false" class="df-cc fl0">4</div>
-                </div>
-              </div>
-            </div>
           </div>
           <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
             <div data-copy="tabs" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'通过页面数量生成导航标签，可自行丰富样式，注意tab栏和page的相关自定义属性值要匹配'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               tabs:
@@ -207,7 +207,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'通过css变量和自定义属性控制颜色变化，实现亮暗主题'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               theme:
@@ -222,7 +222,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'基于原生checkbox，可借助自定义属性的布尔值变化丰富选中/未选中的样式'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               check:
@@ -263,7 +263,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'基于原生checkbox，可通过CSS变量控制大小和圆角，可自行绑定事件'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               switch:
@@ -274,7 +274,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'基于原生滑块，绑定一个输入框，添加事件绑定可能会冲突，建议通过监听自定义属性值触发函数'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               input-range-int:
@@ -287,7 +287,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'带系统吸色器（兼容才会显示）、纯CSS取色盘（支持HSV、HSL）、可切换HEX/RGB两种输入方式，绑定较复杂，建议通过监听自定义属性值触发函数'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               input-color:
@@ -313,7 +313,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'原生输入框，仅统一了样式，如有需要可自行添加清空按钮'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               input-text:
@@ -323,7 +323,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'原生输入框，统一样式基础上绑定兜底数据，建议通过监听自定义属性值变化触发函数'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               input-text-must:
@@ -335,7 +335,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'原生输入框，统一样式基础上绑定显示字数要求，建议通过监听自定义属性值变化触发函数'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               input-text-max:
@@ -350,7 +350,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'原生文本框，统一样式基础上绑定清空按钮，建议输入完成后通过按钮获取值来进行下一步函数'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               textarea:
@@ -366,7 +366,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'原生文本框，统一样式基础上绑定清空按钮和输入说明，建议输入完成后通过按钮获取值来进行下一步函数'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               textarea-eg:
@@ -388,7 +388,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'图标+悬停才显示文字型按钮，本示例的图标专用于跳转'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               turnto:
@@ -405,7 +405,7 @@
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
                 <btn-copy></btn-copy>
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; --tips-text:'图标+悬停才显示文字型按钮，本示例的图标专用于返回'; width: 14px; height: 14px;">
+              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
                 <btn-info></btn-info>
               </div>
               back:
@@ -427,6 +427,7 @@
     </div>
   </div>
   <div class="w100 fl0" style=" height: 20px;"></div>
+  
   <script src="../build/yn_comp.js"></script>
   <script src="main.js"></script>
   <script>

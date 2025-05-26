@@ -455,6 +455,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
 [data-fonttags]{
   font-size: 12px;
   font-weight: 400;
+  line-height: 2.5ch;
   background: var(--boxBak);
   border: 1px solid var(--tagsColor,var(--mainColor));
   color:var(--tagsColor,var(--mainColor));
@@ -517,6 +518,14 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     line-height: 1.5em;
     font-weight: 700;
     --text:'view';
+  }
+
+  .fontcard-title{
+    font-size: 14px;
+  }
+
+  [data-fonttags]{
+    font-size: 10px;
   }
   
 }

@@ -243,10 +243,10 @@ window.addEventListener('load',()=>{
   }
   if(!localStorage.getItem('userTheme')){
     THEME_SWITCH.forEach(item => {
-      item.checked = true;
+      item.checked = false;
     });
-    setTheme(false);
-    localStorage.setItem('userTheme','dark');
+    setTheme(true);
+    localStorage.setItem('userTheme','light');
   }
 
   if(localStorage.getItem('userLanguage') == 'En'){
