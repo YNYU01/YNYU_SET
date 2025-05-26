@@ -36,6 +36,14 @@ html[data-theme="light"]{
   pointer-events: none;
 }
 
+.nobod{
+  --boxBod: transparent;
+}
+
+.nobod:focus{
+  --bod-focus: transparent;
+}
+
 /*prismjs代码高亮库专用 START*/
 .attr-name{
   color: var(--code1);
@@ -409,7 +417,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   height: 1ch;
   border-radius: 50%;
   flex: 0 0 auto;
-  background: var(--mainColor);
+  background: var(--tagsColor-pick,var(--mainColor));
   opacity: 0.6;
 }
 

@@ -164,7 +164,8 @@ const COMPS_TIPS = {
   ],
 }
 
-const copyElements = document.querySelectorAll('[data-copy]')
+const copyElements = document.querySelectorAll('[data-copy]');
+
 
 window.addEventListener('load',()=>{
 
@@ -225,7 +226,7 @@ copyElements.forEach(node => {
     let copyrights = language == 'Zh' ? "\n<!-- © 2024-2025 [YNYU_SET] OPEN DESIGN & SOURCE @YNYU lvynyu2@gmail.com https://www.ynyuset.cn -->" : "\n<!-- © 2024-2025 『云即』系列开源计划 @云雨 lvynyu@163.com https://www.ynyuset.cn -->"
     copy(node,'text',htmlcode.trim() + copyrights);
   });
-})
+});
 
 
 /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/

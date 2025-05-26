@@ -42,6 +42,7 @@ const FONTS_INFO = [
       keyword:[
         ["衬线体","serif"],
         ["古典","classical"],
+        ["古典","classical"],
       ]
     },
     {
@@ -58,6 +59,9 @@ const FONTS_INFO = [
       ]
     },
 ];
+
+const findTags = document.querySelector('[data-findtags]');
+const egfontMoreset = document.getElementById('egfont-moreset');
 
 let randomColor = [
   "var(--code1)",
@@ -78,6 +82,10 @@ window.addEventListener('load',()=>{
     egfontSizeInput.value = egfontSizeInput.value >= 40 ? 40 : egfontSizeInput.value;
     let inputEvent = new Event('change',{bubbles:true});
     egfontSizeInput.dispatchEvent(inputEvent);
+  } else {
+    egfontMoreset.checked = false;
+    let inputEvent = new Event('change',{bubbles:true});
+    egfontMoreset.dispatchEvent(inputEvent);
   }
   addFontsCard();
 });
@@ -103,6 +111,21 @@ window.addEventListener('resize',()=>{
   },500);
 });
 
+findTags.addEventListener('input',(event)=>{ 
+  const fontCards = document.querySelectorAll('[data-fontcard]');
+  fontCards.forEach(node => {
+    let tagsNode = node.querySelectorAll('[data-fonttags]');
+    let styleName = [];
+    tagsNode.forEach(item => {
+      styleName.push(...item.getAttribute('data-fonttags').split(','));
+    }); 
+    if(styleName.includes(event.target.value)){
+      node.style.setProperty('--tagsColor-pick','var(--themeColor)');
+    } else {
+      node.style.setProperty('--tagsColor-pick','var(--mainColor)');
+    };
+  });
+});
 
 /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
 let observer = new MutationObserver((mutations) => {
@@ -183,27 +206,38 @@ function addFontsCard(){
     card.className = 'df-ffc w100';
     card.setAttribute('data-fontcard','');
     card.setAttribute('data-keyword',[fonts.keyword])
-    let cardTitleInput = document.createElement('input');
-    cardTitleInput.type = 'checkbox'
-    cardTitleInput.id = 'fontshow_' + index;
-    card.appendChild(cardTitleInput);
 
-    let cardTitleLable = document.createElement('label');
-    cardTitleLable.setAttribute('for','fontshow_' + index);
-    cardTitleLable.className ='fontcard-title show-next df-lc';
+    let cardTitleMix = document.createElement('div');
+    cardTitleMix.className = 'fontcard-title df-lc';
+    cardTitleMix.style.flexWrap = 'wrap';
+    cardTitleMix.style.rowGap = '4px';
+
     let cardTitle = document.createElement('div');
     cardTitle.setAttribute('data-en-text',fonts.fontFamily[1]);
     cardTitle.innerHTML = fonts.fontFamily[0];
-    cardTitleLable.appendChild(cardTitle)
+    cardTitleMix.appendChild(cardTitle);
+
     fonts.keyword.forEach(item => {
       let tags = document.createElement('div');
       tags.style.setProperty('--tagsColor',randomColor[Math.floor(Math.random()*10)])
       tags.setAttribute('data-fonttags',item[0] + ',' + item[1]);
       tags.setAttribute('data-en-text',item[1])
       tags.innerHTML = item[0];
-      cardTitleLable.appendChild(tags)
-    })
-    card.appendChild(cardTitleLable);
+      cardTitleMix.appendChild(tags)
+    });
+
+    let cardTitleInput = document.createElement('input');
+    cardTitleInput.type = 'checkbox'
+    cardTitleInput.id = 'fontshow_' + index;
+    cardTitleMix.appendChild(cardTitleInput);
+    let cardTitleLable = document.createElement('label');
+    cardTitleLable.setAttribute('for','fontshow_' + index);
+    cardTitleLable.className = 'show-next h100';
+    cardTitleLable.style.minWidth = '18px';
+    cardTitleLable.style.flex = '1';
+
+    cardTitleMix.appendChild(cardTitleLable)
+    card.appendChild(cardTitleMix);
 
     let carEgBox = document.createElement('div');
     carEgBox.className = 'df-ffc w100';
@@ -240,6 +274,11 @@ function addFontsCard(){
     cardTitleInput.addEventListener('change',() => {showNext(cardTitleInput,carEgBox,'flex')})
     
   });
+
+  let bottomMust = document.createElement('div');
+  bottomMust.className = 'w100 fl0'
+  bottomMust.style.height = '40px';
+  egfontCardList.appendChild(bottomMust);
   reLanguage()
 }
 

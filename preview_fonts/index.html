@@ -66,8 +66,9 @@
           <btn-set></btn-set>
         </label>
       </div>
-      <div class="df-sc pos-a w100" style="display: none; bottom: -44px; height: 40px; padding: 8px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 4px;">
-        <div data-egfont-size data-number data-number-value="70" class="df-lc" style="width: 200px; ">
+      <div class="df-lc w100" style="flex-wrap: wrap; display: none; bottom: -44px; gap: 4px;">
+        <div data-egfont-size data-number data-number-value="70" class="df-lc fl1 pos-r" 
+        style="gap:4px; height: 40px; padding: 8px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 4px;">
           <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" 
           style="--tips-w: 8ch; 
           --tips-text:'修改字号'; 
@@ -78,14 +79,17 @@
               <path fill="var(--mainColor)" d="M19 11.5H17.667C17.6668 10.7637 17.0693 10.167 16.333 10.167H16V15.667C16 16.2192 16.4477 16.667 17 16.667V18H13V16.667C13.5523 16.667 14 16.2193 14 15.667V10.167H13.667C12.9307 10.167 12.3332 10.7637 12.333 11.5H11V8.16699H19V11.5Z"/>
             </svg>            
           </div>
-          <input data-input="range" type="range" min="10" max="200" value="70" style="padding: 0 10px;">
-          <input data-input="value" data-input-must="10-200" data-input-type="int" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="70">
+          <input data-input="range" type="range" min="10" max="200" value="70" style="min-width: 10px;">
+          <input data-input="value" data-input-must="10-200" data-input-type="int" type="text" class="nobod" style=" width: 40px; flex: 0 0 auto; padding-right: 10px;" value="70">
+          <div class="pos-a" style="right: 8px; font-size: 12px; font-weight: 700;">px</div>
         </div>
-        <div></div>
+        <div data-egfont-size data-number data-number-value="70" class="df-lc fl1" 
+        style="gap:4px; height: 40px; padding: 8px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 4px;">
+        <input data-input data-findtags class="nobod fl1" type="text">    
+        </div>
       </div>
     </div>
-    <div style="height: 10px;"></div>
-    <div data-fontcard-list class="df-ffc w100 ovy scrollbar" style=" height: calc(100vh - 200px); gap: 20px;">
+    <div data-fontcard-list class="df-ffc w100 ovy scrollbar" style=" height: calc(100vh - 200px); gap: 20px; padding-top: 10px;">
       <!--自动生成列表-->
     </div>
     
