@@ -13,3 +13,11 @@
   font-weight: 500;
   font-display: block;
 }
+
+@font-face {
+  font-family: zhuyinti;
+  src: url("../fonts/zhuyinti-Regular.woff") format('woff'),
+  url("../fonts/zhuyinti-Regular.woff2") format('woff2');
+  font-weight: 500;
+  font-display: block;
+}

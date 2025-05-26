@@ -41,26 +41,35 @@ const FONTS_INFO = [
       ],
       keyword:[
         ["衬线体","serif"],
+        ["古典","classical"],
       ]
     },
     {
-      fontFamily:["庄园雅宋","zhuangyuanyasong"],
+      fontFamily:["铸印体","zhuyinti"],
       fontStyles:[
         {
           fontStyle:["常规","Regular"],
           fontWeight:"500",
-          download:"../fonts/otf/zhuangyuanyasong-Regular.otf",
-        },
-        {
-          fontStyle:["粗体","Bold"],
-          fontWeight:"700",
-          download:'../fonts/otf/zhuangyuanyasong-Bold.otf',
+          download:"../fonts/otf/zhuyinti-Regular.otf",
         }
       ],
       keyword:[
-        ["衬线体","serif"],
+        ["科技感","technology"],
       ]
     },
+];
+
+let randomColor = [
+  "var(--code1)",
+  "var(--code2)",
+  "var(--code3)",
+  "var(--code4)",
+  "var(--code5)",
+  "var(--code6)",
+  "var(--code7)",
+  "var(--code8)",
+  "var(--code9)",
+  "var(--code10)",
 ]
 
 window.addEventListener('load',()=>{
@@ -173,6 +182,7 @@ function addFontsCard(){
     let card = document.createElement('div');
     card.className = 'df-ffc w100';
     card.setAttribute('data-fontcard','');
+    card.setAttribute('data-keyword',[fonts.keyword])
     let cardTitleInput = document.createElement('input');
     cardTitleInput.type = 'checkbox'
     cardTitleInput.id = 'fontshow_' + index;
@@ -187,6 +197,7 @@ function addFontsCard(){
     cardTitleLable.appendChild(cardTitle)
     fonts.keyword.forEach(item => {
       let tags = document.createElement('div');
+      tags.style.setProperty('--tagsColor',randomColor[Math.floor(Math.random()*10)])
       tags.setAttribute('data-fonttags',item[0] + ',' + item[1]);
       tags.setAttribute('data-en-text',item[1])
       tags.innerHTML = item[0];
