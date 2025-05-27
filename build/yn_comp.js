@@ -313,31 +313,44 @@ CLOSE_CLEAR.forEach(item => {//清空输入内容
   })
 });
 
-TAB_AUTO.forEach(item => {
+TAB_AUTO.forEach((item,index) => {
   let pagefor = document.querySelector(`[data-page-id="${item.getAttribute('data-tab-for')}"]`);
   let tabsfor = pagefor.querySelectorAll('[data-page-name]');
-  //let tabs = Object.values(tabsfor).map(item => item.getAttribute('data-page-id'));
+  
   tabsfor.forEach(items => {
-    let id = `tab_${items.getAttribute('data-page-name')}`
+    let tabsforEn = items.getAttribute('data-page-name-en');
+    let keyid = tabsforEn ? `tab_${tabsforEn}` : `tab_${items.getAttribute('data-page-name')}`;
+    let id = keyid + '_' + index;
     let checked = items.getAttribute('data-page-main') === 'true' ? true : false;
+    
     let input = document.createElement('input');
     input.type = 'checkbox'
     input.id = id;
     input.checked = checked;
     input.style.display = 'none';
     if(checked){
-      items.parentNode.setAttribute('data-tab-pick',id);
+      items.parentNode.setAttribute('data-tab-pick',keyid);
       items.style.display = 'flex';
     }
     input.addEventListener('change',() => {
-      document.getElementById(items.parentNode.getAttribute('data-tab-pick')).checked = false;
-      document.querySelector(`[data-page-name="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`).style.display = 'none'
-      input.checked = true;
-      items.style.display = 'flex'
-      items.parentNode.setAttribute('data-tab-pick',id)
+      for(let i = 0; i < TAB_AUTO.length; i++){
+        document.getElementById(items.parentNode.getAttribute('data-tab-pick') + '_' + i).checked = false;
+        document.getElementById(keyid + '_' + i).checked = true;
+      }
+      let oldpage = document.querySelector(`[data-page-name="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`);
+      if(!oldpage){
+        oldpage = document.querySelector(`[data-page-name-en="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`);
+      }
+      oldpage.style.display = 'none';
+      items.style.display = 'flex';
+      items.parentNode.setAttribute('data-tab-pick',keyid);
     })
+
     let label = document.createElement('label');
     label.setAttribute('for',id);
+    if(tabsforEn){
+      label.setAttribute('data-en-text',tabsforEn);
+    }
     label.className = items.getAttribute('data-page-tabclass');
     label.innerHTML = items.getAttribute('data-page-name');
     item.appendChild(input);
@@ -1310,14 +1323,18 @@ function hsvTohsl(h, s, v) {
  * @param {Element} node1 - checkbox对象本身或ID
  * @param {Element} node2 - 需要显影的对象本身或ID
  * @param {string} display -显示后的display值
+ * @param {string} checked -显示后的checked值
  */
-function showNext(node1,node2,display){
-  node1 = node1.innerHTML ? node1 : document.getElementById(node1.id);
-  node2 = node2.innerHTML ? node2 : document.getElementById(node2.id);
+function showNext(node1,node2,display,checked){
+  let nodeA,nodeB
+  nodeA = node1.innerHTML ? node1 : document.getElementById(node1);
+  nodeB = node2.innerHTML ? node2 : document.getElementById(node2);
+  nodeA = nodeA ? nodeA : document.querySelector(node1);
+  nodeB = nodeB ? nodeB : document.querySelector(node2);
   display = display ? display : 'block';
-  if(node1.checked){
-    node2.style.display = 'none'
+  if(nodeA.checked == checked){
+    nodeB.style.display = 'none';
   } else {
-    node2.style.display = display
+    nodeB.style.display = display;
   };
 }
