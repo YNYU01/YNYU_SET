@@ -559,6 +559,10 @@ input[type="checkbox"]:checked + .check{
   opacity: 0.5;
 }
 
+[data-mobile="true"] .btn-op:hover {
+  opacity: 1;
+}
+
 .TV{
   width: 100%;
   height: 18px;
@@ -609,6 +613,10 @@ input[type="checkbox"]:checked + .tab-eg::after{
 
 .show-next:hover{
   --show-o: 0.5;
+}
+
+[data-mobile="true"] .show-next:hover{
+  --show-o: 1;
 }
 
 input[type="checkbox"]:checked+.show-next {
@@ -699,35 +707,21 @@ btn-copy:hover{
 .btn-theme {
   --theme-l:rgba(0,0,0,0);
   --theme-d:var(--mainColor);
+  cursor: pointer;
 }
 
 .btn-theme:hover {
-  cursor: pointer;
   opacity: 0.8;
 }
+
+[data-mobile="true"] .btn-theme:hover {
+  opacity: 1;
+}
+
 
 input[type="checkbox"]:checked+.btn-theme {
   --theme-l:var(--mainColor);
   --theme-d:rgba(0,0,0,0);
-}
-
-#tips-all{
-  display: none;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  width: 100%;
-  bottom: 80px;
-  margin: auto;
-  animation: boxUp 0.2s;
-  z-index: 20;
-}
-
-.tips-all-text{
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.8);
-  padding: 4px 8px;
-  border-radius: 8px;
 }
 
 [data-check-checked="false"]{
@@ -803,15 +797,11 @@ input[type="checkbox"]:checked+.btn-theme {
   width: fit-content;
   line-height: 1.5em;
   font-weight: 700;
-  --text:var(--turnto-text,'立即前往')
+  --text:var(--turnto-text,'立即前往');
 }
 
 [data-turnto]::before{
   content: var(--text);
-}
-
-[data-theme="dark"] [data-turnto]{
-  --mainColor: #242424;
 }
 
 [data-back]{
@@ -834,11 +824,23 @@ input[type="checkbox"]:checked+.btn-theme {
   width: fit-content;
   line-height: 1.5em;
   font-weight: 700;
-  --text:var(--back-text,'返回')
+  --text:var(--back-text,'返回');
 }
 
 [data-back]::after{
   content: var(--text);
+}
+
+[data-language="En"] [data-back]:hover{
+  --text: var(--back-text-en,'Back');
+}
+
+[data-language="En"] [data-turnto]:hover{
+  --text: var(--turnto-text-en,'Back');
+}
+
+[data-theme="dark"] [data-turnto]{
+  --mainColor: #242424;
 }
 
 [data-theme="dark"] [data-back]{

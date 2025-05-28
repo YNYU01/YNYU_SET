@@ -995,19 +995,19 @@ function reTV(){
  * @param {boolean} isLight -默认为深色主题，为true时改为亮色主题
  * 通过[data-theme:"light" | "dark"]配合css的自定义属性控制
  * --mainColor: ;//主要字色，护眼对比，不建议黑/白
-  --mainColor2: ;//主要字色，高对比，如黑/白
-  --themeColor: ;//主题色，高亮彩色
-  --themeColor2: ;//辅助色，高亮彩色
-  --code1: ;//代码高亮
-  --code2: ;//代码高亮
-  --boxBod: ;//控件描边色
-  --boxBak: ;//控件/大背景色
-  --boxGry: ;//模块底色、过渡色
-  --liColor: ;//高亮警示色，通常用红
-  --swi-af: ;//switch拇指控件填充颜色
-  --swi-bod: ;//switch描边颜色
-  --swi-bak: ;//switch底色颜色
-  --range-af: ;//滑块拇指控件颜色
+   --mainColor2: ;//主要字色，高对比，如黑/白
+   --themeColor: ;//主题色，高亮彩色
+   --themeColor2: ;//辅助色，高亮彩色
+   --code1: ;//代码高亮
+   --code2: ;//代码高亮
+   --boxBod: ;//控件描边色
+   --boxBak: ;//控件/大背景色
+   --boxGry: ;//模块底色、过渡色
+   --liColor: ;//高亮警示色，通常用红
+   --swi-af: ;//switch拇指控件填充颜色
+   --swi-bod: ;//switch描边颜色
+   --swi-bak: ;//switch底色颜色
+   --range-af: ;//滑块拇指控件颜色
  */
 function setTheme(isLight){
   if(isLight){
@@ -1320,18 +1320,19 @@ function hsvTohsl(h, s, v) {
 
 /**
  * 下拉组件拓展
- * @param {Element} node1 - checkbox对象本身或ID
- * @param {Element} node2 - 需要显影的对象本身或ID
- * @param {string} display -显示后的display值
- * @param {string} checked -显示后的checked值
+ * @param {Element | string} node1 - checkbox对象本身 | ID | 自定义属性
+ * @param {Element | string} node2 - 需要显影的对象本身 | ID | 自定义属性
+ * @param {string} display -显示后的display值，一般为block | flex
+ * @param {string} checked -显示后的checked值，一般是选中（true）情况下收起，未选中情况下展开，如需反转，要设为false
  */
 function showNext(node1,node2,display,checked){
-  let nodeA,nodeB
-  nodeA = node1.innerHTML ? node1 : document.getElementById(node1);
-  nodeB = node2.innerHTML ? node2 : document.getElementById(node2);
-  nodeA = nodeA ? nodeA : document.querySelector(node1);
-  nodeB = nodeB ? nodeB : document.querySelector(node2);
+  let nodeA,nodeB;
+  nodeA = node1 instanceof HTMLElement ? node1 : document.getElementById(node1);
+  nodeB = node2 instanceof HTMLElement ? node2 : document.getElementById(node2);
+  nodeA = nodeA instanceof HTMLElement ? nodeA : document.querySelector(node1);
+  nodeB = nodeB instanceof HTMLElement ? nodeB : document.querySelector(node2);
   display = display ? display : 'block';
+  checked = checked ? checked : true;//一般是选中情况下收起，未选中情况下展开，如需反转，要设为false
   if(nodeA.checked == checked){
     nodeB.style.display = 'none';
   } else {

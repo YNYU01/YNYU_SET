@@ -80,10 +80,6 @@ html[data-theme="light"]{
   content: var(--tips-text-en,'something there');
 }
 
-[data-language="En"] [data-back]:hover{
-  --text: var(--back-text-en,'Back');
-}
-
 [data-language="Zh"]{
   --banner-dark:url('../VI/banner_top_zh_dark.jpg');
   --banner-light:url('../VI/banner_top_zh_light.jpg');
@@ -127,7 +123,7 @@ html[data-theme="light"]{
   display: none;
 }
 
-[data-tab-side-list]{
+[data-tab-side-mix]{
   width: 200px;
   background: var(--boxGry);
   padding: 40px 10px;
@@ -173,6 +169,27 @@ html[data-theme="light"]{
     padding-left: 0px;
   }
 }
+
+#tips-all{
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  bottom: 80px;
+  margin: auto;
+  animation: boxUp 0.2s;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.tips-all-text{
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
 
 [data-icon-more]{
   transition: transform 0.4s;
@@ -226,6 +243,14 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   transform: translateX(var(--swi-h,18px));
 }
 
+[data-back="home"]{
+  --back-bak: #7263dfd5;
+  --back-w: 40px;
+  --back-text:'返回首页';
+  --back-text-en:'Home';
+  --arrow-w: 4;
+}
+
 [data-worksname-list]{
   --turnto-w:60px;
   --arrow-w: 4;
@@ -259,12 +284,9 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
 }
 
 
-[data-language="Zh"] [data-worksname-list]{
+[data-worksname-list]{
   --turnto-text:'详情';
-}
-
-[data-language="En"] [data-worksname-list]{
-  --turnto-text:'view';
+  --turnto-text-en:'view';
 }
 
 [data-theme="light"] [data-worksname]{
@@ -629,7 +651,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 }
 
 @media (max-width:750px) {
-  [data-tab-top]{
+  [data-tab-top],[data-mainset-top]{
     display: none;
   }
   [data-tab-side]{
@@ -637,22 +659,17 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
 
   [data-banner-top]{
-    background-size:auto 96%;
-    background-position:-30px 50%;
+    background-size:auto 100%;
+    background-position:-68px 50%;
   }
 
   [data-banner-top="home"]{
     --banner-h:40px;
-    background-size:auto 96%;
-    background-position:-164px 50%;
+    background-size:auto 100%;
+    background-position:-172px 50%;
   }
 
-  [data-mainset-top]{
-    z-index: 2;
-    padding: 0 10px 0 5px;
-    height: 40px;
-    transform: translate(3vw,0);
-    background: var(--boxGry);
+  [data-tab-side-mix]{
     --swi-bak: transparent;
   }
   
@@ -672,27 +689,24 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     line-height: 1.5em;
     font-weight: 700;
     font-size: 10px;
-    --text:'详情';
+    --text:var(--turnto-text);
   }
   [data-language="En"] [data-worksname-turnto] [data-turnto]{
     padding:0 1ch;
     width: fit-content;
     line-height: 1.5em;
     font-weight: 700;
-    --text:'view';
+    --text:var(--turnto-text-en);
   }
 
-  [data-back]{
-    transform: translateX(16px);
-  }
-  [data-language="Zh"] [data-back]{
+  [data-language="Zh"] [data-back="home"]{
     padding:0 1ch;
     width: fit-content;
     line-height: 1.5em;
     font-weight: 700;
     --text:var(--back-text);
   }
-  [data-language="En"] [data-back]{
+  [data-language="En"] [data-back="home"]{
     padding:0 1ch;
     width: fit-content;
     line-height: 1.5em;
