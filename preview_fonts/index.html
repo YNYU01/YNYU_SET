@@ -68,24 +68,37 @@
       </div>
       <div class="df-lc w100" style="flex-wrap: wrap; display: none; bottom: -44px; gap: 4px;">
         <div data-egfont-size data-number data-number-value="70" class="df-lc fl1 pos-r" 
-        style="gap:4px; height: 40px; padding: 8px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 4px;">
+        style="gap:10px; height: 40px; padding: 8px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 4px;">
           <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" 
           style="--tips-w: 8ch; 
           --tips-text:'修改字号'; 
-          --tips-text-en:'set font-size';
+          --tips-text-en:'Set font-size';
           width: 20px; height: 20px;">
             <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill="var(--mainColor)" d="M13 6H11C11 4.89543 10.1046 4 9 4H8.5V14.5C8.5 15.3284 9.17157 16 10 16V18H4V16C4.82843 16 5.5 15.3284 5.5 14.5V4H5C3.89543 4 3 4.89543 3 6H1V1H13V6Z"/>
-              <path fill="var(--mainColor)" d="M19 11.5H17.667C17.6668 10.7637 17.0693 10.167 16.333 10.167H16V15.667C16 16.2192 16.4477 16.667 17 16.667V18H13V16.667C13.5523 16.667 14 16.2193 14 15.667V10.167H13.667C12.9307 10.167 12.3332 10.7637 12.333 11.5H11V8.16699H19V11.5Z"/>
-            </svg>            
+              <path fill="var(--mainColor)" d="M13.0001 6.5H11.0001C11.0001 5.39543 10.1046 4.5 9.00006 4.5H8.50006L8.50003 14.5C8.50003 15.3284 9.1716 16 10 16V18H4.00003V16C4.82846 16 5.50003 15.3284 5.50003 14.5L5.50006 4.5H5.00006C3.89549 4.5 3.00006 5.39543 3.00006 6.5H1.00006L1 1.5H13L13.0001 6.5Z"/>
+              <path fill="var(--mainColor)" d="M19 11.5H17.667C17.6668 10.7637 17.0693 10.167 16.333 10.167H16V15C16.0001 15.5523 16.4478 16 17 16V18H12.5V16C13.0523 16 13.5 15.5523 13.5 15V10.167H13.167C12.4308 10.167 11.8332 10.7637 11.833 11.5H10.5V7.5H19V11.5Z"/>
+            </svg>                         
           </div>
           <input data-input="range" type="range" min="10" max="200" value="70" style="min-width: 10px;">
           <input data-input="value" data-input-must="10-200" data-input-type="int" type="text" class="nobod" style=" width: 40px; flex: 0 0 auto; padding-right: 10px;" value="70">
           <div class="pos-a" style="right: 8px; font-size: 12px; font-weight: 700;">px</div>
         </div>
-        <div data-egfont-size data-number data-number-value="70" class="df-lc fl1" 
+        <div data-egfont-size data-number data-number-value="70" class="df-lc fl1 pos-r" 
         style="gap:4px; height: 40px; padding: 8px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 4px;">
-        <input data-input data-findtags class="nobod fl1" type="text">    
+        <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" 
+          style="--tips-w: 8ch; 
+          --tips-text:'标签筛选'; 
+          --tips-text-en:'Find by tags';
+          width: 20px; height: 20px;">
+          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill="var(--mainColor)" d="M20 11.5557L11.5557 20.001L1 9.44434V1H9.44434L20 11.5557ZM6 4C4.89543 4 4 4.89543 4 6C4 7.10457 4.89543 8 6 8C7.10457 8 8 7.10457 8 6C8 4.89543 7.10457 4 6 4Z"/>
+          </svg>
+        </div>
+        <input data-input data-findtags class="nobod fl1" type="text" data-en-placeholder="All tags" placeholder="所有类型"> 
+        <!--清空-->
+        <div class="pos-a" data-close="clear" style="right: 10px; top:calc(50% - 6px); width: 12px; height: 12px;">
+          <btn-close></btn-close>
+        </div>   
         </div>
       </div>
     </div>

@@ -308,8 +308,13 @@ CLOSE_CLEAR.forEach(item => {//清空输入内容
       items.value = '';
       if(items.getAttribute('data-textarea') == 'eg'){
         items.parentNode.querySelector('[data-textarea="tips"]').style.display = "block";
-      }
-    })
+      };
+      let inputEvent = new Event('input',{bubbles:true});
+      items.dispatchEvent(inputEvent);
+      let inputEvent2 = new Event('change',{bubbles:true});
+      items.dispatchEvent(inputEvent2);
+    });
+    
   })
 });
 
@@ -414,7 +419,7 @@ INPUT.forEach(item => {
     if (event.key === 'Enter') {
       item.blur()
     }
-  })
+  });
 });
 
 INPUT_CHECK.forEach(item => {
@@ -1036,10 +1041,22 @@ function setLanguage(isZh){
     });
     localStorage.setItem('userLanguage','Zh');
     tipsAll('已切换为中文',2000,3);
+
     let texts = document.querySelectorAll('[data-zh-text]');
     texts.forEach(item => {
       item.innerHTML = item.getAttribute('data-zh-text');
-    })
+    });
+
+    let inputs = document.querySelectorAll('[data-zh-input]');
+    inputs.forEach(item => {
+      item.value = item.getAttribute('data-zh-input');
+    });
+
+    let placeholders = document.querySelectorAll('[data-zh-placeholder]');
+    placeholders.forEach(item => {
+      item.placeholder = item.getAttribute('data-zh-placeholder');
+    });
+
   }else{
     ROOT.setAttribute("data-language","En");
     LANGUAGE_SWITCH.forEach(item => {
@@ -1048,11 +1065,25 @@ function setLanguage(isZh){
     });
     localStorage.setItem('userLanguage','En');
     tipsAll('Change to English',2000,3);
+
     let texts = document.querySelectorAll('[data-en-text]');
     texts.forEach(item => {
       item.setAttribute('data-zh-text',item.innerHTML);
       item.innerHTML = item.getAttribute('data-en-text');
-    })
+    });
+
+    let inputs = document.querySelectorAll('[data-en-input]');
+    inputs.forEach(item => {
+      item.setAttribute('data-zh-input',item.value);
+      item.value = item.getAttribute('data-en-input');
+    });
+
+    let placeholders = document.querySelectorAll('[data-en-placeholder]');
+    placeholders.forEach(item => {
+      let placeholder = item.placeholder;
+      item.setAttribute('data-zh-placeholder',placeholder);
+      item.placeholder = item.getAttribute('data-en-placeholder');
+    });
   }
 }
 

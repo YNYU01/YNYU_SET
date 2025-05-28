@@ -614,10 +614,14 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   padding: 0.2ch 1ch;
   border-radius: 10px;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 [data-fonttags]:hover{
-  filter: invert();
+  /*filter: invert();*/
+  color: var(--boxGry);
+  border: 1px solid transparent;
+  background: var(--mainColor);
 }
 
 [for="egfont-moreset"]{
