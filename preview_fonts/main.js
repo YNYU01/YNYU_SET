@@ -59,10 +59,28 @@ const FONTS_INFO = [
           fontStyle:["常规","Regular"],
           fontWeight:"500",
           download:"../fonts/otf/zhuyinti-Regular.otf",
+        },
+        {
+          fontStyle:["破形","Mask"],
+          fontWeight:"700",
+          download:"../fonts/otf/zhuyinti-Mask.otf",
         }
       ],
       keyword:[
         ["科技感","technology"],
+      ]
+    },
+    {
+      fontFamily:["锻刀体","duandaoti"],
+      fontStyles:[
+        {
+          fontStyle:["常规","Regular"],
+          fontWeight:"500",
+          download:"../fonts/otf/duandaoti-Regular.otf",
+        },
+      ],
+      keyword:[
+        ["实验性","experimental"],
       ]
     },
 ];
