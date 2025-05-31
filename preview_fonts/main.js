@@ -87,6 +87,8 @@ const FONTS_INFO = [
 
 const findTags = document.querySelector('[data-findtags]');
 const egfontMoreset = document.getElementById('egfont-moreset');
+const egfontCardList = document.querySelector('[data-fontcard-list]');
+const egfontSetText = document.querySelector('[data-egfont-text]');
 
 let randomColor = [
   "var(--code1)",
@@ -267,9 +269,7 @@ function getUserSelect(node){
 }
 
 function addFontsCard(fontsObj){
-  let egfontSetText = document.querySelector('[data-egfont-text]');
   let text = egfontSetText.getAttribute('data-text-value');
-  let egfontCardList = document.querySelector('[data-fontcard-list]');
   fontsObj.forEach((fonts,index) => {
     let card = document.createElement('div');
     card.className = 'df-ffc w100';

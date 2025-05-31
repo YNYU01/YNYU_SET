@@ -217,12 +217,7 @@ let LANGUAGE_SWITCH = document.querySelectorAll("[data-language-check]");
 let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check','btn-color','btn-getcolor','card-colorpick'];
 
 window.addEventListener('load',()=>{
-  reTV();
-
-  if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase())){
-    ISMOBILE = true;
-    ROOT.setAttribute('data-mobile','true');
-  }
+  afterAllMust();
   
   if (window.EyeDropper == undefined || ISMOBILE) {
     //console.error('EyeDropper API is not supported on this platform');
@@ -277,9 +272,20 @@ window.addEventListener('resize',()=>{
       clearTimeout(MOVE_TIMEOUT)
   };
   MOVE_TIMEOUT = setTimeout(()=>{
-      reTV();
+    afterAllMust()
   },500)
 });
+
+function afterAllMust(){
+  reTV();
+  if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 750){
+    ISMOBILE = true;
+    ROOT.setAttribute('data-mobile','true');
+  } else {
+    ROOT.setAttribute('data-mobile','false');
+    ISMOBILE = false;
+  }
+}
 
 LANGUAGE_SWITCH.forEach(item => {
   item.addEventListener('change',()=>{
@@ -328,39 +334,46 @@ TAB_AUTO.forEach((item,index) => {
     let id = keyid + '_' + index;
     let checked = items.getAttribute('data-page-main') === 'true' ? true : false;
     
-    let input = document.createElement('input');
-    input.type = 'checkbox'
-    input.id = id;
-    input.checked = checked;
-    input.style.display = 'none';
-    if(checked){
-      items.parentNode.setAttribute('data-tab-pick',keyid);
-      items.style.display = 'flex';
-    }
-    input.addEventListener('change',() => {
-      for(let i = 0; i < TAB_AUTO.length; i++){
-        document.getElementById(items.parentNode.getAttribute('data-tab-pick') + '_' + i).checked = false;
-        document.getElementById(keyid + '_' + i).checked = true;
+    if(tabsforEn == 'gap'){
+      let tabgap = document.createElement('div')
+      tabgap.className = items.getAttribute('data-page-tabclass');
+      item.appendChild(tabgap);
+    } else {
+      let input = document.createElement('input');
+      input.type = 'checkbox'
+      input.id = id;
+      input.checked = checked;
+      input.style.display = 'none';
+      if(checked){
+        items.parentNode.setAttribute('data-tab-pick',keyid);
+        items.style.display = 'flex';
       }
-      let oldpage = document.querySelector(`[data-page-name="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`);
-      if(!oldpage){
-        oldpage = document.querySelector(`[data-page-name-en="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`);
-      }
-      oldpage.style.display = 'none';
-      items.style.display = 'flex';
-      items.parentNode.setAttribute('data-tab-pick',keyid);
-    })
+      input.addEventListener('change',() => {
+        for(let i = 0; i < TAB_AUTO.length; i++){
+          document.getElementById(items.parentNode.getAttribute('data-tab-pick') + '_' + i).checked = false;
+          document.getElementById(keyid + '_' + i).checked = true;
+        }
+        let oldpage = document.querySelector(`[data-page-name="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`);
+        if(!oldpage){
+          oldpage = document.querySelector(`[data-page-name-en="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`);
+        }
+        oldpage.style.display = 'none';
+        items.style.display = 'flex';
+        items.parentNode.setAttribute('data-tab-pick',keyid);
+      })
 
-    let label = document.createElement('label');
-    label.setAttribute('for',id);
-    if(tabsforEn){
-      label.setAttribute('data-en-text',tabsforEn);
-    }
-    label.className = items.getAttribute('data-page-tabclass');
-    label.innerHTML = items.getAttribute('data-page-name');
-    item.appendChild(input);
-    item.appendChild(label);
-  })
+      let label = document.createElement('label');
+      label.setAttribute('for',id);
+      if(tabsforEn){
+        label.setAttribute('data-en-text',tabsforEn);
+      }
+      label.className = items.getAttribute('data-page-tabclass');
+      label.innerHTML = items.getAttribute('data-page-name');
+      item.appendChild(input);
+      item.appendChild(label);
+    };
+  });
+  
 });
 
 SELECT_PICK.forEach(item => {
