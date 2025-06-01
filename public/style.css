@@ -389,7 +389,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   --bod-join: round/*miter | round*/;
 }
 
-[data-worksname="en"]{
+[data-worksname="en"],[data-worksname="zh"]{
   --bod-cap: butt/*butt | round*/;
   --bod-join: miter/*miter | round*/;
 }
@@ -427,19 +427,19 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
 @keyframes worksnameChange {
   0%{
     --bod-cap: butt;
-    --bod-w: 4;
+    --bod-w: 3.5;
   }
   50%{
     --bod-cap: butt;
-    --bod-w: 4;
+    --bod-w: 3.5;
   }
   51%{
     --bod-cap: round;
-    --bod-w: 4;
+    --bod-w: 3;
   }
   100%{
     --bod-cap: round;
-    --bod-w: 4;
+    --bod-w: 3;
   } 
 }
 
@@ -804,15 +804,19 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 
 @keyframes headMove {
   0%{
-    transform: translateX(0);
+    transform: translateX(0) rotateY(180deg);
+  }
+  49%{
+    transform: translateX(var(--head-move)) rotateY(180deg);
   }
   50%{
-    transform: translateX(var(--head-move));
+    transform: translateX(var(--head-move)) rotateY(0);
   }
   100%{
     transform: translateX(0);
   }
 }
+
 
 [data-head-fill]{
   fill: var(--head-fill,var(--head-col1));
@@ -856,6 +860,45 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 }
 
 @keyframes headChange {
+  0%{
+    --head-fill: var(--head-col1);
+    --op1: 1;
+    --op2: 0;
+    --op3: 0;
+  }
+  32%{
+    --head-fill: var(--head-col1);
+    --op1: 1;
+    --op2: 0;
+    --op3: 0;
+  }
+  33%{
+    --head-fill: var(--head-col2);
+    --op1: 0;
+    --op2: 1;
+    --op3: 0;
+  }
+  65%{
+    --head-fill: var(--head-col2);
+    --op1: 0;
+    --op2: 1;
+    --op3: 0;
+  }
+  66%{
+    --head-fill: var(--head-col3);
+    --op1: 0;
+    --op2: 0;
+    --op3: 1;
+  }
+  100%{
+    --head-fill: var(--head-col3);
+    --op1: 0;
+    --op2: 0;
+    --op3: 1;
+  }
+}
+
+@keyframes headChange1 {
   0%{
     --head-fill: var(--head-col1);
     --op1: 1;
