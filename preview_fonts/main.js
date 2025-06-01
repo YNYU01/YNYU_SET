@@ -74,6 +74,11 @@ const FONTS_INFO = [
       fontFamily:["锻刀体","duandaoti"],
       fontStyles:[
         {
+          fontStyle:["细体","Light"],
+          fontWeight:"300",
+          download:"../fonts/otf/duandaoti-Light.otf",
+        },
+        {
           fontStyle:["常规","Regular"],
           fontWeight:"500",
           download:"../fonts/otf/duandaoti-Regular.otf",

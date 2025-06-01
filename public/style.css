@@ -293,6 +293,14 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   --arrow-w: 4;
 }
 
+[data-scroll-round]{
+  overflow-y: scroll;
+  --scroll-cut: 140px;
+  height: calc(100vh - var(--scroll-cut));
+  gap: 10px;
+  border-radius: 10px;
+}
+
 [data-worksname-list]{
   --turnto-w:60px;
   --arrow-w: 4;
@@ -697,6 +705,86 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   --mainColor: var(--boxBod);
 }
 
+[data-tool-list]{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+[data-tool-box]{
+  width: 300px;
+  height: 400px;
+  padding: 46px 10px 0px 10px;
+  position: relative;
+}
+
+[data-tool-icon]{
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  --bod-w:6px;
+  border: var(--bod-w) solid var(--boxBak);
+  box-sizing: border-box;
+  top: 0;
+  left: calc(50% - 50px);
+  --tool-icon: url('../VI/ICON_YNYUSET_DEV.png');
+  background: var(--tool-icon),var(--boxBak);
+  background-size: cover;
+  animation: sizeUp 0.5s;
+  transform: left 1s;
+}
+
+@keyframes sizeUp {
+  0%{
+    transform: scale(0.5);
+  }
+  100%{
+    transform: scale(1);
+  }
+}
+
+[data-tool-icon]::after{
+  content: '';
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  top: calc(50% - 6px);
+  left: calc(0px - 14px - var(--bod-w)/2);
+  background: repeating-radial-gradient(
+    circle at bottom left,  
+    transparent 0,
+    transparent 12px,
+    var(--boxBak) 12px,
+    var(--boxBak) 20px
+  );
+  background-repeat: no-repeat;
+}
+
+[data-tool-icon]::before{
+  content: '';
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  top: calc(50% - 6px);
+  right: calc(0px - 14px - var(--bod-w)/2);
+  background: repeating-radial-gradient(
+    circle at bottom right,  
+    transparent 0,
+    transparent 12px,
+    var(--boxBak) 12px,
+    var(--boxBak) 20px
+  );
+  background-repeat: no-repeat;
+}
+
+[data-tool-card]{
+  width: 100%;
+  height: 100%;
+  background: var(--boxGry);
+  border-radius: 10px;
+}
+
 [data-head-all]{
   --svg-h:80px;
   --head-t: 9;
@@ -997,6 +1085,9 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 }
 
 @media (max-width:750px) {
+  [data-page-id="library"]{
+    --layout-w: 100%;
+  }
   [data-tab-top],[data-mainset-top]{
     display: none;
   }
@@ -1028,9 +1119,26 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     --swi-bak: transparent;
   }
 
+  [data-tool-list]{
+    width: 100%;
+  }
+
+  [data-tool-box]{
+    padding-top: 36px;
+    width: 100%;
+    height: 200px;
+  }
+
+  [data-tool-icon]{
+    width: 80px;
+    height: 80px;
+    left: 40px;
+    --bod-w: 4px;
+  }
+
   [data-head-all]{
     --head-t: 4;
-    --svg-h:40px;
+    --svg-h: 40px;
   }
   
   [data-worksname-list]{
