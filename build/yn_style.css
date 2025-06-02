@@ -216,7 +216,7 @@ textarea::-webkit-scrollbar-thumb {
 .scrollbar::-webkit-scrollbar-thumb:hover,
 pre::-webkit-scrollbar-thumb:hover,
 textarea::-webkit-scrollbar-thumb:hover {
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 .hasscrollbar{
@@ -315,7 +315,7 @@ input[type="range"] {
   background-color: var(--range-af,var(--boxBod));
   border: var(--range-bod-r,1px) solid var(--range-bod,transparent);
   margin-top: -7px;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 
@@ -488,7 +488,7 @@ input[type="file" i]::after{
   background: var(--boxBak);
   top: 0;
   left: 0;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
   border-right: 1px solid var(--boxBod);
   border-radius: 4px;
   font-weight: 700;
@@ -515,7 +515,7 @@ input[type="file" i]::after{
   flex: 0 0 auto;
   border-radius:calc(var(--swi-r) - 2px);
   background:var(--swi-af);
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 .switch::after{
 transition:transform 0.2s ease-out;
@@ -542,7 +542,7 @@ input[type="checkbox"]:checked+.switch::before {
   width: 18px;
   height: 18px;
   flex: 0 0 auto;
-  cursor: pointer
+  cursor: var(--pointer,pointer);
 }
 
 input[type="checkbox"]:checked + .check{
@@ -550,7 +550,7 @@ input[type="checkbox"]:checked + .check{
 }
 
 .btn-op {
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
   color: var(--mainColor);
   z-index: 2;
 }
@@ -659,7 +659,7 @@ input[type="checkbox"]:checked+.show-next {
 }
 
 [data-radio]{
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
   width: var(--radio-w,14px);
   height: var(--radio-h,14px);
   border: 1px solid var(--boxBod);
@@ -707,7 +707,7 @@ btn-copy:hover{
 .btn-theme {
   --theme-l:rgba(0,0,0,0);
   --theme-d:var(--mainColor);
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 .btn-theme:hover {
@@ -778,7 +778,7 @@ input[type="checkbox"]:checked+.btn-theme {
 }
 
 [data-turnto]{
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
   background: var(--turnto-bak,var(--themeColor));
   border: var(--turnto-bod-w,0) solid var(--turnto-bod,transparent);
   width: var(--turnto-w,26px);
@@ -805,7 +805,7 @@ input[type="checkbox"]:checked+.btn-theme {
 }
 
 [data-back]{
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
   background: var(--back-bak,var(--themeColor2));
   border: var(--back-bod-w,0) solid var(--back-bod,transparent);
   width: var(--back-w,26px);
@@ -959,7 +959,7 @@ input[type="checkbox"]:checked+.btn-theme {
   border-radius: 6px;
   --type:'HEX';
   position: relative;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
   display: flex;
   justify-content: center;
   align-items: center;

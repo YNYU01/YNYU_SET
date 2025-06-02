@@ -106,7 +106,7 @@ let randomColor = [
   "var(--code8)",
   "var(--code9)",
   "var(--code10)",
-]
+];
 
 window.addEventListener('load',()=>{
   if(ISMOBILE || window.innerWidth <= 750){
@@ -331,9 +331,9 @@ function addFontsCard(fontsObj){
     cardTitleMix.appendChild(cardTitleLable)
     card.appendChild(cardTitleMix);
 
-    let carEgBox = document.createElement('div');
-    carEgBox.className = 'df-ffc w100';
-    carEgBox.style.gap = '10px';
+    let cardEgBox = document.createElement('div');
+    cardEgBox.className = 'df-ffc w100';
+    cardEgBox.style.gap = '10px';
     fonts.fontStyles.forEach(item => {
       let difStyle = document.createElement('div');
       difStyle.className = 'df-ffc pos-r';
@@ -358,12 +358,12 @@ function addFontsCard(fontsObj){
       egfontText.innerHTML = text; 
       difStyle.appendChild(egfontText);
 
-      carEgBox.appendChild(difStyle)
+      cardEgBox.appendChild(difStyle)
     });
-    card.appendChild(carEgBox);
+    card.appendChild(cardEgBox);
     
     egfontCardList.appendChild(card);
-    cardTitleInput.addEventListener('change',() => {showNext(cardTitleInput,carEgBox,'flex')})
+    cardTitleInput.addEventListener('change',() => {showNext(cardTitleInput,cardEgBox,'flex')})
     
   });
 
