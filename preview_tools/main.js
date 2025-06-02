@@ -182,17 +182,19 @@ function addToolCard(toolsObj){
       toolbox.style.transform = `rotateY(0deg) rotateX(0deg)`;
     });
     tool3d.addEventListener('mousemove',(event)=>{
-      let cardTop = toolbox.querySelector('[data-tool-card]').offsetTop
-      let bound = toolbox.getBoundingClientRect();
-      let x = bound.left;
-      let y = bound.top;
-      let w = toolbox.offsetWidth;
-      let h = toolbox.offsetHeight;
-      let xx = event.clientX - x;
-      let yy = event.clientY - y;
-      let TB = (yy - (h + cardTop)/2)/h * -20;
-      let LR = (xx - w/2)/w * 30;
-      toolbox.style.transform = `rotateY(${LR}deg) rotateX(${TB}deg)`;
+      if(!ISMOBILE){
+        let cardTop = toolbox.querySelector('[data-tool-card]').offsetTop
+        let bound = toolbox.getBoundingClientRect();
+        let x = bound.left;
+        let y = bound.top;
+        let w = toolbox.offsetWidth;
+        let h = toolbox.offsetHeight;
+        let xx = event.clientX - x;
+        let yy = event.clientY - y;
+        let TB = (yy - (h + cardTop)/2)/h * -20;
+        let LR = (xx - w/2)/w * 30;
+        toolbox.style.transform = `rotateY(${LR}deg) rotateX(${TB}deg)`;
+      };
     });
 
     let toolicon = document.createElement('div');
@@ -255,6 +257,12 @@ function addToolCard(toolsObj){
     tool3d.appendChild(toolbox);
     toolList.appendChild(tool3d);
   });
+
+  //底部固定留空，防遮挡
+  let bottomMust = document.createElement('div');
+  bottomMust.className = 'w100 fl0'
+  bottomMust.style.height = '40px';
+  toolList.appendChild(bottomMust);
 
   //最后重置下语言
   if(ROOT.getAttribute('data-language') == 'En'){

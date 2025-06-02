@@ -81,7 +81,7 @@ worksNamePath.forEach(item => {
 });
 
 headMove.addEventListener('click',()=>{
-  viewPage('support')
+  //viewPage('support')
 })
 
 headMove.addEventListener('mouseenter',(event)=>{
