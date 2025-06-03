@@ -1,9 +1,9 @@
 :root{
   --banner-h: 50px;
   --egfont-size: 70px;
-  --head-col1: #da4a69;
-  --head-col2: #66ca77;
-  --head-col3: #c568d1;
+  --head-col1: #e45f7b;
+  --head-col2: #83db83;
+  --head-col3: #cc7cd6;
   --pointer:url('../VI/pointer_32.png'),auto;
 }
 
@@ -63,7 +63,7 @@ html[data-theme="light"]{
 }
 
 [data-theme="dark"] .dot{
-  --dot-col: rgba(0, 0, 0, 0.2);
+  --dot-col: rgba(55, 55, 55, 0.432);
 }
 
 [data-grid-all]{
@@ -1285,6 +1285,15 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
 }
 
+[data-rect-all]{
+  opacity: 1;
+}
+
+[data-rect-bg]{
+  stroke: var(--mainColor);
+  stroke-width: 0.03;
+}
+
 
 @media (max-width:950px) {
   :root{
@@ -1316,7 +1325,10 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
 
   [data-page-id="library"]{
-    --layout-w: 100%;
+    --layout-w: calc(100% - 10px);
+  }
+  [data-page-id="fonts"]{
+    --layout-w: calc(100% - 20px);
   }
   [data-tab-top],[data-mainset-top]{
     display: none;
@@ -1405,6 +1417,10 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   [data-head-all]{
     --head-t: 4;
     --svg-h: 40px;
+  }
+
+  [data-rect-bg]{
+    stroke-width: 0.1;
   }
   
   [data-worksname-list]{
