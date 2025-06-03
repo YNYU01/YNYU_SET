@@ -177,6 +177,7 @@ function addToolCard(toolsObj){
 
     let toolbox = document.createElement('div');
     toolbox.setAttribute('data-tool-box',index);
+    toolbox.style.animationDelay = index + 's'
 
     tool3d.addEventListener('mouseleave',()=>{
       toolbox.style.transform = `rotateY(0deg) rotateX(0deg)`;
