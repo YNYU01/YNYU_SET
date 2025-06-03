@@ -243,7 +243,7 @@ function addToolCard(toolsObj){
 
     let toolabout = document.createElement('div');
     toolabout.setAttribute('data-tool-about','');
-    toolabout.className = 'noscrollbar df-ffc'
+    toolabout.className = 'noscrollbar df-ffc dot'
     tools.about.forEach(item => {
       let aboutli = document.createElement('li');
       aboutli.setAttribute('data-li-style','2');
