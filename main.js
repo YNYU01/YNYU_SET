@@ -22,7 +22,21 @@ let btnMore = document.getElementById('btn-more');
 let headMove = document.querySelector('[data-head-move]');
 let coinAll = document.querySelector('[data-coin-all]');
 let coins = coinAll.querySelectorAll('[data-coin]');
-let coinCut = document.querySelector('[data-coin-cut]')
+let coinCut = document.querySelector('[data-coin-cut]');
+let rectBg = document.querySelectorAll('[data-rect-bg]');
+
+let randomColor = [
+  "var(--code1)",
+  "var(--code2)",
+  "var(--code3)",
+  "var(--code4)",
+  "var(--code5)",
+  "var(--code6)",
+  "var(--code7)",
+  "var(--code8)",
+  "var(--code9)",
+  "var(--code10)",
+];
 
 window.addEventListener('load',()=>{
   //viewPage('individual');
@@ -32,6 +46,7 @@ window.addEventListener('load',()=>{
     item.style.backgroundPosition = '100%';
   });
   addCoinMotion();
+  reRectBg();
 });
 
 window.addEventListener('resize',()=>{
@@ -73,7 +88,8 @@ worksName.forEach(item => {
     });
   }
   
-})
+});
+
 
 worksNamePath.forEach(item => {
   let pathlength = item.getTotalLength();
@@ -82,7 +98,7 @@ worksNamePath.forEach(item => {
 
 headMove.addEventListener('click',()=>{
   //viewPage('support')
-})
+});
 
 headMove.addEventListener('mouseenter',(event)=>{
   event.target.style.animationPlayState = 'paused';
@@ -165,4 +181,27 @@ function addCoinMotion(){
       }
     },5)
   })
+};
+
+function reRectBg(){
+  roNum();
+  roNum();
+  roNum();
+  roNum();
+  setInterval(()=>{
+    rectBg.forEach(item => {
+      item.setAttribute('fill','none')
+      item.setAttribute('fill-opacity','0')
+    })
+    roNum();
+    roNum();
+    roNum();
+    roNum();
+  },5000)
+  
+  function roNum(){
+    let num = Math.floor(Math.random()*rectBg.length)
+    rectBg[num].setAttribute('fill',randomColor[Math.floor(Math.random()*10)])
+    rectBg[num].setAttribute('fill-opacity',0.2)
+  }
 }

@@ -937,7 +937,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   perspective: 500px;
   transform-style: preserve-3d;
   transition: transform 0.5s;
-  animation: coinJump 2s cubic-bezier(0,0.5,0.5,1) infinite;
+  animation: coinJump 2s cubic-bezier(0,0.5,0.5,1) infinite, coinOp 11s linear ;/*coinOp 8s linear*/
   animation-delay: calc(var(--coin-jump) * var(--head-t)/4);/*var(--head-t)/4*/
 }
 
@@ -952,6 +952,22 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     transform: translateY(0);
   }
 }
+
+@keyframes coinOp {
+  0%{
+    opacity: 1;
+  }
+  14%{
+    opacity: 1;
+  }
+  15%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 0;
+  }
+}
+
 
 [data-coin-cut]{
   width: calc(var(--svg-h)*1.5);
