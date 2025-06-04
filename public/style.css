@@ -1334,7 +1334,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     --layout-w: calc(100% - 10px);
   }
   [data-page-id="fonts"]{
-    --layout-w: calc(100% - 20px);
+    --layout-w: calc(100% - 40px);
   }
   [data-tab-top],[data-mainset-top]{
     display: none;
