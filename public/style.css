@@ -1318,6 +1318,10 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 }
 
 @media (max-width:750px) {
+  .dot{
+    --dot-gap: 12px;
+  }
+
   [data-grid-all]{
     --grid-wh: 80px;
     --grid-bod-w: 1px;

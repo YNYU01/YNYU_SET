@@ -202,7 +202,7 @@ function reRectBg(theme){
     roNum();
   }
 
-  //addCopy();
+  addCopy();
   rectBgInterval = setInterval(()=>{
     rectBg.forEach(item => {
       item.setAttribute('fill','none')
@@ -300,7 +300,7 @@ function reRectBg(theme){
 
   function roNum(){
     let num = Math.floor(Math.random()*rectBg.length)
-    rectBg[num].setAttribute('fill','rgba(128,128,128,0.5)')//randomColor[Math.floor(Math.random()*10)]
+    rectBg[num].setAttribute('fill','rgba(128,128,128,0.8)')//randomColor[Math.floor(Math.random()*10)]
     rectBg[num].setAttribute('fill-opacity',0.1)
   }
 }
