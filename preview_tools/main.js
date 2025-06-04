@@ -83,6 +83,7 @@ let toolList = document.querySelector('[data-tool-list]');
 
 
 window.addEventListener('load',()=>{
+  document.getElementById('noise').className = 'noise';
   addToolCard(TOOL_INFO);
   if(ISMOBILE || window.innerWidth <= 750){
 

@@ -1419,7 +1419,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     --svg-h: 40px;
   }
 
-  [data-rect-bg]{
+  [data-rect-bg],[data-rect-bg2]{
     stroke-width: 0.1;
   }
   

@@ -109,6 +109,7 @@ let randomColor = [
 ];
 
 window.addEventListener('load',()=>{
+  document.getElementById('noise').className = 'noise';
   if(ISMOBILE || window.innerWidth <= 750){
     let egfontSizeInput = document.querySelector('[data-egfont-size]').querySelector('[data-input="value"]')
     egfontSizeInput.value = egfontSizeInput.value >= 40 ? 40 : egfontSizeInput.value;

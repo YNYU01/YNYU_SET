@@ -168,7 +168,7 @@ const copyElements = document.querySelectorAll('[data-copy]');
 
 
 window.addEventListener('load',()=>{
-
+  document.getElementById('noise').className = 'noise';
 });
 
 window.addEventListener('resize',()=>{

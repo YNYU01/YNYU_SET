@@ -1,5 +1,6 @@
 
 window.addEventListener('load',()=>{
+  document.getElementById('noise').className = 'noise';
   if(ISMOBILE || window.innerWidth <= 750){
 
   } else {

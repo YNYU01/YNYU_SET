@@ -40,6 +40,7 @@ let randomColor = [
 
 window.addEventListener('load',()=>{
   //viewPage('individual');
+  document.getElementById('noise').className = 'noise';
   worksName.forEach(item => {
     item.style.animation = 'colormove2 1s';
     item.style.backgroundSize = '0';
