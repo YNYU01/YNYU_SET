@@ -1289,7 +1289,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   opacity: 1;
 }
 
-[data-rect-bg]{
+[data-rect-bg],[data-rect-bg2]{
   stroke: var(--mainColor);
   stroke-width: 0.03;
 }

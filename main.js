@@ -46,12 +46,17 @@ window.addEventListener('load',()=>{
     item.style.backgroundPosition = '100%';
   });
   addCoinMotion();
-  reRectBg();
+  reRectBg(ROOT.getAttribute('data-theme'));
 });
 
 window.addEventListener('resize',()=>{
 });
 
+THEME_SWITCH.forEach(item => {
+  item.addEventListener('change',()=>{
+    reRectBg(ROOT.getAttribute('data-theme'));
+  });
+});
 
 worksName.forEach(item => {
 
@@ -183,22 +188,120 @@ function addCoinMotion(){
   })
 };
 
-function reRectBg(){
-  roNum();
-  roNum();
-  roNum();
-  roNum();
-  setInterval(()=>{
+let rectBgInterval = null;
+
+function reRectBg(theme){
+  let copy = document.querySelector('[data-rectbg-copy]');
+  if(copy){
+    copy.remove();
+  }
+  if(rectBgInterval !== null){
+    clearInterval(rectBgInterval);
+    rectBgInterval = null;
+  } else {
+    roNum();
+    roNum();
+    roNum();
+    roNum();
+    roNum();
+  }
+
+  //addCopy();
+  rectBgInterval = setInterval(()=>{
     rectBg.forEach(item => {
       item.setAttribute('fill','none')
       item.setAttribute('fill-opacity','0')
-    })
+    });
     roNum();
     roNum();
     roNum();
     roNum();
-  },5000)
-  
+    roNum();
+  },5000);
+
+  function addCopy(){
+    let div = document.createElement('div');
+    div.setAttribute('data-rectbg-copy','')
+    div.className = 'pos-a';
+    div.setAttribute('style','width: 120%; height: 150%; z-index: -1;')
+    let svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('width','100%');
+    svg.setAttribute('height','100%');
+    svg.setAttribute('viewBox','0 0 432 370');
+
+    let defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+    rectBg.forEach((item,index) => {
+      let id = 'linearMix' + index;
+      let wh = item.getAttribute('width');
+      let lineW = 14;
+      let lineGap = 0.3;
+      if(ROOT.getAttribute('data-mobile') == 'true'){
+        lineW = 14;
+        lineGap = 0.8;
+      }
+      let lineNum = Math.floor(wh/(lineW + lineGap));
+      let lineW100 = lineW/wh * 100;
+      let lineGap100 = lineGap/wh  * 100;
+      let lineEnd100 = null;
+      if(wh%(lineW + lineGap) !== 0){
+        lineEnd100 = wh%(lineW + lineGap) / wh  * 100;
+      }
+      //console.log(wh,lineNum,lineW100,lineGap100,lineEnd100)
+      let linearGradient = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+      linearGradient.id = id;
+      if(index%2 == 1){
+        linearGradient.setAttribute('x1','0%');
+        linearGradient.setAttribute('y1','0%');
+        linearGradient.setAttribute('x2','100%');
+        linearGradient.setAttribute('y2','0%');
+      }else{
+        linearGradient.setAttribute('x1','0%');
+        linearGradient.setAttribute('y1','0%');
+        linearGradient.setAttribute('x2','0%');
+        linearGradient.setAttribute('y2','100%');
+      }
+      
+      linearGradient.innerHTML = '';
+      let star = 0;
+      let color = theme == 'light' ? '#eeeeee' : '#202020';
+      color = color ? color : 'rgba(0,0,0,0)';
+      for(let i = 0; i < lineNum; i++){
+        let stop = `<stop offset="${star}%" style="stop-color:${color}; stop-opacity:0"></stop>
+        <stop offset="${star + lineW100}%" style="stop-color:${color}; stop-opacity:0"></stop>
+        <stop offset="${star + lineW100}%" style="stop-color:${color}; stop-opacity:1"></stop>
+        <stop offset="${star + lineW100 + lineGap100}%" style="stop-color:${color}; stop-opacity:1"></stop>
+        `
+        if(i == lineNum - 1 && lineEnd100 !== null){
+          stop += `<stop offset="${star + lineW100 + lineGap100}%" style="stop-color:${color}; stop-opacity:0"></stop>
+          <stop offset="100%" style="stop-color:${color}; stop-opacity:0"></stop>
+          `
+        }
+
+        star = star + lineW100 + lineGap100;
+        linearGradient.innerHTML += stop;
+      };
+      defs.appendChild(linearGradient);
+    });
+    let g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('transform','rotate(45 500 150) translate(0,0)')
+    rectBg.forEach((item,index) => {
+      let rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      rect.setAttribute('x',item.getAttribute('x'));
+      rect.setAttribute('y',item.getAttribute('y'));
+      rect.setAttribute('width',item.getAttribute('width'));
+      rect.setAttribute('height',item.getAttribute('height'));
+      rect.setAttribute('fill','url(#linearMix' + index + ')');
+      rect.setAttribute('data-rect-bg2','');
+      g.appendChild(rect);
+    });
+    
+    svg.appendChild(defs);
+    svg.appendChild(g);
+    div.appendChild(svg);
+    rectBg[0].parentNode.parentNode.parentNode.parentNode.appendChild(div);
+    rectBg[0].parentNode.parentNode.parentNode.parentNode.insertBefore(div,rectBg[0].parentNode.parentNode.parentNode)
+  }
+
   function roNum(){
     let num = Math.floor(Math.random()*rectBg.length)
     rectBg[num].setAttribute('fill',randomColor[Math.floor(Math.random()*10)])
