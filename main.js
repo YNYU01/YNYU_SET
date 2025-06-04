@@ -60,24 +60,7 @@ THEME_SWITCH.forEach(item => {
 });
 
 worksName.forEach(item => {
-
-  item.parentNode.addEventListener('mouseenter',()=>{
-    item.style.animation = 'colormove1 1s';
-    item.style.backgroundSize = '100%';
-    item.style.backgroundPosition = '0%';
-  });
-
-  item.parentNode.addEventListener('mouseleave',()=>{
-    item.style.animation = 'colormove2 1s';
-    item.style.backgroundSize = '0';
-    item.style.backgroundPosition = '100%';
-  });
-
-  if(ISMOBILE){
-    item.parentNode.addEventListener('animationend',()=>{
-      item.style.animation = '';
-    });
-
+  if(ISMOBILE){ 
     item.parentNode.addEventListener('touchstart',()=>{
       item.setAttribute('data-touch','true')
       item.style.animation = 'colormove1 1s';
@@ -91,6 +74,18 @@ worksName.forEach(item => {
           item.setAttribute('data-touch','false')
         }
       });  
+    });
+  } else {
+    item.parentNode.addEventListener('mouseenter',()=>{
+      item.style.animation = 'colormove1 1s';
+      item.style.backgroundSize = '100%';
+      item.style.backgroundPosition = '0%';
+    });
+  
+    item.parentNode.addEventListener('mouseleave',()=>{
+      item.style.animation = 'colormove2 1s';
+      item.style.backgroundSize = '0';
+      item.style.backgroundPosition = '100%';
     });
   }
   
@@ -207,7 +202,7 @@ function reRectBg(theme){
     roNum();
   }
 
-  //addCopy();
+  addCopy();
   rectBgInterval = setInterval(()=>{
     rectBg.forEach(item => {
       item.setAttribute('fill','none')
