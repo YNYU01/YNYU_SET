@@ -1420,7 +1420,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
 
   [data-rect-bg],[data-rect-bg2]{
-    stroke-width: 0.1;
+    stroke-width: 0.5;
   }
   
   [data-worksname-list]{
