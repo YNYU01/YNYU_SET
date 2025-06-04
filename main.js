@@ -202,7 +202,7 @@ function reRectBg(theme){
     roNum();
   }
 
-  addCopy();
+  //addCopy();
   rectBgInterval = setInterval(()=>{
     rectBg.forEach(item => {
       item.setAttribute('fill','none')
