@@ -1288,10 +1288,10 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 }
 
 [data-rect-all]{
-  opacity: 1;
+  opacity: 0.8;
 }
 
-[data-rect-bg],[data-rect-bg2]{
+[data-rect-bg]{
   stroke: var(--mainColor);
   stroke-width: 0.03;
 }
@@ -1425,7 +1425,11 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     --svg-h: 40px;
   }
 
-  [data-rect-bg],[data-rect-bg2]{
+  [data-rect-all]{
+    opacity: 0.6;
+  }
+
+  [data-rect-bg]{
     stroke-width: 0.1;
   }
   
