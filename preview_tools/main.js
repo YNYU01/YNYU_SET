@@ -83,7 +83,7 @@ let toolList = document.querySelector('[data-tool-list]');
 
 
 window.addEventListener('load',()=>{
-  document.getElementById('noise').className = 'noise';
+  document.getElementById('noise').className = 'tex-noise';
   addToolCard(TOOL_INFO);
   if(ISMOBILE || window.innerWidth <= 750){
 
@@ -244,7 +244,7 @@ function addToolCard(toolsObj){
 
     let toolabout = document.createElement('div');
     toolabout.setAttribute('data-tool-about','');
-    toolabout.className = 'noscrollbar df-ffc dot'
+    toolabout.className = 'noscrollbar df-ffc tex-dot'
     tools.about.forEach(item => {
       let aboutli = document.createElement('li');
       aboutli.setAttribute('data-li-style','2');

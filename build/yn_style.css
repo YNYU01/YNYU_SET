@@ -19,8 +19,8 @@ html[data-theme="dark"]{
   --mainColor: #acacac;
   --mainColor2: #fff;
   --mainColor3: #2b2b2b;
-  --themeColor: #2f9f6c;
-  --themeColor2: #c89cff;
+  --themeColor: #3ac989;
+  --themeColor2: #9f92fe;
   --code1:#48a67b;
   --code2:#9377b6;
   --boxBod: #494949;
@@ -38,7 +38,7 @@ html[data-theme="light"]{
   --mainColor2: #000;
   --mainColor3: #d1d1d1;
   --themeColor: #18e7a6;
-  --themeColor2: #9a6ffd;
+  --themeColor2: #9f92fe;
   --code1:#03954c;
   --code2:#822eec;
   --boxBod: #aeaeae;
@@ -802,6 +802,7 @@ input[type="checkbox"]:checked+.btn-theme {
 
 [data-turnto]::before{
   content: var(--text);
+  padding-left: 1ch;
 }
 
 [data-back]{
@@ -829,6 +830,7 @@ input[type="checkbox"]:checked+.btn-theme {
 
 [data-back]::after{
   content: var(--text);
+  padding-right: 1ch;
 }
 
 [data-language="En"] [data-back]:hover{

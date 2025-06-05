@@ -21,7 +21,7 @@ let sideMask = document.querySelector('[data-side-mask]');
 let btnMore = document.getElementById('btn-more');
 let headMove = document.querySelector('[data-head-move]');
 let coinAll = document.querySelector('[data-coin-all]');
-let coins = coinAll.querySelectorAll('[data-coin]');
+let coins =  coinAll.querySelectorAll('[data-coin]');
 let coinCut = document.querySelector('[data-coin-cut]');
 let rectBg = document.querySelectorAll('[data-rect-bg]');
 
@@ -40,7 +40,7 @@ let randomColor = [
 
 window.addEventListener('load',()=>{
   //viewPage('individual');
-  document.getElementById('noise').className = 'noise';
+  document.getElementById('noise').className = 'tex-noise';
   worksName.forEach(item => {
     item.style.animation = 'colormove2 1s';
     item.style.backgroundSize = '0';

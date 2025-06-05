@@ -32,7 +32,7 @@ html[data-theme="light"]{
   cursor: url('../VI/cursor_24.png'),auto;
 }
 
-.noise{
+.tex-noise{
   width: 100%;
   height: 100%;
   position: fixed;
@@ -44,7 +44,7 @@ html[data-theme="light"]{
   pointer-events: none;
 }
 
-.dot{
+.tex-dot{
   --dot-col: rgba(0, 0, 0, 0.2);
   --dot-wh: 1px;
   --dot-gap: 10px;
@@ -56,6 +56,29 @@ html[data-theme="light"]{
     transparent var(--dot-wh),
     transparent calc(var(--dot-gap)*2)), var(--boxBak);
   background-size: var(--dot-gap) var(--dot-gap);
+}
+
+.tex-line{
+  --line-col: rgba(0, 0, 0, 0.8);
+  --line-size: 50px;
+  --line-bod: 4%;
+  --line-deg: -45deg;
+  --line-bak: transparent;
+  background: 
+  repeating-linear-gradient(var(--line-deg),
+    var(--line-col) -20%,
+    var(--line-col) calc(-20% + var(--line-bod)),
+    transparent calc(-20% + var(--line-bod)),
+    transparent 30%,
+    var(--line-col) 30%,
+    var(--line-col) calc(30% + var(--line-bod)),
+    transparent calc(30% + var(--line-bod)),
+    transparent 80%,
+    var(--line-col) 80%,
+    var(--line-col) calc(80% + var(--line-bod)),
+    transparent calc(80% + var(--line-bod)),
+    transparent 100%
+    ) 0 0/var(--line-size) var(--line-size),var(--line-bak)
 }
 
 [data-theme="light"] .dot{
@@ -416,6 +439,14 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   --back-w: 40px;
   --back-text:'返回首页';
   --back-text-en:'Home';
+  --arrow-w: 4;
+}
+
+[data-turnto="fontstyle"]{
+  --turnto-bak: #e2b24bd5;
+  --turnto-w: 40px;
+  --turnto-text:'字效编辑器';
+  --turnto-text-en:'Font Effect';
   --arrow-w: 4;
 }
 
@@ -1317,11 +1348,19 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   [data-coin-all]{
     --coin-w:calc(var(--svg-h)/3);
   }
+
+  [data-any="warp950"]{
+    flex-wrap: wrap;
+  }
 }
 
 @media (max-width:750px) {
-  .dot{
+  .tex-dot{
     --dot-gap: 12px;
+  }
+
+  .tex-line{
+    --line-wh: 40px;
   }
 
   [data-grid-all]{
@@ -1459,19 +1498,22 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     --text:var(--turnto-text-en);
   }
 
-  [data-language="Zh"] [data-back="home"]{
+  [data-language="Zh"] [data-back="home"],
+  [data-language="Zh"] [data-turnto="fontstyle"]{
     padding:0 1ch;
     width: fit-content;
     line-height: 1.5em;
     font-weight: 700;
-    --text:var(--back-text);
+    --text:var(--back-text,var(--turnto-text));
   }
-  [data-language="En"] [data-back="home"]{
+  [data-language="En"] [data-back="home"],
+  [data-language="En"] [data-turnto="fontstyle"]
+  {
     padding:0 1ch;
     width: fit-content;
     line-height: 1.5em;
     font-weight: 700;
-    --text:var(--back-text-en);
+    --text:var(--back-text-en,var(--turnto-text-en));
   }
 
   .fontcard-title{

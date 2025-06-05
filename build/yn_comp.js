@@ -178,11 +178,8 @@ class cardcolorpick extends HTMLElement {
 };
 customElements.define('card-colorpick', cardcolorpick);
 
-const ROOT = document.documentElement;
 
 let GETCOLOR = null;
-let ISMOBILE = false;
-let MOBILE_KEYS = /mobile | android | iphone | ipad | blackberry | windows phone/i
 let TV = document.querySelectorAll('[data-TV]');//轮播公告
 let TV_MOVE = false;//用于结合一定条件触发轮播
 let TAB_AUTO = document.querySelectorAll('[data-tab="auto"]');
@@ -228,41 +225,30 @@ window.addEventListener('load',()=>{
     ROOT.style.setProperty('--getcolor-df','block');
     GETCOLOR = new EyeDropper()
     //console.log('该浏览器支持吸色管')
-  }
+  };
 
-   if(localStorage.getItem('userTheme') == 'light'){
-    THEME_SWITCH.forEach(item => {
-      item.checked = false;
-    });
-    setTheme(true);
-  }
+  if(localStorage.getItem('userTheme') == 'light'){
+    setTheme(true,false);
+  };
+
+  if(localStorage.getItem('userTheme') == 'dark'){
+    setTheme(false,false);
+  };
+
   if(!localStorage.getItem('userTheme')){
-    THEME_SWITCH.forEach(item => {
-      item.checked = false;
-    });
-    setTheme(true);
-    localStorage.setItem('userTheme','light');
-  }
+    setTheme(true,false);
+  };
+
 
   if(localStorage.getItem('userLanguage') == 'En'){
-    LANGUAGE_SWITCH.forEach(item => {
-      item.checked = false;
-    });
     setLanguage(false);
-  }
+  };
   if(localStorage.getItem('userLanguage') == 'Zh'){
-    LANGUAGE_SWITCH.forEach(item => {
-      item.checked = true;
-    });
     setLanguage(true);
-  }
+  };
   if(!localStorage.getItem('userLanguage')){
-    LANGUAGE_SWITCH.forEach(item => {
-      item.checked = false;
-    });
     setLanguage(false);
-    localStorage.setItem('userLanguage','En');
-  }
+  };
 });
 
 window.addEventListener('resize',()=>{
@@ -278,21 +264,14 @@ window.addEventListener('resize',()=>{
 
 function afterAllMust(){
   reTV();
-  if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 750){
-    ISMOBILE = true;
-    ROOT.setAttribute('data-mobile','true');
-  } else {
-    ROOT.setAttribute('data-mobile','false');
-    ISMOBILE = false;
-  }
 }
 
 LANGUAGE_SWITCH.forEach(item => {
   item.addEventListener('change',()=>{
     if(item.checked){
-      setLanguage(true);
+      setLanguage(true,true);
     }else{
-      setLanguage(false);
+      setLanguage(false,true);
     }
   });
 });
@@ -300,9 +279,9 @@ LANGUAGE_SWITCH.forEach(item => {
 THEME_SWITCH.forEach(item => {
   item.addEventListener('change',()=>{
     if(item.checked){
-      setTheme(false)
+      setTheme(false,true)
     }else{
-      setTheme(true)
+      setTheme(true,true)
     }
   });
 });
@@ -408,7 +387,7 @@ SELECT_OPTION.forEach(item => {
   item.addEventListener('click',() => {
     let select = item.parentNode.parentNode;
     let oldOption = select.querySelector('[data-option-main="true"]');
-    let optionValue = item.getAttribute('data-option-value');
+    let optionValue = item.textContent;
     oldOption.setAttribute('data-option-main','false');
     item.setAttribute('data-option-main','true');
     select.setAttribute('data-select-value',optionValue);
@@ -796,6 +775,9 @@ TEXTAREA_EG.forEach(item => {//调整输入逻辑
   item.addEventListener('dblclick',() => {
     if (item.value == '' ) {
       let egtext = item.getAttribute('data-eg');
+      if(ROOT.getAttribute('data-language') == 'En'){
+        egtext = item.getAttribute('data-eg-en');
+      }
       egtext = egtext.replace(/\\n/g,'\n').replace(/\\t/g,'\t');//.replace(/\&nbsp;/g,'&nbsp;')
       if(egtext){
         item.value = egtext;
@@ -1027,25 +1009,29 @@ function reTV(){
    --swi-bak: ;//switch底色颜色
    --range-af: ;//滑块拇指控件颜色
  */
-function setTheme(isLight){
+function setTheme(isLight,istips){
   if(isLight){
     ROOT.setAttribute("data-theme","light");
     THEME_SWITCH.forEach(item => {
       item.checked = false;
     });
     localStorage.setItem('userTheme','light');
-    tipsAll('已切换为亮色主题',2000,3);
+    if(istips){
+      tipsAll('已切换为亮色主题',2000,3);
+    };
   }else{
     ROOT.setAttribute("data-theme","dark");
     THEME_SWITCH.forEach(item => {
       item.checked = true;
     });
     localStorage.setItem('userTheme','dark');
-    tipsAll('已切换为暗色主题',2000,3);
-  }
+    if(istips){
+      tipsAll('已切换为暗色主题',2000,3);
+    };
+  };
 }
 
-function setLanguage(isZh){
+function setLanguage(isZh,istips){
   if(isZh){
     ROOT.setAttribute("data-language","Zh");
     LANGUAGE_SWITCH.forEach(item => {
@@ -1053,8 +1039,9 @@ function setLanguage(isZh){
       item.parentNode.style.setProperty('--swi-text',`'Zh'`);
     });
     localStorage.setItem('userLanguage','Zh');
-    tipsAll('已切换为中文',2000,3);
-
+    if(istips){
+      tipsAll('已切换为中文',2000,3);
+    }
     let texts = document.querySelectorAll('[data-zh-text]');
     texts.forEach(item => {
       item.innerHTML = item.getAttribute('data-zh-text');
@@ -1077,7 +1064,9 @@ function setLanguage(isZh){
       item.parentNode.style.setProperty('--swi-text',`'En'`);
     });
     localStorage.setItem('userLanguage','En');
-    tipsAll('Change to English',2000,3);
+    if(istips){
+      tipsAll('Change to English',2000,3);
+    }
 
     let texts = document.querySelectorAll('[data-en-text]');
     texts.forEach(item => {

@@ -11,6 +11,7 @@
   <!-- 引入 Prism JS -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
+  <script src="../build/yn_run.js"></script>
 </head>
 <body class="noselect df-ffc df-cc">
   <div data-banner-top class="df-sc pos-r">
@@ -32,16 +33,7 @@
       </label>
     </div>
   </div>
-  <div class="df-lc w100" style="padding: 10px; box-sizing: border-box;">
-    <a data-back="home" href="../index.html" class="df">
-      <div class="pos-r" style="width: 77%; height: 77%; transform: rotate(180deg);">
-        <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
-          <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>                 
-      </div>
-    </a>
-  </div>
+  
   <!--杂色质感-->
   <div id="noise"></div>
   <div id="watermark" class="watermark"></div>
@@ -52,7 +44,24 @@
       </div>
   </div>
   <div data-page-id="fonts" class="df-ffc pos-r" style="gap: 20px; width: var(--layout-w);">
-    
+    <div class="df-sc" style="width: calc(100% + 20px); margin-left: -10px; padding: 10px 0 0 0; box-sizing: border-box;">
+      <a data-back="home" href="../index.html" class="df">
+        <div class="pos-r" style="width: 77%; height: 77%; transform: rotate(180deg);">
+          <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
+            <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>                 
+        </div>
+      </a>
+      <a data-turnto="fontstyle" href="" class="df" >
+        <div class="pos-r" style="width: 77%; height: 77%;">
+          <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
+            <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>                 
+        </div>
+      </a>
+    </div>
     <div class="df-ffc pos-r" style="gap:10px;">
       <div class="df-lc" style="gap: 10px;">
         <div class="pos-r df-lc w100" data-egfont-text data-text data-text-value="Open Source & Design" >
