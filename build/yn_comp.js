@@ -166,8 +166,8 @@ class cardcolorpick extends HTMLElement {
     <div data-input-color="box" class="df-ffc" style="gap: 4px; display: none; --hsl-h: 0; --hsl-s: 0; --hsl-l: 53; --hsv-s: 0; --hsv-v: 53;">
       <div data-input-color="hsv"></div>
       <div data-number-value="0" class="df-lc" style="gap: 4px;">
-        <input data-input="hsl-h" type="range" min="0" max="360" value="0">
-        <input data-input="value" data-input-color="hsl-h" data-input-must="\`int\`,\`0\`,\`360\`" type="text" class="txt-c" style="padding: 1px 1px; width: 22px; font-size: 10; flex: 0 0 auto;" value="0" >  
+        <input data-input="hsl-h" type="range" min="0" max="360" value="0"/>
+        <input data-input="value" data-input-color="hsl-h" data-input-must="0-360" type="text" class="txt-c" style="padding: 1px 1px; width: 22px; font-size: 10; flex: 0 0 auto;" value="0" />  
       </div>
     </div>
     `;
@@ -188,7 +188,8 @@ let SELECT_OPTION = document.querySelectorAll('[data-option="option"]');
 let RADIO = document.querySelectorAll('[data-radio]');
 let INPUT = document.querySelectorAll('[data-input]');//所有input类型组件
 let INPUT_CHECK = document.querySelectorAll('[data-check]');
-let INPUT_MUST = document.querySelectorAll('[data-input-must]');//所有必填且为空时返回一个默认值的组件
+let INPUT_MUST_TEXT = document.querySelectorAll('[data-input-type="text"]');//所有必填且为空时返回一个默认值的组件
+let INPUT_MUST_INT = document.querySelectorAll('[data-input-type="int"]');//所有必填且为空时返回一个默认值的组件
 let INPUT_MAX = document.querySelectorAll('[data-input-max]');//所有设置最大输入字数的组件
 let INPUT_RANGE = document.querySelectorAll('[data-input="range"]');//所有滑块类型,注意要进一步判断自定义属性的值
 let INPUT_VALUE = document.querySelectorAll('[data-input="value"]');
@@ -427,25 +428,28 @@ INPUT_CHECK.forEach(item => {
   });
 });
 
-INPUT_MUST.forEach(item => {
+INPUT_MUST_TEXT.forEach(item => {
   item.addEventListener('change',() => {
-    let info = [item.getAttribute('data-input-must')];
-    let type = item.getAttribute('data-input-type');
-    type = type ? type : 'text';
-    if(type == 'int'){
-      let max = info[0].split('-')[1] * 1;
-      let min = info[0].split('-')[0] * 1;
-      max = max ? max : 'infinity';
-      min = min ? min : 'infinitesimal';
-      info = [min,max]
-    }
-    inputMust(item,[type,...info]);
+    let info = item.getAttribute('data-input-must');
+    inputMust(item,['text',info]);
     item.parentNode.setAttribute('data-text-value',item.value);
-    if(item.getAttribute('data-input') == 'value'){
-      item.previousElementSibling.value = item.value;
-      item.parentNode.setAttribute('data-number-value',item.value);
-    }
   })
+});
+
+INPUT_MUST_INT.forEach(item => {
+  if(!item.getAttribute('data-value')){//类型冲突
+    item.addEventListener('change',() => {
+      let info = item.getAttribute('data-input-must');
+      let max = info.split('-')[1] * 1;
+      let min = info.split('-')[0] * 1;
+      max = max ? max : 0;
+      min = min ? min : 0;
+      info = [min,max];
+      if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0){
+        inputMust(item,['int',...info]);
+      }
+    });
+  }
 });
 
 INPUT_MAX.forEach(item => {
@@ -475,15 +479,14 @@ INPUT_RANGE.forEach(item => {
 
 INPUT_VALUE.forEach(item => {
   item.addEventListener('input',() => {
-    let info = [item.getAttribute('data-input-must')];
-    let type = item.getAttribute('data-input-type');
-    let max = info[0].split('-')[1] * 1;
-    let min = info[0].split('-')[0] * 1;
-    max = max ? max : 'infinity';
-    min = min ? min : 'infinitesimal';
+    let info = item.getAttribute('data-input-must');
+    let max = info.split('-')[1] * 1;
+    let min = info.split('-')[0] * 1;
+    max = max !== null ? max : 0;
+    min = min !== null ? min : 0;
     info = [min,max];
-    if(item.value == '' || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0){
-      inputMust(item,[type,...info]);
+    if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0){
+      inputMust(item,['int',...info]);
     }
     item.previousElementSibling.value = item.value;
     item.parentNode.setAttribute('data-number-value',item.value);
@@ -597,6 +600,7 @@ INPUT_HSL_H.forEach(item => {
     colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
     colorcomp.setAttribute('data-color-hsl',`hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
     colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+    item.nextElementSibling.value = item.value;
   });
 });
 

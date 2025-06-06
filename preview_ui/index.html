@@ -11,6 +11,7 @@
   <!-- 引入 Prism JS -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chocolate+Classical+Sans&amp;display=swap" rel="stylesheet">
   <script src="../build/yn_run.js"></script>
 </head>
 <body class="noselect df-ffc df-cc">
@@ -34,7 +35,7 @@
     </div>
   </div>
   <div class="df-lc w100" style="padding: 10px; box-sizing: border-box;">
-    <a data-back="home" href="../index.html" data-link-isnew="false" class="df">
+    <a data-back="home" href="../home.html" data-link-isnew="false" class="df">
       <div class="pos-r" style="width: 77%; height: 77%; transform: rotate(180deg);">
         <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
@@ -236,7 +237,7 @@
                     </label>
                   </div>
                   <!--可放任何位置，data-check-name能对应上data-check-for即可-->
-                  <div data-check-name="check-1" data-check-checked="true">选项内容1</div>
+                  <div data-check-name="check-1" data-check-checked="true" data-en-text="Something there 1">选项内容1</div>
                 </div>
                 <div class="df-lc" style="gap: 4px;">
                   <div style="width: 14px; height: 14px;">
@@ -246,7 +247,7 @@
                     </label>
                   </div>
                   <!--可放任何位置，data-check-name能对应上data-check-for即可-->
-                  <div data-check-name="check-2" data-check-checked="true">选项内容2</div>
+                  <div data-check-name="check-2" data-check-checked="true" data-en-text="Something there 2">选项内容2</div>
                 </div>
                 <div class="df-lc" style="gap: 4px;">
                   <div style="width: 14px; height: 14px;">
@@ -256,7 +257,7 @@
                     </label>
                   </div>
                   <!--可放任何位置，data-check-name能对应上data-check-for即可-->
-                  <div data-check-name="check-3" data-check-checked="true">选项内容3</div>
+                  <div data-check-name="check-3" data-check-checked="true" data-en-text="Something there 3">选项内容3</div>
                 </div>
               </div>
             </div>
@@ -280,8 +281,8 @@
               </div>
               input-range-int:
               <div data-number data-number-value="50" class="df-lc fl1" style="flex: 1;">
-                <input data-input="range" type="range" min="0" max="100" value="50">
-                <input data-input="value" data-input-must="0-100" data-input-type="int" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" >
+                <input data-input="range" type="range" min="0" max="100" value="50"/>
+                <input data-input="value" data-input-must="0-100" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" />
               </div>
             </div>
             <div data-copy="input-color" class="df-lc" style="gap: 4px;">
@@ -329,7 +330,7 @@
               </div>
               input-text-must:
               <div data-text data-text-value="此处不能为空" class="fl0">
-                <input type="text" data-input data-input-must="此处不能为空" value="此处不能为空">
+                <input type="text" data-input data-input-type="text" data-input-must="此处不能为空" data-input-must-en="Must input something"  value="此处不能为空"/>
               </div>
             </div>
             <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">

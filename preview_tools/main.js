@@ -1,7 +1,7 @@
 const TOOL_INFO = [
   {
     name: ["云即·工具集 Figma版","    YN+ToolsSet Fig"],
-    icon:"",
+    icon:"url('../preview_tools/img/Icon-ToolsSet_200.png')",
     url:"",
     about:[
       [
@@ -23,7 +23,7 @@ const TOOL_INFO = [
   },
   {
     name: ["云即·工具集 Mastergo版","YN+ToolsSet Mg"],
-    icon:"",
+    icon:"url('../preview_tools/img/Icon-ToolsSet_200.png')",
     url:"",
     about:[
       [
@@ -37,7 +37,7 @@ const TOOL_INFO = [
   },
   {
     name: ["云即·工具集 PS版","YN+ToolsSet Ps"],
-    icon:"",
+    icon:"url('../preview_tools/img/Icon-ToolsSet_200.png')",
     url:"",
     about:[
       [
@@ -51,7 +51,7 @@ const TOOL_INFO = [
   },
   {
     name: ["云即·资源助手","YN+ListEase"],
-    icon:"",
+    icon:"url('../preview_tools/img/Icon-ListEase_200.png')",
     url:"",
     about:[
       [
@@ -201,6 +201,7 @@ function addToolCard(toolsObj){
 
     let toolicon = document.createElement('div');
     toolicon.setAttribute('data-tool-icon','');
+    toolicon.style.setProperty('--tool-icon',tools.icon)
     toolbox.appendChild(toolicon);
 
     let toolicard = document.createElement('div');

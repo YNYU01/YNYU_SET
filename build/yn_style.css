@@ -945,6 +945,26 @@ input[type="checkbox"]:checked+.btn-theme {
   transform: translate(-50%,50%);
 }
 
+[data-color]{
+  --hsl-df:none;
+  position: relative;
+}
+[data-color]:hover{
+  --hsl-df: flex;
+}
+[data-color]::after{
+  content: attr(data-color-hsl);
+  position: absolute;
+  top: -2.5ch;
+  right: 36px;
+  display: var(--hsl-df);
+  background: var(--mainColor);
+  color: var(--boxBak);
+  font-size: 11px;
+  padding: 2px 4px;
+  border-radius: 0.5ch;
+}
+
 [data-getcolor]{
   display: var(--getcolor-df);
 }

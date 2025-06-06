@@ -28,8 +28,16 @@ html[data-theme="light"]{
   --code10:#ec657c;
 }
 
+
 * {
   cursor: url('../VI/cursor_24.png'),auto;
+}
+
+[data-en-text],
+[data-en-input],
+[data-en-placeholder],
+[data-turnto],[data-back]{
+  font-family: "Shanggu Sans";
 }
 
 .tex-noise{
@@ -79,6 +87,19 @@ html[data-theme="light"]{
     transparent calc(80% + var(--line-bod)),
     transparent 100%
     ) 0 0/var(--line-size) var(--line-size),var(--line-bak)
+}
+
+[data-page-id="start"] .tex-line{
+  --pos-x: var(--line-size);
+  --pos-y: 0;
+  --pos-s: 2s;
+  animation: posMove var(--pos-s) linear infinite;
+}
+
+@keyframes posMove {
+  to{
+    background-position: var(--pos-x) var(--pos-y);
+  }
 }
 
 [data-theme="light"] .dot{
@@ -227,6 +248,9 @@ html[data-theme="light"]{
 }
 /*prismjs代码高亮库专用 END*/
 
+[data-page-id="start"]{
+  --start-box: 200px;
+}
 
 [data-language="En"] [data-tips]::after{
   content: var(--tips-text-en,'something there');
@@ -898,8 +922,8 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   box-sizing: border-box;
   top: 0;
   left: calc(50% - 50px);
-  --tool-icon: url('../VI/ICON_YNYUSET_EG.png');
-  background: var(--tool-icon),var(--boxBak);
+  background-image: var(--tool-icon);
+  background-color: var(--boxBak);
   background-size: cover;
   animation: sizeUp 0.5s;
   transition: left 0.5s;
@@ -1363,6 +1387,10 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     --line-wh: 40px;
   }
 
+  [data-page-id="start"]{
+    --start-box: 150px;
+  }
+
   [data-grid-all]{
     --grid-wh: 80px;
     --grid-bod-w: 1px;
@@ -1522,6 +1550,14 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 
   [data-fonttags]{
     font-size: 10px;
+  }
+
+  [data-tool-about]{
+    font-size: 11px;
+  }
+
+  [data-any-view750]{
+    display: none;
   }
   
 }
