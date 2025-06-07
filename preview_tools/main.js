@@ -1,7 +1,7 @@
 const TOOL_INFO = [
   {
     name: ["云即·工具集 Figma版","    YN+ToolsSet Fig"],
-    icon:"url('../preview_tools/img/Icon-ToolsSet_200.png')",
+    icon:"url('../preview_tools/img/Icon-ToolsSet_fig_200.png')",
     url:"",
     about:[
       [
@@ -19,11 +19,12 @@ const TOOL_INFO = [
     ],
     keyword:[
       ["插件","Plug-in"],
+      ["Figma","Figma"],
     ]
   },
   {
     name: ["云即·工具集 Mastergo版","YN+ToolsSet Mg"],
-    icon:"url('../preview_tools/img/Icon-ToolsSet_200.png')",
+    icon:"url('../preview_tools/img/Icon-ToolsSet_mg_200.png')",
     url:"",
     about:[
       [
@@ -37,7 +38,7 @@ const TOOL_INFO = [
   },
   {
     name: ["云即·工具集 PS版","YN+ToolsSet Ps"],
-    icon:"url('../preview_tools/img/Icon-ToolsSet_200.png')",
+    icon:"url('../preview_tools/img/Icon-ToolsSet_ps_200.png')",
     url:"",
     about:[
       [
@@ -47,6 +48,7 @@ const TOOL_INFO = [
     ],
     keyword:[
       ["插件","Plug-in"],
+      ["Photoshop","Photoshop"],
     ]
   },
   {
