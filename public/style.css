@@ -46,8 +46,10 @@ html[data-theme="light"]{
   position: fixed;
   top: 0;
   left: 0;
-  background: url("../VI/noise.png") 0 0/100px 100px,url("../VI/noise.png") 0 0/200px 200px;
-  opacity: 0.1;
+  background: url("../VI/noise.jpg") 0 0/200px 200px,url("../VI/noise.jpg") 0 0/300px 300px;
+  opacity: 0.5;
+  filter: brightness(90%);
+  mix-blend-mode: overlay;
   z-index: 1000;
   pointer-events: none;
 }
