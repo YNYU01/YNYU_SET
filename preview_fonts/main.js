@@ -111,10 +111,11 @@ let randomColor = [
 window.addEventListener('load',()=>{
   document.getElementById('noise').className = 'tex-noise';
   if(ISMOBILE || window.innerWidth <= 750){
-    let egfontSizeInput = document.querySelector('[data-egfont-size]').querySelector('[data-input="value"]')
-    egfontSizeInput.value = egfontSizeInput.value >= 40 ? 40 : egfontSizeInput.value;
-    let inputEvent = new Event('change',{bubbles:true});
-    egfontSizeInput.dispatchEvent(inputEvent);
+    let egfontSizeInput = document.querySelector('[data-egfont-size]');
+    let oldfontsize = egfontSizeInput.getAttribute('data-number-value');
+    let newfontsize = oldfontsize >= 32 ? 32 : oldfontsize;
+    egfontSizeInput.setAttribute('data-number-value',newfontsize);
+    egfontSizeInput.querySelectorAll('input').forEach(item => {item.value = newfontsize})
   } else {
     egfontMoreset.checked = false;
     let inputEvent = new Event('change',{bubbles:true});
@@ -131,15 +132,18 @@ window.addEventListener('resize',()=>{
   };
   MOVE_TIMEOUT = setTimeout(()=>{
     if(window.innerWidth <= 750){
-      let egfontSizeInput = document.querySelector('[data-egfont-size]').querySelector('[data-input="value"]')
-      egfontSizeInput.value = egfontSizeInput.value >= 40 ? 40 : egfontSizeInput.value;
-      let inputEvent = new Event('change',{bubbles:true});
-      egfontSizeInput.dispatchEvent(inputEvent);
+      let egfontSizeInput = document.querySelector('[data-egfont-size]');
+      let oldfontsize = egfontSizeInput.getAttribute('data-number-value');
+      let newfontsize = oldfontsize >= 60 ? 40 : oldfontsize;
+      egfontSizeInput.setAttribute('data-number-value',newfontsize);
+      egfontSizeInput.querySelectorAll('input').forEach(item => {item.value = newfontsize})  
     } else {
-      let egfontSizeInput = document.querySelector('[data-egfont-size]').querySelector('[data-input="value"]')
-      egfontSizeInput.value = egfontSizeInput.value == 40 ? 70 : egfontSizeInput.value;
-      let inputEvent = new Event('change',{bubbles:true});
-      egfontSizeInput.dispatchEvent(inputEvent);
+      let egfontSizeInput = document.querySelector('[data-egfont-size]');
+      let oldfontsize = egfontSizeInput.getAttribute('data-number-value');
+      let newfontsize = oldfontsize == 40 ? 70 : oldfontsize;
+      egfontSizeInput.setAttribute('data-number-value',newfontsize);
+      egfontSizeInput.querySelectorAll('input').forEach(item => {item.value = newfontsize})
+  
     }
   },500);
 });

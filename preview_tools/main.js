@@ -49,6 +49,9 @@ const TOOL_INFO = [
     keyword:[
       ["插件","Plug-in"],
       ["Photoshop","Photoshop"],
+      ["Photoshop","Photoshop"],
+      ["Photoshop","Photoshop"],
+      ["Photoshop","Photoshop"],
     ]
   },
   {
@@ -217,7 +220,8 @@ function addToolCard(toolsObj){
     tooltitle.appendChild(toolname);
     let tooltag = document.createElement('div');
     tooltag.setAttribute('data-tool-tag','');
-    tooltag.className = 'df-cc';
+    tooltag.setAttribute('data-scroll-x','');
+    tooltag.className = 'df-lc noscrollbar';
     tools.keyword.forEach(item => {
       let tags = document.createElement('div');
       tags.style.setProperty('--tagsColor',randomColor[Math.floor(Math.random()*10)])
@@ -226,6 +230,22 @@ function addToolCard(toolsObj){
       tags.innerHTML = item[0];
       tooltag.appendChild(tags);
     });
+    let tooltagScroll;
+    let startX,scrollLeft;
+    tooltag.addEventListener('mousedown',(event)=>{
+      tooltagScroll = true;
+      startX = event.clientX;
+      scrollLeft = tooltag.scrollLeft;  
+    });
+    tooltag.addEventListener('mousemove',(event)=>{
+      if(tooltagScroll){
+        let move = event.clientX - startX;
+        tooltag.scrollLeft = scrollLeft - move;
+      }
+    });
+    tooltag.addEventListener('mouseup',(event)=>{
+      tooltagScroll = false;
+    })
     tooltitle.appendChild(tooltag);
     let toolmore = document.createElement('a');
     toolmore.className =  'df-cc';

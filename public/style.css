@@ -47,11 +47,16 @@ html[data-theme="light"]{
   top: 0;
   left: 0;
   background: url("../VI/noise.jpg") 0 0/200px 200px,url("../VI/noise.jpg") 0 0/300px 300px;
-  opacity: 0.5;
-  filter: brightness(90%);
-  mix-blend-mode: overlay;
+  opacity: 0.2;
+  filter: brightness(110%);
+  mix-blend-mode: hard-light;
   z-index: 1000;
   pointer-events: none;
+}
+
+[data-theme="dark"] .tex-noise{
+  mix-blend-mode: overlay;
+  opacity: 0.4;
 }
 
 .tex-dot{
@@ -209,6 +214,12 @@ html[data-theme="light"]{
   transform-origin: right center;
   transform: rotateX(180deg) rotateY(-90deg) translateX(100%);
   animation: gridMove2 1s linear infinite;
+}
+
+[data-graph-bod]{
+  stroke-width: var(--bod-w,1px);
+  stroke: var(--mainColor);
+  stroke-linecap: square;
 }
 
 .nobod{
@@ -858,6 +869,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   padding: 0.2ch 1ch;
   border-radius: 10px;
   box-sizing: border-box;
+  flex: 0 0 auto;
   cursor: var(--pointer,pointer);
 }
 
@@ -1011,6 +1023,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 }
 
 [data-tool-title]{
+  width: 100%;
   display: flex;
   align-items: center;
   flex-flow: column;
@@ -1022,6 +1035,8 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 [data-tool-tag]{
   margin-top: -8px;
   gap: 4px;
+  max-width: 100%;
+  overflow-x: scroll;
 }
 
 [data-tool-more]{
@@ -1435,6 +1450,9 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   [data-tab-side-mix]{
     --swi-bak: transparent;
   }
+  [data-tool-tag]{
+    justify-content: left;
+  }
 
   [data-tool-list]{
     width: 100%;
@@ -1560,6 +1578,10 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 
   [data-any-view750]{
     display: none;
+  }
+
+  [data-scroll-round]{
+    height: calc(100vh - var(--scroll-cut-mb));
   }
   
 }
