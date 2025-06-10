@@ -31,7 +31,7 @@ window.addEventListener('load',()=>{
   });
   
   A_BACK.forEach(item => {
-    if(ISBACK || document.referrer == ''){
+    if(ISBACK || (document.referrer == '' && ISLOCAL)){
       //console.log(document.referrer)
       item.addEventListener('click',(event)=>{
         event.preventDefault();
