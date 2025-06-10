@@ -507,7 +507,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   width: fit-content;
   gap: 20px;
   transform-style: preserve-3d;
-  transform: translate3d(0 0 0);
+  transform: translate3d(0,0,0);
 }
 
 [data-worksname-turnto]:hover [data-worksname-path],
@@ -766,7 +766,8 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   display: none;
 }
 
-[data-mobile="true"] [data-any="pc"]{
+[data-mobile="true"] [data-any="pc"],
+[data-mobile="false"] [data-any="pe"]{
   display: none;
 }
 
@@ -1368,6 +1369,40 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   stroke-width: 0.03;
 }
 
+@property --arrowRo{
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --arrowUp{
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+[data-turnto-big]{
+  --bod-col: var(--boxGry);
+  --join: bevel;
+  --cap: square;
+  --bod-w: 0.5;
+  animation: arrowRo 1s cubic-bezier(0.85, 0, 0, 1) infinite,
+  arrowUp 1s cubic-bezier(0.5, -20, 0.5, 20) infinite;
+  transform-origin: 50% calc(50% + 2px);
+  transform: rotateX(calc(var(--arrowRo)*1deg)) translateX(calc(var(--arrowUp)*1px));
+}
+
+@keyframes arrowRo {
+  to{
+    --arrowRo: 360;
+  }
+}
+
+@keyframes arrowUp {
+  to{
+    --arrowUp: 1;
+  }
+}
 
 @media (max-width:950px) {
   :root{
@@ -1521,13 +1556,24 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
   
   [data-worksname-list]{
-    --turnto-w:26px;
+    height: calc(100vh - 40px);
+    --turnto-w: 40px;
     --arrow-w: 4;
-    --svg-h:40px;
-    gap:10px;
+    --svg-h: 60px;
+    gap: 40px;
+    overflow-y: scroll;
   }
   [data-worksname-turnto]{
     gap:10px;
+    flex-wrap: wrap;
+  }
+
+  [data-worksname]{
+    width: 100%;
+    --svg-h: 70px;
+    flex-wrap: wrap;
+    align-items: start;
+    gap: 6px;
   }
 
   [data-language="Zh"] [data-worksname-turnto] [data-turnto]{
@@ -1535,7 +1581,6 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     width: fit-content;
     line-height: 1.5em;
     font-weight: 700;
-    font-size: 10px;
     --text:var(--turnto-text);
   }
   [data-language="En"] [data-worksname-turnto] [data-turnto]{
