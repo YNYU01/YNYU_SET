@@ -1,6 +1,6 @@
 let HREF_ALL = document.querySelectorAll('a');
-let A_BACK = document.querySelectorAll('[data-back]')
-let LINK_ALL = document.querySelectorAll('[data-link-to]')
+let A_BACK = document.querySelectorAll('[data-back]');
+let LINK_ALL = document.querySelectorAll('[data-link-to]');
 
 let ISLOCAL = window.location.protocol === 'file:' || window.location.hostname === 'localhost';
 let ISBACK = document.referrer && document.referrer !== window.location.href;
@@ -19,15 +19,17 @@ window.addEventListener('load',()=>{
 
   LINK_ALL.forEach(item => {
     let link = item.getAttribute('data-link-to');
-    if(ISLOCAL){
-      if(item.getAttribute('data-back')){
-        item.setAttribute('href',link  + '.html');
+    if(link){
+      if(ISLOCAL){
+        if(item.getAttribute('data-back')){
+          item.setAttribute('href',link  + '.html');
+        } else {
+          item.setAttribute('href',link  + '/index.html');
+        }
       } else {
-        item.setAttribute('href',link  + '/index.html');
-      }
-    } else {
-      item.setAttribute('href',link);
-    };
+        item.setAttribute('href',link);
+      };
+    } 
   });
   
   A_BACK.forEach(item => {

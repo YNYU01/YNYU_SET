@@ -49,15 +49,12 @@ const TOOL_INFO = [
     keyword:[
       ["插件","Plug-in"],
       ["Photoshop","Photoshop"],
-      ["Photoshop","Photoshop"],
-      ["Photoshop","Photoshop"],
-      ["Photoshop","Photoshop"],
     ]
   },
   {
     name: ["云即·资源助手","YN+ListEase"],
     icon:"url('../preview_tools/img/Icon-ListEase_200.png')",
-    url:"",
+    url:"../tool_web/ListEase",
     about:[
       [
       "说明文案说明文案说明文案说明文案说明文案说明文案说明文案说明文案",
@@ -68,7 +65,20 @@ const TOOL_INFO = [
       ["网页","Web"],
     ]
   },
-  
+  {
+    name: ["云即·字效编辑器","YN+VFontX"],
+    icon:"url('../preview_tools/img/Icon-VFontX_200.png')",
+    url:"../tool_web/VFontX",
+    about:[
+      [
+      "说明文案说明文案说明文案说明文案说明文案说明文案说明文案说明文案",
+      "This is a plug-in for XXX function. Please pay attention to the following issues"
+      ],
+    ],
+    keyword:[
+      ["网页","Web"],
+    ]
+  },
 ];
 
 let randomColor = [
@@ -252,6 +262,9 @@ function addToolCard(toolsObj){
     toolmore.setAttribute('data-tool-more','');
     if(tools.url){
       toolmore.setAttribute('href',tools.url);
+      if(ISLOCAL){
+        toolmore.setAttribute('href',tools.url + '/index.html');
+      }
       toolmore.setAttribute('target','_blank');
       toolmore.setAttribute('rel','noopener noreferrer');
     };

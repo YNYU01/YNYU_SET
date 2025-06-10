@@ -38,7 +38,7 @@ let randomColor = [
   "var(--code10)",
 ];
 
-window.addEventListener('load',()=>{
+window.addEventListener('load',(event)=>{
   //viewPage('individual');
   document.getElementById('noise').className = 'tex-noise';
   worksName.forEach(item => {
@@ -47,7 +47,13 @@ window.addEventListener('load',()=>{
     item.style.backgroundPosition = '100%';
   });
   addCoinMotion();
-  reRectBg(ROOT.getAttribute('data-theme'));
+  reRectBg(ROOT.getAttribute('data-theme')); 
+  if((history.state && history.state.fromBackNavigation) || ISLOCAL){
+    let userTabPick = localStorage.getItem('homepageTabPick');
+    if(userTabPick){
+      viewPage(userTabPick);
+    }
+  };
 });
 
 window.addEventListener('resize',()=>{
@@ -302,5 +308,28 @@ function reRectBg(theme){
     let num = Math.floor(Math.random()*rectBg.length)
     rectBg[num].setAttribute('fill','rgba(128,128,128,0.8)')//randomColor[Math.floor(Math.random()*10)]
     rectBg[num].setAttribute('fill-opacity',0.1)
+  }
+}
+
+/*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
+let observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if(mutation.type === 'attributes'){
+      switch(mutation.attributeName){
+        case 'data-tab-pick':getUserTab(mutation.target); break;
+      }
+    }
+  })
+});
+let userEvent_tab = document.querySelectorAll('[data-tab-pick]');
+userEvent_tab.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-tab-pick']};
+  observer.observe(item,config);
+});
+
+function getUserTab(node){
+  let tabPick = node.getAttribute('data-tab-pick').split('tab_')[1]
+  if(tabPick){
+    localStorage.setItem('homepageTabPick',tabPick);
   }
 }
