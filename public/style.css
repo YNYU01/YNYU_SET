@@ -631,11 +631,11 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
 @keyframes worksnameChange {
   0%{
     --bod-cap: butt;
-    --bod-w: 3.5;
+    --bod-w: 4;
   }
   50%{
     --bod-cap: butt;
-    --bod-w: 3.5;
+    --bod-w: 4;
   }
   51%{
     --bod-cap: round;
@@ -1556,12 +1556,15 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
   
   [data-worksname-list]{
-    height: calc(100vh - 40px);
+    height: calc(100vh - 80px);
     --turnto-w: 40px;
     --arrow-w: 4;
     --svg-h: 60px;
     gap: 40px;
     overflow-y: scroll;
+  }
+  [data-worksname-list] [data-turnto]{
+    margin-left: 10px;
   }
   [data-worksname-turnto]{
     gap:10px;
@@ -1574,6 +1577,9 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     flex-wrap: wrap;
     align-items: start;
     gap: 6px;
+  }
+  [data-worksname="en"]{
+    --svg-h: 66px;
   }
 
   [data-language="Zh"] [data-worksname-turnto] [data-turnto]{
