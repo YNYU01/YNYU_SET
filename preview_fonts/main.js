@@ -131,19 +131,18 @@ window.addEventListener('resize',()=>{
       clearTimeout(MOVE_TIMEOUT)
   };
   MOVE_TIMEOUT = setTimeout(()=>{
-    if(window.innerWidth <= 750){
+    if(window.innerWidth <= 750 && !ISMOBILE){
       let egfontSizeInput = document.querySelector('[data-egfont-size]');
       let oldfontsize = egfontSizeInput.getAttribute('data-number-value');
       let newfontsize = oldfontsize >= 60 ? 40 : oldfontsize;
       egfontSizeInput.setAttribute('data-number-value',newfontsize);
-      egfontSizeInput.querySelectorAll('input').forEach(item => {item.value = newfontsize})  
+      egfontSizeInput.querySelectorAll('input').forEach(item => {item.value = newfontsize});
     } else {
       let egfontSizeInput = document.querySelector('[data-egfont-size]');
       let oldfontsize = egfontSizeInput.getAttribute('data-number-value');
       let newfontsize = oldfontsize == 40 ? 70 : oldfontsize;
       egfontSizeInput.setAttribute('data-number-value',newfontsize);
-      egfontSizeInput.querySelectorAll('input').forEach(item => {item.value = newfontsize})
-  
+      egfontSizeInput.querySelectorAll('input').forEach(item => {item.value = newfontsize});
     }
   },500);
 });
