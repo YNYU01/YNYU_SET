@@ -155,9 +155,9 @@
               </div>
               select:
               <div class="df-lc pos-r" data-select data-select-value="选项1" style="gap: 4px; width: 120px;">
-                <input type="text" data-select-input readonly data-en-input="Option 1" value="选项1">
-                <input id="select-show" data-select-pick type="checkbox">
-                <label for="select-show" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
+                <input id="select-value-1" type="text" data-select-input readonly data-en-input="Option 1" value="选项1">
+                <input id="select-show-1" data-select-pick type="checkbox">
+                <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
                 <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
                   <div data-option="type" data-en-text="Type 1">分类1</div>
                   <div data-option="option" data-option-main="true" data-en-text="Option 1" data-option-value="选项1">选项1</div>
@@ -212,8 +212,8 @@
               </div>
               theme:
               <div id="btn-theme" style="width: 14px; height: 14px;">
-                <input id="theme" data-theme-check type="checkbox" checked="true">
-                <label for="theme" class="btn-theme" style="position: relative;">
+                <input id="theme-2" data-theme-check type="checkbox" checked="true">
+                <label for="theme-2" class="btn-theme" style="position: relative;">
                   <btn-theme></btn-theme>
                 </label>
               </div>
@@ -267,8 +267,8 @@
                 <btn-info></btn-info>
               </div>
               switch:
-              <input id="switch" type="checkbox" checked="true">
-              <label for="switch" class="switch"></label>
+              <input id="switch-1" type="checkbox" checked="true">
+              <label for="switch-1" class="switch"></label>
             </div>
             <div data-copy="input-range-int" class="df-lc" style="gap: 4px;">
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
@@ -279,8 +279,8 @@
               </div>
               input-range-int:
               <div data-number data-number-value="50" class="df-lc fl1" style="flex: 1;">
-                <input data-input="range" type="range" min="0" max="100" value="50"/>
-                <input data-input="value" data-input-must="0-100" data-input-type="int" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" />
+                <input id="input-range-1" data-input="range" type="range" min="0" max="100" value="50"/>
+                <input id="input-int-1" data-input="value" data-input-must="0-100" data-input-type="int" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" />
               </div>
             </div>
             <div data-copy="input-color" class="df-lc" style="gap: 4px;">
@@ -300,11 +300,10 @@
                 <div data-input="colorpick" style="height:20px; cursor: pointer; border: 1px solid var(--boxBod); border-radius: 5px;" >
                   <btn-color></btn-color>
                 </div>
-                <input class="fl1" type="text" data-input="hex" value="#888888" >
-                <input data-input="colortype" id="colortype" type="checkbox">
-                <label for="colortype" class="colortype"></label>
+                <input id="colorvalue-1" class="fl1" type="text" data-input="hex" value="#888888" >
+                <input data-input="colortype" id="colortype-1" type="checkbox">
+                <label for="colortype-1" class="colortype"></label>
                 <card-colorpick></card-colorpick>
-                
               </div> 
             </div>
           </div>
@@ -317,7 +316,7 @@
                 <btn-info></btn-info>
               </div>
               input-text:
-              <input type="text" data-input>
+              <input id="input-text-1" type="text" data-input>
             </div>
             <div data-copy="input-text-must" class="df-lc" style="gap: 4px;">
               <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
@@ -328,7 +327,7 @@
               </div>
               input-text-must:
               <div data-text data-text-value="此处不能为空" class="fl0">
-                <input type="text" data-input data-input-type="text" data-input-must="此处不能为空" data-input-must-en="Must input something" data-en-input="Must input something"  value="此处不能为空"/>
+                <input id="input-text-must-1" type="text" data-input data-input-type="text" data-input-must="此处不能为空" data-input-must-en="Must input something" data-en-input="Must input something"  value="此处不能为空"/>
               </div>
             </div>
             <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">
@@ -340,7 +339,7 @@
               </div>
               input-text-max:
               <div class="pos-r df-lc fl1">
-                <input type="text" maxlength="10" data-input-max>
+                <input id="input-text-max-1" type="text" maxlength="10" data-input-max>
                 <div class="pos-a" style="right: 2px; font-size: 9px; opacity: 0.6;">
                   <span>0</span>/10
                 </div>

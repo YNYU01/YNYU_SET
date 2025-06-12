@@ -84,8 +84,8 @@
               <path fill="var(--mainColor)" d="M19 11.5H17.667C17.6668 10.7637 17.0693 10.167 16.333 10.167H16V15C16.0001 15.5523 16.4478 16 17 16V18H12.5V16C13.0523 16 13.5 15.5523 13.5 15V10.167H13.167C12.4308 10.167 11.8332 10.7637 11.833 11.5H10.5V7.5H19V11.5Z"/>
             </svg>                         
           </div>
-          <input data-input="range" type="range" min="10" max="200" value="70" style="min-width: 10px;">
-          <input data-input="value" data-input-must="10-200" data-input-type="int" type="text" class="nobod" style=" width: 40px; flex: 0 0 auto; padding-right: 10px;" value="70">
+          <input id="font-size-range" data-input="range" type="range" min="10" max="200" value="70" style="min-width: 10px;">
+          <input id="font-size-value" data-input="value" data-input-must="10-200" data-input-type="int" type="text" class="nobod" style=" width: 40px; flex: 0 0 auto; padding-right: 10px;" value="70">
           <div class="pos-a" style="right: 8px; font-size: 12px; font-weight: 700;">px</div>
         </div>
         <div class="df-lc fl1 pos-r egfont-set" 
@@ -99,7 +99,7 @@
             <path fill="var(--mainColor)" d="M20 11.5557L11.5557 20.001L1 9.44434V1H9.44434L20 11.5557ZM6 4C4.89543 4 4 4.89543 4 6C4 7.10457 4.89543 8 6 8C7.10457 8 8 7.10457 8 6C8 4.89543 7.10457 4 6 4Z"/>
           </svg>
         </div>
-        <input data-input data-findtags class="nobod fl1" type="text" data-en-placeholder="All tags" placeholder="所有类型"> 
+        <input id="font-findtags" data-input data-findtags class="nobod fl1" type="text" data-en-placeholder="All tags" placeholder="所有类型"> 
         <!--清空-->
         <div class="pos-a" data-close="clear" style="right: 10px; top:calc(50% - 6px); width: 12px; height: 12px;">
           <btn-close></btn-close>
