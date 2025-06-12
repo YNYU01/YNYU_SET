@@ -669,6 +669,7 @@ input[type="checkbox"]:checked+.show-next {
 }
 
 [data-option-main="true"]{
+  color: #2b2b2b;
   background: var(--themeColor);
 }
 
