@@ -280,7 +280,7 @@
               input-range-int:
               <div data-number data-number-value="50" class="df-lc fl1" style="flex: 1;">
                 <input data-input="range" type="range" min="0" max="100" value="50"/>
-                <input data-input="value" data-input-must="0-100" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" />
+                <input data-input="value" data-input-must="0-100" data-input-type="int" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" />
               </div>
             </div>
             <div data-copy="input-color" class="df-lc" style="gap: 4px;">
@@ -328,7 +328,7 @@
               </div>
               input-text-must:
               <div data-text data-text-value="此处不能为空" class="fl0">
-                <input type="text" data-input data-input-type="text" data-input-must="此处不能为空" data-input-must-en="Must input something"  value="此处不能为空"/>
+                <input type="text" data-input data-input-type="text" data-input-must="此处不能为空" data-input-must-en="Must input something" data-en-input="Must input something"  value="此处不能为空"/>
               </div>
             </div>
             <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">
@@ -437,6 +437,7 @@
   
   <script src="../build/yn_comp.js"></script>
   <script src="../build/yn_test.js"></script>
+  <script src="../build/yn_graph.js"></script>
   <script src="main.js"></script>
   <script>
     /*

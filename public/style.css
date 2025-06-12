@@ -37,7 +37,7 @@ html[data-theme="light"]{
 [data-en-input],
 [data-en-placeholder],
 [data-turnto],[data-back]{
-  font-family: "Shanggu Sans";
+  font-family: "Shanggu Sans", Arial, Helvetica, sans-serif;
 }
 
 .tex-noise{
@@ -1572,7 +1572,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
 
   [data-worksname]{
-    width: 100%;
+    width: 100vw;
     --svg-h: 70px;
     flex-wrap: wrap;
     align-items: start;

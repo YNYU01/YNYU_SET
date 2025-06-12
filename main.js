@@ -99,7 +99,7 @@ worksName.forEach(item => {
 
 
 worksNamePath.forEach(item => {
-  let pathlength = item.getTotalLength();
+  let pathlength = Math.floor(item.getTotalLength());
   item.style.setProperty('--bod-array',pathlength)
 });
 

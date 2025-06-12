@@ -270,7 +270,7 @@ function getUserText(node){
       item.textContent = text;
     })
   }
-  //console.log(text)
+  console.log(text)
 }
 
 function getUserSelect(node){

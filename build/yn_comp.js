@@ -431,20 +431,26 @@ INPUT_CHECK.forEach(item => {
 INPUT_MUST_TEXT.forEach(item => {
   item.addEventListener('change',() => {
     let info = item.getAttribute('data-input-must');
-    inputMust(item,['text',info]);
+    let infoEn = item.getAttribute('data-input-must-en');
+    if(infoEn){
+      inputMust(item,['text',[info,infoEn]]);
+    } else {
+      inputMust(item,['text',info]);
+    }
+    
     item.parentNode.setAttribute('data-text-value',item.value);
-  })
+  });
 });
 
 INPUT_MUST_INT.forEach(item => {
   if(!item.getAttribute('data-value')){//类型冲突
+    let info = item.getAttribute('data-input-must');
+    let max = info.split('-')[1] * 1;
+    let min = info.split('-')[0] * 1;
+    max = max ? max : 0;
+    min = min ? min : 0;
+    info = [min,max];
     item.addEventListener('change',() => {
-      let info = item.getAttribute('data-input-must');
-      let max = info.split('-')[1] * 1;
-      let min = info.split('-')[0] * 1;
-      max = max ? max : 0;
-      min = min ? min : 0;
-      info = [min,max];
       if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0){
         inputMust(item,['int',...info]);
       }
@@ -478,14 +484,19 @@ INPUT_RANGE.forEach(item => {
 });
 
 INPUT_VALUE.forEach(item => {
+  let info = item.getAttribute('data-input-must');
+  let max = info.split('-')[1] * 1;
+  let min = info.split('-')[0] * 1;
+  max = max !== null ? max : 0;
+  min = min !== null ? min : 0;
+  info = [min,max];
   item.addEventListener('input',() => {
-    let info = item.getAttribute('data-input-must');
-    let max = info.split('-')[1] * 1;
-    let min = info.split('-')[0] * 1;
-    max = max !== null ? max : 0;
-    min = min !== null ? min : 0;
-    info = [min,max];
-    if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0){
+    item.previousElementSibling.value = item.value;
+    item.parentNode.setAttribute('data-number-value',item.value);
+  });
+  item.addEventListener('change',() => {
+    if(item.value < min || item.value > max || item.value.replace(/[0-9]/g,'').trim().length > 0){
+      tipsAll(['数值错误，已修正','Wrong type, fixed'],1000,3);
       inputMust(item,['int',...info]);
     }
     item.previousElementSibling.value = item.value;
@@ -836,9 +847,15 @@ function inputMust(node,info){
   }
   if(type === "text"){
     if(node.value == '' || node.value.length < 1){
-      let nullText = info[1];
+      let nullText;
+      if(typeof info[1] !== 'string'){
+        nullText = ROOT.getAttribute('data-language') == 'En' ? info[1][1] : info[1][0];
+      } else {
+        nullText = info[1];
+      }
+      
       let maxlength = node.getAttribute("maxlength")
-      nullText = maxlength ? nullText.substring(0,maxlength) : nullText
+      nullText = maxlength ? nullText.substring(0,maxlength) : nullText;
       node.value = nullText
     }
   }
@@ -849,13 +866,13 @@ function inputMust(node,info){
       if(RGB.length == 3){
         node.value = rgbTohex(RGB[0],RGB[1],RGB[2]);
       } else {
-        tipsAll('请输入正确的色值','1000');
+        tipsAll(['请输入正确的色值','Should be color'],1000);
       }
     } else {
       let values = '#' +  node.value.replace(/[#]/g,'');
       if (values == '#' || values.replace(/[0-9a-fA-F]/g,'').trim().length > 1) {
       node.value = info[1];
-      tipsAll('请输入正确的色值','1000');
+      tipsAll(['请输入正确的色值','Should be color'],1000);
       } else {
           if (node.value.length < 7) {
           if (node.value[0] == '#') {
@@ -901,7 +918,7 @@ function inputMust(node,info){
                   node.value = '#' + node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().substring(0, 6);
               } else {
                   node.value = info[1]
-                  tipsAll('请输入正确的色值','1000');
+                  tipsAll(['请输入正确的色值','Should be color'],1000);
               }
           }
       }
@@ -912,7 +929,7 @@ function inputMust(node,info){
       let values = '#' +  node.value.replace(/[#]/g,'');
       if (values == '#' || values.replace(/[0-9a-fA-F]/g,'').trim().length > 1) {
       node.value = info[1];
-      tipsAll('请输入正确的色值','1000');
+      tipsAll(['请输入正确的色值','Should be color'],1000);
       } else {
           if (node.value.length < 7) {
           if (node.value[0] == '#') {
@@ -958,7 +975,7 @@ function inputMust(node,info){
                   node.value = hexTorgb('#' + node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().substring(0, 6));
               } else {
                   node.value = info[1]
-                  tipsAll('请输入正确的色值','1000');
+                  tipsAll(['请输入正确的色值','Should be color'],1000);
               }
           }
       }
@@ -974,7 +991,7 @@ function inputMust(node,info){
         });
         node.value = `rgb(${RGB[0]},${RGB[1]},${RGB[2]})`
       } else {
-        tipsAll('请输入正确的色值','1000');
+        tipsAll(['请输入正确的色值','Should be color'],1000);
       }
     }
   }
@@ -1021,7 +1038,7 @@ function setTheme(isLight,istips){
     });
     localStorage.setItem('userTheme','light');
     if(istips){
-      tipsAll('已切换为亮色主题',2000,3);
+      tipsAll(['已切换为亮色主题','Change to light theme'],2000,3);
     };
   }else{
     ROOT.setAttribute("data-theme","dark");
@@ -1030,7 +1047,7 @@ function setTheme(isLight,istips){
     });
     localStorage.setItem('userTheme','dark');
     if(istips){
-      tipsAll('已切换为暗色主题',2000,3);
+      tipsAll(['已切换为暗色主题','Change to dark theme'],2000,3);
     };
   };
 }
@@ -1123,20 +1140,22 @@ function copy(node,type,other){
   };
   navigator.clipboard.writeText(copyText) 
   .then(function() {
-    tipsAll('复制成功',2000);
+    tipsAll(['复制成功','Successfully copied'],2000);
   });
 }
 
 /**
  * 全局提示
- * @param {string} string - 全局提示内容
+ * @param {string | Array} string - 全局提示内容,可以是单个文案或多语言数组
  * @param {number} time - 提示停留时间
  * @param {number?} num  - 提示次数（如有）
  */
 function tipsAll(string,time,num){
-  
+  if(typeof string !== 'string'){
+    string = ROOT.getAttribute('data-language') == 'En' ? string[1] : string[0]
+  }
   if(num){
-      if(TIPS_TIMES.some(item => item.split('#')[0] == string )){
+    if(TIPS_TIMES.some(item => item.split('#')[0] == string )){
       //console.log(TIPS_TIMES)
       TIPS_TIMES.forEach((item,index)=> {
         if(item.split('#')[0] == string){
@@ -1147,7 +1166,7 @@ function tipsAll(string,time,num){
             TIPS_TEXT.innerHTML = string;
           }
         }
-      })
+      });
       } else {
         TIPS_TIMES.push(string + '#' + num);
         TIPS.style.display = "flex";
@@ -1157,7 +1176,7 @@ function tipsAll(string,time,num){
     TIPS.style.display = "flex";
     TIPS_TEXT.innerHTML = string;
   }
-
+  
   setTimeout(()=>{
     TIPS.style.animation = "overOp 0.2s"//退场
     setTimeout(()=>{//重置
