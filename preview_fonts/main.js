@@ -294,7 +294,7 @@ function addFontsCard(fontsObj){
     cardTitle.innerHTML = fonts.fontFamily[0];
     cardTitleMix.appendChild(cardTitle);
     let fontDown = document.createElement('div');
-    fontDown.setAttribute('style','width:14px; height:14px; display:var(--down-df,none)');
+    fontDown.setAttribute('style','width:14px; height:14px;');
     fontDown.innerHTML = '<btn-down></btn-down>';
     fontDown.addEventListener('click',()=>{
 
@@ -349,13 +349,13 @@ function addFontsCard(fontsObj){
       difStyle.className = 'df-ffc pos-r';
       difStyle.style.gap = '4px';
 
-      let egfontTitle = document.createElement('a');
+      let egfontTitle = document.createElement('div');
       let styleName = `<div data-any="pc" data-en-text="${item.fontStyle[1]}">${item.fontStyle[0]}</div>`;
       let styleName2 = `<div data-any="pe" data-en-text="${item.fontStyle[1][0]}${item.fontStyle[1][1]}">${item.fontStyle[0][0]}${item.fontStyle[0][1]}</div>`;
 
       //let down = '<div style="width:14px; height:14px; display:var(--down-df,none)"><btn-down></btn-down></div>'
       //egfontTitle.setAttribute('download','');
-      egfontTitle.href = item.download;
+      //egfontTitle.href = item.download;
       egfontTitle.className = 'fontcard-title-style df-lc pos-a'
       egfontTitle.style.gap = '4px';
       egfontTitle.innerHTML = styleName + styleName2;
