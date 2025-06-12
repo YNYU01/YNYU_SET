@@ -131,19 +131,21 @@ window.addEventListener('resize',()=>{
       clearTimeout(MOVE_TIMEOUT)
   };
   MOVE_TIMEOUT = setTimeout(()=>{
-    if(window.innerWidth <= 750 && !ISMOBILE){
-      let egfontSizeInput = document.querySelector('[data-egfont-size]');
-      let oldfontsize = egfontSizeInput.getAttribute('data-number-value');
-      let newfontsize = oldfontsize >= 60 ? 40 : oldfontsize;
-      egfontSizeInput.setAttribute('data-number-value',newfontsize);
-      egfontSizeInput.querySelectorAll('input').forEach(item => {item.value = newfontsize});
-    } else {
-      let egfontSizeInput = document.querySelector('[data-egfont-size]');
-      let oldfontsize = egfontSizeInput.getAttribute('data-number-value');
-      let newfontsize = oldfontsize == 40 ? 70 : oldfontsize;
-      egfontSizeInput.setAttribute('data-number-value',newfontsize);
-      egfontSizeInput.querySelectorAll('input').forEach(item => {item.value = newfontsize});
-    }
+    if(!ISMOBILE){
+      if(window.innerWidth <= 750){
+        let egfontSizeInput = document.querySelector('[data-egfont-size]');
+        let oldfontsize = egfontSizeInput.getAttribute('data-number-value');
+        let newfontsize = oldfontsize >= 60 ? 40 : oldfontsize;
+        egfontSizeInput.setAttribute('data-number-value',newfontsize);
+        egfontSizeInput.querySelectorAll('input').forEach(item => {item.value = newfontsize});
+      } else {
+        let egfontSizeInput = document.querySelector('[data-egfont-size]');
+        let oldfontsize = egfontSizeInput.getAttribute('data-number-value');
+        let newfontsize = oldfontsize == 40 ? 70 : oldfontsize;
+        egfontSizeInput.setAttribute('data-number-value',newfontsize);
+        egfontSizeInput.querySelectorAll('input').forEach(item => {item.value = newfontsize});
+      };
+    };  
   },500);
 });
 
@@ -204,8 +206,6 @@ findTags.addEventListener('keydown',(event)=>{
     findTags.dispatchEvent(inputEvent);
   }
 });
-
-
 
 /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
 let observer = new MutationObserver((mutations) => {
