@@ -1439,6 +1439,13 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     --line-wh: 40px;
   }
 
+  .fontcard-title-style{
+    --down-df:flex;
+    right: 4px;
+    bottom: 1.5ch;
+    padding: 2px 4px;
+  }
+
   [data-page-id="start"]{
     --start-box: 150px;
   }

@@ -1,4 +1,4 @@
-![logo](VI/logo_ynyuset.png)
+![logo](VI/banner_top_zh_dark.jpg)
 
 # 『云即·系列工具』项目资源库
 - [English](README.en.md)

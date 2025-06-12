@@ -31,7 +31,6 @@ class btnset extends HTMLElement {
 };
 customElements.define('btn-set', btnset);
 
-
 const FONTS_INFO = [
     {
       fontFamily:["庄园雅宋","zhuangyuanyasong"],
@@ -294,6 +293,13 @@ function addFontsCard(fontsObj){
     cardTitle.setAttribute('data-en-text',fonts.fontFamily[1]);
     cardTitle.innerHTML = fonts.fontFamily[0];
     cardTitleMix.appendChild(cardTitle);
+    let fontDown = document.createElement('div');
+    fontDown.setAttribute('style','width:14px; height:14px; display:var(--down-df,none)');
+    fontDown.innerHTML = '<btn-down></btn-down>';
+    fontDown.addEventListener('click',()=>{
+
+    })
+    cardTitleMix.appendChild(fontDown);
 
     fonts.keyword.forEach(item => {
       let tags = document.createElement('div');
@@ -344,14 +350,15 @@ function addFontsCard(fontsObj){
       difStyle.style.gap = '4px';
 
       let egfontTitle = document.createElement('a');
-      let styleName = `<div data-en-text="${item.fontStyle[1]}">${item.fontStyle[0]}</div>`;
-      let down = '<div style="width:14px; height:14px; display:var(--down-df,none)"><btn-down></btn-down></div>'
-      egfontTitle.setAttribute('download','');
-      egfontTitle.setAttribute('data-any','pc');
+      let styleName = `<div data-any="pc" data-en-text="${item.fontStyle[1]}">${item.fontStyle[0]}</div>`;
+      let styleName2 = `<div data-any="pe" data-en-text="${item.fontStyle[1][0]}${item.fontStyle[1][1]}">${item.fontStyle[0][0]}${item.fontStyle[0][1]}</div>`;
+
+      //let down = '<div style="width:14px; height:14px; display:var(--down-df,none)"><btn-down></btn-down></div>'
+      //egfontTitle.setAttribute('download','');
       egfontTitle.href = item.download;
       egfontTitle.className = 'fontcard-title-style df-lc pos-a'
       egfontTitle.style.gap = '4px';
-      egfontTitle.innerHTML = styleName + down;
+      egfontTitle.innerHTML = styleName + styleName2;
       difStyle.appendChild(egfontTitle);
 
       let egfontText = document.createElement('div');

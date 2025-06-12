@@ -1,4 +1,4 @@
-![logo](VI/logo_ynyuset.png)
+![logo](VI/banner_top_en_dark.jpg)
 
 # Project Library of YN+Design
 - [简体中文](READM.md)

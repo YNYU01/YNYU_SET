@@ -20,48 +20,48 @@
 
 @font-face {
   font-family: zhuangyuanyasong;
-  src: url("../fonts/zhuangyuanyasong-Bold.woff") format('woff'),
-  url("../fonts/zhuangyuanyasong-Bold.woff2") format('woff2');
+  src: url("../fonts/woff/zhuangyuanyasong-Bold.woff") format('woff'),
+  url("../fonts/woff/zhuangyuanyasong-Bold.woff2") format('woff2');
   font-weight: 700;
   font-display: block;
 }
 
 @font-face {
   font-family: zhuangyuanyasong;
-  src: url("../fonts/zhuangyuanyasong-Regular.woff") format('woff'),
-  url("../fonts/zhuangyuanyasong-Regular.woff2") format('woff2');
+  src: url("../fonts/woff/zhuangyuanyasong-Regular.woff") format('woff'),
+  url("../fonts/woff/zhuangyuanyasong-Regular.woff2") format('woff2');
   font-weight: 500;
   font-display: block;
 }
 
 @font-face {
   font-family: zhuyinti;
-  src: url("../fonts/zhuyinti-Regular.woff") format('woff'),
-  url("../fonts/zhuyinti-Regular.woff2") format('woff2');
+  src: url("../fonts/woff/zhuyinti-Regular.woff") format('woff'),
+  url("../fonts/woff/zhuyinti-Regular.woff2") format('woff2');
   font-weight: 500;
   font-display: block;
 }
 
 @font-face {
   font-family: zhuyinti;
-  src: url("../fonts/zhuyinti-Mask.woff") format('woff'),
-  url("../fonts/zhuyinti-Mask.woff2") format('woff2');
+  src: url("../fonts/woff/zhuyinti-Mask.woff") format('woff'),
+  url("../fonts/woff/zhuyinti-Mask.woff2") format('woff2');
   font-weight: 700;
   font-display: block;
 }
 
 @font-face {
   font-family: duandaoti;
-  src: url("../fonts/duandaoti-Regular.woff") format('woff'),
-  url("../fonts/duandaoti-Regular.woff2") format('woff2');
+  src: url("../fonts/woff/duandaoti-Regular.woff") format('woff'),
+  url("../fonts/woff/duandaoti-Regular.woff2") format('woff2');
   font-weight: 500;
   font-display: block;
 }
 
 @font-face {
   font-family: duandaoti;
-  src: url("../fonts/duandaoti-Light.woff") format('woff'),
-  url("../fonts/duandaoti-Light.woff2") format('woff2');
+  src: url("../fonts/woff/duandaoti-Light.woff") format('woff'),
+  url("../fonts/woff/duandaoti-Light.woff2") format('woff2');
   font-weight: 300;
   font-display: block;
 }
