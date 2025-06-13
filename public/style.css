@@ -1364,19 +1364,27 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
 }
 
+[data-head-home]{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10%;
+  padding: 0 5%;
+  box-sizing: border-box;
+}
+
 [data-head-box]{
   overflow: hidden;
   border-radius: calc(var(--start-box) * 0.08);
   --head-s: 0.8;
+  --head-bak: block;
+  --head-icon: block;
+  height: calc(var(--start-box) * var(--head-s));
 }
 [data-head-box] [data-head-fill="1"]{
   transform: translateY(100%);
   animation: headUp 2.5s cubic-bezier(0.6, -20, 0.4, 20) infinite;
   animation-delay: var(--delay,0);
-}
-[data-head-box]:hover [data-head-fill="1"]{
-  transform: translateY(0%);
-  animation: none;
 }
 
 @keyframes headUp {
@@ -1386,6 +1394,46 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   to{
     transform: translateY(84%);
   }
+}
+
+[data-head-fill="bak"]{
+  /**/--head-fill: #dddddd;/**/
+  /*--head-bak: none;*/
+  display: var(--head-bak, none);
+}
+
+[data-head-fill="?"]{
+  display: var(--head-icon, none);
+}
+
+[data-head-box] [data-head-fill="?"]{
+  transform: translateY(0%);
+  animation: headUp2 2.5s linear infinite;
+  animation-delay: var(--delay,0);
+}
+
+@keyframes headUp2 {
+  60%{
+    transform: translateY(0%);
+  }
+  80%{
+    transform: translateY(-100%);
+  }
+  100%{
+    transform: translateY(0%);
+  }
+}
+
+[data-logobg-home]{
+  --fill: var(--mainColor);
+  --line-bod: 2%;
+  --line-col: rgba(255, 255, 255, 0.2);
+  --line-bak: var(--boxGry)
+}
+
+[data-theme="dark"]  [data-logobg-home]{
+  --line-bod: 1%;
+  --line-col: rgba(110, 110, 110, 0.2);
 }
 
 [data-rect-all]{
@@ -1581,8 +1629,22 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     --head-t: 4;
     --svg-h: 40px;
   }
-  
+
+  [data-head-home]{
+    gap: 6%;
+  }
+
+
+  [data-mobile="true"] [data-head-home]{
+    gap: 1vw;
+  }
+
   [data-head-box]{
+    border-radius: calc(var(--start-box) * 0.04);
+    --head-s: 0.6;
+  }
+
+  [data-mobile="true"] [data-head-box]{
     border-radius: calc(var(--start-box) * 0.04);
     --head-s: 0.5;
   }
