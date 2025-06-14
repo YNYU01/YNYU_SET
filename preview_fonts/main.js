@@ -38,18 +38,24 @@ const FONTS_INFO = [
         {
           fontStyle:["常规","Regular"],
           fontWeight:"500",
-          download:"../fonts/otf/zhuangyuanyasong-Regular.otf",
         },
         {
           fontStyle:["粗体","Bold"],
           fontWeight:"700",
-          download:'../fonts/otf/zhuangyuanyasong-Bold.otf',
         }
       ],
       keyword:[
         ["衬线体","serif"],
         ["古典","classical"],
-      ]
+      ],
+      download:[
+        "../fonts/otf/zhuangyuanyasong-Regular.otf",
+        "../fonts/otf/zhuangyuanyasong-Bold.otf",
+        "../fonts/woff/zhuangyuanyasong-Regular.woff",
+        "../fonts/woff/zhuangyuanyasong-Bold.woff",
+        "../fonts/woff/zhuangyuanyasong-Regular.woff2",
+        "../fonts/woff/zhuangyuanyasong-Bold.woff2",
+      ],
     },
     {
       fontFamily:["铸印体","zhuyinti"],
@@ -57,17 +63,23 @@ const FONTS_INFO = [
         {
           fontStyle:["常规","Regular"],
           fontWeight:"500",
-          download:"../fonts/otf/zhuyinti-Regular.otf",
         },
         {
           fontStyle:["破形","Mask"],
           fontWeight:"700",
-          download:"../fonts/otf/zhuyinti-Mask.otf",
         }
       ],
       keyword:[
         ["科技感","technology"],
-      ]
+      ],
+      download:[
+        "../fonts/otf/zhuyinti-Regular.otf",
+        "../fonts/otf/zhuyinti-Mask.otf",
+        "../fonts/woff/zhuyinti-Regular.woff",
+        "../fonts/woff/zhuyinti-Mask.woff",
+        "../fonts/woff/zhuyinti-Regular.woff2",
+        "../fonts/woff/zhuyinti-Mask.woff2",
+      ],
     },
     {
       fontFamily:["锻刀体","duandaoti"],
@@ -75,17 +87,25 @@ const FONTS_INFO = [
         {
           fontStyle:["细体","Light"],
           fontWeight:"300",
-          download:"../fonts/otf/duandaoti-Light.otf",
+          download:["../fonts/otf/duandaoti-Light.otf"],
         },
         {
           fontStyle:["常规","Regular"],
           fontWeight:"500",
-          download:"../fonts/otf/duandaoti-Regular.otf",
+          download:["../fonts/otf/duandaoti-Regular.otf"],
         },
       ],
       keyword:[
         ["实验性","experimental"],
-      ]
+      ],
+      download:[
+        "../fonts/otf/duandaoti-Regular.otf",
+        "../fonts/otf/duandaoti-Light.otf",
+        "../fonts/woff/duandaoti-Regular.woff",
+        "../fonts/woff/duandaoti-Light.woff",
+        "../fonts/woff/duandaoti-Regular.woff2",
+        "../fonts/woff/duandaoti-Light.woff2",
+      ],
     },
 ];
 
@@ -294,11 +314,13 @@ function addFontsCard(fontsObj){
     cardTitle.innerHTML = fonts.fontFamily[0];
     cardTitleMix.appendChild(cardTitle);
     let fontDown = document.createElement('div');
-    fontDown.setAttribute('style','width:14px; height:14px;');
+    fontDown.setAttribute('style','width:16px; height:100%; cursor: var(--pointer, pointer);');
     fontDown.innerHTML = '<btn-down></btn-down>';
-    fontDown.addEventListener('click',()=>{
-
-    })
+    fontDown.addEventListener('click',async ()=>{
+      let paths = [...fonts.download,"../fonts/LICENSE","../fonts/使用说明.txt"]
+      let filename = ROOT.getAttribute('data-language' == 'En') ? fonts.fontFamily[1] : fonts.fontFamily[0]
+      await addFilesToZip(paths,filename);
+    });
     cardTitleMix.appendChild(fontDown);
 
     fonts.keyword.forEach(item => {
@@ -391,3 +413,32 @@ function addFontsCard(fontsObj){
   }
 }
 
+/**
+ * @param { filePath } path 
+ * @param { callback } fun 
+ */
+async function getFileLocal(path){
+ try {
+    const response = await fetch(path);
+    return await response.blob();
+  } catch (error) {
+    return console.error(error);
+  }
+};
+
+async function addFilesToZip(paths,filename){
+  let zip = new JSZip();
+  for(let path of paths){
+    let content = await getFileLocal(path);
+    let name = path.split('/').pop();
+    zip.file(name,content);
+  };
+  zip.generateAsync({ type: "blob" }).then(function (content) {
+    //saveAs(content,filename + '.zip');
+    let link = document.createElement('a');
+    link.href = URL.createObjectURL(content);
+    link.download = filename + '.zip';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+}

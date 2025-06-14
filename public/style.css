@@ -25,9 +25,12 @@ html[data-theme="light"]{
   --code10:#ec657c;
 }
 
+html{
+  cursor: url('../VI/cursor_24.png'),auto;
+}
 
 * {
-  cursor: url('../VI/cursor_24.png'),auto;
+  cursor: inherit;
 }
 
 [data-en-text],
