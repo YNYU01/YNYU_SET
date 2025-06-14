@@ -1132,7 +1132,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   perspective: 500px;
   transform-style: preserve-3d;
   transition: transform 0.5s;
-  animation: coinJump 2s cubic-bezier(0,0.5,0.5,1) infinite, coinOp 11s linear ;/*coinOp 8s linear*/
+  animation: coinJump 2s cubic-bezier(0,0.5,0.5,1) infinite ;/*, coinOp 11s linear/coinOp 8s linear*/
   animation-delay: calc(var(--coin-jump) * var(--head-t)/4);/*var(--head-t)/4*/
 }
 
@@ -1211,7 +1211,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   fill: var(--head-fill,var(--mainColor));
 }
 [data-head-move] [data-head-fill]{
-  fill: var(--head-col1);
+  fill: var(--head-fill);
   animation: headChange calc(3s * var(--head-t)) linear infinite;
 }
 [data-head-path]{
