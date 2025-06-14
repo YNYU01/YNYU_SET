@@ -1,36 +1,3 @@
-class btndown extends HTMLElement {
-  constructor() {
-    super();
-    this.innerHTML = `
-    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 15H16V13H19V19H1V13H4V15ZM12 8H16L10 14L4 8H8V1H12V8Z" fill="var(--mainColor)"/>
-    </svg>
-    `;
-  }
-};
-customElements.define('btn-down', btndown);
-
-class btnset extends HTMLElement {
-  constructor() {
-    super();
-    this.innerHTML = `
-    <svg width="100%" height="100%" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill="var(--mainColor)" d="M7 4H11L10.5 0H7.5L7 4Z"/>
-      <path fill="var(--mainColor)" d="M11.1212 4.05011L13.9496 6.87853L16.4245 3.69655L14.3031 1.57523L11.1212 4.05011Z"/>
-      <path fill="var(--mainColor)" d="M13.9802 6.94922V10.9492L17.9802 10.4492V7.44922L13.9802 6.94922Z"/>
-      <path fill="var(--mainColor)" d="M14.0203 11.0505L11.1919 13.8789L14.3739 16.3538L16.4952 14.2325L14.0203 11.0505Z"/>
-      <path fill="var(--mainColor)" d="M11 14L7 14L7.5 18L10.5 18L11 14Z"/>
-      <path fill="var(--mainColor)" d="M6.8786 13.9499L4.05017 11.1215L1.5753 14.3034L3.69662 16.4248L6.8786 13.9499Z"/>
-      <path fill="var(--mainColor)" d="M4.01965 11.0508L4.01965 7.05078L0.0196531 7.55078L0.0196533 10.5508L4.01965 11.0508Z"/>
-      <path fill="var(--mainColor)" d="M3.97943 6.94952L6.80785 4.12109L3.62587 1.64622L1.50455 3.76754L3.97943 6.94952Z"/>
-      <circle cx="9" cy="9" r="5" stroke="var(--mainColor)" stroke-weight="1"/>
-      <circle cx="9" cy="9" r="3" fill="var(--mainColor)"/>
-    </svg>
-    `;
-  }
-};
-customElements.define('btn-set', btnset);
-
 const FONTS_INFO = [
     {
       fontFamily:["庄园雅宋","zhuangyuanyasong"],

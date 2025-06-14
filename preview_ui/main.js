@@ -172,7 +172,7 @@ document.getElementById('language-1').addEventListener('change',(event) => {
   }
 })
 
-document.getElementById('switch').addEventListener('change',(event) => {
+document.getElementById('switch-1').addEventListener('change',(event) => {
   if(event.target.checked){
     ROOT.style.setProperty('--btn-copy-df','flex');
   }else{
@@ -184,8 +184,7 @@ copyElements.forEach(node => {
   let copyBtn = node.querySelector('[data-copy-btn]');
   let infoTips = node.querySelector('[data-tips]');
   let key = node.getAttribute('data-copy');
-  let htmlcode = node.innerHTML.split(key + ':')[1];
-  let language = ROOT.getAttribute('[data-language]');
+
 
   if(COMPS_TIPS[key]){
     infoTips.style.setProperty('--tips-text',COMPS_TIPS[key][0]);
@@ -193,10 +192,12 @@ copyElements.forEach(node => {
   }
 
   copyBtn.addEventListener('click',()=>{
+    let language = ROOT.getAttribute('data-language');
+    let htmlcode = node.innerHTML.split(key + ':')[1];
     if(key === "HTML_main"){
-      htmlcode = language == 'Zh' ? '<!--' + COPYRIGHT_ZH + HTML_MAIN + '-->' : '<!--' + COPYRIGHT_EN + HTML_MAIN + '-->';
+      htmlcode = language == 'Zh' ? '<!--' + COPYRIGHT_ZH + '-->' + HTML_MAIN : '<!--' + COPYRIGHT_EN + '-->' + HTML_MAIN;
     } else if ( key === "JS_main"){
-      htmlcode = language == 'Zh' ? '/**\n' + COPYRIGHT_ZH + JS_MAIN + '\n*/' : '/**\n' + COPYRIGHT_EN + JS_MAIN + '\n*/';
+      htmlcode = language == 'Zh' ? '/**\n' + COPYRIGHT_ZH + '\n*/' + JS_MAIN : '/**\n' + COPYRIGHT_EN + '\n*/' + JS_MAIN;
     } else {
       let tips = language == 'Zh' ? '<!--自定义标签，需引入css和js库才能生效-->' : '<!--Importing css and js libraries to make it effective-->'
       COMPS.forEach(item => {
@@ -206,7 +207,7 @@ copyElements.forEach(node => {
         };
       });
     }
-    let copyrights = language == 'Zh' ? "\n<!-- © 2024-2025 [YNYU_SET] OPEN DESIGN & SOURCE @YNYU lvynyu2@gmail.com https://www.ynyuset.cn -->" : "\n<!-- © 2024-2025 『云即』系列开源计划 @云雨 lvynyu@163.com https://www.ynyuset.cn -->"
+    let copyrights = language == 'Zh' ? "\n<!-- © 2024-2025 『云即』系列开源计划 @云雨 lvynyu@163.com https://www.ynyuset.cn -->" : "\n<!-- © 2024-2025 [YNYU_SET] OPEN DESIGN & SOURCE @YNYU lvynyu2@gmail.com https://www.ynyuset.cn -->";
     copy(node,'text',htmlcode.trim() + copyrights);
   });
 });
