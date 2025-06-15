@@ -84,10 +84,10 @@
       <filter id="rippleEffect">
         <!-- 创建湍流纹理 -->
         <feTurbulence type="turbulence" baseFrequency="0.001" numOctaves="3" result="turbulence">
-          <animate attributeName="baseFrequency" values="0;0;0;0;0.002;0.001;0" dur="6s" repeatCount="indefinite"/>
+          <animate attributeName="baseFrequency" values="0;0;0;0;0.002;0.001;0" dur="2s" repeatCount="indefinite"/>
         </feTurbulence>
         <!-- 应用位移贴图 -->
-        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="20" xChannelSelector="R" yChannelSelector="G"/>
+        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="20"/>
 
       </filter>
     </defs>
