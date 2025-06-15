@@ -95,7 +95,89 @@ html{
     var(--line-col) calc(80% + var(--line-bod)),
     transparent calc(80% + var(--line-bod)),
     transparent 100%
-    ) 0 0/var(--line-size) var(--line-size),var(--line-bak)
+    ) 0 0/var(--line-size) var(--line-size),var(--line-bak);
+}
+
+@property --circle-move-num{
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+.tex-circle{
+  --circle-col: rgba(109, 109, 109, 0.356);
+  --circle-bak: transparent;
+  --circle-gap-num: 80;
+  --circle-size: max(100vw,100vh);
+  --circle-bod: 4px;/*4*/
+  --circle-gap: calc(var(--circle-gap-num) * 1px);;/*20*/
+  --circle-gap2: calc(var(--circle-gap) + var(--circle-bod));/*24*/
+  --circle-gap3: calc(var(--circle-gap2) + var(--circle-gap));/*44*/
+  --circle-move: calc(var(--circle-move-num) * 1px - var(--circle-gap) - var(--circle-bod));
+  animation: circleMove 2s  infinite;
+  animation-delay: 1s;
+  background: 
+  radial-gradient(
+    at center,
+    transparent var(--circle-move),
+    transparent calc(var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) + var(--circle-move)),
+    transparent calc(var(--circle-gap2) + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 1 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 1 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 2 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 2 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 2 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 2 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 3 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 3 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 3 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 3 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 4 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 4 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 4 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 4 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 5 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 5 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 5 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 5 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 6 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 6 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 6 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 6 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 7 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 7 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 7 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 7 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 8 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 8 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 8 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 8 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 9 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 9 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 9 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 9 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 10 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 10 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 10 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 10 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 11 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 11 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 11 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 11 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 12 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 12 + var(--circle-move)),
+    transparent calc(var(--circle-gap2) * 12 + var(--circle-gap) + var(--circle-move)),
+    var(--circle-col) calc(var(--circle-gap2) * 12 + var(--circle-gap) + var(--circle-move))
+    ) 50% 50%/var(--circle-size) var(--circle-size),var(--circle-bak);
+  background-repeat: repeat;
+}
+
+@keyframes circleMove {
+  to{
+    --circle-move-num: var(--circle-gap-num);
+  }
 }
 
 [data-page-id="start"] .tex-line{
@@ -1388,7 +1470,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 }
 [data-head-box] [data-head-fill="1"]{
   transform: translateY(100%);
-  animation: headUp 2.5s cubic-bezier(0.6, -20, 0.4, 20) infinite;
+  animation: headUp 2s cubic-bezier(0.6, -20, 0.4, 20) infinite;
   animation-delay: var(--delay,0);
 }
 
@@ -1413,7 +1495,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 
 [data-head-box] [data-head-fill="?"]{
   transform: translateY(0%);
-  animation: headUp2 2.5s linear infinite;
+  animation: headUp2 2s linear infinite;
   animation-delay: var(--delay,0);
 }
 
@@ -1430,15 +1512,44 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
 }
 
 [data-logobg-home]{
-  --fill: var(--mainColor);
+  --fill: #2b2b2b;
+  width: var(--start-box);
+  height: var(--start-box);
   --line-bod: 2%;
   --line-col: rgba(255, 255, 255, 0.2);
-  --line-bak: var(--boxGry)
+  --line-bak: var(--themeColor);
 }
 
 [data-theme="dark"]  [data-logobg-home]{
   --line-bod: 1%;
   --line-col: rgba(110, 110, 110, 0.2);
+}
+
+[data-setbg-home]{
+  --fill: var(--mainColor);
+  /*background: var(--boxGry);*/
+  --circle-col: rgba(109, 109, 109, 0.356);
+  --circle-bak: var(--boxGry);
+  --circle-gap-num: 80;
+  --circle-size: max(100vw,100vh);
+  --circle-bod: 1px;
+  position: relative;
+}
+[data-setbg-home]::after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  backdrop-filter: url('#rippleEffect');
+}
+
+[data-setbg-home] path{
+  paint-order: stroke;
+  stroke: var(--boxGry);
+  stroke-width: 20;
+  
 }
 
 [data-rect-all]{
@@ -1467,8 +1578,8 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   --join: bevel;
   --cap: square;
   --bod-w: 0.5;
-  animation: arrowRo 1s cubic-bezier(0.85, 0, 0, 1) infinite,
-  arrowUp 1s cubic-bezier(0.5, -20, 0.5, 20) infinite;
+  animation: arrowRo 2s cubic-bezier(0.85, 0, 0, 1) infinite,
+  arrowUp 2s cubic-bezier(0.5, -20, 0.5, 20) infinite;
   transform-origin: 50% calc(50% + 2px);
   transform: rotateX(calc(var(--arrowRo)*1deg)) translateX(calc(var(--arrowUp)*1px));
 }
@@ -1494,8 +1605,8 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   width: calc(100vw - var(--start-box));
   height: 60px;
   position: relative;
-  animation: logograph-move 1s cubic-bezier(0, 0.8, 1, 1) infinite;
-  animation-delay: 0.5s;
+  animation: logograph-move 2s cubic-bezier(0, 0.8, 1, 1) infinite;
+  animation-delay: 1s;
 }
 
 [data-logograph-move] logo-graph{
@@ -1775,6 +1886,9 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
     --logograph-num: 4;
   }
   
+  [data-setbg-home]{
+    --circle-gap-num: 60;
+  }
 }
 
 @media (max-width: 375px) {
