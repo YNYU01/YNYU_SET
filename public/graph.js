@@ -181,7 +181,6 @@ class logograph extends HTMLElement {
       <path fill="var(--fill)" d="M9.81641 0.479004C8.55054 0.67972 7.76735 1.20313 7.46683 2.04919L0.394287 21.9602L7.18329 21.9726V27.4793C8.44915 27.2786 9.23234 26.7552 9.53287 25.9091L16.6054 5.99811L9.81644 5.98572L9.81641 0.479004Z"/>
     </svg>
     `;
-    this.setAttribute('class','wh100');
 }
 };
 customElements.define('logo-graph', logograph);

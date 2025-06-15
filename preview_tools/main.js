@@ -98,7 +98,6 @@ let toolList = document.querySelector('[data-tool-list]');
 
 
 window.addEventListener('load',()=>{
-  document.getElementById('noise').className = 'tex-noise';
   addToolCard(TOOL_INFO);
   if(ISMOBILE || window.innerWidth <= 750){
 
@@ -306,6 +305,8 @@ function addToolCard(toolsObj){
   if(ROOT.getAttribute('data-language') == 'En'){
     setLanguage(true);
     setLanguage(false);
-  }
+  };
+  //重置字体样式
+  loadFont();
 }
 

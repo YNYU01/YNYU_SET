@@ -2,19 +2,19 @@
   font-family: Shanggu Sans;
   src: url("../fonts/other/ShangguSans-Regular.otf") format('opentype');
   font-weight: 400;
-  font-display: block;
+  font-display: swap;;
 }
 @font-face {
   font-family: Shanggu Sans;
   src: url("../fonts/other/ShangguSans-Medium.otf") format('opentype');
   font-weight: 700;
-  font-display: block;
+  font-display: swap;;
 }
 @font-face {
   font-family: Shanggu Sans;
   src: url("../fonts/other/ShangguSans-Bold.otf") format('opentype');
   font-weight: 900;
-  font-display: block;
+  font-display: swap;;
 }
 
 
@@ -23,7 +23,7 @@
   src: url("../fonts/woff/zhuangyuanyasong-Bold.woff") format('woff'),
   url("../fonts/woff/zhuangyuanyasong-Bold.woff2") format('woff2');
   font-weight: 700;
-  font-display: block;
+  font-display: swap;;
 }
 
 @font-face {
@@ -31,7 +31,7 @@
   src: url("../fonts/woff/zhuangyuanyasong-Regular.woff") format('woff'),
   url("../fonts/woff/zhuangyuanyasong-Regular.woff2") format('woff2');
   font-weight: 500;
-  font-display: block;
+  font-display: swap;;
 }
 
 @font-face {
@@ -39,7 +39,7 @@
   src: url("../fonts/woff/zhuyinti-Regular.woff") format('woff'),
   url("../fonts/woff/zhuyinti-Regular.woff2") format('woff2');
   font-weight: 500;
-  font-display: block;
+  font-display: swap;;
 }
 
 @font-face {
@@ -47,7 +47,7 @@
   src: url("../fonts/woff/zhuyinti-Mask.woff") format('woff'),
   url("../fonts/woff/zhuyinti-Mask.woff2") format('woff2');
   font-weight: 700;
-  font-display: block;
+  font-display: swap;;
 }
 
 @font-face {
@@ -55,7 +55,7 @@
   src: url("../fonts/woff/duandaoti-Regular.woff") format('woff'),
   url("../fonts/woff/duandaoti-Regular.woff2") format('woff2');
   font-weight: 500;
-  font-display: block;
+  font-display: swap;;
 }
 
 @font-face {
@@ -63,5 +63,5 @@
   src: url("../fonts/woff/duandaoti-Light.woff") format('woff'),
   url("../fonts/woff/duandaoti-Light.woff2") format('woff2');
   font-weight: 300;
-  font-display: block;
+  font-display: swap;;
 }

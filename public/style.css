@@ -33,12 +33,14 @@ html{
   cursor: inherit;
 }
 
+/*
 [data-en-text],
 [data-en-input],
 [data-en-placeholder],
 [data-turnto],[data-back]{
   font-family: "Shanggu Sans", Arial, Helvetica, sans-serif;
 }
+*/
 
 .tex-noise{
   width: 100%;
@@ -1483,6 +1485,34 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
 }
 
+[data-logograph-move]{
+  --logograph-num: 8;
+  --svg-w: 36px;
+  --gap: calc((100% - var(--logograph-num)*var(--svg-w))/var(--logograph-num));
+  gap: var(--gap);
+  transform: translateX(calc(var(--gap)/2));
+  width: calc(100vw - var(--start-box));
+  height: 60px;
+  position: relative;
+  animation: logograph-move 1s cubic-bezier(0, 0.8, 1, 1) infinite;
+  animation-delay: 0.5s;
+}
+
+[data-logograph-move] logo-graph{
+  width: var(--svg-w);
+}
+
+[data-logograph-posa]{
+  position: absolute;
+  left: calc(var(--gap)*-1 - var(--svg-w))
+}
+
+@keyframes logograph-move {
+  to{
+    transform: translateX(calc(var(--gap)/0.5));
+  }
+}
+
 @media (max-width:950px) {
   :root{
     --banner-h:28px;
@@ -1740,5 +1770,19 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   [data-scroll-round]{
     height: calc(100vh - var(--scroll-cut-mb));
   }
+
+  [data-logograph-move]{
+    --logograph-num: 4;
+  }
   
+}
+
+@media (max-width: 375px) {
+  [data-any="view375"]{
+    display: none;
+  }
+
+  [data-logograph-move]{
+    --logograph-num: 2;
+  }
 }

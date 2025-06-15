@@ -95,7 +95,6 @@ let randomColor = [
 ];
 
 window.addEventListener('load',()=>{
-  document.getElementById('noise').className = 'tex-noise';
   if(ISMOBILE || window.innerWidth <= 750){
     let egfontSizeInput = document.querySelector('[data-egfont-size]');
     let oldfontsize = egfontSizeInput.getAttribute('data-number-value');
@@ -377,7 +376,9 @@ function addFontsCard(fontsObj){
   if(ROOT.getAttribute('data-language') == 'En'){
     setLanguage(true);
     setLanguage(false);
-  }
+  };
+  //重置字体样式
+  loadFont();
 }
 
 /**

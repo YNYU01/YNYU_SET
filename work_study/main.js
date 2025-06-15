@@ -1,6 +1,5 @@
 
 window.addEventListener('load',()=>{
-  document.getElementById('noise').className = 'tex-noise';
   if(ISMOBILE || window.innerWidth <= 750){
 
   } else {

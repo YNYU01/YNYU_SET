@@ -18,6 +18,7 @@ let ISLOCAL = window.location.protocol === 'file:' || window.location.hostname =
 let ISBACK = document.referrer && document.referrer !== window.location.href;
 
 window.addEventListener('load',()=>{
+  document.getElementById('noise').className = 'tex-noise';
   if(ISLOCAL){
     HREF_ALL.forEach(item => {
       let href = item.getAttribute('href');
@@ -57,6 +58,8 @@ window.addEventListener('load',()=>{
     };
   });
 
+  loadFont();
+
 });
 
 function getUnicode(text){
@@ -66,3 +69,30 @@ function getUnicode(text){
 }
 
 //console.log(getUnicode(COPYRIGHT_ZH))
+
+/*
+[data-en-text],
+[data-en-input],
+[data-en-placeholder],
+[data-turnto],[data-back]{
+  font-family: "Shanggu Sans", Arial, Helvetica, sans-serif;
+}
+*/
+let loadFontAfter = [
+  "data-en-text",
+  "data-en-input",
+  "data-en-placeholder",
+  "data-turnto",
+  "data-back",
+]
+
+function loadFont(){
+  setTimeout(()=>{
+    loadFontAfter.forEach(key => {
+      let nodes = document.querySelectorAll(`[${key}]`);
+      nodes.forEach(item => {
+        item.style.fontFamily = '"Shanggu Sans", Arial, Helvetica, sans-serif';
+      })
+    });
+  },500);
+}
