@@ -114,8 +114,6 @@ html{
   --circle-gap2: calc(var(--circle-gap) + var(--circle-bod));/*24*/
   --circle-gap3: calc(var(--circle-gap2) + var(--circle-gap));/*44*/
   --circle-move: calc(var(--circle-move-num) * 1px - var(--circle-gap) - var(--circle-bod));
-  animation: circleMove 2s  infinite;
-  animation-delay: 1s;
   background: 
   radial-gradient(
     at center,
@@ -172,25 +170,6 @@ html{
     var(--circle-col) calc(var(--circle-gap2) * 12 + var(--circle-gap) + var(--circle-move))
     ) 50% 50%/var(--circle-size) var(--circle-size),var(--circle-bak);
   background-repeat: repeat;
-}
-
-@keyframes circleMove {
-  to{
-    --circle-move-num: var(--circle-gap-num);
-  }
-}
-
-[data-page-id="start"] .tex-line{
-  --pos-x: var(--line-size);
-  --pos-y: 0;
-  --pos-s: 2s;
-  animation: posMove var(--pos-s) linear infinite;
-}
-
-@keyframes posMove {
-  to{
-    background-position: var(--pos-x) var(--pos-y);
-  }
 }
 
 [data-theme="light"] .dot{
@@ -1511,6 +1490,19 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
 }
 
+[data-page-id="start"] .tex-line{
+  --pos-x: var(--line-size);
+  --pos-y: 0;
+  animation: posMove 2s infinite;
+  animation-delay: 1s;
+}
+
+@keyframes posMove {
+  to{
+    background-position: var(--pos-x) var(--pos-y);
+  }
+}
+
 [data-logobg-home]{
   --fill: #2b2b2b;
   width: var(--start-box);
@@ -1542,11 +1534,20 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   --circle-gap-num: 120;
   --circle-size: max(100vw,100vh);
   --circle-bod: 1px;
+  animation: circleMove 2s infinite;
+  animation-delay: 1s;
   width: calc(100% + 20px);
   height: calc(100% + 20px);
   flex: 0 0 auto;
   position: relative;
 }
+
+@keyframes circleMove {
+  to{
+    --circle-move-num: var(--circle-gap-num);
+  }
+}
+
 [data-setbg-home]::after{
   content: '';
   position: absolute;
