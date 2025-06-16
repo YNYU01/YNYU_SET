@@ -51,9 +51,12 @@
         <logo-head data-head-box class="pos-r fl0" style="--delay: 0.6s; --op3: 1; --head-col3: #2b2b2b;"></logo-head>
       </div>
     </div>
-    <div data-setbg-home class="wh100 df-lc tex-circle">
-      <set-en-home data-any="en" class="df-cc w100" style="height: 160px;"></set-en-home>
-      <set-zh-home data-any="zh" class="df-cc w100" style="height: 160px; "></set-zh-home> 
+    <div data-setbg-home-box>
+      <div data-setbg-home class="wh100 df-cc tex-circle">
+        <div class="pos-a wh100" style="top: 0; left: 0; backdrop-filter: url('#rippleEffect2');"></div>
+        <set-en-home data-any="en"  style="height: 140px;"></set-en-home>
+        <set-zh-home data-any="zh" style="height: 140px; "></set-zh-home> 
+      </div>
     </div>
     <div class="df-rc" style="height: var(--start-box); --fill: var(--mainColor);">
       <div data-logograph-move class="df-lc">
@@ -83,12 +86,20 @@
       <!-- 定义滤镜 -->
       <filter id="rippleEffect">
         <!-- 创建湍流纹理 -->
-        <feTurbulence type="turbulence" baseFrequency="0.001" numOctaves="3" result="turbulence">
-          <animate attributeName="baseFrequency" values="0;0;0;0;0.002;0.001;0" dur="2s" repeatCount="indefinite"/>
+        <feTurbulence type="turbulence" baseFrequency="0.001" numOctaves="2" result="turbulence">
+          <animate attributeName="baseFrequency" values="0.001;0.001;0.001;0.001;0.002;0.001;0.001" dur="2s" repeatCount="indefinite"/>
         </feTurbulence>
         <!-- 应用位移贴图 -->
         <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="10"/>
-
+      </filter>
+      <!-- 定义滤镜 -->
+      <filter id="rippleEffect2">
+        <!-- 创建湍流纹理 -->
+        <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="4" result="turbulence">
+          <animate attributeName="baseFrequency" values="0.002;0.002;0.002;0.002;0.006;0.003;0.002" dur="2s" repeatCount="indefinite"/>
+        </feTurbulence>
+        <!-- 应用位移贴图 -->
+        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="20"/>
       </filter>
     </defs>
   </svg>
