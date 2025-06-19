@@ -67,7 +67,7 @@ THEME_SWITCH.forEach(item => {
 
 worksName.forEach(item => {
   if(ISMOBILE){ 
-    item.parentNode.addEventListener('touchstart',()=>{
+    item.addEventListener('touchstart',()=>{
       item.setAttribute('data-touch','true')
       item.style.animation = 'colormove1 1s';
       item.style.backgroundSize = '100%';
@@ -83,6 +83,7 @@ worksName.forEach(item => {
     });
   } else {
     item.parentNode.addEventListener('mouseenter',()=>{
+      console.log(item.parentNode.getAttribute('data-worksname-turnto'))
       item.style.animation = 'colormove1 1s';
       item.style.backgroundSize = '100%';
       item.style.backgroundPosition = '0%';
