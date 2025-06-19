@@ -83,7 +83,6 @@ worksName.forEach(item => {
     });
   } else {
     item.parentNode.addEventListener('mouseenter',()=>{
-      console.log(item.parentNode.getAttribute('data-worksname-turnto'))
       item.style.animation = 'colormove1 1s';
       item.style.backgroundSize = '100%';
       item.style.backgroundPosition = '0%';
