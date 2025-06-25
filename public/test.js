@@ -2,7 +2,6 @@ let HREF_ALL = document.querySelectorAll('a');
 let A_BACK = document.querySelectorAll('[data-back]');
 let LINK_ALL = document.querySelectorAll('[data-link-to]');
 
-let ISLOCAL = window.location.protocol === 'file:' || window.location.hostname === 'localhost';
 let ISBACK = document.referrer && document.referrer !== window.location.href;
 
 window.addEventListener('load',()=>{

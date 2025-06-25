@@ -38,11 +38,6 @@ class InlineJsCssPlugin {
       html = html
         .replace('<link rel="stylesheet" href="style.css">', `<style>${cssContent}</style>`)
         .replace('<script src="main.js"></script>', `<script>${jsContent}</script>`)
-      
-      //替换哈希值
-      if(this.hash !== 'unknown'){
-        html = html.replace(/@[a-fA-F0-9]\//g, `<style>${cssContent}</style>`)
-      }
 
       // 写入新文件
       const outputPath = path.join(compilation.options.output.path, 'ui.html');

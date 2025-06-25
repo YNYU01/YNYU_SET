@@ -1,13 +1,35 @@
+const skillList = [
+  {
+    title: ['',''],/*一级功能模块*/
+    skills: [
+      {
+        name: ['',''],/*二级功能名*/
+        tips: ['',''],/*功能说明*/
+        comps:[/*功能按钮*/
+          [
+            {
+              type: "",/* BUTTON | INPUT | RANGE_INT | SELECT | */
+              selectOption:[
+                ['',''],
+                ['',''],
+              ]
+            }
+          ]
+        ],
+        isView: true,/*是否外显*/
+        isVIP: false, /*是否高级功能*/
+      }
+    ]
+  }
+  
+]
+
 window.addEventListener('load',()=>{
 
 });
 
-//封装postmessage
-function message(data){
-  /*figma*/
-  parent.postMessage({pluginMessage:data},"*")
-  /*mastergo*/
-  //parent.postMessage(data,"*")
+function addSkill(){
+
 }
 
 //生成导出标签
@@ -905,103 +927,6 @@ function createZipAndDownload(compressedImages) {
   zip.generateAsync({ type: "blob" }).then(function (content) {
     saveAs(content, docInfo + '-' + M + N + '_' + HHMMSS + '.zip');
   });
-}
-
-
-//b64转u8
-function B64ToU8A(b64) {
-  const padding = '='.repeat((4 - b64.length % 4) % 4);
-  const base64 = (b64 + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
-
-  const rawData = atob(base64);
-  const rawDataLength = rawData.length;
-  const array = new Uint8Array(new ArrayBuffer(rawDataLength));
-
-  for (let i = 0; i < rawDataLength; i += 1) {
-    array[i] = rawData.charCodeAt(i);
-  }
-
-  return array;
-}
-
-//u8转b64
-function U8AToB64(u8) {
-  let binaryString = '';
-  for (let i = 0; i < u8.length; i++) {
-    binaryString += String.fromCharCode(u8[i]);
-  }
-  // 对二进制字符串进行base64编码
-  const base64 = btoa(binaryString);
-  return base64; //"data:image/png;base64," + 
-}
-// RGB转HSL
-function rgbToHsl(r,g,b) {
-  var r = r / 255;
-  var g = g / 255;
-  var b = b / 255;
-  
-  var max = Math.max(r, g, b);
-  var min = Math.min(r, g, b);
-  
-  let h, s, l = (max + min) / 2;
-  
-  if (max === min) {
-    h = s = 0; // achromatic
-  } else {
-    var d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    
-    switch (max) {
-      case r:
-        h = (g - b) / d + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / d + 2;
-        break;
-      case b:
-        h = (r - g) / d + 4;
-        break;
-    }
-    
-    h /= 6;
-  }
-  
-  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
-}
-
-//HSL转RGB
-function hslToRgb(H,S,L) {
-  var h = parseInt(H) / 360; // 转换为0到1的数值
-  var s = parseInt(S) / 100; // 保持在0到1之间
-  var l = parseInt(L) / 100; // 保持在0到1之间
-  var r, g, b;
-
-  if (s === 0) {
-    r = g = b = l; // 灰度色
-  } else {
-    var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    var p = 2 * l - q;
-    r = hueToRgb(p, q, h + 1/3);
-    g = hueToRgb(p, q, h);
-    b = hueToRgb(p, q, h - 1/3);
-  }
-
-  return [
-    Math.round(r * 255),
-    Math.round(g * 255),
-    Math.round(b * 255)
-  ];
-
-  function hueToRgb(p, q, t) {
-    if (t < 0) t += 1;
-    if (t > 1) t -= 1;
-    if (t < 1/6) return p + (q - p) * 6 * t;
-    if (t < 1/2) return q;
-    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-    return p;
-  }
 }
 
 //大图导入裁剪

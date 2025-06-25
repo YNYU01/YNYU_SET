@@ -2,19 +2,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const InlineJsCssPlugin = require('./inline-jscss-plugin.js');
 
-const execa = require('execa');
-async function getGitHash(){
-  try{
-    const {stdout} = await execa('git',['rev-parse','HEAD']);
-    return stdout.trim();
-  } catch(error){
-    return 'unknown';
-  }
-}
-
-
 module.exports = async()=> {
-  const gitHash = await getGitHash();
   return{
     mode:'development',
     stats:{
@@ -42,7 +30,6 @@ module.exports = async()=> {
     plugins: [
       new InlineJsCssPlugin({
         template: './tool_plugin/ToolsSetFig/test/index.html',
-        hash: gitHash,
       }),
     ],
   }
