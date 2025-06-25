@@ -1,0 +1,33 @@
+{
+  "name": "ToolsSet",
+  "id": "1519526178556658548",
+  "api": "1.0.0",
+  "main": "code.js",
+  "capabilities": [],
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "ui": "ui.html",
+  "menu":[
+    {"name":"🚀 打开面板","command":"open"},
+    {"name":"更多","menu":[
+    {"name":"帮助","command":"help"},
+    {"name":"获取更新","command":"getnew"},
+    {"name":"联系我们 @lvynyu2.gmail.com","command":"linkus"}
+    ]},
+    { "separator": true },
+    {"name":"快速栅格化","command":"pixel"},
+    {"name":"羽化盒边缘","command":"yuhua"},
+    { "separator": true },
+    {"name":"两格行级选中","command":"lineTable"},
+    {"name":"两格区域选中","command":"areaTable"},
+    {"name":"伪合并表格","command":"tableToArea"}
+  ],
+  "networkAccess": {
+    "allowedDomains": [
+      "https://cdn.jsdelivr.net",
+      "https://cdnjs.cloudflare.com"
+    ]
+  }
+}

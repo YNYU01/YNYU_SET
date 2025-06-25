@@ -403,6 +403,10 @@ input[type="range"] {
   overflow-y: scroll;
 }
 
+.ovx{
+  overflow-x: scroll;
+}
+
 .fl0{
   flex: 0 0 auto;
 }

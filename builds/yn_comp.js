@@ -196,7 +196,7 @@ class cardcolorpick extends HTMLElement {
 };
 customElements.define('card-colorpick', cardcolorpick);
 
-
+let ISLOCAL = window.location.protocol === 'file:' || window.location.hostname === 'localhost';
 let GETCOLOR = null;
 let TV = document.querySelectorAll('[data-TV]');//轮播公告
 let TV_MOVE = false;//用于结合一定条件触发轮播
@@ -1412,4 +1412,19 @@ function showNext(node1,node2,display,checked){
   } else {
     nodeB.style.display = display;
   };
+}
+
+/**
+ * 封装console.log()打印，让打印内容按条件可选择仅在本地环境打印
+ * @param {any} info
+ * @param {string} type -local | online | all | null(=all)
+ */
+function log(info,type){
+  switch (type){
+    case 'local' :if(ISLOCAL){console.log(info)};break
+    case 'online' :if(!ISLOCAL){console.log(info)};break
+    case 'all' :console.log(info);break
+    case false :console.log(info);break
+  }
+
 }

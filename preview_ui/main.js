@@ -5,7 +5,7 @@ const HTML_MAIN = `<html data-theme="dark">
   <meta name="description" content="about this web">
   <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET.png" type="image/png">
   <link rel="stylesheet" href="yn_style.css">
-  <script src="build/yn_run.js"></script>
+  <script src="builds/yn_run.js"></script>
 </head>
 <body class="noselect df-ct">
 <script src="yn_comp.js"></script>
