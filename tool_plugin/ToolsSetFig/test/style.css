@@ -1,0 +1,28 @@
+/**组件修改*/
+#tips-all{
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  bottom: 80px;
+  margin: auto;
+  animation: boxUp 0.2s;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.tips-all-text{
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.switch [data-swi-icon]{
+  transition:transform 0.2s ease-out;
+  }
+  
+input[type="checkbox"]:checked+.switch [data-swi-icon]{
+  transform: translateX(var(--swi-h,18px));
+}

@@ -19,6 +19,7 @@
   "homepage": "https://github.com/YNYU01/YNYU_SET#readme",
   "devDependencies": {
     "css-loader": "^7.1.2",
+    "execa": "^9.6.0",
     "html-webpack-plugin": "^5.6.3",
     "mini-css-extract-plugin": "^2.9.2",
     "style-loader": "^4.0.0",

@@ -5,6 +5,7 @@ const path = require('path');
 class InlineJsCssPlugin {
   constructor(options = {}) {
     this.templatePath = options.template;
+    this.hash = options.hash;
   }
 
   apply(compiler) {
@@ -35,8 +36,13 @@ class InlineJsCssPlugin {
 
       // 替换占位符
       html = html
-        .replace('<!-- INLINE_CSS -->', `<style>${cssContent}</style>`)
-        .replace('<!-- INLINE_JS -->', `<script>${jsContent}</script>`);
+        .replace('<link rel="stylesheet" href="style.css">', `<style>${cssContent}</style>`)
+        .replace('<script src="main.js"></script>', `<script>${jsContent}</script>`)
+      
+      //替换哈希值
+      if(this.hash !== 'unknown'){
+        html = html.replace(/@[a-fA-F0-9]\//g, `<style>${cssContent}</style>`)
+      }
 
       // 写入新文件
       const outputPath = path.join(compilation.options.output.path, 'ui.html');
