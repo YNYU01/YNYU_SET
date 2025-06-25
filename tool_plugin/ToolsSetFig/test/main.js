@@ -1,35 +1,67 @@
+/**
+ * 动态生成小功能列表
+ * 功能层级：模块>功能点/集>表单/按钮，模块用于tab切换，功能点/集可查看说明
+ * 文案类型需用['中文XXX','EnglishXXX']分别记录
+ * 表单类型基于yn_comp.js组件库
+ * 表单逐行记录，CSS控制默认间隙和自适应宽度，分隔间隙需加多分隔对象,可设置分隔值，不设置则按默认间隙两倍
+ */
 const skillList = [
   {
+    icon: '',/*svg注册组件*/
     title: ['',''],/*一级功能模块*/
     skills: [
       {
         name: ['',''],/*二级功能名*/
         tips: ['',''],/*功能说明*/
-        comps:[/*功能按钮*/
-          [
+        comps:[/*功能按钮，逐行*/
+          [/*单行*/
             {
-              type: "",/* BUTTON | INPUT | RANGE_INT | SELECT | */
+              type: "SELECT",/* BUTTON | INPUT_ICON | RANGE_INT | SELECT | */
+              buttonMain: false,/*如为主按钮则特殊样式 */
               selectOption:[
                 ['',''],
                 ['',''],
-              ]
-            }
-          ]
-        ],
-        isView: true,/*是否外显*/
-        isVIP: false, /*是否高级功能*/
-      }
-    ]
-  }
-  
+              ],
+              isView: true,/*是否外显*/
+              isVIP: false,/*是否高级功能*/
+            },
+            {
+              type: "GAP",
+              gap: null,
+              isView: true,
+              isVIP: false,
+            },
+          ],
+        ], 
+        isStart: false,/*用户收藏后保存本地数据并置顶*/
+      },
+    ],
+  },
 ]
+
+/**
+ * 克隆到常用功能
+ */
+let userSkillStart = ['二级功能名','二级功能名']
 
 window.addEventListener('load',()=>{
 
 });
 
 function addSkill(){
+  skillList.forEach(model => {
+    let skillModel = document.createElement('div');
+    skillModel.setAttribute('data-skillModel',model.title[1]);
 
+    let tabSkill = document.createElement('div');
+    tabSkill.setAttribute('data-tabSkill',model.title[1]);
+
+    page_skills.appendChild(skillModel);
+    tab_skills.appendChild(tabSkill)
+  })
+  userSkillStart.forEach(skill => {
+
+  })
 }
 
 //生成导出标签
