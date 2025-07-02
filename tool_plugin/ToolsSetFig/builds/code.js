@@ -143,7 +143,18 @@ var pickTableArea = false;
 figma.ui.onmessage = (message) => { 
     const info = message[0]
     const type = message[1]
-    console.log(message)
+    //console.log(message)
+    //获取用户偏好
+    if (type == "getlocal"){
+        figma.clientStorage.getAsync(info)
+        .then (data => {
+            postmessage([data,info])
+        })
+    }
+    //设置用户偏好
+    if (type == "setlocal"){
+        figma.clientStorage.setAsync(info[0],info[1])
+    }
     //插件自动休眠
     if ( type == "sleep"){
         if (info == true){
@@ -1288,6 +1299,7 @@ figma.ui.onmessage = (message) => {
 
 //封装postMessage
 function postmessage(data){
+    console.log(data)
     /*figma*/
     figma.ui.postMessage({pluginMessage:data})
     /*mastergo*/
