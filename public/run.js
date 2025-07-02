@@ -53,23 +53,29 @@ let storageMix = {
 }
 
 if(storageMix.get('userTheme') == 'light'){
+  console.log(111)
   ROOT.setAttribute("data-theme","light");
 }
 if(storageMix.get('userTheme') == 'dark'){
+  console.log(111)
   ROOT.setAttribute("data-theme","dark");
 }
 if(!storageMix.get('userTheme') && !ISPLUGIN){
+  console.log(111)
   ROOT.setAttribute("data-theme","light");
   storageMix.set('userTheme','light');
 }
 
 if(storageMix.get('userLanguage') == 'En'){
+  console.log(111)
   ROOT.setAttribute("data-language","En");
 }
 if(storageMix.get('userLanguage') == 'Zh'){
+  console.log(111)
   ROOT.setAttribute("data-language","Zh");
 }
 if(!storageMix.get('userLanguage') && !ISPLUGIN){
+  console.log(111)
   ROOT.setAttribute("data-language","En");
   storageMix.set('userLanguage','En');
 }

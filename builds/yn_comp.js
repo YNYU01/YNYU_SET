@@ -250,11 +250,11 @@ window.addEventListener('load',()=>{
     //console.log('该浏览器支持吸色管')
   };
 
-  if(storageMix.get('userTheme') == 'light' || (PLUGIN_THEME && PLUGIN_THEME == 'light')){
+  if(storageMix.get('userTheme') == 'light'){
     setTheme(true,false);
   };
 
-  if(storageMix.get('userTheme') == 'dark'  || (PLUGIN_THEME && PLUGIN_THEME == 'dark')){
+  if(storageMix.get('userTheme') == 'dark'){
     setTheme(false,false);
   };
 
@@ -263,10 +263,10 @@ window.addEventListener('load',()=>{
   };
 
 
-  if(storageMix.get('userLanguage') == 'En' || (PLUGIN_LANGUAGE && PLUGIN_LANGUAGE == 'En')){
+  if(storageMix.get('userLanguage') == 'En'){
     setLanguage(false);
   };
-  if(storageMix.get('userLanguage') == 'Zh' || (PLUGIN_LANGUAGE && PLUGIN_LANGUAGE == 'Zh')){
+  if(storageMix.get('userLanguage') == 'Zh'){
     setLanguage(true);
   };
   if(!storageMix.get('userLanguage') && !ISPLUGIN){
