@@ -1,7 +1,9 @@
+<html data-plugin="fig" data-theme="dark" data-language="Zh">
 <head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78bce693476437f33293b02aa409e324cd845e63/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2e1fac65e0d69de77d8b4f3dedb1fb8843b1456b/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
-  <style>/**组件修改*/
+  <style>
+/**组件修改*/
 #tips-all{
   display: none;
   justify-content: center;
@@ -29,31 +31,17 @@
 input[type="checkbox"]:checked+.switch [data-swi-icon]{
   transform: translateX(var(--swi-h,18px));
 }
+
 </style>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2e1fac65e0d69de77d8b4f3dedb1fb8843b1456b/public/run.js"></script>
   <!-- INLINE_RUN -->
-  <script>const ROOT = document.documentElement;
-
-if(localStorage.getItem('userTheme') == 'light'){
-  ROOT.setAttribute("data-theme","light");
-}
-if(localStorage.getItem('userTheme') == 'dark'){
-  ROOT.setAttribute("data-theme","dark");
-}
-if(!localStorage.getItem('userTheme')){
-  ROOT.setAttribute("data-theme","light");
-  localStorage.setItem('userTheme','light');
-}
-
-if(localStorage.getItem('userLanguage') == 'En'){
-  ROOT.setAttribute("data-language","En");
-}
-if(localStorage.getItem('userLanguage') == 'Zh'){
-  ROOT.setAttribute("data-language","Zh");
-}
-if(!localStorage.getItem('userLanguage')){
-  ROOT.setAttribute("data-language","En");
-  localStorage.setItem('userLanguage','En');
-}</script>
+  <script>
+window.addEventListener('message',(message)=>{
+  if(message.data && message.data.type && message.data.type !== 'figma-ex-page-info'){
+    console.log(message)
+  }
+})
+</script>
 </head>
 
 <body class="noselect df-ffc df-cc">
@@ -82,12 +70,13 @@ if(!localStorage.getItem('userLanguage')){
   </div>
   <!--底部-->
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78bce693476437f33293b02aa409e324cd845e63/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78bce693476437f33293b02aa409e324cd845e63/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78bce693476437f33293b02aa409e324cd845e63/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78bce693476437f33293b02aa409e324cd845e63/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2e1fac65e0d69de77d8b4f3dedb1fb8843b1456b/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2e1fac65e0d69de77d8b4f3dedb1fb8843b1456b/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2e1fac65e0d69de77d8b4f3dedb1fb8843b1456b/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2e1fac65e0d69de77d8b4f3dedb1fb8843b1456b/public/jszip.js"></script>
   <!-- INLINE_JS -->
-  <script>/**
+  <script>
+/**
  * 动态生成小功能列表
  * 功能层级：模块>功能点/集>表单/按钮，模块用于tab切换，功能点/集可查看说明
  * 文案类型需用['中文XXX','EnglishXXX']分别记录
@@ -1213,5 +1202,7 @@ function creCutArea(info,mix) {//{w:,h:,x:,y:,s:}
   }
 
 }
+
 </script>
 </body>
+</html>

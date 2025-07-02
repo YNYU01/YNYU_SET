@@ -29,17 +29,24 @@ if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 7
  */
 let ISPLUGIN = ROOT.getAttribute('data-plugin')? true : false;
 let PLUGINAPP = ISPLUGIN ? ROOT.getAttribute('data-plugin') : null;
+let PLUGIN_THEME;
+let PLUGIN_LANGUAGE;
 let storageMix = {
   get: (key)=>{
     if(ISPLUGIN){
-      toolMessage? toolMessage([key,'getlocal'],PLUGINAPP) : null
+      let value = null;
+      switch (key){
+        case 'userTheme': value =  PLUGIN_THEME;break
+        case 'userLanguage': value =  PLUGIN_LANGUAGE;break
+      }
+      return value;
     } else {
       return window.localStorage.getItem(key)
     }
   },
   set: (key,value)=>{
     if(ISPLUGIN){
-      toolMessage? toolMessage([[key,value],'setlocal'],PLUGINAPP) : null
+      toolMessage? toolMessage([[key,value],'setlocal'],PLUGINAPP) : null;
     } else {
       window.localStorage.setItem(key,value)
     }

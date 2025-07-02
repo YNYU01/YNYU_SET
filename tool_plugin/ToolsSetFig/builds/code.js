@@ -143,7 +143,7 @@ var pickTableArea = false;
 figma.ui.onmessage = (message) => { 
     const info = message[0]
     const type = message[1]
-    //console.log(message)
+    console.log(message)
     //插件自动休眠
     if ( type == "sleep"){
         if (info == true){
