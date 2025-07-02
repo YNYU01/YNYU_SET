@@ -33,49 +33,38 @@ let PLUGINAPP = ISPLUGIN ? ROOT.getAttribute('data-plugin') : null;
 let storageMix = {
   get: (key)=>{
     if(ISPLUGIN){
-      let value = null;
-      switch (key){
-        case 'userTheme': value =  PLUGIN_THEME;break
-        case 'userLanguage': value =  PLUGIN_LANGUAGE;break
-      }
-      return value;
+      return null;
     } else {
-      return window.localStorage.getItem(key)
+      return window.localStorage.getItem(key);
     }
   },
   set: (key,value)=>{
     if(ISPLUGIN){
       toolMessage? toolMessage([[key,value],'setlocal'],PLUGINAPP) : null;
     } else {
-      window.localStorage.setItem(key,value)
+      window.localStorage.setItem(key,value);
     }
   }
 }
 
 if(storageMix.get('userTheme') == 'light'){
-  console.log(111)
   ROOT.setAttribute("data-theme","light");
 }
 if(storageMix.get('userTheme') == 'dark'){
-  console.log(111)
   ROOT.setAttribute("data-theme","dark");
 }
 if(!storageMix.get('userTheme') && !ISPLUGIN){
-  console.log(111)
   ROOT.setAttribute("data-theme","light");
   storageMix.set('userTheme','light');
 }
 
 if(storageMix.get('userLanguage') == 'En'){
-  console.log(111)
   ROOT.setAttribute("data-language","En");
 }
 if(storageMix.get('userLanguage') == 'Zh'){
-  console.log(111)
   ROOT.setAttribute("data-language","Zh");
 }
 if(!storageMix.get('userLanguage') && !ISPLUGIN){
-  console.log(111)
   ROOT.setAttribute("data-language","En");
   storageMix.set('userLanguage','En');
 }

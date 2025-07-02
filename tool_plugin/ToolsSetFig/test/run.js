@@ -1,6 +1,6 @@
 
-let PLUGIN_THEME = document.documentElement.getAttribute('data-theme');
-let PLUGIN_LANGUAGE = document.documentElement.getAttribute('data-language');
+let PLUGIN_THEME;
+let PLUGIN_LANGUAGE;
 
 toolMessage(['userTheme','getlocal'],'fig');
 toolMessage(['userLanguage','getlocal'],'fig');
@@ -16,20 +16,16 @@ window.addEventListener('message',(message)=>{
     }
     console.log(PLUGIN_THEME,PLUGIN_LANGUAGE)
     if(PLUGIN_THEME == 'light'){
-      ROOT.setAttribute("data-theme","light");
       setTheme(true,false);
     }
     if(PLUGIN_THEME == 'dark'){
-      ROOT.setAttribute("data-theme","dark");
       setTheme(false,false);
     }
     if(PLUGIN_LANGUAGE == 'Zh'){
-      ROOT.setAttribute("data-language","Zh");
-      setLanguage(false);
+      setLanguage(true);
     }
     if(PLUGIN_LANGUAGE == 'En'){
-      ROOT.setAttribute("data-language","En");
-      setLanguage(true);
+      setLanguage(false);
     }
   }
 });
