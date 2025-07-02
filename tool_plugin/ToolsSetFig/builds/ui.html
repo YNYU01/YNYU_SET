@@ -36,26 +36,8 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7f0755583211fe48586af8f62b8b7c51918510a4/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
-/*
-PLUGIN_THEME = 'dark';
-PLUGIN_LANGUAGE = 'Zh';
-*/
-
-toolMessage(['userTheme','getlocal'],'fig');
-toolMessage(['userLanguage','getlocal'],'fig');
-
-window.addEventListener('message',(message)=>{
-  let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
-  if(!isPluginMessge){
-    let info = message.data.pluginMessage.pluginMessage[0];
-    let type = message.data.pluginMessage.pluginMessage[1];
-    switch (type){
-      case 'userTheme': PLUGIN_THEME = info; console.log(info) ;break
-      case 'userLanguage': PLUGIN_LANGUAGE = info; console.log(info) ;break
-    }
-  }
-});
-</script>
+    
+  </script>
 </head>
 
 <body class="noselect df-ffc df-cc">

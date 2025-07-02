@@ -155,7 +155,7 @@ figma.ui.onmessage = (message) => {
         //console.log(info[0],info[1])
         figma.clientStorage.getAsync(info[0])
         .then (data => {
-            console.log(data)
+            //console.log(data)
         })
     }
     //插件自动休眠
