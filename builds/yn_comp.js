@@ -200,8 +200,7 @@ let ISLOCAL = false;
 if (window.location.protocol === 'file:' || window.location.hostname === 'localhost'){
   ISLOCAL = true;
 };
-let ISPLUGIN = false;
-let PLUGINAPP = null;
+
 let GETCOLOR = null;
 let TV = document.querySelectorAll('[data-TV]');//轮播公告
 let TV_MOVE = false;//用于结合一定条件触发轮播
@@ -288,26 +287,6 @@ window.addEventListener('resize',()=>{
 
 function afterAllMust(){
   reTV();
-}
-
-/**
- * 使localStorage兼容浏览器/插件环境
- */
-let storageMix = {
-  get: (key)=>{
-    if(ISPLUGIN){
-      toolMessage? toolMessage([key,'getlocal'],PLUGINAPP) : null
-    } else {
-      return window.localStorage.getItem(key)
-    }
-  },
-  set: (key,value)=>{
-    if(ISPLUGIN){
-      toolMessage? toolMessage([[key,value],'setlocal'],PLUGINAPP) : null
-    } else {
-      window.localStorage.setItem(key,value)
-    }
-  }
 }
 
 LANGUAGE_SWITCH.forEach(item => {

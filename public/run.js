@@ -1,5 +1,5 @@
 const ROOT = document.documentElement;
-let toolMessage = null;
+
 let ISMOBILE = false;
 let MOBILE_KEYS = /mobile | android | iphone | ipad | blackberry | windows phone/i
 
@@ -23,9 +23,17 @@ if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 7
   ISMOBILE = false;
 }
 
+
+
 /**
  * 使localStorage兼容浏览器/插件环境
  */
+let ISPLUGIN = ROOT.getAttribute('data-plugin')? true : false;
+let PLUGINAPP = ISPLUGIN ? ROOT.getAttribute('data-plugin') : null;
+let toolMessage;
+if(!ISPLUGIN){
+  toolMessage = null;
+}
 let storageMix = {
   get: (key)=>{
     if(ISPLUGIN){
