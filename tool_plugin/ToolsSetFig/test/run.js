@@ -15,6 +15,18 @@ window.addEventListener('message',(message)=>{
       case 'userLanguage': PLUGIN_LANGUAGE = info;break
     }
     console.log(PLUGIN_THEME,PLUGIN_LANGUAGE)
+    if(PLUGIN_THEME == 'light'){
+      ROOT.setAttribute("data-theme","light");
+    }
+    if(PLUGIN_THEME == 'dark'){
+      ROOT.setAttribute("data-theme","dark");
+    }
+    if(PLUGIN_LANGUAGE == 'Zh'){
+      ROOT.setAttribute("data-language","Zh");
+    }
+    if(PLUGIN_LANGUAGE == 'En'){
+      ROOT.setAttribute("data-language","En");
+    }
   }
 });
 
