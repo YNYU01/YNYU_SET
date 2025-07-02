@@ -119,10 +119,6 @@ if ( figma.command == 'open' ){
  
 figma.ui.resize(UI[0], UI[1]);
 
-//figma.ui.postMessage({pluginMessage:["light","setTheme"]})
-//postmessage(["light","setTheme"])
-//console.log(viewportX);
-
 var tabInfo;
 var importNum = 1,xx = 0,yy = 0,time = 0,ww = 0,hh = 0;
 var find = [],searchTime = 0,seaechOldNodes = [];
@@ -150,10 +146,17 @@ figma.ui.onmessage = (message) => {
         .then (data => {
             postmessage([data,info])
         })
+        .catch (error => {
+        })
     }
     //设置用户偏好
     if (type == "setlocal"){
         figma.clientStorage.setAsync(info[0],info[1])
+        //console.log(info[0],info[1])
+        figma.clientStorage.getAsync(info[0])
+        .then (data => {
+            console.log(data)
+        })
     }
     //插件自动休眠
     if ( type == "sleep"){
@@ -1299,7 +1302,7 @@ figma.ui.onmessage = (message) => {
 
 //封装postMessage
 function postmessage(data){
-    console.log(data)
+    //console.log(data)
     /*figma*/
     figma.ui.postMessage({pluginMessage:data})
     /*mastergo*/
