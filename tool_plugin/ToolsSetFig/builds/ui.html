@@ -1,6 +1,6 @@
 <html data-plugin="fig" data-theme="dark" data-language="Zh">
 <head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7f0755583211fe48586af8f62b8b7c51918510a4/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9d887f48f0cfa8592f947d07e6ed90853f2ab7d6/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 /**组件修改*/
@@ -33,11 +33,40 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7f0755583211fe48586af8f62b8b7c51918510a4/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
-    
-  </script>
+
+let PLUGIN_THEME;
+let PLUGIN_LANGUAGE;
+toolMessage(['userTheme','getlocal'],'fig');
+toolMessage(['userLanguage','getlocal'],'fig');
+
+window.addEventListener('message',(message)=>{
+  let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
+  if(!isPluginMessge){
+    let info = message.data.pluginMessage.pluginMessage[0];
+    let type = message.data.pluginMessage.pluginMessage[1];
+    switch (type){
+      case 'userTheme': PLUGIN_THEME = info;break
+      case 'userLanguage': PLUGIN_LANGUAGE = info;break
+    }
+    console.log(PLUGIN_THEME,PLUGIN_LANGUAGE)
+  }
+});
+
+/**
+ * @param {Array} data - [info,typeName/skillName]
+ * @param {string} app - 'fig' | 'mg'
+ */
+ function toolMessage(data,app){
+  switch (app){
+    case 'fig': parent.postMessage({pluginMessage:data},"*"); break
+    case 'mg' : parent.postMessage(data,"*");break
+  }
+}
+
+</script>
+<script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9d887f48f0cfa8592f947d07e6ed90853f2ab7d6/public/run.js"></script>
 </head>
 
 <body class="noselect df-ffc df-cc">
@@ -66,10 +95,10 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   </div>
   <!--底部-->
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7f0755583211fe48586af8f62b8b7c51918510a4/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7f0755583211fe48586af8f62b8b7c51918510a4/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7f0755583211fe48586af8f62b8b7c51918510a4/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7f0755583211fe48586af8f62b8b7c51918510a4/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9d887f48f0cfa8592f947d07e6ed90853f2ab7d6/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9d887f48f0cfa8592f947d07e6ed90853f2ab7d6/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9d887f48f0cfa8592f947d07e6ed90853f2ab7d6/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9d887f48f0cfa8592f947d07e6ed90853f2ab7d6/public/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /**

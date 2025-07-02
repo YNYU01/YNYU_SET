@@ -258,7 +258,7 @@ window.addEventListener('load',()=>{
     setTheme(false,false);
   };
 
-  if(!storageMix.get('userTheme')){
+  if(!storageMix.get('userTheme') && !ISPLUGIN){
     setTheme(true,false);
   };
 
@@ -269,7 +269,7 @@ window.addEventListener('load',()=>{
   if(storageMix.get('userLanguage') == 'Zh'){
     setLanguage(true);
   };
-  if(!storageMix.get('userLanguage')){
+  if(!storageMix.get('userLanguage') && !ISPLUGIN){
     setLanguage(false);
   };
 });
