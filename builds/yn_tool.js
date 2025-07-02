@@ -1,15 +1,4 @@
 /**
- * @param {Array} data - [info,typeName/skillName]
- * @param {string} app - 'fig' | 'mg'
- */
-function toolMessage(data,app){
-  switch (app){
-    case 'fig': parent.postMessage({pluginMessage:data},"*"); break
-    case 'mg' : parent.postMessage(data,"*");break
-  }
-}
-
-/**
  * Base64转Uint8Array
  */
 function B64ToU8A(b64) {

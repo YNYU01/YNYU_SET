@@ -24,16 +24,11 @@ if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 7
 }
 
 
-
 /**
  * 使localStorage兼容浏览器/插件环境
  */
 let ISPLUGIN = ROOT.getAttribute('data-plugin')? true : false;
 let PLUGINAPP = ISPLUGIN ? ROOT.getAttribute('data-plugin') : null;
-let toolMessage;
-if(!ISPLUGIN){
-  toolMessage = null;
-}
 let storageMix = {
   get: (key)=>{
     if(ISPLUGIN){
@@ -48,6 +43,16 @@ let storageMix = {
     } else {
       window.localStorage.setItem(key,value)
     }
+  }
+}
+/**
+ * @param {Array} data - [info,typeName/skillName]
+ * @param {string} app - 'fig' | 'mg'
+ */
+function toolMessage(data,app){
+  switch (app){
+    case 'fig': parent.postMessage({pluginMessage:data},"*"); break
+    case 'mg' : parent.postMessage(data,"*");break
   }
 }
 
