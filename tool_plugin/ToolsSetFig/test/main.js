@@ -49,7 +49,8 @@ window.addEventListener('load',()=>{
     TV_MOVE = true;
   } else {
     TV_MOVE = false;
-  }
+  };
+  loadFont()
 });
 
 window.addEventListener('resize',()=>{
@@ -66,6 +67,25 @@ MOVE_TIMEOUT = setTimeout(()=>{
   }
 },500);
 });
+
+let loadFontAfter = [
+  "data-en-text",
+  "data-en-input",
+  "data-en-placeholder",
+  "data-turnto",
+  "data-back",
+]
+
+function loadFont(){
+  setTimeout(()=>{
+    loadFontAfter.forEach(key => {
+      let nodes = document.querySelectorAll(`[${key}]`);
+      nodes.forEach(item => {
+        item.style.fontFamily = '"Shanggu Sans", Arial, Helvetica, sans-serif';
+      })
+    });
+  },500);
+}
 
 function addSkill(){
   skillList.forEach(model => {

@@ -108,7 +108,7 @@ class btnshow extends HTMLElement {
   constructor() {
     super();
     this.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="12px" height="12px" viewBox="0 0 10 10">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 10 10">
       <path class="path1" d="M5.5,2L8,2L8,4.5L10,4.5L10,0L5.5,0L5.5,2Z" fill="var(--boxBod)" fill-opacity="1"></path>
       <path class="path2" d="M4.5,8L2,8L2,5.5L0,5.5L0,10L4.5,10L4.5,8Z" fill="var(--boxBod)" fill-opacity="1"></path>
     </svg>

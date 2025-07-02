@@ -1,3 +1,9 @@
+@font-face {
+  font-family: Shanggu Sans;
+  src: url("https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/fonts/other/ShangguSans-Regular.otf") format('opentype');
+  font-weight: 400;
+  font-display: swap;;
+}
 
 /*--组件修改*/
 #tips-all{
@@ -92,3 +98,16 @@ input[type="checkbox"]:checked + .tab-top{
 
 }
 
+.btn-big{
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked+.btn-big .path1 {
+  transform: translateY(6px) translateX(-6px);
+}
+
+input[type="checkbox"]:checked+.btn-big .path2 {
+  transform: translateX(6px) translateY(-6px);
+}
