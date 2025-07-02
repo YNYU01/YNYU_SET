@@ -1,6 +1,5 @@
 <head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/YNYU01/YNYU_SET@96891ca9874470aa2d76dc43959ceb5ed92fc3d8/builds/yn_style.css"  >
-  <script src="https://cdn.jsdelivr.net/gh/YNYU01/YNYU_SET@96891ca9874470aa2d76dc43959ceb5ed92fc3d8/public/run.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78bce693476437f33293b02aa409e324cd845e63/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>/**组件修改*/
 #tips-all{
@@ -31,6 +30,30 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   transform: translateX(var(--swi-h,18px));
 }
 </style>
+  <!-- INLINE_RUN -->
+  <script>const ROOT = document.documentElement;
+
+if(localStorage.getItem('userTheme') == 'light'){
+  ROOT.setAttribute("data-theme","light");
+}
+if(localStorage.getItem('userTheme') == 'dark'){
+  ROOT.setAttribute("data-theme","dark");
+}
+if(!localStorage.getItem('userTheme')){
+  ROOT.setAttribute("data-theme","light");
+  localStorage.setItem('userTheme','light');
+}
+
+if(localStorage.getItem('userLanguage') == 'En'){
+  ROOT.setAttribute("data-language","En");
+}
+if(localStorage.getItem('userLanguage') == 'Zh'){
+  ROOT.setAttribute("data-language","Zh");
+}
+if(!localStorage.getItem('userLanguage')){
+  ROOT.setAttribute("data-language","En");
+  localStorage.setItem('userLanguage','En');
+}</script>
 </head>
 
 <body class="noselect df-ffc df-cc">
@@ -55,25 +78,79 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   </div>
   <!--全局tips-->
   <div id="tips-all">
-    <div id="tips-all-text" class="tips-all-text" >
-        温馨提示
-    </div>
+    <div id="tips-all-text" class="tips-all-text" ></div>
   </div>
+  <!--底部-->
   
-  <script src="https://cdn.jsdelivr.net/gh/YNYU01/YNYU_SET@96891ca9874470aa2d76dc43959ceb5ed92fc3d8/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/YNYU01/YNYU_SET@96891ca9874470aa2d76dc43959ceb5ed92fc3d8/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/YNYU01/YNYU_SET@96891ca9874470aa2d76dc43959ceb5ed92fc3d8/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78bce693476437f33293b02aa409e324cd845e63/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78bce693476437f33293b02aa409e324cd845e63/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78bce693476437f33293b02aa409e324cd845e63/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78bce693476437f33293b02aa409e324cd845e63/public/jszip.js"></script>
   <!-- INLINE_JS -->
-  <script>window.addEventListener('load',()=>{
+  <script>/**
+ * 动态生成小功能列表
+ * 功能层级：模块>功能点/集>表单/按钮，模块用于tab切换，功能点/集可查看说明
+ * 文案类型需用['中文XXX','EnglishXXX']分别记录
+ * 表单类型基于yn_comp.js组件库
+ * 表单逐行记录，CSS控制默认间隙和自适应宽度，分隔间隙需加多分隔对象,可设置分隔值，不设置则按默认间隙两倍
+ */
+const skillList = [
+  {
+    icon: '',/*svg注册组件*/
+    title: ['',''],/*一级功能模块*/
+    skills: [
+      {
+        name: ['',''],/*二级功能名*/
+        tips: ['',''],/*功能说明*/
+        comps:[/*功能按钮，逐行*/
+          [/*单行*/
+            {
+              type: "SELECT",/* BUTTON | INPUT_ICON | RANGE_INT | SELECT | */
+              buttonMain: false,/*如为主按钮则特殊样式 */
+              selectOption:[
+                ['',''],
+                ['',''],
+              ],
+              isView: true,/*是否外显*/
+              isVIP: false,/*是否高级功能*/
+            },
+            {
+              type: "GAP",
+              gap: null,
+              isView: true,
+              isVIP: false,
+            },
+          ],
+        ], 
+        isStart: false,/*用户收藏后保存本地数据并置顶*/
+      },
+    ],
+  },
+]
+
+/**
+ * 克隆到常用功能
+ */
+let userSkillStart = ['二级功能名','二级功能名']
+
+window.addEventListener('load',()=>{
 
 });
 
-//封装postmessage
-function message(data){
-  /*figma*/
-  parent.postMessage({pluginMessage:data},"*")
-  /*mastergo*/
-  //parent.postMessage(data,"*")
+function addSkill(){
+  skillList.forEach(model => {
+    let skillModel = document.createElement('div');
+    skillModel.setAttribute('data-skillModel',model.title[1]);
+
+    let tabSkill = document.createElement('div');
+    tabSkill.setAttribute('data-tabSkill',model.title[1]);
+
+    page_skills.appendChild(skillModel);
+    tab_skills.appendChild(tabSkill)
+  })
+  userSkillStart.forEach(skill => {
+
+  })
 }
 
 //生成导出标签
@@ -971,103 +1048,6 @@ function createZipAndDownload(compressedImages) {
   zip.generateAsync({ type: "blob" }).then(function (content) {
     saveAs(content, docInfo + '-' + M + N + '_' + HHMMSS + '.zip');
   });
-}
-
-
-//b64转u8
-function B64ToU8A(b64) {
-  const padding = '='.repeat((4 - b64.length % 4) % 4);
-  const base64 = (b64 + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
-
-  const rawData = atob(base64);
-  const rawDataLength = rawData.length;
-  const array = new Uint8Array(new ArrayBuffer(rawDataLength));
-
-  for (let i = 0; i < rawDataLength; i += 1) {
-    array[i] = rawData.charCodeAt(i);
-  }
-
-  return array;
-}
-
-//u8转b64
-function U8AToB64(u8) {
-  let binaryString = '';
-  for (let i = 0; i < u8.length; i++) {
-    binaryString += String.fromCharCode(u8[i]);
-  }
-  // 对二进制字符串进行base64编码
-  const base64 = btoa(binaryString);
-  return base64; //"data:image/png;base64," + 
-}
-// RGB转HSL
-function rgbToHsl(r,g,b) {
-  var r = r / 255;
-  var g = g / 255;
-  var b = b / 255;
-  
-  var max = Math.max(r, g, b);
-  var min = Math.min(r, g, b);
-  
-  let h, s, l = (max + min) / 2;
-  
-  if (max === min) {
-    h = s = 0; // achromatic
-  } else {
-    var d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    
-    switch (max) {
-      case r:
-        h = (g - b) / d + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / d + 2;
-        break;
-      case b:
-        h = (r - g) / d + 4;
-        break;
-    }
-    
-    h /= 6;
-  }
-  
-  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
-}
-
-//HSL转RGB
-function hslToRgb(H,S,L) {
-  var h = parseInt(H) / 360; // 转换为0到1的数值
-  var s = parseInt(S) / 100; // 保持在0到1之间
-  var l = parseInt(L) / 100; // 保持在0到1之间
-  var r, g, b;
-
-  if (s === 0) {
-    r = g = b = l; // 灰度色
-  } else {
-    var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    var p = 2 * l - q;
-    r = hueToRgb(p, q, h + 1/3);
-    g = hueToRgb(p, q, h);
-    b = hueToRgb(p, q, h - 1/3);
-  }
-
-  return [
-    Math.round(r * 255),
-    Math.round(g * 255),
-    Math.round(b * 255)
-  ];
-
-  function hueToRgb(p, q, t) {
-    if (t < 0) t += 1;
-    if (t > 1) t -= 1;
-    if (t < 1/6) return p + (q - p) * 6 * t;
-    if (t < 1/2) return q;
-    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-    return p;
-  }
 }
 
 //大图导入裁剪

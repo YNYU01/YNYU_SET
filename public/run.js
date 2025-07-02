@@ -1,4 +1,5 @@
 const ROOT = document.documentElement;
+let toolMessage = null;
 let ISMOBILE = false;
 let MOBILE_KEYS = /mobile | android | iphone | ipad | blackberry | windows phone/i
 
@@ -22,26 +23,46 @@ if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 7
   ISMOBILE = false;
 }
 
-if(localStorage.getItem('userTheme') == 'light'){
-  ROOT.setAttribute("data-theme","light");
-}
-if(localStorage.getItem('userTheme') == 'dark'){
-  ROOT.setAttribute("data-theme","dark");
-}
-if(!localStorage.getItem('userTheme')){
-  ROOT.setAttribute("data-theme","light");
-  localStorage.setItem('userTheme','light');
+/**
+ * 使localStorage兼容浏览器/插件环境
+ */
+let storageMix = {
+  get: (key)=>{
+    if(ISPLUGIN){
+      toolMessage? toolMessage([key,'getlocal'],PLUGINAPP) : null
+    } else {
+      return window.localStorage.getItem(key)
+    }
+  },
+  set: (key,value)=>{
+    if(ISPLUGIN){
+      toolMessage? toolMessage([[key,value],'setlocal'],PLUGINAPP) : null
+    } else {
+      window.localStorage.setItem(key,value)
+    }
+  }
 }
 
-if(localStorage.getItem('userLanguage') == 'En'){
+if(storageMix.get('userTheme') == 'light'){
+  ROOT.setAttribute("data-theme","light");
+}
+if(storageMix.get('userTheme') == 'dark'){
+  ROOT.setAttribute("data-theme","dark");
+}
+if(!storageMix.get('userTheme')){
+  ROOT.setAttribute("data-theme","light");
+  storageMix.set('userTheme','light');
+}
+
+if(storageMix.get('userLanguage') == 'En'){
   ROOT.setAttribute("data-language","En");
 }
-if(localStorage.getItem('userLanguage') == 'Zh'){
+if(storageMix.get('userLanguage') == 'Zh'){
   ROOT.setAttribute("data-language","Zh");
 }
-if(!localStorage.getItem('userLanguage')){
+if(!storageMix.get('userLanguage')){
   ROOT.setAttribute("data-language","En");
-  localStorage.setItem('userLanguage','En');
+  storageMix.set('userLanguage','En');
 }
 
 function getUnicode(text){

@@ -27,6 +27,7 @@
   "networkAccess": {
     "allowedDomains": [
       "https://cdn.jsdelivr.net",
+      "https://cdn.jsdelivr.net.cn",
       "https://cdnjs.cloudflare.com"
     ]
   }

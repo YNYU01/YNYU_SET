@@ -196,7 +196,12 @@ class cardcolorpick extends HTMLElement {
 };
 customElements.define('card-colorpick', cardcolorpick);
 
-let ISLOCAL = window.location.protocol === 'file:' || window.location.hostname === 'localhost';
+let ISLOCAL = false;
+if (window.location.protocol === 'file:' || window.location.hostname === 'localhost'){
+  ISLOCAL = true;
+};
+let ISPLUGIN = false;
+let PLUGINAPP = null;
 let GETCOLOR = null;
 let TV = document.querySelectorAll('[data-TV]');//轮播公告
 let TV_MOVE = false;//用于结合一定条件触发轮播
@@ -246,26 +251,26 @@ window.addEventListener('load',()=>{
     //console.log('该浏览器支持吸色管')
   };
 
-  if(localStorage.getItem('userTheme') == 'light'){
+  if(storageMix.get('userTheme') == 'light'){
     setTheme(true,false);
   };
 
-  if(localStorage.getItem('userTheme') == 'dark'){
+  if(storageMix.get('userTheme') == 'dark'){
     setTheme(false,false);
   };
 
-  if(!localStorage.getItem('userTheme')){
+  if(!storageMix.get('userTheme')){
     setTheme(true,false);
   };
 
 
-  if(localStorage.getItem('userLanguage') == 'En'){
+  if(storageMix.get('userLanguage') == 'En'){
     setLanguage(false);
   };
-  if(localStorage.getItem('userLanguage') == 'Zh'){
+  if(storageMix.get('userLanguage') == 'Zh'){
     setLanguage(true);
   };
-  if(!localStorage.getItem('userLanguage')){
+  if(!storageMix.get('userLanguage')){
     setLanguage(false);
   };
 });
@@ -283,6 +288,26 @@ window.addEventListener('resize',()=>{
 
 function afterAllMust(){
   reTV();
+}
+
+/**
+ * 使localStorage兼容浏览器/插件环境
+ */
+let storageMix = {
+  get: (key)=>{
+    if(ISPLUGIN){
+      toolMessage? toolMessage([key,'getlocal'],PLUGINAPP) : null
+    } else {
+      return window.localStorage.getItem(key)
+    }
+  },
+  set: (key,value)=>{
+    if(ISPLUGIN){
+      toolMessage? toolMessage([[key,value],'setlocal'],PLUGINAPP) : null
+    } else {
+      window.localStorage.setItem(key,value)
+    }
+  }
 }
 
 LANGUAGE_SWITCH.forEach(item => {
@@ -1054,7 +1079,7 @@ function setTheme(isLight,istips){
     THEME_SWITCH.forEach(item => {
       item.checked = false;
     });
-    localStorage.setItem('userTheme','light');
+    storageMix.set('userTheme','light');
     if(istips){
       tipsAll(['已切换为亮色主题','Change to light theme'],2000,3);
     };
@@ -1063,7 +1088,7 @@ function setTheme(isLight,istips){
     THEME_SWITCH.forEach(item => {
       item.checked = true;
     });
-    localStorage.setItem('userTheme','dark');
+    storageMix.set('userTheme','dark');
     if(istips){
       tipsAll(['已切换为暗色主题','Change to dark theme'],2000,3);
     };
@@ -1077,7 +1102,7 @@ function setLanguage(isZh,istips){
       item.checked = true;
       item.parentNode.style.setProperty('--swi-text',`'Zh'`);
     });
-    localStorage.setItem('userLanguage','Zh');
+    storageMix.set('userLanguage','Zh');
     if(istips){
       tipsAll('已切换为中文',2000,3);
     }
@@ -1102,7 +1127,7 @@ function setLanguage(isZh,istips){
       item.checked = false;
       item.parentNode.style.setProperty('--swi-text',`'En'`);
     });
-    localStorage.setItem('userLanguage','En');
+    storageMix.set('userLanguage','En');
     if(istips){
       tipsAll('Change to English',2000,3);
     }

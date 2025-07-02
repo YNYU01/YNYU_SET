@@ -12,15 +12,17 @@ class InlineJsCssPlugin {
     compiler.hooks.afterEmit.tapAsync('InlineJsCssPlugin', (compilation, callback) => {
       // 获取输出路径和文件名
       const outputDir = this.templatePath.replace('/index.html','');//compilation.options.output.path;
-      const mainBundlePath = path.join(outputDir, 'main.js');
+      const mainJsPath = path.join(outputDir, 'main.js');
       const mainCssPath = path.join(outputDir, 'style.css');
+      const mainRunPath = path.join(outputDir, 'run.js');
 
       // 读取 JS 和 CSS 内容
       let jsContent = '';
       let cssContent = '';
+      let runContent = '';
 
       try {
-        jsContent = fs.readFileSync(mainBundlePath, 'utf-8');
+        jsContent = fs.readFileSync(mainJsPath, 'utf-8');
       } catch (e) {
         console.warn('找不到 main.js');
       }
@@ -31,6 +33,12 @@ class InlineJsCssPlugin {
         console.warn('找不到 style.css');
       }
 
+      try {
+        runContent = fs.readFileSync(mainRunPath, 'utf-8');
+      } catch (e) {
+        console.warn('找不到 run.js');
+      }
+
       // 读取 HTML 模板
       let html = fs.readFileSync(this.templatePath, 'utf-8');
 
@@ -38,6 +46,7 @@ class InlineJsCssPlugin {
       html = html
         .replace('<link rel="stylesheet" href="style.css">', `<style>${cssContent}</style>`)
         .replace('<script src="main.js"></script>', `<script>${jsContent}</script>`)
+        .replace('<script src="run.js"></script>', `<script>${runContent}</script>`)
 
       // 写入新文件
       const outputPath = path.join(compilation.options.output.path, 'ui.html');
