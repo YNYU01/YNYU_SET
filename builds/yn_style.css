@@ -65,7 +65,7 @@ html[data-theme="light"]{
   --liColor: #d03b3b;
   --swi-af:var(--themeColor);
   --swi-bod:var(--boxBod);
-  --swi-bak:var(--boxBak);
+  --swi-bak:var(--boxGry);
   --range-af:var(--themeColor);
   --icon-info:#575757;
 }

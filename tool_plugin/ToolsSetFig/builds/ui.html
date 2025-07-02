@@ -1,6 +1,6 @@
 <html data-plugin="fig" data-theme="dark" data-language="Zh">
 <head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@91ad5d09644642403da0e461f60c0c3ea761c540/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fb3fd68845405df4ab02edc505e6ff41d5f799e9/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 
@@ -48,7 +48,6 @@ body{
 
 #top{
   height: 28px;
-  padding-left: 2%;
   position: relative;
 }
 
@@ -65,7 +64,6 @@ body{
 #bottom{
   height: 32px;
   bottom: 0;
-  padding-left: 2%;
 }
 
 #bottom::after{
@@ -78,14 +76,25 @@ body{
   opacity: 0.5;
 }
 
+[data-tab-for="page"]{
+  gap: 4px;
+  padding-left: 2%;
+}
+
 .tab-top{
   padding: 2px 4px;
   border-radius: 4px;
-  text-transform: uppercase;
+  text-transform: capitalize;
+  opacity: 0.5;
 }
 
 input[type="checkbox"]:checked + .tab-top{
+  opacity: 1;
   background: var(--swi-bak);
+}
+
+[data-page-id="page"]{
+
 }
 
 
@@ -120,13 +129,13 @@ if (window.location.protocol !== 'file:'){
   }
 }
 </script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@91ad5d09644642403da0e461f60c0c3ea761c540/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fb3fd68845405df4ab02edc505e6ff41d5f799e9/public/run.js"></script>
 </head>
 
 <body class="noselect df-ffc df-cc">
   <!--顶部-->
   <div id="top" class="w100 df-lc">
-    <div class="df-cc pos-a" style="gap:4px; right: 2%; font-size: 12px;">
+    <div class="df-cc" style="gap:4px; margin-left: 2%; font-size: 12px;">
       <div id="btn-theme" style="width: 20px; height: 20px; padding: 4px; box-sizing: border-box; background: var(--swi-bak); border-radius: 4px;">
         <input id="theme-1" data-theme-check type="checkbox" checked="true">
         <label for="theme-1" class="btn-theme" style="position: relative;">
@@ -148,37 +157,49 @@ if (window.location.protocol !== 'file:'){
     <div id="tips-all-text" class="tips-all-text" ></div>
   </div>
   <!--功能页面-->
-  <div data-page-id="page" style="height: 80px; border: 1px solid var(--boxBod); border-radius: 4px; background: var(--boxBak);" data-tab-pick="tab_tab1">
-    <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-cc wh100" style="display: flex;">
-      示例页面1
+  <div class="df-ffc w100 df-cc">
+    <div class="TV df-lc" style="width: calc(100% - 20px); max-width: 420px;">
+      <div data-tv="false" class="df-lc" style="--tv-w: -29ch; --tv-s: 37s;">
+        <div style="min-width: 7ch;" data-en-text="💬NOTICE:">💬公告:</div>
+        <div style="min-width: 22ch;" data-en-text="Please note the following">公告内容公告内容公告内容</div>  
+      </div>  
     </div>
-    <div data-page-name="表单" data-page-name-en="table" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
-      示例页面2
-    </div>
-    <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
-      示例页面3
-    </div>
-    <div data-page-name="变量" data-page-name-en="variable" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
-      示例页面4
-    </div>
-    <div data-page-name="编辑" data-page-name-en="editor" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
-      示例页面5
+    <div data-page-id="page" class="df-ffc" data-tab-pick="create">
+      <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-cc wh100" style="display: flex;">
+        示例页面1
+      </div>
+      <div data-page-name="表单" data-page-name-en="table" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
+        示例页面2
+      </div>
+      <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
+        示例页面3
+      </div>
+      <div data-page-name="变量" data-page-name-en="variable" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
+        示例页面4
+      </div>
+      <div data-page-name="编辑" data-page-name-en="editor" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
+        示例页面5
+      </div>
+      <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
+        示例页面6
+      </div>
     </div>
   </div>
+  
   <!--底部-->
   <div id="bottom" class="df-lc w100 pos-a">
     <div class="df-ffc fl1" style="gap: 4px;">
-      <div class="df" data-tab="auto" data-tab-for="page" data-tab-pick="" style="gap: 4px;">
+      <div class="df" data-tab="auto" data-tab-for="page">
         <!--自动填充tab-->
       </div>
     </div>
   </div>
   
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@91ad5d09644642403da0e461f60c0c3ea761c540/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@91ad5d09644642403da0e461f60c0c3ea761c540/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@91ad5d09644642403da0e461f60c0c3ea761c540/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@91ad5d09644642403da0e461f60c0c3ea761c540/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fb3fd68845405df4ab02edc505e6ff41d5f799e9/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fb3fd68845405df4ab02edc505e6ff41d5f799e9/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fb3fd68845405df4ab02edc505e6ff41d5f799e9/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fb3fd68845405df4ab02edc505e6ff41d5f799e9/public/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /**
@@ -228,7 +249,26 @@ const skillList = [
 let userSkillStart = ['二级功能名','二级功能名']
 
 window.addEventListener('load',()=>{
+  if(window.innerWidth <= 250){
+    TV_MOVE = true;
+  } else {
+    TV_MOVE = false;
+  }
+});
 
+window.addEventListener('resize',()=>{
+/*防抖*/
+let MOVE_TIMEOUT;
+if(MOVE_TIMEOUT){
+    clearTimeout(MOVE_TIMEOUT)
+};
+MOVE_TIMEOUT = setTimeout(()=>{
+  if(window.innerWidth <= 250){
+    TV_MOVE = true;
+  } else {
+    TV_MOVE = false;
+  }
+},500);
 });
 
 function addSkill(){
