@@ -1,6 +1,7 @@
 if (window.location.protocol !== 'file:'){
   toolMessage(['userTheme','getlocal'],'fig');
   toolMessage(['userLanguage','getlocal'],'fig');
+  toolMessage(['tabPick','getlocal'],'fig');
 
   window.addEventListener('message',(message)=>{
     let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
@@ -10,6 +11,7 @@ if (window.location.protocol !== 'file:'){
       switch (type){
         case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
         case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
+        case 'tabPick': viewPage(info);break
       }
     }
   });

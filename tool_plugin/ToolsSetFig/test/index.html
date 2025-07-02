@@ -1,11 +1,11 @@
 <html data-plugin="fig" data-theme="dark" data-language="Zh">
 <head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c490653ba65c56ad2e34abb44755540980df306d/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <link rel="stylesheet" href="style.css">
   <!-- INLINE_RUN -->
   <script src="run.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c490653ba65c56ad2e34abb44755540980df306d/public/run.js"></script>
 </head>
 
 <body class="noselect df-ffc df-cc">
@@ -13,20 +13,6 @@
   <div id="top" class="w100 df-sc">
     <div></div>
     <div class="df-cc" style="gap:4px; margin-right: 2%; font-size: 12px;">
-      <div id="btn-theme" style="width: 20px; height: 20px; padding: 4px; box-sizing: border-box; background: var(--swi-bak); border-radius: 4px;">
-        <input id="theme-1" data-theme-check type="checkbox" checked="true">
-        <label for="theme-1" class="btn-theme" style="position: relative;">
-          <btn-theme></btn-theme>
-        </label>
-      </div>
-      <input id="language-1" data-language-check type="checkbox" checked="true"/>
-      <label for="language-1" class="switch pos-a" style="--swi-h:18px; --swi-bod:transparent; --swi-r:6px; --swi-af:var(--mainColor);">
-        <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
-          <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
-            <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
-          </svg>
-        </div>
-      </label>
       <input id="big" type="checkbox">
       <label for="big" class="btn-big df-cc">
         <btn-show></btn-show>
@@ -36,6 +22,53 @@
   <!--全局tips-->
   <div id="tips-all">
     <div id="tips-all-text" class="tips-all-text" ></div>
+  </div>
+  <!--侧边栏-->
+  <div data-side class="df pos-a h100" style="--fill: var(--mainColor)">
+    <div data-side-mix class="df-ffc">
+      <div class="h100"></div>
+      <div data-mainset-side class="df-sc">
+        <set-en-home data-any="en" class="fl0" style="height: 20px;"></set-en-home>
+        <set-zh-home data-any="zh" class="fl0" style="height: 20px;"></set-zh-home>
+        <div class="df-lc" style="gap: 4px;">
+          <div id="btn-theme">
+            <input id="theme-1" data-theme-check type="checkbox" checked="true">
+            <label for="theme-1" class="btn-theme" style="position: relative;">
+              <btn-theme></btn-theme>
+            </label>
+          </div>
+          <input id="language-1" data-language-check type="checkbox" checked="true"/>
+          <label for="language-1" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
+            <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
+              <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
+                <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
+              </svg>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="df-cc" style="width: 24px; height: 24px; background: var(--boxGry);">
+      <input id="btn-more" type="checkbox" />
+      <label for="btn-more" class="btn-more" >
+        <svg data-icon-more width="100%" height="100%" viewBox="0 0 20 20">
+          <g data-icon-more-path="1" >
+            <path fill="none" d="M18 0L0 0"></path>
+          </g>
+          <g data-icon-more-path="2">
+            <path fill="none" d="M18 0L0 0"></path>
+          </g>
+          <g data-icon-more-path="3">
+            <path fill="none" d="M18 0L0 0"></path>
+          </g>
+        </svg>
+      </label>
+    </div>
+  </div>
+  <!--侧边栏遮罩-->
+  <div data-side-mask class="wh100 pos-a" style="display: none;  z-index: 2">
+    <div class="wh100" style="background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);"></div>
   </div>
   <!--功能页面-->
   <div class="df-ffc w100 df-cc">
@@ -77,11 +110,11 @@
   </div>
   
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c490653ba65c56ad2e34abb44755540980df306d/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c490653ba65c56ad2e34abb44755540980df306d/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c490653ba65c56ad2e34abb44755540980df306d/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c490653ba65c56ad2e34abb44755540980df306d/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c490653ba65c56ad2e34abb44755540980df306d/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script src="main.js"></script>
 </body>

@@ -5,6 +5,10 @@
   font-display: swap;;
 }
 
+:root{
+  --top-h: 24px;
+}
+
 /*--组件修改*/
 #tips-all{
   display: none;
@@ -48,7 +52,7 @@ body{
 }
 
 #top{
-  height: 28px;
+  height: var(--top-h);
   position: relative;
 }
 
@@ -95,12 +99,13 @@ input[type="checkbox"]:checked + .tab-top{
 }
 
 [data-page-id="page"]{
-
+ height: calc(100% - 56px);
 }
 
 .btn-big{
-  width: 20px;
-  height: 20px;
+  width: 12px;
+  height: 12px;
+  margin-left: 2px;
   cursor: pointer;
 }
 
@@ -110,4 +115,114 @@ input[type="checkbox"]:checked+.btn-big .path1 {
 
 input[type="checkbox"]:checked+.btn-big .path2 {
   transform: translateX(6px) translateY(-6px);
+}
+
+[data-side]{
+  left: 0;
+  z-index: 3;
+  /*animation: topTabUp 0.5s;*/
+}
+
+[data-side-mix]{
+  width: 200px;
+  background: var(--boxGry);
+  padding: 10px 10px;
+  justify-content: space-between;
+  display: none;
+  overflow: hidden;
+}
+
+
+@keyframes sideUp {
+  0%{
+    width: 0;
+  }
+  100%{
+    width: 200px;
+  }
+}
+
+@keyframes sideOver {
+  0%{
+    width: 200px;
+    padding-left: 10px;
+  }
+  100%{
+    width: 0;
+    padding-left: 0px;
+  }
+}
+
+@keyframes topTabUp {
+  0%{
+    transform: translateY(calc(var(--top-h) * -1));
+  }
+  100%{
+    transform: translateY(0%);
+  }
+}
+
+[data-icon-more]{
+  transition: transform 0.4s;
+}
+
+input[type="checkbox"]:checked + label [data-icon-more]{
+  transform: rotate(90deg);
+}
+
+[data-icon-more-path]{
+  stroke: var(--mainColor);
+  stroke-width: 2;
+  transition: transform 0.2s;
+}
+
+[data-icon-more-path="1"]{
+  transform: matrix(1,0,0,1,1,4);
+}
+[data-icon-more-path="2"]{
+  transform: matrix(1,0,0,1,1,10);
+}
+[data-icon-more-path="3"]{
+  transform: matrix(1,0,0,1,1,16);
+}
+
+input[type="checkbox"]:checked + label [data-icon-more-path="1"]{
+  transform: matrix(0.7,0.7,-0.7,0.7,3.64,3.64);
+}
+input[type="checkbox"]:checked + label [data-icon-more-path="2"]{
+  transform: matrix(0.1,0,0,1,10,10);
+}
+input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
+  transform: matrix(0.7,-0.7,0.7,0.7,3.64,16.37);
+}
+
+#btn-theme{
+  width: 20px;
+  height: 20px;
+  padding: 4px;
+  box-sizing: border-box;
+  background: var(--swi-bak);
+  border-radius: 4px;
+  border: 1px solid var(--boxBod);
+}
+
+.btn-more{
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+[data-mainset-side]{
+  gap:4px;
+  padding: 10px 10px 10px 0;
+  border-top: 1px solid var(--boxBod);
+}
+
+[data-language="Zh"] [data-any="en"]{
+  display: none;
+}
+
+[data-language="En"] [data-any="zh"]{
+  display: none;
 }

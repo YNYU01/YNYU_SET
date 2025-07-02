@@ -44,6 +44,10 @@ const skillList = [
  */
 let userSkillStart = ['二级功能名','二级功能名']
 
+let sideMix = document.querySelector('[data-side-mix]');
+let sideMask = document.querySelector('[data-side-mask]');
+let btnMore = document.getElementById('btn-more');
+
 window.addEventListener('load',()=>{
   if(window.innerWidth <= 250){
     TV_MOVE = true;
@@ -85,6 +89,67 @@ function loadFont(){
       })
     });
   },500);
+}
+
+btnMore.addEventListener('change',(event)=>{
+  if(event.target.checked){
+    sideMix.style.display = 'flex';
+    sideMask.style.display = 'block';
+    sideMix.style.animation = 'sideUp 0.3s ease-out';
+    sideMask.style.animation = 'loadOp 0.3s ';
+  } else {
+    sideMix.style.animation = 'sideOver 0.3s ease-out';
+    sideMask.style.animation = 'overOp 0.3s ease-out';
+    setTimeout(()=>{ 
+      sideMix.style.display = 'none'
+      sideMask.style.display = 'none'
+    },280)
+  }
+});
+
+document.addEventListener('click',(event)=>{
+  if(!sideMix.contains(event.target) && sideMask.style.display !== 'none' && sideMix.style.display !== 'none' && btnMore.checked == true ){
+    btnMore.checked = false;
+    let inputEvent = new Event('change',{bubbles:true});
+    btnMore.dispatchEvent(inputEvent);
+  }
+});
+
+/**
+ * 模拟点击tab切换页面，测试时更方便，能直接显示目标页面
+ * @param {string} name - 应该传入tab的英文名
+ */
+function viewPage(name){
+  let tab = document.getElementById(`tab_${name}_0`);
+  tab.checked = true;
+  let inputEvent = new Event('change',{bubbles:true});
+  tab.dispatchEvent(inputEvent);
+}
+
+/*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
+let observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if(mutation.type === 'attributes'){
+      switch(mutation.attributeName){
+        case 'data-tab-pick':getUserTab(mutation.target); break;
+      }
+    }
+  })
+});
+let userEvent_tab = document.querySelectorAll('[data-tab-pick]');
+userEvent_tab.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-tab-pick']};
+  observer.observe(item,config);
+});
+
+/**
+ * @param {Element} node -带有data-tab-pick值的元素，用于记录用户关闭前所选的tab
+ */
+function getUserTab(node){
+  let tabPick = node.getAttribute('data-tab-pick').split('tab_')[1]
+  if(tabPick){
+    storageMix.setItem('tabPick',tabPick);
+  }
 }
 
 function addSkill(){

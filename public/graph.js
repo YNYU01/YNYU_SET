@@ -76,6 +76,30 @@ class logosetenhome extends HTMLElement {
 };
 customElements.define('set-en-home', logosetenhome);
 
+class logosetzh extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="100%" height="100%" viewBox="110 0 453 136" fill="none" xmlns="http://www.w3.org/2000/svg">
+    `+ LOGO_SET_ZH +`
+    </svg> 
+    `;
+  }
+};
+customElements.define('set-zh', logosetzh);
+
+class logoseten extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="100%" height="100%" viewBox="20 0 453 136" fill="none" xmlns="http://www.w3.org/2000/svg">
+    `+ LOGO_SET_EN +`
+    </svg> 
+    `;
+  }
+};
+customElements.define('set-en', logoseten);
+
 class logoynyuzhworks extends HTMLElement {
   constructor() {
     super();

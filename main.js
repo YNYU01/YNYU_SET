@@ -139,7 +139,7 @@ headMove.addEventListener('mouseleave',(event)=>{
   });
 });
 
-document.getElementById('btn-more').addEventListener('change',(event)=>{
+btnMore.addEventListener('change',(event)=>{
   if(event.target.checked){
     sideMix.style.display = 'flex';
     sideMask.style.display = 'block';
