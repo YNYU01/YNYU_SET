@@ -45,7 +45,26 @@ const skillList = [
 let userSkillStart = ['二级功能名','二级功能名']
 
 window.addEventListener('load',()=>{
+  if(window.innerWidth <= 250){
+    TV_MOVE = true;
+  } else {
+    TV_MOVE = false;
+  }
+});
 
+window.addEventListener('resize',()=>{
+/*防抖*/
+let MOVE_TIMEOUT;
+if(MOVE_TIMEOUT){
+    clearTimeout(MOVE_TIMEOUT)
+};
+MOVE_TIMEOUT = setTimeout(()=>{
+  if(window.innerWidth <= 250){
+    TV_MOVE = true;
+  } else {
+    TV_MOVE = false;
+  }
+},500);
 });
 
 function addSkill(){

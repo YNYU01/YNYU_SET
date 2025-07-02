@@ -149,13 +149,27 @@ const COMPS_TIPS = {
 
 const copyElements = document.querySelectorAll('[data-copy]');
 
-
 window.addEventListener('load',()=>{
-  
+  if(window.innerWidth <= 750){
+    TV_MOVE = true;
+  } else {
+    TV_MOVE = false;
+  }
 });
 
 window.addEventListener('resize',()=>{
-
+/*防抖*/
+let MOVE_TIMEOUT;
+if(MOVE_TIMEOUT){
+    clearTimeout(MOVE_TIMEOUT)
+};
+MOVE_TIMEOUT = setTimeout(()=>{
+  if(window.innerWidth <= 750){
+    TV_MOVE = true;
+  } else {
+    TV_MOVE = false;
+  }
+},500);
 });
 
 document.querySelector('[data-code="JS_main"]').innerHTML = JS_MAIN.replace(/</g,'&lt;').replace(/>/g,'&gt;');

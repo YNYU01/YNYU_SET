@@ -1,42 +1,27 @@
+if (window.location.protocol !== 'file:'){
+  toolMessage(['userTheme','getlocal'],'fig');
+  toolMessage(['userLanguage','getlocal'],'fig');
 
-let PLUGIN_THEME;
-let PLUGIN_LANGUAGE;
+  window.addEventListener('message',(message)=>{
+    let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
+    if(!isPluginMessge){
+      let info = message.data.pluginMessage.pluginMessage[0];
+      let type = message.data.pluginMessage.pluginMessage[1];
+      switch (type){
+        case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
+        case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
+      }
+    }
+  });
 
-toolMessage(['userTheme','getlocal'],'fig');
-toolMessage(['userLanguage','getlocal'],'fig');
-
-window.addEventListener('message',(message)=>{
-  let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
-  if(!isPluginMessge){
-    let info = message.data.pluginMessage.pluginMessage[0];
-    let type = message.data.pluginMessage.pluginMessage[1];
-    switch (type){
-      case 'userTheme': PLUGIN_THEME = info;break
-      case 'userLanguage': PLUGIN_LANGUAGE = info;break
+  /**
+   * @param {Array} data - [info,typeName/skillName]
+   * @param {string} app - 'fig' | 'mg'
+   */
+  function toolMessage(data,app){
+    switch (app){
+      case 'fig': parent.postMessage({pluginMessage:data},"*"); break
+      case 'mg' : parent.postMessage(data,"*");break
     }
-    console.log(PLUGIN_THEME,PLUGIN_LANGUAGE)
-    if(PLUGIN_THEME == 'light'){
-      setTheme(true,false);
-    }
-    if(PLUGIN_THEME == 'dark'){
-      setTheme(false,false);
-    }
-    if(PLUGIN_LANGUAGE == 'Zh'){
-      setLanguage(true);
-    }
-    if(PLUGIN_LANGUAGE == 'En'){
-      setLanguage(false);
-    }
-  }
-});
-
-/**
- * @param {Array} data - [info,typeName/skillName]
- * @param {string} app - 'fig' | 'mg'
- */
-function toolMessage(data,app){
-  switch (app){
-    case 'fig': parent.postMessage({pluginMessage:data},"*"); break
-    case 'mg' : parent.postMessage(data,"*");break
   }
 }

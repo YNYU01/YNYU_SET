@@ -152,11 +152,6 @@ figma.ui.onmessage = (message) => {
     //设置用户偏好
     if (type == "setlocal"){
         figma.clientStorage.setAsync(info[0],info[1])
-        console.log(info[0],info[1])
-        figma.clientStorage.getAsync(info[0])
-        .then (data => {
-            console.log(data)
-        })
     }
     //插件自动休眠
     if ( type == "sleep"){

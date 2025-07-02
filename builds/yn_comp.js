@@ -1020,11 +1020,6 @@ function inputMust(node,info){
 }
 
 function reTV(){
-  if(window.innerWidth <= 750){
-    TV_MOVE = true;
-  } else {
-    TV_MOVE = false;
-  }
   TV.forEach(item => {
     let long = item.offsetWidth + item.parentNode.offsetWidth;
     item.style.setProperty('--tv-s',Math.floor(long/30) + 's');
