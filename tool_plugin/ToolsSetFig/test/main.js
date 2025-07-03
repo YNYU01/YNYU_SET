@@ -54,7 +54,7 @@ window.addEventListener('load',()=>{
   } else {
     TV_MOVE = false;
   };
-  loadFont()
+  loadFont();
 });
 
 window.addEventListener('resize',()=>{
@@ -148,7 +148,7 @@ userEvent_tab.forEach(item => {
 function getUserTab(node){
   let tabPick = node.getAttribute('data-tab-pick').split('tab_')[1]
   if(tabPick){
-    storageMix.setItem('tabPick',tabPick);
+    storageMix.set('tabPick',tabPick);
   }
 }
 
