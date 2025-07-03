@@ -7,8 +7,9 @@ if (ISPLUGIN){
 window.addEventListener('message',(message)=>{
   let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
   if(!isPluginMessge){
-    let info = message.data.pluginMessage.pluginMessage[0];
-    let type = message.data.pluginMessage.pluginMessage[1];
+    let messages = message.data.pluginMessage.pluginMessage || ['',''];
+    let info = messages[0];
+    let type = messages[1];
     switch (type){
       case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
       case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break

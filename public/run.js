@@ -28,7 +28,7 @@ if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 7
  * 使localStorage兼容浏览器/插件环境
  */
 let ISPLUGIN = ROOT.getAttribute('data-plugin')? true : false;
-if(window.location && window.location.protocol !== 'file:'){
+if(window.location && window.location.protocol == 'file:'){
   ISPLUGIN = false;
 }
 let PLUGINAPP = ISPLUGIN ? ROOT.getAttribute('data-plugin') : null;
