@@ -10,6 +10,10 @@
   --bottom-h: 32px;
 }
 
+body{
+  min-width: 200px;
+}
+
 /*--组件修改*/
 .show-next{
   margin:0 2px 0 -2px;
@@ -20,8 +24,16 @@
   transform-origin: 40% 40%;
 }
 
+[data-language="En"] [data-tips]::after{
+  content: var(--tips-text-en,'something there');
+}
+
+[data-tips-x="left"]::after {
+  --x: -20px;
+}
+
 [data-tips-x="right"]::after {
-  --x: calc(-100% + 40px);
+  --x: calc(-100% + 70px);
 }
 
 [data-tips-x="center"]::after {
@@ -292,9 +304,16 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   --mainColor: #9b9b9b;
 }
 
+[data-btn-name]{
+  opacity: 0.6;
+  white-space: initial;
+  text-align: center;
+}
+
 
 /*--按钮类*/
 [data-btn]{
+  max-width: 560px;
   padding: 2px 0;
   border: 1px solid var(--boxBod);
   box-sizing: border-box;
@@ -346,6 +365,30 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 
 /*按钮类--*/
 
+/*--模块类*/
+.bod-d{
+  border: 1px var(--boxBod) dashed;
+  border-radius: 10px;
+}
+[data-drop="upload"]{
+  max-width: 560px;
+  /*filter: drop-shadow(0 0 var(--drop-w,0) var(--mainColor));*/
+}
+[data-mode-id="upload"]{
+  visibility: var(--drop-df,visible)/*collapse*/;
+  gap: 10px;
+  padding: 10px;
+  font-size: 10px;
+}
+.file-tag{
+  border-radius: 0 0 10px 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #9b9b9b;
+  padding: 2px 8px;
+  font-size: 10px;
+}
+/*模块类--*/
+
 /*--纹理类*/
 .tex-dot{
   --dot-wh: 1px;
@@ -361,7 +404,22 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 }
 /*纹理类--*/
 
-@media (max-width:240px) {
+@media (min-width:420px) {
+  [data-mainset-top]{
+    display: flex;
+  }
+}
+
+@media (max-width:299px) {
+  [data-any="vw300"]{
+    display: none;
+  }
+  [data-tips]::after{
+    display: none;
+  }
+}
+
+@media (max-width:239px) {
   [data-any="vw240"]{
     display: none;
   }
@@ -370,7 +428,4 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
     display: flex;
   }
 
-  [data-tips]::after{
-    display: none;
-  }
 }

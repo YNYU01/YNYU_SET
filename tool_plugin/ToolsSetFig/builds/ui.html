@@ -1,6 +1,8 @@
 <html data-plugin="fig" data-theme="dark" data-language="Zh">
 <head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@56c3e7969cc8b03bf7a0d2c93bb30ea18aa267e7/builds/yn_style.css"  >
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -15,6 +17,10 @@
   --bottom-h: 32px;
 }
 
+body{
+  min-width: 200px;
+}
+
 /*--组件修改*/
 .show-next{
   margin:0 2px 0 -2px;
@@ -25,6 +31,21 @@
   transform-origin: 40% 40%;
 }
 
+[data-language="En"] [data-tips]::after{
+  content: var(--tips-text-en,'something there');
+}
+
+[data-tips-x="left"]::after {
+  --x: -20px;
+}
+
+[data-tips-x="right"]::after {
+  --x: calc(-100% + 70px);
+}
+
+[data-tips-x="center"]::after {
+  --x:calc(-50% + 20px)
+}
 
 #tips-all{
   display: none;
@@ -87,7 +108,7 @@ body{
   bottom: 0;
 }
 
-#bottom::after{
+#bottom::before{
   content: '';
   position: absolute;
   top: -1px;
@@ -142,7 +163,7 @@ input[type="checkbox"]:checked+.btn-big .path2 {
 
 [data-side]{
   left: 0;
-  z-index: 3;
+  z-index: 11;
   /*animation: topTabUp 0.5s;*/
 }
 
@@ -242,7 +263,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 
 [data-mainset-side]{
   gap:4px;
-  padding: 10px 10px 10px 0;
+  padding: 10px 0;
   border-top: 1px solid var(--boxBod);
 }
 
@@ -280,7 +301,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 [data-tv-cut]{
   height: 18px;
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.8);
+  background:  rgba(0, 0, 0, 0.8);
   --mainColor: #b9b9b9;
   color: var(--mainColor);
   margin-top: 2px;
@@ -290,12 +311,20 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   --mainColor: #9b9b9b;
 }
 
+[data-btn-name]{
+  opacity: 0.6;
+  white-space: initial;
+  text-align: center;
+}
+
 
 /*--按钮类*/
 [data-btn]{
+  max-width: 560px;
   padding: 2px 0;
   border: 1px solid var(--boxBod);
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 [data-btn]:hover{
@@ -315,10 +344,89 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   border-radius: 8px;
 }
 
+[data-btn="help"]{
+  margin: 6px 0;
+  padding: 0;
+  --boxBod: var(--themeColor);
+  background: var(--themeColor);
+  border-radius: 20px;
+  color: #000;
+}
+
+[data-btn="help"]:hover{
+  background: var(--code1);
+}
+
+[data-btn="icon"]{
+  display: block;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+}
+
+[data-btn="icon"]:hover{
+  background: none;
+  opacity: 0.5;
+}
 
 /*按钮类--*/
 
-@media (max-width:240px) {
+/*--模块类*/
+.bod-d{
+  border: 1px var(--boxBod) dashed;
+  border-radius: 10px;
+}
+[data-drop="upload"]{
+  max-width: 560px;
+  /*filter: drop-shadow(0 0 var(--drop-w,0) var(--mainColor));*/
+}
+[data-mode-id="upload"]{
+  visibility: var(--drop-df,visible)/*collapse*/;
+  gap: 10px;
+  padding: 10px;
+  font-size: 10px;
+}
+.file-tag{
+  border-radius: 0 0 10px 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #9b9b9b;
+  padding: 2px 8px;
+  font-size: 10px;
+}
+/*模块类--*/
+
+/*--纹理类*/
+.tex-dot{
+  --dot-wh: 1px;
+  --dot-gap: 10px;
+  background: 
+  repeating-radial-gradient(
+    circle at center,
+    var(--dot-col) 0,
+    var(--dot-col) var(--dot-wh),
+    transparent var(--dot-wh),
+    transparent calc(var(--dot-gap)*2)), var(--boxBak);
+  background-size: var(--dot-gap) var(--dot-gap);
+}
+/*纹理类--*/
+
+@media (min-width:420px) {
+  [data-mainset-top]{
+    display: flex;
+  }
+}
+
+@media (max-width:299px) {
+  [data-any="vw300"]{
+    display: none;
+  }
+  [data-tips]::after{
+    display: none;
+  }
+}
+
+@media (max-width:239px) {
   [data-any="vw240"]{
     display: none;
   }
@@ -326,13 +434,14 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   [data-mainset-top]{
     display: flex;
   }
+
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@56c3e7969cc8b03bf7a0d2c93bb30ea18aa267e7/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
-let PULGIN_LOCAL = true;
+PULGIN_LOCAL = true;
 if (ISPLUGIN){
   ROOT.setAttribute('data-mobile','false');
   ISMOBILE = false;
@@ -393,7 +502,7 @@ function toolMessage(data,app){
     <div data-tv-box data-any="vw240"  class="df-lc">
       <div data-tv-cut class="TV df-lc" >
         <div data-tv="true" class="df-lc" style="--tv-w: -29ch; --tv-s: 37s;">
-          <div data-tv-text style="min-width: 29ch;" data-en-text="💬NOTICE:Please note the following">💬公告:公告内容公告内容公告内容</div>  
+          <div data-tv-text data-en-text="💬NOTICE:Please note the following">💬公告:公告内容公告内容公告内容</div>  
         </div>  
       </div> 
     </div>
@@ -411,9 +520,23 @@ function toolMessage(data,app){
   <!--侧边栏-->
   <div data-side data-any="vw240" class="df pos-a" style="top: 0; left: 0; --fill: var(--mainColor)">
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
-      <div class="h100"></div>
+      <div class="h100 df-ffc" style="justify-content: space-between;">
+        <div ></div>
+        <a class="df-cc" data-btn="help">
+          <div data-en-text="HELP DOC">使用文档</div>
+          <div style="width:20px; height:20px; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
+            <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.71411 11.3821H20.7141" stroke="#000" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
+              <path d="M13.3421 4.38208L20.7141 11.3821L13.3421 18.3821" stroke="#000" stroke-width="var(--arrow-w)"></path>
+            </svg>
+          </div>
+        </a>
+      </div>
       <div data-mainset-side class="df-sc">
-        <a href="https://www.ynyuset.cn" target="_blank" class="fl1 df-lc" style="gap: 2px; color: var(--mainColor); font-size: 10px;">
+        <a href="https://www.ynyuset.cn" target="_blank" class="fl1 df-lc"
+        data-tips="set" data-tips-y="top" data-tips-x="left" 
+        style="--tips-gap: -16px; --tips-text: '🔗https://www.ynyuset.cn'; --tips-text-en: 'https://www.ynyuset.cn';
+        gap: 2px; color: var(--mainColor); font-size: 10px;">
           ©2024-2025 
           <set-en data-any="en" class="fl0" style="height: 20px; margin-top: -2px;"></set-en>
           <set-zh data-any="zh" class="fl0" style="height: 20px; margin-top: -3px;"></set-zh>
@@ -455,7 +578,7 @@ function toolMessage(data,app){
     </div>
   </div>
   <!--侧边栏遮罩-->
-  <div data-side-mask class="wh100 pos-a" style="display: none;  z-index: 2">
+  <div data-side-mask class="wh100 pos-a" style="display: none;  z-index: 10">
     <div class="wh100" style="background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);"></div>
   </div>
   
@@ -463,13 +586,51 @@ function toolMessage(data,app){
   <div class="df-ffc w100 df-cc">
     <div data-page-id="page" class="df-ffc w100" data-tab-pick="create">
       <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: flex;">
-        <div style="height: calc(100% - 40px);"></div>
+        <div class="w100 df-ffc" style="height: calc(100% - 40px); align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+          <div class="w100 df-cc"  style="padding:4px 0 10px 0; opacity: 0.6;"> 
+            ▼&nbsp;
+            <span data-en-text="Upload | Drop | Input" >上传 | 拖拽 | 输入</span>
+            &nbsp;&nbsp;
+            <span data-any="vw300" data-en-text="data to create node in batches" style="opacity: 0.6;"> 数据以批量创建内容</span>
+          </div>
+          <div data-drop="upload" class="w100 df-ffc df-cc bod-d">
+            <div class="w100 df-cc">
+              <div data-file-info class="file-tag" data-en-text="📁 No files there">📁 未选择任何文件</div>
+            </div>
+            <div data-mode-id="upload" class="df-cc">
+              <div class="df-ffc df-cc" style="gap: 4px;">
+                <input id="input-user-img" type="file" accept="image/*" style="display: none;" multiple/>
+                <label for="input-user-img" data-tips="auto" data-tips-y="top" data-tips-x="left"
+                style=" --tips-text: '可上传1~10张大图，支持常见图片格式'; --tips-text-en: 'Upload 1~10 large images (common formats)';" >
+                  <btn-user-img  data-btn="icon" ></btn-user-img>
+                </label>
+                <div data-btn-name data-any="vw300" data-en-text="Cut large image">大图自动切片</div>
+              </div>
+              <div class="df-ffc df-cc" style="gap: 4px;">
+                <input id="input-user-table" type="file" accept=".csv,.xls,.xlsx"  style="display: none;"/>
+                <label for="input-user-table" data-tips="auto" data-tips-y="top" data-tips-x="center"
+                style="--tips-text: '上传单个表格，需按一定格式填写'; --tips-text-en: 'Upload 1 table in the prescribed format';" >
+                  <btn-user-table data-btn="icon"></btn-user-table>
+                </label>
+                <div data-btn-name data-any="vw300" data-en-text="Table to frame">表格创建画板</div>
+              </div>
+              <div class="df-ffc df-cc" style="gap: 4px;">
+                <input id="input-user-zy" type="file" accept=".zy,.sketch,.xml,.json,.zip,.rar,.7z" style="display: none;"/>
+                <label for="input-user-zy" data-tips="auto" data-tips-y="top" data-tips-x="right"
+                style="--tips-text: '上传由云即系列插件生成的图层信息文件'; --tips-text-en: 'Upload .zy (by YN+) or other compatible file';" >
+                  <btn-user-zy data-btn="icon"></btn-user-zy>
+                </label>
+                <div data-btn-name data-any="vw300" data-en-text="Layers frome .zy">兼容格式导入</div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div data-btn="main" class="df-cc" data-en-text="CREATER">创建对象</div>
       </div>
       <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
         
       </div>
-      <div data-page-name="表单" data-page-name-en="table" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
+      <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
         
       </div>
       <div data-page-name="变量" data-page-name-en="variable" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
@@ -492,11 +653,11 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@56c3e7969cc8b03bf7a0d2c93bb30ea18aa267e7/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@56c3e7969cc8b03bf7a0d2c93bb30ea18aa267e7/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@56c3e7969cc8b03bf7a0d2c93bb30ea18aa267e7/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@56c3e7969cc8b03bf7a0d2c93bb30ea18aa267e7/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@56c3e7969cc8b03bf7a0d2c93bb30ea18aa267e7/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /**
@@ -548,18 +709,29 @@ let userSkillStart = ['二级功能名','二级功能名']
 let toUserTips = {
   worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
   random: [
-    ["",""],
-    ["",""],
-    ["",""],
-    ["",""],
+    ["❤ 久坐伤身, 快起来走两步吧~","❤ Get up and take a walk now~"],
+    ["❤ 身心要紧, 不舒服及时休息~","❤ Put down your work and rest in time~"],
+    ["❤ 工具提效, 是为了多陪家人~","❤ Spend more time with your family~"],
+    ["❤ 支持开源, 要价值而非价格~","❤ Support open source and design~"],
+    ["❤ 久坐伤身, 快起来走两步吧~","❤ Get up and take a walk now~"],
+    ["❤ 身心要紧, 不舒服及时休息~","❤ Put down your work and rest in time~"],
+    ["❤ 工具提效, 是为了多陪家人~","❤ Spend more time with your family~"],
+    ["❤ 支持开源, 要价值而非价格~","❤ Support open source and design~"],
   ],
 }
+
 const UI_MINI = [200,460];
 const sideMix = document.querySelector('[data-side-mix]');
 const sideMask = document.querySelector('[data-side-mask]');
 const btnMore = document.getElementById('btn-more');
 const btnResize = document.querySelector('[data-resize]');
-const btnBig = document.getElementById('big')
+const btnBig = document.getElementById('big');
+const TV_text = document.querySelector('[data-tv-text]');
+const dropUp = document.querySelector('[data-drop="upload"]');
+const userImg = document.getElementById('input-user-img');
+const userTable = document.getElementById('input-user-table');
+const userZy = document.getElementById('input-user-zy');
+const fileInfo = document.querySelector('[data-file-info]');
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -572,6 +744,10 @@ window.addEventListener('load',()=>{
   };
   reTV();
   loadFont();
+  addToUserTips();
+  setInterval(() => {
+    addToUserTips();
+  }, 12000);
 });
 
 window.addEventListener('resize',()=>{
@@ -606,6 +782,24 @@ function loadFont(){
       })
     });
   },500);
+}
+
+function addToUserTips(){
+  let languge = ROOT.getAttribute('data-language');
+  let num = languge == 'Zh' ? 0 : 1;
+  let languge2 = languge == 'Zh' ? 'en' : 'zh';
+  let random = toUserTips.random[Math.floor(Math.random()*toUserTips.random.length)]
+  TV_text.textContent = random[num]
+  TV_text.setAttribute('data-'+ languge2 +'-text',random[1 - num]);
+  TV_text.setAttribute('data-'+ languge.toLowerCase() +'-text',random[num]);
+  let textW
+  if(num){
+    textW = random[num].length * -2 + 'ch'
+  }else{
+    textW = random[num].length * -1 + 'ch'
+  }
+  TV_text.parentNode.style.setProperty('--tv-w',textW)
+
 }
 
 //侧边栏展开
@@ -671,11 +865,11 @@ btnResize.addEventListener('mousedown',(event)=>{
   document.addEventListener('mouseup',()=>{
     isResize = false;
   })
-})
+});
 //打印所选对象
 document.getElementById('bottom').addEventListener('dblclick',()=>{
   toolMessage(['','getnode'],PLUGINAPP)
-})
+});
 //最大化窗口
 btnBig.addEventListener('change',()=>{
   if(btnBig.checked){
@@ -683,6 +877,54 @@ btnBig.addEventListener('change',()=>{
   }else{
     toolMessage([false,'big'],PLUGINAPP)
   }
+});
+//点击上传
+userImg.addEventListener('change',(e)=>{
+  let files = userImg.files;
+  reFileInfo(files);
+  let reader = new FileReader();
+});
+userTable.addEventListener('change',(e)=>{
+  let files = userTable.files;
+  reFileInfo(files);
+});
+userZy.addEventListener('change',(e)=>{
+  let files = userZy.files;
+  reFileInfo(files);
+});
+function reFileInfo(files){
+  let languge = ROOT.getAttribute('data-language');
+  let fileLength = '<span style="color: var(--code2)">' + files.length + '</span>'
+  let fileName1 = files.length == 1 ? files[0].name : files[0].name + ' ...等 ' + fileLength + '  个文件';
+  let fileName2 = files.length == 1 ? files[0].name : files[0].name + ' ... ' + fileLength + ' files';
+  fileName1 = '📁 ' + fileName1;
+  fileName2 = '📁 ' + fileName2;
+  fileInfo.setAttribute('data-zh-text',fileName1);
+  fileInfo.setAttribute('data-en-text',fileName2);
+  if(languge == "Zh"){
+    fileInfo.innerHTML = fileName1;
+  }else{
+    fileInfo.innerHTML = fileName2;
+  };
+}
+//拖拽上传
+dropUp.addEventListener('dragover',(e)=>{
+  e.stopPropagation();
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+  dropUp.style.filter = 'drop-shadow(0 0 4px var(--mainColor))';
+  dropUp.style.setProperty('--drop-df','collapse')
+});
+dropUp.addEventListener('dragleave',(e)=>{
+  e.stopPropagation();
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+  dropUp.style.filter = '';
+  dropUp.style.setProperty('--drop-df','visible')
+});
+dropUp.addEventListener('drop',(e)=>{
+  e.stopPropagation();
+  e.preventDefault();
 })
 
 /**

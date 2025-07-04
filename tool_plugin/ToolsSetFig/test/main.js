@@ -65,6 +65,11 @@ const btnMore = document.getElementById('btn-more');
 const btnResize = document.querySelector('[data-resize]');
 const btnBig = document.getElementById('big');
 const TV_text = document.querySelector('[data-tv-text]');
+const dropUp = document.querySelector('[data-drop="upload"]');
+const userImg = document.getElementById('input-user-img');
+const userTable = document.getElementById('input-user-table');
+const userZy = document.getElementById('input-user-zy');
+const fileInfo = document.querySelector('[data-file-info]');
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -198,11 +203,11 @@ btnResize.addEventListener('mousedown',(event)=>{
   document.addEventListener('mouseup',()=>{
     isResize = false;
   })
-})
+});
 //打印所选对象
 document.getElementById('bottom').addEventListener('dblclick',()=>{
   toolMessage(['','getnode'],PLUGINAPP)
-})
+});
 //最大化窗口
 btnBig.addEventListener('change',()=>{
   if(btnBig.checked){
@@ -210,6 +215,54 @@ btnBig.addEventListener('change',()=>{
   }else{
     toolMessage([false,'big'],PLUGINAPP)
   }
+});
+//点击上传
+userImg.addEventListener('change',(e)=>{
+  let files = userImg.files;
+  reFileInfo(files);
+  let reader = new FileReader();
+});
+userTable.addEventListener('change',(e)=>{
+  let files = userTable.files;
+  reFileInfo(files);
+});
+userZy.addEventListener('change',(e)=>{
+  let files = userZy.files;
+  reFileInfo(files);
+});
+function reFileInfo(files){
+  let languge = ROOT.getAttribute('data-language');
+  let fileLength = '<span style="color: var(--code2)">' + files.length + '</span>'
+  let fileName1 = files.length == 1 ? files[0].name : files[0].name + ' ...等 ' + fileLength + '  个文件';
+  let fileName2 = files.length == 1 ? files[0].name : files[0].name + ' ... ' + fileLength + ' files';
+  fileName1 = '📁 ' + fileName1;
+  fileName2 = '📁 ' + fileName2;
+  fileInfo.setAttribute('data-zh-text',fileName1);
+  fileInfo.setAttribute('data-en-text',fileName2);
+  if(languge == "Zh"){
+    fileInfo.innerHTML = fileName1;
+  }else{
+    fileInfo.innerHTML = fileName2;
+  };
+}
+//拖拽上传
+dropUp.addEventListener('dragover',(e)=>{
+  e.stopPropagation();
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+  dropUp.style.filter = 'drop-shadow(0 0 4px var(--mainColor))';
+  dropUp.style.setProperty('--drop-df','collapse')
+});
+dropUp.addEventListener('dragleave',(e)=>{
+  e.stopPropagation();
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+  dropUp.style.filter = '';
+  dropUp.style.setProperty('--drop-df','visible')
+});
+dropUp.addEventListener('drop',(e)=>{
+  e.stopPropagation();
+  e.preventDefault();
 })
 
 /**

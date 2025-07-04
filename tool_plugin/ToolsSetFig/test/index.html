@@ -2,10 +2,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@588a71b7bfba6d09d80fb0f82e6b014ca8f82de3/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@588a71b7bfba6d09d80fb0f82e6b014ca8f82de3/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script src="run.js"></script>
 </head>
@@ -118,50 +118,64 @@
   <div class="df-ffc w100 df-cc">
     <div data-page-id="page" class="df-ffc w100" data-tab-pick="create">
       <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: flex;">
-        <div class="w100 df-ffc" style="height: calc(100% - 40px); padding:0 10px 10px 10px; box-sizing: border-box;">
-          <div class="w100 df-cc" data-en-text="Upload | Drop | Input" style="padding: 10px 0; opacity: 0.6;">上传 | 拖拽 | 输入</div>
-          <div class="w100 df-ffc df-cc" style=" border: 1px var(--boxBod) dashed; border-radius: 10px;">
-            <div class="df-cc" style="gap: 10px; padding: 10px; font-size: 10px;">
+        <div class="w100 df-ffc" style="height: calc(100% - 40px); align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+          <div class="w100 df-cc"  style="padding:4px 0 10px 0; opacity: 0.6;"> 
+            ▼&nbsp;
+            <span data-en-text="Upload | Drop | Input" >上传 | 拖拽 | 输入</span>
+            &nbsp;&nbsp;
+            <span data-any="vw300" data-en-text="data to create node in batches" style="opacity: 0.6;"> 数据以批量创建内容</span>
+          </div>
+          <div data-drop="upload" class="w100 df-ffc df-cc bod-d">
+            <div class="w100 df-cc">
+              <div data-file-info class="file-tag" data-en-text="📁 No files there">📁 未选择任何文件</div>
+            </div>
+            <div data-mode-id="upload" class="df-cc">
               <div class="df-ffc df-cc" style="gap: 4px;">
-                <input id="input-user-img" type="file" style="display: none;" multiple/>
+                <input id="input-user-img" type="file" accept="image/*" style="display: none;" multiple/>
                 <label for="input-user-img" data-tips="auto" data-tips-y="top" data-tips-x="left"
-                style=" --x: -20px; --tips-text: '可上传1~10张大图，支持常见图片格式'; --tips-text-en: 'Upload 1~10 large images ';" >
+                style=" --tips-text: '可上传1~10张大图，支持常见图片格式'; --tips-text-en: 'Upload 1~10 large images (common formats)';" >
                   <btn-user-img  data-btn="icon" ></btn-user-img>
                 </label>
-                <div data-any="vw240" data-en-text="Import image" style="opacity: 0.6;">大图自动切片</div>
+                <div data-btn-name data-any="vw300" data-en-text="Cut large image">大图自动切片</div>
               </div>
               <div class="df-ffc df-cc" style="gap: 4px;">
-                <div data-tips="auto" data-tips-y="top" data-tips-x="center"
-                style="--tips-text: '上传单个表格，需按一定格式填写'; --tips-text-en: '';" >
+                <input id="input-user-table" type="file" accept=".csv,.xls,.xlsx"  style="display: none;"/>
+                <label for="input-user-table" data-tips="auto" data-tips-y="top" data-tips-x="center"
+                style="--tips-text: '上传单个表格，需按一定格式填写'; --tips-text-en: 'Upload 1 table in the prescribed format';" >
                   <btn-user-table data-btn="icon"></btn-user-table>
-                </div>
-                <div data-any="vw240" data-en-text="Import table" style="opacity: 0.6;">表格创建画板</div>
+                </label>
+                <div data-btn-name data-any="vw300" data-en-text="Table to frame">表格创建画板</div>
               </div>
               <div class="df-ffc df-cc" style="gap: 4px;">
-                <div data-tips="auto" data-tips-y="top" data-tips-x="right"
-                style=" --x: 20px; --tips-text: '上传云即系列插件生成的兼容文件'; --tips-text-en: '';" >
+                <input id="input-user-zy" type="file" accept=".zy,.sketch,.xml,.json,.zip,.rar,.7z" style="display: none;"/>
+                <label for="input-user-zy" data-tips="auto" data-tips-y="top" data-tips-x="right"
+                style="--tips-text: '上传由云即系列插件生成的图层信息文件'; --tips-text-en: 'Upload .zy (by YN+) or other compatible file';" >
                   <btn-user-zy data-btn="icon"></btn-user-zy>
-                </div>
-                <div data-any="vw240" data-en-text="Import .zy files" style="opacity: 0.6;">兼容格式导入</div>
+                </label>
+                <div data-btn-name data-any="vw300" data-en-text="Layers frome .zy">兼容格式导入</div>
               </div>
             </div>
           </div>
         </div>
         <div data-btn="main" class="df-cc" data-en-text="CREATER">创建对象</div>
       </div>
-      <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
+      <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
+        <div class="w100 df-ffc" style="height: calc(100% - 40px); align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        </div>
+        <div data-btn="main" class="df-cc" data-en-text="EXPORT">导出全部</div>
+      </div>
+      <div data-page-name="变量" data-page-name-en="variable" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
         
       </div>
-      <div data-page-name="表单" data-page-name-en="table" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
+      <div data-page-name="编辑" data-page-name-en="editor" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
+        <div class="w100 df-ffc" style="height: calc(100% - 40px); align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        </div>
+        <div data-btn="main" class="df-cc" data-en-text="APPLY">应用编辑</div>
+      </div>
+      <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
         
       </div>
-      <div data-page-name="变量" data-page-name-en="variable" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
-        
-      </div>
-      <div data-page-name="编辑" data-page-name-en="editor" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
-        
-      </div>
-      <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
+      <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
         
       </div>
     </div>
@@ -175,11 +189,11 @@
   <!--插件端调整大小-->
   <div data-resize></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@588a71b7bfba6d09d80fb0f82e6b014ca8f82de3/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@588a71b7bfba6d09d80fb0f82e6b014ca8f82de3/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@588a71b7bfba6d09d80fb0f82e6b014ca8f82de3/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@588a71b7bfba6d09d80fb0f82e6b014ca8f82de3/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@588a71b7bfba6d09d80fb0f82e6b014ca8f82de3/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script src="main.js"></script>
 </body>
