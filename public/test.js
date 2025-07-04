@@ -62,7 +62,7 @@ function loadFont(){
     loadFontAfter.forEach(key => {
       let nodes = document.querySelectorAll(`[${key}]`);
       nodes.forEach(item => {
-        item.style.fontFamily = '"Shanggu Sans", Arial, Helvetica, sans-serif';
+        item.style.fontFamily = `'Shanggu Sans', Arial, Helvetica, sans-serif`;
       })
     });
   },500);

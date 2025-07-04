@@ -47,18 +47,24 @@ let userSkillStart = ['二级功能名','二级功能名']
 let toUserTips = {
   worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
   random: [
-    ["",""],
-    ["",""],
-    ["",""],
-    ["",""],
+    ["❤ 久坐伤身, 快起来走两步吧~","❤ Get up and take a walk now~"],
+    ["❤ 身心要紧, 不舒服及时休息~","❤ Put down your work and rest in time~"],
+    ["❤ 工具提效, 是为了多陪家人~","❤ Spend more time with your family~"],
+    ["❤ 支持开源, 要价值而非价格~","❤ Support open source and design~"],
+    ["❤ 久坐伤身, 快起来走两步吧~","❤ Get up and take a walk now~"],
+    ["❤ 身心要紧, 不舒服及时休息~","❤ Put down your work and rest in time~"],
+    ["❤ 工具提效, 是为了多陪家人~","❤ Spend more time with your family~"],
+    ["❤ 支持开源, 要价值而非价格~","❤ Support open source and design~"],
   ],
 }
+
 const UI_MINI = [200,460];
 const sideMix = document.querySelector('[data-side-mix]');
 const sideMask = document.querySelector('[data-side-mask]');
 const btnMore = document.getElementById('btn-more');
 const btnResize = document.querySelector('[data-resize]');
-const btnBig = document.getElementById('big')
+const btnBig = document.getElementById('big');
+const TV_text = document.querySelector('[data-tv-text]');
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -71,6 +77,10 @@ window.addEventListener('load',()=>{
   };
   reTV();
   loadFont();
+  addToUserTips();
+  setInterval(() => {
+    addToUserTips();
+  }, 12000);
 });
 
 window.addEventListener('resize',()=>{
@@ -105,6 +115,24 @@ function loadFont(){
       })
     });
   },500);
+}
+
+function addToUserTips(){
+  let languge = ROOT.getAttribute('data-language');
+  let num = languge == 'Zh' ? 0 : 1;
+  let languge2 = languge == 'Zh' ? 'en' : 'zh';
+  let random = toUserTips.random[Math.floor(Math.random()*toUserTips.random.length)]
+  TV_text.textContent = random[num]
+  TV_text.setAttribute('data-'+ languge2 +'-text',random[1 - num]);
+  TV_text.setAttribute('data-'+ languge.toLowerCase() +'-text',random[num]);
+  let textW
+  if(num){
+    textW = random[num].length * -2 + 'ch'
+  }else{
+    textW = random[num].length * -1 + 'ch'
+  }
+  TV_text.parentNode.style.setProperty('--tv-w',textW)
+
 }
 
 //侧边栏展开

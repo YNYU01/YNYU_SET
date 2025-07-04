@@ -82,7 +82,7 @@ body{
   bottom: 0;
 }
 
-#bottom::after{
+#bottom::before{
   content: '';
   position: absolute;
   top: -1px;
@@ -237,7 +237,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 
 [data-mainset-side]{
   gap:4px;
-  padding: 10px 10px 10px 0;
+  padding: 10px 0;
   border-top: 1px solid var(--boxBod);
 }
 
@@ -275,7 +275,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 [data-tv-cut]{
   height: 18px;
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.8);
+  background:  rgba(0, 0, 0, 0.8);
   --mainColor: #b9b9b9;
   color: var(--mainColor);
   margin-top: 2px;
@@ -310,8 +310,34 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   border-radius: 8px;
 }
 
+[data-btn="help"]{
+  margin: 6px 0;
+  padding: 0;
+  --boxBod: var(--themeColor);
+  background: var(--themeColor);
+  border-radius: 20px;
+  color: #000;
+}
+[data-btn="help"]:hover{
+  background: var(--code1);
+}
 
 /*按钮类--*/
+
+/*--纹理类*/
+.tex-dot{
+  --dot-wh: 1px;
+  --dot-gap: 10px;
+  background: 
+  repeating-radial-gradient(
+    circle at center,
+    var(--dot-col) 0,
+    var(--dot-col) var(--dot-wh),
+    transparent var(--dot-wh),
+    transparent calc(var(--dot-gap)*2)), var(--boxBak);
+  background-size: var(--dot-gap) var(--dot-gap);
+}
+/*纹理类--*/
 
 @media (max-width:240px) {
   [data-any="vw240"]{

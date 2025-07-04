@@ -2,10 +2,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c8c7d26ed25973493517b1c7320914a6d7d1132/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8936f04921c8ac7c8fc8af6bdbe2ca0847292d95/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c8c7d26ed25973493517b1c7320914a6d7d1132/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8936f04921c8ac7c8fc8af6bdbe2ca0847292d95/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script src="run.js"></script>
 </head>
@@ -34,7 +34,7 @@
     <div data-tv-box data-any="vw240"  class="df-lc">
       <div data-tv-cut class="TV df-lc" >
         <div data-tv="true" class="df-lc" style="--tv-w: -29ch; --tv-s: 37s;">
-          <div data-tv-text style="min-width: 29ch;" data-en-text="💬NOTICE:Please note the following">💬公告:公告内容公告内容公告内容</div>  
+          <div data-tv-text data-en-text="💬NOTICE:Please note the following">💬公告:公告内容公告内容公告内容</div>  
         </div>  
       </div> 
     </div>
@@ -52,9 +52,23 @@
   <!--侧边栏-->
   <div data-side data-any="vw240" class="df pos-a" style="top: 0; left: 0; --fill: var(--mainColor)">
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
-      <div class="h100"></div>
+      <div class="h100 df-ffc" style="justify-content: space-between;">
+        <div ></div>
+        <a class="df-cc" data-btn="help">
+          <div data-en-text="HELP DOC">使用文档</div>
+          <div style="width:20px; height:20px; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
+            <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.71411 11.3821H20.7141" stroke="#000" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
+              <path d="M13.3421 4.38208L20.7141 11.3821L13.3421 18.3821" stroke="#000" stroke-width="var(--arrow-w)"></path>
+            </svg>
+          </div>
+        </a>
+      </div>
       <div data-mainset-side class="df-sc">
-        <a href="https://www.ynyuset.cn" target="_blank" class="fl1 df-lc" style="gap: 2px; color: var(--mainColor); font-size: 10px;">
+        <a href="https://www.ynyuset.cn" target="_blank" class="fl1 df-lc"
+        data-tips="set" data-tips-y="top" data-tips-x="left" 
+        style="--tips-gap: -16px; --tips-text: '🔗https://www.ynyuset.cn'; --tips-text-en: 'https://www.ynyuset.cn';
+        gap: 2px; color: var(--mainColor); font-size: 10px;">
           ©2024-2025 
           <set-en data-any="en" class="fl0" style="height: 20px; margin-top: -2px;"></set-en>
           <set-zh data-any="zh" class="fl0" style="height: 20px; margin-top: -3px;"></set-zh>
@@ -105,6 +119,14 @@
     <div data-page-id="page" class="df-ffc w100" data-tab-pick="create">
       <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: flex;">
         <div style="height: calc(100% - 40px);"></div>
+        <div style="width: calc(100% - 20px); display: flex; gap: 10px;padding: 10px 0 10px 0; margin: 10px auto 10px auto;justify-content: center; align-items: center;border: 1px var(--boxBod) dashed; border-radius: 10px;">
+          <div style="width: 40px; height: 40px;">
+          </div>
+          <div style="width: 40px; height: 40px;">
+          </div>
+          <div style="width: 40px; height: 40px;">
+          </div>
+        </div>
         <div data-btn="main" class="df-cc" data-en-text="CREATER">创建对象</div>
       </div>
       <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-cc wh100" style="display: none;">
@@ -125,8 +147,7 @@
     </div>
   </div>
   <!--底部-->
-  <div id="bottom" class="df-lc w100 pos-a" data-tips="set" data-tips-y="bottom" data-tips-x="left" 
-  style="--tips-w: 80vw; --tips-text: ''; --tips-text-en: '';">
+  <div id="bottom" class="df-lc w100 pos-a">
     <div data-scroll class="df ovx noscrollbar" data-tab="auto" data-tab-for="page" style="padding: 6px 4px;">
       <!--自动填充tab-->
     </div>
@@ -134,11 +155,11 @@
   <!--插件端调整大小-->
   <div data-resize></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c8c7d26ed25973493517b1c7320914a6d7d1132/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c8c7d26ed25973493517b1c7320914a6d7d1132/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c8c7d26ed25973493517b1c7320914a6d7d1132/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c8c7d26ed25973493517b1c7320914a6d7d1132/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c8c7d26ed25973493517b1c7320914a6d7d1132/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8936f04921c8ac7c8fc8af6bdbe2ca0847292d95/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8936f04921c8ac7c8fc8af6bdbe2ca0847292d95/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8936f04921c8ac7c8fc8af6bdbe2ca0847292d95/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8936f04921c8ac7c8fc8af6bdbe2ca0847292d95/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8936f04921c8ac7c8fc8af6bdbe2ca0847292d95/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script src="main.js"></script>
 </body>
