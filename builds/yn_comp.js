@@ -197,7 +197,7 @@ class cardcolorpick extends HTMLElement {
 customElements.define('card-colorpick', cardcolorpick);
 
 let ISLOCAL = false;
-if (window.location.protocol === 'file:' || window.location.hostname === 'localhost'){
+if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || PULGIN_LOCAL){
   ISLOCAL = true;
 };
 
@@ -1416,14 +1416,104 @@ function showNext(node1,node2,display,checked){
 /**
  * 封装console.log()打印，让打印内容按条件可选择仅在本地环境打印
  * @param {any} info
- * @param {string} type -local | online | all | null(=all)
+ * @param {string} type -local | online | all | null(=local)
  */
 function log(info,type){
   switch (type){
     case 'local' :if(ISLOCAL){console.log(info)};break
     case 'online' :if(!ISLOCAL){console.log(info)};break
     case 'all' :console.log(info);break
-    case false :console.log(info);break
+    default :if(ISLOCAL){console.log(info)};break
   }
 
+}
+
+/**
+ * @param {string} regex - 带格式占位的字符串，如"YYYY年MM月DD日"
+ * @param {Boolean} isZh - 是否用中文表示
+ */
+function getDate(regex,isZh){
+  let now = new Date();
+  let YYYY = now.getFullYear();
+  let M = now.getMonth()*1 + 1;
+  let MM = M.toString().padStart(2,'0');
+  let D = now.getDate();
+  let DD = D.toString().padStart(2,'0');
+  let numZh = ['〇','一','二','三','四','五','六','七','八','九','十','十一','十二'];
+  if(isZh){
+    YYYY = Array.from(YYYY.toString()).map(item => {return numZh[item*1]} ).join('');
+    M = numZh[M];
+    MM = M;
+    if(D >= 10){
+      D = Array.from(D.toString());
+      D[0] = D[0] == '1' ? '十' : numZh[D[0]*1] + '十';
+      D[1] = D[1] == '0' ? '' : numZh[D[1]*1];
+      D = D.join('');
+    } else {
+      D = numZh[D];
+    };
+    DD = D;
+    //console.log(`${YYYY}年${MM}月${DD}日`)
+  }
+  regex = regex.replace('YYYY',YYYY);
+  regex = regex.replace('MM',MM);
+  regex = regex.replace('DD',DD);
+  regex = regex.replace('M',M);
+  regex = regex.replace('D',D);
+  return [regex,[YYYY,MM,DD]];
+}
+
+//log(getDate('YYYY-MM-DD')[0])
+
+/**
+ * @param {string} regex - 带格式占位的字符串，如"YYYY年MM月DD日"
+ * @param {Boolean} is12 - 是否用12小时制
+ */
+function getTime(regex,is12){
+  let now = new Date();
+  let H = now.getHours();
+  let HH = H.toString().padStart(2,'0');
+  let M = now.getMinutes();
+  let MM = M.toString().padStart(2,'0');
+  let S = now.getSeconds();
+  let SS = S.toString().padStart(2,'0');
+  if(is12){
+    if(H >= 12){
+      H = H - 12;
+      HH = H.toString().padStart(2,'0');
+    }
+  }
+  regex = regex.replace('HH',HH);
+  regex = regex.replace('MM',MM);
+  regex = regex.replace('SS',SS);
+  regex = regex.replace('H',H);
+  regex = regex.replace('M',M);
+  regex = regex.replace('S',S);
+  return [regex,[HH,MM,SS]];
+}
+
+//log(getTime('HH:MM',true)[0])
+
+//通用X轴滚动
+let scrollNode = document.querySelectorAll('[data-scroll]');
+scrollNode.forEach(item =>{
+  scrollX(item)
+})
+function scrollX(node){
+  let nodeScroll = false;
+  let nodeStartX,nodeScrollLeft;
+  node.addEventListener('mousedown',(event)=>{
+    nodeScroll = true;
+    nodeStartX = event.clientX;
+    nodeScrollLeft = node.scrollLeft;  
+    document.addEventListener('mousemove',(e)=>{
+      if(nodeScroll){
+        let move = e.clientX - nodeStartX;
+        node.scrollLeft = nodeScrollLeft - move;
+      }
+    });
+    document.addEventListener('mouseup',()=>{
+      nodeScroll = false;
+    })
+  });
 }

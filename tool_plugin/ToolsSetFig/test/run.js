@@ -1,4 +1,7 @@
+let PULGIN_LOCAL = true;
 if (ISPLUGIN){
+  ROOT.setAttribute('data-mobile','false');
+  ISMOBILE = false;
   toolMessage(['userTheme','getlocal'],PLUGINAPP);
   toolMessage(['userLanguage','getlocal'],PLUGINAPP);
   toolMessage(['tabPick','getlocal'],PLUGINAPP);
@@ -20,7 +23,7 @@ window.addEventListener('message',(message)=>{
 
 /**
  * @param {Array} data - [info,typeName/skillName]
- * @param {string} app - PLUGINAPP | 'mg'
+ * @param {string} app - PLUGINAPP(需定义) | 'fig' | 'mg'
  */
 function toolMessage(data,app){
   switch (app){

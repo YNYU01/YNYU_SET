@@ -7,9 +7,20 @@
 
 :root{
   --top-h: 24px;
+  --bottom-h: 32px;
 }
 
 /*--组件修改*/
+.show-next{
+  margin:0 2px 0 -2px;
+  cursor: pointer;
+}
+
+.show-next::after {
+  transform-origin: 40% 40%;
+}
+
+
 #tips-all{
   display: none;
   justify-content: center;
@@ -67,7 +78,7 @@ body{
 }
 
 #bottom{
-  height: 32px;
+  height: var(--bottom-h);
   bottom: 0;
 }
 
@@ -99,7 +110,14 @@ input[type="checkbox"]:checked + .tab-top{
 }
 
 [data-page-id="page"]{
- height: calc(100% - 56px);
+ height: calc(100vh - var(--bottom-h) - var(--top-h));
+}
+
+[data-tv-box]{
+  display: flex;
+  align-items: center;
+  width: calc(100% - 10px);
+  font-size: 10px;
 }
 
 .btn-big{
@@ -226,3 +244,73 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 [data-language="En"] [data-any="zh"]{
   display: none;
 }
+
+[data-resize]{
+  content: '';
+  position: absolute;
+  cursor:nw-resize;
+  bottom: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(to top left,
+  transparent 20%,
+  var(--boxBod) 21%,
+  var(--boxBod) 25%,
+  transparent 26%,
+  transparent 45%,
+  var(--boxBod) 46%,
+  var(--boxBod) 50%,
+  transparent 51%);
+}
+
+[data-tv-box]{
+  padding: 0 4px;
+}
+
+[data-tv-cut]{
+  height: 18px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  --mainColor: #b9b9b9;
+  color: var(--mainColor);
+  margin-top: 2px;
+}
+
+[data-theme="dark"] [data-tv-cut]{
+  --mainColor: #9b9b9b;
+}
+
+@media (max-width:240px) {
+  [data-any="vw240"]{
+    display: none;
+  }
+}
+
+/*--按钮类*/
+[data-btn]{
+  padding: 2px 0;
+  border: 1px solid var(--boxBod);
+  box-sizing: border-box;
+}
+
+[data-btn]:hover{
+  background: var(--boxGry);
+}
+
+[data-btn]:active{
+  transform: translateY(1px);
+}
+
+[data-btn="main"]{
+  width: calc(100% - 20px);
+  border-radius: 20px;
+}
+
+[data-btn="skill"]{
+  border-radius: 8px;
+}
+
+
+
+/*按钮类--*/

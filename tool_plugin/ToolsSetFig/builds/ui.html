@@ -1,6 +1,6 @@
 <html data-plugin="fig" data-theme="dark" data-language="Zh">
 <head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6f1817a929762a294e9bf2885f6c604c18f723db/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b69de11f6a667f2934cf82cd067412e3e9b3895b/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -15,6 +15,35 @@
 }
 
 /*--组件修改*/
+.show-next{
+  transform: rotate(90deg);
+  margin:0 -2px 0 2px;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked + .show-next{
+  transform: rotate(-30deg);
+  margin:0 2px 0 -2px;
+}
+
+.show-next::after {
+  transform-origin: 40% 40%;
+}
+
+input[type="checkbox"]:checked + .show-next::after {
+  content: '📢';
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  top: -2px;
+  left: 2px;
+  transform: none;
+  background: none;
+}
+
 #tips-all{
   display: none;
   justify-content: center;
@@ -104,7 +133,14 @@ input[type="checkbox"]:checked + .tab-top{
 }
 
 [data-page-id="page"]{
- height: calc(100% - 56px);
+ height: calc(100vh - 76px);
+}
+
+[data-tv-box]{
+  display: flex;
+  align-items: center;
+  width: calc(100% - 10px);
+  font-size: 10px;
 }
 
 .btn-big{
@@ -231,40 +267,86 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 [data-language="En"] [data-any="zh"]{
   display: none;
 }
-</style>
-  <!-- INLINE_RUN -->
-  <script>
-if (window.location.protocol !== 'file:'){
-  toolMessage(['userTheme','getlocal'],'fig');
-  toolMessage(['userLanguage','getlocal'],'fig');
-  toolMessage(['tabPick','getlocal'],'fig');
 
-  window.addEventListener('message',(message)=>{
-    let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
-    if(!isPluginMessge){
-      let info = message.data.pluginMessage.pluginMessage[0];
-      let type = message.data.pluginMessage.pluginMessage[1];
-      switch (type){
-        case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
-        case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
-        case 'tabPick': viewPage(info); break
-      }
-    }
-  });
+[data-resize]{
+  content: '';
+  position: absolute;
+  cursor:nw-resize;
+  bottom: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(to top left,
+  transparent 20%,
+  var(--boxBod) 21%,
+  var(--boxBod) 25%,
+  transparent 26%,
+  transparent 45%,
+  var(--boxBod) 46%,
+  var(--boxBod) 50%,
+  transparent 51%);
+}
 
-  /**
-   * @param {Array} data - [info,typeName/skillName]
-   * @param {string} app - 'fig' | 'mg'
-   */
-  function toolMessage(data,app){
-    switch (app){
-      case 'fig': parent.postMessage({pluginMessage:data},"*"); break
-      case 'mg' : parent.postMessage(data,"*");break
-    }
+[data-tv-box]{
+  --mainColor: #b9b9b9;
+  color: var(--mainColor);
+}
+
+[data-theme="dark"] [data-tv-box]{
+  --mainColor: #9b9b9b;
+}
+
+[data-tv-cut],
+[data-tv-box] .show-next{
+  height: 18px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width:240px) {
+  [data-any="vw240"]{
+    display: none;
   }
 }
+
+</style>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b69de11f6a667f2934cf82cd067412e3e9b3895b/public/run.js"></script>
+  <!-- INLINE_RUN -->
+  <script>
+if (ISPLUGIN){
+  ROOT.setAttribute('data-mobile','false');
+  ISMOBILE = false;
+  toolMessage(['userTheme','getlocal'],PLUGINAPP);
+  toolMessage(['userLanguage','getlocal'],PLUGINAPP);
+  toolMessage(['tabPick','getlocal'],PLUGINAPP);
+}
+
+window.addEventListener('message',(message)=>{
+  let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
+  if(!isPluginMessge){
+    let messages = message.data.pluginMessage.pluginMessage || ['',''];
+    let info = messages[0];
+    let type = messages[1];
+    switch (type){
+      case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
+      case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
+      case 'tabPick': viewPage(info);break
+    }
+  }
+});
+
+/**
+ * @param {Array} data - [info,typeName/skillName]
+ * @param {string} app - PLUGINAPP(需定义) | 'fig' | 'mg'
+ */
+function toolMessage(data,app){
+  switch (app){
+    case 'fig': parent.postMessage({pluginMessage:data},"*"); break
+    case 'mg' : parent.postMessage(data,"*");break
+  }
+}
+
 </script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6f1817a929762a294e9bf2885f6c604c18f723db/public/run.js"></script>
 </head>
 
 <body class="noselect df-ffc df-cc">
@@ -283,8 +365,8 @@ if (window.location.protocol !== 'file:'){
     <div id="tips-all-text" class="tips-all-text" ></div>
   </div>
   <!--侧边栏-->
-  <div data-side class="df pos-a h100" style="--fill: var(--mainColor)">
-    <div data-side-mix class="df-ffc">
+  <div data-side data-any="vw240" class="df pos-a" style="top: 0; left: 0; --fill: var(--mainColor)">
+    <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
       <div class="h100"></div>
       <div data-mainset-side class="df-sc">
         <a href="https://www.ynyuset.cn" target="_blank" class="fl1 df-lc" style="gap: 2px; color: var(--mainColor); font-size: 10px;">
@@ -334,12 +416,6 @@ if (window.location.protocol !== 'file:'){
   </div>
   <!--功能页面-->
   <div class="df-ffc w100 df-cc">
-    <div class="TV df-lc" style="display: none; width: calc(100% - 20px); max-width: 420px; padding: 4px 0;">
-      <div data-tv="false" class="df-lc" style="--tv-w: -29ch; --tv-s: 37s;">
-        <div style="min-width: 7ch;" data-en-text="💬NOTICE:">💬公告:</div>
-        <div style="min-width: 22ch;" data-en-text="Please note the following">公告内容公告内容公告内容</div>  
-      </div>  
-    </div>
     <div data-page-id="page" class="df-ffc" data-tab-pick="create">
       <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-cc wh100" style="display: flex;">
         
@@ -361,22 +437,32 @@ if (window.location.protocol !== 'file:'){
       </div>
     </div>
   </div>
-  
+  <!--公告栏-->
+  <div data-tv-box data-any="vw240"  class="df-lc">
+    <div data-tv-cut class="TV df-lc" >
+      <div data-tv="true" class="df-lc" style="--tv-w: -29ch; --tv-s: 37s;">
+        <div style="min-width: 7ch;" data-en-text="💬NOTICE:">💬公告:</div>
+        <div style="min-width: 22ch;" data-en-text="Please note the following">公告内容公告内容公告内容</div>  
+      </div>  
+    </div>
+    <input type="checkbox" id="TV_show"/>
+    <label for="TV_show"class="show-next df-cc fl0" style="width: 18px;">
+    </label> 
+  </div>
   <!--底部-->
   <div id="bottom" class="df-lc w100 pos-a">
-    <div class="df-ffc fl1" style="gap: 4px;">
-      <div class="df" data-tab="auto" data-tab-for="page">
-        <!--自动填充tab-->
-      </div>
+    <div class="df ovx noscrollbar" data-tab="auto" data-tab-for="page" style="padding: 6px 4px;">
+      <!--自动填充tab-->
     </div>
   </div>
+  <!--插件端调整大小-->
+  <div data-resize></div>
   
-  
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6f1817a929762a294e9bf2885f6c604c18f723db/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6f1817a929762a294e9bf2885f6c604c18f723db/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6f1817a929762a294e9bf2885f6c604c18f723db/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6f1817a929762a294e9bf2885f6c604c18f723db/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6f1817a929762a294e9bf2885f6c604c18f723db/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b69de11f6a667f2934cf82cd067412e3e9b3895b/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b69de11f6a667f2934cf82cd067412e3e9b3895b/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b69de11f6a667f2934cf82cd067412e3e9b3895b/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b69de11f6a667f2934cf82cd067412e3e9b3895b/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b69de11f6a667f2934cf82cd067412e3e9b3895b/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /**
@@ -425,16 +511,23 @@ const skillList = [
  */
 let userSkillStart = ['二级功能名','二级功能名']
 
-let sideMix = document.querySelector('[data-side-mix]');
-let sideMask = document.querySelector('[data-side-mask]');
-let btnMore = document.getElementById('btn-more');
+const UI_MINI = [200,460];
+const sideMix = document.querySelector('[data-side-mix]');
+const sideMask = document.querySelector('[data-side-mask]');
+const btnMore = document.getElementById('btn-more');
+const btnResize = document.querySelector('[data-resize]');
+const btnBig = document.getElementById('big')
+
+let isResize = false;
+let reStartW,reStartH,reStartX,reStartY;
 
 window.addEventListener('load',()=>{
-  if(window.innerWidth <= 250){
+  if(window.innerWidth < 300){
     TV_MOVE = true;
   } else {
     TV_MOVE = false;
   };
+  reTV();
   loadFont();
 });
 
@@ -445,7 +538,7 @@ if(MOVE_TIMEOUT){
     clearTimeout(MOVE_TIMEOUT)
 };
 MOVE_TIMEOUT = setTimeout(()=>{
-  if(window.innerWidth <= 250){
+  if(window.innerWidth < 300){
     TV_MOVE = true;
   } else {
     TV_MOVE = false;
@@ -472,6 +565,7 @@ function loadFont(){
   },500);
 }
 
+//侧边栏展开
 btnMore.addEventListener('change',(event)=>{
   if(event.target.checked){
     sideMix.style.display = 'flex';
@@ -487,7 +581,7 @@ btnMore.addEventListener('change',(event)=>{
     },280)
   }
 });
-
+//侧边栏关闭
 document.addEventListener('click',(event)=>{
   if(!sideMix.contains(event.target) && sideMask.style.display !== 'none' && sideMix.style.display !== 'none' && btnMore.checked == true ){
     btnMore.checked = false;
@@ -495,6 +589,79 @@ document.addEventListener('click',(event)=>{
     btnMore.dispatchEvent(inputEvent);
   }
 });
+//缩放窗口
+btnResize.addEventListener('mousedown',(event)=>{
+  isResize = true;
+  let reNodeStyle = document.defaultView.getComputedStyle(ROOT);
+  reStartW = parseInt(reNodeStyle.width,10);
+  reStartH = parseInt(reNodeStyle.height,10);
+  reStartX = event.clientX;
+  reStartY = event.clientY;
+  //console.log(reStartW,reStartH)
+  document.addEventListener('mousemove',(e)=>{
+    if(isResize){
+      let w = reStartW + e.clientX - reStartX;
+      let h = reStartH + e.clientY - reStartY;
+      w = Math.max(w,UI_MINI[0]);
+      h = Math.max(h,UI_MINI[1]);
+      toolMessage([[w,h],'resize'],PLUGINAPP);
+      /*//
+      console.log(w,h)
+      ROOT.style.width = w;
+      ROOT.style.height = h;
+      //*/
+      
+      /*防抖*/
+      let MOVE_TIMEOUT;
+      if(MOVE_TIMEOUT){
+          clearTimeout(MOVE_TIMEOUT)
+      };
+      MOVE_TIMEOUT = setTimeout(()=>{
+        if(w > UI_MINI[0] || h > UI_MINI[1]){
+          btnBig.checked = true;
+        } else {
+          btnBig.checked = false;
+        }
+      },500);
+    }
+  });
+  document.addEventListener('mouseup',()=>{
+    isResize = false;
+  })
+})
+//打印所选对象
+document.getElementById('bottom').addEventListener('dblclick',()=>{
+  toolMessage(['','getnode'],PLUGINAPP)
+})
+//最大化窗口
+btnBig.addEventListener('change',()=>{
+  if(btnBig.checked){
+    toolMessage([true,'big'],PLUGINAPP)
+  }else{
+    toolMessage([false,'big'],PLUGINAPP)
+  }
+})
+//tab滚动
+let tabPage = document.querySelector('[data-tab-for="page"]');
+let tabScroll = false;
+let tabStartX,tabScrollLeft;
+tabPage.addEventListener('mousedown',(event)=>{
+  tabScroll = true;
+  tabStartX = event.clientX;
+  tabScrollLeft = tabPage.scrollLeft;  
+  document.addEventListener('mousemove',(e)=>{
+    if(tabScroll){
+      let move = e.clientX - tabStartX;
+      tabPage.scrollLeft = tabScrollLeft - move;
+    }
+  });
+  document.addEventListener('mouseup',()=>{
+    tabScroll = false;
+  })
+});
+//公告展开收起
+document.getElementById('TV_show').addEventListener('change',() => {showNext('TV_show','[data-tv-cut]','flex')})
+
 
 /**
  * 模拟点击tab切换页面，测试时更方便，能直接显示目标页面

@@ -44,16 +44,32 @@ const skillList = [
  */
 let userSkillStart = ['二级功能名','二级功能名']
 
-let sideMix = document.querySelector('[data-side-mix]');
-let sideMask = document.querySelector('[data-side-mask]');
-let btnMore = document.getElementById('btn-more');
+let toUserTips = {
+  worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
+  random: [
+    ["",""],
+    ["",""],
+    ["",""],
+    ["",""],
+  ],
+}
+const UI_MINI = [200,460];
+const sideMix = document.querySelector('[data-side-mix]');
+const sideMask = document.querySelector('[data-side-mask]');
+const btnMore = document.getElementById('btn-more');
+const btnResize = document.querySelector('[data-resize]');
+const btnBig = document.getElementById('big')
+
+let isResize = false;
+let reStartW,reStartH,reStartX,reStartY;
 
 window.addEventListener('load',()=>{
-  if(window.innerWidth <= 250){
+  if(window.innerWidth < 300){
     TV_MOVE = true;
   } else {
     TV_MOVE = false;
   };
+  reTV();
   loadFont();
 });
 
@@ -64,7 +80,7 @@ if(MOVE_TIMEOUT){
     clearTimeout(MOVE_TIMEOUT)
 };
 MOVE_TIMEOUT = setTimeout(()=>{
-  if(window.innerWidth <= 250){
+  if(window.innerWidth < 300){
     TV_MOVE = true;
   } else {
     TV_MOVE = false;
@@ -91,6 +107,7 @@ function loadFont(){
   },500);
 }
 
+//侧边栏展开
 btnMore.addEventListener('change',(event)=>{
   if(event.target.checked){
     sideMix.style.display = 'flex';
@@ -106,7 +123,7 @@ btnMore.addEventListener('change',(event)=>{
     },280)
   }
 });
-
+//侧边栏关闭
 document.addEventListener('click',(event)=>{
   if(!sideMix.contains(event.target) && sideMask.style.display !== 'none' && sideMix.style.display !== 'none' && btnMore.checked == true ){
     btnMore.checked = false;
@@ -114,6 +131,63 @@ document.addEventListener('click',(event)=>{
     btnMore.dispatchEvent(inputEvent);
   }
 });
+//缩放窗口
+btnResize.addEventListener('mousedown',(event)=>{
+  isResize = true;
+  let reNodeStyle = document.defaultView.getComputedStyle(ROOT);
+  reStartW = parseInt(reNodeStyle.width,10);
+  reStartH = parseInt(reNodeStyle.height,10);
+  reStartX = event.clientX;
+  reStartY = event.clientY;
+  //console.log(reStartW,reStartH)
+  document.addEventListener('mousemove',(e)=>{
+    if(isResize){
+      let w = reStartW + e.clientX - reStartX;
+      let h = reStartH + e.clientY - reStartY;
+      w = Math.max(w,UI_MINI[0]);
+      h = Math.max(h,UI_MINI[1]);
+      toolMessage([[w,h],'resize'],PLUGINAPP);
+      /*//
+      console.log(w,h)
+      ROOT.style.width = w;
+      ROOT.style.height = h;
+      //*/
+      
+      /*防抖*/
+      let MOVE_TIMEOUT;
+      if(MOVE_TIMEOUT){
+          clearTimeout(MOVE_TIMEOUT)
+      };
+      MOVE_TIMEOUT = setTimeout(()=>{
+        if(w > UI_MINI[0] || h > UI_MINI[1]){
+          btnBig.checked = true;
+        } else {
+          btnBig.checked = false;
+        }
+      },500);
+    }
+  });
+  document.addEventListener('mouseup',()=>{
+    isResize = false;
+  })
+})
+//打印所选对象
+document.getElementById('bottom').addEventListener('dblclick',()=>{
+  toolMessage(['','getnode'],PLUGINAPP)
+})
+//最大化窗口
+btnBig.addEventListener('change',()=>{
+  if(btnBig.checked){
+    toolMessage([true,'big'],PLUGINAPP)
+  }else{
+    toolMessage([false,'big'],PLUGINAPP)
+  }
+})
+//通用X轴滚动
+let scrollNode = document.querySelectorAll('[data-scroll]');
+scrollNode.forEach(item =>{
+  scrollX(item)
+})
 
 /**
  * 模拟点击tab切换页面，测试时更方便，能直接显示目标页面

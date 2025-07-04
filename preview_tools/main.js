@@ -239,22 +239,7 @@ function addToolCard(toolsObj){
       tags.innerHTML = item[0];
       tooltag.appendChild(tags);
     });
-    let tooltagScroll;
-    let startX,scrollLeft;
-    tooltag.addEventListener('mousedown',(event)=>{
-      tooltagScroll = true;
-      startX = event.clientX;
-      scrollLeft = tooltag.scrollLeft;  
-    });
-    tooltag.addEventListener('mousemove',(event)=>{
-      if(tooltagScroll){
-        let move = event.clientX - startX;
-        tooltag.scrollLeft = scrollLeft - move;
-      }
-    });
-    tooltag.addEventListener('mouseup',(event)=>{
-      tooltagScroll = false;
-    })
+    scrollX(tooltag);
     tooltitle.appendChild(tooltag);
     let toolmore = document.createElement('a');
     toolmore.className =  'df-cc';
