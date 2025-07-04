@@ -214,7 +214,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   transform: matrix(0.7,-0.7,0.7,0.7,3.64,16.37);
 }
 
-#btn-theme{
+#btn-theme,#btn-theme-2{
   width: 20px;
   height: 20px;
   padding: 4px;
@@ -222,6 +222,10 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   background: var(--swi-bak);
   border-radius: 4px;
   border: 1px solid var(--boxBod);
+}
+
+[data-mainset-top]{
+  display: none;
 }
 
 .btn-more{
@@ -281,11 +285,6 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   --mainColor: #9b9b9b;
 }
 
-@media (max-width:240px) {
-  [data-any="vw240"]{
-    display: none;
-  }
-}
 
 /*--按钮类*/
 [data-btn]{
@@ -312,5 +311,14 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 }
 
 
-
 /*按钮类--*/
+
+@media (max-width:240px) {
+  [data-any="vw240"]{
+    display: none;
+  }
+
+  [data-mainset-top]{
+    display: flex;
+  }
+}

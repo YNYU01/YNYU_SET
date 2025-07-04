@@ -1,4 +1,4 @@
-let PULGIN_LOCAL = true;
+PULGIN_LOCAL = true;
 if (ISPLUGIN){
   ROOT.setAttribute('data-mobile','false');
   ISMOBILE = false;

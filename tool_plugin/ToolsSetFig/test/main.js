@@ -183,11 +183,6 @@ btnBig.addEventListener('change',()=>{
     toolMessage([false,'big'],PLUGINAPP)
   }
 })
-//通用X轴滚动
-let scrollNode = document.querySelectorAll('[data-scroll]');
-scrollNode.forEach(item =>{
-  scrollX(item)
-})
 
 /**
  * 模拟点击tab切换页面，测试时更方便，能直接显示目标页面
