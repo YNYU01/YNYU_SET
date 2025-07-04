@@ -785,11 +785,11 @@ input[type="checkbox"]:checked+.btn-theme {
 }
 
 [data-tips-y="top"]::after{
-  top: var(--tips-gap,-22);
+  top: var(--tips-gap,-22px);
 }
 
 [data-tips-y="bottom"]::after{
-  bottom: var(--tips-gap,-22);
+  bottom: var(--tips-gap,-22px);
 }
 
 [data-tips-x="center"]::after{
