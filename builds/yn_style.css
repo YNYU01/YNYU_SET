@@ -793,11 +793,11 @@ input[type="checkbox"]:checked+.btn-theme {
 }
 
 [data-tips-x="center"]::after{
-  --x:calc(-50% + 8px)
+  --x:calc(-50% + var(--x,8px))
 }
 
 [data-tips-x="right"]::after{
-  --x:calc(-100% + 16px)
+  --x:calc(-100% + var(--x,16px))
 }
 
 [data-turnto]{

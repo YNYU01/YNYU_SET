@@ -20,6 +20,13 @@
   transform-origin: 40% 40%;
 }
 
+[data-tips-x="right"]::after {
+  --x: calc(-100% + 40px);
+}
+
+[data-tips-x="center"]::after {
+  --x:calc(-50% + 20px)
+}
 
 #tips-all{
   display: none;
@@ -137,7 +144,7 @@ input[type="checkbox"]:checked+.btn-big .path2 {
 
 [data-side]{
   left: 0;
-  z-index: 3;
+  z-index: 11;
   /*animation: topTabUp 0.5s;*/
 }
 
@@ -291,6 +298,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   padding: 2px 0;
   border: 1px solid var(--boxBod);
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 [data-btn]:hover{
@@ -318,8 +326,22 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   border-radius: 20px;
   color: #000;
 }
+
 [data-btn="help"]:hover{
   background: var(--code1);
+}
+
+[data-btn="icon"]{
+  display: block;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+}
+
+[data-btn="icon"]:hover{
+  background: none;
+  opacity: 0.5;
 }
 
 /*按钮类--*/
@@ -346,5 +368,9 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 
   [data-mainset-top]{
     display: flex;
+  }
+
+  [data-tips]::after{
+    display: none;
   }
 }
