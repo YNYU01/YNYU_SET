@@ -59,10 +59,12 @@ let toUserTips = {
 }
 
 const UI_MINI = [200,460];
+const UI = [300,660];
+const UI_BIG = [620,660];
 const sideMix = document.querySelector('[data-side-mix]');
 const sideMask = document.querySelector('[data-side-mask]');
 const btnMore = document.getElementById('btn-more');
-const btnResize = document.querySelector('[data-resize]');
+const btnResize = document.querySelector('[data-resize-window]');
 const btnBig = document.getElementById('big');
 const TV_text = document.querySelector('[data-tv-text]');
 const dropUp = document.querySelector('[data-drop="upload"]');
@@ -192,7 +194,7 @@ btnResize.addEventListener('mousedown',(event)=>{
           clearTimeout(MOVE_TIMEOUT)
       };
       MOVE_TIMEOUT = setTimeout(()=>{
-        if(w > UI_MINI[0] || h > UI_MINI[1]){
+        if(w > UI[0]){
           btnBig.checked = true;
         } else {
           btnBig.checked = false;
@@ -210,10 +212,17 @@ document.getElementById('bottom').addEventListener('dblclick',()=>{
 });
 //最大化窗口
 btnBig.addEventListener('change',()=>{
+  let w = window.innerWidth;
+  let h = window.innerHeight;
   if(btnBig.checked){
-    toolMessage([true,'big'],PLUGINAPP)
+    if(w < UI[0] || h < UI[1]){
+      toolMessage([false,'big'],PLUGINAPP);
+      btnBig.checked = false;
+    }else{
+      toolMessage([true,'big'],PLUGINAPP);
+    }
   }else{
-    toolMessage([false,'big'],PLUGINAPP)
+    toolMessage([false,'big'],PLUGINAPP);
   }
 });
 //点击上传

@@ -7,8 +7,9 @@
 - 引用开源库的部分应遵循对应许可
 - 使用当前代码时禁止删除或修改本声明
 */
+let UI_MINI = [200,460];
 let UI = [300,660];
-let UI_BIG = [820,660]
+let UI_BIG = [620,660];
 let vX = figma.viewport.bounds.x,vY = figma.viewport.bounds.y;
 figma.skipInvisibleInstanceChildren = true;//忽略不可见元素及其子集
 

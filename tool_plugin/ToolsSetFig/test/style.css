@@ -8,6 +8,7 @@
 :root{
   --top-h: 24px;
   --bottom-h: 32px;
+  --option-font: 12px;
 }
 
 body{
@@ -24,20 +25,41 @@ body{
   transform-origin: 40% 40%;
 }
 
+[data-resize]::after {
+  pointer-events: none;
+}
+
+[data-option="type"] {
+  padding: 1ch 0 0.5ch 1ch;
+}
+
+[data-option="option"] {
+  padding: 0.5ch 0 0.5ch 3ch;
+}
+
 [data-language="En"] [data-tips]::after{
   content: var(--tips-text-en,'something there');
 }
 
-[data-tips-x="left"]::after {
+[data-mode-id="upload"] [data-tips-x="left"]::after {
+  --x: -20px;
+}
+
+[data-mode-id="upload"] [data-tips-x="right"]::after {
+  --x: calc(-100% + 70px);
+}
+
+[data-mode-id="upload"] [data-tips-x="center"]::after {
+  --x:calc(-50% + 20px)
+}
+
+#upload-set-main [data-tips-x="left"]::after,
+#upload-moreset-box [data-tips-x="left"]::after{
   --x: -20px;
 }
 
 [data-tips-x="right"]::after {
-  --x: calc(-100% + 70px);
-}
-
-[data-tips-x="center"]::after {
-  --x:calc(-50% + 20px)
+  --x: calc(-100% + 40px);
 }
 
 #tips-all{
@@ -268,7 +290,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   display: none;
 }
 
-[data-resize]{
+[data-resize-window]{
   content: '';
   position: absolute;
   cursor:nw-resize;
@@ -313,7 +335,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 
 /*--按钮类*/
 [data-btn]{
-  max-width: 560px;
+  max-width: 580px;
   padding: 2px 0;
   border: 1px solid var(--boxBod);
   box-sizing: border-box;
@@ -331,6 +353,11 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 [data-btn="main"]{
   width: calc(100% - 20px);
   border-radius: 20px;
+  background: var(--boxGry);
+}
+
+[data-btn="main"]:hover{
+  background: var(--boxBod);
 }
 
 [data-btn="skill"]{
@@ -363,6 +390,44 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   opacity: 0.5;
 }
 
+[data-btn="moreset"]{
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid var(--boxBod);
+}
+
+[data-btn="moreset"]:hover{
+  background: var(--boxGry);
+}
+
+input[type="checkbox"]:checked + .btn-moreset:hover{
+  background: var(--themeColor);
+  --mainColor: #242424;
+}
+
+
+.btn-moreset{
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: var(--themeColor);
+  --mainColor: #242424;
+  cursor: pointer;
+}
+
+
+input[type="checkbox"]:checked + .btn-moreset{
+  background: transparent;
+  border: 1px solid var(--boxBod);
+  --mainColor: var(--boxBod);
+}
+
 /*按钮类--*/
 
 /*--模块类*/
@@ -381,11 +446,38 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   font-size: 10px;
 }
 .file-tag{
+  visibility: var(--drop-df,visible)/*collapse*/;
   border-radius: 0 0 10px 10px;
   background: rgba(0, 0, 0, 0.8);
   color: #9b9b9b;
   padding: 2px 8px;
   font-size: 10px;
+}
+.upload-set{
+  height: 40px;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--boxBod);
+  border-radius: 4px;
+}
+.nobod {
+  --boxBod: transparent;
+}
+
+#upload-textarea{
+  height: 160px;
+  min-height: 120px;
+  resize: vertical;
+  padding: 4px 10px;
+}
+
+#upload-set-box{
+  width:100%;
+  justify-content: space-between;
+}
+
+[data-resize]::-webkit-resizer{
+  display: none;
 }
 /*模块类--*/
 
@@ -410,6 +502,25 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   }
 }
 
+@media (max-width:360px) {
+  #upload-textarea-box{
+    width: 100%;
+    flex: 0 0 auto;
+  }
+}
+
+@media (min-width:360px) {
+  #upload-set-box{
+    width: 40px;
+  }
+  #upload-set-main{
+    height: calc(100% - 40px);
+  }
+  #upload-set-main [data-tips-x="left"]::after {
+    --x: calc(-100% + 40px);
+  }
+  
+}
 @media (max-width:299px) {
   [data-any="vw300"]{
     display: none;

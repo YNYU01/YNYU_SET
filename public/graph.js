@@ -312,6 +312,29 @@ class btnuserzy extends HTMLElement {
 };
 customElements.define('btn-user-zy', btnuserzy);
 
+class btnre extends HTMLElement {
+  constructor() {
+      super();
+      this.innerHTML = `
+      <svg width="100%" height="100%" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1">
+        <path  fill="var(--mainColor)"  d="M12.2855,7.6274L11.71607,9.7524003L6.11928,3.5940002612L14.0454,1.05907L13.5682,2.840080261231C16.2837,4.1933303,18,6.9662403,18,10.000240261230468C18,12.14093026123047,17.142,14.192330261230468,15.618,15.695630261230468C15.8708,14.991330261230468,16,14.248530261230469,16,13.500230261230469C16,10.989500261230468,14.554,8.703270261230468,12.2855,7.6273202612304685ZM6.43178,17.16043026123047L5.95456,18.94143026123047L13.8807,16.40643026123047L8.28393,10.248070261230469L7.71452,12.373130261230468C5.446,11.29723026123047,4,9.010970261230469,4,6.500240261230469C4,5.751890261230469,4.12923,5.009170261230469,4.38199,4.304810261230468C2.857956,5.808120261230469,2,7.859530261230469,2,10.000240261230468C2,13.03423026123047,3.71629,15.80713026123047,6.43178,17.16043026123047Z" fill-rule="evenodd" fill-opacity="1"/>
+      </svg>
+      `;
+  }
+}
+customElements.define('btn-re', btnre);
+
+class btnchange extends HTMLElement {
+  constructor() {
+      super();
+      this.innerHTML = `
+      <svg width="100%" height="100%" viewBox="0 0 18 12" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1">
+          <path fill="var(--mainColor)"  d="M7.84606,8.54545L7.84606,10L4,8.25454L4,7.09091L7.07693,7.09091L7.84606,7.09091L13.99991,7.09091L13.99991,8.54545L7.84606,8.54545ZM10.15385,3.45455L10.15385,2L13.99996,3.74546L13.99996,5L10.15385,5L4,5L4,3.45455L10.15385,3.45455Z" fill-rule="evenodd"fill-opacity="1"/>
+      </svg>
+      `;
+  }
+}
+customElements.define('btn-change', btnchange);
 /*
 
 */
