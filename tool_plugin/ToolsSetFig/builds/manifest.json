@@ -9,16 +9,6 @@
     "figma"
   ],
   "ui": "ui.html",
-  "menu":[
-    {"name":"🚀 打开面板","command":"open"},
-    { "separator": true },
-    {"name":"快速栅格化","command":"pixel"},
-    {"name":"羽化盒边缘","command":"yuhua"},
-    { "separator": true },
-    {"name":"两格行级选中","command":"lineTable"},
-    {"name":"两格区域选中","command":"areaTable"},
-    {"name":"伪合并表格","command":"tableToArea"}
-  ],
   "networkAccess": {
     "allowedDomains": [
       "https://cdn.jsdelivr.net",

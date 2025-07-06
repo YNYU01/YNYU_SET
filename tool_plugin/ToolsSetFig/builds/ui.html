@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -435,6 +435,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   --mainColor: var(--boxBod);
 }
 
+
 /*按钮类--*/
 
 /*--模块类*/
@@ -473,7 +474,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 #upload-textarea{
   height: 160px;
-  min-height: 120px;
+  min-height: 135px;
   resize: vertical;
   padding: 4px 10px;
 }
@@ -481,6 +482,10 @@ input[type="checkbox"]:checked + .btn-moreset{
 #upload-set-box{
   width:100%;
   justify-content: space-between;
+}
+
+#upload-set-main{
+  gap: 4px;
 }
 
 [data-resize]::-webkit-resizer{
@@ -503,6 +508,15 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 /*纹理类--*/
 
+@keyframes loadRo2 {/*旋转*/
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(-180deg);
+  }
+}
+
 @media (min-width:420px) {
   [data-mainset-top]{
     display: flex;
@@ -521,7 +535,9 @@ input[type="checkbox"]:checked + .btn-moreset{
     width: 40px;
   }
   #upload-set-main{
+    width: 40px;
     height: calc(100% - 40px);
+    flex-flow: column;
   }
   #upload-set-main [data-tips-x="left"]::after {
     --x: calc(-100% + 40px);
@@ -549,7 +565,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -739,20 +755,30 @@ function toolMessage(data,app){
             <div class="w100 df" style="flex-wrap: wrap; max-width: 560px; margin: 4px 0; gap: 4px;">
               <div id="upload-textarea-box" data-resize class="pos-r fl1" style="min-width: 180px;">
                 <textarea id="upload-textarea" data-textarea="eg" 
-                data-eg="name\tw\th\nkv\t1920\t1080\nbanner\t1200\t300"
-                data-eg-en="name\tw\th\nkv\t1920\t1080\nbanner\t1200\t300"
-                ></textarea>
+                data-eg="kv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
+                data-eg-en="kv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
+                onfocus="
+                  this.parentNode.parentNode.querySelector('btn-re').style.animation = 'loadRo2 2s linear infinite';
+                "
+                onblur="
+                  this.parentNode.parentNode.querySelector('btn-re').style.animation = '';
+                "></textarea>
                 <!--清空-->
                 <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
                   <btn-close></btn-close>
                 </div>
                 <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: wrap; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
                   <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
+                  <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
                 </div>
               </div>
               <div id="upload-set-box" class="df" style="flex-wrap: wrap; max-width: 560px; margin:0 0 4px 0; gap: 4px;">
                 <div id="upload-set-main" class="df">
                   <div id="upload-set-1" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
+                  style=" --tips-text:'转为标签/大纲';  --tips-text-en:'Convert to tags/catalogue';">
+                    <btn-re class="df-cc wh100"></btn-re>                   
+                  </div>
+                  <div id="upload-set-2" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   style=" --tips-text:'从所选对象获取数据';  --tips-text-en:'Retrieve data from the selected node';">
                     <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path fill="var(--mainColor)" d="M18.8157 14.2207C19.7226 14.5107 19.7487 15.7845 18.8547 16.1123L10.4709 19.1855C10.2512 19.266 10.0096 19.2674 9.78931 19.1885L1.21313 16.1152C0.310723 15.7914 0.337167 14.505 1.2522 14.2188L2.41919 13.8535L10.1301 16.6172L17.6672 13.8535L18.8157 14.2207ZM8.89771 7.89746C9.81186 8.73115 10.3983 9.70031 10.8049 10.3096L12.2288 12.4434L12.6243 9.90918C12.708 9.3731 12.7298 8.84584 12.7034 8.33301L18.8167 10.2881C19.7234 10.5782 19.7496 11.8519 18.8557 12.1797L10.4719 15.2529C10.2521 15.3335 10.0107 15.3348 9.79028 15.2559L1.21411 12.1816C0.311182 11.858 0.337567 10.5722 1.25317 10.2861L8.89771 7.89746Z"/>
@@ -801,7 +827,7 @@ function toolMessage(data,app){
                   </svg>
                 </div>
                 <input id="input-framename" data-input class="nobod fl1" type="text" data-input-type="text" data-input-must="none" value="w×h">  
-                <div class="df-lc pos-r" data-select="" data-select-value="" style="gap: 4px; width: 90px;">
+                <div class="df-lc pos-r" data-select="" data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
                   <input id="select-value-1" type="text" data-select-input readonly value="w×h">
                   <input id="select-show-1" data-select-pick="w×h" type="checkbox">
                   <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
@@ -823,7 +849,7 @@ function toolMessage(data,app){
               <span>▼&nbsp;</span>
               <span data-en-text="Edit final tags/catalogue to create" >编辑标签/大纲，以确认最终创建内容</span>
             </div>
-            <div class="wh100 upload-set pos-r ovy noscrollbar" data-resize style="resize: vertical; height: 100%; max-width: 560px; min-height: 20vh; max-height: 80vh;"></div>
+            <div class="wh100 upload-set pos-r ovy noscrollbar" data-resize style="resize: vertical; height: 200px; max-width: 560px; min-height: 20vh; max-height: 80vh;"></div>
           </div>
         </div>
         <div data-btn="main" class="df-cc" data-en-text="CREATER">创建对象</div>
@@ -858,11 +884,11 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6827ff983886077c47d8a2de887ede624439ee35/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /**

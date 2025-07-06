@@ -70,11 +70,22 @@ const TV_text = document.querySelector('[data-tv-text]');
 const dropUp = document.querySelector('[data-drop="upload"]');
 const userImg = document.getElementById('input-user-img');
 const userTable = document.getElementById('input-user-table');
+const userTableTitle = document.getElementById('input-user-table-title');
 const userZy = document.getElementById('input-user-zy');
 const fileInfo = document.querySelector('[data-file-info]');
+const frameName =  document.getElementById('input-framename');
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
+let tableTitleMust = userTableTitle.getAttribute('placeholder').split(',');
+let imageType = document.getElementById('input-user-img').getAttribute('accept');
+let tableType = document.getElementById('input-user-table').getAttribute('accept');
+let zyType = document.getElementById('input-user-zy').getAttribute('accept');
+let frameNmaeSelect = [];
+frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
+.forEach(item => {
+  frameNmaeSelect.push(item.getAttribute('data-option-value'));
+});
 
 window.addEventListener('load',()=>{
   if(window.innerWidth < 300){
@@ -255,24 +266,105 @@ function reFileInfo(files){
   };
 }
 //拖拽上传
+let dragAreaInfo;
 dropUp.addEventListener('dragover',(e)=>{
+  dragAreaInfo = dropUp.getBoundingClientRect();
   e.stopPropagation();
   e.preventDefault();
   e.dataTransfer.dropEffect = 'copy';
   dropUp.style.filter = 'drop-shadow(0 0 4px var(--mainColor))';
-  dropUp.style.setProperty('--drop-df','collapse')
+  dropUp.style.setProperty('--drop-df','collapse');
 });
 dropUp.addEventListener('dragleave',(e)=>{
-  e.stopPropagation();
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'copy';
-  dropUp.style.filter = '';
-  dropUp.style.setProperty('--drop-df','visible')
+  let x = e.clientX;
+  let y = e.clientY;
+  let areaX = dragAreaInfo.x;
+  let areaY = dragAreaInfo.y;
+  let areaW = dragAreaInfo.width;
+  let areaH = dragAreaInfo.height;
+  if( x <= areaX || x >= areaX + areaW || y <= areaY || y >= areaY + areaH){
+    e.stopPropagation();
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    dropUp.style.filter = '';
+    dropUp.style.setProperty('--drop-df','visible');
+  }
 });
 dropUp.addEventListener('drop',(e)=>{
   e.stopPropagation();
   e.preventDefault();
-})
+  dropUp.style.filter = '';
+  dropUp.style.setProperty('--drop-df','visible');
+  let files = Array.from(e.dataTransfer.files).sort((a, b) => b.size - a.size);
+  reFileInfo(files);
+  let reader = new FileReader();
+});
+//设置画板命名格式
+frameName.addEventListener('input',()=>{
+  if(frameNmaeSelect.includes(frameName.value)){
+    frameName.nextElementSibling.querySelector(`[data-option-value="${frameName.value}"]`).click();
+  }else{
+    frameName.nextElementSibling.querySelector(`[data-select-input]`).value = '';
+  };
+});
+//设置画板数据表头规则
+userTableTitle.addEventListener('change',()=>{
+  userTableTitle.value = reTableTitle(userTableTitle.value);
+});
+function reTableTitle(text){
+  if(text == ''){
+    return '';
+  }
+  //首先必须是逗号隔开的单词形式
+  let regex = /^[a-z]+$/;
+  let texts = text.split(',');
+  if(texts.some(item => !tableTitleMust.includes(item))){
+    tipsAll(['请用指定单词，并用逗号隔开','Must use example words and separated by commas'],3000);
+    texts = texts.filter(item => tableTitleMust.includes(item));
+    if(texts.length == 0){
+      return 'name,w,h'
+    } else {
+      if(texts.includes('name') && texts.includes('w') && texts.includes('h')){
+        return [...new Set(texts)].join(',');
+      }else{
+        texts = [...new Set(texts)];
+        if(!texts.includes('name')){
+          texts.push('name')
+        };
+        if(!texts.includes('w')){
+          texts.push('w')
+        };
+        if(!texts.includes('h')){
+          texts.push('h')
+        }
+        return texts.join(',');
+      }
+    }
+  }else{ 
+    if(texts.includes('name') && texts.includes('w') && texts.includes('h')){
+      if(texts.length == [...new Set(texts)].length){
+        return text;
+      }else{
+        tipsAll(['单词重复','The word is repeated'],3000);
+        return [...new Set(texts)].join(',');
+      }
+    }else{
+      tipsAll(['必须包含name、w、h','Must include name, w, h'],3000);
+      texts = [...new Set(texts)];
+      if(!texts.includes('name')){
+        texts.push('name')
+      };
+      if(!texts.includes('w')){
+        texts.push('w')
+      };
+      if(!texts.includes('h')){
+        texts.push('h')
+      }
+      return texts.join(',');
+    }
+  }; 
+};
+
 
 /**
  * 模拟点击tab切换页面，测试时更方便，能直接显示目标页面
@@ -291,6 +383,7 @@ let observer = new MutationObserver((mutations) => {
     if(mutation.type === 'attributes'){
       switch(mutation.attributeName){
         case 'data-tab-pick':getUserTab(mutation.target); break;
+        case 'data-select-value':getUserSelect(mutation.target); break;
       }
     }
   })
@@ -298,6 +391,11 @@ let observer = new MutationObserver((mutations) => {
 let userEvent_tab = document.querySelectorAll('[data-tab-pick]');
 userEvent_tab.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-tab-pick']};
+  observer.observe(item,config);
+});
+let userEvent_select = document.querySelectorAll('[data-select]');
+userEvent_select.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-select-value']};
   observer.observe(item,config);
 });
 
@@ -308,6 +406,15 @@ function getUserTab(node){
   let tabPick = node.getAttribute('data-tab-pick').split('tab_')[1]
   if(tabPick){
     storageMix.set('tabPick',tabPick);
+  }
+}
+
+function getUserSelect(node){
+  let userSelect = node.getAttribute('data-select-value');
+  if(userSelect){
+    if(node.previousElementSibling == frameName){
+      frameName.value = userSelect;
+    }
   }
 }
 

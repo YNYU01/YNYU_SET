@@ -41,7 +41,9 @@ body{
   content: var(--tips-text-en,'something there');
 }
 
-[data-mode-id="upload"] [data-tips-x="left"]::after {
+[data-mode-id="upload"] [data-tips-x="left"]::after,
+#upload-set-main [data-tips-x="left"]::after,
+#upload-moreset-box [data-tips-x="left"]::after{
   --x: -20px;
 }
 
@@ -49,14 +51,11 @@ body{
   --x: calc(-100% + 70px);
 }
 
-[data-mode-id="upload"] [data-tips-x="center"]::after {
+[data-mode-id="upload"] [data-tips-x="center"]::after,
+#upload-set-main [data-tips-x="center"]::after {
   --x:calc(-50% + 20px)
 }
 
-#upload-set-main [data-tips-x="left"]::after,
-#upload-moreset-box [data-tips-x="left"]::after{
-  --x: -20px;
-}
 
 [data-tips-x="right"]::after {
   --x: calc(-100% + 40px);
@@ -428,6 +427,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   --mainColor: var(--boxBod);
 }
 
+
 /*按钮类--*/
 
 /*--模块类*/
@@ -448,8 +448,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 .file-tag{
   visibility: var(--drop-df,visible)/*collapse*/;
   border-radius: 0 0 10px 10px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #9b9b9b;
+  background: var(--boxGry);
   padding: 2px 8px;
   font-size: 10px;
 }
@@ -465,8 +464,8 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 #upload-textarea{
-  height: 160px;
-  min-height: 120px;
+  height: 180px;
+  min-height: 180px;
   resize: vertical;
   padding: 4px 10px;
 }
@@ -474,6 +473,10 @@ input[type="checkbox"]:checked + .btn-moreset{
 #upload-set-box{
   width:100%;
   justify-content: space-between;
+}
+
+#upload-set-main{
+  gap: 4px;
 }
 
 [data-resize]::-webkit-resizer{
@@ -496,13 +499,22 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 /*纹理类--*/
 
+@keyframes loadRo2 {/*旋转*/
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(-180deg);
+  }
+}
+
 @media (min-width:420px) {
   [data-mainset-top]{
     display: flex;
   }
 }
 
-@media (max-width:360px) {
+@media (max-width:359px) {
   #upload-textarea-box{
     width: 100%;
     flex: 0 0 auto;
@@ -514,9 +526,12 @@ input[type="checkbox"]:checked + .btn-moreset{
     width: 40px;
   }
   #upload-set-main{
+    width: 40px;
     height: calc(100% - 40px);
+    flex-flow: column;
   }
-  #upload-set-main [data-tips-x="left"]::after {
+  #upload-set-main [data-tips-x="left"]::after,
+  #upload-set-main [data-tips-x="center"]::after {
     --x: calc(-100% + 40px);
   }
   

@@ -13,6 +13,7 @@ let UI_BIG = [620,660];
 let vX = figma.viewport.bounds.x,vY = figma.viewport.bounds.y;
 figma.skipInvisibleInstanceChildren = true;//忽略不可见元素及其子集
 
+/*
 switch (figma.command){
     case 'open':figma.showUI(__html__,{position:{x:vX,y:vY},themeColors:true});break
     case 'pixel': ;break
@@ -23,7 +24,9 @@ switch (figma.command){
     case 'getnew': ;break
     case 'tableToArea': ;break
 }
+*/
  
+figma.showUI(__html__,{position:{x:vX,y:vY},themeColors:true});
 figma.ui.resize(UI[0], UI[1]);
 
 
