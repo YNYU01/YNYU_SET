@@ -48,7 +48,9 @@ body{
   content: var(--tips-text-en,'something there');
 }
 
-[data-mode-id="upload"] [data-tips-x="left"]::after {
+[data-mode-id="upload"] [data-tips-x="left"]::after,
+#upload-set-main [data-tips-x="left"]::after,
+#upload-moreset-box [data-tips-x="left"]::after{
   --x: -20px;
 }
 
@@ -56,14 +58,11 @@ body{
   --x: calc(-100% + 70px);
 }
 
-[data-mode-id="upload"] [data-tips-x="center"]::after {
+[data-mode-id="upload"] [data-tips-x="center"]::after,
+#upload-set-main [data-tips-x="center"]::after {
   --x:calc(-50% + 20px)
 }
 
-#upload-set-main [data-tips-x="left"]::after,
-#upload-moreset-box [data-tips-x="left"]::after{
-  --x: -20px;
-}
 
 [data-tips-x="right"]::after {
   --x: calc(-100% + 40px);
@@ -456,8 +455,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 .file-tag{
   visibility: var(--drop-df,visible)/*collapse*/;
   border-radius: 0 0 10px 10px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #9b9b9b;
+  background: var(--boxGry);
   padding: 2px 8px;
   font-size: 10px;
 }
@@ -473,8 +471,8 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 #upload-textarea{
-  height: 160px;
-  min-height: 135px;
+  height: 180px;
+  min-height: 180px;
   resize: vertical;
   padding: 4px 10px;
 }
@@ -523,7 +521,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   }
 }
 
-@media (max-width:360px) {
+@media (max-width:359px) {
   #upload-textarea-box{
     width: 100%;
     flex: 0 0 auto;
@@ -539,7 +537,8 @@ input[type="checkbox"]:checked + .btn-moreset{
     height: calc(100% - 40px);
     flex-flow: column;
   }
-  #upload-set-main [data-tips-x="left"]::after {
+  #upload-set-main [data-tips-x="left"]::after,
+  #upload-set-main [data-tips-x="center"]::after {
     --x: calc(-100% + 40px);
   }
   
@@ -644,6 +643,8 @@ function toolMessage(data,app){
   <div id="tips-all">
     <div id="tips-all-text" class="tips-all-text" ></div>
   </div>
+  <!--弹窗-->
+  
   <!--侧边栏-->
   <div data-side data-any="vw240" class="df pos-a" style="top: 0; left: 0; --fill: var(--mainColor)">
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
@@ -720,6 +721,7 @@ function toolMessage(data,app){
               <span data-en-text="Upload | Drop | Input" >上传 | 拖拽 | 输入</span>
               &nbsp;&nbsp;
               <span data-any="vw300" data-en-text="data to create node in batches" style="opacity: 0.6;"> 数据以批量创建内容</span>
+
             </div>
             <div data-drop="upload" class="w100 df-ffc df-cc bod-d">
               <div class="w100 df-cc">
@@ -786,6 +788,18 @@ function toolMessage(data,app){
                       <path fill="var(--mainColor)" d="M11.6365 9.75528C12.233 5.93585 9.27837 2.47694 7.9768 2.36549L6.13448 5.42255C9.41622 6.02688 10.952 8.72977 11.6365 9.75528Z"/>
                     </svg>                    
                   </div>
+                  <a href="https://www.ynyuset.cn/tool_web/ListEase/" target="_blank" id="upload-set-3" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="center"
+                  style=" --tips-text:'前往制作更复杂的模板数据';  --tips-text-en:'To create more complex template data';">
+                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle fill="var(--mainColor)" cx="3" cy="4" r="2"/>
+                      <path stroke="var(--mainColor)" d="M3 5V10H9"/>
+                      <path stroke="var(--mainColor)" d="M3 4H9"/>
+                      <path stroke="var(--mainColor)" d="M3 5V16H9"/>
+                      <rect fill="var(--mainColor)" x="7" y="8" width="12" height="4" rx="2"/>
+                      <rect fill="var(--mainColor)" x="7" y="2" width="12" height="4" rx="2"/>
+                      <rect fill="var(--mainColor)" x="7" y="14" width="12" height="4" rx="2"/>
+                    </svg>                                       
+                  </a>
                 </div>
                 <input id="upload-moreset" type="checkbox" checked onchange="showNext(this,this.parentNode.parentNode.nextElementSibling,'flex',true)">
                 <label for="upload-moreset" class="btn-moreset" data-tips="auto" data-tips-y="top" data-tips-x="right"
@@ -797,7 +811,7 @@ function toolMessage(data,app){
             <div id="upload-moreset-box" class="w100 df-lc" style="flex-wrap: wrap; max-width: 560px; gap: 4px; display: none;">
               <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 180px;">
                 <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
-                  --tips-text:'可自定义列顺序，name、w、h必填';  --tips-text-en:'Custom column order, name,w,h are required'; width: 20px; height: 20px;">
+                  --tips-text:'可自定义列顺序，无特殊需要保持默认即可';  --tips-text-en:'Custom column order if necessary'; width: 20px; height: 20px;">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path stroke="var(--mainColor)" fill="var(--mainColor)" d="M1.40967 3.66602C1.40967 2.56145 2.3051 1.66602 3.40967 1.66602H7.40967V6.59054H1.40967V3.66602Z"/>
                     <rect stroke="var(--mainColor)" x="1.40967" y="7.13843" width="5.63721" height="5.5603" />
@@ -807,7 +821,7 @@ function toolMessage(data,app){
                     <path stroke="var(--mainColor)" d="M9.86572 13.1169H19V17.0002C19 18.1048 18.1046 19.0002 17 19.0002H9.86572V13.1169Z"/>
                   </svg>
                 </div>
-                <input id="input-th-width" data-input class="nobod fl1" type="text" placeholder="name,w,h,s,type"> 
+                <input id="input-user-table-title" data-input class="nobod fl1" type="text" placeholder="name,w,h,s,type,add"> 
                 <!--清空-->
                 <div class="pos-a" data-close="clear" style="right: 10px; top:calc(50% - 6px); width: 12px; height: 12px;">
                   <btn-close></btn-close>
@@ -963,11 +977,22 @@ const TV_text = document.querySelector('[data-tv-text]');
 const dropUp = document.querySelector('[data-drop="upload"]');
 const userImg = document.getElementById('input-user-img');
 const userTable = document.getElementById('input-user-table');
+const userTableTitle = document.getElementById('input-user-table-title');
 const userZy = document.getElementById('input-user-zy');
 const fileInfo = document.querySelector('[data-file-info]');
+const frameName =  document.getElementById('input-framename');
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
+let tableTitleMust = userTableTitle.getAttribute('placeholder').split(',');
+let imageType = document.getElementById('input-user-img').getAttribute('accept');
+let tableType = document.getElementById('input-user-table').getAttribute('accept');
+let zyType = document.getElementById('input-user-zy').getAttribute('accept');
+let frameNmaeSelect = [];
+frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
+.forEach(item => {
+  frameNmaeSelect.push(item.getAttribute('data-option-value'));
+});
 
 window.addEventListener('load',()=>{
   if(window.innerWidth < 300){
@@ -1148,24 +1173,105 @@ function reFileInfo(files){
   };
 }
 //拖拽上传
+let dragAreaInfo;
 dropUp.addEventListener('dragover',(e)=>{
+  dragAreaInfo = dropUp.getBoundingClientRect();
   e.stopPropagation();
   e.preventDefault();
   e.dataTransfer.dropEffect = 'copy';
   dropUp.style.filter = 'drop-shadow(0 0 4px var(--mainColor))';
-  dropUp.style.setProperty('--drop-df','collapse')
+  dropUp.style.setProperty('--drop-df','collapse');
 });
 dropUp.addEventListener('dragleave',(e)=>{
-  e.stopPropagation();
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'copy';
-  dropUp.style.filter = '';
-  dropUp.style.setProperty('--drop-df','visible')
+  let x = e.clientX;
+  let y = e.clientY;
+  let areaX = dragAreaInfo.x;
+  let areaY = dragAreaInfo.y;
+  let areaW = dragAreaInfo.width;
+  let areaH = dragAreaInfo.height;
+  if( x <= areaX || x >= areaX + areaW || y <= areaY || y >= areaY + areaH){
+    e.stopPropagation();
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    dropUp.style.filter = '';
+    dropUp.style.setProperty('--drop-df','visible');
+  }
 });
 dropUp.addEventListener('drop',(e)=>{
   e.stopPropagation();
   e.preventDefault();
-})
+  dropUp.style.filter = '';
+  dropUp.style.setProperty('--drop-df','visible');
+  let files = Array.from(e.dataTransfer.files).sort((a, b) => b.size - a.size);
+  reFileInfo(files);
+  let reader = new FileReader();
+});
+//设置画板命名格式
+frameName.addEventListener('input',()=>{
+  if(frameNmaeSelect.includes(frameName.value)){
+    frameName.nextElementSibling.querySelector(`[data-option-value="${frameName.value}"]`).click();
+  }else{
+    frameName.nextElementSibling.querySelector(`[data-select-input]`).value = '';
+  };
+});
+//设置画板数据表头规则
+userTableTitle.addEventListener('change',()=>{
+  userTableTitle.value = reTableTitle(userTableTitle.value);
+});
+function reTableTitle(text){
+  if(text == ''){
+    return '';
+  }
+  //首先必须是逗号隔开的单词形式
+  let regex = /^[a-z]+$/;
+  let texts = text.split(',');
+  if(texts.some(item => !tableTitleMust.includes(item))){
+    tipsAll(['请用指定单词，并用逗号隔开','Must use example words and separated by commas'],3000);
+    texts = texts.filter(item => tableTitleMust.includes(item));
+    if(texts.length == 0){
+      return 'name,w,h'
+    } else {
+      if(texts.includes('name') && texts.includes('w') && texts.includes('h')){
+        return [...new Set(texts)].join(',');
+      }else{
+        texts = [...new Set(texts)];
+        if(!texts.includes('name')){
+          texts.push('name')
+        };
+        if(!texts.includes('w')){
+          texts.push('w')
+        };
+        if(!texts.includes('h')){
+          texts.push('h')
+        }
+        return texts.join(',');
+      }
+    }
+  }else{ 
+    if(texts.includes('name') && texts.includes('w') && texts.includes('h')){
+      if(texts.length == [...new Set(texts)].length){
+        return text;
+      }else{
+        tipsAll(['单词重复','The word is repeated'],3000);
+        return [...new Set(texts)].join(',');
+      }
+    }else{
+      tipsAll(['必须包含name、w、h','Must include name, w, h'],3000);
+      texts = [...new Set(texts)];
+      if(!texts.includes('name')){
+        texts.push('name')
+      };
+      if(!texts.includes('w')){
+        texts.push('w')
+      };
+      if(!texts.includes('h')){
+        texts.push('h')
+      }
+      return texts.join(',');
+    }
+  }; 
+};
+
 
 /**
  * 模拟点击tab切换页面，测试时更方便，能直接显示目标页面
@@ -1184,6 +1290,7 @@ let observer = new MutationObserver((mutations) => {
     if(mutation.type === 'attributes'){
       switch(mutation.attributeName){
         case 'data-tab-pick':getUserTab(mutation.target); break;
+        case 'data-select-value':getUserSelect(mutation.target); break;
       }
     }
   })
@@ -1191,6 +1298,11 @@ let observer = new MutationObserver((mutations) => {
 let userEvent_tab = document.querySelectorAll('[data-tab-pick]');
 userEvent_tab.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-tab-pick']};
+  observer.observe(item,config);
+});
+let userEvent_select = document.querySelectorAll('[data-select]');
+userEvent_select.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-select-value']};
   observer.observe(item,config);
 });
 
@@ -1201,6 +1313,15 @@ function getUserTab(node){
   let tabPick = node.getAttribute('data-tab-pick').split('tab_')[1]
   if(tabPick){
     storageMix.set('tabPick',tabPick);
+  }
+}
+
+function getUserSelect(node){
+  let userSelect = node.getAttribute('data-select-value');
+  if(userSelect){
+    if(node.previousElementSibling == frameName){
+      frameName.value = userSelect;
+    }
   }
 }
 
