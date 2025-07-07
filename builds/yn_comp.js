@@ -228,6 +228,7 @@ let INPUT_COLORPICK_HSV = document.querySelectorAll('[data-input-color="hsv"]');
 let TEXTAREA = document.querySelectorAll('[data-textarea]');
 let TEXTAREA_EG = document.querySelectorAll('[data-textarea="eg"]');
 let CLOSE_CLEAR = document.querySelectorAll('[data-close="clear"]');
+let CLOSE_CLOSE = document.querySelectorAll('[data-close="close"]');
 let TIPS = document.getElementById('tips-all');
 let TIPS_TEXT = document.getElementById('tips-all-text');
 let TIPS_TIMES = [];
@@ -325,6 +326,15 @@ CLOSE_CLEAR.forEach(item => {//清空输入内容
     
   })
 });
+
+CLOSE_CLOSE.forEach(item =>{//关闭对象
+  item.addEventListener('click',() => {
+    let closeNode = document.querySelector(item.getAttribute('data-close-for'));
+    if(closeNode) {
+      closeNode.style.display = 'none'
+    }
+  })
+})
 
 TAB_AUTO.forEach((item,index) => {
   let pagefor = document.querySelector(`[data-page-id="${item.getAttribute('data-tab-for')}"]`);
