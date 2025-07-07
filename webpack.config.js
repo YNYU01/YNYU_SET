@@ -1,6 +1,8 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const InlineJsCssPlugin = require('./inline-jscss-plugin.js');
+const {execSync} = require('child_process');
+const GIT_HASH = execSync('git rev-parse HEAD').toString().trim()
 
 module.exports = async()=> {
   return{
@@ -30,7 +32,7 @@ module.exports = async()=> {
     plugins: [
       new InlineJsCssPlugin({
         template: './tool_plugin/ToolsSetFig/test/index.html',
-        hash: '',
+        hash:GIT_HASH,
       }),
     ],
   }

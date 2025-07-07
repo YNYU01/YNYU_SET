@@ -44,11 +44,10 @@ class InlineJsCssPlugin {
 
       // 替换占位符
       html = html
+        .replace(/\.\.\/\.\.\/\.\./g,'https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@' + this.hash)
         .replace('<link rel="stylesheet" href="style.css">', `<style>\n${cssContent}\n</style>`)
         .replace('<script src="main.js"></script>', `<script>\n${jsContent}\n</script>`)
         .replace('<script src="run.js"></script>', `<script>\n${runContent}\n</script>`)
-        .replace('../../..','https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@' + this.hash)
-
       // 写入新文件
       const outputPath = path.join(compilation.options.output.path, 'ui.html');
       fs.writeFileSync(outputPath, html);

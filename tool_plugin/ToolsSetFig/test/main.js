@@ -1,112 +1,97 @@
-/**
- * 动态生成小功能列表
- * 功能层级：模块>功能点/集>表单/按钮，模块用于tab切换，功能点/集可查看说明
- * 文案类型需用['中文XXX','EnglishXXX']分别记录
- * 表单类型基于yn_comp.js组件库
- * 表单逐行记录，CSS控制默认间隙和自适应宽度，分隔间隙需加多分隔对象,可设置分隔值，不设置则按默认间隙两倍
- */
-const skillList = [
-  {
-    icon: '',/*svg注册组件*/
-    title: ['',''],/*一级功能模块*/
-    skills: [
-      {
-        name: ['',''],/*二级功能名*/
-        tips: ['',''],/*功能说明*/
-        comps:[/*功能按钮，逐行*/
-          [/*单行*/
-            {
-              type: "SELECT",/* BUTTON | INPUT_ICON | RANGE_INT | SELECT | */
-              buttonMain: false,/*如为主按钮则特殊样式 */
-              selectOption:[
-                ['',''],
-                ['',''],
-              ],
-              isView: true,/*是否外显*/
-              isVIP: false,/*是否高级功能*/
-            },
-            {
-              type: "GAP",
-              gap: null,
-              isView: true,
-              isVIP: false,
-            },
-          ],
-        ], 
-        isStart: false,/*用户收藏后保存本地数据并置顶*/
-      },
-    ],
-  },
+/*let skillModel = [
+  ["常用功能","Useful & Starts"],
+  ["像素&变换","Pixel & Transform"],
+  ["文本&图层","Text & Layer"],
+  ["矢量&生成","Vector & Generate"],
+  ["样式&原型","Style & Prototype"],
 ]
+*/
 
-/**
- * 克隆到常用功能
- */
 let userSkillStart = ['二级功能名','二级功能名']
 
 let toUserTips = {
   worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
   random: [
-    ["❤ 久坐伤身, 快起来走两步吧~","❤ Get up and take a walk now~"],
-    ["❤ 身心要紧, 不舒服及时休息~","❤ Put down your work and rest in time~"],
-    ["❤ 工具提效, 是为了多陪家人~","❤ Spend more time with your family~"],
-    ["❤ 支持开源, 要价值而非价格~","❤ Support open source and design~"],
-    ["❤ 久坐伤身, 快起来走两步吧~","❤ Get up and take a walk now~"],
-    ["❤ 身心要紧, 不舒服及时休息~","❤ Put down your work and rest in time~"],
-    ["❤ 工具提效, 是为了多陪家人~","❤ Spend more time with your family~"],
-    ["❤ 支持开源, 要价值而非价格~","❤ Support open source and design~"],
+    ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
+    ["身心要紧, 不舒服及时休息~","Put down your work and rest in time~"],
+    ["工具提效, 是为了多陪家人~","Spend more time with your family~"],
+    ["支持开源, 要价值而非价格~","Support open source and design~"],
+    ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
+    ["身心要紧, 不舒服及时休息~","Put down your work and rest in time~"],
+    ["工具提效, 是为了多陪家人~","Spend more time with your family~"],
+    ["支持开源, 要价值而非价格~","Support open source and design~"],
   ],
 };
 
 let helpData = {
   create: [
     ["p",
-    "本页功能主要用于批量创建画板、图层等",
-    "This page is used for batch creation of frames, layers, etc"],
+    "本页功能主要用于<span data-highlight> 批量创建画板、图层等 </span>",
+    "This page is used for batch creation of <span data-highlight> frames, layers, etc </span>"],
     ["li",
     "传入大图（长图）可创建大小均匀的切片组，以避免压缩",
     "Upload large images (long images) will create slice groups to avoid compression"],
     ["li",
-    "传入带命名、长宽等信息的表格数据则创建画板",
-    "Upload table data with name, length, width, and other information, will will create frames"],
+    "传入带命名、宽高等信息的表格数据则创建画板",
+    "Upload table data with name, width, height, and other information, will will create frames"],
     ["li",
     "传入由本系列插件生成的兼容文件则创建图层",
     "Upload files by YN+ will create layers"],
     ["br","",""],
     ["p",
-    "拖拽和上传文件会立即生成用以确认最终生成内容的标签/大纲",
+    "拖拽和上传文件会立即生成用以确认最终生成内容的<span data-highlight> 标签/大纲 </span>",
     "Dragging or uploading files will immediately convert to <span data-highlight> tags/catalogue </span>"],
     ["li",
-    "拖拽的文件需统一为图片类、表格类或兼容文件，不能混杂",
-    ""],
+    "拖拽的文件需全部是为图片类、全部是表格类或全部是兼容文件，<span data-highlight>不能混杂类型</span>",
+    "Drag and drop files must be all images, tables, or compatible files. <span data-highlight> Mixed file types are not allowed </span>"],
     ["li",
     "上传文件设置了具体格式，不支持的格式将无法点选",
-    ""],
+    "The three upload buttons restrict the file format, and unsupported formats cannot be uploaded"],
     ["br","",""],
     ["p",
     "通过文本框输入数据，需要点击第一个按钮来生成标签/大纲",
-    ""],
+    "If input data through the textarea, click the first button to convert the data to tags/catalogue"],
     ["li",
-    "输入表格数据无需包含表头、单位，可双击文本框查看示例",
-    ""],
+    "输入表格数据无需包含表头、单位，<span data-highlight>可双击文本框查看示例</span>",
+    "Does not need to include a table header or unit.<span data-highlight> May double-click the textarea to fill an example <span>"],
     ["li",
-    "可以选中文件里的画板或图层并点击，点击第二个按钮获取命名和长宽数据",
-    ""],
+    "可以选中文件里的画板或图层，然后点击第二个按钮获取命名和宽高数据",
+    "Select frames or layers in the file, and then click the second button to obtain theirs name, width and height data"],
     ["li",
     "如果需要制作更复杂的模板，点击第三个按钮前往资源助手",
-    ""],
+    "If you need to create more complex templates, click the third button to go to the <span data-highlight> YN+ ListEase </span> online"],
     ["br","",""],
     ["p",
-    "表格数据默认按命名、长宽、目标文件大小、目标文件格式、补充信息的顺序读取列，如需修改规则可点击第四个按钮展开高级设置",
-    ""],
+    "表格数据默认按<span data-highlight>命名、宽高、目标文件大小、目标文件格式、补充信息</span>的顺序读取列，如需修改规则可点击第四个按钮展开高级设置",
+    "Table data is read in the order of <span data-highlight> name, width, height, target file size, target file format, and supplementary information </span> by default. To modify the rules, click the fourth button to expand advanced settings"],
     ["li",
-    "修改列顺序规则时需注意,必须包含命名和长宽"
-    ,""],
+    "修改列顺序规则时需注意,必须包含命名和宽高"
+    ,"When modifying column order rules, it is important to include <span data-highlight> name, width and height </span>"],
     ["li",
     "画板名默认带w×h后缀，如“kv 1920×1080 ”，可选择其他预设或自行定义",
-    ""],
+    "The frame defaults to a suffix with width and height,such as 'kv 1920 × 1080', you can selected a presets or input oneself"],
   ]
 }
+
+let skillModel = [];
+let skilltypeNameNode = document.querySelector('[data-skilltype-box]').querySelectorAll('[data-skilltype-name]')
+skilltypeNameNode.forEach(item => {
+  let name1 = item.getAttribute('data-zh-text');
+  name1 = name1 ? name1 : item.textContent.trim();
+  let name2 = item.getAttribute('data-en-text');
+  skillModel.push([name1,name2]);
+});
+
+/*
+skillModel.forEach(item => {
+  let box = document.querySelector('[data-skills-box]');
+  let node = document.createElement('div');
+  node.className = 'w100 df-ffc';
+  //node.innerHTML = item[0];
+  node.setAttribute('data-skillModel',item[1]);
+  box.appendChild(node);
+});
+*/
 
 const UI_MINI = [200,460];
 const UI = [300,660];
@@ -141,6 +126,7 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 });
 
 window.addEventListener('load',()=>{
+  viewPage('more tools')
   if(window.innerWidth < 300){
     TV_MOVE = true;
   } else {
@@ -198,9 +184,9 @@ function addToUserTips(){
   TV_text.setAttribute('data-'+ languge.toLowerCase() +'-text',random[num]);
   let textW
   if(num){
-    textW = random[num].length * -2 + 'ch'
+    textW = random[num].length * -1 - 4 + 'ch';//英文1ch
   }else{
-    textW = random[num].length * -1 + 'ch'
+    textW = random[num].length * -2 - 4 + 'ch';//中文2ch
   }
   TV_text.parentNode.style.setProperty('--tv-w',textW)
 
@@ -419,7 +405,7 @@ function reTableTitle(text){
 };
 //上传|拖拽|输入 的规则说明
 helpCreate.addEventListener('click',()=>{
-  if(dailogBox.innerHTML.split(helpData.create[0][1]).length == 1){
+  if(dailogBox.innerHTML.split(helpData.create[0][1].split('<')[0]).length == 1){
     dailogBox.innerHTML = '';
     let node = document.createElement('div');
     node.className = 'df-ffc';
@@ -445,9 +431,9 @@ helpCreate.addEventListener('click',()=>{
 });
 //点击弹窗外关闭弹窗
 dailog.addEventListener('click',(e)=>{
-  if(e.target !== dailogBox){
+  if(!dailogBox.contains(e.target)){
     dailog.style.display = 'none';
-  }
+  };
 });
 
 
@@ -503,21 +489,6 @@ function getUserSelect(node){
   }
 }
 
-function addSkill(){
-  skillList.forEach(model => {
-    let skillModel = document.createElement('div');
-    skillModel.setAttribute('data-skillModel',model.title[1]);
-
-    let tabSkill = document.createElement('div');
-    tabSkill.setAttribute('data-tabSkill',model.title[1]);
-
-    page_skills.appendChild(skillModel);
-    tab_skills.appendChild(tabSkill)
-  })
-  userSkillStart.forEach(skill => {
-
-  })
-}
 
 //生成导出标签
 function addExport(frameDataOld,frameDataNew,isNew) {

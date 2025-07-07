@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@30dc857edef290cf74e0d97c33af59e38636ee64/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -16,6 +16,23 @@
   --top-h: 24px;
   --bottom-h: 32px;
   --option-font: 12px;
+  --pointer:url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/pointer_24.png'),auto;
+  --code3:#48a64d;
+  --code4:#b677b1;
+  --code5:#a66e48;
+  --code6:#77b6b6;
+  --code7:#a64848;
+  --code8:#527ac4;
+  --code9:#e09524;
+  --code10:#ec657c;
+}
+
+html{
+  cursor: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/cursor_16.png'),auto;
+}
+
+* {
+  cursor: inherit;
 }
 
 body{
@@ -25,11 +42,15 @@ body{
 /*--组件修改*/
 .show-next{
   margin:0 2px 0 -2px;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 .show-next::after {
   transform-origin: 40% 40%;
+}
+
+p [data-highlight]{
+  color: var(--themeColor)
 }
 
 [data-resize]::after {
@@ -171,7 +192,7 @@ input[type="checkbox"]:checked + .tab-top{
   width: 12px;
   height: 12px;
   margin-left: 2px;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 input[type="checkbox"]:checked+.btn-big .path1 {
@@ -279,7 +300,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   width: 16px;
   height: 16px;
   opacity: 0.6;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 [data-mainset-side]{
@@ -345,7 +366,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   padding: 2px 0;
   border: 1px solid var(--boxBod);
   box-sizing: border-box;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 [data-btn]:hover{
@@ -424,7 +445,7 @@ input[type="checkbox"]:checked + .btn-moreset:hover{
   border: 1px solid transparent;
   background: var(--themeColor);
   --mainColor: #242424;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 
@@ -434,10 +455,68 @@ input[type="checkbox"]:checked + .btn-moreset{
   --mainColor: var(--boxBod);
 }
 
+[data-help]{
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--boxBod); 
+  border-radius: 50%;
+  font-size: 10px;
+  color: var(--boxBod);
+  cursor: var(--pointer,pointer);
+  margin-left: 4px;
+}
 
 /*按钮类--*/
 
 /*--模块类*/
+[data-dailog]{
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  padding: 50px 20px;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 12;
+  gap: 4px;
+  text-wrap: wrap;
+}
+
+[data-dailog-box] p{
+  font-size: 11px;
+}
+
+[data-dailog-box] li{
+  opacity: 0.6;
+}
+
+[data-dailog-box] p::before{
+  content: '👉 ';
+}
+[data-dailog-box] p::after{
+  content: ':';
+}
+
+[data-dailog-close]{
+  width: 80%;
+  max-width: 360;
+}
+
+[data-dailog-close] [data-close]{
+  width: 20px;
+  height: 20px;
+}
+
+[data-dailog-box]{
+  width: 80%;
+  height: 70%;
+  max-width: 360;
+  padding: 2% 4%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid var(--boxBod);
+  background: var(--boxGry); 
+  gap: 4px;
+}
+
 .bod-d{
   border: 1px var(--boxBod) dashed;
   border-radius: 10px;
@@ -564,7 +643,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@30dc857edef290cf74e0d97c33af59e38636ee64/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -600,6 +679,7 @@ function toolMessage(data,app){
     case 'mg' : parent.postMessage(data,"*");break
   }
 }
+
 
 </script>
 </head>
@@ -644,7 +724,18 @@ function toolMessage(data,app){
     <div id="tips-all-text" class="tips-all-text" ></div>
   </div>
   <!--弹窗-->
-  
+  <div data-dailog data-close-id="dailog" class="pos-a df-ffc df-cc">
+    <!--关闭-->
+    <div data-dailog-close class="df-rc">
+      <div data-close="close" data-close-for="dailog">
+        <btn-close></btn-close>
+      </div>
+    </div>
+    <div data-dailog-box class="ovy scrollbar df-ffc">
+      <!--生成内容-->
+    </div>
+    
+  </div>
   <!--侧边栏-->
   <div data-side data-any="vw240" class="df pos-a" style="top: 0; left: 0; --fill: var(--mainColor)">
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
@@ -721,7 +812,7 @@ function toolMessage(data,app){
               <span data-en-text="Upload | Drop | Input" >上传 | 拖拽 | 输入</span>
               &nbsp;&nbsp;
               <span data-any="vw300" data-en-text="data to create node in batches" style="opacity: 0.6;"> 数据以批量创建内容</span>
-
+              <div data-any="vw300" data-help="create" class="fl0 df-cc">?</div>
             </div>
             <div data-drop="upload" class="w100 df-ffc df-cc bod-d">
               <div class="w100 df-cc">
@@ -898,11 +989,11 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@816e1b9db12331eea29e080899e45cb164e78edd/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@30dc857edef290cf74e0d97c33af59e38636ee64/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@30dc857edef290cf74e0d97c33af59e38636ee64/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@30dc857edef290cf74e0d97c33af59e38636ee64/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@30dc857edef290cf74e0d97c33af59e38636ee64/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@30dc857edef290cf74e0d97c33af59e38636ee64/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /**
@@ -963,6 +1054,56 @@ let toUserTips = {
     ["❤ 工具提效, 是为了多陪家人~","❤ Spend more time with your family~"],
     ["❤ 支持开源, 要价值而非价格~","❤ Support open source and design~"],
   ],
+};
+
+let helpData = {
+  create: [
+    ["p",
+    "本页功能主要用于批量创建画板、图层等",
+    "This page is used for batch creation of frames, layers, etc"],
+    ["li",
+    "传入大图（长图）可创建大小均匀的切片组，以避免压缩",
+    "Upload large images (long images) will create slice groups to avoid compression"],
+    ["li",
+    "传入带命名、长宽等信息的表格数据则创建画板",
+    "Upload table data with name, length, width, and other information, will will create frames"],
+    ["li",
+    "传入由本系列插件生成的兼容文件则创建图层",
+    "Upload files by YN+ will create layers"],
+    ["br","",""],
+    ["p",
+    "拖拽和上传文件会立即生成用以确认最终生成内容的标签/大纲",
+    "Dragging or uploading files will immediately convert to <span data-highlight> tags/catalogue </span>"],
+    ["li",
+    "拖拽的文件需统一为图片类、表格类或兼容文件，不能混杂",
+    ""],
+    ["li",
+    "上传文件设置了具体格式，不支持的格式将无法点选",
+    ""],
+    ["br","",""],
+    ["p",
+    "通过文本框输入数据，需要点击第一个按钮来生成标签/大纲",
+    ""],
+    ["li",
+    "输入表格数据无需包含表头、单位，可双击文本框查看示例",
+    ""],
+    ["li",
+    "可以选中文件里的画板或图层并点击，点击第二个按钮获取命名和长宽数据",
+    ""],
+    ["li",
+    "如果需要制作更复杂的模板，点击第三个按钮前往资源助手",
+    ""],
+    ["br","",""],
+    ["p",
+    "表格数据默认按命名、长宽、目标文件大小、目标文件格式、补充信息的顺序读取列，如需修改规则可点击第四个按钮展开高级设置",
+    ""],
+    ["li",
+    "修改列顺序规则时需注意,必须包含命名和长宽"
+    ,""],
+    ["li",
+    "画板名默认带w×h后缀，如“kv 1920×1080 ”，可选择其他预设或自行定义",
+    ""],
+  ]
 }
 
 const UI_MINI = [200,460];
@@ -981,6 +1122,9 @@ const userTableTitle = document.getElementById('input-user-table-title');
 const userZy = document.getElementById('input-user-zy');
 const fileInfo = document.querySelector('[data-file-info]');
 const frameName =  document.getElementById('input-framename');
+const helpCreate = document.querySelector('[data-help="create"]');
+const dailog = document.querySelector('[data-dailog]');
+const dailogBox = document.querySelector('[data-dailog-box]');
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -1271,6 +1415,38 @@ function reTableTitle(text){
     }
   }; 
 };
+//上传|拖拽|输入 的规则说明
+helpCreate.addEventListener('click',()=>{
+  if(dailogBox.innerHTML.split(helpData.create[0][1]).length == 1){
+    dailogBox.innerHTML = '';
+    let node = document.createElement('div');
+    node.className = 'df-ffc';
+    helpData.create.forEach(item =>{
+      let line = document.createElement(item[0]);
+      line.innerHTML = item[1];
+      line.setAttribute('data-en-text',item[2]);
+      if(item[0] == 'li'){
+        line.setAttribute('data-li-style','2')
+      }
+      node.appendChild(line);
+    });
+    dailogBox.appendChild(node);
+    //最后重置下语言
+    if(ROOT.getAttribute('data-language') == 'En'){
+      setLanguage(true);
+      setLanguage(false);
+    };
+    //重置文字样式
+    loadFont();
+  };
+  dailog.style.display = 'flex';
+});
+//点击弹窗外关闭弹窗
+dailog.addEventListener('click',(e)=>{
+  if(!dailogBox.contains(e.target)){
+    dailog.style.display = 'none';
+  };
+});
 
 
 /**

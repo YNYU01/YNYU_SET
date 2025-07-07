@@ -9,6 +9,23 @@
   --top-h: 24px;
   --bottom-h: 32px;
   --option-font: 12px;
+  --pointer:url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/pointer_24.png'),auto;
+  --code3:#48a64d;
+  --code4:#b677b1;
+  --code5:#a66e48;
+  --code6:#77b6b6;
+  --code7:#a64848;
+  --code8:#527ac4;
+  --code9:#e09524;
+  --code10:#ec657c;
+}
+
+html{
+  cursor: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/cursor_16.png'),auto;
+}
+
+* {
+  cursor: inherit;
 }
 
 body{
@@ -18,11 +35,33 @@ body{
 /*--组件修改*/
 .show-next{
   margin:0 2px 0 -2px;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 .show-next::after {
   transform-origin: 40% 40%;
+}
+
+p [data-highlight]{
+  color: var(--themeColor)
+}
+
+[data-radio]{
+  width: fit-content;
+  height: fit-content;
+  flex: 0 0 auto;
+  border: none;
+  background: none;
+  padding: 0.5ch 0;
+}
+
+[data-radio-main]:hover {
+  background: var(--boxGry);
+}
+
+[data-theme="dark"] [data-radio-main="true"] {
+  --mainColor: inherit;
+  background: var(--boxGry);
 }
 
 [data-resize]::after {
@@ -160,11 +199,32 @@ input[type="checkbox"]:checked + .tab-top{
   font-size: 10px;
 }
 
+[data-tv-text]::before,
+[data-tv-text]::after{
+  content: '❤';
+  color: rgb(248, 153, 169);
+  width: 10px;
+  height: 10px;
+  padding: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  transform: scale(0.8);
+  animation: heartUp 0.5s cubic-bezier(0,10,1,1) infinite;
+}
+
+@keyframes heartUp {
+  to{
+    transform: scale(0.86);
+  }
+}
+
 .btn-big{
   width: 12px;
   height: 12px;
   margin-left: 2px;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 input[type="checkbox"]:checked+.btn-big .path1 {
@@ -272,7 +332,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   width: 16px;
   height: 16px;
   opacity: 0.6;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 [data-mainset-side]{
@@ -338,7 +398,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   padding: 2px 0;
   border: 1px solid var(--boxBod);
   box-sizing: border-box;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 [data-btn]:hover{
@@ -417,7 +477,7 @@ input[type="checkbox"]:checked + .btn-moreset:hover{
   border: 1px solid transparent;
   background: var(--themeColor);
   --mainColor: #242424;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
 }
 
 
@@ -434,8 +494,16 @@ input[type="checkbox"]:checked + .btn-moreset{
   border-radius: 50%;
   font-size: 10px;
   color: var(--boxBod);
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
   margin-left: 4px;
+}
+
+[data-skilltype-icon]{
+  width: 40px;
+  height: 40px;
+  padding: 4px;
+  box-sizing: border-box;
+  flex: 0 0 auto;
 }
 
 /*按钮类--*/
@@ -540,6 +608,29 @@ input[type="checkbox"]:checked + .btn-moreset{
 [data-resize]::-webkit-resizer{
   display: none;
 }
+
+[data-skilltype-box]{
+  max-width: 560px;
+  height: 70px;
+  padding: 0 10px;
+  gap: 6px;
+}
+[data-language="En"] [data-skilltype-box]{
+  gap: 4px;
+}
+
+[data-skilltype-name]{
+  font-size: 10px;
+  line-height: 1.25em;
+  text-wrap: wrap;
+}
+
+[data-skillModel]{
+  border-top: 1px solid var(--boxBod);
+  box-sizing: border-box;
+  min-height: 180px;
+}
+
 /*模块类--*/
 
 /*--纹理类*/
@@ -566,10 +657,17 @@ input[type="checkbox"]:checked + .btn-moreset{
   }
 }
 
+@media (max-width:460px) {
+  [data-language="En"] [data-skillType-name]{
+    max-width: 50px;
+  }
+}
+
 @media (min-width:420px) {
   [data-mainset-top]{
     display: flex;
   }
+
 }
 
 @media (max-width:359px) {
@@ -577,6 +675,11 @@ input[type="checkbox"]:checked + .btn-moreset{
     width: 100%;
     flex: 0 0 auto;
   }
+  [data-language="Zh"] [data-skillType-name]{
+    max-width: 5ch;
+  }
+  
+
 }
 
 @media (min-width:360px) {
@@ -592,7 +695,10 @@ input[type="checkbox"]:checked + .btn-moreset{
   #upload-set-main [data-tips-x="center"]::after {
     --x: calc(-100% + 40px);
   }
-  
+
+  [data-radio]{
+    padding: 0.5ch;
+  }
 }
 @media (max-width:299px) {
   [data-any="vw300"]{
@@ -600,6 +706,13 @@ input[type="checkbox"]:checked + .btn-moreset{
   }
   [data-tips]::after{
     display: none;
+  }
+  
+}
+@media (min-width:300px) {
+  [data-skillType-box]{
+    justify-content: center;
+    height: 100px;
   }
 }
 
