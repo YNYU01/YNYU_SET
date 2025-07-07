@@ -329,12 +329,12 @@ CLOSE_CLEAR.forEach(item => {//清空输入内容
 
 CLOSE_CLOSE.forEach(item =>{//关闭对象
   item.addEventListener('click',() => {
-    let closeNode = document.querySelector(item.getAttribute('data-close-for'));
+    let closeNode = document.querySelector(`data-close-id="${item.getAttribute('data-close-for')}"`);
     if(closeNode) {
       closeNode.style.display = 'none'
-    }
-  })
-})
+    };
+  });
+});
 
 TAB_AUTO.forEach((item,index) => {
   let pagefor = document.querySelector(`[data-page-id="${item.getAttribute('data-tab-for')}"]`);
