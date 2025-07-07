@@ -31,3 +31,4 @@ function toolMessage(data,app){
     case 'mg' : parent.postMessage(data,"*");break
   }
 }
+

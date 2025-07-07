@@ -30,6 +30,7 @@ module.exports = async()=> {
     plugins: [
       new InlineJsCssPlugin({
         template: './tool_plugin/ToolsSetFig/test/index.html',
+        hash: '',
       }),
     ],
   }

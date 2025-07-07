@@ -56,6 +56,56 @@ let toUserTips = {
     ["❤ 工具提效, 是为了多陪家人~","❤ Spend more time with your family~"],
     ["❤ 支持开源, 要价值而非价格~","❤ Support open source and design~"],
   ],
+};
+
+let helpData = {
+  create: [
+    ["p",
+    "本页功能主要用于批量创建画板、图层等",
+    "This page is used for batch creation of frames, layers, etc"],
+    ["li",
+    "传入大图（长图）可创建大小均匀的切片组，以避免压缩",
+    "Upload large images (long images) will create slice groups to avoid compression"],
+    ["li",
+    "传入带命名、长宽等信息的表格数据则创建画板",
+    "Upload table data with name, length, width, and other information, will will create frames"],
+    ["li",
+    "传入由本系列插件生成的兼容文件则创建图层",
+    "Upload files by YN+ will create layers"],
+    ["br","",""],
+    ["p",
+    "拖拽和上传文件会立即生成用以确认最终生成内容的标签/大纲",
+    "Dragging or uploading files will immediately convert to <span data-highlight> tags/catalogue </span>"],
+    ["li",
+    "拖拽的文件需统一为图片类、表格类或兼容文件，不能混杂",
+    ""],
+    ["li",
+    "上传文件设置了具体格式，不支持的格式将无法点选",
+    ""],
+    ["br","",""],
+    ["p",
+    "通过文本框输入数据，需要点击第一个按钮来生成标签/大纲",
+    ""],
+    ["li",
+    "输入表格数据无需包含表头、单位，可双击文本框查看示例",
+    ""],
+    ["li",
+    "可以选中文件里的画板或图层并点击，点击第二个按钮获取命名和长宽数据",
+    ""],
+    ["li",
+    "如果需要制作更复杂的模板，点击第三个按钮前往资源助手",
+    ""],
+    ["br","",""],
+    ["p",
+    "表格数据默认按命名、长宽、目标文件大小、目标文件格式、补充信息的顺序读取列，如需修改规则可点击第四个按钮展开高级设置",
+    ""],
+    ["li",
+    "修改列顺序规则时需注意,必须包含命名和长宽"
+    ,""],
+    ["li",
+    "画板名默认带w×h后缀，如“kv 1920×1080 ”，可选择其他预设或自行定义",
+    ""],
+  ]
 }
 
 const UI_MINI = [200,460];
@@ -74,6 +124,9 @@ const userTableTitle = document.getElementById('input-user-table-title');
 const userZy = document.getElementById('input-user-zy');
 const fileInfo = document.querySelector('[data-file-info]');
 const frameName =  document.getElementById('input-framename');
+const helpCreate = document.querySelector('[data-help="create"]');
+const dailog = document.querySelector('[data-dailog]');
+const dailogBox = document.querySelector('[data-dailog-box]');
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -364,6 +417,38 @@ function reTableTitle(text){
     }
   }; 
 };
+//上传|拖拽|输入 的规则说明
+helpCreate.addEventListener('click',()=>{
+  if(dailogBox.innerHTML.split(helpData.create[0][1]).length == 1){
+    dailogBox.innerHTML = '';
+    let node = document.createElement('div');
+    node.className = 'df-ffc';
+    helpData.create.forEach(item =>{
+      let line = document.createElement(item[0]);
+      line.innerHTML = item[1];
+      line.setAttribute('data-en-text',item[2]);
+      if(item[0] == 'li'){
+        line.setAttribute('data-li-style','2')
+      }
+      node.appendChild(line);
+    });
+    dailogBox.appendChild(node);
+    //最后重置下语言
+    if(ROOT.getAttribute('data-language') == 'En'){
+      setLanguage(true);
+      setLanguage(false);
+    };
+    //重置文字样式
+    loadFont();
+  };
+  dailog.style.display = 'flex';
+});
+//点击弹窗外关闭弹窗
+dailog.addEventListener('click',(e)=>{
+  if(e.target !== dailogBox){
+    dailog.style.display = 'none';
+  }
+});
 
 
 /**

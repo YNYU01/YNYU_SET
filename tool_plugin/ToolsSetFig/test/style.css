@@ -427,21 +427,49 @@ input[type="checkbox"]:checked + .btn-moreset{
   --mainColor: var(--boxBod);
 }
 
+[data-help]{
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--boxBod); 
+  border-radius: 50%;
+  font-size: 10px;
+  color: var(--boxBod);
+  cursor: pointer;
+  margin-left: 4px;
+}
 
 /*按钮类--*/
 
 /*--模块类*/
 [data-dailog]{
+  display: none;
   width: 100vw;
   height: 100vh;
   padding: 50px 20px;
   background: rgba(0, 0, 0, 0.6);
   z-index: 12;
   gap: 4px;
+  text-wrap: wrap;
+}
+
+[data-dailog-box] p{
+  font-size: 11px;
+}
+
+[data-dailog-box] li{
+  opacity: 0.6;
+}
+
+[data-dailog-box] p::before{
+  content: '👉 ';
+}
+[data-dailog-box] p::after{
+  content: ':';
 }
 
 [data-dailog-close]{
   width: 80%;
+  max-width: 360;
 }
 
 [data-dailog-close] [data-close]{
@@ -453,11 +481,12 @@ input[type="checkbox"]:checked + .btn-moreset{
   width: 80%;
   height: 70%;
   max-width: 360;
-  padding: 10px;
+  padding: 2% 4%;
   box-sizing: border-box;
   border-radius: 10px;
   border: 1px solid var(--boxBod);
   background: var(--boxGry); 
+  gap: 4px;
 }
 
 .bod-d{
