@@ -1,13 +1,18 @@
-/*let skillModel = [
-  ["常用功能","Useful & Starts"],
-  ["像素&变换","Pixel & Transform"],
-  ["文本&图层","Text & Layer"],
-  ["矢量&生成","Vector & Generate"],
-  ["样式&原型","Style & Prototype"],
+let skillSecInfo = [
+  {
+    id: 'inSituRasterize',
+    name: ["原地栅格化","in-situ rasterize"],
+    tips:  ["",""],
+  },
+  {
+    id: 'easeTransform',
+    name: ["简单变形","ease transform"],
+    tips:  ["",""],
+  },
 ]
-*/
 
-let userSkillStart = ['二级功能名','二级功能名']
+//let userSkillStar = ['inSituRasterize'];
+let userSkillStar = storageMix.get('userSkillStar') || [];
 
 let toUserTips = {
   worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
@@ -82,17 +87,6 @@ skilltypeNameNode.forEach(item => {
   skillModel.push([name1,name2]);
 });
 
-/*
-skillModel.forEach(item => {
-  let box = document.querySelector('[data-skills-box]');
-  let node = document.createElement('div');
-  node.className = 'w100 df-ffc';
-  //node.innerHTML = item[0];
-  node.setAttribute('data-skillModel',item[1]);
-  box.appendChild(node);
-});
-*/
-
 const UI_MINI = [200,460];
 const UI = [300,660];
 const UI_BIG = [620,660];
@@ -103,15 +97,21 @@ const btnResize = document.querySelector('[data-resize-window]');
 const btnBig = document.getElementById('big');
 const TV_text = document.querySelector('[data-tv-text]');
 const dropUp = document.querySelector('[data-drop="upload"]');
-const userImg = document.getElementById('input-user-img');
-const userTable = document.getElementById('input-user-table');
-const userTableTitle = document.getElementById('input-user-table-title');
-const userZy = document.getElementById('input-user-zy');
 const fileInfo = document.querySelector('[data-file-info]');
-const frameName =  document.getElementById('input-framename');
 const helpCreate = document.querySelector('[data-help="create"]');
 const dailog = document.querySelector('[data-dailog]');
 const dailogBox = document.querySelector('[data-dailog-box]');
+const skillSecNode = document.querySelectorAll('[data-skill-sec]');
+const skillStar = document.querySelectorAll('[data-skill-star]');
+const skillStarModel = document.querySelector('[data-skillmodel="Useful & Starts"]')
+
+/*表单绑定*/
+const userImg = document.getElementById('input-user-img');
+const userTable = document.getElementById('input-user-table');
+const userZy = document.getElementById('input-user-zy');
+const userTableTitle = document.getElementById('input-user-table-title');
+const frameName =  document.getElementById('input-framename');
+const pixelScale = document.getElementById('input-pixelScale');
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -134,6 +134,7 @@ window.addEventListener('load',()=>{
   };
   reTV();
   loadFont();
+  addSkillTitle()
   addToUserTips();
   setInterval(() => {
     addToUserTips();
@@ -171,7 +172,7 @@ function loadFont(){
         item.style.fontFamily = '"Shanggu Sans", Arial, Helvetica, sans-serif';
       })
     });
-  },500);
+  },100);
 }
 
 function addToUserTips(){
@@ -190,6 +191,37 @@ function addToUserTips(){
   }
   TV_text.parentNode.style.setProperty('--tv-w',textW)
 
+}
+
+function addSkillTitle(){
+  skillSecNode.forEach(secnode =>{
+    let secid = secnode.getAttribute('data-skill-sec');
+    if(secid){
+      let info = skillSecInfo.find(item => item.id == secid);
+      let node = document.createElement('div');
+      node.setAttribute('data-skill-title','');
+      node.className = 'df-lc';
+      let tips = document.createElement('div');
+      tips.setAttribute('data-tips','');
+      tips.setAttribute('data-tips-x','left');
+      tips.setAttribute('data-tips-y','top');
+      tips.setAttribute('style',`--tips-text:'${info.tips[0]}'; --tips-text-en:'${info.tips[1]}';`);
+      tips.innerHTML = '<btn-info></btn-info>'
+      node.appendChild(tips);
+      let name = document.createElement('div');
+      let languge = ROOT.getAttribute('data-language');
+      name.setAttribute('data-zh-text',info.name[0]);
+      name.setAttribute('data-en-text',info.name[1]);
+      name.setAttribute('data-skill-sec-name','');
+      let text = languge == 'Zh' ? info.name[0] : info.name[1];
+      name.innerHTML = text;
+      node.appendChild(name);
+      secnode.prepend(node);
+      //重置文字样式
+      loadFont();
+    };
+    moveSkillStar(userSkillStar);
+  })
 }
 
 //侧边栏展开
@@ -435,6 +467,65 @@ dailog.addEventListener('click',(e)=>{
     dailog.style.display = 'none';
   };
 });
+//收藏功能
+skillStar.forEach(item =>{
+  item.addEventListener('click',()=>{
+    let isStar = item.getAttribute('data-skill-star');
+    let skillId = item.parentNode.getAttribute('data-skill-sec');
+    let cover = document.querySelector(`[data-skill-cover="${skillId}"]`);
+    let skillNode = document.querySelector(`[data-skill-sec="${skillId}"]`);
+    if(isStar == "true"){
+      item.setAttribute('data-skill-star','false');
+      let numModel = cover.parentNode.childNodes.length;
+      if(numModel%2 == 1){
+        cover.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'flex'
+      }
+      cover.parentNode.insertBefore(skillNode,cover);
+      cover.remove();
+    } else {
+      item.setAttribute('data-skill-star','true');
+      let numModel = skillNode.parentNode.childNodes.length;
+      if(numModel%2 == 1){
+        skillNode.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'none'
+      }
+      moveSkillStar([skillId]);
+    };
+    
+  });
+});
+
+function moveSkillStar(stars){
+  stars.forEach(item => {
+    let skillNode = document.querySelector(`[data-skill-sec="${item}"]`);
+    if(skillNode){
+      let cover = document.createElement('div');
+      cover.setAttribute('data-skill-cover',item);
+      cover.setAttribute('style','display: none');
+      skillNode.parentNode.insertBefore(cover,skillNode);
+      skillStarModel.prepend(skillNode);
+    };
+  });
+}
+
+/*
+function cloneSkillStar(stars){
+  stars.forEach(item => {
+    let skillNode = document.querySelector(`[data-skill-sec="${item}"]`);
+    if(skillNode){
+      let copyNode = skillNode.cloneNode(true);
+      copyNode.querySelectorAll('[id]').forEach(idNode => {
+        idNode.setAttribute('id',idNode.getAttribute('id') + '-copy')
+      });
+      copyNode.querySelectorAll('[for]').forEach(idNode => {
+        idNode.setAttribute('for',idNode.getAttribute('for') + '-copy')
+      });
+      skillStarModel.appendChild(copyNode);
+      COMP_MAIN();
+    };
+  });
+}
+*/
+
 
 
 /**
@@ -454,6 +545,9 @@ let observer = new MutationObserver((mutations) => {
     if(mutation.type === 'attributes'){
       switch(mutation.attributeName){
         case 'data-tab-pick':getUserTab(mutation.target); break;
+        case 'data-color-hex':getUserColor(mutation.target); break;
+        case 'data-number-value':getUserNumber(mutation.target); break;
+        case 'data-text-value':getUserText(mutation.target); break;
         case 'data-select-value':getUserSelect(mutation.target); break;
       }
     }
@@ -462,6 +556,21 @@ let observer = new MutationObserver((mutations) => {
 let userEvent_tab = document.querySelectorAll('[data-tab-pick]');
 userEvent_tab.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-tab-pick']};
+  observer.observe(item,config);
+});
+let userEvent_color = document.querySelectorAll('[data-color]');
+userEvent_color.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-color-hex']};
+  observer.observe(item,config);
+});
+let userEvent_number = document.querySelectorAll('[data-number]');
+userEvent_number.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-number-value']};
+  observer.observe(item,config);
+});
+let userEvent_text = document.querySelectorAll('[data-text]');
+userEvent_text.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-text-value']};
   observer.observe(item,config);
 });
 let userEvent_select = document.querySelectorAll('[data-select]');
@@ -478,6 +587,38 @@ function getUserTab(node){
   if(tabPick){
     storageMix.set('tabPick',tabPick);
   }
+}
+
+function getUserColor(node){
+  let color = {
+    HEX:node.getAttribute('data-color-hex'),
+    RGB:node.getAttribute('data-color-rgb'),
+    HSL:node.getAttribute('data-color-hsl'),
+    HSV:node.getAttribute('data-color-hsv'),
+  }
+  //console.log(color)
+}
+
+function getUserNumber(node){
+  let number = node.getAttribute('data-number-value');
+  if(node.getAttribute('data-skewset-x') !== null){
+    node.parentNode.parentNode.parentNode.style.setProperty('--skewX',number)
+  };
+  if(node.getAttribute('data-skewset-y') !== null){
+    node.parentNode.parentNode.parentNode.style.setProperty('--skewY',number)
+  };
+  if(node.getAttribute('data-scaleset-x') !== null){
+    node.parentNode.parentNode.parentNode.style.setProperty('--scaleX',number)
+  };
+  if(node.getAttribute('data-scaleset-y') !== null){
+    node.parentNode.parentNode.parentNode.style.setProperty('--scaleY',number)
+  };
+}
+
+function getUserText(node){
+  let text = node.getAttribute('data-text-value');
+
+  //console.log(text)
 }
 
 function getUserSelect(node){

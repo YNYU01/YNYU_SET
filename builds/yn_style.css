@@ -309,6 +309,7 @@ input[type="range"] {
   appearance: none;
   background-color: transparent;
   margin: 0;
+  min-width: 10px;
 }
 
 /* 定义range控件轨道的样式 */
@@ -462,6 +463,7 @@ input[type="text"],
 input[type="number"],
 input[type="search"]{
   flex: 1;
+  min-width: 10px;
 }
 
 input[type="text"],

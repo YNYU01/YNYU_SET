@@ -6,8 +6,9 @@
 }
 
 :root{
-  --top-h: 24px;
-  --bottom-h: 32px;
+  --top-h: 32px;
+  --bottom-h: 40px;
+  --side-w: 200px;
   --option-font: 12px;
   --pointer:url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/pointer_24.png'),auto;
   --code3:#48a64d;
@@ -62,6 +63,16 @@ p [data-highlight]{
 [data-theme="dark"] [data-radio-main="true"] {
   --mainColor: inherit;
   background: var(--boxGry);
+}
+
+[data-skill-sec] [data-radio]{
+  padding: 0;
+  min-width: fit-content;
+  height: 20px;
+  box-sizing: border-box;
+  font-size: 12px;
+  border: 1px solid var(--boxBod);
+  flex: 1;
 }
 
 [data-resize]::after {
@@ -127,6 +138,16 @@ p [data-highlight]{
 input[type="checkbox"]:checked+.switch [data-swi-icon]{
   transform: translateX(var(--swi-h,18px));
 }
+
+[data-input-unit]{
+  height: 20px;
+  width: 14px;
+  flex: 0 0 auto;
+  padding: 0 0 0 0.5ch;
+  background: var(--boxGry);
+  margin-left: -0.5ch;
+  border-radius: 0 4px 4px 0;
+}
 /*组件修改--*/
 
 html[data-language="En"] {
@@ -159,6 +180,8 @@ body{
 #bottom{
   height: var(--bottom-h);
   bottom: 0;
+  padding:0 10px 0 4px;
+  box-sizing: border-box;
 }
 
 #bottom::before{
@@ -242,7 +265,7 @@ input[type="checkbox"]:checked+.btn-big .path2 {
 }
 
 [data-side-mix]{
-  width: 200px;
+  width: var(--side-w);
   background: var(--boxGry);
   padding: 10px 10px;
   justify-content: space-between;
@@ -256,13 +279,13 @@ input[type="checkbox"]:checked+.btn-big .path2 {
     width: 0;
   }
   100%{
-    width: 200px;
+    width: var(--side-w);
   }
 }
 
 @keyframes sideOver {
   0%{
-    width: 200px;
+    width: var(--side-w);
     padding-left: 10px;
   }
   100%{
@@ -314,7 +337,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   transform: matrix(0.7,-0.7,0.7,0.7,3.64,16.37);
 }
 
-#btn-theme,#btn-theme-2{
+#btn-theme-1,#btn-theme-2,#btn-theme-3{
   width: 20px;
   height: 20px;
   padding: 4px;
@@ -324,7 +347,8 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   border: 1px solid var(--boxBod);
 }
 
-[data-mainset-top]{
+[data-mainset-top],
+[data-mainset-bottom]{
   display: none;
 }
 
@@ -335,7 +359,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   cursor: var(--pointer,pointer);
 }
 
-[data-mainset-side]{
+[data-mainset-side-box]{
   gap:4px;
   padding: 10px 0;
   border-top: 1px solid var(--boxBod);
@@ -415,12 +439,17 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   background: var(--boxGry);
 }
 
-[data-btn="main"]:hover{
+[data-btn="main"]:hover,[data-btn="skill-main"]:hover{
   background: var(--boxBod);
 }
 
-[data-btn="skill"]{
-  border-radius: 8px;
+[data-btn="skill"],[data-btn="skill-main"]{
+  border-radius: 4px;
+}
+
+[data-btn="skill-main"]{
+  width: 100%;
+  background: var(--boxGry);
 }
 
 [data-btn="help"]{
@@ -460,6 +489,14 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 
 [data-btn="moreset"]:hover{
   background: var(--boxGry);
+}
+
+[data-btn="reset"]{
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  border-radius: 4px;
+  margin-left: 4px;
 }
 
 input[type="checkbox"]:checked + .btn-moreset:hover{
@@ -504,6 +541,20 @@ input[type="checkbox"]:checked + .btn-moreset{
   padding: 4px;
   box-sizing: border-box;
   flex: 0 0 auto;
+}
+
+[data-skill-star] {
+  position: absolute;
+  cursor: pointer;
+  top: 4px;
+  right: 4px;
+}
+
+[data-skill-star="true"] [data-skill-star-path]{
+  fill: var(--code9)
+}
+[data-skill-star="false"] [data-skill-star-path]{
+  fill: var(--boxBod)
 }
 
 /*按钮类--*/
@@ -611,7 +662,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-skilltype-box]{
   max-width: 560px;
-  height: 70px;
+  height: 60px;
   padding: 0 10px;
   gap: 6px;
 }
@@ -625,10 +676,100 @@ input[type="checkbox"]:checked + .btn-moreset{
   text-wrap: wrap;
 }
 
-[data-skillModel]{
+[data-skills-scroll]{
+  max-width: 560px;
   border-top: 1px solid var(--boxBod);
+  padding-bottom: 80px;
+}
+
+[data-skills-box]{
+  padding-top: 6px;
+  gap: 6px;
+}
+
+[data-skillmodel]{
+  border-radius: 4px;
+  padding: 6px;
   box-sizing: border-box;
   min-height: 180px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+[data-skill-sec]{
+  position: relative;
+  min-width: 200px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.03);
+  padding: 8px;
+  text-wrap: wrap;
+}
+
+[data-theme="dark"] [data-skill-sec]{
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-skill-title]{
+  --icon-info: var(--boxBod);
+  height: 14px;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+[data-skill-sec-name]{
+  font-size: 12px;
+  opacity: 0.6;
+  text-transform: capitalize;
+}
+
+[data-skill-btnname]{
+  font-size: 10px;
+}
+
+[data-skill-btnname]::after{
+  content: ' ▶';
+  opacity: 0.6;
+}
+
+[data-skill-line]{
+  padding:0 4px;
+  margin-bottom: 6px;
+  gap: 4px;
+}
+
+[data-skewscale-box]{
+  width: 100%;
+  height: 60px;
+  position: relative;
+  overflow: hidden;
+}
+[data-skewscale-box]::after{
+  content: '+';
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  top: 0;
+  left: calc(50% - 30px);
+  width: 60px;
+  height: 60px;
+  border: 1px var(--boxGry) dashed;
+  z-index: 0;
+}
+
+[data-skewscale-view]{
+  width: 20px;
+  height: 20px;
+  border: 1px var(--themeColor) solid;
+  box-sizing: border-box;
+  transform: 
+  skew(
+    calc(var(--skewX,0) * 1deg),
+    calc(var(--skewY,0) * 1deg))
+  scale(
+    calc(var(--scaleX,100) * 1%),
+    calc(var(--scaleY,100) * 1%));
 }
 
 /*模块类--*/
@@ -664,8 +805,12 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 @media (min-width:420px) {
-  [data-mainset-top]{
+  [data-mainset-bottom]{
     display: flex;
+  }
+
+  [data-mainset-side]{
+    display: none;
   }
 
 }
@@ -712,7 +857,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 @media (min-width:300px) {
   [data-skillType-box]{
     justify-content: center;
-    height: 100px;
+    height: 80px;
   }
 }
 
@@ -723,6 +868,10 @@ input[type="checkbox"]:checked + .btn-moreset{
 
   [data-mainset-top]{
     display: flex;
+  }
+
+  [data-skill-sec]{
+    min-width: 160px;
   }
 
 }

@@ -202,43 +202,558 @@ if (window.location.protocol === 'file:' || window.location.hostname === 'localh
 };
 
 let GETCOLOR = null;
+let TIPS_TIMES = [];
+let USER_KEYING = false;
+let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check','btn-color','btn-getcolor','card-colorpick'];
+
 let TV = document.querySelectorAll('[data-TV]');//轮播公告
 let TV_MOVE = false;//用于结合一定条件触发轮播
 let TAB_AUTO = document.querySelectorAll('[data-tab="auto"]');
-let SELECT_PICK = document.querySelectorAll('[data-select-pick]');
-let SELECT_OPTION = document.querySelectorAll('[data-option="option"]');
-let RADIO = document.querySelectorAll('[data-radio]');
-let INPUT = document.querySelectorAll('[data-input]');//所有input类型组件
-let INPUT_CHECK = document.querySelectorAll('[data-check]');
-let INPUT_MUST_TEXT = document.querySelectorAll('[data-input-type="text"]');//所有必填且为空时返回一个默认值的组件
-let INPUT_MUST_INT = document.querySelectorAll('[data-input-type="int"]');//所有必填且为空时返回一个默认值的组件
-let INPUT_MAX = document.querySelectorAll('[data-input-max]');//所有设置最大输入字数的组件
-let INPUT_RANGE = document.querySelectorAll('[data-input="range"]');//所有滑块类型,注意要进一步判断自定义属性的值
-let INPUT_VALUE = document.querySelectorAll('[data-input="value"]');
-let INPUT_GETCOLOR = document.querySelectorAll('[data-getcolor]')
-let INPUT_COLOR = document.querySelectorAll('[data-input="colorpick"]');
-let INPUT_COLOR_TYPE = document.querySelectorAll('[data-input="colortype"]');
-let INPUT_HEX = document.querySelectorAll('[data-input="hex"]');
-let INPUT_RGB = document.querySelectorAll('[data-input="rgb"]');
-let INPUT_HSL_H = document.querySelectorAll('[data-input="hsl-h"]');
-let INPUT_COLORPICK_BOX = document.querySelectorAll('[data-input-color="box"]');
-let INPUT_COLORPICK_HSL = document.querySelectorAll('[data-input-color="hsl"]');
-let INPUT_COLORPICK_HSL_H = document.querySelectorAll('[data-input-color="hsl-h"]');
-let INPUT_COLORPICK_HSV = document.querySelectorAll('[data-input-color="hsv"]');
-let TEXTAREA = document.querySelectorAll('[data-textarea]');
-let TEXTAREA_EG = document.querySelectorAll('[data-textarea="eg"]');
-let CLOSE_CLEAR = document.querySelectorAll('[data-close="clear"]');
-let CLOSE_CLOSE = document.querySelectorAll('[data-close="close"]');
 let TIPS = document.getElementById('tips-all');
 let TIPS_TEXT = document.getElementById('tips-all-text');
-let TIPS_TIMES = [];
-let USER_KEYING = false;
 let THEME_SWITCH = document.querySelectorAll("[data-theme-check]");
 let LANGUAGE_SWITCH = document.querySelectorAll("[data-language-check]");
-let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check','btn-color','btn-getcolor','card-colorpick'];
+
+function COMP_MAIN(){
+  /*可动态添加的元素*/
+  let SELECT_PICK = document.querySelectorAll('[data-select-pick]');
+  let SELECT_OPTION = document.querySelectorAll('[data-option="option"]');
+  let INPUT = document.querySelectorAll('[data-input]');//所有input类型组件
+  let INPUT_CHECK = document.querySelectorAll('[data-check]');
+  let INPUT_MUST_TEXT = document.querySelectorAll('[data-input-type="text"]');//所有必填且为空时返回一个默认值的组件
+  let INPUT_MUST_INT = document.querySelectorAll('[data-input-type="int"]');//所有必填且为空时返回一个默认值的组件
+  let INPUT_MUST_FLOAT = document.querySelectorAll('[data-input-type="float"]');//所有必填且为空时返回一个默认值的组件
+  let INPUT_MAX = document.querySelectorAll('[data-input-max]');//所有设置最大输入字数的组件
+  let INPUT_RANGE = document.querySelectorAll('[data-input="range"]');//所有滑块类型,注意要进一步判断自定义属性的值
+  let INPUT_VALUE = document.querySelectorAll('[data-input="value"]');
+  let INPUT_GETCOLOR = document.querySelectorAll('[data-getcolor]')
+  let INPUT_COLOR = document.querySelectorAll('[data-input="colorpick"]');
+  let INPUT_COLOR_TYPE = document.querySelectorAll('[data-input="colortype"]');
+  let INPUT_HEX = document.querySelectorAll('[data-input="hex"]');
+  let INPUT_RGB = document.querySelectorAll('[data-input="rgb"]');
+  let INPUT_HSL_H = document.querySelectorAll('[data-input="hsl-h"]');
+  let INPUT_COLORPICK_BOX = document.querySelectorAll('[data-input-color="box"]');
+  let INPUT_COLORPICK_HSL = document.querySelectorAll('[data-input-color="hsl"]');
+  let INPUT_COLORPICK_HSL_H = document.querySelectorAll('[data-input-color="hsl-h"]');
+  let INPUT_COLORPICK_HSV = document.querySelectorAll('[data-input-color="hsv"]');
+  let TEXTAREA = document.querySelectorAll('[data-textarea]');
+  let TEXTAREA_EG = document.querySelectorAll('[data-textarea="eg"]');
+  let CLOSE_CLEAR = document.querySelectorAll('[data-close="clear"]');
+  let CLOSE_CLOSE = document.querySelectorAll('[data-close="close"]');
+  let RADIO = document.querySelectorAll('[data-radio]');
+  let RESET = document.querySelectorAll('[data-input-reset]');
+
+
+  SELECT_PICK.forEach(item => {
+    let options = item.parentNode.querySelector('[data-select-options]');
+    let otherscroll = document.querySelectorAll('[data-scroll]')
+    item.addEventListener('change', () => {
+      if(item.checked){
+        options.style.display = 'flex';
+        otherscroll.forEach(items => {
+          items.style.overflowY = 'hidden';
+        })
+      } else {
+        options.style.display = 'none';
+        otherscroll.forEach(items => {
+          items.style.overflowY = 'scroll';
+        })
+      }
+    });
+    document.addEventListener('mousedown', function (event) {
+      let inputs = item.parentNode;
+      if(!item.contains(event.target) && !inputs.contains(event.target) && document.activeElement){
+        item.checked = false
+        options.style.display = 'none';
+        otherscroll.forEach(items => {
+          items.style.overflowY = 'scroll';
+        })
+      }
+    })
+  });
+
+  SELECT_OPTION.forEach(item => {
+    item.addEventListener('click',() => {
+      let select = item.parentNode.parentNode;
+      let oldOption = select.querySelector('[data-option-main="true"]');
+      let optionValue = item.textContent;
+      oldOption.setAttribute('data-option-main','false');
+      item.setAttribute('data-option-main','true');
+      select.setAttribute('data-select-value',optionValue);
+      select.querySelector('[data-select-input]').value = optionValue;
+    })
+  });
+
+  INPUT.forEach(item => {
+    item.addEventListener('keydown',(event) => {
+      if (event.key === 'Enter') {
+        item.blur()
+      }
+    });
+    item.setAttribute('data-input-default',item.value);
+  });
+
+  INPUT_CHECK.forEach(item => {
+    item.addEventListener('change',(event) => {
+      let check = document.querySelector(`[data-check-name="${item.getAttribute('data-check-for')}"]`)
+      if(check){
+        if(item.checked){
+          check.setAttribute('data-check-checked','true');
+        } else {
+          check.setAttribute('data-check-checked','false');
+        }
+      }
+    });
+  });
+
+  INPUT_MUST_TEXT.forEach(item => {
+    item.addEventListener('change',() => {
+      let info = item.getAttribute('data-input-must');
+      let infoEn = item.getAttribute('data-input-must-en');
+      if(infoEn){
+        inputMust(item,['text',[info,infoEn]]);
+      } else {
+        inputMust(item,['text',info]);
+      }
+      
+      item.parentNode.setAttribute('data-text-value',item.value);
+    });
+  });
+
+  INPUT_MUST_INT.forEach(item => {
+    if(!item.getAttribute('data-value')){//类型冲突
+      let info = item.getAttribute('data-input-must');
+      let max = info.split(',')[1] * 1;
+      let min = info.split(',')[0] * 1;
+      max = max ? max : 0;
+      min = min ? min : 0;
+      info = [min,max];
+      item.addEventListener('change',() => {
+        if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0 || item.value.replace(/[0-9]/g,'').trim().length > 0){
+          inputMust(item,['int',...info]);
+        }
+      });
+    }
+  });
+  INPUT_MUST_FLOAT.forEach(item => {
+    if(!item.getAttribute('data-value')){//类型冲突
+      let info = item.getAttribute('data-input-must');
+      let max = info.split(',')[1] * 1;
+      let min = info.split(',')[0] * 1;
+      max = max ? max : 0;
+      min = min ? min : 0;
+      info = [min,max];
+      item.addEventListener('change',() => {
+        if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0 || item.value.replace(/[0-9]/g,'').trim().length > 0){
+          inputMust(item,['float',...info]);
+        }
+      });
+    }
+  });
+
+  INPUT_MAX.forEach(item => {
+    item.addEventListener('input',() => {
+      if(!USER_KEYING){
+        if(item.nextElementSibling){
+          item.nextElementSibling.querySelector('span').innerHTML = item.value.length;
+        } else {
+          let node = document.createElement('div')
+          node.className = 'pos-a';
+          node.style.right = '2px';
+          node.style.fontSize = '9px';
+          node.style.opacity = '0.6';
+          node.innerHTML = `<span>${item.value.length}</span>/${item.getAttribute('maxlength')}`
+          item.parentNode.appendChild(node)
+        }
+      };
+    })
+  });
+
+  INPUT_RANGE.forEach(item => {
+    item.addEventListener('input',() => {
+      item.nextElementSibling.value = item.value;
+      item.parentNode.setAttribute('data-number-value',item.value);
+    })
+  });
+
+  INPUT_VALUE.forEach(item => {
+    let info = item.getAttribute('data-input-must');
+    let max = info.split(',')[1] * 1;
+    let min = info.split(',')[0] * 1;
+    max = max !== null ? max : 0;
+    min = min !== null ? min : 0;
+    info = [min,max];
+    item.addEventListener('input',() => {
+      item.previousElementSibling.value = item.value;
+      item.parentNode.setAttribute('data-number-value',item.value);
+    });
+    item.addEventListener('change',() => {
+      if(item.value < min || item.value > max || item.value.replace(/[0-9]/g,'').trim().length > 0){
+        tipsAll(['数值错误，已修正','Wrong type, fixed'],1000,3);
+        inputMust(item,['int',...info]);
+      }
+      item.previousElementSibling.value = item.value;
+      item.parentNode.setAttribute('data-number-value',item.value);
+    })
+  });
+
+  INPUT_COLOR.forEach(item => {
+    item.addEventListener('click',() => {
+      let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
+      if(colorbox){
+        colorbox.style.display = 'flex';
+      }
+    })
+  });
+
+  INPUT_COLOR_TYPE.forEach(item => {
+    item.addEventListener('change',() => {
+      if(item.checked){
+        item.previousElementSibling.setAttribute('data-input','rgb');
+        let HEX = hexTorgb(item.previousElementSibling.value);
+        item.previousElementSibling.value =  `rgb(${HEX[0]},${HEX[1]},${HEX[2]})`
+      } else {
+        item.previousElementSibling.setAttribute('data-input','hex');
+        let RGB = item.previousElementSibling.value.toLowerCase().replace('rgb(','').replace(')','').split(',')
+        item.previousElementSibling.value = rgbTohex(RGB[0] * 1,RGB[1] * 1,RGB[2] * 1);
+      }
+    })
+  });
+
+  INPUT_COLORPICK_BOX.forEach(item => {
+    document.addEventListener('mousedown', function (event) {
+      let inputs = item.parentNode.parentNode;
+      if(!item.contains(event.target) && !inputs.contains(event.target) && document.activeElement){
+        item.style.display = 'none';
+      }
+    })
+  });
+
+  INPUT_HEX.forEach(item => {
+    item.addEventListener('change',() => {
+      let colortype = item.getAttribute('data-input');
+      let info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
+      inputMust(item,[colortype,info])
+      item.parentNode.style.setProperty("--input-color",item.value);
+      let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
+      let colorrange = item.parentNode.querySelector('[data-input="hsl-h"]');
+      let colorvalue = item.parentNode.querySelector('[data-input-color="hsl-h"]');
+      let RGB = item.value.split('#').length > 1 ? hexTorgb(item.value) : item.value.toLowerCase().replace('rgb(','').replace(')','').split(',');
+      let HEX = item.value.split('#').length > 1 ? item.value : rgbTohex(RGB[0],RGB[1],RGB[2]);
+      let HSL = rgbTohsl(RGB[0],RGB[1],RGB[2]);
+      let HSV = hslTohsv(HSL[0],HSL[1],HSL[2]);
+      colorrange.value = HSL[0];
+      colorvalue.value = HSL[0];
+      colorbox.style.setProperty("--hsl-h",HSL[0]);
+      colorbox.style.setProperty("--hsl-s",HSL[1]);
+      colorbox.style.setProperty("--hsl-l",HSL[2]);
+      colorbox.style.setProperty("--hsv-s",HSV[1]);
+      colorbox.style.setProperty("--hsv-v",HSV[2]);
+      item.parentNode.setAttribute('data-color-hex',HEX);
+      item.parentNode.setAttribute('data-color-rgb',`rgb(${RGB[0]},${RGB[1]},${RGB[2]})`);
+      item.parentNode.setAttribute('data-color-hsl',`hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
+      item.parentNode.setAttribute('data-color-hsv',`hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
+    })
+  });
+
+  INPUT_RGB.forEach(item => {
+    item.addEventListener('change',() => {
+      let colortype = item.getAttribute('data-input');
+      let info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
+      inputMust(item,[colortype,info])
+      item.parentNode.style.setProperty("--input-color",item.value);
+      let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
+      let colorrange = item.parentNode.querySelector('[data-input="hsl-h"]');
+      let colorvalue = item.parentNode.querySelector('[data-input-color="hsl-h"]');
+      let RGB = item.value.split('#').length > 1 ? hexTorgb(item.value) : item.value.toLowerCase().replace('rgb(','').replace(')','').split(',');
+      let HEX = item.value.split('#').length > 1 ? item.value : rgbTohex(RGB[0],RGB[1],RGB[2]);
+      let HSL = rgbTohsl(RGB[0],RGB[1],RGB[2]);
+      let HSV = hslTohsv(HSL[0],HSL[1],HSL[2]);
+      colorrange.value = HSL[0];
+      colorvalue.value = HSL[0];
+      colorbox.style.setProperty("--hsl-h",HSL[0]);
+      colorbox.style.setProperty("--hsl-s",HSL[1]);
+      colorbox.style.setProperty("--hsl-l",HSL[2]);
+      colorbox.style.setProperty("--hsv-s",HSV[1]);
+      colorbox.style.setProperty("--hsv-v",HSV[2]);
+      item.parentNode.setAttribute('data-color-hex',HEX);
+      item.parentNode.setAttribute('data-color-rgb',`rgb(${RGB[0]},${RGB[1]},${RGB[2]})`);
+      item.parentNode.setAttribute('data-color-hsl',`hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
+      item.parentNode.setAttribute('data-color-hsv',`hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
+    })
+  });
+
+  INPUT_HSL_H.forEach(item => {
+    item.addEventListener('input',() => {
+      item.parentNode.parentNode.style.setProperty("--hsl-h",item.value);
+      let colorcomp = item.parentNode.parentNode.parentNode.parentNode;
+      let oldHSL = colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
+      let newRGB = hslTorgb(item.value,oldHSL[1],oldHSL[2],255);
+      let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+      let newHSV = hslTohsv(item.value,oldHSL[1],oldHSL[2])
+      let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+      let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+      if(colorinput1){
+        colorinput1.value = newHEX;
+      }
+      if(colorinput2){
+        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+      }
+      colorcomp.style.setProperty("--input-color",newHEX);
+      colorcomp.setAttribute('data-color-hex',newHEX);
+      colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+      colorcomp.setAttribute('data-color-hsl',`hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
+      colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+      item.nextElementSibling.value = item.value;
+    });
+  });
+
+  INPUT_COLORPICK_HSL_H.forEach(item => {
+    item.addEventListener('input',() => {
+      item.parentNode.parentNode.style.setProperty("--hsl-h",item.value);
+      let colorcomp = item.parentNode.parentNode.parentNode.parentNode;
+      let oldHSL = colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
+      let newRGB = hslTorgb(item.value,oldHSL[1],oldHSL[2],255);
+      let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+      let newHSV = hslTohsv(item.value,oldHSL[1],oldHSL[2])
+      let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+      let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+      if(colorinput1){
+        colorinput1.value = newHEX;
+      }
+      if(colorinput2){
+        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+      }
+      colorcomp.style.setProperty("--input-color",newHEX);
+      colorcomp.setAttribute('data-color-hex',newHEX);
+      colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+      colorcomp.setAttribute('data-color-hsl',`hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
+      colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+    });
+  });
+
+  INPUT_COLORPICK_HSV.forEach(item => {
+    item.addEventListener('click',(event) => {
+      let x = event.clientX;
+      let y = event.clientY;
+      let w = item.offsetWidth;
+      let h = item.offsetHeight;
+      let startX = item.getBoundingClientRect().left;
+      let startY = item.getBoundingClientRect().top;
+      //console.log(x,y,w,h,startX,startY)
+      let hsvS = Math.floor((x - startX)/w * 100);
+      let hsvV = 100 - Math.floor((y - startY)/h * 100);
+      hsvS = hsvS <= 100 ? hsvS : 100;
+      hsvV = hsvV <= 100 ? hsvV : 100;
+      hsvS = hsvS >= 0 ? hsvS : 0;
+      hsvV = hsvV >= 0 ? hsvV : 0;
+      let colorcomp = item.parentNode.parentNode.parentNode;
+      let oldHSV = colorcomp.getAttribute('data-color-hsv').replace('hsv(','').replace(')','').split(',').map(item => item.replace('%',''));
+      let newHSL = hsvTohsl(oldHSV[0],hsvS,hsvV);
+      let newRGB = hslTorgb(newHSL[0],newHSL[1],newHSL[2],255);
+      let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+      let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+      let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+      if(colorinput1){
+        colorinput1.value = newHEX;
+      }
+      if(colorinput2){
+        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+      }
+      item.parentNode.style.setProperty("--hsv-s",hsvS);
+      item.parentNode.style.setProperty("--hsv-v",hsvV);
+      item.parentNode.style.setProperty("--hsl-s",newHSL[1]);
+      item.parentNode.style.setProperty("--hsl-l",newHSL[2]);
+      colorcomp.style.setProperty("--input-color",newHEX);
+      colorcomp.setAttribute('data-color-hex',newHEX);
+      colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+      colorcomp.setAttribute('data-color-hsl',`hsl(${newHSL[0]},${newHSL[1]}%,${newHSL[2]}%)`);
+      colorcomp.setAttribute('data-color-hsv',`hsv(${oldHSV[0]},${hsvS}%,${hsvV}%)`);
+    });
+  });
+
+  INPUT_COLORPICK_HSL.forEach(item => {
+    item.addEventListener('click',(event) => {
+      let x = event.clientX;
+      let y = event.clientY;
+      let w = item.offsetWidth;
+      let h = item.offsetHeight;
+      let startX = item.getBoundingClientRect().left;
+      let startY = item.getBoundingClientRect().top;
+      //console.log(x,y,w,h,startX,startY)
+      let hslS = Math.floor((x - startX)/w * 100);
+      let hslL = 100 - Math.floor((y - startY)/h * 100);
+      hslS = hslS <= 100 ? hslS : 100;
+      hslL = hslL <= 100 ? hslL : 100;
+      hslS = hslS >= 0 ? hslS : 0;
+      hslL = hslL >= 0 ? hslL : 0;
+      let colorcomp = item.parentNode.parentNode.parentNode;
+      let oldHSL= colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
+      let newHSV = hslTohsv(oldHSL[0],hslS,hslL)
+      let newRGB = hslTorgb(oldHSL[0],hslS,hslL,255);
+      let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+      let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+      let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+      if(colorinput1){
+        colorinput1.value = newHEX;
+      }
+      if(colorinput2){
+        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+      }
+      item.parentNode.style.setProperty("--hsl-s",hslS);
+      item.parentNode.style.setProperty("--hsl-l",hslL);
+      item.parentNode.style.setProperty("--hsv-s",newHSV[1]);
+      item.parentNode.style.setProperty("--hsv-v",newHSV[2]);
+      colorcomp.style.setProperty("--input-color",newHEX);
+      colorcomp.setAttribute('data-color-hex',newHEX);
+      colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+      colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+      colorcomp.setAttribute('data-color-hsl',`hsl(${oldHSL[0]},${hslS}%,${hslL}%)`);
+    });
+  });
+
+  INPUT_GETCOLOR.forEach(item => {
+    item.addEventListener('click', () => {
+      if(GETCOLOR){
+        GETCOLOR.open()
+        .then(USER_COLOR => {
+            // returns hex color value (#RRGGBB) of the selected pixel
+            let newHEX = USER_COLOR.sRGBHex;
+            let newRGB = hexTorgb(newHEX);
+            let colorcomp = item.parentNode;
+            let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+            let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+            if(colorinput1){
+              colorinput1.value = newHEX;
+              let inputEvent = new Event('change',{bubbles:true});
+              colorinput1.dispatchEvent(inputEvent);
+            }
+            if(colorinput2){
+              colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
+              let inputEvent = new Event('change',{bubbles:true});
+              colorinput2.dispatchEvent(inputEvent);
+            }
+            
+        })
+        .catch(error => {
+            // handle the user choosing to exit eyedropper mode without a selection
+        });
+      }
+    })
+  });
+
+  TEXTAREA.forEach(item => {//调整输入逻辑
+    let otherscroll = document.querySelectorAll('[data-scroll]')
+    item.addEventListener('keydown',(event) => {
+      if (event.key === 'Tab') {
+        event.preventDefault(); // 阻止默认Tab行为
+        const start = item.selectionStart;
+        const end = item.selectionEnd;
+        const selectedText = item.value.substring(start, end);
+        const before = item.value.substring(0, start);
+        const after = item.value.substring(end, item.value.length);
+        item.value = before + '\t' + selectedText + after; // 用4个空格替换Tab
+        item.selectionStart = item.selectionEnd = start + 4; // 设置光标位置
+      }
+    });
+    item.addEventListener('focus',() => { 
+      otherscroll.forEach(items => {
+        items.style.overflowY = 'hidden';
+      })
+    })
+    item.addEventListener('blur',() => {
+      otherscroll.forEach(items => {
+        items.style.overflowY = 'scroll';
+      })
+    })
+  });
+
+  TEXTAREA_EG.forEach(item => {//调整输入逻辑
+    let tips = item.parentNode.querySelector('[data-textarea="tips"]');
+    item.addEventListener('focus',() => { 
+      tips.style.display = "none";
+    })
+    item.addEventListener('blur',() => {
+      if(item.value == ''){
+        tips.style.display = "flex";
+      }else{
+        tips.style.display = "none";
+      }
+    })
+    item.addEventListener('dblclick',() => {
+      if (item.value == '' ) {
+        let egtext = item.getAttribute('data-eg');
+        if(ROOT.getAttribute('data-language') == 'En'){
+          egtext = item.getAttribute('data-eg-en');
+        }
+        egtext = egtext.replace(/\\n/g,'\n').replace(/\\t/g,'\t');//.replace(/\&nbsp;/g,'&nbsp;')
+        if(egtext){
+          item.value = egtext;
+        }
+      }
+    })
+  });
+
+  CLOSE_CLEAR.forEach(item => {//清空输入内容
+    item.addEventListener('click',() => {
+      let hasvalue = [...item.parentNode.querySelectorAll('textarea'),...item.parentNode.querySelectorAll('input[type="text"]')];
+      hasvalue.forEach(items => {
+        items.value = '';
+        if(items.getAttribute('data-textarea') == 'eg'){
+          items.parentNode.querySelector('[data-textarea="tips"]').style.display = "block";
+        };
+        let inputEvent = new Event('input',{bubbles:true});
+        items.dispatchEvent(inputEvent);
+        let inputEvent2 = new Event('change',{bubbles:true});
+        items.dispatchEvent(inputEvent2);
+      });
+      
+    })
+  });
+
+  CLOSE_CLOSE.forEach(item =>{//关闭对象
+    item.addEventListener('click',() => {
+      let closeNode = document.querySelector(`[data-close-id="${item.getAttribute('data-close-for')}"]`);
+      if(closeNode) {
+        closeNode.style.display = 'none'
+      };
+    });
+  });
+
+  RADIO.forEach(item => {
+    item.addEventListener('click',()=>{
+      let radio = item.parentNode;
+      let oldpick = radio.querySelector('[data-radio-main="true"]');
+      let data = item.getAttribute('data-radio-data');
+      oldpick.setAttribute('data-radio-main','false');
+      item.setAttribute('data-radio-main','true');
+      radio.setAttribute('data-radio-value',data);
+    });
+  });
+
+  RESET.forEach(item => {
+    item.addEventListener('click',()=>{
+      
+      let input = item.parentNode.querySelectorAll('input');
+      input.forEach(node =>{
+        console.log(666)
+        let defaultValue = node.getAttribute('data-input-default');
+        if(!defaultValue){
+          switch (node.type){
+            case 'text': if( node.value * 1 !== NaN){defaultValue = 0}else{node.value = ''} ;break
+            case 'range': defaultValue = node.getAttribute('min') || 0;break
+          }
+        };
+        node.parentNode.setAttribute('data-number-value',defaultValue)
+        node.value = defaultValue;
+      });
+    });
+  });
+}
 
 window.addEventListener('load',()=>{
   afterAllMust();
+  COMP_MAIN();
   
   if (window.EyeDropper == undefined || ISMOBILE) {
     //console.error('EyeDropper API is not supported on this platform');
@@ -310,31 +825,6 @@ THEME_SWITCH.forEach(item => {
   });
 });
 
-CLOSE_CLEAR.forEach(item => {//清空输入内容
-  item.addEventListener('click',() => {
-    let hasvalue = [...item.parentNode.querySelectorAll('textarea'),...item.parentNode.querySelectorAll('input[type="text"]')];
-    hasvalue.forEach(items => {
-      items.value = '';
-      if(items.getAttribute('data-textarea') == 'eg'){
-        items.parentNode.querySelector('[data-textarea="tips"]').style.display = "block";
-      };
-      let inputEvent = new Event('input',{bubbles:true});
-      items.dispatchEvent(inputEvent);
-      let inputEvent2 = new Event('change',{bubbles:true});
-      items.dispatchEvent(inputEvent2);
-    });
-    
-  })
-});
-
-CLOSE_CLOSE.forEach(item =>{//关闭对象
-  item.addEventListener('click',() => {
-    let closeNode = document.querySelector(`[data-close-id="${item.getAttribute('data-close-for')}"]`);
-    if(closeNode) {
-      closeNode.style.display = 'none'
-    };
-  });
-});
 
 TAB_AUTO.forEach((item,index) => {
   let pagefor = document.querySelector(`[data-page-id="${item.getAttribute('data-tab-for')}"]`);
@@ -388,451 +878,6 @@ TAB_AUTO.forEach((item,index) => {
   
 });
 
-SELECT_PICK.forEach(item => {
-  let options = item.parentNode.querySelector('[data-select-options]');
-  let otherscroll = document.querySelectorAll('[data-scroll]')
-  item.addEventListener('change', () => {
-    if(item.checked){
-      options.style.display = 'flex';
-      otherscroll.forEach(items => {
-        items.style.overflowY = 'hidden';
-      })
-    } else {
-      options.style.display = 'none';
-      otherscroll.forEach(items => {
-        items.style.overflowY = 'scroll';
-      })
-    }
-  });
-  document.addEventListener('mousedown', function (event) {
-    let inputs = item.parentNode;
-    if(!item.contains(event.target) && !inputs.contains(event.target) && document.activeElement){
-      item.checked = false
-      options.style.display = 'none';
-      otherscroll.forEach(items => {
-        items.style.overflowY = 'scroll';
-      })
-    }
-  })
-});
-
-SELECT_OPTION.forEach(item => {
-  item.addEventListener('click',() => {
-    let select = item.parentNode.parentNode;
-    let oldOption = select.querySelector('[data-option-main="true"]');
-    let optionValue = item.textContent;
-    oldOption.setAttribute('data-option-main','false');
-    item.setAttribute('data-option-main','true');
-    select.setAttribute('data-select-value',optionValue);
-    select.querySelector('[data-select-input]').value = optionValue;
-  })
-});
-
-RADIO.forEach(item => {
-  item.addEventListener('click',()=>{
-    let radio = item.parentNode;
-    let oldpick = radio.querySelector('[data-radio-main="true"]');
-    let data = item.getAttribute('data-radio-data');
-    oldpick.setAttribute('data-radio-main','false');
-    item.setAttribute('data-radio-main','true');
-    radio.setAttribute('data-radio-value',data);
-  })
-})
-
-INPUT.forEach(item => {
-  item.addEventListener('keydown',(event) => {
-    if (event.key === 'Enter') {
-      item.blur()
-    }
-  });
-});
-
-INPUT_CHECK.forEach(item => {
-  item.addEventListener('change',(event) => {
-    let check = document.querySelector(`[data-check-name="${item.getAttribute('data-check-for')}"]`)
-    if(check){
-      if(item.checked){
-        check.setAttribute('data-check-checked','true');
-      } else {
-        check.setAttribute('data-check-checked','false');
-      }
-    }
-  });
-});
-
-INPUT_MUST_TEXT.forEach(item => {
-  item.addEventListener('change',() => {
-    let info = item.getAttribute('data-input-must');
-    let infoEn = item.getAttribute('data-input-must-en');
-    if(infoEn){
-      inputMust(item,['text',[info,infoEn]]);
-    } else {
-      inputMust(item,['text',info]);
-    }
-    
-    item.parentNode.setAttribute('data-text-value',item.value);
-  });
-});
-
-INPUT_MUST_INT.forEach(item => {
-  if(!item.getAttribute('data-value')){//类型冲突
-    let info = item.getAttribute('data-input-must');
-    let max = info.split('-')[1] * 1;
-    let min = info.split('-')[0] * 1;
-    max = max ? max : 0;
-    min = min ? min : 0;
-    info = [min,max];
-    item.addEventListener('change',() => {
-      if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0){
-        inputMust(item,['int',...info]);
-      }
-    });
-  }
-});
-
-INPUT_MAX.forEach(item => {
-  item.addEventListener('input',() => {
-    if(!USER_KEYING){
-      if(item.nextElementSibling){
-        item.nextElementSibling.querySelector('span').innerHTML = item.value.length;
-      } else {
-        let node = document.createElement('div')
-        node.className = 'pos-a';
-        node.style.right = '2px';
-        node.style.fontSize = '9px';
-        node.style.opacity = '0.6';
-        node.innerHTML = `<span>${item.value.length}</span>/${item.getAttribute('maxlength')}`
-        item.parentNode.appendChild(node)
-      }
-    };
-  })
-});
-
-INPUT_RANGE.forEach(item => {
-  item.addEventListener('input',() => {
-    item.nextElementSibling.value = item.value;
-    item.parentNode.setAttribute('data-number-value',item.value);
-  })
-});
-
-INPUT_VALUE.forEach(item => {
-  let info = item.getAttribute('data-input-must');
-  let max = info.split('-')[1] * 1;
-  let min = info.split('-')[0] * 1;
-  max = max !== null ? max : 0;
-  min = min !== null ? min : 0;
-  info = [min,max];
-  item.addEventListener('input',() => {
-    item.previousElementSibling.value = item.value;
-    item.parentNode.setAttribute('data-number-value',item.value);
-  });
-  item.addEventListener('change',() => {
-    if(item.value < min || item.value > max || item.value.replace(/[0-9]/g,'').trim().length > 0){
-      tipsAll(['数值错误，已修正','Wrong type, fixed'],1000,3);
-      inputMust(item,['int',...info]);
-    }
-    item.previousElementSibling.value = item.value;
-    item.parentNode.setAttribute('data-number-value',item.value);
-  })
-});
-
-INPUT_COLOR.forEach(item => {
-  item.addEventListener('click',() => {
-    let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
-    if(colorbox){
-      colorbox.style.display = 'flex';
-    }
-  })
-});
-
-INPUT_COLOR_TYPE.forEach(item => {
-  item.addEventListener('change',() => {
-    if(item.checked){
-      item.previousElementSibling.setAttribute('data-input','rgb');
-      let HEX = hexTorgb(item.previousElementSibling.value);
-      item.previousElementSibling.value =  `rgb(${HEX[0]},${HEX[1]},${HEX[2]})`
-    } else {
-      item.previousElementSibling.setAttribute('data-input','hex');
-      let RGB = item.previousElementSibling.value.toLowerCase().replace('rgb(','').replace(')','').split(',')
-      item.previousElementSibling.value = rgbTohex(RGB[0] * 1,RGB[1] * 1,RGB[2] * 1);
-    }
-  })
-});
-
-INPUT_COLORPICK_BOX.forEach(item => {
-  document.addEventListener('mousedown', function (event) {
-    let inputs = item.parentNode.parentNode;
-    if(!item.contains(event.target) && !inputs.contains(event.target) && document.activeElement){
-      item.style.display = 'none';
-    }
-  })
-});
-
-INPUT_HEX.forEach(item => {
-  item.addEventListener('change',() => {
-    let colortype = item.getAttribute('data-input');
-    let info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
-    inputMust(item,[colortype,info])
-    item.parentNode.style.setProperty("--input-color",item.value);
-    let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
-    let colorrange = item.parentNode.querySelector('[data-input="hsl-h"]');
-    let colorvalue = item.parentNode.querySelector('[data-input-color="hsl-h"]');
-    let RGB = item.value.split('#').length > 1 ? hexTorgb(item.value) : item.value.toLowerCase().replace('rgb(','').replace(')','').split(',');
-    let HEX = item.value.split('#').length > 1 ? item.value : rgbTohex(RGB[0],RGB[1],RGB[2]);
-    let HSL = rgbTohsl(RGB[0],RGB[1],RGB[2]);
-    let HSV = hslTohsv(HSL[0],HSL[1],HSL[2]);
-    colorrange.value = HSL[0];
-    colorvalue.value = HSL[0];
-    colorbox.style.setProperty("--hsl-h",HSL[0]);
-    colorbox.style.setProperty("--hsl-s",HSL[1]);
-    colorbox.style.setProperty("--hsl-l",HSL[2]);
-    colorbox.style.setProperty("--hsv-s",HSV[1]);
-    colorbox.style.setProperty("--hsv-v",HSV[2]);
-    item.parentNode.setAttribute('data-color-hex',HEX);
-    item.parentNode.setAttribute('data-color-rgb',`rgb(${RGB[0]},${RGB[1]},${RGB[2]})`);
-    item.parentNode.setAttribute('data-color-hsl',`hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
-    item.parentNode.setAttribute('data-color-hsv',`hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
-  })
-});
-
-INPUT_RGB.forEach(item => {
-  item.addEventListener('change',() => {
-    let colortype = item.getAttribute('data-input');
-    let info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
-    inputMust(item,[colortype,info])
-    item.parentNode.style.setProperty("--input-color",item.value);
-    let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
-    let colorrange = item.parentNode.querySelector('[data-input="hsl-h"]');
-    let colorvalue = item.parentNode.querySelector('[data-input-color="hsl-h"]');
-    let RGB = item.value.split('#').length > 1 ? hexTorgb(item.value) : item.value.toLowerCase().replace('rgb(','').replace(')','').split(',');
-    let HEX = item.value.split('#').length > 1 ? item.value : rgbTohex(RGB[0],RGB[1],RGB[2]);
-    let HSL = rgbTohsl(RGB[0],RGB[1],RGB[2]);
-    let HSV = hslTohsv(HSL[0],HSL[1],HSL[2]);
-    colorrange.value = HSL[0];
-    colorvalue.value = HSL[0];
-    colorbox.style.setProperty("--hsl-h",HSL[0]);
-    colorbox.style.setProperty("--hsl-s",HSL[1]);
-    colorbox.style.setProperty("--hsl-l",HSL[2]);
-    colorbox.style.setProperty("--hsv-s",HSV[1]);
-    colorbox.style.setProperty("--hsv-v",HSV[2]);
-    item.parentNode.setAttribute('data-color-hex',HEX);
-    item.parentNode.setAttribute('data-color-rgb',`rgb(${RGB[0]},${RGB[1]},${RGB[2]})`);
-    item.parentNode.setAttribute('data-color-hsl',`hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
-    item.parentNode.setAttribute('data-color-hsv',`hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
-  })
-});
-
-INPUT_HSL_H.forEach(item => {
-  item.addEventListener('input',() => {
-    item.parentNode.parentNode.style.setProperty("--hsl-h",item.value);
-    let colorcomp = item.parentNode.parentNode.parentNode.parentNode;
-    let oldHSL = colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
-    let newRGB = hslTorgb(item.value,oldHSL[1],oldHSL[2],255);
-    let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
-    let newHSV = hslTohsv(item.value,oldHSL[1],oldHSL[2])
-    let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-    let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-    if(colorinput1){
-      colorinput1.value = newHEX;
-    }
-    if(colorinput2){
-      colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
-    }
-    colorcomp.style.setProperty("--input-color",newHEX);
-    colorcomp.setAttribute('data-color-hex',newHEX);
-    colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-    colorcomp.setAttribute('data-color-hsl',`hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
-    colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
-    item.nextElementSibling.value = item.value;
-  });
-});
-
-INPUT_COLORPICK_HSL_H.forEach(item => {
-  item.addEventListener('input',() => {
-    item.parentNode.parentNode.style.setProperty("--hsl-h",item.value);
-    let colorcomp = item.parentNode.parentNode.parentNode.parentNode;
-    let oldHSL = colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
-    let newRGB = hslTorgb(item.value,oldHSL[1],oldHSL[2],255);
-    let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
-    let newHSV = hslTohsv(item.value,oldHSL[1],oldHSL[2])
-    let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-    let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-    if(colorinput1){
-      colorinput1.value = newHEX;
-    }
-    if(colorinput2){
-      colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
-    }
-    colorcomp.style.setProperty("--input-color",newHEX);
-    colorcomp.setAttribute('data-color-hex',newHEX);
-    colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-    colorcomp.setAttribute('data-color-hsl',`hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
-    colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
-  });
-});
-
-INPUT_COLORPICK_HSV.forEach(item => {
-  item.addEventListener('click',(event) => {
-    let x = event.clientX;
-    let y = event.clientY;
-    let w = item.offsetWidth;
-    let h = item.offsetHeight;
-    let startX = item.getBoundingClientRect().left;
-    let startY = item.getBoundingClientRect().top;
-    //console.log(x,y,w,h,startX,startY)
-    let hsvS = Math.floor((x - startX)/w * 100);
-    let hsvV = 100 - Math.floor((y - startY)/h * 100);
-    hsvS = hsvS <= 100 ? hsvS : 100;
-    hsvV = hsvV <= 100 ? hsvV : 100;
-    hsvS = hsvS >= 0 ? hsvS : 0;
-    hsvV = hsvV >= 0 ? hsvV : 0;
-    let colorcomp = item.parentNode.parentNode.parentNode;
-    let oldHSV = colorcomp.getAttribute('data-color-hsv').replace('hsv(','').replace(')','').split(',').map(item => item.replace('%',''));
-    let newHSL = hsvTohsl(oldHSV[0],hsvS,hsvV);
-    let newRGB = hslTorgb(newHSL[0],newHSL[1],newHSL[2],255);
-    let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
-    let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-    let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-    if(colorinput1){
-      colorinput1.value = newHEX;
-    }
-    if(colorinput2){
-      colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
-    }
-    item.parentNode.style.setProperty("--hsv-s",hsvS);
-    item.parentNode.style.setProperty("--hsv-v",hsvV);
-    item.parentNode.style.setProperty("--hsl-s",newHSL[1]);
-    item.parentNode.style.setProperty("--hsl-l",newHSL[2]);
-    colorcomp.style.setProperty("--input-color",newHEX);
-    colorcomp.setAttribute('data-color-hex',newHEX);
-    colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-    colorcomp.setAttribute('data-color-hsl',`hsl(${newHSL[0]},${newHSL[1]}%,${newHSL[2]}%)`);
-    colorcomp.setAttribute('data-color-hsv',`hsv(${oldHSV[0]},${hsvS}%,${hsvV}%)`);
-  });
-});
-
-INPUT_COLORPICK_HSL.forEach(item => {
-  item.addEventListener('click',(event) => {
-    let x = event.clientX;
-    let y = event.clientY;
-    let w = item.offsetWidth;
-    let h = item.offsetHeight;
-    let startX = item.getBoundingClientRect().left;
-    let startY = item.getBoundingClientRect().top;
-    //console.log(x,y,w,h,startX,startY)
-    let hslS = Math.floor((x - startX)/w * 100);
-    let hslL = 100 - Math.floor((y - startY)/h * 100);
-    hslS = hslS <= 100 ? hslS : 100;
-    hslL = hslL <= 100 ? hslL : 100;
-    hslS = hslS >= 0 ? hslS : 0;
-    hslL = hslL >= 0 ? hslL : 0;
-    let colorcomp = item.parentNode.parentNode.parentNode;
-    let oldHSL= colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
-    let newHSV = hslTohsv(oldHSL[0],hslS,hslL)
-    let newRGB = hslTorgb(oldHSL[0],hslS,hslL,255);
-    let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
-    let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-    let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-    if(colorinput1){
-      colorinput1.value = newHEX;
-    }
-    if(colorinput2){
-      colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
-    }
-    item.parentNode.style.setProperty("--hsl-s",hslS);
-    item.parentNode.style.setProperty("--hsl-l",hslL);
-    item.parentNode.style.setProperty("--hsv-s",newHSV[1]);
-    item.parentNode.style.setProperty("--hsv-v",newHSV[2]);
-    colorcomp.style.setProperty("--input-color",newHEX);
-    colorcomp.setAttribute('data-color-hex',newHEX);
-    colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-    colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
-    colorcomp.setAttribute('data-color-hsl',`hsl(${oldHSL[0]},${hslS}%,${hslL}%)`);
-  });
-});
-
-INPUT_GETCOLOR.forEach(item => {
-  item.addEventListener('click', () => {
-    if(GETCOLOR){
-      GETCOLOR.open()
-      .then(USER_COLOR => {
-          // returns hex color value (#RRGGBB) of the selected pixel
-          let newHEX = USER_COLOR.sRGBHex;
-          let newRGB = hexTorgb(newHEX);
-          let colorcomp = item.parentNode;
-          let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-          let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-          if(colorinput1){
-            colorinput1.value = newHEX;
-            let inputEvent = new Event('change',{bubbles:true});
-            colorinput1.dispatchEvent(inputEvent);
-          }
-          if(colorinput2){
-            colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
-            let inputEvent = new Event('change',{bubbles:true});
-            colorinput2.dispatchEvent(inputEvent);
-          }
-          
-      })
-      .catch(error => {
-          // handle the user choosing to exit eyedropper mode without a selection
-      });
-    }
-  })
-});
-
-TEXTAREA.forEach(item => {//调整输入逻辑
-  let otherscroll = document.querySelectorAll('[data-scroll]')
-  item.addEventListener('keydown',(event) => {
-    if (event.key === 'Tab') {
-      event.preventDefault(); // 阻止默认Tab行为
-      const start = item.selectionStart;
-      const end = item.selectionEnd;
-      const selectedText = item.value.substring(start, end);
-      const before = item.value.substring(0, start);
-      const after = item.value.substring(end, item.value.length);
-      item.value = before + '\t' + selectedText + after; // 用4个空格替换Tab
-      item.selectionStart = item.selectionEnd = start + 4; // 设置光标位置
-    }
-  });
-  item.addEventListener('focus',() => { 
-    otherscroll.forEach(items => {
-      items.style.overflowY = 'hidden';
-    })
-  })
-  item.addEventListener('blur',() => {
-    otherscroll.forEach(items => {
-      items.style.overflowY = 'scroll';
-    })
-  })
-})
-
-TEXTAREA_EG.forEach(item => {//调整输入逻辑
-  let tips = item.parentNode.querySelector('[data-textarea="tips"]');
-  item.addEventListener('focus',() => { 
-    tips.style.display = "none";
-  })
-  item.addEventListener('blur',() => {
-    if(item.value == ''){
-      tips.style.display = "flex";
-    }else{
-      tips.style.display = "none";
-    }
-  })
-  item.addEventListener('dblclick',() => {
-    if (item.value == '' ) {
-      let egtext = item.getAttribute('data-eg');
-      if(ROOT.getAttribute('data-language') == 'En'){
-        egtext = item.getAttribute('data-eg-en');
-      }
-      egtext = egtext.replace(/\\n/g,'\n').replace(/\\t/g,'\t');//.replace(/\&nbsp;/g,'&nbsp;')
-      if(egtext){
-        item.value = egtext;
-      }
-    }
-  })
-})
-
 document.addEventListener('keydown',(event) => {
   if (event.isComposing) {
     USER_KEYING = true;
@@ -876,6 +921,16 @@ function inputMust(node,info){
   function toInt(value,nullText){
     let num = value.replace(/\D/g,'').trim()
     return num ? num*1 : nullText;
+  }
+  if(type === "float"){
+    let min = info[1]
+    let max = info[2]
+    let num = node.value.replace(/[^0-9\.]/g,'').trim()
+    if(num >= min && num <= max){
+      node.value = num;
+    }else{
+      node.value = num > max ? max : min;
+    }
   }
   if(type === "text"){
     if(node.value == '' || node.value.length < 1){

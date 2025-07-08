@@ -335,6 +335,23 @@ class btnchange extends HTMLElement {
   }
 }
 customElements.define('btn-change', btnchange);
+
+class btnreset extends HTMLElement {
+  constructor() {
+      super();
+      this.innerHTML = `
+      <svg width="100%" height="100%" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1">
+        <path stroke="var(--mainColor)" d="M5 9V7.83333C5 5.99238 6.27919 4.5 7.85714 4.5H15" stroke-width="2.5" stroke-linecap="round"/>
+        <path fill="var(--mainColor)" d="M13.5 1.54031C13.5 1.12106 13.985 0.887973 14.3123 1.14988L17.5239 3.71913C18.0243 4.11946 18.0243 4.88054 17.5239 5.28087L14.3123 7.85012C13.985 8.11203 13.5 7.87894 13.5 7.45969V1.54031Z"/>
+        <path stroke="var(--mainColor)" d="M15 11V12.1667C15 14.0076 13.7208 15.5 12.1429 15.5H5" stroke-width="2.5" stroke-linecap="round"/>
+        <path fill="var(--mainColor)" d="M6.5 18.4597C6.5 18.8789 6.01503 19.112 5.68765 18.8501L2.47609 16.2809C1.97568 15.8805 1.97568 15.1195 2.47609 14.7191L5.68765 12.1499C6.01503 11.888 6.5 12.1211 6.5 12.5403L6.5 18.4597Z"/>
+      </svg>
+      `;
+  }
+}
+customElements.define('btn-reset', btnreset);
+
 /*
+
 
 */
