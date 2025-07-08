@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1937a27188af1dd9dd856e8401c79d78b08ec06c/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dca11b486615b68fa5a107e89337b8f8f2755a78/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -13,8 +13,9 @@
 }
 
 :root{
-  --top-h: 24px;
-  --bottom-h: 32px;
+  --top-h: 32px;
+  --bottom-h: 40px;
+  --side-w: 200px;
   --option-font: 12px;
   --pointer:url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/pointer_24.png'),auto;
   --code3:#48a64d;
@@ -69,6 +70,16 @@ p [data-highlight]{
 [data-theme="dark"] [data-radio-main="true"] {
   --mainColor: inherit;
   background: var(--boxGry);
+}
+
+[data-skill-sec] [data-radio]{
+  padding: 0;
+  min-width: fit-content;
+  height: 20px;
+  box-sizing: border-box;
+  font-size: 12px;
+  border: 1px solid var(--boxBod);
+  flex: 1;
 }
 
 [data-resize]::after {
@@ -134,6 +145,16 @@ p [data-highlight]{
 input[type="checkbox"]:checked+.switch [data-swi-icon]{
   transform: translateX(var(--swi-h,18px));
 }
+
+[data-input-unit]{
+  height: 20px;
+  width: 14px;
+  flex: 0 0 auto;
+  padding: 0 0 0 0.5ch;
+  background: var(--boxGry);
+  margin-left: -0.5ch;
+  border-radius: 0 4px 4px 0;
+}
 /*组件修改--*/
 
 html[data-language="En"] {
@@ -166,6 +187,8 @@ body{
 #bottom{
   height: var(--bottom-h);
   bottom: 0;
+  padding:0 10px 0 4px;
+  box-sizing: border-box;
 }
 
 #bottom::before{
@@ -249,7 +272,7 @@ input[type="checkbox"]:checked+.btn-big .path2 {
 }
 
 [data-side-mix]{
-  width: 200px;
+  width: var(--side-w);
   background: var(--boxGry);
   padding: 10px 10px;
   justify-content: space-between;
@@ -263,13 +286,13 @@ input[type="checkbox"]:checked+.btn-big .path2 {
     width: 0;
   }
   100%{
-    width: 200px;
+    width: var(--side-w);
   }
 }
 
 @keyframes sideOver {
   0%{
-    width: 200px;
+    width: var(--side-w);
     padding-left: 10px;
   }
   100%{
@@ -321,7 +344,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   transform: matrix(0.7,-0.7,0.7,0.7,3.64,16.37);
 }
 
-#btn-theme,#btn-theme-2{
+#btn-theme-1,#btn-theme-2,#btn-theme-3{
   width: 20px;
   height: 20px;
   padding: 4px;
@@ -331,7 +354,8 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   border: 1px solid var(--boxBod);
 }
 
-[data-mainset-top]{
+[data-mainset-top],
+[data-mainset-bottom]{
   display: none;
 }
 
@@ -342,7 +366,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   cursor: var(--pointer,pointer);
 }
 
-[data-mainset-side]{
+[data-mainset-side-box]{
   gap:4px;
   padding: 10px 0;
   border-top: 1px solid var(--boxBod);
@@ -422,12 +446,17 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   background: var(--boxGry);
 }
 
-[data-btn="main"]:hover{
+[data-btn="main"]:hover,[data-btn="skill-main"]:hover{
   background: var(--boxBod);
 }
 
-[data-btn="skill"]{
-  border-radius: 8px;
+[data-btn="skill"],[data-btn="skill-main"]{
+  border-radius: 4px;
+}
+
+[data-btn="skill-main"]{
+  width: 100%;
+  background: var(--boxGry);
 }
 
 [data-btn="help"]{
@@ -467,6 +496,14 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
 
 [data-btn="moreset"]:hover{
   background: var(--boxGry);
+}
+
+[data-btn="reset"]{
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  border-radius: 4px;
+  margin-left: 4px;
 }
 
 input[type="checkbox"]:checked + .btn-moreset:hover{
@@ -511,6 +548,20 @@ input[type="checkbox"]:checked + .btn-moreset{
   padding: 4px;
   box-sizing: border-box;
   flex: 0 0 auto;
+}
+
+[data-skill-star] {
+  position: absolute;
+  cursor: pointer;
+  top: 4px;
+  right: 4px;
+}
+
+[data-skill-star="true"] [data-skill-star-path]{
+  fill: var(--code9)
+}
+[data-skill-star="false"] [data-skill-star-path]{
+  fill: var(--boxBod)
 }
 
 /*按钮类--*/
@@ -618,7 +669,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-skilltype-box]{
   max-width: 560px;
-  height: 70px;
+  height: 60px;
   padding: 0 10px;
   gap: 6px;
 }
@@ -632,10 +683,100 @@ input[type="checkbox"]:checked + .btn-moreset{
   text-wrap: wrap;
 }
 
-[data-skillModel]{
+[data-skills-scroll]{
+  max-width: 560px;
   border-top: 1px solid var(--boxBod);
+  padding-bottom: 80px;
+}
+
+[data-skills-box]{
+  padding-top: 6px;
+  gap: 6px;
+}
+
+[data-skillmodel]{
+  border-radius: 4px;
+  padding: 6px;
   box-sizing: border-box;
   min-height: 180px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+[data-skill-sec]{
+  position: relative;
+  min-width: 200px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.03);
+  padding: 8px;
+  text-wrap: wrap;
+}
+
+[data-theme="dark"] [data-skill-sec]{
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-skill-title]{
+  --icon-info: var(--boxBod);
+  height: 14px;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+[data-skill-sec-name]{
+  font-size: 12px;
+  opacity: 0.6;
+  text-transform: capitalize;
+}
+
+[data-skill-btnname]{
+  font-size: 10px;
+}
+
+[data-skill-btnname]::after{
+  content: ' ▶';
+  opacity: 0.6;
+}
+
+[data-skill-line]{
+  padding:0 4px;
+  margin-bottom: 6px;
+  gap: 4px;
+}
+
+[data-skewscale-box]{
+  width: 100%;
+  height: 60px;
+  position: relative;
+  overflow: hidden;
+}
+[data-skewscale-box]::after{
+  content: '+';
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  top: 0;
+  left: calc(50% - 30px);
+  width: 60px;
+  height: 60px;
+  border: 1px var(--boxGry) dashed;
+  z-index: 0;
+}
+
+[data-skewscale-view]{
+  width: 20px;
+  height: 20px;
+  border: 1px var(--themeColor) solid;
+  box-sizing: border-box;
+  transform: 
+  skew(
+    calc(var(--skewX,0) * 1deg),
+    calc(var(--skewY,0) * 1deg))
+  scale(
+    calc(var(--scaleX,100) * 1%),
+    calc(var(--scaleY,100) * 1%));
 }
 
 /*模块类--*/
@@ -671,8 +812,12 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 @media (min-width:420px) {
-  [data-mainset-top]{
+  [data-mainset-bottom]{
     display: flex;
+  }
+
+  [data-mainset-side]{
+    display: none;
   }
 
 }
@@ -719,7 +864,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 @media (min-width:300px) {
   [data-skillType-box]{
     justify-content: center;
-    height: 100px;
+    height: 80px;
   }
 }
 
@@ -732,10 +877,14 @@ input[type="checkbox"]:checked + .btn-moreset{
     display: flex;
   }
 
+  [data-skill-sec]{
+    min-width: 160px;
+  }
+
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1937a27188af1dd9dd856e8401c79d78b08ec06c/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dca11b486615b68fa5a107e89337b8f8f2755a78/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -779,23 +928,7 @@ function toolMessage(data,app){
 <body class="noselect df-ffc df-cc">
   <!--顶部-->
   <div id="top" class="w100 df-sc">
-    <div data-any="vw240" class="fl0" style="width: 24px; height: 24px;"></div>
-    <div data-mainset-top class="df-lc" style="gap: 4px; margin-left: 2px;">
-      <div id="btn-theme-2">
-        <input id="theme-2" data-theme-check type="checkbox" checked="true">
-        <label for="theme-2" class="btn-theme" style="position: relative;">
-          <btn-theme></btn-theme>
-        </label>
-      </div>
-      <input id="language-2" data-language-check type="checkbox" checked="true"/>
-      <label for="language-2" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
-        <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
-          <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
-            <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
-          </svg>
-        </div>
-      </label>
-    </div>
+    <div data-any="vw240" class="fl0" style="width: var(--top-h); height: var(--top-h);"></div>
     <!--公告栏-->
     <div data-tv-box data-any="vw240"  class="df-lc">
       <div data-tv-cut class="TV df-lc" >
@@ -803,6 +936,22 @@ function toolMessage(data,app){
           <div data-tv-text data-en-text="💬NOTICE:Please note the following">💬公告:公告内容公告内容公告内容</div>  
         </div>  
       </div> 
+    </div>
+    <div data-mainset-top class="df-lc" style="gap: 4px; margin-left: 2px;">
+      <div id="btn-theme-3">
+        <input id="theme-3" data-theme-check type="checkbox" checked="true">
+        <label for="theme-3" class="btn-theme" style="position: relative;">
+          <btn-theme></btn-theme>
+        </label>
+      </div>
+      <input id="language-3" data-language-check type="checkbox" checked="true"/>
+      <label for="language-3" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
+        <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
+          <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
+            <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
+          </svg>
+        </div>
+      </label>
     </div>
     <div class="df-cc" style="gap:4px; margin-right: 2%; font-size: 12px;">
       <input id="big" type="checkbox">
@@ -843,17 +992,17 @@ function toolMessage(data,app){
           </div>
         </a>
       </div>
-      <div data-mainset-side class="df-sc">
-        <a href="https://www.ynyuset.cn" target="_blank" class="fl1 df-lc"
+      <div data-mainset-side-box class="df-sc">
+        <a href="https://www.ynyuset.cn" target="_blank" class="df-lc"
         data-tips="set" data-tips-y="top" data-tips-x="left" 
         style="--tips-gap: -16px; --tips-text: '🔗https://www.ynyuset.cn'; --tips-text-en: 'https://www.ynyuset.cn';
-        gap: 2px; color: var(--mainColor); font-size: 10px;">
+        gap: 2px; color: var(--mainColor); font-size: 10px; flex: 1;">
           ©2024-2025 
           <set-en data-any="en" class="fl0" style="height: 20px; margin-top: -2px;"></set-en>
           <set-zh data-any="zh" class="fl0" style="height: 20px; margin-top: -3px;"></set-zh>
         </a>
-        <div class="df-lc" style="gap: 4px;">
-          <div id="btn-theme">
+        <div data-mainset-side class="df-lc" style="gap: 4px;">
+          <div id="btn-theme-1">
             <input id="theme-1" data-theme-check type="checkbox" checked="true">
             <label for="theme-1" class="btn-theme" style="position: relative;">
               <btn-theme></btn-theme>
@@ -871,7 +1020,7 @@ function toolMessage(data,app){
       </div>
     </div>
     
-    <div class="df-cc" style="width: 24px; height: 24px; background: var(--boxGry);">
+    <div class="df-cc" style="width: var(--top-h); height: var(--top-h); background: var(--boxGry);">
       <input id="btn-more" type="checkbox" />
       <label for="btn-more" class="btn-more" >
         <svg data-icon-more width="100%" height="100%" viewBox="0 0 20 20">
@@ -899,6 +1048,7 @@ function toolMessage(data,app){
       <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: flex;">
         <div class="w100 df-ffc ovy noscrollbar" style="height: calc(100% - 40px); align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
           <div class="w100 df-ffc" style="align-items: center;">
+            <!--步骤1-->
             <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Upload | Drop | Input" >上传 | 拖拽 | 输入</span>
@@ -906,6 +1056,7 @@ function toolMessage(data,app){
               <span data-any="vw300" data-en-text="data to create node in batches" style="opacity: 0.6;"> 数据以批量创建内容</span>
               <div data-any="vw300" data-help="create" class="fl0 df-cc">?</div>
             </div>
+            <!--上传文件-->
             <div data-drop="upload" class="w100 df-ffc df-cc bod-d">
               <div class="w100 df-cc">
                 <div data-file-info class="file-tag" data-en-text="📁 No files there">📁 未选择任何文件</div>
@@ -937,6 +1088,7 @@ function toolMessage(data,app){
                 </div>
               </div>
             </div>
+            <!--输入参数-->
             <div class="w100 df" style="flex-wrap: wrap; max-width: 560px; margin: 4px 0; gap: 4px;">
               <div id="upload-textarea-box" data-resize class="pos-r fl1" style="min-width: 180px;">
                 <textarea id="upload-textarea" data-textarea="eg" 
@@ -991,6 +1143,7 @@ function toolMessage(data,app){
                 </label>
               </div>
             </div>
+            <!--更多设置-->
             <div id="upload-moreset-box" class="w100 df-lc" style="flex-wrap: wrap; max-width: 560px; gap: 4px; display: none;">
               <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 180px;">
                 <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
@@ -1042,6 +1195,7 @@ function toolMessage(data,app){
                 </div>
               </div>
             </div>
+            <!--步骤2-->
             <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Edit final tags/catalogue" > 编辑标签/大纲 </span>
@@ -1071,7 +1225,8 @@ function toolMessage(data,app){
       </div>
       <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
         <div class="wh100 df-ffc" style="align-items: center; padding: 10px; box-sizing: border-box;">
-          <div class="w100 df-lc ovx noscrollbar" data-radio-value data-scroll data-skilltype-box>
+          <!--功能tags-->
+          <div class="w100 df-lc ovx noscrollbar fl0" data-radio-value="1" data-scroll data-skilltype-box>
             <div data-radio data-radio-data="1" data-radio-main="true" class="df-ffc df-cc" style="gap: 4px;">
               <div data-skilltype-icon>
                 <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1151,22 +1306,142 @@ function toolMessage(data,app){
               </div>
             </div>
           </div>
-          <div class="wh100 df-ffc ovy noscrollbar" style="max-width: 560px;">
-            <div data-skills-box="" class="w100 df-ffc" style="gap: 4px;">
-              <div class="w100 df-ffc" data-skillmodel="Useful & Starts">
+          <!--功能列表-->
+          <div  data-skills-scroll class="wh100 df-ffc ovy noscrollbar">
+            <div data-skills-box class="w100 df-ffc">
+              <div class="w100 df" data-skillmodel="Useful & Starts">
+                <!--自动添加-->
+                <div class="fl1 df-cc" data-skill-sec data-skill-cover="end" style="opacity: 0.6;"
+                data-en-text="Click the star of functional module to add it to here~">
+                  点击功能块右上角的星星即可收藏到此处~
+                </div>
+              </div>
+              <div class="w100 df" data-skillmodel="Pixel & Transform">
+                <div class="fl1" data-skill-sec="inSituRasterize">
+                  <div data-skill-star="false">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path data-skill-star-path d="M9.10133 5.24013C9.4668 4.4921 10.5329 4.4921 10.8983 5.24013L11.9152 7.32142L14.2089 7.64537C15.0332 7.76179 15.3626 8.77567 14.7642 9.3544L13.099 10.9647L13.4996 13.2462C13.6437 14.0661 12.7812 14.6928 12.0458 14.3024L9.99983 13.2163L7.95381 14.3024C7.21847 14.6928 6.35601 14.0661 6.50002 13.2462L6.9007 10.9647L5.23551 9.3544C4.63703 8.77567 4.96646 7.76179 5.79081 7.64537L8.08446 7.32142L9.10133 5.24013Z"></path>
+                      </svg>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
+                    <div class="df-lc pos-r" data-select="" data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
+                      <input id="select-value-2" type="text" data-select-input="" readonly="" value="≤4096">
+                      <input id="select-show-2" data-select-pick="≤4096" type="checkbox">
+                      <label for="select-show-2" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
+                      <div data-select-options="" class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
+                        <div data-option="option" data-option-main="true" data-option-value="≤ 4096px">≤ 4096px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 2048px">≤ 2048px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 1024px">≤ 1024px</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="df-sc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Scale">像素倍率</div>
+                    <div class="df-lc" style="flex: 0 0 auto; width: 50px;">
+                      <input id="input-pixelScale" type="text" value="1"
+                      data-input data-input-type="float" data-input-must="0.1-20" 
+                      style="flex: 0 0 auto; width: 32px; text-align: center;"/>
+                    <div class="df-cc" data-input-unit>x</div>
+                    </div>
+                    <div></div>
+                    <div class="df-lc fl1" data-radio-value="1" style="gap: 2px;">
+                      <div data-radio data-radio-data="1" data-radio-main="true" class="df-cc">
+                        1x
+                      </div>
+                      <div data-radio data-radio-data="2" data-radio-main="false" class="df-cc">
+                        2x
+                      </div>
+                      <div data-radio data-radio-data="3" data-radio-main="false" class="df-cc">
+                        3x
+                      </div>
+                      <div data-radio data-radio-data="4" data-radio-main="false" class="df-cc">
+                        4x
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="df-sc" data-skill-line>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="As Copy">生成</div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Overwrite">覆盖</div>
+                  </div>
+                </div>
+                <div class="fl1"  data-skill-sec="easeTransform">
+                  <div data-skill-star="false">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path data-skill-star-path d="M9.10133 5.24013C9.4668 4.4921 10.5329 4.4921 10.8983 5.24013L11.9152 7.32142L14.2089 7.64537C15.0332 7.76179 15.3626 8.77567 14.7642 9.3544L13.099 10.9647L13.4996 13.2462C13.6437 14.0661 12.7812 14.6928 12.0458 14.3024L9.99983 13.2163L7.95381 14.3024C7.21847 14.6928 6.35601 14.0661 6.50002 13.2462L6.9007 10.9647L5.23551 9.3544C4.63703 8.77567 4.96646 7.76179 5.79081 7.64537L8.08446 7.32142L9.10133 5.24013Z"></path>
+                    </svg>
+                  </div>
+                  <div class="df-cc" data-skill-line>
+                    <div data-skewscale-box class="fl0 df-cc">
+                      <div data-skewscale-view ></div>
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Skew X">左右倾斜</div>
+                    <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
+                      <input data-input="range" type="range" min="-80" max="80" value="0">
+                      <input data-input="value" data-input-must="-80,80" data-input-type="int" 
+                      type="text" class="txt-c" style="width: 30px; flex: 0 0 auto; margin-left: 4px;" value="0">
+                      <div class="df-cc" data-input-unit>°</div>
+                      <div data-input-reset data-btn="reset">
+                        <btn-reset></btn-reset>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Skew Y">上下倾斜</div>
+                    <div data-skewset-y data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
+                      <input data-input="range" type="range" min="-80" max="80" value="0">
+                      <input data-input="value" data-input-must="-80,80" data-input-type="int" 
+                      type="text" class="txt-c" style="width: 30px; flex: 0 0 auto; margin-left: 4px;" value="0">
+                      <div class="df-cc" data-input-unit>°</div>
+                      <div data-input-reset data-btn="reset">
+                        <btn-reset></btn-reset>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右变形</div>
+                    <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
+                      <input data-input="range" type="range" min="1" max="200" value="100">
+                      <input data-input="value" data-input-must="1,200" data-input-type="int" 
+                      type="text" class="txt-c" style="width: 30px; flex: 0 0 auto; margin-left: 4px;" value="100">
+                      <div class="df-cc" data-input-unit>%</div>
+                      <div data-input-reset data-btn="reset">
+                        <btn-reset></btn-reset>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Scale Y">上下变形</div>
+                    <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
+                      <input data-input="range" type="range" min="1" max="200" value="100">
+                      <input data-input="value" data-input-must="1,200" data-input-type="int" 
+                      type="text" class="txt-c" style="width: 30px; flex: 0 0 auto; margin-left: 4px;" value="100">
+                      <div class="df-cc" data-input-unit>%</div>
+                      <div data-input-reset data-btn="reset">
+                        <btn-reset></btn-reset>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="df-sc" data-skill-line>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Reset All">重置全部</div>
+                  </div>
+                </div>
+                <div class="fl1"  data-skill-sec="easeTransform">
+                  
+                </div>
+                <div class="fl1"  data-skill-sec data-skill-cover="end"></div>
+              </div>
+              <div class="w100 df" data-skillmodel="Text & Layer">
 
               </div>
-              <div class="w100 df-ffc" data-skillmodel="Pixel & Transform">
+              <div class="w100 df" data-skillmodel="Vector & Generate">
 
               </div>
-              <div class="w100 df-ffc" data-skillmodel="Text & Layer">
+              <div class="w100 df" data-skillmodel="Style & Prototype">
 
-              </div>
-              <div class="w100 df-ffc" data-skillmodel="Vector & Generate">
-
-              </div>
-              <div class="w100 df-ffc" data-skillmodel="Style & Prototype">
-                
               </div>
             </div>
           </div>
@@ -1176,31 +1451,53 @@ function toolMessage(data,app){
     </div>
   </div>
   <!--底部-->
-  <div id="bottom" class="df-lc w100 pos-a">
+  <div id="bottom" class="df-sc w100 pos-a">
     <div data-scroll class="df ovx noscrollbar" data-tab="auto" data-tab-for="page" style="padding: 6px 4px;">
       <!--自动填充tab-->
     </div>
+    <div data-mainset-bottom class="df-lc" style="gap: 4px; margin-left: 2px;">
+      <div id="btn-theme-2">
+        <input id="theme-2" data-theme-check type="checkbox" checked="true">
+        <label for="theme-2" class="btn-theme" style="position: relative;">
+          <btn-theme></btn-theme>
+        </label>
+      </div>
+      <input id="language-2" data-language-check type="checkbox" checked="true"/>
+      <label for="language-2" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
+        <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
+          <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
+            <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
+          </svg>
+        </div>
+      </label>
+    </div>
+
   </div>
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1937a27188af1dd9dd856e8401c79d78b08ec06c/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1937a27188af1dd9dd856e8401c79d78b08ec06c/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1937a27188af1dd9dd856e8401c79d78b08ec06c/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1937a27188af1dd9dd856e8401c79d78b08ec06c/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1937a27188af1dd9dd856e8401c79d78b08ec06c/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dca11b486615b68fa5a107e89337b8f8f2755a78/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dca11b486615b68fa5a107e89337b8f8f2755a78/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dca11b486615b68fa5a107e89337b8f8f2755a78/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dca11b486615b68fa5a107e89337b8f8f2755a78/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dca11b486615b68fa5a107e89337b8f8f2755a78/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
-/*let skillModel = [
-  ["常用功能","Useful & Starts"],
-  ["像素&变换","Pixel & Transform"],
-  ["文本&图层","Text & Layer"],
-  ["矢量&生成","Vector & Generate"],
-  ["样式&原型","Style & Prototype"],
+let skillSecInfo = [
+  {
+    id: 'inSituRasterize',
+    name: ["原地栅格化","in-situ rasterize"],
+    tips:  ["",""],
+  },
+  {
+    id: 'easeTransform',
+    name: ["简单变形","ease transform"],
+    tips:  ["",""],
+  },
 ]
-*/
 
-let userSkillStart = ['二级功能名','二级功能名']
+//let userSkillStar = ['inSituRasterize'];
+let userSkillStar = storageMix.get('userSkillStar') || [];
 
 let toUserTips = {
   worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
@@ -1275,17 +1572,6 @@ skilltypeNameNode.forEach(item => {
   skillModel.push([name1,name2]);
 });
 
-/*
-skillModel.forEach(item => {
-  let box = document.querySelector('[data-skills-box]');
-  let node = document.createElement('div');
-  node.className = 'w100 df-ffc';
-  //node.innerHTML = item[0];
-  node.setAttribute('data-skillModel',item[1]);
-  box.appendChild(node);
-});
-*/
-
 const UI_MINI = [200,460];
 const UI = [300,660];
 const UI_BIG = [620,660];
@@ -1296,15 +1582,21 @@ const btnResize = document.querySelector('[data-resize-window]');
 const btnBig = document.getElementById('big');
 const TV_text = document.querySelector('[data-tv-text]');
 const dropUp = document.querySelector('[data-drop="upload"]');
-const userImg = document.getElementById('input-user-img');
-const userTable = document.getElementById('input-user-table');
-const userTableTitle = document.getElementById('input-user-table-title');
-const userZy = document.getElementById('input-user-zy');
 const fileInfo = document.querySelector('[data-file-info]');
-const frameName =  document.getElementById('input-framename');
 const helpCreate = document.querySelector('[data-help="create"]');
 const dailog = document.querySelector('[data-dailog]');
 const dailogBox = document.querySelector('[data-dailog-box]');
+const skillSecNode = document.querySelectorAll('[data-skill-sec]');
+const skillStar = document.querySelectorAll('[data-skill-star]');
+const skillStarModel = document.querySelector('[data-skillmodel="Useful & Starts"]')
+
+/*表单绑定*/
+const userImg = document.getElementById('input-user-img');
+const userTable = document.getElementById('input-user-table');
+const userZy = document.getElementById('input-user-zy');
+const userTableTitle = document.getElementById('input-user-table-title');
+const frameName =  document.getElementById('input-framename');
+const pixelScale = document.getElementById('input-pixelScale');
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -1327,6 +1619,7 @@ window.addEventListener('load',()=>{
   };
   reTV();
   loadFont();
+  addSkillTitle()
   addToUserTips();
   setInterval(() => {
     addToUserTips();
@@ -1364,7 +1657,7 @@ function loadFont(){
         item.style.fontFamily = '"Shanggu Sans", Arial, Helvetica, sans-serif';
       })
     });
-  },500);
+  },100);
 }
 
 function addToUserTips(){
@@ -1383,6 +1676,37 @@ function addToUserTips(){
   }
   TV_text.parentNode.style.setProperty('--tv-w',textW)
 
+}
+
+function addSkillTitle(){
+  skillSecNode.forEach(secnode =>{
+    let secid = secnode.getAttribute('data-skill-sec');
+    if(secid){
+      let info = skillSecInfo.find(item => item.id == secid);
+      let node = document.createElement('div');
+      node.setAttribute('data-skill-title','');
+      node.className = 'df-lc';
+      let tips = document.createElement('div');
+      tips.setAttribute('data-tips','');
+      tips.setAttribute('data-tips-x','left');
+      tips.setAttribute('data-tips-y','top');
+      tips.setAttribute('style',`--tips-text:'${info.tips[0]}'; --tips-text-en:'${info.tips[1]}';`);
+      tips.innerHTML = '<btn-info></btn-info>'
+      node.appendChild(tips);
+      let name = document.createElement('div');
+      let languge = ROOT.getAttribute('data-language');
+      name.setAttribute('data-zh-text',info.name[0]);
+      name.setAttribute('data-en-text',info.name[1]);
+      name.setAttribute('data-skill-sec-name','');
+      let text = languge == 'Zh' ? info.name[0] : info.name[1];
+      name.innerHTML = text;
+      node.appendChild(name);
+      secnode.prepend(node);
+      //重置文字样式
+      loadFont();
+    };
+    moveSkillStar(userSkillStar);
+  })
 }
 
 //侧边栏展开
@@ -1628,6 +1952,65 @@ dailog.addEventListener('click',(e)=>{
     dailog.style.display = 'none';
   };
 });
+//收藏功能
+skillStar.forEach(item =>{
+  item.addEventListener('click',()=>{
+    let isStar = item.getAttribute('data-skill-star');
+    let skillId = item.parentNode.getAttribute('data-skill-sec');
+    let cover = document.querySelector(`[data-skill-cover="${skillId}"]`);
+    let skillNode = document.querySelector(`[data-skill-sec="${skillId}"]`);
+    if(isStar == "true"){
+      item.setAttribute('data-skill-star','false');
+      let numModel = cover.parentNode.childNodes.length;
+      if(numModel%2 == 1){
+        cover.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'flex'
+      }
+      cover.parentNode.insertBefore(skillNode,cover);
+      cover.remove();
+    } else {
+      item.setAttribute('data-skill-star','true');
+      let numModel = skillNode.parentNode.childNodes.length;
+      if(numModel%2 == 1){
+        skillNode.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'none'
+      }
+      moveSkillStar([skillId]);
+    };
+    
+  });
+});
+
+function moveSkillStar(stars){
+  stars.forEach(item => {
+    let skillNode = document.querySelector(`[data-skill-sec="${item}"]`);
+    if(skillNode){
+      let cover = document.createElement('div');
+      cover.setAttribute('data-skill-cover',item);
+      cover.setAttribute('style','display: none');
+      skillNode.parentNode.insertBefore(cover,skillNode);
+      skillStarModel.prepend(skillNode);
+    };
+  });
+}
+
+/*
+function cloneSkillStar(stars){
+  stars.forEach(item => {
+    let skillNode = document.querySelector(`[data-skill-sec="${item}"]`);
+    if(skillNode){
+      let copyNode = skillNode.cloneNode(true);
+      copyNode.querySelectorAll('[id]').forEach(idNode => {
+        idNode.setAttribute('id',idNode.getAttribute('id') + '-copy')
+      });
+      copyNode.querySelectorAll('[for]').forEach(idNode => {
+        idNode.setAttribute('for',idNode.getAttribute('for') + '-copy')
+      });
+      skillStarModel.appendChild(copyNode);
+      COMP_MAIN();
+    };
+  });
+}
+*/
+
 
 
 /**
@@ -1647,6 +2030,9 @@ let observer = new MutationObserver((mutations) => {
     if(mutation.type === 'attributes'){
       switch(mutation.attributeName){
         case 'data-tab-pick':getUserTab(mutation.target); break;
+        case 'data-color-hex':getUserColor(mutation.target); break;
+        case 'data-number-value':getUserNumber(mutation.target); break;
+        case 'data-text-value':getUserText(mutation.target); break;
         case 'data-select-value':getUserSelect(mutation.target); break;
       }
     }
@@ -1655,6 +2041,21 @@ let observer = new MutationObserver((mutations) => {
 let userEvent_tab = document.querySelectorAll('[data-tab-pick]');
 userEvent_tab.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-tab-pick']};
+  observer.observe(item,config);
+});
+let userEvent_color = document.querySelectorAll('[data-color]');
+userEvent_color.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-color-hex']};
+  observer.observe(item,config);
+});
+let userEvent_number = document.querySelectorAll('[data-number]');
+userEvent_number.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-number-value']};
+  observer.observe(item,config);
+});
+let userEvent_text = document.querySelectorAll('[data-text]');
+userEvent_text.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-text-value']};
   observer.observe(item,config);
 });
 let userEvent_select = document.querySelectorAll('[data-select]');
@@ -1671,6 +2072,38 @@ function getUserTab(node){
   if(tabPick){
     storageMix.set('tabPick',tabPick);
   }
+}
+
+function getUserColor(node){
+  let color = {
+    HEX:node.getAttribute('data-color-hex'),
+    RGB:node.getAttribute('data-color-rgb'),
+    HSL:node.getAttribute('data-color-hsl'),
+    HSV:node.getAttribute('data-color-hsv'),
+  }
+  //console.log(color)
+}
+
+function getUserNumber(node){
+  let number = node.getAttribute('data-number-value');
+  if(node.getAttribute('data-skewset-x') !== null){
+    node.parentNode.parentNode.parentNode.style.setProperty('--skewX',number)
+  };
+  if(node.getAttribute('data-skewset-y') !== null){
+    node.parentNode.parentNode.parentNode.style.setProperty('--skewY',number)
+  };
+  if(node.getAttribute('data-scaleset-x') !== null){
+    node.parentNode.parentNode.parentNode.style.setProperty('--scaleX',number)
+  };
+  if(node.getAttribute('data-scaleset-y') !== null){
+    node.parentNode.parentNode.parentNode.style.setProperty('--scaleY',number)
+  };
+}
+
+function getUserText(node){
+  let text = node.getAttribute('data-text-value');
+
+  //console.log(text)
 }
 
 function getUserSelect(node){
