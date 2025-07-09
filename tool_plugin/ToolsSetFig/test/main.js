@@ -9,6 +9,11 @@ let skillSecInfo = [
     name: ["简单变形","ease transform"],
     tips:  ["",""],
   },
+  {
+    id: 'uniformScale',
+    name: ["等比缩放","uniform scale"],
+    tips:  ["",""],
+  },
 ]
 
 //let userSkillStar = ['inSituRasterize'];
@@ -506,25 +511,15 @@ function moveSkillStar(stars){
     };
   });
 }
-
-/*
-function cloneSkillStar(stars){
-  stars.forEach(item => {
-    let skillNode = document.querySelector(`[data-skill-sec="${item}"]`);
-    if(skillNode){
-      let copyNode = skillNode.cloneNode(true);
-      copyNode.querySelectorAll('[id]').forEach(idNode => {
-        idNode.setAttribute('id',idNode.getAttribute('id') + '-copy')
-      });
-      copyNode.querySelectorAll('[for]').forEach(idNode => {
-        idNode.setAttribute('for',idNode.getAttribute('for') + '-copy')
-      });
-      skillStarModel.appendChild(copyNode);
-      COMP_MAIN();
-    };
+//重置全部
+document.querySelectorAll('[data-reset-all]').forEach(reall => {
+  reall.addEventListener('click',()=>{
+    let btnReAll = reall.parentNode.parentNode.querySelectorAll('[data-input-reset]');
+    btnReAll.forEach(item =>{
+      item.click();
+    });
   });
-}
-*/
+});
 
 
 

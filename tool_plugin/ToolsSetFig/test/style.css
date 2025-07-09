@@ -544,17 +544,38 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-skill-star] {
+  width: 20px;
+  height: 20px;
   position: absolute;
   cursor: pointer;
   top: 4px;
   right: 4px;
 }
 
-[data-skill-star="true"] [data-skill-star-path]{
-  fill: var(--code9)
+[data-transform-center-box]{
+  min-width: 70px;
+  height: 70px;
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--boxBod);
+  border-radius: 6px;
 }
-[data-skill-star="false"] [data-skill-star-path]{
-  fill: var(--boxBod)
+
+[data-transform-center-box] [data-radio]{
+  align-self: center;
+  justify-self: center;
+  width: 14px;
+  height: 14px;
+  border: none;
+}
+
+[data-transform-center-box] [data-radio-main="true"]{
+  color: transparent;
+  background: var(--themeColor);
 }
 
 /*按钮类--*/
@@ -696,6 +717,10 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 6px;
 }
 
+[data-skillmodel="Useful & Starts"]{
+  min-height: 80px;
+}
+
 [data-skill-sec]{
   position: relative;
   min-width: 200px;
@@ -722,12 +747,17 @@ input[type="checkbox"]:checked + .btn-moreset{
   text-transform: capitalize;
 }
 
-[data-skill-btnname]{
+[data-skill-btnname],[data-skill-btnname-top]{
   font-size: 10px;
 }
 
 [data-skill-btnname]::after{
   content: ' ▶';
+  opacity: 0.6;
+}
+
+[data-skill-btnname-top]::after{
+  content: ' ▼';
   opacity: 0.6;
 }
 
@@ -787,6 +817,46 @@ input[type="checkbox"]:checked + .btn-moreset{
     transparent calc(var(--dot-gap)*2)), var(--boxBak);
   background-size: var(--dot-gap) var(--dot-gap);
 }
+
+.tex-line{
+  --line-col: rgba(0, 0, 0, 0.8);
+  --line-size: 50px;
+  --line-bod: 4%;
+  --line-deg: -45deg;
+  --line-bak: transparent;
+  background: 
+  repeating-linear-gradient(var(--line-deg),
+    var(--line-col) -20%,
+    var(--line-col) calc(-20% + var(--line-bod)),
+    transparent calc(-20% + var(--line-bod)),
+    transparent 30%,
+    var(--line-col) 30%,
+    var(--line-col) calc(30% + var(--line-bod)),
+    transparent calc(30% + var(--line-bod)),
+    transparent 80%,
+    var(--line-col) 80%,
+    var(--line-col) calc(80% + var(--line-bod)),
+    transparent calc(80% + var(--line-bod)),
+    transparent 100%
+    ) 0 0/var(--line-size) var(--line-size),var(--line-bak);
+    --pos-x: var(--line-size);
+    --pos-y: 0;
+    animation: posMove 2s infinite;
+    animation-delay: 1s;
+}
+
+* .tex-line  {
+  --pos-x: var(--line-size);
+  --pos-y: 0;
+  animation: posMove 2s infinite;
+  animation-delay: 1s;
+}
+
+@keyframes posMove {
+  to {
+    background-position: var(--pos-x) var(--pos-y);
+  }
+}
 /*纹理类--*/
 
 @keyframes loadRo2 {/*旋转*/
@@ -795,6 +865,12 @@ input[type="checkbox"]:checked + .btn-moreset{
   }
   100%{
     transform: rotate(-180deg);
+  }
+}
+
+@media (min-width:470px) {
+  [data-transform-center-model]{
+    max-width: 72px;
   }
 }
 
@@ -854,6 +930,13 @@ input[type="checkbox"]:checked + .btn-moreset{
   }
   
 }
+
+@media (max-width:300px) {
+  [data-transform-center-model]{
+    max-width: 72px;
+  }
+}
+
 @media (min-width:300px) {
   [data-skillType-box]{
     justify-content: center;

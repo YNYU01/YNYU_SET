@@ -404,9 +404,7 @@
               <div class="w100 df" data-skillmodel="Pixel & Transform">
                 <div class="fl1" data-skill-sec="inSituRasterize">
                   <div data-skill-star="false">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path data-skill-star-path d="M9.10133 5.24013C9.4668 4.4921 10.5329 4.4921 10.8983 5.24013L11.9152 7.32142L14.2089 7.64537C15.0332 7.76179 15.3626 8.77567 14.7642 9.3544L13.099 10.9647L13.4996 13.2462C13.6437 14.0661 12.7812 14.6928 12.0458 14.3024L9.99983 13.2163L7.95381 14.3024C7.21847 14.6928 6.35601 14.0661 6.50002 13.2462L6.9007 10.9647L5.23551 9.3544C4.63703 8.77567 4.96646 7.76179 5.79081 7.64537L8.08446 7.32142L9.10133 5.24013Z"></path>
-                      </svg>
+                    <btn-star></btn-star>
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
@@ -425,7 +423,7 @@
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale">像素倍率</div>
                     <div class="df-lc" style="flex: 0 0 auto; width: 50px;">
                       <input id="input-pixelScale" type="text" value="1"
-                      data-input data-input-type="float" data-input-must="0.1-20" 
+                      data-input data-input-type="float" data-input-must="0.1,20" 
                       style="flex: 0 0 auto; width: 32px; text-align: center;"/>
                     <div class="df-cc" data-input-unit>x</div>
                     </div>
@@ -447,15 +445,52 @@
                     
                   </div>
                   <div class="df-sc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="As Copy">生成</div>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Overwrite">覆盖</div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="As Copy">保留原图层</div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Overwrite">覆写原图层</div>
+                  </div>
+                </div>
+                <div class="fl1"  data-skill-sec="uniformScale">
+                  <div data-skill-star="false">
+                      <btn-star></btn-star>
+                  </div>
+                  <div class="df-sc" data-skill-line>
+                    <div class="df-ffc fl1" style="gap: 7px; max-width: 160px;">
+                      <div data-any="vw240" style="height: 6px;"></div>
+                      <div class="df-lc w100" style="max-width: 160px;">
+                        <div data-skill-btnname data-any="vw240" data-en-text="Each ratio">按百分比</div>
+                        <input id="uniform-set-s" type="text" value="1" data-input data-input-type="float" data-input-must="0.001,100" style="text-align: center;">
+                        <div class="df-cc" data-input-unit="">x</div>
+                      </div>
+                      <div class="df-lc w100" style="max-width: 160px;">
+                        <div data-skill-btnname data-any="vw240" data-en-text="Same width">按宽度</div>
+                        <input id="uniform-set-w" type="text" value="" data-input data-input-type="float" data-input-must="0.001,100" style="text-align: center;">
+                        <div class="df-cc" data-input-unit="">w</div>
+                      </div>
+                      <div class="df-lc w100" style="max-width: 160px;">
+                        <div data-skill-btnname data-any="vw240" data-en-text="Same height">按高度</div>
+                        <input id="uniform-set-w" type="text" value="" data-input data-input-type="float" data-input-must="0.001,100" style="text-align: center;">
+                        <div class="df-cc" data-input-unit="">h</div>
+                      </div>
+                    </div>
+                    <div data-transform-center-model class="df-ffc df-cc fl1" style="gap: 4px; margin-left: 10px;">
+                      <div data-skill-btnname-top data-any="vw240" data-en-text="Scale center">缩放中心</div>
+                      <div data-transform-center-box data-radio-value="1" class="w100" >
+                        <div data-radio data-radio-data="1" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="2" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="3" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="4" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="5" data-radio-main="true" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="6" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="7" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="8" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="9" data-radio-main="false" class="df-cc">▪</div>
+                      </div>
+                    </div>                    
                   </div>
                 </div>
                 <div class="fl1"  data-skill-sec="easeTransform">
                   <div data-skill-star="false">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path data-skill-star-path d="M9.10133 5.24013C9.4668 4.4921 10.5329 4.4921 10.8983 5.24013L11.9152 7.32142L14.2089 7.64537C15.0332 7.76179 15.3626 8.77567 14.7642 9.3544L13.099 10.9647L13.4996 13.2462C13.6437 14.0661 12.7812 14.6928 12.0458 14.3024L9.99983 13.2163L7.95381 14.3024C7.21847 14.6928 6.35601 14.0661 6.50002 13.2462L6.9007 10.9647L5.23551 9.3544C4.63703 8.77567 4.96646 7.76179 5.79081 7.64537L8.08446 7.32142L9.10133 5.24013Z"></path>
-                    </svg>
+                    <btn-star></btn-star>
                   </div>
                   <div class="df-cc" data-skill-line>
                     <div data-skewscale-box class="fl0 df-cc">
@@ -510,28 +545,33 @@
                       </div>
                     </div>
                   </div>
-                  <div class="df-sc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Reset All">重置全部</div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="Reset All">重置全部</div>
                   </div>
                 </div>
+                <div class="fl1"  data-skill-sec data-skill-cover="end"></div>
+              </div>
+              <div class="w100 df" data-skillmodel="Text & Layer">
                 <div class="fl1"  data-skill-sec="easeTransform">
                   
                 </div>
                 <div class="fl1"  data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodel="Text & Layer">
-
-              </div>
               <div class="w100 df" data-skillmodel="Vector & Generate">
-
+                <div class="fl1"  data-skill-sec="easeTransform">
+                  
+                </div>
+                <div class="fl1"  data-skill-sec data-skill-cover="end"></div>
               </div>
               <div class="w100 df" data-skillmodel="Style & Prototype">
-
+                <div class="fl1"  data-skill-sec="easeTransform">
+                  
+                </div>
+                <div class="fl1"  data-skill-sec data-skill-cover="end"></div>
               </div>
             </div>
           </div>
         </div>
-      
       </div>
     </div>
   </div>

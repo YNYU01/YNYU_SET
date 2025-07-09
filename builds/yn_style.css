@@ -729,6 +729,13 @@ btn-copy:hover{
   --add:var(--mainColor);
 }
 
+[data-skill-star="true"] [data-skill-star-path]{
+  fill: var(--code9)
+}
+[data-skill-star="false"] [data-skill-star-path]{
+  fill: var(--boxBod)
+}
+
 .btn-theme {
   --theme-l:rgba(0,0,0,0);
   --theme-d:var(--mainColor);
