@@ -734,6 +734,27 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: rgba(255, 255, 255, 0.03);
 }
 
+[data-skill-cover="end"]{
+  color: var(--boxBod);
+  opacity: 0.6;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-skill-cover="end"]:hover{
+  content: '';
+  width: 110%;
+  height: 110%;
+  top: -10%;
+  left: -10%;
+  background: url('https://www.ynyuset.cn/VI/logo_graph_bod.png');
+}
+
+[data-skillmodel="Useful & Starts"] [data-skill-cover="end"]{
+  opacity: 1;
+}
+
+
 [data-skill-title]{
   --icon-info: var(--boxBod);
   height: 14px;
@@ -868,10 +889,17 @@ input[type="checkbox"]:checked + .btn-moreset{
   }
 }
 
+@media (max-width:469px) {
+  [data-any="vw470"]{
+    display: none;
+  }
+}
+
 @media (min-width:470px) {
   [data-transform-center-model]{
     max-width: 72px;
   }
+  
 }
 
 @media (max-width:460px) {
