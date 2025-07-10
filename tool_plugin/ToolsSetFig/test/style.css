@@ -552,6 +552,15 @@ input[type="checkbox"]:checked + .btn-moreset{
   right: 4px;
 }
 
+[data-skillmodule="Useful & Starts"] span [data-skill-star]{
+  display: inline-block;
+  position: relative;
+  top: 8px;
+  left: 0;
+  width: 24px;
+  height: 24px;
+}
+
 [data-transform-center-box]{
   min-width: 70px;
   height: 70px;
@@ -708,7 +717,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 6px;
 }
 
-[data-skillmodel]{
+[data-skillmodule]{
   border-radius: 4px;
   padding: 6px;
   box-sizing: border-box;
@@ -717,7 +726,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 6px;
 }
 
-[data-skillmodel="Useful & Starts"]{
+[data-skillmodule="Useful & Starts"]{
   min-height: 80px;
 }
 
@@ -735,23 +744,35 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-skill-cover="end"]{
-  color: var(--boxBod);
-  opacity: 0.6;
+  opacity: 0.5;
   position: relative;
   overflow: hidden;
 }
 
-[data-skill-cover="end"]:hover{
+[data-skill-cover="end"]::after{
   content: '';
+  position: absolute;
   width: 110%;
   height: 110%;
   top: -10%;
   left: -10%;
-  background: url('https://www.ynyuset.cn/VI/logo_graph_bod.png');
+  background: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@499353f70d93db793ee5a4102aba38f934c27292/VI/logo_graph_bod.png');
+  background-size: 380px;
+  animation: bgMove 50s linear infinite;
 }
 
-[data-skillmodel="Useful & Starts"] [data-skill-cover="end"]{
-  opacity: 1;
+@keyframes bgMove {
+  to{
+    background-position: 380px 0;
+  }
+}
+
+[data-skillmodule="Useful & Starts"] [data-skill-cover="end"]{
+  opacity: 0.8;
+}
+
+[data-skillmodule="Useful & Starts"] [data-skill-cover="tips"]{
+  margin-top: -6px;
 }
 
 
@@ -896,7 +917,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 @media (min-width:470px) {
-  [data-transform-center-model]{
+  [data-transform-center-module]{
     max-width: 72px;
   }
   
@@ -960,7 +981,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 @media (max-width:300px) {
-  [data-transform-center-model]{
+  [data-transform-center-module]{
     max-width: 72px;
   }
 }

@@ -108,7 +108,7 @@ const dailog = document.querySelector('[data-dailog]');
 const dailogBox = document.querySelector('[data-dailog-box]');
 const skillSecNode = document.querySelectorAll('[data-skill-sec]');
 const skillStar = document.querySelectorAll('[data-skill-star]');
-const skillStarModel = document.querySelector('[data-skillmodel="Useful & Starts"]')
+const skillStarModel = document.querySelector('[data-skillmodule="Useful & Starts"]')
 
 /*表单绑定*/
 const userImg = document.getElementById('input-user-img');
@@ -481,19 +481,41 @@ skillStar.forEach(item =>{
     let skillNode = document.querySelector(`[data-skill-sec="${skillId}"]`);
     if(isStar == "true"){
       item.setAttribute('data-skill-star','false');
-      let numModel = cover.parentNode.childNodes.length;
+      let module = cover.parentNode.children;
+      let numModel = 0;
+      for(let i = 0; i < module.length; i++){
+        if(!module[i].getAttribute('data-skill-cover')){
+          numModel++;
+        };
+      };
       if(numModel%2 == 1){
-        cover.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'flex'
+        cover.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'none'
+      }else{
+        cover.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'block'
       }
       cover.parentNode.insertBefore(skillNode,cover);
       cover.remove();
     } else {
       item.setAttribute('data-skill-star','true');
-      let numModel = skillNode.parentNode.childNodes.length;
-      if(numModel%2 == 1){
-        skillNode.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'none'
+      let module = skillNode.parentNode.children;
+      let numModel = 0;
+      for(let i = 0; i < module.length; i++){
+        if(!module[i].getAttribute('data-skill-cover')){
+          numModel++;
+        };
+      };
+      
+      if(numModel == 1){
+        item.setAttribute('data-skill-star','false');
+        tipsAll(['禁止收藏整个模块的功能',"Don't star all functions of same module"],3000,4)
+      }else{
+        if(numModel%2 == 1){
+          skillNode.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'none'
+        }else{
+          skillNode.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'block'
+        }
+        moveSkillStar([skillId]);
       }
-      moveSkillStar([skillId]);
     };
     
   });

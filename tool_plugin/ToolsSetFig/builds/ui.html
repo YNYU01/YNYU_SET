@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@507e2c424efcac5470ec6ed7a2ba718d5a6c3c0b/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@499353f70d93db793ee5a4102aba38f934c27292/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -559,6 +559,15 @@ input[type="checkbox"]:checked + .btn-moreset{
   right: 4px;
 }
 
+[data-skillmodule="Useful & Starts"] span [data-skill-star]{
+  display: inline-block;
+  position: relative;
+  top: 8px;
+  left: 0;
+  width: 24px;
+  height: 24px;
+}
+
 [data-transform-center-box]{
   min-width: 70px;
   height: 70px;
@@ -715,7 +724,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 6px;
 }
 
-[data-skillmodel]{
+[data-skillmodule]{
   border-radius: 4px;
   padding: 6px;
   box-sizing: border-box;
@@ -724,7 +733,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 6px;
 }
 
-[data-skillmodel="Useful & Starts"]{
+[data-skillmodule="Useful & Starts"]{
   min-height: 80px;
 }
 
@@ -740,6 +749,39 @@ input[type="checkbox"]:checked + .btn-moreset{
 [data-theme="dark"] [data-skill-sec]{
   background: rgba(255, 255, 255, 0.03);
 }
+
+[data-skill-cover="end"]{
+  opacity: 0.5;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-skill-cover="end"]::after{
+  content: '';
+  position: absolute;
+  width: 110%;
+  height: 110%;
+  top: -10%;
+  left: -10%;
+  background: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@499353f70d93db793ee5a4102aba38f934c27292/VI/logo_graph_bod.png');
+  background-size: 380px;
+  animation: bgMove 50s linear infinite;
+}
+
+@keyframes bgMove {
+  to{
+    background-position: 380px 0;
+  }
+}
+
+[data-skillmodule="Useful & Starts"] [data-skill-cover="end"]{
+  opacity: 0.8;
+}
+
+[data-skillmodule="Useful & Starts"] [data-skill-cover="tips"]{
+  margin-top: -6px;
+}
+
 
 [data-skill-title]{
   --icon-info: var(--boxBod);
@@ -875,10 +917,17 @@ input[type="checkbox"]:checked + .btn-moreset{
   }
 }
 
+@media (max-width:469px) {
+  [data-any="vw470"]{
+    display: none;
+  }
+}
+
 @media (min-width:470px) {
-  [data-transform-center-model]{
+  [data-transform-center-module]{
     max-width: 72px;
   }
+  
 }
 
 @media (max-width:460px) {
@@ -939,7 +988,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 @media (max-width:300px) {
-  [data-transform-center-model]{
+  [data-transform-center-module]{
     max-width: 72px;
   }
 }
@@ -967,7 +1016,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@507e2c424efcac5470ec6ed7a2ba718d5a6c3c0b/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@499353f70d93db793ee5a4102aba38f934c27292/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -1392,14 +1441,23 @@ function toolMessage(data,app){
           <!--功能列表-->
           <div  data-skills-scroll class="wh100 df-ffc ovy noscrollbar">
             <div data-skills-box class="w100 df-ffc">
-              <div class="w100 df" data-skillmodel="Useful & Starts">
+              <div class="w100 df" data-skillmodule="Useful & Starts">
                 <!--自动添加-->
-                <div class="fl1 df-cc" data-skill-sec data-skill-cover="end" style="opacity: 0.6;"
-                data-en-text="Click the star of functional module to add it to here~">
-                  点击功能块右上角的星星即可收藏到此处~
+                <div class="fl1 df-cc" data-skill-sec data-skill-cover="end">
+                  <span data-skill-cover="tips">
+                    <span data-en-text="Click the star">
+                      点击功能块右上角的星星
+                    </span>
+                    <span data-skill-star="true">
+                        <btn-star></btn-star>
+                    </span>
+                    <span data-en-text="of functional module to add it to here~">
+                      即可收藏到此处~
+                    </span>
+                  </span>
                 </div>
               </div>
-              <div class="w100 df" data-skillmodel="Pixel & Transform">
+              <div class="w100 df" data-skillmodule="Pixel & Transform">
                 <div class="fl1" data-skill-sec="inSituRasterize">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -1466,11 +1524,11 @@ function toolMessage(data,app){
                       </div>
                       <div class="df-lc w100" style="max-width: 160px;">
                         <div data-skill-btnname data-any="vw240" data-en-text="Same height">按高度</div>
-                        <input id="uniform-set-w" type="text" value="" data-input data-input-type="float" data-input-must="0.001,100" style="text-align: center;">
+                        <input id="uniform-set-h" type="text" value="" data-input data-input-type="float" data-input-must="0.001,100" style="text-align: center;">
                         <div class="df-cc" data-input-unit="">h</div>
                       </div>
                     </div>
-                    <div data-transform-center-model class="df-ffc df-cc fl1" style="gap: 4px; margin-left: 10px;">
+                    <div data-transform-center-module class="df-ffc df-cc fl1" style="gap: 4px; margin-left: 10px;">
                       <div data-skill-btnname-top data-any="vw240" data-en-text="Scale center">缩放中心</div>
                       <div data-transform-center-box data-radio-value="1" class="w100" >
                         <div data-radio data-radio-data="1" data-radio-main="false" class="df-cc">▪</div>
@@ -1547,25 +1605,25 @@ function toolMessage(data,app){
                     <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="Reset All">重置全部</div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec data-skill-cover="end"></div>
+                <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodel="Text & Layer">
+              <div class="w100 df" data-skillmodule="Text & Layer">
                 <div class="fl1"  data-skill-sec="easeTransform">
                   
                 </div>
-                <div class="fl1"  data-skill-sec data-skill-cover="end"></div>
+                <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodel="Vector & Generate">
+              <div class="w100 df" data-skillmodule="Vector & Generate">
                 <div class="fl1"  data-skill-sec="easeTransform">
                   
                 </div>
-                <div class="fl1"  data-skill-sec data-skill-cover="end"></div>
+                <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodel="Style & Prototype">
+              <div class="w100 df" data-skillmodule="Style & Prototype">
                 <div class="fl1"  data-skill-sec="easeTransform">
                   
                 </div>
-                <div class="fl1"  data-skill-sec data-skill-cover="end"></div>
+                <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
             </div>
           </div>
@@ -1599,11 +1657,11 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@507e2c424efcac5470ec6ed7a2ba718d5a6c3c0b/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@507e2c424efcac5470ec6ed7a2ba718d5a6c3c0b/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@507e2c424efcac5470ec6ed7a2ba718d5a6c3c0b/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@507e2c424efcac5470ec6ed7a2ba718d5a6c3c0b/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@507e2c424efcac5470ec6ed7a2ba718d5a6c3c0b/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@499353f70d93db793ee5a4102aba38f934c27292/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@499353f70d93db793ee5a4102aba38f934c27292/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@499353f70d93db793ee5a4102aba38f934c27292/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@499353f70d93db793ee5a4102aba38f934c27292/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@499353f70d93db793ee5a4102aba38f934c27292/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 let skillSecInfo = [
@@ -1716,7 +1774,7 @@ const dailog = document.querySelector('[data-dailog]');
 const dailogBox = document.querySelector('[data-dailog-box]');
 const skillSecNode = document.querySelectorAll('[data-skill-sec]');
 const skillStar = document.querySelectorAll('[data-skill-star]');
-const skillStarModel = document.querySelector('[data-skillmodel="Useful & Starts"]')
+const skillStarModel = document.querySelector('[data-skillmodule="Useful & Starts"]')
 
 /*表单绑定*/
 const userImg = document.getElementById('input-user-img');
@@ -2089,19 +2147,41 @@ skillStar.forEach(item =>{
     let skillNode = document.querySelector(`[data-skill-sec="${skillId}"]`);
     if(isStar == "true"){
       item.setAttribute('data-skill-star','false');
-      let numModel = cover.parentNode.childNodes.length;
+      let module = cover.parentNode.children;
+      let numModel = 0;
+      for(let i = 0; i < module.length; i++){
+        if(!module[i].getAttribute('data-skill-cover')){
+          numModel++;
+        };
+      };
       if(numModel%2 == 1){
-        cover.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'flex'
+        cover.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'none'
+      }else{
+        cover.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'block'
       }
       cover.parentNode.insertBefore(skillNode,cover);
       cover.remove();
     } else {
       item.setAttribute('data-skill-star','true');
-      let numModel = skillNode.parentNode.childNodes.length;
-      if(numModel%2 == 1){
-        skillNode.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'none'
+      let module = skillNode.parentNode.children;
+      let numModel = 0;
+      for(let i = 0; i < module.length; i++){
+        if(!module[i].getAttribute('data-skill-cover')){
+          numModel++;
+        };
+      };
+      
+      if(numModel == 1){
+        item.setAttribute('data-skill-star','false');
+        tipsAll(['禁止收藏整个模块的功能',"Don't star all functions of same module"],3000,4)
+      }else{
+        if(numModel%2 == 1){
+          skillNode.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'none'
+        }else{
+          skillNode.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'block'
+        }
+        moveSkillStar([skillId]);
       }
-      moveSkillStar([skillId]);
     };
     
   });
