@@ -14,6 +14,51 @@ let skillSecInfo = [
     name: ["等比缩放","uniform scale"],
     tips:  ["",""],
   },
+  {
+    id: 'alterImageFill',
+    name: ["图片填充修改","alter image fill"],
+    tips:  ["",""],
+  },
+  {
+    id: 'clipGrid',
+    name: ["宫格裁切","clip grid"],
+    tips:  ["",""],
+  },
+  {
+    id: 'SplitText',
+    name: ["拆分文本","split text"],
+    tips:  ["",""],
+  },
+  {
+    id: 'MergeText',
+    name: ["合并文本","merge text"],
+    tips:  ["",""],
+  },
+  {
+    id: '',
+    name: ["",""],
+    tips:  ["",""],
+  },
+  {
+    id: '',
+    name: ["",""],
+    tips:  ["",""],
+  },
+  {
+    id: '',
+    name: ["",""],
+    tips:  ["",""],
+  },
+  {
+    id: '',
+    name: ["",""],
+    tips:  ["",""],
+  },
+  {
+    id: '',
+    name: ["",""],
+    tips:  ["",""],
+  },
 ]
 
 //let userSkillStar = ['inSituRasterize'];
@@ -139,7 +184,8 @@ window.addEventListener('load',()=>{
   };
   reTV();
   loadFont();
-  addSkillTitle()
+  reSkillNum();
+  addSkillTitle();
   addToUserTips();
   setInterval(() => {
     addToUserTips();
@@ -481,43 +527,23 @@ skillStar.forEach(item =>{
     let skillNode = document.querySelector(`[data-skill-sec="${skillId}"]`);
     if(isStar == "true"){
       item.setAttribute('data-skill-star','false');
-      let module = cover.parentNode.children;
-      let numModel = 0;
-      for(let i = 0; i < module.length; i++){
-        if(!module[i].getAttribute('data-skill-cover')){
-          numModel++;
-        };
-      };
-      if(numModel%2 == 1){
-        cover.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'none'
-      }else{
-        cover.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'block'
-      }
       cover.parentNode.insertBefore(skillNode,cover);
       cover.remove();
     } else {
-      item.setAttribute('data-skill-star','true');
-      let module = skillNode.parentNode.children;
-      let numModel = 0;
-      for(let i = 0; i < module.length; i++){
-        if(!module[i].getAttribute('data-skill-cover')){
-          numModel++;
-        };
-      };
-      
-      if(numModel == 1){
-        item.setAttribute('data-skill-star','false');
+      let numModel = skillNode.parentNode.getAttribute('data-skillnum');
+      if(numModel == 2){
         tipsAll(['禁止收藏整个模块的功能',"Don't star all functions of same module"],3000,4)
       }else{
-        if(numModel%2 == 1){
-          skillNode.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'none'
-        }else{
-          skillNode.parentNode.querySelector('[data-skill-cover="end"]').style.display = 'block'
-        }
+        item.setAttribute('data-skill-star','true');
         moveSkillStar([skillId]);
       }
     };
-    
+    reSkillNum();
+    skillNode.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'nearest',
+    });
   });
 });
 
@@ -532,7 +558,17 @@ function moveSkillStar(stars){
       skillStarModel.prepend(skillNode);
     };
   });
-}
+};
+
+function reSkillNum(){
+  let models = document.querySelectorAll('[data-skillmodule]');
+  models.forEach(model => {
+    let skills = model.querySelectorAll('[data-skill-sec]');
+    model.setAttribute('data-skillnum',skills.length);//剩一个时不能继续收藏
+    model.setAttribute('data-skillnum-odd',skills.length%2);//单数显示占位，排版好看些
+  });
+};
+
 //重置全部
 document.querySelectorAll('[data-reset-all]').forEach(reall => {
   reall.addEventListener('click',()=>{
@@ -566,6 +602,7 @@ let observer = new MutationObserver((mutations) => {
         case 'data-number-value':getUserNumber(mutation.target); break;
         case 'data-text-value':getUserText(mutation.target); break;
         case 'data-select-value':getUserSelect(mutation.target); break;
+        case 'data-radio-value':getUserRadio(mutation.target); break;
       }
     }
   })
@@ -593,6 +630,11 @@ userEvent_text.forEach(item => {
 let userEvent_select = document.querySelectorAll('[data-select]');
 userEvent_select.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-select-value']};
+  observer.observe(item,config);
+});
+let userEvent_radio = document.querySelectorAll('[data-radio-value]');
+userEvent_radio.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-radio-value']};
   observer.observe(item,config);
 });
 
@@ -634,7 +676,6 @@ function getUserNumber(node){
 
 function getUserText(node){
   let text = node.getAttribute('data-text-value');
-
   //console.log(text)
 }
 
@@ -643,10 +684,51 @@ function getUserSelect(node){
   if(userSelect){
     if(node.previousElementSibling == frameName){
       frameName.value = userSelect;
+    };
+  };
+};
+
+function getUserRadio(node){
+  let userRadio= node.getAttribute('data-radio-value');
+  if(userRadio){
+    if(node.getAttribute('data-pixelscale-set') !== null){
+      pixelScale.value = userRadio;
+    };
+    if(node.getAttribute('data-clip-w-set')  !== null){
+      let set = node.parentNode.parentNode.querySelector('[data-clip-w]');
+      let sets = set.querySelectorAll('[data-clip-set]');
+      set.setAttribute('data-clip-w',userRadio);
+      sets.forEach(item => {
+        item.setAttribute('style','');
+      });
+    }
+    if(node.getAttribute('data-clip-h-set')  !== null){
+      let set = node.parentNode.parentNode.querySelector('[data-clip-h]');
+      let sets = set.querySelectorAll('[data-clip-set]');
+      set.setAttribute('data-clip-h',userRadio);
+      sets.forEach(item => {
+        item.setAttribute('style','');
+      });
     }
   }
 }
 
+//栅格化像素倍率绑定
+pixelScale.addEventListener('change',()=>{
+  let set = document.querySelector('[data-pixelscale-set]');
+  let sets = set.querySelectorAll('[data-radio-data]');
+  let num = [];
+  sets.forEach(item => {
+    num.push(item.getAttribute('data-radio-data'));
+  })
+  if(num.includes(pixelScale.value)){
+    set.querySelector(`[data-radio-data="${pixelScale.value}"]`);
+  }else{
+    num.forEach(item => {
+      set.querySelector(`[data-radio-data="${item}"]`).setAttribute('data-radio-main','false')
+    });
+  };
+});
 
 //生成导出标签
 function addExport(frameDataOld,frameDataNew,isNew) {

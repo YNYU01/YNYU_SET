@@ -725,7 +725,9 @@ function COMP_MAIN(){
       let radio = item.parentNode;
       let oldpick = radio.querySelector('[data-radio-main="true"]');
       let data = item.getAttribute('data-radio-data');
-      oldpick.setAttribute('data-radio-main','false');
+      if(oldpick){
+        oldpick.setAttribute('data-radio-main','false');
+      }
       item.setAttribute('data-radio-main','true');
       radio.setAttribute('data-radio-value',data);
     });

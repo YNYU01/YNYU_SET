@@ -713,7 +713,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-skills-box]{
-  padding-top: 6px;
+  padding-top: 10px;
   gap: 6px;
 }
 
@@ -747,6 +747,10 @@ input[type="checkbox"]:checked + .btn-moreset{
   opacity: 0.5;
   position: relative;
   overflow: hidden;
+}
+
+[data-skillnum-odd="1"] [data-skill-cover="end"]{
+  display: none;
 }
 
 [data-skill-cover="end"]::after{
@@ -809,6 +813,10 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 4px;
 }
 
+[data-skill-more]{
+  gap: 4px;
+}
+
 [data-skewscale-box]{
   width: 100%;
   height: 60px;
@@ -842,6 +850,179 @@ input[type="checkbox"]:checked + .btn-moreset{
   scale(
     calc(var(--scaleX,100) * 1%),
     calc(var(--scaleY,100) * 1%));
+}
+
+[data-select-node]{
+  width: 100%;
+  height: 38px;
+  font-size: 10px;
+  text-wrap: wrap;
+  text-align: center;
+  opacity: 0.6;
+  margin: 4px 0;
+}
+
+[data-select-node="true"]{
+  opacity: 1;
+}
+
+[data-select-node="false"]::after{
+  content: var(--tips-text,'未选中任何图层');
+}
+
+[data-select-node="false"] ~ [data-skill-more]{
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+[data-language="En"] [data-select-node="false"]::after{
+  content: var(--tips-text-en,'No layer selected');
+}
+
+[data-skill-gap]{
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+[data-clip-view]{
+  width: 100%;
+  height: 150px;
+  position: relative;
+  margin: 4px 0;
+}
+
+[data-clip-select]{
+  /*
+  --select-h: 1400;
+  --select-w: 700;
+  --w: auto;
+  */
+  --wh: calc(var(--select-w)/var(--select-h));
+  aspect-ratio: var(--wh,1);
+  width: var(--w,100%);
+  height: var(--h,100%);
+  max-height: calc(100% - 30px);
+  max-width: calc(100% - 30px);
+  border-radius: 0;
+}
+
+[data-clip-set-box="w"]{
+  width: 100%;
+  height: calc(100% + 30px);
+  top: -15px;
+  left: 0;
+}
+
+[data-clip-set-box="h"]{
+  width: calc(100% + 30px);
+  height: 100%;
+  top: 0;
+  left: -15px;
+}
+
+[data-clip-w="0"]{
+  --dis-w1: none;
+  --dis-w2: none;
+}
+[data-clip-w="2"]{
+  --xx: 33.3%;
+  --dis-w1: block;
+  --dis-w2: none;
+}
+[data-clip-w="4"]{
+  --xx: 20%;
+  --dis-w1: block;
+  --dis-w2: block;
+}
+[data-clip-h="0"]{
+  --dis-h1: none;
+  --dis-h2: none;
+}
+[data-clip-h="2"]{
+  --yy: 33.3%;
+  --dis-h1: block;
+  --dis-h2: none;
+}
+[data-clip-h="4"]{
+  --yy: 20%;
+  --dis-h1: block;
+  --dis-h2: block;
+}
+
+[data-clip-set="x1"],[data-clip-set="x2"]{
+  display: var(--dis-w1);
+}
+[data-clip-set="x3"],[data-clip-set="x4"]{
+  display: var(--dis-w2);
+}
+[data-clip-set="y1"],[data-clip-set="y2"]{
+  display: var(--dis-h1);
+}
+[data-clip-set="y3"],[data-clip-set="y4"]{
+  display: var(--dis-h2);
+}
+
+
+[data-clip-set-box="w"] [data-clip-set]{
+  width: var(--x,var(--xx));
+  border-width:0 1px 0 0;
+  resize: horizontal;
+  max-width: calc(100% - 10px);
+  min-width: 1px;
+}
+
+[data-clip-set-box="w"] [data-clip-set]::after{
+  right: -4px;
+  bottom: 0;
+}
+
+[data-clip-set-box="w"] [data-clip-set]::before{
+  right: 6px;
+  bottom: 0;
+}
+
+[data-clip-set-box="h"] [data-clip-set]{
+  height: var(--y,var(--yy));
+  border-width:0  0 1px 0;
+  resize: vertical;
+  max-height: calc(100% - 10px);
+  min-height: 1px;
+}
+
+[data-clip-set-box="h"] [data-clip-set]::after{
+  right: 0;
+  bottom: -4px;
+}
+
+[data-clip-set-box="h"] [data-clip-set]::before{
+  right: 0;
+  bottom: 6px;
+}
+
+[data-clip-set]{
+  border-style: solid;
+  border-color: var(--boxBod);
+}
+
+[data-clip-set]::after{
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--themeColor);
+  border-radius: 4px;
+}
+
+[data-clip-set]::-webkit-resizer{
+  display: none;
+}
+
+[data-clip-set]::before{
+  content: attr(data-clip-set);
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  font-size: 8px;
 }
 
 /*模块类--*/
@@ -1004,6 +1185,10 @@ input[type="checkbox"]:checked + .btn-moreset{
 
   [data-skill-sec]{
     min-width: 160px;
+  }
+
+  [data-skill-more]{
+    flex-wrap: wrap;
   }
 
 }
