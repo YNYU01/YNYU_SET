@@ -19,6 +19,11 @@
   --code8:#527ac4;
   --code9:#e09524;
   --code10:#ec657c;
+  /*初始化*/
+  --select-w: 100;
+  --select-h: 100;
+  --w: auto;
+  --h: 100%;
 }
 
 html{
@@ -62,6 +67,9 @@ p [data-highlight]{
 
 [data-theme="dark"] [data-radio-main="true"] {
   --mainColor: inherit;
+}
+
+[data-radio-main="true"] {
   background: var(--boxGry);
 }
 
@@ -829,18 +837,25 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: flex;
   justify-content: center;
   align-items: center;
-  box-sizing: border-box;
   top: 0;
   left: calc(50% - 30px);
   width: 60px;
   height: 60px;
-  border: 1px var(--boxGry) dashed;
   z-index: 0;
 }
 
 [data-skewscale-view]{
-  width: 20px;
-  height: 20px;
+  /**
+  --select-h: 100;
+  --select-w: 3000;
+  --h: auto;/*谁小谁auto*/
+  /**/
+  --wh: calc(var(--select-w)/var(--select-h));
+  aspect-ratio: var(--wh,1);
+  width: var(--w,100%);
+  height: var(--h,100%);
+  max-height: calc(100% - 10px);
+  max-width: calc(100% - 40px);
   border: 1px var(--themeColor) solid;
   box-sizing: border-box;
   transform: 
@@ -854,6 +869,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-select-node]{
   width: 100%;
+  max-width: 560px;
   height: 38px;
   font-size: 10px;
   text-wrap: wrap;
@@ -862,21 +878,21 @@ input[type="checkbox"]:checked + .btn-moreset{
   margin: 4px 0;
 }
 
-[data-select-node="true"]{
+[data-select="true"] [data-select-node]{
   opacity: 1;
 }
 
-[data-select-node="false"]::after{
+[data-select="false"] [data-select-node]::after{
   content: var(--tips-text,'未选中任何图层');
 }
 
-[data-select-node="false"] ~ [data-skill-more]{
-  pointer-events: none;
-  opacity: 0.6;
+[data-language="En"] [data-select-node]::after{
+  content: var(--tips-text-en,'No layer selected');
 }
 
-[data-language="En"] [data-select-node="false"]::after{
-  content: var(--tips-text-en,'No layer selected');
+[data-select="false"] [data-skill-line]{
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 [data-skill-gap]{
@@ -886,17 +902,17 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-clip-view]{
   width: 100%;
-  height: 150px;
+  height: 250px;
   position: relative;
   margin: 4px 0;
 }
 
 [data-clip-select]{
-  /*
-  --select-h: 1400;
-  --select-w: 700;
-  --w: auto;
-  */
+  /**
+  --select-h: 1200;
+  --select-w: 100;
+  --w: auto;/*谁小谁auto*/
+  /**/
   --wh: calc(var(--select-w)/var(--select-h));
   aspect-ratio: var(--wh,1);
   width: var(--w,100%);

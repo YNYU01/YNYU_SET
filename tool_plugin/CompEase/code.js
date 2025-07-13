@@ -6,19 +6,19 @@
 - 引用开源库的部分应遵循对应许可
 - 使用当前代码时禁止删除或修改本声明
 */
-var UI = [300,660];
-var vX = figma.viewport.bounds.x,vY = figma.viewport.bounds.y;
+let UI = [300,660];
+let vX = figma.viewport.bounds.x,vY = figma.viewport.bounds.y;
 figma.skipInvisibleInstanceChildren = true;//忽略不可见元素及其子集
 figma.showUI(__html__,{position:{x:vX,y:vY},themeColors:true});
 figma.ui.resize(UI[0], UI[1]);
 figma.loadAllPagesAsync()
 
-var NullText = "";
-var EnterText = "[enter]";
-var diffColorTime = 0;
-var usePluginTime = "0";
-var setTags = ["fillcolor","strokecolor","fontsize","view","fillstyle","strokestyle"]
-var tagsMust = new RegExp(`\\#[^#\\s]+\\.(${setTags.join('|')})`,'g')
+let NullText = "";
+let EnterText = "[enter]";
+let diffColorTime = 0;
+let usePluginTime = "0";
+let setTags = ["fillcolor","strokecolor","fontsize","view","fillstyle","strokestyle"]
+let tagsMust = new RegExp(`\\#[^#\\s]+\\.(${setTags.join('|')})`,'g')
 
 if(figma.currentPage.parent.getPluginData("usePluginTime")){
     usePluginTime = figma.currentPage.parent.getPluginData("usePluginTime")* 1 + 1 ;
@@ -45,33 +45,33 @@ figma.ui.onmessage = (message) => {
     }
     //建立表格
     if ( type == 'creTable'){
-        var a = figma.currentPage;
-        var b = a.selection;
-        var viewX = figma.viewport.center.x - ((figma.viewport.bounds.width/2  - 300)* figma.viewport.zoom)/// figma.viewport.bound.width/2 + 300;
-        var viewY = figma.viewport.center.y;
-        var x = viewX;
-        var y = viewY;
-        var H = Number(info[0]);
-        var L = Number(info[1]);
+        let a = figma.currentPage;
+        let b = a.selection;
+        let viewX = figma.viewport.center.x - ((figma.viewport.bounds.width/2  - 300)* figma.viewport.zoom)/// figma.viewport.bound.width/2 + 300;
+        let viewY = figma.viewport.center.y;
+        let x = viewX;
+        let y = viewY;
+        let H = Number(info[0]);
+        let L = Number(info[1]);
         if ( b.length < 2){
             if ( b.length == 1 && b[0].type == "TEXT"){
-                var data = tableToData(b[0].characters,true)
+                let data = tableToData(b[0].characters,true)
                 H = data[0].length;
                 L = data.length;
                 //console.log(H,L)
                 x = b[0].x + b[0].width + 60;
                 y = b[0].y;
             }
-            var node1 = figma.createComponent();
+            let node1 = figma.createComponent();
             node1.x = x;
             node1.y = y;
             creTableSet(node1, "table-表头",true,true,"表头文案")//需添加表格属性的节点，命名，是否显示区分色，是否需要填充文案，需要填充的文案/克隆的节点
-            var node2 = figma.createComponent();
+            let node2 = figma.createComponent();
             node2.x = node1.x;
             node2.y = node1.y + 60;
             creTableSet(node2, "table-数据",false,true,"数据文案")
 
-            var list = figma.createFrame()
+            let list = figma.createFrame()
             list.name = "#列";
             list.layoutPositioning = "AUTO";
             list.clipsContent = false;
@@ -87,7 +87,7 @@ figma.ui.onmessage = (message) => {
             list.itemReverseZIndex = true;//正向堆叠，方便伪合并表格
             if ( H > 2){
                 list.appendChild(node1.createInstance());
-                for ( var e = 1; e < H; e++){
+                for ( let e = 1; e < H; e++){
                     list.appendChild(node2.createInstance());
                 }
             } else {
@@ -104,7 +104,7 @@ figma.ui.onmessage = (message) => {
             list.counterAxisAlignItems = "CENTER"; 
             list.counterAxisSizingMode = "AUTO";
             
-            var table = figma.createFrame()
+            let table = figma.createFrame()
             table.x = x + 200;
             table.y = y;
             table.name = "#table";
@@ -125,7 +125,7 @@ figma.ui.onmessage = (message) => {
             table.itemReverseZIndex = true;//正向堆叠，方便伪合并表格
             if ( L > 0 ){
                 table.appendChild(list);
-                for ( var e = 1; e < L; e++){
+                for ( let e = 1; e < L; e++){
                     table.appendChild(list.clone());
                 }
             }else{
@@ -141,10 +141,10 @@ figma.ui.onmessage = (message) => {
         if ( b.length == 2){
             if ( b[0].name.split("表头").length !== 1 && b[1].name.split("数据").length !== 1 || b[1].name.split("表头").length !== 1 && b[0].name.split("数据").length !== 1){
 
-                var list = figma.createFrame();
+                let list = figma.createFrame();
                 list.name = "#列";
                 list.fills = [];
-                for ( var i = 0; i < b.length; i++){
+                for ( let i = 0; i < b.length; i++){
                     if(b[i].type == "COMPONENT"){
                         x = b[0].x;
                         y = b[0].y + 80;
@@ -153,7 +153,7 @@ figma.ui.onmessage = (message) => {
                         }
                         if (b[i].name.split("数据").length !== 1){
                             if( H > 0){
-                                for ( var e = 0; e < H; e++){
+                                for ( let e = 0; e < H; e++){
                                     list.insertChild(e + 1,b[i].createInstance());
                                 }
                             } else {
@@ -171,7 +171,7 @@ figma.ui.onmessage = (message) => {
                         }
                         if (b[i].name.split("数据").length !== 1){
                             if( H > 0){
-                                for ( var e = 0; e < H; e++){
+                                for ( let e = 0; e < H; e++){
                                     list.insertChild(e + 1,b[i].clone());
                                 }
                             } else {
@@ -193,7 +193,7 @@ figma.ui.onmessage = (message) => {
                 list.paddingBottom = 0;
                 list.paddingLeft = 0;
                 list.paddingRight= 0;
-                var table = figma.createFrame()
+                let table = figma.createFrame()
                 table.x = x;
                 table.y = y;
                 table.name = "#table";
@@ -213,7 +213,7 @@ figma.ui.onmessage = (message) => {
                 table.fills = [];
                 if ( L > 0){
                     table.appendChild(list);
-                    for ( var e = 1; e < L; e++){
+                    for ( let e = 1; e < L; e++){
                         table.appendChild(list.clone());
                     }
                 }else{
@@ -229,26 +229,26 @@ figma.ui.onmessage = (message) => {
     }
     //表格填充数据
     if ( type == 'reTable'){
-        var a = figma.currentPage;
-        var b = a.selection;
+        let a = figma.currentPage;
+        let b = a.selection;
         if (b.length == 1 && hasKeyName(b[0],"table")){
             
             if (hasKeyName(b[0],"横")){
-                var datas = tableToData(info.trim(),true);
-                var data = datas[0].map((col, i) => datas.map(row => row[i]))
+                let datas = tableToData(info.trim(),true);
+                let data = datas[0].map((col, i) => datas.map(row => row[i]))
             } else {
-                var data = tableToData(info.trim(),true) 
+                let data = tableToData(info.trim(),true) 
             }
-            var H = data[0].length - b[0].children[0].children.length;
-            var L = data.length - b[0].children.length;
+            let H = data[0].length - b[0].children[0].children.length;
+            let L = data.length - b[0].children.length;
 
             addTable(b,H,L)
-            for(var i = 0; i < b[0].children.length; i++){             
+            for(let i = 0; i < b[0].children.length; i++){             
                 if (hasKeyName(b[0].children[i],"列")){
-                    var c = b[0].children[i].children;
-                    for (var ii = 0; ii < c.length; ii++){
-                        var comps = Object.keys(c[ii].componentProperties)
-                        var properties = [];
+                    let c = b[0].children[i].children;
+                    for (let ii = 0; ii < c.length; ii++){
+                        let comps = Object.keys(c[ii].componentProperties)
+                        let properties = [];
                         comps.forEach(item => {
                             properties.push({name:item.split("#")[0],id:item.split("#")[1],type:c[ii].componentProperties[item].type})
                         })
@@ -268,15 +268,15 @@ figma.ui.onmessage = (message) => {
         }
 
         if (b.length == 1 && (hasKeyName(b[0],"数据流")) ){
-            var data = tableToData(info.trim(),false)
-            var H = 0;
-            var L = data.length - b[0].children.length;
+            let data = tableToData(info.trim(),false)
+            let H = 0;
+            let L = data.length - b[0].children.length;
 
             addTable(b,H,L)
-            var c = b[0].children
-            for (var ii = 0; ii < c.length; ii++){
-                var comps = Object.keys(c[ii].componentProperties)
-                var properties = [];
+            let c = b[0].children
+            for (let ii = 0; ii < c.length; ii++){
+                let comps = Object.keys(c[ii].componentProperties)
+                let properties = [];
                 comps.forEach(item => {
                     properties.push({name:item.split("#")[0],id:item.split("#")[1],type:c[ii].componentProperties[item].type})
                 })
@@ -295,11 +295,11 @@ figma.ui.onmessage = (message) => {
         }
 
         if (b.length == 1 && (hasKeyName(b[0],"列")) ){
-            var data = tableToData(info.trim(),false)
-            var c = b[0].children
-            for (var ii = 0; ii < c.length; ii++){
-                var comps = Object.keys(c[ii].componentProperties)
-                var properties = [];
+            let data = tableToData(info.trim(),false)
+            let c = b[0].children
+            for (let ii = 0; ii < c.length; ii++){
+                let comps = Object.keys(c[ii].componentProperties)
+                let properties = [];
                 comps.forEach(item => {
                     properties.push({name:item.split("#")[0],id:item.split("#")[1],type:c[ii].componentProperties[item].type})
                 })
@@ -318,18 +318,18 @@ figma.ui.onmessage = (message) => {
         }
 
         if (b.length > 1 ){
-            var data = tableToData(info.trim(),false)
-            var c = [];
+            let data = tableToData(info.trim(),false)
+            let c = [];
             b.forEach(item => {
                 if(item.type == "INSTANCE" ){
                     c.push(item)
                 }
-                var instances = item.findAll((node) => node.type == "INSTANCE" )
+                let instances = item.findAll((node) => node.type == "INSTANCE" )
                 c.push(...instances)
             })
-            for (var ii = 0; ii < c.length; ii++){
-                var comps = Object.keys(c[ii].componentProperties)
-                var properties = [];
+            for (let ii = 0; ii < c.length; ii++){
+                let comps = Object.keys(c[ii].componentProperties)
+                let properties = [];
                 comps.forEach(item => {
                     properties.push({name:item.split("#")[0],id:item.split("#")[1],type:c[ii].componentProperties[item].type})
                 })
@@ -356,20 +356,20 @@ figma.ui.onmessage = (message) => {
     }
     //读取表格数据
     if ( type == 'getTableData'){
-        var a = figma.currentPage;
-        var b = a.selection;
+        let a = figma.currentPage;
+        let b = a.selection;
         if(b.length == 1 && b[0].type !==  "INSTANCE"){
             if(b[0].type ==  "COMPONENT"){
                 findCompData(b)
             } else if(b[0].name.split("table").length > 1 ) {
-                var H = b[0].children[0].children.length;
-                var L = b[0].children.length;
-                var docData = Array(H).fill().map(() => Array(L).fill(NullText))
+                let H = b[0].children[0].children.length;
+                let L = b[0].children.length;
+                let docData = Array(H).fill().map(() => Array(L).fill(NullText))
                 
                 //console.log(docData)
-                for(var i = 0; i < b[0].children.length; i++){
-                    var c = b[0].children[i].children;
-                    for (var ii = 0; ii < c.length; ii++){
+                for(let i = 0; i < b[0].children.length; i++){
+                    let c = b[0].children[i].children;
+                    for (let ii = 0; ii < c.length; ii++){
                         docData[ii][i] = Object.values(c[ii].componentProperties).filter(item => item.type == "TEXT")[0].value
                         if(i == b[0].children.length - 1 && ii == c.length - 1){
                             //console.log(docData)
@@ -384,7 +384,7 @@ figma.ui.onmessage = (message) => {
             }              
         }else{
           if(!b.some(item => item.type !== "INSTANCE")){
-            var names = [];
+            let names = [];
             b.forEach((item,index) => {
             item.getMainComponentAsync()
             .then(maincomp =>{
@@ -413,26 +413,26 @@ figma.ui.onmessage = (message) => {
         }
 
         function findCompData(nodes){
-            var values = [];
-            var keys;
+            let values = [];
+            let keys;
             if(nodes[0].type == "COMPONENT"){
                 keys = Object.keys(nodes[0].componentPropertyDefinitions);
-                var compChild = nodes[0].findAll((item) => item.isExposedInstance == true);
+                let compChild = nodes[0].findAll((item) => item.isExposedInstance == true);
                 compChild.forEach(item => {
-                    var keyss = Object.keys(item.componentProperties);
+                    let keyss = Object.keys(item.componentProperties);
                     keys.push(...keyss);
                 })
                 values.push(keys.map(key => key.split("#")[0]));
-                var datas = [];
+                let datas = [];
                 datas.push(...Object.values(nodes[0].componentPropertyDefinitions).map(item => item.defaultValue));
                 compChild.forEach(item => {
                     datas.push(...Object.values(item.componentProperties).map(item => item.value))
                 })
                 datas.forEach((item,index) => {
                     if(hasKeyName({name:item.toString()},"\n")){
-                        var texts = item.split('\n')
-                        var value = ''
-                        for(var e = 0; e < texts.length; e++){
+                        let texts = item.split('\n')
+                        let value = ''
+                        for(let e = 0; e < texts.length; e++){
                             if(e == texts.length - 1){
                             value += texts[e]
                             } else {
@@ -454,21 +454,21 @@ figma.ui.onmessage = (message) => {
                 keys = Object.keys(nodes[0].componentProperties);
                 if(nodes[0].exposedInstances){
                     nodes[0].exposedInstances.forEach(item => {
-                        var keyss = Object.keys(item.componentProperties);
+                        let keyss = Object.keys(item.componentProperties);
                         keys.push(...keyss);
                     })
                 }
                 values.push(keys.map(key => key.split("#")[0]))
                 nodes.forEach((node,index) => {                
-                    var datas = []
-                    for(var i = 0; i < keys.length; i++){
-                        var value = node.componentProperties[keys[i]]
+                    let datas = []
+                    for(let i = 0; i < keys.length; i++){
+                        let value = node.componentProperties[keys[i]]
                         if(value){
                             value = value.value;
                             if(hasKeyName({name:value},"\n")){
-                            var texts = value.split('\n')
+                            let texts = value.split('\n')
                             value = ''
-                            for(var e = 0; e < texts.length; e++){
+                            for(let e = 0; e < texts.length; e++){
                                 if(e == texts.length - 1){
                                 value += texts[e]
                                 } else {
@@ -487,14 +487,14 @@ figma.ui.onmessage = (message) => {
                     }
                     if(node.exposedInstances){
                     node.exposedInstances.forEach(items => {
-                        for(var i = 0; i < keys.length; i++){
-                        var value = items.componentProperties[keys[i]]
+                        for(let i = 0; i < keys.length; i++){
+                        let value = items.componentProperties[keys[i]]
                         if(value){
                             value = value.value;
                             if(hasKeyName({name:value},"\n")){
-                            var texts = value.split('\n')
+                            let texts = value.split('\n')
                             value = ''
-                            for(var e = 0; e < texts.length; e++){
+                            for(let e = 0; e < texts.length; e++){
                                 if(e == texts.length - 1){
                                 value += texts[e]
                                 } else {
@@ -525,8 +525,8 @@ figma.ui.onmessage = (message) => {
         }
     }
     if ( type == 'getTagsData'){
-        var a = figma.currentPage;
-        var b = a.selection;
+        let a = figma.currentPage;
+        let b = a.selection;
         if(b.length == 1 && b[0].type !==  "INSTANCE"){
             if(b[0].type ==  "COMPONENT"){
                 findTagsData(b)
@@ -537,7 +537,7 @@ figma.ui.onmessage = (message) => {
             }              
         }else{
           if(!b.some(item => item.type !== "INSTANCE")){
-            var names = [];
+            let names = [];
             b.forEach((item,index) => {
             item.getMainComponentAsync()
             .then(maincomp =>{
@@ -566,14 +566,14 @@ figma.ui.onmessage = (message) => {
         }
 
         function findTagsData(nodes){
-            var values = [];
-            var keys = [];
+            let values = [];
+            let keys = [];
 
-            var keynodes = [];
+            let keynodes = [];
             if(hasKeyName(nodes[0],"#") && hasKeyName(nodes[0],".")){
                 keynodes.push(nodes[0])
             }
-            var childs = nodes[0].findAll((item) => hasKeyName(item,"#") && hasKeyName(item,"."));
+            let childs = nodes[0].findAll((item) => hasKeyName(item,"#") && hasKeyName(item,"."));
             keynodes.push(...childs)
             
             keynodes.forEach(node => {
@@ -584,18 +584,18 @@ figma.ui.onmessage = (message) => {
             values.push(keys)
 
             nodes.forEach(item => {
-                var keynodess = [];
+                let keynodess = [];
                 if(hasKeyName(item,"#") && hasKeyName(item,".")){
                     keynodess.push(item)
                 }
-                var childss = item.findAll((items) => hasKeyName(items,"#") && hasKeyName(items,"."));
+                let childss = item.findAll((items) => hasKeyName(items,"#") && hasKeyName(items,"."));
                 keynodess.push(...childss);
 
-                var value = Array(keys.length).fill().map(() => '')
+                let value = Array(keys.length).fill().map(() => '')
                 keynodess.forEach(node => {
                     keys.forEach((items,indexs) => {
                         if(hasKeyName(node,items)){
-                            var keyname = items.split('.')[1]
+                            let keyname = items.split('.')[1]
                             if(keyname == "fillcolor"){
                                 value[indexs] = rgbToHex(node.fills[0].color)
                             }
@@ -611,7 +611,7 @@ figma.ui.onmessage = (message) => {
                             if(keyname == "fillstyle"){
                                 figma.getLocalPaintStylesAsync()
                                 .then(list => {
-                                    var name = list.find(item => item.id == node.fillStyleId).name
+                                    let name = list.find(item => item.id == node.fillStyleId).name
                                     if(name){
                                         value[indexs] = name
                                     }
@@ -623,7 +623,7 @@ figma.ui.onmessage = (message) => {
                             if(keyname == "strokestyle"){
                                 figma.getLocalPaintStylesAsync()
                                 .then(list => {
-                                    var name = list.find(item => item.id == node.fillStyleId).name
+                                    let name = list.find(item => item.id == node.fillStyleId).name
                                     if(name){
                                         value[indexs] = name
                                     }
@@ -654,20 +654,20 @@ figma.ui.onmessage = (message) => {
     }
     //从表格文本命名
     if ( type == 'reTableName'){
-        var a = figma.currentPage;
-        var b = a.selection;
+        let a = figma.currentPage;
+        let b = a.selection;
 
         if (b.length == 1 && b[0].name.split('数据流').length !== 1){
-            var data = tableToData(info.trim(),false)
-            var H = 0;
-            var L = data.length - b[0].children.length;
+            let data = tableToData(info.trim(),false)
+            let H = 0;
+            let L = data.length - b[0].children.length;
             addTable(b,H,L)
-            for(var i = 0; i < b[0].children.length; i++){
+            for(let i = 0; i < b[0].children.length; i++){
                 b[0].children[i].name = data[i][0]
             }         
         } else {
-            var data = tableToData(info.trim(),false)
-            for(var i = 0; i < b.length; i++){
+            let data = tableToData(info.trim(),false)
+            for(let i = 0; i < b.length; i++){
                 if(data[i]){
                     b[i].name = data[i][0]
                 }
@@ -677,28 +677,28 @@ figma.ui.onmessage = (message) => {
     //表格增减行列数
     if ( type == 'addTable'){
         //console.log(info)
-        var a = figma.currentPage;
-        var b = a.selection;
-        var H = Number(info[0]);
-        var L = Number(info[1]);
+        let a = figma.currentPage;
+        let b = a.selection;
+        let H = Number(info[0]);
+        let L = Number(info[1]);
         addTable(b,H,L) 
     }
     //表格区分色
     if ( type == "diffColorTable"){      
-        var a = figma.currentPage;
-        var b = a.selection;
+        let a = figma.currentPage;
+        let b = a.selection;
         if ( info == 'diffLine'){
-            for (var i = 0; i < b.length; i++){
+            for (let i = 0; i < b.length; i++){
                 if ( b[i].name.split("table").length !== 1){
-                    var c = b[i].children;
+                    let c = b[i].children;
                     if ( b[i].name.split("-横").length !== 1){
                         console.log('横向表格')
-                        for ( var ii = 0; ii < c.length; ii++){
+                        for ( let ii = 0; ii < c.length; ii++){
                             if (c[ii].name.split('#列').length !== 1){
-                                var d = c[ii].children;
+                                let d = c[ii].children;
                                 if ( (ii + 1) % 2 == 0){
-                                    for ( var iii = 0; iii < d.length; iii++){
-                                        var properties = [];
+                                    for ( let iii = 0; iii < d.length; iii++){
+                                        let properties = [];
                                         Object.keys(d[iii].componentProperties).forEach(item => {
                                             properties.push({name:item.split("#")[0],id:item.split("#")[1]})
                                         })
@@ -710,8 +710,8 @@ figma.ui.onmessage = (message) => {
                                         })
                                     }
                                 } else {
-                                    for ( var iii = 0; iii < d.length; iii++){
-                                        var properties = [];
+                                    for ( let iii = 0; iii < d.length; iii++){
+                                        let properties = [];
                                         Object.keys(d[iii].componentProperties).forEach(item => {
                                             properties.push({name:item.split("#")[0],id:item.split("#")[1]})
                                         })
@@ -731,11 +731,11 @@ figma.ui.onmessage = (message) => {
 
                     }else{
                         console.log('竖向表格');
-                        for ( var ii = 0; ii < c.length; ii++){
+                        for ( let ii = 0; ii < c.length; ii++){
                             if (c[ii].name.split('#列').length !== 1){
-                                var d = c[ii].children;
-                                for ( var iii = 1; iii < d.length; iii++){
-                                    var properties = [];
+                                let d = c[ii].children;
+                                for ( let iii = 1; iii < d.length; iii++){
+                                    let properties = [];
                                     Object.keys(d[iii].componentProperties).forEach(item => {
                                         properties.push({name:item.split("#")[0],id:item.split("#")[1]})
                                     })
@@ -766,7 +766,7 @@ figma.ui.onmessage = (message) => {
  
             if ( diffColorTime%2 == 0){
                 b.forEach(node =>{
-                    var properties = [];
+                    let properties = [];
                     Object.keys(node.componentProperties).forEach(item => {
                         properties.push({name:item.split("#")[0],id:item.split("#")[1]})
                     })
@@ -780,7 +780,7 @@ figma.ui.onmessage = (message) => {
                 diffColorTime++
             } else {
                 b.forEach(node =>{
-                    var properties = [];
+                    let properties = [];
                     Object.keys(node.componentProperties).forEach(item => {
                         properties.push({name:item.split("#")[0],id:item.split("#")[1]})
                     })
@@ -798,19 +798,19 @@ figma.ui.onmessage = (message) => {
     }
     //反转表格行列
     if ( type == "translateTable"){
-        var a = figma.currentPage;
-        var b = a.selection;
-        var loading =  figma.notify("生成中，请稍后",{
+        let a = figma.currentPage;
+        let b = a.selection;
+        let loading =  figma.notify("生成中，请稍后",{
             timeout: 6000,
             });
 
         setTimeout(() => {   
-        for ( var i = 0; i < b.length; i++){
+        for ( let i = 0; i < b.length; i++){
             
             if ( b[i].name.split("table").length !== 1){
-                var H = 0,L = 0;
+                let H = 0,L = 0;
 
-                for ( var ii = 0; ii < b[i].children.length; ii++){
+                for ( let ii = 0; ii < b[i].children.length; ii++){
 
                     if ( b[i].children[ii].name.split("#列").length !== 1){
                         H++
@@ -820,27 +820,27 @@ figma.ui.onmessage = (message) => {
                 if ( b[i].children[0].name.split("#列").length !== 1){
                     
 
-                    for ( var ii = 0; ii < b[i].children[0].children.length; ii++){
+                    for ( let ii = 0; ii < b[i].children[0].children.length; ii++){
                         L++
                     }
                 }
                 
-                var table = b[i].parent.insertChild(0,b[i].clone());
+                let table = b[i].parent.insertChild(0,b[i].clone());
                 
-                var c =  b[i].parent.children[0];
+                let c =  b[i].parent.children[0];
                 if ( b[i].children[0].children[1].name.split("表头").length == 1){
                     c.name += "-横";
                 } else {
                     c.name = b[i].name.split("-横")[0];
                 }
                 addTable([c],H - L,L - H);
-                for ( var ii = 0; ii < L; ii++){
-                    for ( var iii = 0; iii < H; iii++){
+                for ( let ii = 0; ii < L; ii++){
+                    for ( let iii = 0; iii < H; iii++){
                         c.children[ii].children[0].remove();//删一个少一个
                     }
                 }
-                for ( var ii = 0; ii < H; ii++){
-                    for ( var iii = 0; iii < L; iii++){
+                for ( let ii = 0; ii < H; ii++){
+                    for ( let iii = 0; iii < L; iii++){
                         c.children[iii].appendChild(b[i].children[ii].children[iii].clone());
                     }
                     
@@ -859,18 +859,18 @@ figma.ui.onmessage = (message) => {
     }
     //批量组件属性
     if( type == "reComponentValue"){
-        var a = figma.currentPage;
-        var b = a.selection;
-        var data = tableToData(info.trim(),true);//每列数据
+        let a = figma.currentPage;
+        let b = a.selection;
+        let data = tableToData(info.trim(),true);//每列数据
         console.log(data)
-        var keys = data.map(item => item[0]);//表头
-        var nodes = [];
+        let keys = data.map(item => item[0]);//表头
+        let nodes = [];
         if(b.length == 1){
             if(hasKeyName(b[0],"数据流")){
                 nodes.push(...b[0].children);
-                var length = (data[0].length - 1 - b[0].children.length)
-                for(var i = 0; i < length; i++){
-                    var node = b[0].children[0].clone();
+                let length = (data[0].length - 1 - b[0].children.length)
+                for(let i = 0; i < length; i++){
+                    let node = b[0].children[0].clone();
                     b[0].appendChild(node);
                     nodes.push(node);
                 }
@@ -878,9 +878,9 @@ figma.ui.onmessage = (message) => {
                 if( b[0].type == "INSTANCE"){
                     nodes.push(b[0])
                     if(hasKeyName(b[0].parent,"数据流")){
-                        var length = (data[0].length - 1 - b[0].parent.children.length)
-                        for(var i = 0; i < length; i++){
-                            var node = b[0].clone();
+                        let length = (data[0].length - 1 - b[0].parent.children.length)
+                        for(let i = 0; i < length; i++){
+                            let node = b[0].clone();
                             b[0].parent.appendChild(node);
                             nodes.push(node);
                         }
@@ -898,12 +898,12 @@ figma.ui.onmessage = (message) => {
         }
 
         nodes.forEach((item,index) => {
-            var comps = item.componentProperties;
+            let comps = item.componentProperties;
             if(comps && Object.keys(comps).length > 0){
                 Object.keys(comps).forEach(comp => {
                     if(keys.includes(comp.split('#')[0])){//属性名要匹配表头
                         if(comps[comp].type == 'BOOLEAN'){
-                            var bool = data[keys.findIndex(value => value == comp.split('#')[0])][(index + 1)]
+                            let bool = data[keys.findIndex(value => value == comp.split('#')[0])][(index + 1)]
                             dataToBool(bool) ? item.setProperties({[comp]:true}) : item.setProperties({[comp]:false}) 
                         } else {
                             item.setProperties({[comp]:data[keys.findIndex(value => value === comp.split('#')[0])][(index + 1)]}) 
@@ -911,15 +911,15 @@ figma.ui.onmessage = (message) => {
                     }
                 })
             }
-            var child = item.findAll((items) => items.componentProperties && Object.keys(items.componentProperties).length > 0 && (keys.includes(Object.keys(items.componentProperties)[0].split('#')[0]) || keys.includes(Object.keys(items.componentProperties)[(Object.keys(items.componentProperties).length - 1)].split('#')[0])) );
+            let child = item.findAll((items) => items.componentProperties && Object.keys(items.componentProperties).length > 0 && (keys.includes(Object.keys(items.componentProperties)[0].split('#')[0]) || keys.includes(Object.keys(items.componentProperties)[(Object.keys(items.componentProperties).length - 1)].split('#')[0])) );
 
             child.forEach((items) => {
-                var compss = items.componentProperties;
+                let compss = items.componentProperties;
                 if(compss && Object.keys(compss).length > 0){
                     Object.keys(compss).forEach(comp => {
                         if(keys.includes(comp.split('#')[0])){
                             if(compss[comp].type == 'BOOLEAN'){
-                                var bool = data[keys.findIndex(value => value == comp.split('#')[0])][(index + 1)]
+                                let bool = data[keys.findIndex(value => value == comp.split('#')[0])][(index + 1)]
                                 dataToBool(bool)  ? items.setProperties({[comp]:true}) : items.setProperties({[comp]:false}) 
                             } else {
                                 items.setProperties({[comp]:data[keys.findIndex(value => value === comp.split('#')[0])][(index + 1)]}) 
@@ -932,17 +932,17 @@ figma.ui.onmessage = (message) => {
     }
     //批量标签属性
     if( type == "setByTags"){  
-        var a = figma.currentPage;
-        var b = a.selection;
-        var data = tableToData(info.trim(),true);//每列数据
-        var keys = data.map(item => item[0]);//表头
-        var nodes = [];
+        let a = figma.currentPage;
+        let b = a.selection;
+        let data = tableToData(info.trim(),true);//每列数据
+        let keys = data.map(item => item[0]);//表头
+        let nodes = [];
         if(b.length == 1){
             if(hasKeyName(b[0],"数据流")){
                 nodes.push(...b[0].children);
-                var length = (data[0].length - 1 - b[0].children.length)
-                for(var i = 0; i < length; i++){
-                    var node = b[0].children[0].clone();
+                let length = (data[0].length - 1 - b[0].children.length)
+                for(let i = 0; i < length; i++){
+                    let node = b[0].children[0].clone();
                     b[0].appendChild(node);
                     nodes.push(node);
                 }
@@ -950,9 +950,9 @@ figma.ui.onmessage = (message) => {
                 if( b[0].type == "INSTANCE"){
                     nodes.push(b[0])
                     if(hasKeyName(b[0].parent,"数据流")){
-                        var length = (data[0].length - 1 - b[0].parent.children.length)
-                        for(var i = 0; i < length; i++){
-                            var node = b[0].clone();
+                        let length = (data[0].length - 1 - b[0].parent.children.length)
+                        for(let i = 0; i < length; i++){
+                            let node = b[0].clone();
                             b[0].parent.appendChild(node);
                             nodes.push(node);
                         }
@@ -975,7 +975,7 @@ figma.ui.onmessage = (message) => {
                 if(hasKeyName(item,sets)){
                     setByTags(item,sets,data[indexs][(index + 1)])
                 }
-                var child = item.findAll((childs) => hasKeyName(childs,sets));
+                let child = item.findAll((childs) => hasKeyName(childs,sets));
                 child.forEach((items) => {
                     setByTags(items,sets,data[indexs][(index + 1)])
                 })
@@ -983,12 +983,12 @@ figma.ui.onmessage = (message) => {
         })
 
         function setByTags(node,sets,value){//sets的格式应该为：#XXX.type
-            var type = sets.split('.')[1]
+            let type = sets.split('.')[1]
             if(type == "fillcolor"){
                 //console.log(hexToRgb({value:value}))
-                var color = {r:0,g:0,b:0};
+                let color = {r:0,g:0,b:0};
                 if(hasKeyName({name:value},"rgb(")){
-                     var RGB = value.replace("rgb(","").replace(")","").split(",")
+                     let RGB = value.replace("rgb(","").replace(")","").split(",")
                     if(RGB.length == 3){
                         color = {r:(RGB[0]/255) * 1,g:(RGB[0]/255) * 1,b:(RGB[0]/255) * 1}
                     }
@@ -998,9 +998,9 @@ figma.ui.onmessage = (message) => {
                 node.fills = [{type:"SOLID",color:color}];//color:{r:0.4,g:0.4,b:0.4}
             }
             if(type == "strokecolor"){
-                var color = {r:0,g:0,b:0};
+                let color = {r:0,g:0,b:0};
                 if(hasKeyName({name:value},"rgb(")){
-                     var RGB = value.replace("rgb(","").replace(")","").split(",")
+                     let RGB = value.replace("rgb(","").replace(")","").split(",")
                     if(RGB.length == 3){
                         color = {r:(RGB[0]/255) * 1,g:(RGB[0]/255) * 1,b:(RGB[0]/255) * 1}
                     }
@@ -1010,7 +1010,7 @@ figma.ui.onmessage = (message) => {
                 node.strokes = [{type:"SOLID",color:color}];//color:{r:0.4,g:0.4,b:0.4}
             }
             if(type == "view"){
-                var bool = dataToBool(value);
+                let bool = dataToBool(value);
                 node.visible = bool;
             }
             if(type == "fontsize"){
@@ -1022,7 +1022,7 @@ figma.ui.onmessage = (message) => {
                 figma.getLocalPaintStylesAsync()
                 .then(list => {
                     //console.log(list)
-                    var id = list.find(item => item.name == value).id
+                    let id = list.find(item => item.name == value).id
                     if(id){
                         node.setFillStyleIdAsync(id)
                     }
@@ -1035,7 +1035,7 @@ figma.ui.onmessage = (message) => {
                 figma.getLocalPaintStylesAsync()
                 .then(list => {
                     //console.log(list)
-                    var id = list.find(item => item.name == value).id
+                    let id = list.find(item => item.name == value).id
                     if(id){
                         node.setStrokeStyleIdAsync(id)
                     }
@@ -1075,10 +1075,10 @@ function cloneMain(newnode,oldnode,boundingBox){
 function tableToData(text,dataToList){
     //console.log(text)
     if ( dataToList ){
-        var h = text.split("\n");//[[文案\t文案\t文案],[文案\t文案\t文案]]
-        var hs = [];//[[文案,文案,文案],[文案,文案,文案,]]
-        var e = 0;
-        for (var i = 0; i < h.length; i++){
+        let h = text.split("\n");//[[文案\t文案\t文案],[文案\t文案\t文案]]
+        let hs = [];//[[文案,文案,文案],[文案,文案,文案,]]
+        let e = 0;
+        for (let i = 0; i < h.length; i++){
             hs[e] = h[i].split("\t");
             hs[e].forEach((item,index) => {
               if(item.split(EnterText).length > 1){
@@ -1090,10 +1090,10 @@ function tableToData(text,dataToList){
         }
         return hs[0].map((col, i) => hs.map(row => row[i]))
     } else {
-        var h = text.split("\n");//[[文案\t文案\t文案],[文案\t文案\t文案]]
-        var hs = [];//[[文案,文案,文案],[文案,文案,文案,]]
-        var e = 0;
-        for (var i = 0; i < h.length; i++){
+        let h = text.split("\n");//[[文案\t文案\t文案],[文案\t文案\t文案]]
+        let hs = [];//[[文案,文案,文案],[文案,文案,文案,]]
+        let e = 0;
+        for (let i = 0; i < h.length; i++){
             hs[e] = h[i].split("\t");
             hs[e].forEach((item,index) => {
               if(item.split(EnterText).length > 1){
@@ -1120,15 +1120,15 @@ function addAbsolute(parent,absoluteNode,names,view){
 
     absoluteNode.children[0].x = 0;
     absoluteNode.children[0].y = 0;
-    var addLayerSet = parent.addComponentProperty(names,"BOOLEAN",view);
+    let addLayerSet = parent.addComponentProperty(names,"BOOLEAN",view);
     absoluteNode.componentPropertyReferences = {visible:addLayerSet};
 }
 
 function reTableStroke(table,H,L){
-    for ( var i = 0; i < L; i++){
-        for ( var ii = 0; ii < H; ii++){
-            var c = table.children[i].children[ii];
-            var keys = Object.keys(c.componentProperties)
+    for ( let i = 0; i < L; i++){
+        for ( let ii = 0; ii < H; ii++){
+            let c = table.children[i].children[ii];
+            let keys = Object.keys(c.componentProperties)
         }
     }
 }
@@ -1149,7 +1149,7 @@ function creTableSet(node,name,view,needText,textOrClone,){
     node.paddingBottom = 10;
     node.resize(176,52);
     node.fills = [];
-    var colorLayer = figma.createRectangle();
+    let colorLayer = figma.createRectangle();
     cloneMain(colorLayer,node)
     if (view){
         colorLayer.fills = [{type:"SOLID",color:{r:0.4,g:0.4,b:0.4}}];
@@ -1157,40 +1157,40 @@ function creTableSet(node,name,view,needText,textOrClone,){
         colorLayer.fills = [{type:"SOLID",color:{r:0.4,g:0.4,b:0.4},opacity:0.5}];
     }
 
-    var strokeTop = figma.createRectangle();
+    let strokeTop = figma.createRectangle();
     cloneMain(strokeTop,node);
     setStroke(strokeTop,"CENTER",[1,0,0,0]);
-    var strokeRight = figma.createRectangle();
+    let strokeRight = figma.createRectangle();
     cloneMain(strokeRight,node);
     setStroke(strokeRight,"CENTER",[0,1,0,0]);
-    var strokeBottom = figma.createRectangle();
+    let strokeBottom = figma.createRectangle();
     cloneMain(strokeBottom,node);
     setStroke(strokeBottom,"CENTER",[0,0,1,0]);
-    var strokeLeft = figma.createRectangle();
+    let strokeLeft = figma.createRectangle();
     cloneMain(strokeLeft,node);
     setStroke(strokeLeft,"CENTER",[0,0,0,1]);
 
     /* figma的组不受自动布局影响，只能用画板来包裹，否则不能跟随自动布局来拉伸
-    var diffC = figma.group([colorLayer]);
-    var strokeT = figma.group([strokeTop]);
-    var strokeR = figma.group([strokeRight]);
-    var strokeB = figma.group([strokeBottom]);
-    var strokeL = figma.group([strokeLeft]);
+    let diffC = figma.group([colorLayer]);
+    let strokeT = figma.group([strokeTop]);
+    let strokeR = figma.group([strokeRight]);
+    let strokeB = figma.group([strokeBottom]);
+    let strokeL = figma.group([strokeLeft]);
     */
 
-    var diffC = figma.createFrame();
+    let diffC = figma.createFrame();
     diffC.appendChild(colorLayer)
-    var strokeT = figma.createFrame();
+    let strokeT = figma.createFrame();
     strokeT.appendChild(strokeTop)
-    var strokeR = figma.createFrame();
+    let strokeR = figma.createFrame();
     strokeR.appendChild(strokeRight)
-    var strokeB = figma.createFrame();
+    let strokeB = figma.createFrame();
     strokeB.appendChild(strokeBottom)
-    var strokeL = figma.createFrame();
+    let strokeL = figma.createFrame();
     strokeL.appendChild(strokeLeft)
 
 
-    var absolutes = [
+    let absolutes = [
         [node,diffC,"区分色",view],
         [node,strokeT,"上描边",false],
         [node,strokeR,"右描边",false],
@@ -1204,11 +1204,11 @@ function creTableSet(node,name,view,needText,textOrClone,){
     if (needText == true){
         node.appendChild(figma.createText())
 
-        for ( var ii = 0; ii < node.children.length; ii++){
+        for ( let ii = 0; ii < node.children.length; ii++){
             if ( node.children[ii].type == "TEXT"){
                 
                 if (Object.keys(node.children[ii].componentPropertyReferences).length === 0){
-                    var addTextSet = node.addComponentProperty("字段1", "TEXT", node.children[ii].characters);
+                    let addTextSet = node.addComponentProperty("字段1", "TEXT", node.children[ii].characters);
                     setTextMain(node.children[ii],22,textOrClone);
                     node.children[ii].componentPropertyReferences = {characters:addTextSet};
                     
@@ -1248,54 +1248,54 @@ async function setTextMain(node,fontSize,text){
 
 async function reFontSize(node,fontSize){
     await figma.listAvailableFontsAsync()
-    var fontInfo = node.getRangeFontName(0,node.characters.length)
+    let fontInfo = node.getRangeFontName(0,node.characters.length)
     await figma.loadFontAsync(fontInfo)
     node.setRangeFontSize(0,node.characters.length,fontSize);
 }
 
 function addTable(b,H,L){
-    for (var i = 0; i < b.length; i++){
+    for (let i = 0; i < b.length; i++){
             
         if (b[i].name.split('table').length !== 1 || b[i].name.split('数据流').length !== 1){
             if (b[i].children.length >= 1 ){
                 if ( L > 0){
-                    for( var e = 0; e < L; e++){
+                    for( let e = 0; e < L; e++){
                         //console.log()
                         if (b[i].name.split('数据流').length !== 1){
-                            var lists = b[i].children[0] 
+                            let lists = b[i].children[0] 
                         } else {
-                            var lists = b[i].children[Math.floor(b[i].children.length/2)]
+                            let lists = b[i].children[Math.floor(b[i].children.length/2)]
                         }
                         
                         b[i].appendChild(lists.clone());
                     }
                 } else if ( L < 0 ){
                     if (b[i].children.length > 1 ){
-                        for( var e = 0; e < L * -1; e++){
+                        for( let e = 0; e < L * -1; e++){
                             //console.log()
-                            var length = b[i].children.length - 1 ;
+                            let length = b[i].children.length - 1 ;
                             b[i].children[length].remove()
                         }
                     }
                 }
             }
-            for(var ii = 0; ii < b[i].children.length; ii++){ 
+            for(let ii = 0; ii < b[i].children.length; ii++){ 
                 if (b[i].children[ii].name.split('#列').length !== 1){
                     if (b[i].children[ii].children.length >= 2 ){
-                        var data = b[i].children[ii].children[b[i].children[ii].children.length - 1]
+                        let data = b[i].children[ii].children[b[i].children[ii].children.length - 1]
                         if ( H > 0){
-                            for( var e = 0; e < H; e++){
+                            for( let e = 0; e < H; e++){
                                 //console.log()
-                                var list = b[i].children[ii];
-                                var length = list.children.length - 1 ;
+                                let list = b[i].children[ii];
+                                let length = list.children.length - 1 ;
                                 list.appendChild(data.clone());
                             }  
                         } else if ( H < 0 ){
                             if( b[i].children[ii].children.length > 2 ){
-                                for( var e = 0; e < H * -1; e++){
+                                for( let e = 0; e < H * -1; e++){
                                     //console.log()
-                                    var list = b[i].children[ii];
-                                    var length = list.children.length - 1 ;
+                                    let list = b[i].children[ii];
+                                    let length = list.children.length - 1 ;
                                     list.children[length].remove()
                                 }
                             }
@@ -1328,7 +1328,7 @@ function setRadius(node,trbl){
 }
 
 function hasKeyName(node,key){
-    var bool = false;
+    let bool = false;
     if(node.name){
         node.name.split(key).length > 1 ? bool = true : bool = false;
     } else {
@@ -1338,25 +1338,25 @@ function hasKeyName(node,key){
 }
 
 function hexToRgb(hex){
-    var colors = reColorText(hex,true)
-    var R = colors[0] + colors[1], G = colors[2] + colors[3], B = colors[4] + colors[5];
+    let colors = reColorText(hex,true)
+    let R = colors[0] + colors[1], G = colors[2] + colors[3], B = colors[4] + colors[5];
     return {r:(parseInt(R,16)/255) * 1,g:(parseInt(G,16)/255) * 1,b:(parseInt(B,16)/255) * 1};
 }
 
 function rgbToHex(rgb){
-    var R = rgb.r * 255,G = rgb.g * 255,B = rgb.b * 255;
+    let R = rgb.r * 255,G = rgb.g * 255,B = rgb.b * 255;
     return  Math.floor(R).toString(16) + Math.floor(G).toString(16) + Math.floor(B).toString(16);
 }
 
 //重置输入色值
 function reColorText(e,isReturn) {
-    var values = '#' +  e.value.replace(/[#]/g,'');
+    let values = '#' +  e.value.replace(/[#]/g,'');
     if (values == '#' || values.replace(/[0-9a-fA-F]/g,'').trim().length > 1) {
     e.value = "#000000";
     } else {
         if (e.value.length < 7) {
         if (e.value[0] == '#') {
-            var a = e.value.replace(/[#]/g,'');
+            let a = e.value.replace(/[#]/g,'');
             if (a.length == 3) {
             e.value = "#" + a + a
             }
@@ -1373,7 +1373,7 @@ function reColorText(e,isReturn) {
             e.value = "#" + a + "0"
             }
         } else {
-            var c = e.value.replace(/[#]/g,'')
+            let c = e.value.replace(/[#]/g,'')
             if (c.length == 3) {
             e.value = "#" + c + c
             }
@@ -1410,6 +1410,6 @@ function reColorText(e,isReturn) {
 
 //判断是否
 function dataToBool(data){
-    var bool =  data == 'true' || data == '1' || data == '是' || data == '有'  ?  true : false;
+    let bool =  data == 'true' || data == '1' || data == '是' || data == '有'  ?  true : false;
     return bool;
 }

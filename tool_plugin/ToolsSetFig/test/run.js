@@ -1,10 +1,12 @@
 PULGIN_LOCAL = true;
+let userSkillStar = [];
 if (ISPLUGIN){
   ROOT.setAttribute('data-mobile','false');
   ISMOBILE = false;
   toolMessage(['userTheme','getlocal'],PLUGINAPP);
   toolMessage(['userLanguage','getlocal'],PLUGINAPP);
   toolMessage(['tabPick','getlocal'],PLUGINAPP);
+  toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
 }
 
 window.addEventListener('message',(message)=>{
@@ -13,12 +15,17 @@ window.addEventListener('message',(message)=>{
     let messages = message.data.pluginMessage.pluginMessage || ['',''];
     let info = messages[0];
     let type = messages[1];
+    if(info.split('[').length > 1 || info.split('{').length > 1){
+      info = JSON.parse(info);
+    }
     switch (type){
       case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
       case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
       case 'tabPick': viewPage(info);break
-    }
-  }
+      case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);;break
+      case 'selectInfo': reSelectInfo(info);break
+    };
+  };
 });
 
 /**
@@ -31,4 +38,6 @@ function toolMessage(data,app){
     case 'mg' : parent.postMessage(data,"*");break
   }
 }
+
+
 

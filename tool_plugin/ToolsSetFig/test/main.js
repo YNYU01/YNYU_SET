@@ -61,8 +61,6 @@ let skillSecInfo = [
   },
 ]
 
-//let userSkillStar = ['inSituRasterize'];
-let userSkillStar = storageMix.get('userSkillStar') || [];
 
 let toUserTips = {
   worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
@@ -176,7 +174,7 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 });
 
 window.addEventListener('load',()=>{
-  viewPage('more tools')
+  viewPage('more tools');
   if(window.innerWidth < 300){
     TV_MOVE = true;
   } else {
@@ -271,8 +269,15 @@ function addSkillTitle(){
       //重置文字样式
       loadFont();
     };
-    moveSkillStar(userSkillStar);
-  })
+  });
+}
+
+function reSelectInfo(info){
+ if(info.length > 0){
+  ROOT.setAttribute('data-select','true')
+ }else{
+  ROOT.setAttribute('data-select','false')
+ }
 }
 
 //侧边栏展开
@@ -528,14 +533,17 @@ skillStar.forEach(item =>{
     if(isStar == "true"){
       item.setAttribute('data-skill-star','false');
       cover.parentNode.insertBefore(skillNode,cover);
+      userSkillStar = userSkillStar.filter(id => id !== skillId);
+      storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
       cover.remove();
     } else {
       let numModel = skillNode.parentNode.getAttribute('data-skillnum');
       if(numModel == 2){
         tipsAll(['禁止收藏整个模块的功能',"Don't star all functions of same module"],3000,4)
       }else{
-        item.setAttribute('data-skill-star','true');
         moveSkillStar([skillId]);
+        userSkillStar.push(skillId);
+        storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
       }
     };
     reSkillNum();
@@ -556,6 +564,8 @@ function moveSkillStar(stars){
       cover.setAttribute('style','display: none');
       skillNode.parentNode.insertBefore(cover,skillNode);
       skillStarModel.prepend(skillNode);
+      let star = skillNode.querySelector('[data-skill-star]');
+      star.setAttribute('data-skill-star','true')
     };
   });
 };

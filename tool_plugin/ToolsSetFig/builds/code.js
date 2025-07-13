@@ -55,13 +55,14 @@ figma.ui.onmessage = (message) => {
     if ( type == "getlocal"){
         figma.clientStorage.getAsync(info)
         .then (data => {
-            postmessage([data,info])
+            postmessage([data,info]);
         })
         .catch (error => {
         })
     }
     //设置用户偏好
     if ( type == "setlocal"){
+        //console.log(info)
         figma.clientStorage.setAsync(info[0],info[1])
     }
     //插件自由缩放
@@ -1204,6 +1205,31 @@ function postmessage(data){
     figma.ui.postMessage({pluginMessage:data})
     /*mastergo*/
     //mg.ui.postMessage(data)
+}
+
+figma.on('selectionchange',()=>{
+    sendInfo()
+})
+
+sendInfo()
+function sendInfo(){
+    let a = figma.currentPage;
+    let b = a.selection;
+    if(b){
+        let data = [];
+        b.forEach(node => {
+            let n = node.name;
+            let w = node.width;
+            let h = node.height;
+            data.push([n,w,h])
+        });
+        figma.clientStorage.getAsync('tabPick')
+        .then(tab => {
+            if(tab == 'more tools'){
+                postmessage([JSON.stringify(data),'selectInfo']);
+            }
+        }); 
+    };
 }
 
 function cloneMain(newnode,oldnode,boundingBox){

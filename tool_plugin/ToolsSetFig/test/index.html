@@ -1,4 +1,4 @@
-<html data-plugin="fig" data-theme="dark" data-language="Zh" data-mobile="false">
+<html data-plugin="fig" data-select="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
@@ -401,7 +401,7 @@
                     <span data-en-text="Click the star">
                       点击功能块右上角的星星
                     </span>
-                    <span data-skill-star="true">
+                    <span data-skill-star="false">
                         <btn-star></btn-star>
                     </span>
                     <span data-en-text="of functional module to add it to here~">
@@ -563,7 +563,7 @@
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div data-clip-view class="fl0 df-cc">
+                  <div data-clip-view class="fl0 df-cc" data-skill-line>
                     <div data-clip-select data-clip-w="2" data-clip-h="2" class="bod-d pos-r">
                       <div class="pos-a df" data-clip-set-box="w">
                         <div data-clip-set="x1" class="ovh fl0 pos-r"></div>
@@ -607,9 +607,6 @@
                     <btn-star></btn-star>
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
-                    <div class="df-cc bod-d" data-select-node="false" data-select-type="fill"
-                    style="--tips-text: '请选中带图片填充的图层';
-                    --tips-text-en: 'Select the layer with image-fill';"></div>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Clear Filter">清除调整</div>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Raw Size">还原尺寸</div>  
@@ -671,6 +668,8 @@
               </div>
             </div>
           </div>
+          <!--选中信息-->
+          <div class="df-cc bod-d" data-select-node="false" data-select-type="fill"></div>
         </div>
       </div>
     </div>
