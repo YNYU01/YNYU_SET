@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4713f1b84f6b209c93ab02f01e3c2c55b19294e0/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4160622f4aa7cb90d6fdb1785d0979dcfb02cfac/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1271,7 +1271,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4713f1b84f6b209c93ab02f01e3c2c55b19294e0/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4160622f4aa7cb90d6fdb1785d0979dcfb02cfac/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -2029,12 +2029,12 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4713f1b84f6b209c93ab02f01e3c2c55b19294e0/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4713f1b84f6b209c93ab02f01e3c2c55b19294e0/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4713f1b84f6b209c93ab02f01e3c2c55b19294e0/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4713f1b84f6b209c93ab02f01e3c2c55b19294e0/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4713f1b84f6b209c93ab02f01e3c2c55b19294e0/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4713f1b84f6b209c93ab02f01e3c2c55b19294e0/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4160622f4aa7cb90d6fdb1785d0979dcfb02cfac/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4160622f4aa7cb90d6fdb1785d0979dcfb02cfac/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4160622f4aa7cb90d6fdb1785d0979dcfb02cfac/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4160622f4aa7cb90d6fdb1785d0979dcfb02cfac/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4160622f4aa7cb90d6fdb1785d0979dcfb02cfac/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4160622f4aa7cb90d6fdb1785d0979dcfb02cfac/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 let skillSecInfo = [
@@ -2554,6 +2554,7 @@ function loadImage(file){
 }
 
 async function addImageTags(files,isCreate){
+  createImaageInfo = [];
   let sizes = files.map(item => item.size);
   let sizeAll = sizes.reduce((a,b) => a + b, 0);
   sizeAll = sizeAll*1 == NaN ? files.length : sizeAll; //大图至少算1M大小

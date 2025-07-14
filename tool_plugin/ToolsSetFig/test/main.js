@@ -515,6 +515,7 @@ function loadImage(file){
 }
 
 async function addImageTags(files,isCreate){
+  createImaageInfo = [];
   let sizes = files.map(item => item.size);
   let sizeAll = sizes.reduce((a,b) => a + b, 0);
   sizeAll = sizeAll*1 == NaN ? files.length : sizeAll; //大图至少算1M大小

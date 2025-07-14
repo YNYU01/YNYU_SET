@@ -218,13 +218,43 @@ figma.ui.onmessage = (message) => {
         let viewY = Math.floor( figma.viewport.center.y - ((figma.viewport.bounds.height/2  - 300)* figma.viewport.zoom));
         let gap = 20;
         for ( let i = 0; i < info.length; i++){
-            if (info[i].cuts > 1){
-
-            } else {
-                let node = figma.createImage(info[i].cuts[0].img);
-                node.resize(info[i].w,info[i].h);
+            if (info[i].cuts.length > 1){
+                let node = figma.createFrame();
                 node.x = viewX;
                 node.y = viewY;
+                node.name = info[i].n;
+                node.resize(info[i].w,info[i].h);
+                node.fills = [];
+                info[i].cuts.forEach((item,index) => {
+                    let image = figma.createImage(item.img)
+                    let cut = figma.createRectangle();
+                    cut.resize(item.w,item.h);
+                    cut.name = 'cut ' + (index + 1);
+                    cut.x = item.x;
+                    cut.y = item.y;
+                    cut.fills = [
+                        {
+                          type: 'IMAGE',
+                          imageHash: image.hash,
+                          scaleMode: 'FILL'
+                        }
+                    ]; 
+                node.appendChild(cut)
+                });
+            } else {
+                let image = figma.createImage(info[i].cuts[0].img)
+                let node = figma.createRectangle();
+                node.resize(info[i].w,info[i].h);
+                node.name = info[i].n;
+                node.x = viewX;
+                node.y = viewY;
+                node.fills = [
+                    {
+                      type: 'IMAGE',
+                      imageHash: image.hash,
+                      scaleMode: 'FILL'
+                    }
+                ]; 
             }
             viewX += info[i].w + gap;
         }
