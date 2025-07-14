@@ -54,7 +54,7 @@ function U8AToB64(u8,type) {
  */
 function CanvasToU8A(canvas){
   let dataUrl = canvas.toDataURL('image/png');
-  return new Uint8Array(dataUrl.split(',')[1]);
+  return new Uint8Array(B64ToU8A(dataUrl.split(',')[1]));
 };
 
 /**
