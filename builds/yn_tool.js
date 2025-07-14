@@ -48,3 +48,13 @@ function U8AToB64(u8,type) {
   base64 = type && filetype[type.toLowerCase()] ? filetype[type.toLowerCase()] + base64 : base64;
   return base64;
 }
+
+/**
+ * Canvas转Uint8Array
+ */
+function CanvasToU8A(canvas){
+  let dataUrl = canvas.toDataURL('image/png');
+  let atob = dataUrl.split(',')[1];
+  let code = atob.split('').map(c => c.charCodeAt(0));
+  return new Uint8Array(code);
+};

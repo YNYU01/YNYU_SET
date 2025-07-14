@@ -12,40 +12,11 @@ let UI = [300,660];
 let UI_BIG = [620,660];
 let vX = figma.viewport.bounds.x,vY = figma.viewport.bounds.y;
 figma.skipInvisibleInstanceChildren = true;//忽略不可见元素及其子集
-
-/*
-switch (figma.command){
-    case 'open':figma.showUI(__html__,{position:{x:vX,y:vY},themeColors:true});break
-    case 'pixel': ;break
-    case 'yuhua': ;break
-    case 'lineTable': ;break
-    case 'areaTable': ;break
-    case 'help': ;break
-    case 'getnew': ;break
-    case 'tableToArea': ;break
-}
-*/
  
 figma.showUI(__html__,{position:{x:vX,y:vY},themeColors:true});
 figma.ui.resize(UI[0], UI[1]);
 
 
-let tabInfo;
-let importNum = 1,xx = 0,yy = 0,time = 0,ww = 0,hh = 0;
-let find = [],searchTime = 0,seaechOldNodes = [];
-let cutMax = 4096;
-let stylePage = '附录/变量&样式表';
-let mixType = {
-    "Pd":mixPd,
-    "R":mixR,
-    "WH":mixWH,
-    "S":mixS,
-    "isV":mixisV,
-}
-let searchType = "Text",searchArea = "Page";
-let diffStyleNode = []
-let diffColorTime = 0;
-let pickTableArea = false;
 //核心功能
 figma.ui.onmessage = (message) => { 
     const info = message[0]
@@ -1221,11 +1192,23 @@ function sendInfo(){
             let n = node.name;
             let w = node.width;
             let h = node.height;
+            let lengthE = n.replace(/[\u4e00-\u9fa5]/g,'').length*1;
+            let lengthZ = n.replace(/[^\u4e00-\u9fa5]/g,'').length*2;
+            if(lengthZ > lengthE){
+                if((lengthE + lengthZ) > 10){
+                    n = n.substring(0,6) + '..';
+                }
+            } else {
+                if((lengthE + lengthZ) > 10){
+                    n = n.substring(0,11) + '..';
+                }
+            }
+            //console.log(lengthE,lengthZ,n)
             data.push([n,w,h])
         });
         figma.clientStorage.getAsync('tabPick')
         .then(tab => {
-            if(tab == 'more tools'){
+            if(tab == 'more tools' || data.length == 0){
                 postmessage([JSON.stringify(data),'selectInfo']);
             }
         }); 
@@ -1605,45 +1588,3 @@ function pickBefore(nodes){
     a.selection = newNode;
 }
 
-function mixPd(star,node,end,num,index){
-    for ( let i = 0; i < star.length; i++){
-        node[i].paddingTop = star[i].paddingTop + ((end[i].paddingTop - star[i].paddingTop)/num)*index
-        node[i].paddingRight = star[i].paddingRight + ((end[i].paddingRight - star[i].paddingRight)/num)*index
-        node[i].paddingBottom = star[i].paddingBottom + ((end[i].paddingBottom - star[i].paddingBottom)/num)*index
-        node[i].paddingLeft = star[i].paddingLeft + ((end[i].paddingLeft - star[i].paddingLeft)/num)*index
-    } 
-}
-
-function mixR(star,node,end,num,index){
-    for ( let i = 0; i < star.length; i++){
-        node[i].rotation = star[i].rotation + ((end[i].rotation - star[i].rotation)/num)*index
-    }  
-}
-
-function mixWH(star,node,end,num,index){
-    for ( let i = 0; i < star.length; i++){
-        node[i].width = star[i].width + ((end[i].width - star[i].width)/num)*index
-        node[i].height = star[i].height + ((end[i].height - star[i].height)/num)*index
-    }  
-}
-
-function mixS(star,node,end,num,index){
-    for ( let i = 0; i < star.length; i++){
-        //console.log(num)
-        let scale = 1 + Math.sqrt( (end[i].width * end[i].height)/(star[i].width * star[i].height) )/(num * 2) * index
-        //console.log(scale)
-        node[i].rescale(scale,{scaleCenter:'CENTER'})
-    }  
-}
-
-async function mixisV(star,node,end,num,index){
-    for ( let i = 0; i < star.length; i++){
-        let V = await star[i].findChildren((item) => item.isVisible == true).length + (( end[i].findChildren((item) => item.isVisible == true).length - star[i].findChildren((item) => item.isVisible == true).length)/num)*index
-
-        for( let ii = 0; ii < V; ii++){
-            console.log(V,ii, node[i].children[ii])
-            node[i].children[ii].isVisible = true
-        }
-            
-    }  
-}

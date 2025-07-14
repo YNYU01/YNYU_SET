@@ -144,7 +144,6 @@ li::after,li[data-li]::after{
 }
 
 li a,li i,li [data-highlight]{
-  display: inline-block;
   margin: 0 4px;
   color: var(--themeColor2);
 }

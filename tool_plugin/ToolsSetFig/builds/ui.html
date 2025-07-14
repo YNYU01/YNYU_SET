@@ -1,8 +1,8 @@
-<html data-plugin="fig" data-select="false" data-theme="dark" data-language="Zh" data-mobile="false">
+<html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@473273b350e21f7b4e3163006ad39f0d55bb30fe/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0c30936ff30d6fa2ef5c1c0def7cb4ea7bed51a7/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -874,7 +874,7 @@ input[type="checkbox"]:checked + .btn-moreset{
     calc(var(--scaleY,100) * 1%));
 }
 
-[data-select-node]{
+[data-selects-node]{
   width: 100%;
   max-width: 560px;
   height: 38px;
@@ -885,19 +885,39 @@ input[type="checkbox"]:checked + .btn-moreset{
   margin: 4px 0;
 }
 
-[data-select="true"] [data-select-node]{
+[data-selects="true"] [data-selects-node]{
   opacity: 1;
 }
 
-[data-select="false"] [data-select-node]::after{
+[data-selects="true"] [data-selects-node]::after{
+  content: '';
+}
+
+[data-selects="false"] [data-selects-node]::after{
   content: var(--tips-text,'未选中任何图层');
 }
 
-[data-language="En"] [data-select-node]::after{
-  content: var(--tips-text-en,'No layer selected');
+[data-selects="false"] [data-selects-info-box]{
+  display: none;
+ }
+ 
+ [data-selects-info="more"]{
+   display: none;
+ }
+
+ [data-selects-more="true"] [data-selects-info="more"]{
+  display: inline-block;
 }
 
-[data-select="false"] [data-skill-line]{
+[data-selects-info="main"],[data-selects-info="num"]{
+  color: var(--themeColor2);
+}
+
+[data-language="En"] [data-selects-node]::after{
+  --tips-text: var(--tips-text-en,'No layer selected');
+}
+
+[data-selects="false"] [data-skill-line]{
   pointer-events: none;
   opacity: 0.6;
 }
@@ -1217,7 +1237,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@473273b350e21f7b4e3163006ad39f0d55bb30fe/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0c30936ff30d6fa2ef5c1c0def7cb4ea7bed51a7/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -1519,7 +1539,7 @@ function toolMessage(data,app){
                   </svg>
                 </div>
                 <input id="input-framename" data-input class="nobod fl1" type="text" data-input-type="text" data-input-must="none" value="w×h">  
-                <div class="df-lc pos-r" data-select="" data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
+                <div class="df-lc pos-r" data-select data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
                   <input id="select-value-1" type="text" data-select-input readonly value="w×h">
                   <input id="select-show-1" data-select-pick="w×h" type="checkbox">
                   <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
@@ -1674,7 +1694,7 @@ function toolMessage(data,app){
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
-                    <div class="df-lc pos-r" data-select="" data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
+                    <div class="df-lc pos-r" data-select data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
                       <input id="select-value-2" type="text" data-select-input="" readonly="" value="≤4096">
                       <input id="select-show-2" data-select-pick="≤4096" type="checkbox">
                       <label for="select-show-2" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
@@ -1926,7 +1946,18 @@ function toolMessage(data,app){
             </div>
           </div>
           <!--选中信息-->
-          <div class="df-cc bod-d" data-select-node="false" data-select-type="fill"></div>
+          <div class="df-cc bod-d" data-selects-node>
+            <span data-selects-info-box>
+              <span data-selects-info="main"></span>
+              <span data-selects-info="more">
+                +
+                <span data-selects-info="sec"></span>
+                ..
+                <span data-selects-info="num"></span>
+                <span data-en-text="layers">图层</span>
+              </span>
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -1957,11 +1988,11 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@473273b350e21f7b4e3163006ad39f0d55bb30fe/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@473273b350e21f7b4e3163006ad39f0d55bb30fe/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@473273b350e21f7b4e3163006ad39f0d55bb30fe/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@473273b350e21f7b4e3163006ad39f0d55bb30fe/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@473273b350e21f7b4e3163006ad39f0d55bb30fe/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0c30936ff30d6fa2ef5c1c0def7cb4ea7bed51a7/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0c30936ff30d6fa2ef5c1c0def7cb4ea7bed51a7/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0c30936ff30d6fa2ef5c1c0def7cb4ea7bed51a7/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0c30936ff30d6fa2ef5c1c0def7cb4ea7bed51a7/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0c30936ff30d6fa2ef5c1c0def7cb4ea7bed51a7/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 let skillSecInfo = [
@@ -2118,6 +2149,7 @@ const dailogBox = document.querySelector('[data-dailog-box]');
 const skillSecNode = document.querySelectorAll('[data-skill-sec]');
 const skillStar = document.querySelectorAll('[data-skill-star]');
 const skillStarModel = document.querySelector('[data-skillmodule="Useful & Starts"]')
+const selectNodeInfo = document.querySelectorAll('[data-selects-node]')
 
 /*表单绑定*/
 const userImg = document.getElementById('input-user-img');
@@ -2240,9 +2272,22 @@ function addSkillTitle(){
 
 function reSelectInfo(info){
  if(info.length > 0){
-  ROOT.setAttribute('data-select','true')
+  ROOT.setAttribute('data-selects','true');
+  selectNodeInfo.forEach(item => {
+    let main = item.querySelector('[data-selects-info="main"]');
+    let sec = item.querySelector('[data-selects-info="sec"]');
+    let num = item.querySelector('[data-selects-info="num"]');
+    main.textContent = info[0][0];
+    sec.textContent = info[1] ? info[1][0] : '';
+    num.textContent = info.length;
+  });
+  if(info.length > 1){
+    ROOT.setAttribute('data-selects-more','true');
+  }else{
+    ROOT.setAttribute('data-selects-more','false');
+  }
  }else{
-  ROOT.setAttribute('data-select','false')
+  ROOT.setAttribute('data-selects','false')
  }
 }
 

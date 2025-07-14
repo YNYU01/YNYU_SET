@@ -1,4 +1,4 @@
-<html data-plugin="fig" data-select="false" data-theme="dark" data-language="Zh" data-mobile="false">
+<html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
@@ -148,7 +148,7 @@
               </div>
               <div data-mode-id="upload" class="df-cc">
                 <div class="df-ffc df-cc" style="gap: 4px;">
-                  <input id="input-user-img" type="file" accept="image/*" style="display: none;" multiple/>
+                  <input id="input-user-img" type="file" accept=".jpg,.jpeg,.jfif,.webp,.png,.apng,.gif" style="display: none;" multiple/>
                   <label for="input-user-img" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   style=" --tips-text: '可上传1~10张大图，支持常见图片格式'; --tips-text-en: 'Upload 1~10 large images (common formats)';" >
                     <btn-user-img  data-btn="icon" ></btn-user-img>
@@ -164,7 +164,7 @@
                   <div data-btn-name data-any="vw300" data-en-text="Table to frame">表格创建画板</div>
                 </div>
                 <div class="df-ffc df-cc" style="gap: 4px;">
-                  <input id="input-user-zy" type="file" accept=".zy,.sketch,.xml,.json,.zip,.rar,.7z" style="display: none;"/>
+                  <input id="input-user-zy" type="file" accept=".zy,.sketch,.svg,.xml,.json,.zip,.rar,.7z" style="display: none;"/>
                   <label for="input-user-zy" data-tips="auto" data-tips-y="top" data-tips-x="right"
                   style="--tips-text: '上传由云即系列插件生成的图层信息文件'; --tips-text-en: 'Upload .zy (by YN+) or other compatible file';" >
                     <btn-user-zy data-btn="icon"></btn-user-zy>
@@ -262,7 +262,7 @@
                   </svg>
                 </div>
                 <input id="input-framename" data-input class="nobod fl1" type="text" data-input-type="text" data-input-must="none" value="w×h">  
-                <div class="df-lc pos-r" data-select="" data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
+                <div class="df-lc pos-r" data-select data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
                   <input id="select-value-1" type="text" data-select-input readonly value="w×h">
                   <input id="select-show-1" data-select-pick="w×h" type="checkbox">
                   <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
@@ -417,7 +417,7 @@
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
-                    <div class="df-lc pos-r" data-select="" data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
+                    <div class="df-lc pos-r" data-select data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
                       <input id="select-value-2" type="text" data-select-input="" readonly="" value="≤4096">
                       <input id="select-show-2" data-select-pick="≤4096" type="checkbox">
                       <label for="select-show-2" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
@@ -669,7 +669,18 @@
             </div>
           </div>
           <!--选中信息-->
-          <div class="df-cc bod-d" data-select-node="false" data-select-type="fill"></div>
+          <div class="df-cc bod-d" data-selects-node>
+            <span data-selects-info-box>
+              <span data-selects-info="main"></span>
+              <span data-selects-info="more">
+                +
+                <span data-selects-info="sec"></span>
+                ..
+                <span data-selects-info="num"></span>
+                <span data-en-text="layers">图层</span>
+              </span>
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -703,6 +714,7 @@
   <script src="../../../builds/yn_comp.js"></script>
   <script src="../../../builds/yn_tool.js"></script>
   <script src="../../../public/compressor.min.js"></script>
+  <script src="../../../public/xlsx.min.js"></script>
   <script src="../../../public/jszip.js"></script>
   <script src="../../../public/graph.js"></script>
   <!-- INLINE_JS -->
