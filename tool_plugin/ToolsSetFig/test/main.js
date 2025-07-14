@@ -172,6 +172,9 @@ const userTableTitle = document.getElementById('input-user-table-title');
 const frameName =  document.getElementById('input-framename');
 const pixelScale = document.getElementById('input-pixelScale');
 
+/*数据*/
+let createImaageInfo = []
+
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
 let tableTitleMust = userTableTitle.getAttribute('placeholder').split(',');
@@ -469,7 +472,7 @@ dropUp.addEventListener('drop',(e)=>{
     files = files.sort((a, b) => b.size - a.size);
     reFileInfo(files);
     switch (sameType){
-      case 'image': addImageTags(files);break
+      case 'image': addImageTags(files,true);break
       case 'table': addTableTags(files);break
       case 'zy': addZyCatalogue(files);break
     }
@@ -479,6 +482,23 @@ dropUp.addEventListener('drop',(e)=>{
   
 });
 
+document.querySelector('[data-create-any]').addEventListener('click',()=>{
+  let type = createTagsBox.parentNode.getAttribute('data-create-tags-box');
+  switch (type){
+    case 'image':
+      let finalCreate = [...createImaageInfo]
+      let nocreateTag = createTagsBox.querySelectorAll('[data-create-final="false"]');
+      nocreateTag.forEach(item => {
+        let id = item.querySelector('input').id;
+        let idnum = id.split('_')[id.split('_').length - 1];
+        finalCreate.splice(idnum,1);
+      });
+      toolMessage([finalCreate,'createImage'],PLUGINAPP);
+    ;break
+    case 'table': ;break
+    case 'zy': ;break
+  }
+});
 
 function loadImage(file){
   return new Promise((resolve,reject) => {
@@ -494,21 +514,23 @@ function loadImage(file){
   });
 }
 
-async function addImageTags(files){
+async function addImageTags(files,isCreate){
   let sizes = files.map(item => item.size);
   let sizeAll = sizes.reduce((a,b) => a + b, 0);
   sizeAll = sizeAll*1 == NaN ? files.length : sizeAll; //大图至少算1M大小
   tipsAll(['读取中，请耐心等待','Reading, please wait a moment'],sizeAll/1024/1024 * 100); //加载1M需要100毫秒
-  let tagsInfo = [];
   for(let i = 0; i < files.length; i++){
     let file = files[i];
     let name = file.name.split('.').filter(item => !imageType.includes(item.toLowerCase())).join('_');
     try{
       let image = await loadImage(file);
       let cuts = await CUT_IMAGE(image);
-      tagsInfo.push({n:name,w:image.width,h:image.height,cuts:cuts});
+      createImaageInfo.push({n:name,w:image.width,h:image.height,cuts:cuts});
       if(i == files.length - 1){
-        addTag('image',tagsInfo)
+        addTag('image',createImaageInfo);
+        if(isCreate){
+          toolMessage([createImaageInfo,'createImage'],PLUGINAPP);
+        }
       }
     } catch (error) {
       console.log(error)

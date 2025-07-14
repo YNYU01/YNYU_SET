@@ -59,7 +59,7 @@ figma.ui.onmessage = (message) => {
         }
     }
     //批量创建画板
-    if ( type == "createrframe") {
+    if ( type == "createFrame"){
         console.log("创建画板：",info.length,"个");
         let a = figma.currentPage;
         let b = a.selection;
@@ -210,6 +210,24 @@ figma.ui.onmessage = (message) => {
         }
 
         easeframe(info,x,y,gap,true)
+    }
+    //批量导入大图
+    if( type == "createImage"){
+        //console.log(info)
+        let viewX = Math.floor( figma.viewport.center.x - ((figma.viewport.bounds.width/2  - 300)* figma.viewport.zoom));
+        let viewY = Math.floor( figma.viewport.center.y - ((figma.viewport.bounds.height/2  - 300)* figma.viewport.zoom));
+        let gap = 20;
+        for ( let i = 0; i < info.length; i++){
+            if (info[i].cuts > 1){
+
+            } else {
+                let node = figma.createImage(info[i].cuts[0].img);
+                node.resize(info[i].w,info[i].h);
+                node.x = viewX;
+                node.y = viewY;
+            }
+            viewX += info[i].w + gap;
+        }
     }
     //自动排列
     if ( info == 'autoLayout'){
