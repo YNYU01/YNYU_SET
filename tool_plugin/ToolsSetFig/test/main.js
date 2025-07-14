@@ -161,7 +161,8 @@ const dailogBox = document.querySelector('[data-dailog-box]');
 const skillSecNode = document.querySelectorAll('[data-skill-sec]');
 const skillStar = document.querySelectorAll('[data-skill-star]');
 const skillStarModel = document.querySelector('[data-skillmodule="Useful & Starts"]')
-const selectNodeInfo = document.querySelectorAll('[data-selects-node]')
+const selectNodeInfo = document.querySelectorAll('[data-selects-node]');
+const createTagsBox = document.querySelector('[data-create-tags]')
 
 /*表单绑定*/
 const userImg = document.getElementById('input-user-img');
@@ -394,15 +395,16 @@ btnBig.addEventListener('change',()=>{
 });
 //点击上传
 userImg.addEventListener('change',(e)=>{
-  let files = userImg.files;
+  let files = Array.from(userImg.files);
   reFileInfo(files);
+  addImageTags(files)
 });
 userTable.addEventListener('change',(e)=>{
-  let files = userTable.files;
+  let files = Array.from(userTable.files);
   reFileInfo(files);
 });
 userZy.addEventListener('change',(e)=>{
-  let files = userZy.files;
+  let files = Array.from(userZy.files);
   reFileInfo(files);
 });
 function reFileInfo(files){
@@ -410,8 +412,8 @@ function reFileInfo(files){
   let fileLength = '<span style="color: let(--code2)">' + files.length + '</span>'
   let fileName1 = files.length == 1 ? files[0].name : files[0].name + ' ...等 ' + fileLength + '  个文件';
   let fileName2 = files.length == 1 ? files[0].name : files[0].name + ' ... ' + fileLength + ' files';
-  fileName1 = '📁 ' + fileName1;
-  fileName2 = '📁 ' + fileName2;
+  fileName1 = '📁 ' + TextMaxLength(fileName1,20,'..');
+  fileName2 = '📁 ' + TextMaxLength(fileName2,20,'..');
   fileInfo.setAttribute('data-zh-text',fileName1);
   fileInfo.setAttribute('data-en-text',fileName2);
   if(languge == "Zh"){
@@ -493,7 +495,10 @@ function loadImage(file){
 }
 
 async function addImageTags(files){
-  
+  let sizes = files.map(item => item.size);
+  let sizeAll = sizes.reduce((a,b) => a + b, 0);
+  sizeAll = sizeAll*1 == NaN ? files.length : sizeAll; //大图至少算1M大小
+  tipsAll(['读取中，请耐心等待','Reading, please wait a moment'],sizeAll/1024/1024 * 100); //加载1M需要100毫秒
   let tagsInfo = [];
   for(let i = 0; i < files.length; i++){
     let file = files[i];
@@ -502,7 +507,6 @@ async function addImageTags(files){
       let image = await loadImage(file);
       let cuts = await CUT_IMAGE(image);
       tagsInfo.push({n:name,w:image.width,h:image.height,cuts:cuts});
-      console.log(tagsInfo)
       if(i == files.length - 1){
         addTag('image',tagsInfo)
       }
@@ -514,14 +518,65 @@ async function addImageTags(files){
 }
 
 function addTag(type,info){
+  createTagsBox.innerHTML = '';
   switch (type){
     case 'image':
-      info.forEach(item => {
+      info.forEach((img,index) => {
         let tag = document.createElement('div');
-        tag.setAttribute('data-create-tags','image');
+        createTagsBox.parentNode.setAttribute('data-create-tags-box','image');
+        tag.setAttribute('data-create-tag','');
+        tag.setAttribute('data-create-final','true');
+        tag.className = 'df-lc';
 
-      })
+        let checkbox = document.createElement('div');
+        checkbox.setAttribute('style','width: 14px; height: 14px;');
+        let checkid = 'cr_img_chk_' + index;
+        let checkinput = document.createElement('input');
+        checkinput.id = checkid;
+        checkinput.type = 'checkbox';
+        checkinput.setAttribute('checked','true');
+        let checklabel = document.createElement('label');
+        checklabel.setAttribute('for',checkid);
+        checklabel.className = 'check'
+        checklabel.innerHTML = '<btn-check></btn-check>'
+        checkbox.appendChild(checkinput);
+        checkbox.appendChild(checklabel);
+        tag.appendChild(checkbox);
+
+        let name = document.createElement('div');
+        name.setAttribute('data-create-info','name');
+        name.innerHTML = TextMaxLength(img.n,16,'...');
+        tag.appendChild(name);
+        if(img.cuts.length > 1){
+          let span = document.createElement('span');
+          let text = ROOT.getAttribute('data-language') == 'Zh' ? "切片" : "Slice"
+          span.innerHTML = `▶ 
+          <span style="color: var(--themeColor)">${img.cuts.length}</span>
+          <span data-en-text="Slice" data-zh-text="切片">${text}</span>
+          ` ;
+          tag.appendChild(span);
+          span.addEventListener('dblclick',()=>{
+            console.log(img.cuts)
+          });
+        }
+        createTagsBox.appendChild(tag);
+
+        checkinput.addEventListener('change',()=>{
+          if(checkinput.checked){
+            tag.setAttribute('data-check-checked','true');
+            tag.setAttribute('data-create-final','true');
+          }else{
+            tag.setAttribute('data-check-checked','false');
+            tag.setAttribute('data-create-final','false');
+          }
+        });
+      });
     ;break
+    case 'zy':
+      info.forEach(layer => {
+        let catalogue = document.createElement('div');
+        catalogue.setAttribute('data-create-catalogue','');
+      });
   }
 }
 
@@ -871,7 +926,7 @@ function CUT_IMAGE(image,mix){
           canvas2.height = h;
           let ctx2 = canvas2.getContext("2d");
           ctx2.drawImage(canvas, x, y, w, h, 0, 0, w, h);
-          let imgData = C2U8A(canvas2);
+          let imgData = CanvasToU8A(canvas2);
           cuts.push({ img: imgData, w: w, h: h, x: x, y: y });
           if (i == cutAreas.length - 1) {
             resolve(cuts);

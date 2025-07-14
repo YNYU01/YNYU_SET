@@ -131,10 +131,6 @@ li[data-li-style="2"]::before{
   background: var(--boxBod);
 }
 
-li::after,li[data-li]::after{
-  content: '；';
-}
-
 [data-language="Zh"] li::after,li[data-li]::after{
   content: '；';
 }

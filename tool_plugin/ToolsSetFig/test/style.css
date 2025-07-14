@@ -698,6 +698,38 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: none;
 }
 
+[data-create-tags-box]{
+  resize: vertical;
+  height: 200px;
+  max-width: 560px;
+  min-height: 20vh;
+  max-height: 80vh;
+}
+
+[data-create-tags],[data-create-catalogues]{
+  height: fit-content;
+  display: none;
+}
+
+[data-create-tags-box="image"] [data-create-tags],
+[data-create-tags-box="table"] [data-create-tags]{
+  display: flex;
+}
+
+[data-create-tags]{
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+[data-create-tag]{
+  height: 24px;
+  padding: 2px 4px;
+  background: var(--boxGry);
+  border-radius: 6px;
+  gap: 4px;
+  font-size: 10px;
+}
+
 [data-skilltype-box]{
   max-width: 560px;
   height: 60px;
@@ -1165,7 +1197,9 @@ input[type="checkbox"]:checked + .btn-moreset{
   [data-language="Zh"] [data-skillType-name]{
     max-width: 5ch;
   }
-  
+  .file-tag{
+    max-width: 200px;
+  }
 
 }
 

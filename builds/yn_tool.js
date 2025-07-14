@@ -58,3 +58,23 @@ function CanvasToU8A(canvas){
   let code = atob.split('').map(c => c.charCodeAt(0));
   return new Uint8Array(code);
 };
+
+/**
+ * 中英文字数限制兼容
+ */
+function TextMaxLength(text,max,add){
+  let newtext = text.toString();
+  add = add ? add : '';
+  let lengthE = newtext.replace(/[\u4e00-\u9fa5]/g,'').length*1;
+  let lengthZ = newtext.replace(/[^\u4e00-\u9fa5]/g,'').length*2;
+  if(lengthZ > lengthE){
+      if((lengthE + lengthZ) > max){
+        newtext = newtext.substring(0,(max/2 + 1)) + add;
+      }
+  } else {
+      if((lengthE + lengthZ) > max){
+        newtext = newtext.substring(0,(max + 1)) + add;
+      }
+  }
+  return newtext;
+}
