@@ -738,6 +738,13 @@ function COMP_MAIN(){
         block: 'center',
         inline: inline,
       });
+      if( index > allradio.length/2  && item.nextElementSibling){
+        item.nextElementSibling.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'nearest',
+        });
+      };
     });
   });
 
@@ -879,6 +886,13 @@ TAB_AUTO.forEach((item,index) => {
           block: 'center',
           inline: inline,
         });
+        if(index > allinput.length/2 && input.nextElementSibling && input.nextElementSibling.nextElementSibling && input.nextElementSibling.nextElementSibling.nextElementSibling){
+          input.nextElementSibling.nextElementSibling.nextElementSibling.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest',
+          });
+        };
       });
 
       let label = document.createElement('label');
