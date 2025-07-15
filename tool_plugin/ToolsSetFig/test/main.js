@@ -1,3 +1,4 @@
+/*初始数据*/
 let skillSecInfo = [
   {
     id: 'inSituRasterize',
@@ -60,7 +61,6 @@ let skillSecInfo = [
     tips:  ["",""],
   },
 ]
-
 
 let toUserTips = {
   worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
@@ -130,8 +130,8 @@ let helpData = {
     "修改列顺序规则时需注意,必须包含命名和宽高"
     ,"When modifying column order rules, it is important to include <span data-highlight> name, width and height </span>"],
     ["li",
-    "画板名默认带w×h后缀，如“kv 1920×1080 ”，可选择其他预设或自行定义",
-    "The frame defaults to a suffix with width and height,such as 'kv 1920 × 1080', you can selected a presets or input oneself"],
+    "画板名默认带w×h后缀，如“ <span data-highlight>kv 1920×1080 </span>”，可选择其他预设或自行定义",
+    "The frame defaults to a suffix with width and height,such as ' <span data-highlight>kv 1920 × 1080 </span>', you can selected a presets or input oneself"],
   ]
 }
 
@@ -144,6 +144,7 @@ skilltypeNameNode.forEach(item => {
   skillModel.push([name1,name2]);
 });
 
+/*静态数据或对象*/
 const UI_MINI = [200,460];
 const UI = [300,660];
 const UI_BIG = [620,660];
@@ -158,10 +159,11 @@ const fileInfo = document.querySelector('[data-file-info]');
 const helpCreate = document.querySelector('[data-help="create"]');
 const dailog = document.querySelector('[data-dailog]');
 const dailogBox = document.querySelector('[data-dailog-box]');
+const skillAllBox = document.querySelector('[data-skills-box]');
 const skillSecNode = document.querySelectorAll('[data-skill-sec]');
 const skillStar = document.querySelectorAll('[data-skill-star]');
 const skillStarModel = document.querySelector('[data-skillmodule="Useful & Starts"]')
-const selectNodeInfo = document.querySelectorAll('[data-selects-node]');
+const selectInfoBox = document.querySelectorAll('[data-selects-node]');
 const createTagsBox = document.querySelector('[data-create-tags]');
 const cataloguesBox = document.querySelector('[data-create-catalogues]');
 
@@ -173,8 +175,9 @@ const userTableTitle = document.getElementById('input-user-table-title');
 const frameName =  document.getElementById('input-framename');
 const pixelScale = document.getElementById('input-pixelScale');
 
-/*数据*/
-let createImaageInfo = []
+/*动态数据或对象*/
+let CreateImageInfo = [];
+let SelectNodeInfo = [];
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -223,16 +226,18 @@ MOVE_TIMEOUT = setTimeout(()=>{
 
 /* ---界面初始化--- */
 
-let loadFontAfter = [
-  "data-en-text",
-  "data-en-input",
-  "data-en-placeholder",
-  "data-turnto",
-  "data-back",
-]
-
-//重载字体样式
+/**
+ * 重载字体样式
+ * @param {node | null} area -可传入重载范围，可以是元素本身，或id/自定义属性等唯一值；
+ */
 function loadFont(area){
+  let loadFontAfter = [
+    "data-en-text",
+    "data-en-input",
+    "data-en-placeholder",
+    "data-turnto",
+    "data-back",
+  ];
   let areas = getElementMix(area) || document;
   setTimeout(()=>{
     loadFontAfter.forEach(key => {
@@ -242,8 +247,8 @@ function loadFont(area){
       })
     });
   },100);
-}
-
+};
+//动态变化公屏文案
 function addToUserTips(){
   let languge = ROOT.getAttribute('data-language');
   let num = languge == 'Zh' ? 0 : 1;
@@ -260,8 +265,8 @@ function addToUserTips(){
   }
   TV_text.parentNode.style.setProperty('--tv-w',textW)
 
-}
-
+};
+//添加带tips的功能标题
 function addSkillTitle(){
   skillSecNode.forEach(secnode =>{
     let secid = secnode.getAttribute('data-skill-sec');
@@ -290,19 +295,20 @@ function addSkillTitle(){
       loadFont(secnode.parentNode);
     };
   });
-}
-
+};
+//处理选中图层的信息
 function reSelectInfo(info){
- if(info.length > 0){
-  ROOT.setAttribute('data-selects','true');
-  selectNodeInfo.forEach(item => {
-    let main = item.querySelector('[data-selects-info="main"]');
-    let sec = item.querySelector('[data-selects-info="sec"]');
-    let num = item.querySelector('[data-selects-info="num"]');
-    main.textContent = info[0][0];
-    sec.textContent = info[1] ? info[1][0] : '';
-    num.textContent = info.length;
-  });
+  SelectNodeInfo = info;
+  if(info.length > 0){
+    ROOT.setAttribute('data-selects','true');
+    selectInfoBox.forEach(item => {
+      let main = item.querySelector('[data-selects-info="main"]');
+      let sec = item.querySelector('[data-selects-info="sec"]');
+      let num = item.querySelector('[data-selects-info="num"]');
+      main.textContent = info[0][0];
+      sec.textContent = info[1] ? info[1][0] : '';
+      num.textContent = info.length;
+    });
   if(info.length > 1){
     ROOT.setAttribute('data-selects-more','true');
   }else{
@@ -311,7 +317,7 @@ function reSelectInfo(info){
  }else{
   ROOT.setAttribute('data-selects','false')
  }
-}
+};
 
 
 /* ---界面交互--- */
@@ -413,21 +419,6 @@ userZy.addEventListener('change',(e)=>{
   let files = Array.from(userZy.files);
   reFileInfo(files);
 });
-function reFileInfo(files){
-  let languge = ROOT.getAttribute('data-language');
-  let fileLength = '<span style="color: let(--code2)">' + files.length + '</span>'
-  let fileName1 = files.length == 1 ? files[0].name : files[0].name + ' ...等 ' + fileLength + '  个文件';
-  let fileName2 = files.length == 1 ? files[0].name : files[0].name + ' ... ' + fileLength + ' files';
-  fileName1 = '📁 ' + TextMaxLength(fileName1,20,'..');
-  fileName2 = '📁 ' + TextMaxLength(fileName2,20,'..');
-  fileInfo.setAttribute('data-zh-text',fileName1);
-  fileInfo.setAttribute('data-en-text',fileName2);
-  if(languge == "Zh"){
-    fileInfo.innerHTML = fileName1;
-  }else{
-    fileInfo.innerHTML = fileName2;
-  };
-}
 //拖拽上传
 let dragAreaInfo;
 dropUp.addEventListener('dragover',(e)=>{
@@ -484,12 +475,11 @@ dropUp.addEventListener('drop',(e)=>{
   }
   
 });
-
 document.querySelector('[data-create-any]').addEventListener('click',()=>{
   let type = createTagsBox.parentNode.getAttribute('data-create-tags-box');
   switch (type){
     case 'image':
-      let finalCreate = [...createImaageInfo]
+      let finalCreate = [...CreateImageInfo]
       let nocreateTag = createTagsBox.querySelectorAll('[data-create-final="false"]');
       nocreateTag.forEach(item => {
         let id = item.querySelector('input').id;
@@ -502,7 +492,7 @@ document.querySelector('[data-create-any]').addEventListener('click',()=>{
     case 'zy': ;break
   }
 });
-
+//加载图片
 function loadImage(file){
   return new Promise((resolve,reject) => {
     const reader = new FileReader()
@@ -515,10 +505,10 @@ function loadImage(file){
     reader.onerror = (error)=>{reject(error)}
     reader.readAsDataURL(file)
   });
-}
-
+};
+//添加标签前处理
 async function addImageTags(files,isCreate){
-  createImaageInfo = [];
+  CreateImageInfo = [];
   let sizes = files.map(item => item.size);
   let sizeAll = sizes.reduce((a,b) => a + b, 0);
   sizeAll = sizeAll*1 == NaN ? files.length : sizeAll; //大图至少算1M大小
@@ -529,11 +519,11 @@ async function addImageTags(files,isCreate){
     try{
       let image = await loadImage(file);
       let cuts = await CUT_IMAGE(image);
-      createImaageInfo.push({n:name,w:image.width,h:image.height,cuts:cuts});
+      CreateImageInfo.push({n:name,w:image.width,h:image.height,cuts:cuts});
       if(i == files.length - 1){
-        addTag('image',createImaageInfo);
-        if(isCreate){
-          toolMessage([createImaageInfo,'createImage'],PLUGINAPP);
+        addTag('image',CreateImageInfo);
+        if(isCreate){//仅图片类型是在拖拽上传时立即生成
+          toolMessage([CreateImageInfo,'createImage'],PLUGINAPP);
         }
       }
     } catch (error) {
@@ -542,14 +532,13 @@ async function addImageTags(files,isCreate){
     
   };
 }
-
 function addTableTags(files){
   
-}
+};
 function addZyCatalogue(files){
   
-}
-
+};
+//添加标签-总
 function addTag(type,info){
   createTagsBox.innerHTML = '';
   switch (type){
@@ -630,16 +619,34 @@ function addTag(type,info){
           }
         });
       });
-    ;break
+    break
+    case 'table':
+    break
     case 'zy':
       info.forEach(layer => {
         
       });
+    break
   }
   //重置文字样式
   loadFont(createTagsBox.parentNode);
-}
-
+};
+//显示所上传文件名
+function reFileInfo(files){
+  let languge = ROOT.getAttribute('data-language');
+  let fileLength = '<span style="color: let(--code2)">' + files.length + '</span>'
+  let fileName1 = files.length == 1 ? files[0].name : files[0].name + ' ...等 ' + fileLength + '  个文件';
+  let fileName2 = files.length == 1 ? files[0].name : files[0].name + ' ... ' + fileLength + ' files';
+  fileName1 = '📁 ' + TextMaxLength(fileName1,20,'..');
+  fileName2 = '📁 ' + TextMaxLength(fileName2,20,'..');
+  fileInfo.setAttribute('data-zh-text',fileName1);
+  fileInfo.setAttribute('data-en-text',fileName2);
+  if(languge == "Zh"){
+    fileInfo.innerHTML = fileName1;
+  }else{
+    fileInfo.innerHTML = fileName2;
+  };
+};
 //设置画板命名格式
 frameName.addEventListener('input',()=>{
   if(frameNmaeSelect.includes(frameName.value)){
@@ -729,7 +736,7 @@ helpCreate.addEventListener('click',()=>{
       setLanguage(false);
     };
     //重置文字样式
-    loadFont();
+    loadFont(dailogBox);
   };
   dailog.style.display = 'flex';
 });
@@ -817,6 +824,24 @@ pixelScale.addEventListener('change',()=>{
     });
   };
 });
+//返回裁切方案以栅格化
+skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
+  let mix = skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+  let s = pixelScale.value;
+  let cuts = [];
+  tipsAll(['读取中，请耐心等待','Reading, please wait a moment'],SelectNodeInfo.length * 800);
+  setTimeout(()=>{
+    SelectNodeInfo.forEach((item) => {
+    let w = item[1];
+    let h = item[2];
+    let cut = CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix)
+    cuts.push(cut);
+  });
+  //console.log(cuts);
+  toolMessage([cuts,'pixelCopy'],PLUGINAPP);
+  },100);
+});
+
 
 
 /**
@@ -828,7 +853,7 @@ function viewPage(name){
   tab.checked = true;
   let inputEvent = new Event('change',{bubbles:true});
   tab.dispatchEvent(inputEvent);
-}
+};
 
 
 /* ---钩子--- */
@@ -887,7 +912,7 @@ function getUserTab(node){
   if(tabPick){
     storageMix.set('tabPick',tabPick);
   }
-}
+};
 
 function getUserColor(node){
   let color = {
@@ -897,7 +922,7 @@ function getUserColor(node){
     HSV:node.getAttribute('data-color-hsv'),
   }
   //console.log(color)
-}
+};
 
 function getUserNumber(node){
   let number = node.getAttribute('data-number-value');
@@ -913,12 +938,12 @@ function getUserNumber(node){
   if(node.getAttribute('data-scaleset-y') !== null){
     node.parentNode.parentNode.parentNode.style.setProperty('--scaleY',number)
   };
-}
+};
 
 function getUserText(node){
   let text = node.getAttribute('data-text-value');
   //console.log(text)
-}
+};
 
 function getUserSelect(node){
   let userSelect = node.getAttribute('data-select-value');
@@ -952,93 +977,4 @@ function getUserRadio(node){
       });
     }
   }
-}
-
-
-/* 核心功能 */
-
-function CUT_IMAGE(image,mix){
-  return new Promise((resolve,reject) => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = image.width;
-    canvas.height = image.height;
-    requestAnimationFrame(function draw() {
-      // 绘制图片
-      ctx.drawImage(image, 0, 0);
-      let cutAreas = CUT_AREA({ w: canvas.width, h: canvas.height, x: 0, y: 0, s: 1 },mix | 4096);
-      // 检查图片是否完全绘制
-      if (image.complete) {
-        let cuts = [];
-        for (let i = 0; i < cutAreas.length; i++) {
-          let canvas2 = document.createElement("canvas");
-          let w = cutAreas[i].w;
-          let h = cutAreas[i].h;
-          let x = cutAreas[i].x;
-          let y = cutAreas[i].y;
-          canvas2.width = w;
-          canvas2.height = h;
-          let ctx2 = canvas2.getContext("2d");
-          ctx2.drawImage(canvas, x, y, w, h, 0, 0, w, h);
-          let imgData = CanvasToU8A(canvas2);//new Uint8Array(ctx2.getImageData(0, 0, w, h).data);
-          cuts.push({ img: imgData, w: w, h: h, x: x, y: y });
-          if (i == cutAreas.length - 1) {
-            resolve(cuts);
-          };
-        };
-      };
-    });
-  });
-}
-
-
-/**
- * 均匀裁切方案，可用于瓦片切图和长图分割
- * @param { object } info - {w:,h:,x:,y:,s:}原始宽高、坐标(如有)、栅格化倍率(如有)
- * @param { number } mix - 4096 | 2048 | 1024
- */
-function CUT_AREA(info,mix) {
-  let W = info.w, H = info.h;//图片宽高
-  let Ws = info.w, Hs = info.h;//非尾部的裁剪宽高
-  let lastWs = info.w, lastHs = info.h;//尾部的裁剪宽高
-  let X = info.x || 0, Y = info.y || 0;//裁切区坐标
-  let cutW = 1, cutH = 1;//纵横裁剪数量
-  let cutAreas = [];//从左到右，从上到下记录的裁切区域集
-  let isCut = (W * info.s <= mix && H * info.s <= mix);//不超过最大尺寸的不裁切
-
-  if (isCut) {
-    return [{w:W,h:H,x:X,y:Y}];
-  } else {
-    cutW = Math.ceil((W * info.s) / mix);
-    cutH = Math.ceil((H * info.s) / mix);
-    Ws = Math.ceil(W / cutW);
-    Hs = Math.ceil(H / cutH);
-    lastWs = W - (Ws * (cutW - 1));//有小数点则向上取整，最后一截短一些
-    lastHs = H - (Hs * (cutH - 1));
-
-    for (let i = 0; i < (cutW * cutH); i++) {
-      if ((i + 1) % cutW == 0 && i !== (cutW * cutH) - 1 && i !== 0) {
-        cutAreas.push({ w: lastWs, h: Hs, x: X, y: Y, });
-        Y = Y + Hs;
-        X = info.x;
-      } else if (i == (cutW * cutH) - 1) {
-        cutAreas.push({ w: lastWs, h: lastHs, x: X, y: Y,});
-      } else {
-        if (i > (cutW * (cutH - 1)) - 1) {
-          cutAreas.push({ w: Ws, h: lastHs, x: X, y: Y });
-        } else {
-          cutAreas.push({ w: Ws, h: Hs, x: X, y: Y });
-        }
-        if (cutW == 1) {
-          X = info.x;
-          Y = Y + Hs;
-        } else {
-          X = X + Ws;
-        }
-      }
-    }
-
-    return cutAreas;
-  }
-
-}
+};

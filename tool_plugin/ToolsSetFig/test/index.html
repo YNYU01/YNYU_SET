@@ -176,7 +176,7 @@
             <!--输入参数-->
             <div class="w100 df" style="flex-wrap: wrap; max-width: 560px; margin: 4px 0; gap: 4px;">
               <div id="upload-textarea-box" data-resize class="pos-r fl1" style="min-width: 180px;">
-                <textarea id="upload-textarea" data-textarea="eg" 
+                <textarea spellcheck="false" id="upload-textarea" data-textarea="eg" 
                 data-eg="kv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
                 data-eg-en="kv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
                 onfocus="
@@ -262,7 +262,7 @@
                   </svg>
                 </div>
                 <input id="input-framename" data-input class="nobod fl1" type="text" data-input-type="text" data-input-must="none" value="w×h">  
-                <div class="df-lc pos-r" data-select data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
+                <div class="df-lc pos-r" data-select data-select-value="w×h" style="gap: 4px; width: 90px; z-index:2;">
                   <input id="select-value-1" type="text" data-select-input readonly value="w×h">
                   <input id="select-show-1" data-select-pick="w×h" type="checkbox">
                   <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
@@ -424,8 +424,8 @@
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
-                    <div class="df-lc pos-r" data-select data-select-value="" style="gap: 4px; width: 90px; z-index:2;">
-                      <input id="select-value-2" type="text" data-select-input="" readonly="" value="≤4096">
+                    <div data-pixel-mix class="df-lc pos-r" data-select data-select-value="≤ 4096px" style="gap: 4px; width: 90px; z-index:2;">
+                      <input id="select-value-2" type="text" data-select-input readonly="" value="≤4096">
                       <input id="select-show-2" data-select-pick="≤4096" type="checkbox">
                       <label for="select-show-2" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
                       <div data-select-options="" class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
@@ -461,8 +461,8 @@
                   </div>
                   <div class="df-sc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="As Copy">保留原图层</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Overwrite">覆写原图层</div>
+                      <div data-pixel-copy class="df-cc" data-btn="skill-main" data-en-text="As Copy">保留原图层</div>
+                      <div data-pixel-overwrite class="df-cc" data-btn="skill-main" data-en-text="Overwrite">覆写原图层</div>
                     </div>
                   </div>
                 </div>

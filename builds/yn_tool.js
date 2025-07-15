@@ -76,3 +76,91 @@ function TextMaxLength(text,max,add){
   }
   return newtext;
 }
+
+/* ---核心功能--- */
+
+function CUT_IMAGE(image,mix){
+  return new Promise((resolve,reject) => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = image.width;
+    canvas.height = image.height;
+    requestAnimationFrame(function draw() {
+      // 绘制图片
+      ctx.drawImage(image, 0, 0);
+      let cutAreas = CUT_AREA({ w: canvas.width, h: canvas.height, x: 0, y: 0, s: 1 },mix | 4096);
+      // 检查图片是否完全绘制
+      if (image.complete) {
+        let cuts = [];
+        for (let i = 0; i < cutAreas.length; i++) {
+          let canvas2 = document.createElement("canvas");
+          let w = cutAreas[i].w;
+          let h = cutAreas[i].h;
+          let x = cutAreas[i].x;
+          let y = cutAreas[i].y;
+          canvas2.width = w;
+          canvas2.height = h;
+          let ctx2 = canvas2.getContext("2d");
+          ctx2.drawImage(canvas, x, y, w, h, 0, 0, w, h);
+          let imgData = CanvasToU8A(canvas2);//new Uint8Array(ctx2.getImageData(0, 0, w, h).data);
+          cuts.push({ img: imgData, w: w, h: h, x: x, y: y });
+          if (i == cutAreas.length - 1) {
+            resolve(cuts);
+          };
+        };
+      };
+    });
+  });
+};
+
+
+/**
+ * 均匀裁切方案，可用于瓦片切图和长图分割
+ * @param { object } info - {w:,h:,x:,y:,s:}原始宽高、坐标(如有)、栅格化倍率(如有)
+ * @param { number } mix - 4096 | 2048 | 1024
+ */
+function CUT_AREA(info,mix) {
+  let W = info.w, H = info.h;//图片宽高
+  let Ws = info.w, Hs = info.h;//非尾部的裁剪宽高
+  let lastWs = info.w, lastHs = info.h;//尾部的裁剪宽高
+  let X = info.x || 0, Y = info.y || 0;//裁切区坐标
+  let cutW = 1, cutH = 1;//纵横裁剪数量
+  let cutAreas = [];//从左到右，从上到下记录的裁切区域集
+  let s = info.s || 1;
+  mix = mix || 4096
+  let isCut = (W * info.s > mix || H * info.s > mix);//不超过最大尺寸的不裁切
+  if (!isCut) {
+    return [{w:W,h:H,x:X,y:Y,s:s}];
+  } else {
+    cutW = Math.ceil((W * info.s) / mix);
+    cutH = Math.ceil((H * info.s) / mix);
+    Ws = Math.ceil(W / cutW);
+    Hs = Math.ceil(H / cutH);
+    lastWs = W - (Ws * (cutW - 1));//有小数点则向上取整，最后一截短一些
+    lastHs = H - (Hs * (cutH - 1));
+
+    for (let i = 0; i < (cutW * cutH); i++) {
+      if ((i + 1) % cutW == 0 && i !== (cutW * cutH) - 1 && i !== 0) {
+        cutAreas.push({ w: lastWs, h: Hs, x: X, y: Y, s:s});
+        Y = Y + Hs;
+        X = info.x;
+      } else if (i == (cutW * cutH) - 1) {
+        cutAreas.push({ w: lastWs, h: lastHs, x: X, y: Y, s:s});
+      } else {
+        if (i > (cutW * (cutH - 1)) - 1) {
+          cutAreas.push({ w: Ws, h: lastHs, x: X, y: Y, s:s});
+        } else {
+          cutAreas.push({ w: Ws, h: Hs, x: X, y: Y, s:s});
+        }
+        if (cutW == 1) {
+          X = info.x;
+          Y = Y + Hs;
+        } else {
+          X = X + Ws;
+        }
+      }
+    }
+
+    return cutAreas;
+  };
+};
