@@ -730,6 +730,11 @@ function COMP_MAIN(){
       }
       item.setAttribute('data-radio-main','true');
       radio.setAttribute('data-radio-value',data);
+      item.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest',
+      });
     });
   });
 
@@ -738,7 +743,6 @@ function COMP_MAIN(){
       
       let input = item.parentNode.querySelectorAll('input');
       input.forEach(node =>{
-        console.log(666)
         let defaultValue = node.getAttribute('data-input-default');
         if(!defaultValue){
           switch (node.type){
@@ -864,7 +868,12 @@ TAB_AUTO.forEach((item,index) => {
         oldpage.style.display = 'none';
         items.style.display = 'flex';
         items.parentNode.setAttribute('data-tab-pick',keyid);
-      })
+        input.nextElementSibling.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        });
+      });
 
       let label = document.createElement('label');
       label.setAttribute('for',id);

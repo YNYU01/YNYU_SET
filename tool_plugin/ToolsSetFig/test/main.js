@@ -135,15 +135,6 @@ let helpData = {
   ]
 }
 
-let skillModel = [];
-let skilltypeNameNode = document.querySelector('[data-skilltype-box]').querySelectorAll('[data-skilltype-name]')
-skilltypeNameNode.forEach(item => {
-  let name1 = item.getAttribute('data-zh-text');
-  name1 = name1 ? name1 : item.textContent.trim();
-  let name2 = item.getAttribute('data-en-text');
-  skillModel.push([name1,name2]);
-});
-
 /*静态数据或对象*/
 const UI_MINI = [200,460];
 const UI = [300,660];
@@ -159,13 +150,25 @@ const fileInfo = document.querySelector('[data-file-info]');
 const helpCreate = document.querySelector('[data-help="create"]');
 const dailog = document.querySelector('[data-dailog]');
 const dailogBox = document.querySelector('[data-dailog-box]');
+const skillTypeBox = document.querySelector('[data-skilltype-box]');
 const skillAllBox = document.querySelector('[data-skills-box]');
 const skillSecNode = document.querySelectorAll('[data-skill-sec]');
 const skillStar = document.querySelectorAll('[data-skill-star]');
-const skillStarModel = document.querySelector('[data-skillmodule="Useful & Starts"]')
+const skillAllModel = document.querySelectorAll('[data-skillmodule]');
+const skillStarModel = document.querySelector('[data-skillmodule="Useful & Starts"]');
 const selectInfoBox = document.querySelectorAll('[data-selects-node]');
 const createTagsBox = document.querySelector('[data-create-tags]');
 const cataloguesBox = document.querySelector('[data-create-catalogues]');
+
+let skillModel = [];
+let skilltypeNameNode = skillTypeBox.querySelectorAll('[data-skilltype-name]');
+skilltypeNameNode.forEach(item => {
+  let name1 = item.getAttribute('data-zh-text');
+  name1 = name1 ? name1 : item.textContent.trim();
+  let name2 = item.getAttribute('data-en-text');
+  skillModel.push([name1,name2]);
+});
+let isSkillScroll = true;
 
 /*表单绑定*/
 const userImg = document.getElementById('input-user-img');
@@ -492,6 +495,20 @@ document.querySelector('[data-create-any]').addEventListener('click',()=>{
     case 'zy': ;break
   }
 });
+//功能列表滚动绑定tab
+skillAllModel.forEach(item =>{
+  item.addEventListener('mouseenter',() => {
+    isSkillScroll = false;
+    let modelid = item.getAttribute('data-skillmodule');
+    let index = skillModel.findIndex(skill => skill.includes(modelid));
+    let tab = skillTypeBox.querySelector(`[data-radio-data="${(index + 1)}"]`);
+    tab.click();
+  });
+});
+skillTypeBox.addEventListener('mouseenter',() => {
+  isSkillScroll = true;
+});
+
 //加载图片
 function loadImage(file){
   return new Promise((resolve,reject) => {
@@ -911,6 +928,9 @@ function getUserTab(node){
   let tabPick = node.getAttribute('data-tab-pick').split('tab_')[1]
   if(tabPick){
     storageMix.set('tabPick',tabPick);
+    if(tabPick == 'more tools'){
+      toolMessage(['','selectInfo'],PLUGINAPP);
+    }
   }
 };
 
@@ -960,21 +980,34 @@ function getUserRadio(node){
     if(node.getAttribute('data-pixelscale-set') !== null){
       pixelScale.value = userRadio;
     };
-    if(node.getAttribute('data-clip-w-set')  !== null){
+    if(node.getAttribute('data-clip-w-set') !== null){
       let set = node.parentNode.parentNode.querySelector('[data-clip-w]');
       let sets = set.querySelectorAll('[data-clip-set]');
       set.setAttribute('data-clip-w',userRadio);
       sets.forEach(item => {
         item.setAttribute('style','');
       });
-    }
-    if(node.getAttribute('data-clip-h-set')  !== null){
+    };
+    if(node.getAttribute('data-clip-h-set') !== null){
       let set = node.parentNode.parentNode.querySelector('[data-clip-h]');
       let sets = set.querySelectorAll('[data-clip-set]');
       set.setAttribute('data-clip-h',userRadio);
       sets.forEach(item => {
         item.setAttribute('style','');
       });
-    }
+    };
+    if(node.getAttribute('data-skilltype-box') !== null){
+      let modelid = skillModel[userRadio - 1][1];
+      //console.log(modelid);
+      let model = skillAllBox.querySelector(`[data-skillmodule="${modelid}"]`);
+      let skillnode = model.querySelector('[data-skill-sec]');
+      if(isSkillScroll){
+        skillnode.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'nearest',
+        });
+      };
+    };
   }
 };

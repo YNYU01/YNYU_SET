@@ -318,7 +318,7 @@
       <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
         <div class="wh100 df-ffc" style="align-items: center; padding: 10px; box-sizing: border-box;">
           <!--功能tags-->
-          <div class="w100 df-lc ovx noscrollbar fl0" data-radio-value="1" data-scroll data-skilltype-box>
+          <div data-skilltype-box class="w100 df-lc ovx noscrollbar fl0" data-radio-value="1" data-scroll>
             <div data-radio data-radio-data="1" data-radio-main="true" class="df-ffc df-cc" style="gap: 4px;">
               <div data-skilltype-icon>
                 <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -676,14 +676,22 @@
             </div>
           </div>
           <!--选中信息-->
-          <div class="df-cc bod-d" data-selects-node>
-            <span data-selects-info-box>
+          <div class="df-cc" data-selects-node>
+            <span class="df-cc" data-selects-info-box>
+              <div style="width: 12px; height: 12px;">
+                <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="var(--mainColor)" d="M18.4265 14.8145C19.3056 15.1165 19.3327 16.35 18.4675 16.6904L10.486 19.8271C10.2536 19.9184 9.9946 19.9195 9.76144 19.8301L1.59738 16.6934C0.722562 16.3569 0.749635 15.1094 1.63839 14.8115L3.17062 14.2988L10.1247 16.9697L16.9206 14.2988L18.4265 14.8145ZM18.4265 10.3438C19.3064 10.6455 19.3333 11.8804 18.4675 12.2207L10.486 15.3574C10.2535 15.4488 9.9947 15.45 9.76144 15.3604L1.59738 12.2236C0.722562 11.8872 0.749635 10.6397 1.63839 10.3418L6.26046 8.79395L9.99972 13L13.7761 8.75098L18.4265 10.3438Z"/>
+                  <path fill="var(--mainColor)" d="M8 0.75C9.79493 0.75 11.25 2.20507 11.25 4V5H15L10 11L5 5H8.75V4C8.75 3.58579 8.41421 3.25 8 3.25H3V0.75H8Z"/>
+                </svg>          
+              </div>
+              &nbsp;
               <span data-selects-info="main"></span>
-              <span data-selects-info="more">
-                +
+              <span class="df-cc" data-selects-info="more">
+                &nbsp;+&nbsp;
                 <span data-selects-info="sec"></span>
-                ..
+                ..&nbsp;
                 <span data-selects-info="num"></span>
+                &nbsp;
                 <span data-en-text="layers">图层</span>
               </span>
             </span>

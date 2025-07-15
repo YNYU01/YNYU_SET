@@ -30,34 +30,38 @@ figma.ui.onmessage = (message) => {
         })
         .catch (error => {
         })
-    }
+    };
     //设置用户偏好
     if ( type == "setlocal"){
         //console.log(info)
-        figma.clientStorage.setAsync(info[0],info[1])
-    }
+        figma.clientStorage.setAsync(info[0],info[1]);
+    };
+    //按需发送选中内容信息
+    if ( type == "selectInfo"){
+        sendInfo();
+    };
     //插件自由缩放
     if ( type == "resize"){
         figma.ui.resize(info[0], info[1]);
-    }
+    };
     //插件最大化
     if ( type == "big"){
         if (info){
             figma.ui.resize(UI_BIG[0], UI_BIG[1]);  
         } else {
             figma.ui.resize(UI[0], UI[1]);
-        }
-    }
+        };
+    };
     //双击底部获取当前节点信息(开发用)
     if ( type == "getnode"){
         if (figma.currentPage.selection.length > 0){
-            console.log("当前节点信息：")
-            console.log(figma.currentPage.selection[0])
+            console.log("当前节点信息：");
+            console.log(figma.currentPage.selection[0]);
         } else {
             //console.log(figma.currentPage.parent)
-            console.log("未选中对象")
-        }
-    }
+            console.log("未选中对象");
+        };
+    };
     //批量导入大图
     if ( type == "createImage"){
         //console.log(info)

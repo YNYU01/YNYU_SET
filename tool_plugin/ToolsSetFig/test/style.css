@@ -26,6 +26,11 @@
   --h: 100%;
 }
 
+html[data-theme="light"] {
+  --boxGry: #d9d9d9;
+  --themeColor: #1cc992;
+}
+
 html{
   cursor: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/cursor_16.png'),auto;
 }
@@ -781,6 +786,10 @@ input[type="checkbox"]:checked + .btn-moreset{
   text-wrap: wrap;
 }
 
+[data-skill-sec]:hover{
+  border: 1px solid var(--boxBod);
+}
+
 [data-theme="dark"] [data-skill-sec]{
   background: rgba(255, 255, 255, 0.03);
 }
@@ -910,6 +919,10 @@ input[type="checkbox"]:checked + .btn-moreset{
   text-align: center;
   opacity: 0.6;
   margin: 4px 0;
+  background: rgba(0, 0, 0, 0.8);
+  --mainColor: #b9b9b9;
+  color: var(--mainColor);
+  border-radius: 10px;
 }
 
 [data-selects="true"] [data-selects-node]{
@@ -928,16 +941,21 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: none;
  }
  
- [data-selects-info="more"]{
+[data-selects-info="more"]{
    display: none;
  }
 
- [data-selects-more="true"] [data-selects-info="more"]{
-  display: inline-block;
+[data-selects="true"] [data-selects-info-box],
+[data-selects-more="true"] [data-selects-info="more"]{
+  display: inline-flex;
 }
 
 [data-selects-info="main"],[data-selects-info="num"]{
   color: var(--themeColor2);
+}
+
+[data-selects-more="false"] [data-selects-info="main"]{
+  color: var(--mainColor);
 }
 
 [data-language="En"] [data-selects-node]::after{
@@ -1227,7 +1245,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   [data-any="vw300"]{
     display: none;
   }
-  [data-tips]::after{
+  [data-tips]::after, btn-info{
     display: none;
   }
   

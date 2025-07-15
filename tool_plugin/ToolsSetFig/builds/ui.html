@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5440b73d04f53172399ed9c5e11c4a911ffd7d74/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8292a29c97666c9768640822179d4661ebd83c16/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -31,6 +31,11 @@
   --select-h: 100;
   --w: auto;
   --h: 100%;
+}
+
+html[data-theme="light"] {
+  --boxGry: #d9d9d9;
+  --themeColor: #1cc992;
 }
 
 html{
@@ -788,6 +793,10 @@ input[type="checkbox"]:checked + .btn-moreset{
   text-wrap: wrap;
 }
 
+[data-skill-sec]:hover{
+  border: 1px solid var(--boxBod);
+}
+
 [data-theme="dark"] [data-skill-sec]{
   background: rgba(255, 255, 255, 0.03);
 }
@@ -917,6 +926,10 @@ input[type="checkbox"]:checked + .btn-moreset{
   text-align: center;
   opacity: 0.6;
   margin: 4px 0;
+  background: rgba(0, 0, 0, 0.8);
+  --mainColor: #b9b9b9;
+  color: var(--mainColor);
+  border-radius: 10px;
 }
 
 [data-selects="true"] [data-selects-node]{
@@ -935,16 +948,21 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: none;
  }
  
- [data-selects-info="more"]{
+[data-selects-info="more"]{
    display: none;
  }
 
- [data-selects-more="true"] [data-selects-info="more"]{
-  display: inline-block;
+[data-selects="true"] [data-selects-info-box],
+[data-selects-more="true"] [data-selects-info="more"]{
+  display: inline-flex;
 }
 
 [data-selects-info="main"],[data-selects-info="num"]{
   color: var(--themeColor2);
+}
+
+[data-selects-more="false"] [data-selects-info="main"]{
+  color: var(--mainColor);
 }
 
 [data-language="En"] [data-selects-node]::after{
@@ -1234,7 +1252,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   [data-any="vw300"]{
     display: none;
   }
-  [data-tips]::after{
+  [data-tips]::after, btn-info{
     display: none;
   }
   
@@ -1273,7 +1291,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5440b73d04f53172399ed9c5e11c4a911ffd7d74/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8292a29c97666c9768640822179d4661ebd83c16/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -1631,7 +1649,7 @@ function toolMessage(data,app){
       <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
         <div class="wh100 df-ffc" style="align-items: center; padding: 10px; box-sizing: border-box;">
           <!--功能tags-->
-          <div class="w100 df-lc ovx noscrollbar fl0" data-radio-value="1" data-scroll data-skilltype-box>
+          <div data-skilltype-box class="w100 df-lc ovx noscrollbar fl0" data-radio-value="1" data-scroll>
             <div data-radio data-radio-data="1" data-radio-main="true" class="df-ffc df-cc" style="gap: 4px;">
               <div data-skilltype-icon>
                 <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1989,14 +2007,22 @@ function toolMessage(data,app){
             </div>
           </div>
           <!--选中信息-->
-          <div class="df-cc bod-d" data-selects-node>
-            <span data-selects-info-box>
+          <div class="df-cc" data-selects-node>
+            <span class="df-cc" data-selects-info-box>
+              <div style="width: 12px; height: 12px;">
+                <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="var(--mainColor)" d="M18.4265 14.8145C19.3056 15.1165 19.3327 16.35 18.4675 16.6904L10.486 19.8271C10.2536 19.9184 9.9946 19.9195 9.76144 19.8301L1.59738 16.6934C0.722562 16.3569 0.749635 15.1094 1.63839 14.8115L3.17062 14.2988L10.1247 16.9697L16.9206 14.2988L18.4265 14.8145ZM18.4265 10.3438C19.3064 10.6455 19.3333 11.8804 18.4675 12.2207L10.486 15.3574C10.2535 15.4488 9.9947 15.45 9.76144 15.3604L1.59738 12.2236C0.722562 11.8872 0.749635 10.6397 1.63839 10.3418L6.26046 8.79395L9.99972 13L13.7761 8.75098L18.4265 10.3438Z"/>
+                  <path fill="var(--mainColor)" d="M8 0.75C9.79493 0.75 11.25 2.20507 11.25 4V5H15L10 11L5 5H8.75V4C8.75 3.58579 8.41421 3.25 8 3.25H3V0.75H8Z"/>
+                </svg>          
+              </div>
+              &nbsp;
               <span data-selects-info="main"></span>
-              <span data-selects-info="more">
-                +
+              <span class="df-cc" data-selects-info="more">
+                &nbsp;+&nbsp;
                 <span data-selects-info="sec"></span>
-                ..
+                ..&nbsp;
                 <span data-selects-info="num"></span>
+                &nbsp;
                 <span data-en-text="layers">图层</span>
               </span>
             </span>
@@ -2031,12 +2057,12 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5440b73d04f53172399ed9c5e11c4a911ffd7d74/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5440b73d04f53172399ed9c5e11c4a911ffd7d74/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5440b73d04f53172399ed9c5e11c4a911ffd7d74/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5440b73d04f53172399ed9c5e11c4a911ffd7d74/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5440b73d04f53172399ed9c5e11c4a911ffd7d74/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5440b73d04f53172399ed9c5e11c4a911ffd7d74/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8292a29c97666c9768640822179d4661ebd83c16/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8292a29c97666c9768640822179d4661ebd83c16/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8292a29c97666c9768640822179d4661ebd83c16/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8292a29c97666c9768640822179d4661ebd83c16/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8292a29c97666c9768640822179d4661ebd83c16/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8292a29c97666c9768640822179d4661ebd83c16/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -2176,15 +2202,6 @@ let helpData = {
   ]
 }
 
-let skillModel = [];
-let skilltypeNameNode = document.querySelector('[data-skilltype-box]').querySelectorAll('[data-skilltype-name]')
-skilltypeNameNode.forEach(item => {
-  let name1 = item.getAttribute('data-zh-text');
-  name1 = name1 ? name1 : item.textContent.trim();
-  let name2 = item.getAttribute('data-en-text');
-  skillModel.push([name1,name2]);
-});
-
 /*静态数据或对象*/
 const UI_MINI = [200,460];
 const UI = [300,660];
@@ -2200,13 +2217,25 @@ const fileInfo = document.querySelector('[data-file-info]');
 const helpCreate = document.querySelector('[data-help="create"]');
 const dailog = document.querySelector('[data-dailog]');
 const dailogBox = document.querySelector('[data-dailog-box]');
+const skillTypeBox = document.querySelector('[data-skilltype-box]');
 const skillAllBox = document.querySelector('[data-skills-box]');
 const skillSecNode = document.querySelectorAll('[data-skill-sec]');
 const skillStar = document.querySelectorAll('[data-skill-star]');
-const skillStarModel = document.querySelector('[data-skillmodule="Useful & Starts"]')
+const skillAllModel = document.querySelectorAll('[data-skillmodule]');
+const skillStarModel = document.querySelector('[data-skillmodule="Useful & Starts"]');
 const selectInfoBox = document.querySelectorAll('[data-selects-node]');
 const createTagsBox = document.querySelector('[data-create-tags]');
 const cataloguesBox = document.querySelector('[data-create-catalogues]');
+
+let skillModel = [];
+let skilltypeNameNode = skillTypeBox.querySelectorAll('[data-skilltype-name]');
+skilltypeNameNode.forEach(item => {
+  let name1 = item.getAttribute('data-zh-text');
+  name1 = name1 ? name1 : item.textContent.trim();
+  let name2 = item.getAttribute('data-en-text');
+  skillModel.push([name1,name2]);
+});
+let isSkillScroll = true;
 
 /*表单绑定*/
 const userImg = document.getElementById('input-user-img');
@@ -2533,6 +2562,20 @@ document.querySelector('[data-create-any]').addEventListener('click',()=>{
     case 'zy': ;break
   }
 });
+//功能列表滚动绑定tab
+skillAllModel.forEach(item =>{
+  item.addEventListener('mouseenter',() => {
+    isSkillScroll = false;
+    let modelid = item.getAttribute('data-skillmodule');
+    let index = skillModel.findIndex(skill => skill.includes(modelid));
+    let tab = skillTypeBox.querySelector(`[data-radio-data="${(index + 1)}"]`);
+    tab.click();
+  });
+});
+skillTypeBox.addEventListener('mouseenter',() => {
+  isSkillScroll = true;
+});
+
 //加载图片
 function loadImage(file){
   return new Promise((resolve,reject) => {
@@ -2952,6 +2995,9 @@ function getUserTab(node){
   let tabPick = node.getAttribute('data-tab-pick').split('tab_')[1]
   if(tabPick){
     storageMix.set('tabPick',tabPick);
+    if(tabPick == 'more tools'){
+      toolMessage(['','selectInfo'],PLUGINAPP);
+    }
   }
 };
 
@@ -3001,22 +3047,35 @@ function getUserRadio(node){
     if(node.getAttribute('data-pixelscale-set') !== null){
       pixelScale.value = userRadio;
     };
-    if(node.getAttribute('data-clip-w-set')  !== null){
+    if(node.getAttribute('data-clip-w-set') !== null){
       let set = node.parentNode.parentNode.querySelector('[data-clip-w]');
       let sets = set.querySelectorAll('[data-clip-set]');
       set.setAttribute('data-clip-w',userRadio);
       sets.forEach(item => {
         item.setAttribute('style','');
       });
-    }
-    if(node.getAttribute('data-clip-h-set')  !== null){
+    };
+    if(node.getAttribute('data-clip-h-set') !== null){
       let set = node.parentNode.parentNode.querySelector('[data-clip-h]');
       let sets = set.querySelectorAll('[data-clip-set]');
       set.setAttribute('data-clip-h',userRadio);
       sets.forEach(item => {
         item.setAttribute('style','');
       });
-    }
+    };
+    if(node.getAttribute('data-skilltype-box') !== null){
+      let modelid = skillModel[userRadio - 1][1];
+      //console.log(modelid);
+      let model = skillAllBox.querySelector(`[data-skillmodule="${modelid}"]`);
+      let skillnode = model.querySelector('[data-skill-sec]');
+      if(isSkillScroll){
+        skillnode.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'nearest',
+        });
+      };
+    };
   }
 };
 
