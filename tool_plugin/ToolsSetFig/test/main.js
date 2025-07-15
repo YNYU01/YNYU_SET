@@ -162,7 +162,8 @@ const skillSecNode = document.querySelectorAll('[data-skill-sec]');
 const skillStar = document.querySelectorAll('[data-skill-star]');
 const skillStarModel = document.querySelector('[data-skillmodule="Useful & Starts"]')
 const selectNodeInfo = document.querySelectorAll('[data-selects-node]');
-const createTagsBox = document.querySelector('[data-create-tags]')
+const createTagsBox = document.querySelector('[data-create-tags]');
+const cataloguesBox = document.querySelector('[data-create-catalogues]');
 
 /*表单绑定*/
 const userImg = document.getElementById('input-user-img');
@@ -230,10 +231,12 @@ let loadFontAfter = [
   "data-back",
 ]
 
-function loadFont(){
+//重载字体样式
+function loadFont(area){
+  let areas = getElementMix(area) || document;
   setTimeout(()=>{
     loadFontAfter.forEach(key => {
-      let nodes = document.querySelectorAll(`[${key}]`);
+      let nodes = areas.querySelectorAll(`[${key}]`);
       nodes.forEach(item => {
         item.style.fontFamily = '"Shanggu Sans", Arial, Helvetica, sans-serif';
       })
@@ -284,7 +287,7 @@ function addSkillTitle(){
       node.appendChild(name);
       secnode.prepend(node);
       //重置文字样式
-      loadFont();
+      loadFont(secnode.parentNode);
     };
   });
 }
@@ -540,6 +543,13 @@ async function addImageTags(files,isCreate){
   };
 }
 
+function addTableTags(files){
+  
+}
+function addZyCatalogue(files){
+  
+}
+
 function addTag(type,info){
   createTagsBox.innerHTML = '';
   switch (type){
@@ -578,8 +588,34 @@ function addTag(type,info){
           <span data-en-text="Slice" data-zh-text="切片">${text}</span>
           ` ;
           tag.appendChild(span);
-          span.addEventListener('dblclick',()=>{
-            console.log(img.cuts)
+          span.addEventListener('click',()=>{
+            
+            dailogBox.innerHTML = '';
+            dailog.style.display = 'flex';
+            let cutinfo = document.createElement('div');
+            cutinfo.className = 'w100 df-ffc';
+            cutinfo.setAttribute('style','gap: 4px');
+            img.cuts.forEach((cut,num) => { 
+              let blob = new Blob([cut.img],{ type: 'image/png' });
+              let cutone = document.createElement('span');
+              cutone.innerHTML = `▶ 
+              <span data-en-text="Slice" data-zh-text="切片">${text}</span>
+              <span> &nbsp;${(num + 1)}</span>
+              ` ;
+              cutinfo.appendChild(cutone);
+              let cutimgbox = document.createElement('a');
+              cutimgbox.className = 'w100 df-cc'
+              cutimgbox.href = URL.createObjectURL(blob);
+              cutimgbox.setAttribute('download', TextMaxLength(img.n,16,'...') + '_' + text + (num + 1)  + '.png')
+              let cutimg = document.createElement('img');
+              cutimg.setAttribute('style','width: 80%;');
+              cutimg.src = URL.createObjectURL(blob);
+              cutimgbox.appendChild(cutimg);
+              cutinfo.appendChild(cutimgbox);
+            });
+            dailogBox.appendChild(cutinfo);
+              
+            
           });
         }
         createTagsBox.appendChild(tag);
@@ -597,18 +633,13 @@ function addTag(type,info){
     ;break
     case 'zy':
       info.forEach(layer => {
-        let catalogue = document.createElement('div');
-        catalogue.setAttribute('data-create-catalogue','');
+        
       });
   }
+  //重置文字样式
+  loadFont(createTagsBox.parentNode);
 }
 
-function addTableTags(files){
-  
-}
-function addZyCatalogue(files){
-  
-}
 //设置画板命名格式
 frameName.addEventListener('input',()=>{
   if(frameNmaeSelect.includes(frameName.value)){
@@ -949,7 +980,7 @@ function CUT_IMAGE(image,mix){
           canvas2.height = h;
           let ctx2 = canvas2.getContext("2d");
           ctx2.drawImage(canvas, x, y, w, h, 0, 0, w, h);
-          let imgData = CanvasToU8A(canvas2);
+          let imgData = CanvasToU8A(canvas2);//new Uint8Array(ctx2.getImageData(0, 0, w, h).data);
           cuts.push({ img: imgData, w: w, h: h, x: x, y: y });
           if (i == cutAreas.length - 1) {
             resolve(cuts);

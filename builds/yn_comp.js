@@ -1466,18 +1466,10 @@ function hsvTohsl(h, s, v) {
  * @param {string} checked -显示后的checked值，一般是选中（true）情况下收起，未选中情况下展开，如需反转，要设为false
  */
 function showNext(node1,node2,display,checked){
-  let nodeA,nodeB;
-  nodeA = node1 instanceof HTMLElement ? node1 : document.getElementById(node1);
-  nodeB = node2 instanceof HTMLElement ? node2 : document.getElementById(node2);
-  nodeA = nodeA instanceof HTMLElement ? nodeA : document.querySelector(node1);
-  nodeB = nodeB instanceof HTMLElement ? nodeB : document.querySelector(node2);
-  display = display ? display : 'block';
-  checked = checked ? checked : true;//一般是选中情况下收起，未选中情况下展开，如需反转，要设为false
-  if(nodeA.checked == checked){
-    nodeB.style.display = 'none';
-  } else {
-    nodeB.style.display = display;
-  };
+  let nodeA = getElementMix(node1),nodeB = getElementMix(node2);
+  display = display || 'block';
+  checked = checked || true;//一般是选中情况下收起，未选中情况下展开，如需反转，要设为false
+  nodeB.style.display = (nodeA.checked == checked) ? 'none' : display;
 }
 
 /**
@@ -1492,7 +1484,6 @@ function log(info,type){
     case 'all' :console.log(info);break
     default :if(ISLOCAL){console.log(info)};break
   }
-
 }
 
 /**
@@ -1530,8 +1521,6 @@ function getDate(regex,isZh){
   return [regex,[YYYY,MM,DD]];
 }
 
-//log(getDate('YYYY-MM-DD')[0])
-
 /**
  * @param {string} regex - 带格式占位的字符串，如"YYYY年MM月DD日"
  * @param {Boolean} is12 - 是否用12小时制
@@ -1559,8 +1548,6 @@ function getTime(regex,is12){
   return [regex,[HH,MM,SS]];
 }
 
-//log(getTime('HH:MM',true)[0])
-
 //通用X轴滚动
 let scrollNode = document.querySelectorAll('[data-scroll]');
 scrollNode.forEach(item =>{
@@ -1583,4 +1570,16 @@ function scrollX(node){
       nodeScroll = false;
     })
   });
+}
+
+/**
+ * 兼容传入的是 对象本身 | ID | 自定义属性
+ * @param {Element | id | Attribute} node 
+ */
+function getElementMix(mix){
+  let node = mix;
+  node = node instanceof HTMLElement ? node : document.getElementById(node);
+  node = node instanceof HTMLElement ? node : document.querySelector(node);
+  node = node instanceof HTMLElement ? node : mix;
+  return node;
 }
