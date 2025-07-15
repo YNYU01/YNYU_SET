@@ -787,7 +787,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-skill-sec]:hover{
-  border: 1px solid var(--boxBod);
+  box-shadow:0 0 1px 1px var(--boxBod);
 }
 
 [data-theme="dark"] [data-skill-sec]{

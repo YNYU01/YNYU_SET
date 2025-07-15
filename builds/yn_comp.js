@@ -880,13 +880,13 @@ TAB_AUTO.forEach((item,index) => {
         items.parentNode.setAttribute('data-tab-pick',keyid);
         let allinput = Array.from(input.parentNode.querySelectorAll('input'));
         let index = allinput.indexOf(input);
-        let inline = index > allinput.length/2 ? 'nearest' : 'center';
+        let inline = index >= allinput.length/2 ? 'nearest' : 'center';
         input.nextElementSibling.scrollIntoView({
           behavior: 'smooth',
           block: 'center',
           inline: inline,
         });
-        if(index > allinput.length/2 && input.nextElementSibling && input.nextElementSibling.nextElementSibling && input.nextElementSibling.nextElementSibling.nextElementSibling){
+        if(index >= allinput.length/2 && input.nextElementSibling && input.nextElementSibling.nextElementSibling && input.nextElementSibling.nextElementSibling.nextElementSibling){
           input.nextElementSibling.nextElementSibling.nextElementSibling.scrollIntoView({
             behavior: 'smooth',
             block: 'center',
