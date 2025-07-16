@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dfc9379ece8317dafb6418ff9c031dac75575895/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -697,6 +697,8 @@ input[type="checkbox"]:checked + .btn-moreset{
   min-height: 180px;
   resize: vertical;
   padding: 4px 10px;
+  text-wrap: nowrap;
+  line-height: 1.5em;
 }
 
 #upload-set-box{
@@ -930,6 +932,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   --mainColor: #b9b9b9;
   color: var(--mainColor);
   border-radius: 10px;
+  transform: translateY(6px);
 }
 
 [data-selects="true"] [data-selects-node]{
@@ -1179,10 +1182,10 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 @keyframes loadRo2 {/*旋转*/
   0%{
-    transform: rotate(0deg);
+    transform: rotate(0deg) scale(1.1);
   }
   100%{
-    transform: rotate(-180deg);
+    transform: rotate(-180deg) scale(1.1);
   }
 }
 
@@ -1291,7 +1294,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dfc9379ece8317dafb6418ff9c031dac75575895/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -1508,13 +1511,17 @@ function toolMessage(data,app){
             <div class="w100 df" style="flex-wrap: wrap; max-width: 560px; margin: 4px 0; gap: 4px;">
               <div id="upload-textarea-box" data-resize class="pos-r fl1" style="min-width: 180px;">
                 <textarea spellcheck="false" id="upload-textarea" data-textarea="eg" 
-                data-eg="kv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
-                data-eg-en="kv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
+                data-eg="name\tw\th\nkv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
+                data-eg-en="name\tw\th\nkv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
                 onfocus="
-                  this.parentNode.parentNode.querySelector('btn-re').style.animation = 'loadRo2 2s linear infinite';
+                let btn = this.parentNode.parentNode.querySelector('btn-re');
+                btn.style.animation = 'loadRo2 2s linear infinite';
+                btn.parentNode.style.borderColor = 'var(--mainColor)';
                 "
                 onblur="
-                  this.parentNode.parentNode.querySelector('btn-re').style.animation = '';
+                let btn = this.parentNode.parentNode.querySelector('btn-re');
+                btn.style.animation = '';
+                btn.parentNode.style.borderColor = 'var(--boxBod)';
                 "></textarea>
                 <!--清空-->
                 <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
@@ -1523,6 +1530,7 @@ function toolMessage(data,app){
                 <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: wrap; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
                   <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
                   <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
+                  <li data-li-style="2" data-en-text="Table header must with: name | w | h (optional: s | type | add | node)" >表头固定用：name,w,h,(可选：s,type,add,node), 无顺序要求</li>
                 </div>
               </div>
               <div id="upload-set-box" class="df" style="flex-wrap: wrap; max-width: 560px; margin:0 0 4px 0; gap: 4px;">
@@ -1563,7 +1571,7 @@ function toolMessage(data,app){
             <div id="upload-moreset-box" class="w100 df-lc" style="flex-wrap: wrap; max-width: 560px; gap: 4px; display: none;">
               <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 180px;">
                 <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
-                  --tips-text:'可自定义列顺序，无特殊需要保持默认即可';  --tips-text-en:'Custom column order if necessary'; width: 20px; height: 20px;">
+                  --tips-text:'修改生效列，用于剔除数据';  --tips-text-en:'Select columns to take effect'; width: 20px; height: 20px;">
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path stroke="var(--mainColor)" fill="var(--mainColor)" d="M1.40967 3.66602C1.40967 2.56145 2.3051 1.66602 3.40967 1.66602H7.40967V6.59054H1.40967V3.66602Z"/>
                     <rect stroke="var(--mainColor)" x="1.40967" y="7.13843" width="5.63721" height="5.5603" />
@@ -1573,7 +1581,7 @@ function toolMessage(data,app){
                     <path stroke="var(--mainColor)" d="M9.86572 13.1169H19V17.0002C19 18.1048 18.1046 19.0002 17 19.0002H9.86572V13.1169Z"/>
                   </svg>
                 </div>
-                <input id="input-user-table-title" data-input class="nobod fl1" type="text" placeholder="name,w,h,s,type,add"> 
+                <input id="input-user-table-title" data-input class="nobod fl1" type="text" placeholder="name,w,h,s,type,add,node"> 
                 <!--清空-->
                 <div class="pos-a" data-close="clear" style="right: 10px; top:calc(50% - 6px); width: 12px; height: 12px;">
                   <btn-close></btn-close>
@@ -1592,19 +1600,19 @@ function toolMessage(data,app){
                     <path fill="var(--mainColor)" d="M11.3154 11.5259L7.35709 9.45685L11.5784 1.38079C11.8343 0.891339 12.4385 0.701954 12.9279 0.957792L15.1138 2.10035C15.6032 2.35618 15.7926 2.96036 15.5368 3.44982L11.3154 11.5259Z"/>
                   </svg>
                 </div>
-                <input id="input-framename" data-input class="nobod fl1" type="text" data-input-type="text" data-input-must="none" value="w×h">  
-                <div class="df-lc pos-r" data-select data-select-value="w×h" style="gap: 4px; width: 90px; z-index:2;">
-                  <input id="select-value-1" type="text" data-select-input readonly value="w×h">
-                  <input id="select-show-1" data-select-pick="w×h" type="checkbox">
+                <input id="input-framename" data-input class="nobod fl1" type="text" data-input-type="text" data-input-must="none" value=" w×h">  
+                <div class="df-lc pos-r" data-select data-select-value=" w×h" style="gap: 4px; width: 90px; z-index:2;">
+                  <input id="select-value-1" type="text" data-select-input readonly value=" w×h">
+                  <input id="select-show-1" data-select-pick=" w×h" type="checkbox">
                   <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
                   <div data-select-options="" class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
                     <div data-option="type" data-en-text="Basic">基础</div>
                     <div data-option="option" data-option-main="false" data-option-value="none">none</div>
-                    <div data-option="option" data-option-main="true" data-option-value="w×h">w×h</div>
-                    <div data-option="option" data-option-main="false" data-option-value="w_h">w_h</div>
+                    <div data-option="option" data-option-main="true" data-option-value=" w×h">&nbsp;w×h</div>
+                    <div data-option="option" data-option-main="false" data-option-value=" w_h">&nbsp;w_h</div>
                     <div data-option="type" data-en-text="Complex">复杂</div>
-                    <div data-option="option" data-option-main="false" data-option-value="w×h s">w×h s</div>
-                    <div data-option="option" data-option-main="false" data-option-value="w_h s">w_h s</div>
+                    <div data-option="option" data-option-main="false" data-option-value=" w×h s">&nbsp;w×h s</div>
+                    <div data-option="option" data-option-main="false" data-option-value=" w_h s">&nbsp;w_h s</div>
                     <div data-option="option" data-option-main="false" data-option-value="add w×h s">add w×h s</div>
                     <div data-option="option" data-option-main="false" data-option-value="add w_h s">add w_h s</div>
                   </div>
@@ -2057,12 +2065,12 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dfc9379ece8317dafb6418ff9c031dac75575895/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dfc9379ece8317dafb6418ff9c031dac75575895/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dfc9379ece8317dafb6418ff9c031dac75575895/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dfc9379ece8317dafb6418ff9c031dac75575895/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dfc9379ece8317dafb6418ff9c031dac75575895/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@dfc9379ece8317dafb6418ff9c031dac75575895/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -2243,10 +2251,13 @@ const userTable = document.getElementById('input-user-table');
 const userZy = document.getElementById('input-user-zy');
 const userTableTitle = document.getElementById('input-user-table-title');
 const frameName =  document.getElementById('input-framename');
+const userText = document.getElementById('upload-textarea');
+
 const pixelScale = document.getElementById('input-pixelScale');
 
 /*动态数据或对象*/
 let CreateImageInfo = [];
+let CreateTableInfo = [];
 let SelectNodeInfo = [];
 
 let isResize = false;
@@ -2484,10 +2495,12 @@ userImg.addEventListener('change',(e)=>{
 userTable.addEventListener('change',(e)=>{
   let files = Array.from(userTable.files);
   reFileInfo(files);
+  addTableText(files)
 });
 userZy.addEventListener('change',(e)=>{
   let files = Array.from(userZy.files);
   reFileInfo(files);
+  addZyCatalogue(files)
 });
 //拖拽上传
 let dragAreaInfo;
@@ -2537,8 +2550,8 @@ dropUp.addEventListener('drop',(e)=>{
     reFileInfo(files);
     switch (sameType){
       case 'image': addImageTags(files,true);break
-      case 'table': addTableTags(files);break
-      case 'zy': addZyCatalogue(files);break
+      case 'table': addTableText(files,true);break
+      case 'zy': addZyCatalogue(files,true);break
     }
   } else {
     tipsAll(['只能上传同类型文件','The file type must meet the requirements'],3000)
@@ -2549,18 +2562,26 @@ document.querySelector('[data-create-any]').addEventListener('click',()=>{
   let type = createTagsBox.parentNode.getAttribute('data-create-tags-box');
   switch (type){
     case 'image':
-      let finalCreate = [...CreateImageInfo]
-      let nocreateTag = createTagsBox.querySelectorAll('[data-create-final="false"]');
-      nocreateTag.forEach(item => {
-        let id = item.querySelector('input').id;
-        let idnum = id.split('_')[id.split('_').length - 1];
-        finalCreate.splice(idnum,1);
-      });
-      toolMessage([finalCreate,'createImage'],PLUGINAPP);
+      let images = getFinalInfo(CreateImageInfo)
+      toolMessage([images,'createImage'],PLUGINAPP);
     ;break
-    case 'table': ;break
+    case 'table':
+      let tables = getFinalInfo(CreateTableInfo)
+      toolMessage([tables,'createImage'],PLUGINAPP);
+    ;break
     case 'zy': ;break
-  }
+  };
+  //移除未勾选的数据
+  function getFinalInfo(info){
+    let finalCreate = [...info]
+    let nocreateTag = createTagsBox.querySelectorAll('[data-create-final="false"]');
+    nocreateTag.forEach(item => {
+      let id = item.querySelector('input').id;
+      let idnum = id.split('_')[id.split('_').length - 1];
+      finalCreate.splice(idnum,1);
+    });
+    return finalCreate;
+  };
 });
 //功能列表滚动绑定tab
 skillAllModel.forEach(item =>{
@@ -2586,10 +2607,93 @@ function loadImage(file){
       image.onerror = (error)=> reject(error);
       image.src = e.target.result;
     };
-    reader.onerror = (error)=>{reject(error)}
-    reader.readAsDataURL(file)
+    reader.onerror = (error)=>{reject(error)};
+    reader.readAsDataURL(file);
   });
 };
+//加载表格
+function loadTable(file){
+  return new Promise((resolve,reject) => {
+    const reader = new FileReader();
+    let type = file.name.split('.')[file.name.split('.').length - 1].toLowerCase();
+     if(type == 'xls' || type == 'xlsx'){
+      reader.onload = (e)=>{
+        let zip = new JSZip();
+        zip.loadAsync(reader.result)
+        .then((zipContents)=>{
+          zip.file('xl/worksheets/sheet1.xml').async('string')
+          .then((sheetContent)=>{
+            zip.file('xl/sharedStrings.xml').async('string')
+            .then((strContent)=>{
+              const parser = new DOMParser();
+              const xmlDoc = parser.parseFromString(sheetContent,'text/xml');
+              const rows = getTag(xmlDoc,'row');
+              const strDoc = parser.parseFromString(strContent,'text/xml');
+              const sis = getTag(strDoc,'si');
+              let sharedStrings = [];
+              for( let i = 0; i < sis.length; i++){
+                let t = getTag(sis[i],'t');
+                sharedStrings.push(t[0].textContent.trim());
+              };
+              let XY = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+              let rowTitle = getTag(rows[0],'c')
+              let maxlength = XY.indexOf(rowTitle[rowTitle.length - 1].getAttribute('r').replace(/[0-9]/g,''))*1 + 1;
+              let titles =  getRow(0,maxlength) + '\n';
+              let values = '';
+              for(let i = 1; i < rows.length; i++){
+                let value = getRow(i,maxlength);
+                if(i == rows.length - 1){
+                  values += value;
+                } else {
+                  values += value + '\n';
+                };
+              };
+              resolve(titles + values.trim());
+              //console.log(titles + values)
+              function getTag(xml,name){
+                return xml.getElementsByTagName(name);
+              };
+              function getRow(index,length){
+                let text = '';
+                for( let i = 0; i < length; i++){
+                  let v;
+                  let c = rows[index].querySelector(`[r="${XY[i] + (index + 1)}"]`);
+                  if(c){
+                    v = getTag(c,'v')[0].textContent;
+                    if(c.getAttribute('t') == 's'){
+                      v = sharedStrings[v*1];
+                    };
+                  }else{
+                    v = ''
+                  }    
+                  if(i == length - 1){
+                    text += v;
+                  } else {
+                    text += v + '\t';
+                  }
+                };
+                return text;
+              };
+            }); 
+          });
+        });
+      };
+      reader.onerror = (error)=>{reject(error)};
+      reader.readAsArrayBuffer(file);
+     };
+     if(type == 'csv'){
+      reader.onload = (e)=>{
+        let csvData = reader.result;
+        let values = csvData.replace(/\r/g,'').replace(/\,/g,'\t');
+        //console.log(values) 
+        resolve(values.trim())
+      };
+      reader.onerror = (error)=>{reject(error)};
+      reader.readAsText(file);
+     };
+  });
+}
+
 //添加标签前处理
 async function addImageTags(files,isCreate){
   CreateImageInfo = [];
@@ -2616,10 +2720,71 @@ async function addImageTags(files,isCreate){
     
   };
 }
-function addTableTags(files){
-  
+async function addTableText(files,isTags){
+  CreateTableInfo = [];
+  userText.focus();
+  userText.value = '';
+  let tableText = await loadTable(files[0])
+  userText.value = tableText;
+  let tableArray = tableTextToArray(tableText);
+  let tableObj = tableArrayToObj(tableArray);
+  CreateTableInfo = tableObj;
+  //console.log(tableArray,tableTextToArray(tableText,true),tableObj)
+
+  if(isTags){
+    document.getElementById('upload-set-1').click()
+  }
+}
+document.getElementById('upload-set-1').addEventListener('click',()=>{
+  let tableArray = tableTextToArray(userText.value.trim());
+  let tableObj = tableArrayToObj(tableArray);
+  CreateTableInfo = tableObj;
+  if(CreateTableInfo.some(item => item.add)){
+    document.getElementById('upload-moreset').checked = true;
+    document.querySelector('[for="upload-moreset"]').click();
+    document.querySelector('[data-option-value="add w×h s"]').click();
+  } else if(CreateTableInfo.some(item => item.s)){
+    document.getElementById('upload-moreset').checked = true;
+    document.querySelector('[for="upload-moreset"]').click();
+    document.querySelector('[data-option-value=" w×h s"]').click();
+  } else {
+    document.querySelector('[data-option-value=" w×h"]').click();
+  };
+  setTimeout(()=>{
+    addTableTags()
+  },100)
+});
+//制表文案转数组，兼容反转行列
+function tableTextToArray(tableText,isColumn){
+  let lines = tableText.split('\n');
+  lines.forEach((item,index) => {
+    lines[index] = item.split('\t');
+  });
+  let columns = lines[0].map((_, i) => lines.map(row => row[i]));
+  if(isColumn){
+    return columns;
+  }else{
+    return lines;
+  }
 };
-function addZyCatalogue(files){
+//制表数组转对象组
+function tableArrayToObj(tableArray){
+  let keys = tableArray[0];
+  let objs = [];
+  for(let i = 1; i < tableArray.length; i++){
+    let obj = {};
+    tableArray[i].forEach((item,index) => {
+      obj[keys[index]] = item;
+    });
+    objs.push(obj);
+  };
+  return objs;
+}
+
+function addTableTags(){
+  addTag('table',CreateTableInfo);
+};
+function addZyCatalogue(files,isCreate){
   
 };
 //添加标签-总
@@ -2630,31 +2795,14 @@ function addTag(type,info){
       info.forEach((img,index) => {
         let tag = document.createElement('div');
         createTagsBox.parentNode.setAttribute('data-create-tags-box','image');
-        tag.setAttribute('data-create-tag','');
-        tag.setAttribute('data-create-final','true');
-        tag.className = 'df-lc';
-
-        let checkbox = document.createElement('div');
-        checkbox.setAttribute('style','width: 14px; height: 14px;');
-        let checkid = 'cr_img_chk_' + index;
-        let checkinput = document.createElement('input');
-        checkinput.id = checkid;
-        checkinput.type = 'checkbox';
-        checkinput.setAttribute('checked','true');
-        let checklabel = document.createElement('label');
-        checklabel.setAttribute('for',checkid);
-        checklabel.className = 'check'
-        checklabel.innerHTML = '<btn-check></btn-check>'
-        checkbox.appendChild(checkinput);
-        checkbox.appendChild(checklabel);
-        tag.appendChild(checkbox);
-
+        addTagMain(tag,index);
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
         name.innerHTML = TextMaxLength(img.n,16,'...');
         tag.appendChild(name);
         if(img.cuts.length > 1){
           let span = document.createElement('span');
+          span.setAttribute('style','cursor: var(--pointer,pointer)');
           let text = ROOT.getAttribute('data-language') == 'Zh' ? "切片" : "Slice"
           span.innerHTML = `▶ 
           <span style="color: var(--themeColor)">${img.cuts.length}</span>
@@ -2662,7 +2810,6 @@ function addTag(type,info){
           ` ;
           tag.appendChild(span);
           span.addEventListener('click',()=>{
-            
             dailogBox.innerHTML = '';
             dailog.style.display = 'flex';
             let cutinfo = document.createElement('div');
@@ -2687,31 +2834,74 @@ function addTag(type,info){
               cutinfo.appendChild(cutimgbox);
             });
             dailogBox.appendChild(cutinfo);
-              
-            
           });
         }
         createTagsBox.appendChild(tag);
-
-        checkinput.addEventListener('change',()=>{
-          if(checkinput.checked){
-            tag.setAttribute('data-check-checked','true');
-            tag.setAttribute('data-create-final','true');
-          }else{
-            tag.setAttribute('data-check-checked','false');
-            tag.setAttribute('data-create-final','false');
-          }
-        });
       });
     break
     case 'table':
+      let nameRegex = frameName.value;
+      info.forEach((list,index) => {
+        let tag = document.createElement('div');
+        createTagsBox.parentNode.setAttribute('data-create-tags-box','table');
+        addTagMain(tag,index);
+        let name = document.createElement('div');
+        let end = nameRegex
+        .replace(/add/g,list.add)
+        .replace(/w/g,list.w)
+        .replace(/h/g,list.h)
+        .replace(/type/g,list.type)
+        .replace(/undefined/g,'')
+        if(list.s){
+          end = end.replace(/s/g,list.s + 'k');
+        } else {
+          end = end.replace(/s/g,'');
+        }
+        name.innerHTML = `${list.name}${end}`.trim();
+        if(nameRegex == 'none'){
+          name.innerHTML = list.name;
+        }
+        tag.appendChild(name);
+        createTagsBox.appendChild(tag);
+      });
     break
     case 'zy':
       info.forEach(layer => {
         
       });
     break
-  }
+  };
+  //所有tag都支持二次确认，以得到最终要生成的内容
+  function addTagMain(tag,index){
+    tag.setAttribute('data-create-tag','');
+    tag.setAttribute('data-create-final','true');
+    tag.className = 'df-lc';
+
+    let checkbox = document.createElement('div');
+    checkbox.setAttribute('style','width: 14px; height: 14px;');
+    let checkid = 'cr_chk_' + index;
+    let checkinput = document.createElement('input');
+    checkinput.id = checkid;
+    checkinput.type = 'checkbox';
+    checkinput.setAttribute('checked','true');
+    let checklabel = document.createElement('label');
+    checklabel.setAttribute('for',checkid);
+    checklabel.className = 'check'
+    checklabel.innerHTML = '<btn-check></btn-check>'
+    checkbox.appendChild(checkinput);
+    checkbox.appendChild(checklabel);
+    tag.appendChild(checkbox);
+    
+    checkinput.addEventListener('change',()=>{
+      if(checkinput.checked){
+        tag.setAttribute('data-check-checked','true');
+        tag.setAttribute('data-create-final','true');
+      }else{
+        tag.setAttribute('data-check-checked','false');
+        tag.setAttribute('data-create-final','false');
+      };
+    });
+  };
   //重置文字样式
   loadFont(createTagsBox.parentNode);
 };
