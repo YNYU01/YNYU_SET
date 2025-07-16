@@ -690,6 +690,8 @@ input[type="checkbox"]:checked + .btn-moreset{
   min-height: 180px;
   resize: vertical;
   padding: 4px 10px;
+  text-wrap: nowrap;
+  line-height: 1.5em;
 }
 
 #upload-set-box{
@@ -923,6 +925,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   --mainColor: #b9b9b9;
   color: var(--mainColor);
   border-radius: 10px;
+  transform: translateY(6px);
 }
 
 [data-selects="true"] [data-selects-node]{
@@ -1172,10 +1175,10 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 @keyframes loadRo2 {/*旋转*/
   0%{
-    transform: rotate(0deg);
+    transform: rotate(0deg) scale(1.1);
   }
   100%{
-    transform: rotate(-180deg);
+    transform: rotate(-180deg) scale(1.1);
   }
 }
 

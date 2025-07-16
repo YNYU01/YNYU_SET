@@ -176,10 +176,13 @@ const userTable = document.getElementById('input-user-table');
 const userZy = document.getElementById('input-user-zy');
 const userTableTitle = document.getElementById('input-user-table-title');
 const frameName =  document.getElementById('input-framename');
+const userText = document.getElementById('upload-textarea');
+
 const pixelScale = document.getElementById('input-pixelScale');
 
 /*动态数据或对象*/
 let CreateImageInfo = [];
+let CreateTableInfo = [];
 let SelectNodeInfo = [];
 
 let isResize = false;
@@ -417,10 +420,12 @@ userImg.addEventListener('change',(e)=>{
 userTable.addEventListener('change',(e)=>{
   let files = Array.from(userTable.files);
   reFileInfo(files);
+  addTableText(files)
 });
 userZy.addEventListener('change',(e)=>{
   let files = Array.from(userZy.files);
   reFileInfo(files);
+  addZyCatalogue(files)
 });
 //拖拽上传
 let dragAreaInfo;
@@ -470,8 +475,8 @@ dropUp.addEventListener('drop',(e)=>{
     reFileInfo(files);
     switch (sameType){
       case 'image': addImageTags(files,true);break
-      case 'table': addTableTags(files);break
-      case 'zy': addZyCatalogue(files);break
+      case 'table': addTableText(files,true);break
+      case 'zy': addZyCatalogue(files,true);break
     }
   } else {
     tipsAll(['只能上传同类型文件','The file type must meet the requirements'],3000)
@@ -482,18 +487,26 @@ document.querySelector('[data-create-any]').addEventListener('click',()=>{
   let type = createTagsBox.parentNode.getAttribute('data-create-tags-box');
   switch (type){
     case 'image':
-      let finalCreate = [...CreateImageInfo]
-      let nocreateTag = createTagsBox.querySelectorAll('[data-create-final="false"]');
-      nocreateTag.forEach(item => {
-        let id = item.querySelector('input').id;
-        let idnum = id.split('_')[id.split('_').length - 1];
-        finalCreate.splice(idnum,1);
-      });
-      toolMessage([finalCreate,'createImage'],PLUGINAPP);
+      let images = getFinalInfo(CreateImageInfo)
+      toolMessage([images,'createImage'],PLUGINAPP);
     ;break
-    case 'table': ;break
+    case 'table':
+      let tables = getFinalInfo(CreateTableInfo)
+      toolMessage([tables,'createImage'],PLUGINAPP);
+    ;break
     case 'zy': ;break
-  }
+  };
+  //移除未勾选的数据
+  function getFinalInfo(info){
+    let finalCreate = [...info]
+    let nocreateTag = createTagsBox.querySelectorAll('[data-create-final="false"]');
+    nocreateTag.forEach(item => {
+      let id = item.querySelector('input').id;
+      let idnum = id.split('_')[id.split('_').length - 1];
+      finalCreate.splice(idnum,1);
+    });
+    return finalCreate;
+  };
 });
 //功能列表滚动绑定tab
 skillAllModel.forEach(item =>{
@@ -519,10 +532,93 @@ function loadImage(file){
       image.onerror = (error)=> reject(error);
       image.src = e.target.result;
     };
-    reader.onerror = (error)=>{reject(error)}
-    reader.readAsDataURL(file)
+    reader.onerror = (error)=>{reject(error)};
+    reader.readAsDataURL(file);
   });
 };
+//加载表格
+function loadTable(file){
+  return new Promise((resolve,reject) => {
+    const reader = new FileReader();
+    let type = file.name.split('.')[file.name.split('.').length - 1].toLowerCase();
+     if(type == 'xls' || type == 'xlsx'){
+      reader.onload = (e)=>{
+        let zip = new JSZip();
+        zip.loadAsync(reader.result)
+        .then((zipContents)=>{
+          zip.file('xl/worksheets/sheet1.xml').async('string')
+          .then((sheetContent)=>{
+            zip.file('xl/sharedStrings.xml').async('string')
+            .then((strContent)=>{
+              const parser = new DOMParser();
+              const xmlDoc = parser.parseFromString(sheetContent,'text/xml');
+              const rows = getTag(xmlDoc,'row');
+              const strDoc = parser.parseFromString(strContent,'text/xml');
+              const sis = getTag(strDoc,'si');
+              let sharedStrings = [];
+              for( let i = 0; i < sis.length; i++){
+                let t = getTag(sis[i],'t');
+                sharedStrings.push(t[0].textContent.trim());
+              };
+              let XY = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+              let rowTitle = getTag(rows[0],'c')
+              let maxlength = XY.indexOf(rowTitle[rowTitle.length - 1].getAttribute('r').replace(/[0-9]/g,''))*1 + 1;
+              let titles =  getRow(0,maxlength) + '\n';
+              let values = '';
+              for(let i = 1; i < rows.length; i++){
+                let value = getRow(i,maxlength);
+                if(i == rows.length - 1){
+                  values += value;
+                } else {
+                  values += value + '\n';
+                };
+              };
+              resolve(titles + values.trim());
+              //console.log(titles + values)
+              function getTag(xml,name){
+                return xml.getElementsByTagName(name);
+              };
+              function getRow(index,length){
+                let text = '';
+                for( let i = 0; i < length; i++){
+                  let v;
+                  let c = rows[index].querySelector(`[r="${XY[i] + (index + 1)}"]`);
+                  if(c){
+                    v = getTag(c,'v')[0].textContent;
+                    if(c.getAttribute('t') == 's'){
+                      v = sharedStrings[v*1];
+                    };
+                  }else{
+                    v = ''
+                  }    
+                  if(i == length - 1){
+                    text += v;
+                  } else {
+                    text += v + '\t';
+                  }
+                };
+                return text;
+              };
+            }); 
+          });
+        });
+      };
+      reader.onerror = (error)=>{reject(error)};
+      reader.readAsArrayBuffer(file);
+     };
+     if(type == 'csv'){
+      reader.onload = (e)=>{
+        let csvData = reader.result;
+        let values = csvData.replace(/\r/g,'').replace(/\,/g,'\t');
+        //console.log(values) 
+        resolve(values.trim())
+      };
+      reader.onerror = (error)=>{reject(error)};
+      reader.readAsText(file);
+     };
+  });
+}
+
 //添加标签前处理
 async function addImageTags(files,isCreate){
   CreateImageInfo = [];
@@ -549,10 +645,71 @@ async function addImageTags(files,isCreate){
     
   };
 }
-function addTableTags(files){
-  
+async function addTableText(files,isTags){
+  CreateTableInfo = [];
+  userText.focus();
+  userText.value = '';
+  let tableText = await loadTable(files[0])
+  userText.value = tableText;
+  let tableArray = tableTextToArray(tableText);
+  let tableObj = tableArrayToObj(tableArray);
+  CreateTableInfo = tableObj;
+  //console.log(tableArray,tableTextToArray(tableText,true),tableObj)
+
+  if(isTags){
+    document.getElementById('upload-set-1').click()
+  }
+}
+document.getElementById('upload-set-1').addEventListener('click',()=>{
+  let tableArray = tableTextToArray(userText.value.trim());
+  let tableObj = tableArrayToObj(tableArray);
+  CreateTableInfo = tableObj;
+  if(CreateTableInfo.some(item => item.add)){
+    document.getElementById('upload-moreset').checked = true;
+    document.querySelector('[for="upload-moreset"]').click();
+    document.querySelector('[data-option-value="add w×h s"]').click();
+  } else if(CreateTableInfo.some(item => item.s)){
+    document.getElementById('upload-moreset').checked = true;
+    document.querySelector('[for="upload-moreset"]').click();
+    document.querySelector('[data-option-value=" w×h s"]').click();
+  } else {
+    document.querySelector('[data-option-value=" w×h"]').click();
+  };
+  setTimeout(()=>{
+    addTableTags()
+  },100)
+});
+//制表文案转数组，兼容反转行列
+function tableTextToArray(tableText,isColumn){
+  let lines = tableText.split('\n');
+  lines.forEach((item,index) => {
+    lines[index] = item.split('\t');
+  });
+  let columns = lines[0].map((_, i) => lines.map(row => row[i]));
+  if(isColumn){
+    return columns;
+  }else{
+    return lines;
+  }
 };
-function addZyCatalogue(files){
+//制表数组转对象组
+function tableArrayToObj(tableArray){
+  let keys = tableArray[0];
+  let objs = [];
+  for(let i = 1; i < tableArray.length; i++){
+    let obj = {};
+    tableArray[i].forEach((item,index) => {
+      obj[keys[index]] = item;
+    });
+    objs.push(obj);
+  };
+  return objs;
+}
+
+function addTableTags(){
+  addTag('table',CreateTableInfo);
+};
+function addZyCatalogue(files,isCreate){
   
 };
 //添加标签-总
@@ -563,31 +720,14 @@ function addTag(type,info){
       info.forEach((img,index) => {
         let tag = document.createElement('div');
         createTagsBox.parentNode.setAttribute('data-create-tags-box','image');
-        tag.setAttribute('data-create-tag','');
-        tag.setAttribute('data-create-final','true');
-        tag.className = 'df-lc';
-
-        let checkbox = document.createElement('div');
-        checkbox.setAttribute('style','width: 14px; height: 14px;');
-        let checkid = 'cr_img_chk_' + index;
-        let checkinput = document.createElement('input');
-        checkinput.id = checkid;
-        checkinput.type = 'checkbox';
-        checkinput.setAttribute('checked','true');
-        let checklabel = document.createElement('label');
-        checklabel.setAttribute('for',checkid);
-        checklabel.className = 'check'
-        checklabel.innerHTML = '<btn-check></btn-check>'
-        checkbox.appendChild(checkinput);
-        checkbox.appendChild(checklabel);
-        tag.appendChild(checkbox);
-
+        addTagMain(tag,index);
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
         name.innerHTML = TextMaxLength(img.n,16,'...');
         tag.appendChild(name);
         if(img.cuts.length > 1){
           let span = document.createElement('span');
+          span.setAttribute('style','cursor: var(--pointer,pointer)');
           let text = ROOT.getAttribute('data-language') == 'Zh' ? "切片" : "Slice"
           span.innerHTML = `▶ 
           <span style="color: var(--themeColor)">${img.cuts.length}</span>
@@ -595,7 +735,6 @@ function addTag(type,info){
           ` ;
           tag.appendChild(span);
           span.addEventListener('click',()=>{
-            
             dailogBox.innerHTML = '';
             dailog.style.display = 'flex';
             let cutinfo = document.createElement('div');
@@ -620,31 +759,74 @@ function addTag(type,info){
               cutinfo.appendChild(cutimgbox);
             });
             dailogBox.appendChild(cutinfo);
-              
-            
           });
         }
         createTagsBox.appendChild(tag);
-
-        checkinput.addEventListener('change',()=>{
-          if(checkinput.checked){
-            tag.setAttribute('data-check-checked','true');
-            tag.setAttribute('data-create-final','true');
-          }else{
-            tag.setAttribute('data-check-checked','false');
-            tag.setAttribute('data-create-final','false');
-          }
-        });
       });
     break
     case 'table':
+      let nameRegex = frameName.value;
+      info.forEach((list,index) => {
+        let tag = document.createElement('div');
+        createTagsBox.parentNode.setAttribute('data-create-tags-box','table');
+        addTagMain(tag,index);
+        let name = document.createElement('div');
+        let end = nameRegex
+        .replace(/add/g,list.add)
+        .replace(/w/g,list.w)
+        .replace(/h/g,list.h)
+        .replace(/type/g,list.type)
+        .replace(/undefined/g,'')
+        if(list.s){
+          end = end.replace(/s/g,list.s + 'k');
+        } else {
+          end = end.replace(/s/g,'');
+        }
+        name.innerHTML = `${list.name}${end}`.trim();
+        if(nameRegex == 'none'){
+          name.innerHTML = list.name;
+        }
+        tag.appendChild(name);
+        createTagsBox.appendChild(tag);
+      });
     break
     case 'zy':
       info.forEach(layer => {
         
       });
     break
-  }
+  };
+  //所有tag都支持二次确认，以得到最终要生成的内容
+  function addTagMain(tag,index){
+    tag.setAttribute('data-create-tag','');
+    tag.setAttribute('data-create-final','true');
+    tag.className = 'df-lc';
+
+    let checkbox = document.createElement('div');
+    checkbox.setAttribute('style','width: 14px; height: 14px;');
+    let checkid = 'cr_chk_' + index;
+    let checkinput = document.createElement('input');
+    checkinput.id = checkid;
+    checkinput.type = 'checkbox';
+    checkinput.setAttribute('checked','true');
+    let checklabel = document.createElement('label');
+    checklabel.setAttribute('for',checkid);
+    checklabel.className = 'check'
+    checklabel.innerHTML = '<btn-check></btn-check>'
+    checkbox.appendChild(checkinput);
+    checkbox.appendChild(checklabel);
+    tag.appendChild(checkbox);
+    
+    checkinput.addEventListener('change',()=>{
+      if(checkinput.checked){
+        tag.setAttribute('data-check-checked','true');
+        tag.setAttribute('data-create-final','true');
+      }else{
+        tag.setAttribute('data-check-checked','false');
+        tag.setAttribute('data-create-final','false');
+      };
+    });
+  };
   //重置文字样式
   loadFont(createTagsBox.parentNode);
 };
