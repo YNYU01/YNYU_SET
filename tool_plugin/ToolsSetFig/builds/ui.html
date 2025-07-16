@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -710,7 +710,8 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 4px;
 }
 
-[data-resize]::-webkit-resizer{
+[data-resize]::-webkit-resizer,
+[data-resize] *::-webkit-resizer{
   display: none;
 }
 
@@ -1294,7 +1295,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -1626,12 +1627,14 @@ function toolMessage(data,app){
                 &nbsp;&nbsp;
                 <span data-en-text="to create finally" data-any="vw240" style="opacity: 0.6;">以确认最终创建内容</span>
             </div>
-            <div data-create-tags-box class="wh100 upload-set pos-r ovy noscrollbar" data-resize>
-              <div data-create-tags class="w100 df-lc">
-                <!--动态填充-->
-              </div>
-              <div data-create-catalogues class="w100 df-ffc">
-                <!--动态填充-->
+            <div class="wh100 pos-r" data-resize>
+              <div data-create-tags-box class="wh100 upload-set pos-r ovy noscrollbar">
+                <div data-create-tags class="w100 df-lc">
+                  <!--动态填充-->
+                </div>
+                <div data-create-catalogues class="w100 df-ffc">
+                  <!--动态填充-->
+                </div>
               </div>
             </div>
           </div>
@@ -2065,12 +2068,12 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cef1a3754c0112042db1513635c5a951844796be/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/

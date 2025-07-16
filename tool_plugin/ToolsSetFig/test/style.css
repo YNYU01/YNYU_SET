@@ -703,7 +703,8 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 4px;
 }
 
-[data-resize]::-webkit-resizer{
+[data-resize]::-webkit-resizer,
+[data-resize] *::-webkit-resizer{
   display: none;
 }
 
