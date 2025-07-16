@@ -70,8 +70,11 @@ figma.ui.onmessage = (message) => {
         let gap = 20;
         for ( let i = 0; i < info.length; i++){
             if (info[i].cuts.length > 1){
+                /*
                 let node = figma.createFrame();
                 setMain([info[i].w,info[i].h,viewX,viewY,info[i].n,[]],node)
+                */
+                let node = addFrame([info[i].w,info[i].h,viewX,viewY,info[i].n,[]]);
                 info[i].cuts.forEach((item,index) => {
                 addImg(node,{w:item.w,h:item.h,x:item.x,y:item.y,n:'cut ' + (index + 1),img:item.img});
                 });
@@ -144,23 +147,23 @@ function sendInfo(){
  * @param {node?} cloneNode - 直接参考的对象
  */
 function setMain(info,node,cloneNode){
-    let w = info[0],h = info[1],x = info[2],y = info[3],n = info[4],fill = info[5];
+    let w = info[0],h = info[1],x = info[2],y = info[3],n = info[4],fills = info[5];
     if(cloneNode){
         w = cloneNode.width;
         h = cloneNode.height;
         x = cloneNode.x;
         y = cloneNode.y;
         n = cloneNode.name;
-        fill = cloneNode.fill;
+        fills = cloneNode.fill;
     }
-    fill = fill ? fill : [];
+    fills = fills ? fills : [];
     node.resize(w,h);
     node.x = x;
     node.y = y;
-    node.n = n;
-    node.fill = fill;
+    node.name = n;
+    node.fills = fills;
 }
-
+//添加图片
 function addImg(node,info){
     let image = figma.createImage(info.img)
     let img = figma.createRectangle();
@@ -177,42 +180,49 @@ function addImg(node,info){
     ]; 
     node.appendChild(img)
 }
-
 //添加切片
-function addCutArea(node,info){
+/**
+ * @param {group} group - 通过克隆需要被栅格化的对象，初步得到的组
+ * @param {[{w:num,h:num,x:num,y:num,s:num}]} info - 切片大小位置栅格化倍率信息集
+ */
+function addCutArea(group,info){
     info.forEach(async (item,index) => {
         let w = item.w;
         let h = item.h;
         let x = item.x;
         let y = item.y;
+        let s = item.s;
         let cut = figma.createSlice();
-        cut.x = node.x + x;
-        cut.y = node.y + y;
+        cut.x = group.x + x;
+        cut.y = group.y + y;
         cut.resize(w,h);
-        cut.name = 'cut ' + (index + 1);
-        node.appendChild(cut);
+        cut.name = 'cut ' + (index + 1) + '@' + s + 'x';//命名记录栅格化倍率
+        group.appendChild(cut);
     });
 };
-
-function addCutImg(node,info){
-    let cuts = node.findChildren(item => item.type == 'SLICE');
-    let old = node.findOne(item => item.name == node.name);
+//切片转图片
+/**
+ * @param {group} group - 由addCutArea生成的包含切片和源对象的组
+ */
+function addCutImg(group){
+    let cuts = group.findChildren(item => item.type == 'SLICE');
+    let old = group.findOne(item => item.name == group.name);
     cuts.forEach(async (item,index) => {
-        let w = info[index].w;
-        let h = info[index].h;
+        let w = item.width;
+        let h = item.height;
         let x = item.x;
         let y = item.y;
-        let s = info[index].s;
+        let s = item.name.split('@')[1].split('x')[0]*1;
         let code = await item.exportAsync({
             format: 'PNG',
-            constraint: { type: 'SCALE', value: s * 1 },
+            constraint: { type: 'SCALE', value: s},
         });
         let image = figma.createImage(code);
         let cutimg = figma.createRectangle();
         cutimg.x = x;
         cutimg.y = y;
         cutimg.resize(w,h);
-        cutimg.name = node.name + '_' + (index + 1);
+        cutimg.name = group.name + '_' + (index + 1);
         cutimg.fills = [
             {
             type: 'IMAGE',
@@ -220,14 +230,18 @@ function addCutImg(node,info){
             scaleMode: 'FILL'
             }
         ];
-        node.appendChild(cutimg);
+        group.appendChild(cutimg);
         item.remove();
-        if(index == cuts.length - 1){
+        if(old && index == cuts.length - 1){
             old.remove();
         }
     });
 }
-
+//通过切片实现原地栅格化
+/**
+ * @param {[{w:num,h:num,x:num,y:num,s:num}]} info - 切片大小位置信息栅格化倍率集
+ * @param {boolean} isOverWrite - 是否覆盖
+ */
 function toPixel(info,isOverWrite){
     //console.log(info)
     let a = figma.currentPage;
@@ -247,5 +261,15 @@ function toPixel(info,isOverWrite){
         };
     };
 }
+//添加画板
+/**
+ * @param {Array} info - [w,h,x,y,n,fill]
+ * @returns {node}
+ */
+function addFrame(info){
+    let node = figma.createFrame();
+    setMain(info,node);
+    return node;
+};
 
 

@@ -730,20 +730,22 @@ function COMP_MAIN(){
       }
       item.setAttribute('data-radio-main','true');
       radio.setAttribute('data-radio-value',data);
-      let allradio = Array.from(item.parentNode.querySelectorAll('[data-radio-data]'));
-      let index = allradio.indexOf(item);
-      let inline = index > allradio.length/2 ? 'nearest' : 'center';
-      item.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: inline,
-      });
-      if( index > allradio.length/2  && item.nextElementSibling){
-        item.nextElementSibling.scrollIntoView({
+      if(item.parentNode.getAttribute('data-scorll') !== null){
+        let allradio = Array.from(item.parentNode.querySelectorAll('[data-radio-data]'));
+        let index = allradio.indexOf(item);
+        let inline = index > allradio.length/2 ? 'nearest' : 'center';
+        item.scrollIntoView({
           behavior: 'smooth',
           block: 'center',
-          inline: 'nearest',
+          inline: inline,
         });
+        if( index > allradio.length/2  && item.nextElementSibling){
+          item.nextElementSibling.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest',
+          });
+        };
       };
     });
   });
@@ -878,21 +880,24 @@ TAB_AUTO.forEach((item,index) => {
         oldpage.style.display = 'none';
         items.style.display = 'flex';
         items.parentNode.setAttribute('data-tab-pick',keyid);
-        let allinput = Array.from(input.parentNode.querySelectorAll('input'));
-        let index = allinput.indexOf(input);
-        let inline = index >= allinput.length/2 ? 'nearest' : 'center';
-        input.nextElementSibling.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: inline,
-        });
-        if(index >= allinput.length/2 && input.nextElementSibling && input.nextElementSibling.nextElementSibling && input.nextElementSibling.nextElementSibling.nextElementSibling){
-          input.nextElementSibling.nextElementSibling.nextElementSibling.scrollIntoView({
+        if(input.parentNode.getAttribute('data-scorll') !== null){
+          let allinput = Array.from(input.parentNode.querySelectorAll('input'));
+          let index = allinput.indexOf(input);
+          let inline = index >= allinput.length/2 ? 'nearest' : 'center';
+          input.nextElementSibling.scrollIntoView({
             behavior: 'smooth',
             block: 'center',
-            inline: 'nearest',
+            inline: inline,
           });
-        };
+          if(index >= allinput.length/2 && input.nextElementSibling && input.nextElementSibling.nextElementSibling && input.nextElementSibling.nextElementSibling.nextElementSibling){
+            input.nextElementSibling.nextElementSibling.nextElementSibling.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+              inline: 'nearest',
+            });
+          };
+        }
+        
       });
 
       let label = document.createElement('label');
