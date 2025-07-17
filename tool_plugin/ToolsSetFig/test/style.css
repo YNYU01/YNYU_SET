@@ -966,7 +966,8 @@ input[type="checkbox"]:checked + .btn-moreset{
   --tips-text: var(--tips-text-en,'No layer selected');
 }
 
-[data-selects="false"] [data-skill-line]{
+[data-selects="false"] [data-skill-line],
+[data-selects="false"] [data-selects-must]{
   pointer-events: none;
   opacity: 0.6;
 }

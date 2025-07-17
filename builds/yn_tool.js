@@ -1,3 +1,4 @@
+function TOOL_JS() {
 /**
  * Base64转Uint8Array
  */
@@ -17,6 +18,7 @@ function B64ToU8A(b64) {
 
   return array;
 }
+TOOL_JS.prototype.B64ToU8A = B64ToU8A;
 
 /**
  * Uint8Array转Base64
@@ -48,6 +50,7 @@ function U8AToB64(u8,type) {
   base64 = type && filetype[type.toLowerCase()] ? filetype[type.toLowerCase()] + base64 : base64;
   return base64;
 }
+TOOL_JS.prototype.U8AToB64 = U8AToB64;
 
 /**
  * Canvas转Uint8Array
@@ -56,6 +59,7 @@ function CanvasToU8A(canvas){
   let dataUrl = canvas.toDataURL('image/png');
   return new Uint8Array(B64ToU8A(dataUrl.split(',')[1]));
 };
+TOOL_JS.prototype.CanvasToU8A = CanvasToU8A;
 
 /**
  * 中英文字数限制兼容
@@ -76,8 +80,7 @@ function TextMaxLength(text,max,add){
   }
   return newtext;
 }
-
-/* ---核心功能--- */
+TOOL_JS.prototype.TextMaxLength = TextMaxLength;
 
 function CUT_IMAGE(image,mix){
   return new Promise((resolve,reject) => {
@@ -112,7 +115,7 @@ function CUT_IMAGE(image,mix){
     });
   });
 };
-
+TOOL_JS.prototype.CUT_IMAGE = CUT_IMAGE;
 
 /**
  * 均匀裁切方案，可用于瓦片切图和长图分割
@@ -164,3 +167,6 @@ function CUT_AREA(info,mix) {
     return cutAreas;
   };
 };
+TOOL_JS.prototype.CUT_AREA = CUT_AREA;
+
+}

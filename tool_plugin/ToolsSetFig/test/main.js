@@ -328,6 +328,7 @@ function reSelectInfo(info){
 
 /* ---界面交互--- */
 
+let TOOL_JS = new TOOL_JS();
 //侧边栏展开
 btnMore.addEventListener('change',(event)=>{
   if(event.target.checked){
@@ -631,7 +632,7 @@ async function addImageTags(files,isCreate){
     let name = file.name.split('.').filter(item => !imageType.includes(item.toLowerCase())).join('_');
     try{
       let image = await loadImage(file);
-      let cuts = await CUT_IMAGE(image);
+      let cuts = await TOOL_JS.CUT_IMAGE(image);
       CreateImageInfo.push({n:name,w:image.width,h:image.height,cuts:cuts});
       if(i == files.length - 1){
         addTag('image',CreateImageInfo);
@@ -723,7 +724,7 @@ function addTag(type,info){
         addTagMain(tag,index);
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
-        name.innerHTML = TextMaxLength(img.n,16,'...');
+        name.innerHTML = TOOL_JS.TextMaxLength(img.n,16,'...');
         tag.appendChild(name);
         if(img.cuts.length > 1){
           let span = document.createElement('span');
@@ -751,7 +752,7 @@ function addTag(type,info){
               let cutimgbox = document.createElement('a');
               cutimgbox.className = 'w100 df-cc'
               cutimgbox.href = URL.createObjectURL(blob);
-              cutimgbox.setAttribute('download', TextMaxLength(img.n,16,'...') + '_' + text + (num + 1)  + '.png')
+              cutimgbox.setAttribute('download', TOOL_JS.TextMaxLength(img.n,16,'...') + '_' + text + (num + 1)  + '.png')
               let cutimg = document.createElement('img');
               cutimg.setAttribute('style','width: 80%;');
               cutimg.src = URL.createObjectURL(blob);
@@ -836,8 +837,8 @@ function reFileInfo(files){
   let fileLength = '<span style="color: let(--code2)">' + files.length + '</span>'
   let fileName1 = files.length == 1 ? files[0].name : files[0].name + ' ...等 ' + fileLength + '  个文件';
   let fileName2 = files.length == 1 ? files[0].name : files[0].name + ' ... ' + fileLength + ' files';
-  fileName1 = '📁 ' + TextMaxLength(fileName1,20,'..');
-  fileName2 = '📁 ' + TextMaxLength(fileName2,20,'..');
+  fileName1 = '📁 ' + TOOL_JS.TextMaxLength(fileName1,20,'..');
+  fileName2 = '📁 ' + TOOL_JS.TextMaxLength(fileName2,20,'..');
   fileInfo.setAttribute('data-zh-text',fileName1);
   fileInfo.setAttribute('data-en-text',fileName2);
   if(languge == "Zh"){
@@ -1033,7 +1034,7 @@ skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
     SelectNodeInfo.forEach((item) => {
     let w = item[1];
     let h = item[2];
-    let cut = CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix)
+    let cut = TOOL_JS.CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix);
     cuts.push(cut);
   });
   //console.log(cuts);

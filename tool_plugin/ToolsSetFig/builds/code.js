@@ -16,6 +16,15 @@ figma.skipInvisibleInstanceChildren = true;//忽略不可见元素及其子集
 figma.showUI(__html__,{position:{x:vX,y:vY},themeColors:true});
 figma.ui.resize(UI[0], UI[1]);
 
+let TOOL_JS;
+fetch('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/builds/yn_tool.js')
+.then(js => {
+    return js.text()
+})
+.then(data => {
+    TOOL_JS = new Function( 'function TOOL_JS(){' + data + '}');
+    TOOL_JS.TextMaxLength('123456789',3,'..');
+});
 
 //核心功能
 figma.ui.onmessage = (message) => { 
@@ -132,12 +141,7 @@ function sendInfo(){
             //console.log(lengthE,lengthZ,n)
             data.push([n,w,h])
         });
-        figma.clientStorage.getAsync('tabPick')
-        .then(tab => {
-            if(tab == 'more tools' || data.length == 0){
-                postmessage([JSON.stringify(data),'selectInfo']);
-            }
-        }); 
+        postmessage([JSON.stringify(data),'selectInfo']);
     };
 }
 

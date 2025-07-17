@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -973,7 +973,8 @@ input[type="checkbox"]:checked + .btn-moreset{
   --tips-text: var(--tips-text-en,'No layer selected');
 }
 
-[data-selects="false"] [data-skill-line]{
+[data-selects="false"] [data-skill-line],
+[data-selects="false"] [data-selects-must]{
   pointer-events: none;
   opacity: 0.6;
 }
@@ -1295,7 +1296,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -1540,7 +1541,7 @@ function toolMessage(data,app){
                   style=" --tips-text:'转为标签/大纲';  --tips-text-en:'Convert to tags/catalogue';">
                     <btn-re class="df-cc wh100"></btn-re>                   
                   </div>
-                  <div id="upload-set-2" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
+                  <div id="upload-set-2" data-selects-must data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   style=" --tips-text:'从所选对象获取数据';  --tips-text-en:'Retrieve data from the selected node';">
                     <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path fill="var(--mainColor)" d="M18.8157 14.2207C19.7226 14.5107 19.7487 15.7845 18.8547 16.1123L10.4709 19.1855C10.2512 19.266 10.0096 19.2674 9.78931 19.1885L1.21313 16.1152C0.310723 15.7914 0.337167 14.505 1.2522 14.2188L2.41919 13.8535L10.1301 16.6172L17.6672 13.8535L18.8157 14.2207ZM8.89771 7.89746C9.81186 8.73115 10.3983 9.70031 10.8049 10.3096L12.2288 12.4434L12.6243 9.90918C12.708 9.3731 12.7298 8.84584 12.7034 8.33301L18.8167 10.2881C19.7234 10.5782 19.7496 11.8519 18.8557 12.1797L10.4719 15.2529C10.2521 15.3335 10.0107 15.3348 9.79028 15.2559L1.21411 12.1816C0.311182 11.858 0.337567 10.5722 1.25317 10.2861L8.89771 7.89746Z"/>
@@ -2068,12 +2069,12 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d7f9cee29b257316aa509f0dd8f2f3d3c5d18b57/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
