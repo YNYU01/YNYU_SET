@@ -939,6 +939,10 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-selects="false"] [data-selects-node]::after{
   content: var(--tips-text,'未选中任何图层');
+  margin: 0 auto;
+}
+[data-language="En"] [data-selects-node]::after{
+  --tips-text: var(--tips-text-en,'No layer selected');
 }
 
 [data-selects="false"] [data-selects-info-box]{
@@ -954,16 +958,16 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: inline-flex;
 }
 
+[data-selects-info-box] span{
+  text-wrap: nowrap;
+}
+
 [data-selects-info="main"],[data-selects-info="num"]{
   color: var(--themeColor2);
 }
 
 [data-selects-more="false"] [data-selects-info="main"]{
   color: var(--mainColor);
-}
-
-[data-language="En"] [data-selects-node]::after{
-  --tips-text: var(--tips-text-en,'No layer selected');
 }
 
 [data-selects="false"] [data-skill-line],

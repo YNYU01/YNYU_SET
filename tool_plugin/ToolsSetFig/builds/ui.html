@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3bb5c6667184e0a283ec816a4b4a99b5f921a7c3/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -946,6 +946,10 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-selects="false"] [data-selects-node]::after{
   content: var(--tips-text,'未选中任何图层');
+  margin: 0 auto;
+}
+[data-language="En"] [data-selects-node]::after{
+  --tips-text: var(--tips-text-en,'No layer selected');
 }
 
 [data-selects="false"] [data-selects-info-box]{
@@ -961,16 +965,16 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: inline-flex;
 }
 
+[data-selects-info-box] span{
+  text-wrap: nowrap;
+}
+
 [data-selects-info="main"],[data-selects-info="num"]{
   color: var(--themeColor2);
 }
 
 [data-selects-more="false"] [data-selects-info="main"]{
   color: var(--mainColor);
-}
-
-[data-language="En"] [data-selects-node]::after{
-  --tips-text: var(--tips-text-en,'No layer selected');
 }
 
 [data-selects="false"] [data-skill-line],
@@ -1296,7 +1300,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3bb5c6667184e0a283ec816a4b4a99b5f921a7c3/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -1316,7 +1320,7 @@ window.addEventListener('message',(message)=>{
     let messages = message.data.pluginMessage.pluginMessage || ['',''];
     let info = messages[0];
     let type = messages[1];
-    if(info.split('[').length > 1 || info.split('{').length > 1){
+    if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
       info = JSON.parse(info);
     }
     switch (type){
@@ -1325,6 +1329,7 @@ window.addEventListener('message',(message)=>{
       case 'tabPick': viewPage(info);break
       case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
       case 'selectInfo': reSelectInfo(info);break
+      case 'selectInfoMain': addTableText(tableObjToText(info));break
     };
   };
 });
@@ -1583,11 +1588,14 @@ function toolMessage(data,app){
                     <path stroke="var(--mainColor)" d="M9.86572 13.1169H19V17.0002C19 18.1048 18.1046 19.0002 17 19.0002H9.86572V13.1169Z"/>
                   </svg>
                 </div>
-                <input id="input-user-table-title" data-input class="nobod fl1" type="text" placeholder="name,w,h,s,type,add,node"> 
-                <!--清空-->
-                <div class="pos-a" data-close="clear" style="right: 10px; top:calc(50% - 6px); width: 12px; height: 12px;">
-                  <btn-close></btn-close>
-                </div>   
+                <input id="input-user-table-title" data-input class="nobod fl1" type="text" 
+                placeholder="name,w,h,s,type,add,node" 
+                value="name,w,h,s,type,add,node"
+                data-input-must="name,w,h" data-input-type="text"> 
+                <!--重置-->
+                <div data-input-reset data-btn="reset">
+                  <btn-reset></btn-reset>
+                </div>  
               </div>
               <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 180px;">
                 <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
@@ -1980,7 +1988,7 @@ function toolMessage(data,app){
                       <div class="df-cc" data-btn="skill-main" data-en-text="Same Full">统一填充模式</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Same Filter">统一裁剪位置</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Same Clip Position">统一裁剪位置</div>
                       <div class="w100" data-any="vw240"></div>  
                     </div>
                   </div>
@@ -1996,6 +2004,35 @@ function toolMessage(data,app){
                 <div class="fl1"  data-skill-sec="MergeText">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
+                  </div>
+                </div>
+                <div class="fl1"  data-skill-sec="LayersLayout">
+                  <div data-skill-star="false">
+                    <btn-star></btn-star>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Arrange By Ratio">自动重排</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Auto Constraints">简单约束</div>  
+                    </div>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Reversing Index">反转顺序</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Exchange Position">调换位置</div>  
+                    </div>
+                    <div data-skill-gap>
+                      <span>----</span>
+                      <span data-any="vw240" data-en-text="For components(may with auto layout)">
+                        基于组件(部分需在自动布局中)</span>
+                      <span>----</span>
+                    </div> 
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Fixed From">组件填充</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="To Fixed">撑满约束</div>  
+                    </div>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Heavy Chain">重链组件</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Release">解除组件</div>  
+                    </div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -2019,8 +2056,8 @@ function toolMessage(data,app){
             </div>
           </div>
           <!--选中信息-->
-          <div class="df-cc" data-selects-node>
-            <span class="df-cc" data-selects-info-box>
+          <div class="df-lc noscrollbar" data-selects-node data-scroll style="padding: 0 10px; box-sizing: border-box;">
+            <span class="df-lc" data-selects-info-box style="margin: 0 auto;">
               <div style="width: 12px; height: 12px;">
                 <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill="var(--mainColor)" d="M18.4265 14.8145C19.3056 15.1165 19.3327 16.35 18.4675 16.6904L10.486 19.8271C10.2536 19.9184 9.9946 19.9195 9.76144 19.8301L1.59738 16.6934C0.722562 16.3569 0.749635 15.1094 1.63839 14.8115L3.17062 14.2988L10.1247 16.9697L16.9206 14.2988L18.4265 14.8145ZM18.4265 10.3438C19.3064 10.6455 19.3333 11.8804 18.4675 12.2207L10.486 15.3574C10.2535 15.4488 9.9947 15.45 9.76144 15.3604L1.59738 12.2236C0.722562 11.8872 0.749635 10.6397 1.63839 10.3418L6.26046 8.79395L9.99972 13L13.7761 8.75098L18.4265 10.3438Z"/>
@@ -2069,12 +2106,12 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3bb5c6667184e0a283ec816a4b4a99b5f921a7c3/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3bb5c6667184e0a283ec816a4b4a99b5f921a7c3/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3bb5c6667184e0a283ec816a4b4a99b5f921a7c3/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3bb5c6667184e0a283ec816a4b4a99b5f921a7c3/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3bb5c6667184e0a283ec816a4b4a99b5f921a7c3/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3bb5c6667184e0a283ec816a4b4a99b5f921a7c3/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -2115,8 +2152,8 @@ let skillSecInfo = [
     tips:  ["",""],
   },
   {
-    id: '',
-    name: ["",""],
+    id: 'LayersLayout',
+    name: ["图层&布局","layers layout"],
     tips:  ["",""],
   },
   {
@@ -2238,6 +2275,7 @@ const skillStarModel = document.querySelector('[data-skillmodule="Useful & Start
 const selectInfoBox = document.querySelectorAll('[data-selects-node]');
 const createTagsBox = document.querySelector('[data-create-tags]');
 const cataloguesBox = document.querySelector('[data-create-catalogues]');
+const skillBtnMain = document.querySelectorAll('[data-btn="skill-main"]');
 
 let skillModel = [];
 let skilltypeNameNode = skillTypeBox.querySelectorAll('[data-skilltype-name]');
@@ -2407,6 +2445,7 @@ function reSelectInfo(info){
 
 /* ---界面交互--- */
 
+let tool = new TOOL_JS();
 //侧边栏展开
 btnMore.addEventListener('change',(event)=>{
   if(event.target.checked){
@@ -2562,21 +2601,29 @@ dropUp.addEventListener('drop',(e)=>{
   }
   
 });
+//创建内容
 document.querySelector('[data-create-any]').addEventListener('click',()=>{
   let type = createTagsBox.parentNode.getAttribute('data-create-tags-box');
   switch (type){
     case 'image':
-      let images = getFinalInfo(CreateImageInfo)
-      toolMessage([images,'createImage'],PLUGINAPP);
+      let images = getFinalInfo(CreateImageInfo);
+      tipsAll(['读取中，请耐心等待','Reading, please wait a moment'],images.length * 800);
+      setTimeout(()=>{
+        toolMessage([images,'createImage'],PLUGINAPP);
+      },100);
     ;break
     case 'table':
-      let tables = getFinalInfo(CreateTableInfo)
-      toolMessage([tables,'createImage'],PLUGINAPP);
+      //console.log(CreateTableInfo)
+      let tables = getFinalInfo(CreateTableInfo,true);
+      tipsAll(['读取中，请耐心等待','Reading, please wait a moment'],CreateTableInfo.length * 100);
+      setTimeout(()=>{
+        toolMessage([tables,'createFrame'],PLUGINAPP);
+      },100);
     ;break
     case 'zy': ;break
   };
   //移除未勾选的数据
-  function getFinalInfo(info){
+  function getFinalInfo(info,isname){
     let finalCreate = [...info]
     let nocreateTag = createTagsBox.querySelectorAll('[data-create-final="false"]');
     nocreateTag.forEach(item => {
@@ -2584,6 +2631,13 @@ document.querySelector('[data-create-any]').addEventListener('click',()=>{
       let idnum = id.split('_')[id.split('_').length - 1];
       finalCreate.splice(idnum,1);
     });
+    if(isname){
+      let createTag = createTagsBox.querySelectorAll('[data-create-final="true"]');
+      createTag.forEach((item,index) => {
+        let name = item.querySelector('[data-create-info="name"]').textContent.trim()
+        finalCreate[index].name = name;
+      });
+    };
     return finalCreate;
   };
 });
@@ -2710,7 +2764,7 @@ async function addImageTags(files,isCreate){
     let name = file.name.split('.').filter(item => !imageType.includes(item.toLowerCase())).join('_');
     try{
       let image = await loadImage(file);
-      let cuts = await CUT_IMAGE(image);
+      let cuts = await tool.CUT_IMAGE(image);
       CreateImageInfo.push({n:name,w:image.width,h:image.height,cuts:cuts});
       if(i == files.length - 1){
         addTag('image',CreateImageInfo);
@@ -2726,37 +2780,55 @@ async function addImageTags(files,isCreate){
 }
 async function addTableText(files,isTags){
   CreateTableInfo = [];
+  createTagsBox.innerHTML = '';
+  cataloguesBox.innerHTML = '';
   userText.focus();
   userText.value = '';
-  let tableText = await loadTable(files[0])
+  let tableText;
+  if(typeof(files) == 'string'){
+    tableText = files;
+  } else {
+    tableText = await loadTable(files[0])
+  }
   userText.value = tableText;
   let tableArray = tableTextToArray(tableText);
   let tableObj = tableArrayToObj(tableArray);
   CreateTableInfo = tableObj;
   //console.log(tableArray,tableTextToArray(tableText,true),tableObj)
-
   if(isTags){
     document.getElementById('upload-set-1').click()
   }
 }
+//文本框内容转标签/大纲
 document.getElementById('upload-set-1').addEventListener('click',()=>{
-  let tableArray = tableTextToArray(userText.value.trim());
-  let tableObj = tableArrayToObj(tableArray);
-  CreateTableInfo = tableObj;
-  if(CreateTableInfo.some(item => item.add)){
-    document.getElementById('upload-moreset').checked = true;
-    document.querySelector('[for="upload-moreset"]').click();
-    document.querySelector('[data-option-value="add w×h s"]').click();
-  } else if(CreateTableInfo.some(item => item.s)){
-    document.getElementById('upload-moreset').checked = true;
-    document.querySelector('[for="upload-moreset"]').click();
-    document.querySelector('[data-option-value=" w×h s"]').click();
-  } else {
-    document.querySelector('[data-option-value=" w×h"]').click();
+  let firstline = userText.value.trim().split('\n')[0];
+  let isTableText = !['name','w','h'].some(item => !firstline.includes(item));
+  if(isTableText){
+    let tableArray = tableTextToArray(userText.value.trim());
+    let tableObj = tableArrayToObj(tableArray);
+    CreateTableInfo = tableObj;
+    if(CreateTableInfo.some(item => item.add) && !frameName.value.includes('add') && userTableTitle.value.includes('add')){
+      document.getElementById('upload-moreset').checked = true;
+      document.querySelector('[for="upload-moreset"]').click();
+      document.querySelector('[data-option-value="add w×h s"]').click();
+    } else if(CreateTableInfo.some(item => item.s) && !frameName.value.includes('s') && userTableTitle.value.includes('s')){
+      document.getElementById('upload-moreset').checked = true;
+      document.querySelector('[for="upload-moreset"]').click();
+      document.querySelector('[data-option-value=" w×h s"]').click();
+    };
+    setTimeout(()=>{
+      addTableTags();
+    },100);
+  }else if(firstline.includes('svg')){
+
+  }
+  else{
+    tipsAll(['数据格式错误，请检查~','Data format error, please check~'],3000)
   };
-  setTimeout(()=>{
-    addTableTags()
-  },100)
+});
+//从所选图层获取数据
+document.getElementById('upload-set-2').addEventListener('click',()=>{
+  toolMessage(['','getTableBySelects'],PLUGINAPP);
 });
 //制表文案转数组，兼容反转行列
 function tableTextToArray(tableText,isColumn){
@@ -2778,11 +2850,25 @@ function tableArrayToObj(tableArray){
   for(let i = 1; i < tableArray.length; i++){
     let obj = {};
     tableArray[i].forEach((item,index) => {
-      obj[keys[index]] = item;
+      obj[keys[index]] = isNaN(item * 1) ? item : item * 1;;
     });
     objs.push(obj);
   };
   return objs;
+};
+//对象组转制表文案
+function tableObjToText(obj){
+  let header = Object.keys(obj[0]).join('\t') + '\n';
+  let values = '';
+  for(let i = 0; i < obj.length; i++){
+    let text = Object.values(obj[i]).join('\t');
+    if(i == obj.length - 1){
+      values += text;
+    }else{
+      values += text + '\n';
+    }
+  };
+  return header + values;
 }
 
 function addTableTags(){
@@ -2802,7 +2888,7 @@ function addTag(type,info){
         addTagMain(tag,index);
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
-        name.innerHTML = TextMaxLength(img.n,16,'...');
+        name.innerHTML = tool.TextMaxLength(img.n,16,'...');
         tag.appendChild(name);
         if(img.cuts.length > 1){
           let span = document.createElement('span');
@@ -2830,7 +2916,7 @@ function addTag(type,info){
               let cutimgbox = document.createElement('a');
               cutimgbox.className = 'w100 df-cc'
               cutimgbox.href = URL.createObjectURL(blob);
-              cutimgbox.setAttribute('download', TextMaxLength(img.n,16,'...') + '_' + text + (num + 1)  + '.png')
+              cutimgbox.setAttribute('download', tool.TextMaxLength(img.n,16,'...') + '_' + text + (num + 1)  + '.png')
               let cutimg = document.createElement('img');
               cutimg.setAttribute('style','width: 80%;');
               cutimg.src = URL.createObjectURL(blob);
@@ -2850,21 +2936,30 @@ function addTag(type,info){
         createTagsBox.parentNode.setAttribute('data-create-tags-box','table');
         addTagMain(tag,index);
         let name = document.createElement('div');
+        name.setAttribute('data-create-info','name');
         let end = nameRegex
-        .replace(/add/g,list.add)
         .replace(/w/g,list.w)
         .replace(/h/g,list.h)
-        .replace(/type/g,list.type)
-        .replace(/undefined/g,'')
+
+        if(list.type){
+          end = end.replace(/type/g,list.type)
+        }else{
+          end = end.replace(/type/g,'')
+        }
+        if(list.add){
+          end = end.replace(/add/g,list.add)
+        }else{
+          end = end.replace(/add/g,'')
+        }
         if(list.s){
           end = end.replace(/s/g,list.s + 'k');
         } else {
           end = end.replace(/s/g,'');
-        }
+        };
         name.innerHTML = `${list.name}${end}`.trim();
         if(nameRegex == 'none'){
           name.innerHTML = list.name;
-        }
+        };
         tag.appendChild(name);
         createTagsBox.appendChild(tag);
       });
@@ -2915,8 +3010,8 @@ function reFileInfo(files){
   let fileLength = '<span style="color: let(--code2)">' + files.length + '</span>'
   let fileName1 = files.length == 1 ? files[0].name : files[0].name + ' ...等 ' + fileLength + '  个文件';
   let fileName2 = files.length == 1 ? files[0].name : files[0].name + ' ... ' + fileLength + ' files';
-  fileName1 = '📁 ' + TextMaxLength(fileName1,20,'..');
-  fileName2 = '📁 ' + TextMaxLength(fileName2,20,'..');
+  fileName1 = '📁 ' + tool.TextMaxLength(fileName1,20,'..');
+  fileName2 = '📁 ' + tool.TextMaxLength(fileName2,20,'..');
   fileInfo.setAttribute('data-zh-text',fileName1);
   fileInfo.setAttribute('data-en-text',fileName2);
   if(languge == "Zh"){
@@ -3104,22 +3199,35 @@ pixelScale.addEventListener('change',()=>{
 });
 //返回裁切方案以栅格化
 skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
-  let mix = skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
-  let s = pixelScale.value;
-  let cuts = [];
-  tipsAll(['读取中，请耐心等待','Reading, please wait a moment'],SelectNodeInfo.length * 800);
-  setTimeout(()=>{
-    SelectNodeInfo.forEach((item) => {
-    let w = item[1];
-    let h = item[2];
-    let cut = CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix)
-    cuts.push(cut);
-  });
-  //console.log(cuts);
-  toolMessage([cuts,'pixelCopy'],PLUGINAPP);
-  },100);
+  
 });
-
+//点击即执行的功能
+skillBtnMain.forEach(btn => {
+  btn.addEventListener('click',() => {
+    let skillname = btn.getAttribute('data-en-text');
+    switch (skillname){
+      case 'As Copy':
+        //返回裁切方案以栅格化
+        let mix = skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+        let s = pixelScale.value;
+        let cuts = [];
+        tipsAll(['读取中，请耐心等待','Reading, please wait a moment'],SelectNodeInfo.length * 800);
+        setTimeout(()=>{
+          SelectNodeInfo.forEach((item) => {
+          let w = item[1];
+          let h = item[2];
+          let cut = tool.CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix);
+          cuts.push(cut);
+        });
+        //console.log(cuts);
+        toolMessage([cuts,'pixelCopy'],PLUGINAPP);
+        },100);
+      ;break
+      case 'Overwrite':;break
+      default : toolMessage(['',skillname],PLUGINAPP);console.log(skillname);break
+    }
+  });
+});
 
 
 /**

@@ -16,16 +16,6 @@ figma.skipInvisibleInstanceChildren = true;//忽略不可见元素及其子集
 figma.showUI(__html__,{position:{x:vX,y:vY},themeColors:true});
 figma.ui.resize(UI[0], UI[1]);
 
-let TOOL_JS;
-fetch('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ec59e6065be5d6317b6959c8d927c6b970195fc1/builds/yn_tool.js')
-.then(js => {
-    return js.text()
-})
-.then(data => {
-    TOOL_JS = new Function( 'function TOOL_JS(){' + data + '}');
-    TOOL_JS.TextMaxLength('123456789',3,'..');
-});
-
 //核心功能
 figma.ui.onmessage = (message) => { 
     const info = message[0]
@@ -79,10 +69,6 @@ figma.ui.onmessage = (message) => {
         let gap = 20;
         for ( let i = 0; i < info.length; i++){
             if (info[i].cuts.length > 1){
-                /*
-                let node = figma.createFrame();
-                setMain([info[i].w,info[i].h,viewX,viewY,info[i].n,[]],node)
-                */
                 let node = addFrame([info[i].w,info[i].h,viewX,viewY,info[i].n,[]]);
                 info[i].cuts.forEach((item,index) => {
                 addImg(node,{w:item.w,h:item.h,x:item.x,y:item.y,n:'cut ' + (index + 1),img:item.img});
@@ -92,15 +78,38 @@ figma.ui.onmessage = (message) => {
             }
             viewX += info[i].w + gap;
         }
+    };
+    //批量创建画板
+    if ( type == "createFrame"){
+        //console.log(info)
+        let viewX = Math.floor( figma.viewport.center.x - ((figma.viewport.bounds.width/2  - 300)* figma.viewport.zoom));
+        let viewY = Math.floor( figma.viewport.center.y - ((figma.viewport.bounds.height/2  - 300)* figma.viewport.zoom));
+        let selects = []
+        for ( let i = 0; i < info.length; i++){
+            let node = addFrame([info[i].w,info[i].h,null,null,info[i].name],[]);
+            selects.push(node);
+        };
+        figma.currentPage.selection = selects;
+        layoutByRatio(selects);
+    };
+    //反传画板数据
+    if ( type == "getTableBySelects"){
+        let data = getMain(figma.currentPage.selection);
+        postmessage([data,'selectInfoMain']);
     }
     //栅格化-副本
     if ( type == 'pixelCopy'){
-        toPixel(info)
+        toPixel(info);
     };
     //栅格化-覆盖
     if ( type == 'overWrite'){
-        toPixel(info,true)
-    }
+        toPixel(info,true);
+    };
+    //自动排列
+    if ( type == 'Arrange By Ratio'){
+        layoutByRatio(figma.currentPage.selection);
+    };
+    
 }
 
 
@@ -124,24 +133,13 @@ function sendInfo(){
     if(b){
         let data = [];
         b.forEach(node => {
-            let n = node.name;
+            let n = TextMaxLength(node.name,20,'...');
             let w = node.width;
             let h = node.height;
-            let lengthE = n.replace(/[\u4e00-\u9fa5]/g,'').length*1;
-            let lengthZ = n.replace(/[^\u4e00-\u9fa5]/g,'').length*2;
-            if(lengthZ > lengthE){
-                if((lengthE + lengthZ) > 10){
-                    n = n.substring(0,6) + '..';
-                }
-            } else {
-                if((lengthE + lengthZ) > 10){
-                    n = n.substring(0,11) + '..';
-                }
-            }
             //console.log(lengthE,lengthZ,n)
             data.push([n,w,h])
         });
-        postmessage([JSON.stringify(data),'selectInfo']);
+        postmessage([data,'selectInfo']);
     };
 }
 
@@ -151,6 +149,9 @@ function sendInfo(){
  * @param {node?} cloneNode - 直接参考的对象
  */
 function setMain(info,node,cloneNode){
+    let viewX = Math.floor( figma.viewport.center.x - ((figma.viewport.bounds.width/2  - 300)* figma.viewport.zoom));
+    let viewY = Math.floor( figma.viewport.center.y - ((figma.viewport.bounds.height/2  - 300)* figma.viewport.zoom));
+
     let w = info[0],h = info[1],x = info[2],y = info[3],n = info[4],fills = info[5];
     if(cloneNode){
         w = cloneNode.width;
@@ -160,6 +161,8 @@ function setMain(info,node,cloneNode){
         n = cloneNode.name;
         fills = cloneNode.fill;
     }
+    x = x ? x : viewX;
+    y = y ? y : viewY;
     fills = fills ? fills : [];
     node.resize(w,h);
     node.x = x;
@@ -276,4 +279,118 @@ function addFrame(info){
     return node;
 };
 
+
+/**
+ * 中英文字数限制兼容
+ */
+function TextMaxLength(text,max,add){
+    let newtext = text.toString();
+    add = add ? add : '';
+    let lengthE = newtext.replace(/[\u4e00-\u9fa5]/g,'').length*1;
+    let lengthZ = newtext.replace(/[^\u4e00-\u9fa5]/g,'').length*2;
+    if(lengthZ > lengthE){
+        if((lengthE + lengthZ) > max){
+          newtext = newtext.substring(0,(max/2 + 1)) + add;
+        }
+    } else {
+        if((lengthE + lengthZ) > max){
+          newtext = newtext.substring(0,(max + 1)) + add;
+        }
+    }
+    return newtext;
+  };
+
+//按长、宽、方排列所选
+function layoutByRatio(nodes){
+    let b = nodes;
+    let x = Math.min(...b.map(item => item.x)),XX = Math.min(...b.map(item => item.x));
+    let y = Math.min(...b.map(item => item.y)),YY = Math.min(...b.map(item => item.y));
+    let infos = [];
+    for ( let i = 0; i < b.length; i++){
+        infos.push({x:b[i].x,y:b[i].y,w:b[i].width,h:b[i].height,i:i,});
+    };
+    let HH = infos.filter(item => item.w > item.h).sort((a, b) => b.w*b.h - a.w*a.h);//横板
+    let maxW = Math.max(Math.max(...HH.map(item => item.w)),1920)
+    let LL = infos.filter(item => item.w < item.h).sort((a, b) => b.w*b.h - a.w*a.h);//竖版
+    let maxH = Math.max(...LL.map(item => item.h))
+    let FF = infos.filter(item => item.w == item.h).sort((a, b) => b.w*b.h - a.w*a.h);//方形
+    let gap = 30;
+    let lineMaxH = [],lineMaxW = [];
+    let lineW = 0,lineH = 0;
+    for(let e = 0; e < HH.length; e++){
+        if ( e !== HH.length - 1){
+            lineW += HH[e].w + HH[e + 1].w ;
+        }
+        lineMaxH.push([HH[e].h]);
+        //console.log(lineMaxH)                   
+        b[HH[e].i].x = x
+        b[HH[e].i].y = y
+        
+        if ( lineW > maxW){
+            //console.log(lineMaxH) 
+            lineW = 0;
+            x = XX;
+            y = y + Math.max(...lineMaxH) + gap;
+            lineMaxH = []
+        } else {
+            x = x + HH[e].w + gap; 
+        }
+    };
+    x = XX + maxW + gap;
+    y = YY;
+    for(let e = 0; e < LL.length; e++){
+        if ( e !== LL.length - 1){
+            lineH += LL[e].h + LL[e + 1].h ;
+        }
+        lineMaxW.push([LL[e].w]);
+        //console.log(lineMaxH)                   
+        b[LL[e].i].x = x
+        b[LL[e].i].y = y
+        
+        if ( lineH > maxH){
+
+            lineH = 0;
+            y = YY;
+            x = x + Math.max(...lineMaxW) + gap;
+            lineMaxW = []
+        } else {
+            y = y + LL[e].h + gap; 
+        }
+    };
+    x = XX + maxW + gap;
+    y = YY + maxH + gap;
+    for(let e = 0; e < FF.length; e++){
+        if ( e !== FF.length - 1){
+            lineW += FF[e].w + FF[e + 1].w ;
+        }
+        lineMaxH.push([FF[e].h]);
+        //console.log(lineMaxH)                   
+        b[FF[e].i].x = x
+        b[FF[e].i].y = y
+        
+        if ( lineW > maxW){
+
+            lineW = 0;
+            x = XX + maxW + gap;
+            y = y + Math.max(...lineMaxH) + gap;
+            lineMaxW = []
+        } else {
+            x = x + FF[e].w + gap; 
+        }
+    };
+}
+
+//获取画板可用于创建画板的信息
+function getMain(nodes){
+    if(nodes){
+        let data = [];
+        nodes.forEach(node => {
+            let n = node.name;
+            let w = node.width;
+            let h = node.height;
+            data.push({name:n,w:w,h:h})
+        });
+        return data;
+    };
+}
 

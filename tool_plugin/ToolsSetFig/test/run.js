@@ -15,7 +15,7 @@ window.addEventListener('message',(message)=>{
     let messages = message.data.pluginMessage.pluginMessage || ['',''];
     let info = messages[0];
     let type = messages[1];
-    if(info.split('[').length > 1 || info.split('{').length > 1){
+    if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
       info = JSON.parse(info);
     }
     switch (type){
@@ -24,6 +24,7 @@ window.addEventListener('message',(message)=>{
       case 'tabPick': viewPage(info);break
       case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
       case 'selectInfo': reSelectInfo(info);break
+      case 'selectInfoMain': addTableText(tableObjToText(info));break
     };
   };
 });

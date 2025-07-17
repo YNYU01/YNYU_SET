@@ -247,11 +247,14 @@
                     <path stroke="var(--mainColor)" d="M9.86572 13.1169H19V17.0002C19 18.1048 18.1046 19.0002 17 19.0002H9.86572V13.1169Z"/>
                   </svg>
                 </div>
-                <input id="input-user-table-title" data-input class="nobod fl1" type="text" placeholder="name,w,h,s,type,add,node"> 
-                <!--清空-->
-                <div class="pos-a" data-close="clear" style="right: 10px; top:calc(50% - 6px); width: 12px; height: 12px;">
-                  <btn-close></btn-close>
-                </div>   
+                <input id="input-user-table-title" data-input class="nobod fl1" type="text" 
+                placeholder="name,w,h,s,type,add,node" 
+                value="name,w,h,s,type,add,node"
+                data-input-must="name,w,h" data-input-type="text"> 
+                <!--重置-->
+                <div data-input-reset data-btn="reset">
+                  <btn-reset></btn-reset>
+                </div>  
               </div>
               <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 180px;">
                 <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
@@ -300,6 +303,10 @@
                 <div data-create-catalogues class="w100 df-ffc">
                   <!--动态填充-->
                 </div>
+                <!--清空-->
+                <div class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;">
+                  <btn-close></btn-close>
+                </div>
               </div>
             </div>
           </div>
@@ -320,7 +327,16 @@
         
       </div>
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        
+        <div class="wh100 df-ffc" style="padding: 10px; box-sizing: border-box;">
+          <!--步骤1-->
+          <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <span>▼&nbsp;</span>
+            <span data-en-text="Create a basic table" >创建一个表格样例</span>
+            &nbsp;&nbsp;
+            <span data-any="vw300" data-en-text="and make it more diverse" style="opacity: 0.6;">并进一步定制化设计</span>
+            <div data-any="vw300" data-help="sheet" class="fl0 df-cc">?</div>
+          </div>
+        </div>
       </div>
       <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
         <div class="wh100 df-ffc" style="align-items: center; padding: 10px; box-sizing: border-box;">
@@ -644,7 +660,7 @@
                       <div class="df-cc" data-btn="skill-main" data-en-text="Same Full">统一填充模式</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Same Filter">统一裁剪位置</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Same Clip Position">统一裁剪位置</div>
                       <div class="w100" data-any="vw240"></div>  
                     </div>
                   </div>
@@ -660,6 +676,35 @@
                 <div class="fl1"  data-skill-sec="MergeText">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
+                  </div>
+                </div>
+                <div class="fl1"  data-skill-sec="LayersLayout">
+                  <div data-skill-star="false">
+                    <btn-star></btn-star>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Arrange By Ratio">自动重排</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Auto Constraints">简单约束</div>  
+                    </div>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Reversing Index">反转顺序</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Exchange Position">调换位置</div>  
+                    </div>
+                    <div data-skill-gap>
+                      <span>----</span>
+                      <span data-any="vw240" data-en-text="For components(may with auto layout)">
+                        基于组件(部分需在自动布局中)</span>
+                      <span>----</span>
+                    </div> 
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Fixed From">组件填充</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="To Fixed">撑满约束</div>  
+                    </div>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Heavy Chain">重链组件</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Release">解除组件</div>  
+                    </div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -683,8 +728,8 @@
             </div>
           </div>
           <!--选中信息-->
-          <div class="df-cc" data-selects-node>
-            <span class="df-cc" data-selects-info-box>
+          <div class="df-lc noscrollbar" data-selects-node data-scroll style="padding: 0 10px; box-sizing: border-box;">
+            <span class="df-lc" data-selects-info-box style="margin: 0 auto;">
               <div style="width: 12px; height: 12px;">
                 <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill="var(--mainColor)" d="M18.4265 14.8145C19.3056 15.1165 19.3327 16.35 18.4675 16.6904L10.486 19.8271C10.2536 19.9184 9.9946 19.9195 9.76144 19.8301L1.59738 16.6934C0.722562 16.3569 0.749635 15.1094 1.63839 14.8115L3.17062 14.2988L10.1247 16.9697L16.9206 14.2988L18.4265 14.8145ZM18.4265 10.3438C19.3064 10.6455 19.3333 11.8804 18.4675 12.2207L10.486 15.3574C10.2535 15.4488 9.9947 15.45 9.76144 15.3604L1.59738 12.2236C0.722562 11.8872 0.749635 10.6397 1.63839 10.3418L6.26046 8.79395L9.99972 13L13.7761 8.75098L18.4265 10.3438Z"/>
