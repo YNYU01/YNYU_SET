@@ -730,7 +730,7 @@ function COMP_MAIN(){
       }
       item.setAttribute('data-radio-main','true');
       radio.setAttribute('data-radio-value',data);
-      if(item.parentNode.getAttribute('data-scorll') !== null){
+      if(item.parentNode.parentNode.getAttribute('data-scroll') !== null){
         let allradio = Array.from(item.parentNode.querySelectorAll('[data-radio-data]'));
         let index = allradio.indexOf(item);
         let inline = index > allradio.length/2 ? 'nearest' : 'center';
@@ -880,7 +880,7 @@ TAB_AUTO.forEach((item,index) => {
         oldpage.style.display = 'none';
         items.style.display = 'flex';
         items.parentNode.setAttribute('data-tab-pick',keyid);
-        if(input.parentNode.getAttribute('data-scorll') !== null){
+        if(input.parentNode.getAttribute('data-scroll') !== null){
           let allinput = Array.from(input.parentNode.querySelectorAll('input'));
           let index = allinput.indexOf(input);
           let inline = index >= allinput.length/2 ? 'nearest' : 'center';
@@ -1612,8 +1612,8 @@ function scrollX(node){
  */
 function getElementMix(mix){
   let node = mix;
-  node = node instanceof HTMLElement ? node : document.getElementById(node);
-  node = node instanceof HTMLElement ? node : document.querySelector(node);
-  node = node instanceof HTMLElement ? node : mix;
+  node = node instanceof HTMLElement ? node : document.getElementById(mix);
+  node = node instanceof HTMLElement ? node : document.querySelector(`[${mix}]`);
+  node = node instanceof HTMLElement ? node : ROOT;
   return node;
 }

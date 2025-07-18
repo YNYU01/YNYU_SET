@@ -16,6 +16,7 @@ figma.skipInvisibleInstanceChildren = true;//忽略不可见元素及其子集
 figma.showUI(__html__,{position:{x:vX,y:vY},themeColors:true});
 figma.ui.resize(UI[0], UI[1]);
 
+let isSendComp = false;
 //核心功能
 figma.ui.onmessage = (message) => { 
     const info = message[0]
@@ -96,7 +97,12 @@ figma.ui.onmessage = (message) => {
     if ( type == "getTableBySelects"){
         let data = getMain(figma.currentPage.selection);
         postmessage([data,'selectInfoMain']);
-    }
+    };
+    //反传组件信息
+    if ( type == "selectComp"){
+        isSendComp = true;
+        sendSendComp();
+    };
     //栅格化-副本
     if ( type == 'pixelCopy'){
         toPixel(info);
@@ -123,8 +129,11 @@ function postmessage(data){
 }
 
 figma.on('selectionchange',()=>{
-    sendInfo()
-})
+    sendInfo();
+    if(isSendComp){
+        sendSendComp()
+    };
+});
 
 sendInfo()
 function sendInfo(){
@@ -141,6 +150,26 @@ function sendInfo(){
         });
         postmessage([data,'selectInfo']);
     };
+};
+
+function sendSendComp(){
+    let a = figma.currentPage;
+    let b = a.selection;
+    let info = []
+    let comps = b.filter(item => item.type == 'COMPONENT' || item.type == 'INSTANCE');
+    let th = comps.findOne(item => item.name.split('@th').length > 1);
+    let td = comps.findOne(item => item.name.split('@td').length > 1);
+    if(th){
+        info.push(th.name);
+    } else {
+        info.push(null);
+    };
+    if(td){
+        info.push(td.name);
+    } else {
+        info.push(null);
+    }
+    postmessage([info,'selectComp']);
 }
 
 /**
@@ -169,7 +198,7 @@ function setMain(info,node,cloneNode){
     node.y = y;
     node.name = n;
     node.fills = fills;
-}
+};
 //添加图片
 function addImg(node,info){
     let image = figma.createImage(info.img)
@@ -186,7 +215,7 @@ function addImg(node,info){
         }
     ]; 
     node.appendChild(img)
-}
+};
 //添加切片
 /**
  * @param {group} group - 通过克隆需要被栅格化的对象，初步得到的组
@@ -243,7 +272,7 @@ function addCutImg(group){
             old.remove();
         }
     });
-}
+};
 //通过切片实现原地栅格化
 /**
  * @param {[{w:num,h:num,x:num,y:num,s:num}]} info - 切片大小位置信息栅格化倍率集
@@ -267,7 +296,7 @@ function toPixel(info,isOverWrite){
             b[i].remove()
         };
     };
-}
+};
 //添加画板
 /**
  * @param {Array} info - [w,h,x,y,n,fill]
@@ -298,7 +327,7 @@ function TextMaxLength(text,max,add){
         }
     }
     return newtext;
-  };
+};
 
 //按长、宽、方排列所选
 function layoutByRatio(nodes){
@@ -378,7 +407,7 @@ function layoutByRatio(nodes){
             x = x + FF[e].w + gap; 
         }
     };
-}
+};
 
 //获取画板可用于创建画板的信息
 function getMain(nodes){
@@ -392,5 +421,5 @@ function getMain(nodes){
         });
         return data;
     };
-}
+};
 

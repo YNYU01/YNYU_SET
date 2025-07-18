@@ -25,6 +25,7 @@ window.addEventListener('message',(message)=>{
       case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
       case 'selectInfo': reSelectInfo(info);break
       case 'selectInfoMain': addTableText(tableObjToText(info));break
+      case 'selectComp': reSelectComp(info);break
     };
   };
 });

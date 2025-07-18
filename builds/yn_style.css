@@ -452,6 +452,10 @@ input[type="range"] {
   text-align: center;
 }
 
+[data-scroll]{
+  overflow: auto;
+}
+
 /*纯CSS控件*/
 [data-input="range"],
 input[type="text"],

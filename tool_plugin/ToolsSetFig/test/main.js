@@ -79,10 +79,10 @@ let toUserTips = {
 let helpData = {
   create: [
     ["p",
-    "本页功能主要用于<span data-highlight> 批量创建画板、图层等 </span>",
-    "This page is used for batch creation of <span data-highlight> frames, layers, etc </span>"],
+    "本页功能主要用于/++ 批量创建画板、图层等 ++/",
+    "This page is used for batch creation of /++ frames, layers, etc ++/"],
     ["li",
-    "传入大图（长图）可创建大小均匀的切片组，以避免压缩",
+    "传入大图（长图）可创建大小均匀的切片组, 以避免压缩",
     "Upload large images (long images) will create slice groups to avoid compression"],
     ["li",
     "传入带命名、宽高等信息的表格数据则创建画板",
@@ -91,63 +91,117 @@ let helpData = {
     "传入由本系列插件生成的兼容文件则创建图层",
     "Upload files by YN+ or other compatible file will create layers"],
     ["li",
-    "图片支持格式: <br> <span data-highlight> .jpg | .jpeg | .jfif | .webp | .png | .apng | .gif </span>",
-    "Image file type:<br> <span data-highlight> .jpg | .jpeg | .jfif | .webp | .png | .apng | .gif </span>"],
+    "图片支持格式: <br> /++ .jpg | .jpeg | .jfif | .webp | .png | .apng | .gif ++/",
+    "Image file type:<br> /++ .jpg | .jpeg | .jfif | .webp | .png | .apng | .gif ++/"],
     ["li",
-    "表格支持格式: <br> <span data-highlight> .csv | .xls | .xlsx </span>",
-    "Table file type: <br> <span data-highlight> .csv | .xls | .xlsx </span>"],
+    "表格支持格式: <br> /++ .csv | .xls | .xlsx ++/",
+    "Table file type: <br> /++ .csv | .xls | .xlsx ++/"],
     ["li",
-    "兼容文件支持格式: <br><span data-highlight> .zy | .sketch | .svg | .xml | .json | .zip | .rar | .7z </span>",
-    "Compatible file type: <br> <span data-highlight> .zy | .sketch | .svg | .xml | .json | .zip | .rar | .7z </span>"],
+    "兼容文件支持格式: <br>/++ .zy | .sketch | .svg | .xml | .json | .zip | .rar | .7z ++/",
+    "Compatible file type: <br> /++ .zy | .sketch | .svg | .xml | .json | .zip | .rar | .7z ++/"],
     ["br","",""],
     ["p",
-    "拖拽和上传文件会立即生成用以确认最终生成内容的<span data-highlight> 标签/大纲 </span>",
-    "Dragging or uploading files will immediately convert to <span data-highlight> tags/catalogue </span>"],
+    "拖拽和上传文件会立即生成用以确认最终生成内容的/++ 标签/大纲 ++/",
+    "Dragging or uploading files will immediately convert to /++ tags/catalogue ++/"],
     ["li",
-    "拖拽的文件需全部是为图片类、全部是表格类或全部是兼容文件，<span data-highlight>不能混杂类型</span>",
-    "Drag and drop files must be all images, tables, or compatible files. <span data-highlight> Mixed file types are not allowed </span>"],
+    "拖拽的文件需全部是为图片类、全部是表格类或全部是兼容文件, /++ 不能混杂类型 ++/",
+    "Drag and drop files must be all images, tables, or compatible files. /++ Mixed file types are not allowed ++/"],
     ["li",
-    "上传文件设置了具体格式，不支持的格式将无法点选",
+    "上传文件设置了具体格式, 不支持的格式将无法点选",
     "The three upload buttons restrict the file format, and unsupported formats cannot be uploaded"],
     ["br","",""],
     ["p",
-    "通过文本框输入数据，需要点击第一个按钮来生成标签/大纲",
+    "通过文本框输入数据, 需要点击第一个按钮来生成标签/大纲",
     "If input data through the textarea, click the first button to convert the data to tags/catalogue"],
     ["li",
-    "输入表格数据无需包含表头、单位，<span data-highlight>可双击文本框查看示例</span>",
-    "Does not need to include a table header or unit.<span data-highlight> May double-click the textarea to fill an example <span>"],
+    "输入表格数据无需包含表头、单位, /++ 可双击文本框查看示例 ++/",
+    "Does not need to include a table header or unit./++ May double-click the textarea to fill an example <span>"],
     ["li",
-    "可以选中文件里的画板或图层，然后点击第二个按钮获取命名和宽高数据",
+    "可以选中文件里的画板或图层, 然后点击第二个按钮获取命名和宽高数据",
     "Select frames or layers in the file, and then click the second button to obtain theirs name, width and height data"],
     ["li",
-    "如果需要制作更复杂的模板，点击第三个按钮前往资源助手",
-    "If you need to create more complex templates, click the third button to go to the <span data-highlight> YN+ ListEase </span> online"],
+    "如果需要制作更复杂的模板, 点击第三个按钮前往资源助手",
+    "If you need to create more complex templates, click the third button to go to the /++ YN+ ListEase ++/ online"],
     ["br","",""],
     ["p",
-    "表格数据默认按<span data-highlight>命名、宽高、目标文件大小、目标文件格式、补充信息</span>的顺序读取列，如需修改规则可点击第四个按钮展开高级设置",
-    "Table data is read in the order of <span data-highlight> name, width, height, target file size, target file format, and supplementary information </span> by default. To modify the rules, click the fourth button to expand advanced settings"],
+    "表格数据默认按/++ 命名、宽高、目标文件大小、目标文件格式、补充信息 ++/的顺序读取列, 如需修改规则可点击第四个按钮展开高级设置",
+    "Table data is read in the order of /++ name, width, height, target file size, target file format, and supplementary information ++/ by default. To modify the rules, click the fourth button to expand advanced settings"],
     ["li",
     "修改列顺序规则时需注意,必须包含命名和宽高"
-    ,"When modifying column order rules, it is important to include <span data-highlight> name, width and height </span>"],
+    ,"When modifying column order rules, it is important to include /++ name, width and height ++/"],
     ["li",
-    "画板名默认带w×h后缀，如“ <span data-highlight>kv 1920×1080 </span>”，可选择其他预设或自行定义",
-    "The frame defaults to a suffix with width and height,such as ' <span data-highlight>kv 1920 × 1080 </span>', you can selected a presets or input oneself"],
+    "画板名默认带w×h后缀, 如/++ kv 1920×1080 ++/, 可选择其他预设或自行定义",
+    "The frame defaults to a suffix with width and height,such as /++ kv 1920 × 1080 ++/, you can selected a presets or input oneself"],
   ],
   sheet: [
     ["p",
-    "表格由至少两个组件: <span data-highlight> 表头(xxx@th) | 表格(xxx@td) </span>，嵌套自动布局而成，请注意，这里采用先按列再按行的布局，与常见表格逻辑相反，但更适合设计领域",
-    "The table should build with auto-layout from least 2 components: <span data-highlight> table-header(xxx@th) | table-data(xxx@td) </span>. Please note that the layout here is based on columns first and then rows, which is opposite to the common table logic but more suitable for the design field"],
-    ["li",
-    "首次使用该功能，建议按默认步骤生成一个表格示例，以理解其中的规范要求",
+    "使用本功能需要掌握【组件】和【组件属性】等基本知识",
     ""],
     ["li",
-    "为实现更好的设计效果，您需要掌握组件和组件属性的基本知识",
+    "组件使元素能保持一致的样式, 并通过实例的/++ 继承性 ++/实现批量控制样式",
     ""],
     ["li",
-    "默认生成表头和表格组件，如选中了命名",
+    "组件属性是将需要修改的样式以表单的形式放在属性栏最上方, 方便/++ 参数化管理组件 ++/",
+    ""],
+    ["p",
+    "表格由至少两个组件: /++ xxx@th(表头) | xxx@td(表数据) ++/, 嵌套自动布局而成, 请注意, 这里采用先按列再按行的布局, 与常见表格逻辑相反, 但更适合设计领域",
+    "The table should build with auto-layout from least 2 components: /++ xxx@th(table-header) | xxx@td(table-data) ++/. Please note that the layout here is based on columns first and then rows, which is opposite to the common table logic but more suitable for the design field"],
+    ["li",
+    "首次使用该功能, 建议直接点击按钮生成一个表格示例, 以便理解其中的规范要求",
     ""],
     ["li",
-    "默认生成3*3的表格, 也可以输入具体行列来生成，但随后填充数据时会自动调节行列",
+    "默认生成3*3的表格, 也可以输入具体行列来生成, 但随后填充数据时会自动调节行列",
+    ""],
+    ["li",
+    "默认先生成表头和表格组件, 如选中了命名为xxx@th和xxx@td的组件, 则会直接生成表格",
+    ""],
+    ["li",
+    "组件必须包含用多个图层实现的描边和填充, 并绑定/++ 布尔类型组件属性: --bod-l(左描边) | --bod-r(右描边) | --bod-t(上描边) | --bod-b(下描边) | --fills(填充) ++/",
+    ""],
+    ["li",
+    "组件会先包裹在一个列中xxx@column, xxx@th会始终在第一个, 然后多个列会包裹在一个表中xxx@table",
+    ""],
+    ["li",
+    "组件必须包含一个文字图层, 并绑定/++ 字符类型组件属性: --data(数值/文本) ++/",
+    ""],
+    ["br","",""],
+    ["p",
+    "因为【组件属性】功能的强大, 我们会有很多办法实现批量替换数据, 不仅限于表格, 因此【表格】可视为【批量替换数据】的一种特殊情况",
+    ""],
+    ["li",
+    "使用【表格数据填充】时, 仅检索xxx@table下,每列xxx@column的xxx@th和xxx@td的--data属性进行修改",
+    ""],
+    ["li",
+    "如需要更复杂的组件属性组合, 需使用【批量组件属性】功能来完成数据映射",
+    ""],
+    ["li",
+    "【表格数据填充】不需要表头作为查找组件属性的依据, 直接按行列对应关系填充数据, 【批量组件属性】则需要将对应组件属性名作为表头, 按图层顺序修改对应的值",
+    ""],
+    ["li",
+    "【批量组件属性】对变体的选项值也同样生效,需设置唯一的变体属性名(默认是Property) 需避免存在同名的情况, 变体集内的组件命名无影响",
+    ""],
+    ["br","",""],
+    ["p",
+    "通过将xxx@th和xxx@td组件宽度设置为充满, 我们可以轻松地用xxx@column控制列宽,也可以直接在图层里连选列内的xxx@td, 而选中行的方式可能比较复杂",
+    ""],
+    ["li",
+    "【选中单行】功能可以查找相邻父级同位置的图层, 请确保图层结构的一致性",
+    ""],
+    ["li",
+    "【选中多行】功能可以在选中单行的基础上, 将所在行之间的其他行一并选中",
+    ""],
+    ["li",
+    "【区域选中】功能类似框选, 会在选中两个xxx@td形成的框内所有的xxx@td ",
+    ""],
+    ["li",
+    "【连续选中】功能可类似文本段落的连选, 会从第一个xxx@td开始逐行选中, 到第二个xxx@td结束",
+    ""],
+    ["br","",""],
+    ["p",
+    "为弥补组件属性的局限性问题, 可使用【标签属性映射】来完成 /++ #xxx.fill(填充色值) | #xxx.stroke(描边色值) | #xxx.fillStyle(填充样式名) | #xxx.strokeStyle(描边样式名)| #xxx.visible(可见性true/false) | #xxx.opacity(透明度0~1) | #xxx.fontSize(字号) ++/ 的参数化控制",
+    ""],
+    ["li",
+    "选中的对象将按图层顺序对应每一行的数值,修改时会先判断对象是否带标签, 然后再遍历子对象, 对象/子对象本身可以包含多个标签, 可以存在不同的标签组合, 这对实现更复杂的样式变化很有用 ",
     ""],
     ["li",
     "",
@@ -194,6 +248,8 @@ const skillBtnMain = document.querySelectorAll('[data-btn="skill-main"]');
 const clearTags = document.querySelector('[data-create-tags-box]').querySelector('btn-close').parentNode;
 const convertTags = document.getElementById('upload-set-1');
 const getTableText = document.getElementById('upload-set-2');
+const chkTablestyle = document.getElementById('chk-tablestyle');
+const chkSelectcomp = document.getElementById('chk-selectcomp');
 
 let skillModel = [];
 let skilltypeNameNode = skillTypeBox.querySelectorAll('[data-skilltype-name]');
@@ -269,7 +325,7 @@ MOVE_TIMEOUT = setTimeout(()=>{
 
 /**
  * 重载字体样式
- * @param {node | null} area -可传入重载范围，可以是元素本身，或id/自定义属性等唯一值；
+ * @param {node | null} area -可传入重载范围, 可以是元素本身, 或id/自定义属性等唯一值；
  */
 function loadFont(area){
   let loadFontAfter = [
@@ -279,7 +335,12 @@ function loadFont(area){
     "data-turnto",
     "data-back",
   ];
-  let areas = getElementMix(area) || document;
+  let areas;
+  if(area){
+    areas = getElementMix(area);
+  } else {
+    areas = document;
+  };
   setTimeout(()=>{
     loadFontAfter.forEach(key => {
       let nodes = areas.querySelectorAll(`[${key}]`);
@@ -525,7 +586,7 @@ document.querySelector('[data-create-any]').addEventListener('click',()=>{
   switch (type){
     case 'image':
       let images = getFinalInfo(CreateImageInfo);
-      tipsAll(['读取中，请耐心等待','Reading, please wait a moment'],images.length * 800);
+      tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],images.length * 800);
       setTimeout(()=>{
         toolMessage([images,'createImage'],PLUGINAPP);
       },100);
@@ -533,7 +594,7 @@ document.querySelector('[data-create-any]').addEventListener('click',()=>{
     case 'table':
       //console.log(CreateTableInfo)
       let tables = getFinalInfo(CreateTableInfo,true);
-      tipsAll(['读取中，请耐心等待','Reading, please wait a moment'],CreateTableInfo.length * 100);
+      tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],CreateTableInfo.length * 100);
       setTimeout(()=>{
         toolMessage([tables,'createFrame'],PLUGINAPP);
       },100);
@@ -676,7 +737,7 @@ async function addImageTags(files,isCreate){
   let sizes = files.map(item => item.size);
   let sizeAll = sizes.reduce((a,b) => a + b, 0);
   sizeAll = sizeAll*1 == NaN ? files.length : sizeAll; //大图至少算1M大小
-  tipsAll(['读取中，请耐心等待','Reading, please wait a moment'],sizeAll/1024/1024 * 100); //加载1M需要100毫秒
+  tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],sizeAll/1024/1024 * 100); //加载1M需要100毫秒
   for(let i = 0; i < files.length; i++){
     let file = files[i];
     let name = file.name.split('.').filter(item => !imageType.includes(item.toLowerCase())).join('_');
@@ -813,7 +874,7 @@ function addTag(type,info){
       });
     break
   };
-  //所有tag都支持二次确认，以得到最终要生成的内容
+  //所有tag都支持二次确认, 以得到最终要生成的内容
   function addTagMain(tag,index){
     tag.setAttribute('data-create-tag','');
     tag.setAttribute('data-create-final','true');
@@ -847,7 +908,7 @@ function addTag(type,info){
   //重置文字样式
   loadFont(createTagsBox.parentNode);
 };
-//制表文案转数组，兼容反转行列
+//制表文案转数组, 兼容反转行列
 function tableTextToArray(tableText,isColumn){
   let lines = tableText.split('\n');
   lines.forEach((item,index) => {
@@ -919,7 +980,7 @@ convertTags.addEventListener('click',()=>{
 
   }
   else{
-    tipsAll(['数据格式错误，请检查~','Data format error, please check~'],3000)
+    tipsAll(['数据格式错误, 请检查~','Data format error, please check~'],3000)
   };
 });
 //从所选图层获取数据
@@ -962,7 +1023,7 @@ function reTableTitle(text){
   let regex = /^[a-z]+$/;
   let texts = text.split(',');
   if(texts.some(item => !tableTitleMust.includes(item))){
-    tipsAll(['请用指定单词，并用逗号隔开','Must use example words and separated by commas'],3000);
+    tipsAll(['请用指定单词, 并用逗号隔开','Must use example words and separated by commas'],3000);
     texts = texts.filter(item => tableTitleMust.includes(item));
     if(texts.length == 0){
       return 'name,w,h'
@@ -1007,6 +1068,23 @@ function reTableTitle(text){
     }
   }; 
 };
+//设置表格初始样式
+chkTablestyle.addEventListener('change',()=>{
+  chkTablestyle.checked = true;
+  getElementMix('chk-selectcomp').checked = false;
+  getElementMix('data-selectcomp-box').style.display = 'none';
+  getElementMix('data-tablestyle-box').style.display = 'flex';
+});
+chkSelectcomp.addEventListener('change',()=>{
+  chkSelectcomp.checked = true;
+  getElementMix('chk-tablestyle').checked = false;
+  getElementMix('data-tablestyle-box').style.display = 'none';
+  getElementMix('data-selectcomp-box').style.display = 'flex';
+  toolMessage(['','selectComp'],PLUGINAPP);
+});
+function reSelectComp(info){
+ console.log(info)
+};
 //上传|拖拽|输入 的规则说明
 btnHelp.forEach(item => {
   item.addEventListener('click',()=>{
@@ -1018,12 +1096,12 @@ btnHelp.forEach(item => {
       helpData[key].forEach(item =>{
         let line = document.createElement(item[0]);
         let span =  document.createElement('span');
-        span.innerHTML = item[1];
-        span.setAttribute('data-en-text',item[2]);
+        span.innerHTML = item[1].replace(/\/\+\+/g,`<span data-highlight>`).replace(/\+\+\//g,'</span>');
+        span.setAttribute('data-en-text',item[2].replace(/\/\+\+/g,`<span data-highlight>`).replace(/\+\+\//g,'</span>'));
         line.appendChild(span)
         if(item[0] == 'li'){
-          line.setAttribute('data-li-style','2')
-        }
+          line.setAttribute('data-li-style','2');
+        };
         node.appendChild(line);
       });
       dailogBox.appendChild(node);
@@ -1094,7 +1172,7 @@ function reSkillNum(){
   models.forEach(model => {
     let skills = model.querySelectorAll('[data-skill-sec]');
     model.setAttribute('data-skillnum',skills.length);//剩一个时不能继续收藏
-    model.setAttribute('data-skillnum-odd',skills.length%2);//单数显示占位，排版好看些
+    model.setAttribute('data-skillnum-odd',skills.length%2);//单数显示占位, 排版好看些
   });
 };
 //重置全部
@@ -1136,7 +1214,7 @@ skillBtnMain.forEach(btn => {
         let mix = skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
         let s = pixelScale.value;
         let cuts = [];
-        tipsAll(['读取中，请耐心等待','Reading, please wait a moment'],SelectNodeInfo.length * 800);
+        tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],SelectNodeInfo.length * 800);
         setTimeout(()=>{
           SelectNodeInfo.forEach((item) => {
           let w = item[1];
@@ -1156,7 +1234,7 @@ skillBtnMain.forEach(btn => {
 
 
 /**
- * 模拟点击tab切换页面，测试时更方便，能直接显示目标页面
+ * 模拟点击tab切换页面, 测试时更方便, 能直接显示目标页面
  * @param {string} name - 应该传入tab的英文名
  */
 function viewPage(name){
@@ -1169,7 +1247,7 @@ function viewPage(name){
 
 /* ---钩子--- */
 
-/*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
+/*监听组件的自定义属性值, 变化时触发函数, 用于已经绑定事件用于自身的组件, 如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
 let observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if(mutation.type === 'attributes'){
@@ -1216,7 +1294,7 @@ userEvent_radio.forEach(item => {
 });
 
 /**
- * @param {Element} node -带有data-tab-pick值的元素，用于记录用户关闭前所选的tab
+ * @param {Element} node -带有data-tab-pick值的元素, 用于记录用户关闭前所选的tab
  */
 function getUserTab(node){
   let tabPick = node.getAttribute('data-tab-pick').split('tab_')[1]

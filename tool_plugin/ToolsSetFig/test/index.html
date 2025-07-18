@@ -207,11 +207,7 @@
                   </div>
                   <div id="upload-set-2" data-selects-must data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   style=" --tips-text:'从所选对象获取数据';  --tips-text-en:'Retrieve data from the selected node';">
-                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill="var(--mainColor)" d="M18.8157 14.2207C19.7226 14.5107 19.7487 15.7845 18.8547 16.1123L10.4709 19.1855C10.2512 19.266 10.0096 19.2674 9.78931 19.1885L1.21313 16.1152C0.310723 15.7914 0.337167 14.505 1.2522 14.2188L2.41919 13.8535L10.1301 16.6172L17.6672 13.8535L18.8157 14.2207ZM8.89771 7.89746C9.81186 8.73115 10.3983 9.70031 10.8049 10.3096L12.2288 12.4434L12.6243 9.90918C12.708 9.3731 12.7298 8.84584 12.7034 8.33301L18.8167 10.2881C19.7234 10.5782 19.7496 11.8519 18.8557 12.1797L10.4719 15.2529C10.2521 15.3335 10.0107 15.3348 9.79028 15.2559L1.21411 12.1816C0.311182 11.858 0.337567 10.5722 1.25317 10.2861L8.89771 7.89746Z"/>
-                      <path fill="var(--mainColor)" d="M2.90601 2.11987L9.23639 0.345091L5.85843 8.12319L2.90601 2.11987Z"/>
-                      <path fill="var(--mainColor)" d="M11.6365 9.75528C12.233 5.93585 9.27837 2.47694 7.9768 2.36549L6.13448 5.42255C9.41622 6.02688 10.952 8.72977 11.6365 9.75528Z"/>
-                    </svg>                    
+                    <btn-getbyselect></btn-getbyselect>                   
                   </div>
                   <a href="https://www.ynyuset.cn/tool_web/ListEase/" target="_blank" id="upload-set-3" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="center"
                   style=" --tips-text:'前往制作更复杂的模板数据';  --tips-text-en:'To create more complex template data';">
@@ -295,7 +291,7 @@
                 &nbsp;&nbsp;
                 <span data-en-text="to create finally" data-any="vw240" style="opacity: 0.6;">以确认最终创建内容</span>
             </div>
-            <div class="wh100 pos-r" data-resize>
+            <div class="wh100 pos-r" data-resize style="max-width: 560px;">
               <div data-create-tags-box class="wh100 upload-set pos-r ovy noscrollbar">
                 <div data-create-tags class="w100 df-lc">
                   <!--动态填充-->
@@ -327,7 +323,7 @@
         
       </div>
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc" style="padding: 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc" style="padding: 10px; box-sizing: border-box; max-width: 560px;">
           <!--步骤1-->
           <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
@@ -336,88 +332,195 @@
             <span data-any="vw300" data-en-text="and make it more diverse" style="opacity: 0.6;">并进一步定制化设计</span>
             <div data-any="vw300" data-help="sheet" class="fl0 df-cc">?</div>
           </div>
+          <div data-tableset-thtd class="df-lc w100">
+            <div class="df-lc" style="max-width: 100%; margin:0 auto; gap: 4px;">
+              <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px);">
+                <input id="chk-tablestyle" type="checkbox" >
+                <label for="chk-tablestyle" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;  width: 22px; height: 22px;
+                --tips-text:'按预设样式生成组件';  --tips-text-en:'Create from the preset';">
+                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="var(--mainColor)" d="M7.96875 7.57129H3V12.0713H6.61914L6.50391 13.0713H3V16.5713C3 17.1236 3.44772 17.5713 4 17.5713H9.5V15.4512L10.5 14.5693V17.5713H16C16.5523 17.5713 17 17.1236 17 16.5713V13.0713H12.1982L12.5205 12.7871L13.332 12.0713H17V7.57129H15.2656L17.5137 3.26758C17.8157 3.61783 17.9999 4.07254 18 4.57129V16.5713L17.9893 16.7754C17.887 17.7841 17.0357 18.5713 16 18.5713H4C2.96435 18.5713 2.113 17.7841 2.01074 16.7754L2 16.5713V4.57129C2.00016 3.46686 2.89553 2.57129 4 2.57129H10.583L7.96875 7.57129Z"/>
+                    <path fill="var(--mainColor)" d="M11.8598 12.0372L8.12642 15.3311C7.78273 15.6343 7.24651 15.3537 7.29927 14.8985L7.87154 9.95317L11.8598 12.0372ZM12.7329 0.616255C12.9887 0.127036 13.5931 -0.0621097 14.0825 0.193403L16.269 1.33598C16.7583 1.59183 16.9475 2.19621 16.6919 2.68559L12.4702 10.7618L8.51216 8.69243L12.7329 0.616255Z"/>
+                  </svg>                  
+                </label>
+                <div data-tablestyle-box class="df-lc" style="gap: 4px; overflow: auto;">
+                  ▶
+                  <div class="noscrollbar" data-scroll>
+                    <div data-tablestyle-set class="df-lc" data-radio-value="1">
+                      <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="true">
+                        <div data-tablestyle-chk>
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--mainColor)" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 14V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V14H3ZM3 10H17V7H3V10Z"/>
+                          </svg>    
+                        </div>
+                        <div data-any="vw360" data-tablestyle-name data-en-text="Space filling">间格区分色</div>         
+                      </div>
+                      <div class="fl0 df-lc" data-radio data-radio-data="2" data-radio-main="false">
+                        <div data-tablestyle-chk>
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--mainColor)" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V7H3V16Z"/>
+                          </svg>
+                        </div>
+                        <div data-any="vw360" data-tablestyle-name data-en-text="No strokes">无描边</div>         
+                      </div>
+                      <div class="fl0 df-lc" data-radio data-radio-data="3" data-radio-main="false">
+                        <div data-tablestyle-chk>
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 12.5V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V12.5H3ZM3 11.5H17V7H3V11.5Z"/>
+                          </svg> 
+                        </div>
+                        <div data-any="vw360" data-tablestyle-name data-en-text="Row strokes">仅横线</div>         
+                      </div>
+                      <div class="fl0 df-lc" data-radio data-radio-data="4" data-radio-main="false">
+                        <div data-tablestyle-chk>
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V12.5H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V12.5H3V16ZM10.5 11.5H17V7H10.5V11.5ZM3 11.5H9.5V7H3V11.5Z"/>
+                          </svg>   
+                        </div>
+                        <div data-any="vw360" data-tablestyle-name data-en-text="All strokes">全描边</div>         
+                      </div>
+                      <div class="fl0 df-lc" data-radio data-radio-data="5" data-radio-main="false">
+                        <div data-tablestyle-chk>
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 13V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V13H3ZM3 12H17V8H3V12ZM4 3C3.44772 3 3 3.44772 3 4V7H17V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                          </svg>   
+                        </div>
+                        <div data-any="vw360" data-tablestyle-name data-en-text="Row strokes 2">仅横线 2</div>         
+                      </div>
+                      <div class="fl0 df-lc" data-radio data-radio-data="6" data-radio-main="false">
+                        <div data-tablestyle-chk>
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"/>
+                          </svg>  
+                        </div>
+                        <div data-any="vw360" data-tablestyle-name data-en-text="All strokes 2">全描边 2</div>         
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px);">
+                <input id="chk-selectcomp" type="checkbox" checked >
+                <label for="chk-selectcomp" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="right" style="--tips-w: 8ch;  width: 22px; height: 22px;
+                --tips-text:'以所选对象为组件';  --tips-text-en:'Create from the selected node';">
+                  <btn-getbyselect></btn-getbyselect>                  
+                </label>
+                <div data-selectcomp-box="false" class="df-lc" style="gap: 4px; display: none; overflow: auto;">
+                  ▶
+                  <div class="noscrollbar df-lc" data-scroll>
+                    <div data-selectcomp-no style="padding: 0 10px;" data-en-text="Has not valid components">未选中有效的组件</div>
+                    <div data-selectcomp-mix class="df-lc" style="gap:4px">
+                      <span data-any="vw240">
+                        <span data-en-text="Header:">表头:</span>
+                      </span>
+                      <input id="chk-selectcomp-1" type="checkbox">
+                      <label class="check" for="chk-selectcomp-1" style="width: 16px; height: 16px;">
+                        <btn-check></btn-check>
+                      </label>
+                      <span data-selectcomp-1>none</span>
+                      <div></div>
+                      <div></div>
+                      <span data-any="vw240">
+                        <span data-en-text="Data:">数据:</span>
+                      </span>
+                      <input id="chk-selectcomp-2" type="checkbox">
+                      <label class="check" for="chk-selectcomp-2" style="width: 16px; height: 16px;">
+                        <btn-check></btn-check>
+                      </label>
+                      <span data-selectcomp-2>none</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> 
+          <div class="w100 df-cc" style="margin: 4px 0;">
+            <div data-create-table data-btn="main2" class="w100 df-cc" data-en-text="Create Table">创建表格</div>  
+          </div>
         </div>
       </div>
       <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
         <div class="wh100 df-ffc" style="align-items: center; padding: 10px; box-sizing: border-box;">
           <!--功能tags-->
-          <div data-skilltype-box class="w100 df-lc ovx noscrollbar fl0" data-radio-value="1" data-scroll>
-            <div data-radio data-radio-data="1" data-radio-main="true" class="df-ffc df-cc" style="gap: 4px;">
-              <div data-skilltype-icon>
-                <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="var(--mainColor)" d="M9.10133 5.24013C9.4668 4.4921 10.5329 4.4921 10.8983 5.24013L11.9152 7.32142L14.2089 7.64537C15.0332 7.76179 15.3626 8.77567 14.7642 9.3544L13.099 10.9647L13.4996 13.2462C13.6437 14.0661 12.7812 14.6928 12.0458 14.3024L9.99983 13.2163L7.95381 14.3024C7.21847 14.6928 6.35601 14.0661 6.50002 13.2462L6.9007 10.9647L5.23551 9.3544C4.63703 8.77567 4.96646 7.76179 5.79081 7.64537L8.08446 7.32142L9.10133 5.24013Z"/>
-                  <rect stroke="var(--mainColor)" x="2.5" y="2.5" width="15" height="15" rx="2"/>
-                </svg>           
+          <div class="w100 fl0 noscrollbar df" data-scroll>
+            <div data-skilltype-box class="df-lc fl0" data-radio-value="1" >
+              <div data-radio data-radio-data="1" data-radio-main="true" class="df-ffc df-cc" style="gap: 4px;">
+                <div data-skilltype-icon>
+                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="var(--mainColor)" d="M9.10133 5.24013C9.4668 4.4921 10.5329 4.4921 10.8983 5.24013L11.9152 7.32142L14.2089 7.64537C15.0332 7.76179 15.3626 8.77567 14.7642 9.3544L13.099 10.9647L13.4996 13.2462C13.6437 14.0661 12.7812 14.6928 12.0458 14.3024L9.99983 13.2163L7.95381 14.3024C7.21847 14.6928 6.35601 14.0661 6.50002 13.2462L6.9007 10.9647L5.23551 9.3544C4.63703 8.77567 4.96646 7.76179 5.79081 7.64537L8.08446 7.32142L9.10133 5.24013Z"/>
+                    <rect stroke="var(--mainColor)" x="2.5" y="2.5" width="15" height="15" rx="2"/>
+                  </svg>           
+                </div>
+                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Useful & Starts" >
+                  常用功能
+                </div>
               </div>
-              <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Useful & Starts" >
-                常用功能
+              <div data-radio data-radio-data="2" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+                <div data-skilltype-icon>
+                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="var(--mainColor)" d="M7 7H2V2H7V7ZM3 3V6H6V3H3Z"/>
+                    <rect fill="var(--mainColor)" x="6" y="4" width="6" height="1" rx="0.5"/>
+                    <rect fill="var(--mainColor)" x="4" y="6" width="1" height="6" rx="0.5"/>
+                    <path fill="var(--mainColor)" d="M3 15C3 14.4477 3.44772 14 4 14H6C6.55228 14 7 14.4477 7 15V17C7 17.5523 6.55228 18 6 18H4C3.44772 18 3 17.5523 3 17V15Z"/>
+                    <path fill="var(--mainColor)" d="M8.5 15C8.5 14.4477 8.94772 14 9.5 14H11.5C12.0523 14 12.5 14.4477 12.5 15V17C12.5 17.5523 12.0523 18 11.5 18H9.5C8.94772 18 8.5 17.5523 8.5 17V15Z"/>
+                    <path fill="var(--mainColor)" d="M8.5 9.5C8.5 8.94772 8.94772 8.5 9.5 8.5H11.5C12.0523 8.5 12.5 8.94772 12.5 9.5V11.5C12.5 12.0523 12.0523 12.5 11.5 12.5H9.5C8.94772 12.5 8.5 12.0523 8.5 11.5V9.5Z"/>
+                    <rect fill="var(--mainColor)" x="14" y="14" width="4" height="4" rx="1"/>
+                    <path fill="var(--mainColor)" d="M14 9.5C14 8.94772 14.4477 8.5 15 8.5H17C17.5523 8.5 18 8.94772 18 9.5V11.5C18 12.0523 17.5523 12.5 17 12.5H15C14.4477 12.5 14 12.0523 14 11.5V9.5Z"/>
+                    <path fill="var(--mainColor)" d="M14 4C14 3.44772 14.4477 3 15 3H17C17.5523 3 18 3.44772 18 4V6C18 6.55228 17.5523 7 17 7H15C14.4477 7 14 6.55228 14 6V4Z"/>
+                  </svg>              
+                </div>
+                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Pixel & Transform" >
+                  像素&变换
+                </div>
               </div>
-            </div>
-            <div data-radio data-radio-data="2" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
-              <div data-skilltype-icon>
-                <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="var(--mainColor)" d="M7 7H2V2H7V7ZM3 3V6H6V3H3Z"/>
-                  <rect fill="var(--mainColor)" x="6" y="4" width="6" height="1" rx="0.5"/>
-                  <rect fill="var(--mainColor)" x="4" y="6" width="1" height="6" rx="0.5"/>
-                  <path fill="var(--mainColor)" d="M3 15C3 14.4477 3.44772 14 4 14H6C6.55228 14 7 14.4477 7 15V17C7 17.5523 6.55228 18 6 18H4C3.44772 18 3 17.5523 3 17V15Z"/>
-                  <path fill="var(--mainColor)" d="M8.5 15C8.5 14.4477 8.94772 14 9.5 14H11.5C12.0523 14 12.5 14.4477 12.5 15V17C12.5 17.5523 12.0523 18 11.5 18H9.5C8.94772 18 8.5 17.5523 8.5 17V15Z"/>
-                  <path fill="var(--mainColor)" d="M8.5 9.5C8.5 8.94772 8.94772 8.5 9.5 8.5H11.5C12.0523 8.5 12.5 8.94772 12.5 9.5V11.5C12.5 12.0523 12.0523 12.5 11.5 12.5H9.5C8.94772 12.5 8.5 12.0523 8.5 11.5V9.5Z"/>
-                  <rect fill="var(--mainColor)" x="14" y="14" width="4" height="4" rx="1"/>
-                  <path fill="var(--mainColor)" d="M14 9.5C14 8.94772 14.4477 8.5 15 8.5H17C17.5523 8.5 18 8.94772 18 9.5V11.5C18 12.0523 17.5523 12.5 17 12.5H15C14.4477 12.5 14 12.0523 14 11.5V9.5Z"/>
-                  <path fill="var(--mainColor)" d="M14 4C14 3.44772 14.4477 3 15 3H17C17.5523 3 18 3.44772 18 4V6C18 6.55228 17.5523 7 17 7H15C14.4477 7 14 6.55228 14 6V4Z"/>
-                </svg>              
+              <div data-radio data-radio-data="3" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+                <div data-skilltype-icon>
+                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="var(--mainColor)" d="M9 2L8.99992 4.81319H8.02803L7.94126 3.8956H6.19353L6.19361 8.41026L7.13657 8.5641V10H3.66841V8.5641L4.73222 8.41026L4.73214 3.8956H3.05867L2.97767 4.81319H2L2.00008 2H9Z"/>
+                    <path fill="var(--mainColor)" d="M2 13C2 11.8954 2.89543 11 4 11H8C9.10457 11 10 11.8954 10 13V17C10 18.1046 9.10457 19 8 19H4C2.89543 19 2 18.1046 2 17V13Z"/>
+                    <path fill="var(--mainColor)" d="M11.7126 4.04181C11.8915 3.86285 12.1817 3.86285 12.3607 4.04181L13.7493 5.43044C13.9282 5.6094 13.9282 5.89954 13.7493 6.0785L12.3607 7.46713C12.1817 7.64609 11.8915 7.64609 11.7126 7.46713L10.324 6.0785C10.145 5.89954 10.145 5.6094 10.324 5.43044L11.7126 4.04181Z"/>
+                    <path fill="var(--mainColor)" d="M14.2585 1.49591C14.4374 1.31695 14.7276 1.31695 14.9066 1.49591L16.2952 2.88454C16.4741 3.0635 16.4741 3.35365 16.2952 3.5326L14.9066 4.92124C14.7276 5.10019 14.4374 5.10019 14.2585 4.92123L12.8699 3.5326C12.6909 3.35365 12.6909 3.0635 12.8699 2.88454L14.2585 1.49591Z"/>
+                    <rect fill="var(--mainColor)" x="14.5825" y="6.26343" width="2.88032" height="2.88032" rx="0.458252" transform="rotate(45 14.5825 6.26343)"/>
+                    <path fill="var(--mainColor)" d="M16.8044 4.04181C16.9833 3.86285 17.2735 3.86285 17.4525 4.04181L18.8411 5.43044C19.02 5.6094 19.02 5.89954 18.8411 6.0785L17.4525 7.46713C17.2735 7.64609 16.9833 7.64609 16.8044 7.46713L15.4158 6.0785C15.2368 5.89954 15.2368 5.6094 15.4158 5.43044L16.8044 4.04181Z"/>
+                    <path stroke="var(--mainColor)"  stroke-linecap="round" stroke-dasharray="2 2" d="M11.5 13.5C11.5 12.3954 12.3954 11.5 13.5 11.5H16.5C17.6046 11.5 18.5 12.3954 18.5 13.5V16.5C18.5 17.6046 17.6046 18.5 16.5 18.5H13.5C12.3954 18.5 11.5 17.6046 11.5 16.5V13.5Z"/>
+                  </svg>                                   
+                </div>
+                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Text & Layer" >
+                  文本&图层
+                </div>
               </div>
-              <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Pixel & Transform" >
-                像素&变换
+              <div data-radio data-radio-data="4" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+                <div data-skilltype-icon>
+                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="var(--mainColor)" d="M12.5 7H7.5V2H12.5V7ZM8.5 3V6H11.5V3H8.5Z"/>
+                    <rect fill="var(--mainColor)" x="1" y="3" width="3" height="3"/>
+                    <rect fill="var(--mainColor)" x="16" y="3" width="3" height="3"/>
+                    <rect fill="var(--mainColor)" x="12" y="4" width="4" height="1"/>
+                    <rect fill="var(--mainColor)" x="4" y="4" width="4" height="1"/>
+                    <path stroke="var(--mainColor)" stroke-linecap="round" d="M17 10C17 7.59975 15.0191 5.57184 12 5M3 10C3 7.58397 4.95063 5.55643 8 5"/>
+                    <circle stroke="var(--mainColor)" cx="8.5" cy="10.5" r="1.5"/>
+                    <path fill="var(--mainColor)" d="M4.63324 12.8363L4.94986 12.4494L4.94986 12.4494L4.63324 12.8363ZM11.1597 13.6771L11.4886 14.0537L11.5013 14.0426L11.5132 14.0307L11.1597 13.6771ZM12.5 13.6103L12.8271 13.2319L12.8166 13.2233L12.5 13.6103ZM17.5 13.5731C17.5 13.2969 17.2761 13.0731 17 13.0731C16.7239 13.0731 16.5 13.2969 16.5 13.5731H17.5ZM16.5 12C16.5 12.2761 16.7239 12.5 17 12.5C17.2761 12.5 17.5 12.2761 17.5 12H16.5ZM17.5 11.5C17.5 11.2239 17.2761 11 17 11C16.7239 11 16.5 11.2239 16.5 11.5H17.5ZM7.19138 14.9294L6.87476 15.3163L7.19138 14.9294ZM4.63324 12.8363L4.31662 13.2233L6.87476 15.3163L7.19138 14.9294L7.508 14.5424L4.94986 12.4494L4.63324 12.8363ZM9.77349 14.8878L10.1024 15.2644L11.4886 14.0537L11.1597 13.6771L10.8307 13.3006L9.44458 14.5112L9.77349 14.8878ZM12.5 13.6103L12.173 13.9886L16.673 17.8783L17 17.5001L17.327 17.1218L12.827 13.232L12.5 13.6103ZM11.1597 13.6771L11.5132 14.0307C11.6948 13.8491 11.9846 13.8346 12.1834 13.9973L12.5 13.6103L12.8166 13.2233C12.2202 12.7353 11.351 12.7787 10.8061 13.3236L11.1597 13.6771ZM3 13.6103H3.5C3.5 13.1885 3.99015 12.9562 4.31662 13.2233L4.63324 12.8363L4.94986 12.4494C3.97046 11.648 2.5 12.3449 2.5 13.6103H3ZM4 18.0001V18.5001H16V18.0001V17.5001H4V18.0001ZM17 17.0001H17.5V13.5731H17H16.5V17.0001H17ZM16 18.0001V18.5001C16.8284 18.5001 17.5 17.8285 17.5 17.0001H17H16.5C16.5 17.2762 16.2761 17.5001 16 17.5001V18.0001ZM3 17.0001H2.5C2.5 17.8285 3.17157 18.5001 4 18.5001V18.0001V17.5001C3.72386 17.5001 3.5 17.2762 3.5 17.0001H3ZM3 17.0001H3.5V13.6103H3H2.5V17.0001H3ZM17 12H17.5V11.5H17H16.5V12H17ZM7.19138 14.9294L6.87476 15.3163C7.81915 16.089 9.18336 16.0671 10.1024 15.2644L9.77349 14.8878L9.44458 14.5112C8.89316 14.9928 8.07463 15.006 7.508 14.5424L7.19138 14.9294Z"/>
+                  </svg>                  
+                </div>
+                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Vector & Generate" >
+                  矢量&生成
+                </div>
               </div>
-            </div>
-            <div data-radio data-radio-data="3" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
-              <div data-skilltype-icon>
-                <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="var(--mainColor)" d="M9 2L8.99992 4.81319H8.02803L7.94126 3.8956H6.19353L6.19361 8.41026L7.13657 8.5641V10H3.66841V8.5641L4.73222 8.41026L4.73214 3.8956H3.05867L2.97767 4.81319H2L2.00008 2H9Z"/>
-                  <path fill="var(--mainColor)" d="M2 13C2 11.8954 2.89543 11 4 11H8C9.10457 11 10 11.8954 10 13V17C10 18.1046 9.10457 19 8 19H4C2.89543 19 2 18.1046 2 17V13Z"/>
-                  <path fill="var(--mainColor)" d="M11.7126 4.04181C11.8915 3.86285 12.1817 3.86285 12.3607 4.04181L13.7493 5.43044C13.9282 5.6094 13.9282 5.89954 13.7493 6.0785L12.3607 7.46713C12.1817 7.64609 11.8915 7.64609 11.7126 7.46713L10.324 6.0785C10.145 5.89954 10.145 5.6094 10.324 5.43044L11.7126 4.04181Z"/>
-                  <path fill="var(--mainColor)" d="M14.2585 1.49591C14.4374 1.31695 14.7276 1.31695 14.9066 1.49591L16.2952 2.88454C16.4741 3.0635 16.4741 3.35365 16.2952 3.5326L14.9066 4.92124C14.7276 5.10019 14.4374 5.10019 14.2585 4.92123L12.8699 3.5326C12.6909 3.35365 12.6909 3.0635 12.8699 2.88454L14.2585 1.49591Z"/>
-                  <rect fill="var(--mainColor)" x="14.5825" y="6.26343" width="2.88032" height="2.88032" rx="0.458252" transform="rotate(45 14.5825 6.26343)"/>
-                  <path fill="var(--mainColor)" d="M16.8044 4.04181C16.9833 3.86285 17.2735 3.86285 17.4525 4.04181L18.8411 5.43044C19.02 5.6094 19.02 5.89954 18.8411 6.0785L17.4525 7.46713C17.2735 7.64609 16.9833 7.64609 16.8044 7.46713L15.4158 6.0785C15.2368 5.89954 15.2368 5.6094 15.4158 5.43044L16.8044 4.04181Z"/>
-                  <path stroke="var(--mainColor)"  stroke-linecap="round" stroke-dasharray="2 2" d="M11.5 13.5C11.5 12.3954 12.3954 11.5 13.5 11.5H16.5C17.6046 11.5 18.5 12.3954 18.5 13.5V16.5C18.5 17.6046 17.6046 18.5 16.5 18.5H13.5C12.3954 18.5 11.5 17.6046 11.5 16.5V13.5Z"/>
-                </svg>                                   
-              </div>
-              <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Text & Layer" >
-                文本&图层
-              </div>
-            </div>
-            <div data-radio data-radio-data="4" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
-              <div data-skilltype-icon>
-                <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="var(--mainColor)" d="M12.5 7H7.5V2H12.5V7ZM8.5 3V6H11.5V3H8.5Z"/>
-                  <rect fill="var(--mainColor)" x="1" y="3" width="3" height="3"/>
-                  <rect fill="var(--mainColor)" x="16" y="3" width="3" height="3"/>
-                  <rect fill="var(--mainColor)" x="12" y="4" width="4" height="1"/>
-                  <rect fill="var(--mainColor)" x="4" y="4" width="4" height="1"/>
-                  <path stroke="var(--mainColor)" stroke-linecap="round" d="M17 10C17 7.59975 15.0191 5.57184 12 5M3 10C3 7.58397 4.95063 5.55643 8 5"/>
-                  <circle stroke="var(--mainColor)" cx="8.5" cy="10.5" r="1.5"/>
-                  <path fill="var(--mainColor)" d="M4.63324 12.8363L4.94986 12.4494L4.94986 12.4494L4.63324 12.8363ZM11.1597 13.6771L11.4886 14.0537L11.5013 14.0426L11.5132 14.0307L11.1597 13.6771ZM12.5 13.6103L12.8271 13.2319L12.8166 13.2233L12.5 13.6103ZM17.5 13.5731C17.5 13.2969 17.2761 13.0731 17 13.0731C16.7239 13.0731 16.5 13.2969 16.5 13.5731H17.5ZM16.5 12C16.5 12.2761 16.7239 12.5 17 12.5C17.2761 12.5 17.5 12.2761 17.5 12H16.5ZM17.5 11.5C17.5 11.2239 17.2761 11 17 11C16.7239 11 16.5 11.2239 16.5 11.5H17.5ZM7.19138 14.9294L6.87476 15.3163L7.19138 14.9294ZM4.63324 12.8363L4.31662 13.2233L6.87476 15.3163L7.19138 14.9294L7.508 14.5424L4.94986 12.4494L4.63324 12.8363ZM9.77349 14.8878L10.1024 15.2644L11.4886 14.0537L11.1597 13.6771L10.8307 13.3006L9.44458 14.5112L9.77349 14.8878ZM12.5 13.6103L12.173 13.9886L16.673 17.8783L17 17.5001L17.327 17.1218L12.827 13.232L12.5 13.6103ZM11.1597 13.6771L11.5132 14.0307C11.6948 13.8491 11.9846 13.8346 12.1834 13.9973L12.5 13.6103L12.8166 13.2233C12.2202 12.7353 11.351 12.7787 10.8061 13.3236L11.1597 13.6771ZM3 13.6103H3.5C3.5 13.1885 3.99015 12.9562 4.31662 13.2233L4.63324 12.8363L4.94986 12.4494C3.97046 11.648 2.5 12.3449 2.5 13.6103H3ZM4 18.0001V18.5001H16V18.0001V17.5001H4V18.0001ZM17 17.0001H17.5V13.5731H17H16.5V17.0001H17ZM16 18.0001V18.5001C16.8284 18.5001 17.5 17.8285 17.5 17.0001H17H16.5C16.5 17.2762 16.2761 17.5001 16 17.5001V18.0001ZM3 17.0001H2.5C2.5 17.8285 3.17157 18.5001 4 18.5001V18.0001V17.5001C3.72386 17.5001 3.5 17.2762 3.5 17.0001H3ZM3 17.0001H3.5V13.6103H3H2.5V17.0001H3ZM17 12H17.5V11.5H17H16.5V12H17ZM7.19138 14.9294L6.87476 15.3163C7.81915 16.089 9.18336 16.0671 10.1024 15.2644L9.77349 14.8878L9.44458 14.5112C8.89316 14.9928 8.07463 15.006 7.508 14.5424L7.19138 14.9294Z"/>
-                </svg>                  
-              </div>
-              <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Vector & Generate" >
-                矢量&生成
-              </div>
-            </div>
-            <div data-radio data-radio-data="5" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
-              <div data-skilltype-icon>
-                <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="var(--mainColor)" d="M7.53784 8.53784C7.53784 7.98556 7.98556 7.53784 8.53784 7.53784H11.4618C12.0141 7.53784 12.4618 7.98556 12.4618 8.53784V11.4618C12.4618 12.0141 12.0141 12.4618 11.4618 12.4618H8.53784C7.98556 12.4618 7.53784 12.0141 7.53784 11.4618V8.53784Z"/>
-                  <path stroke="var(--mainColor)" d="M17.5 8.125V7C17.5 4.51472 15.4853 2.5 13 2.5H11.875M17.5 11.875V13C17.5 15.4853 15.4853 17.5 13 17.5H11.875M2.5 11.875V13C2.5 15.4853 4.51472 17.5 7 17.5H8.125M2.5 8.125V7C2.5 4.51472 4.51472 2.5 7 2.5H8.125"/>
-                  <path stroke="var(--mainColor)" d="M5.65112 7.65112C5.65112 6.54655 6.54655 5.65112 7.65112 5.65112H12.3489C13.4535 5.65112 14.3489 6.54655 14.3489 7.65112V12.3489C14.3489 13.4535 13.4535 14.3489 12.3489 14.3489H7.65112C6.54655 14.3489 5.65112 13.4535 5.65112 12.3489V7.65112Z" stroke-dasharray="2.14 2.14"/>
-                  <circle stroke="var(--mainColor)" cx="10" cy="2.5" r="1.5"/>
-                  <circle stroke="var(--mainColor)" cx="10" cy="17.5" r="1.5"/>
-                  <circle stroke="var(--mainColor)" cx="2.5" cy="10" r="1.5"/>
-                  <circle stroke="var(--mainColor)" cx="17.5" cy="10" r="1.5"/>
-                </svg>                  
-              </div>
-              <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Style & Prototype" >
-                样式&原型
+              <div data-radio data-radio-data="5" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+                <div data-skilltype-icon>
+                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="var(--mainColor)" d="M7.53784 8.53784C7.53784 7.98556 7.98556 7.53784 8.53784 7.53784H11.4618C12.0141 7.53784 12.4618 7.98556 12.4618 8.53784V11.4618C12.4618 12.0141 12.0141 12.4618 11.4618 12.4618H8.53784C7.98556 12.4618 7.53784 12.0141 7.53784 11.4618V8.53784Z"/>
+                    <path stroke="var(--mainColor)" d="M17.5 8.125V7C17.5 4.51472 15.4853 2.5 13 2.5H11.875M17.5 11.875V13C17.5 15.4853 15.4853 17.5 13 17.5H11.875M2.5 11.875V13C2.5 15.4853 4.51472 17.5 7 17.5H8.125M2.5 8.125V7C2.5 4.51472 4.51472 2.5 7 2.5H8.125"/>
+                    <path stroke="var(--mainColor)" d="M5.65112 7.65112C5.65112 6.54655 6.54655 5.65112 7.65112 5.65112H12.3489C13.4535 5.65112 14.3489 6.54655 14.3489 7.65112V12.3489C14.3489 13.4535 13.4535 14.3489 12.3489 14.3489H7.65112C6.54655 14.3489 5.65112 13.4535 5.65112 12.3489V7.65112Z" stroke-dasharray="2.14 2.14"/>
+                    <circle stroke="var(--mainColor)" cx="10" cy="2.5" r="1.5"/>
+                    <circle stroke="var(--mainColor)" cx="10" cy="17.5" r="1.5"/>
+                    <circle stroke="var(--mainColor)" cx="2.5" cy="10" r="1.5"/>
+                    <circle stroke="var(--mainColor)" cx="17.5" cy="10" r="1.5"/>
+                  </svg>                  
+                </div>
+                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Style & Prototype" >
+                  样式&原型
+                </div>
               </div>
             </div>
           </div>
@@ -731,10 +834,7 @@
           <div class="df-lc noscrollbar" data-selects-node data-scroll style="padding: 0 10px; box-sizing: border-box;">
             <span class="df-lc" data-selects-info-box style="margin: 0 auto;">
               <div style="width: 12px; height: 12px;">
-                <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="var(--mainColor)" d="M18.4265 14.8145C19.3056 15.1165 19.3327 16.35 18.4675 16.6904L10.486 19.8271C10.2536 19.9184 9.9946 19.9195 9.76144 19.8301L1.59738 16.6934C0.722562 16.3569 0.749635 15.1094 1.63839 14.8115L3.17062 14.2988L10.1247 16.9697L16.9206 14.2988L18.4265 14.8145ZM18.4265 10.3438C19.3064 10.6455 19.3333 11.8804 18.4675 12.2207L10.486 15.3574C10.2535 15.4488 9.9947 15.45 9.76144 15.3604L1.59738 12.2236C0.722562 11.8872 0.749635 10.6397 1.63839 10.3418L6.26046 8.79395L9.99972 13L13.7761 8.75098L18.4265 10.3438Z"/>
-                  <path fill="var(--mainColor)" d="M8 0.75C9.79493 0.75 11.25 2.20507 11.25 4V5H15L10 11L5 5H8.75V4C8.75 3.58579 8.41421 3.25 8 3.25H3V0.75H8Z"/>
-                </svg>          
+                <btn-hasselect></btn-hasselect>         
               </div>
               &nbsp;
               <span data-selects-info="main"></span>
@@ -754,7 +854,7 @@
   </div>
   <!--底部-->
   <div id="bottom" class="df-sc w100 pos-a">
-    <div data-scroll class="df ovx noscrollbar" data-tab="auto" data-tab-for="page" style="padding: 6px 4px;">
+    <div data-scroll class="df noscrollbar" data-tab="auto" data-tab-for="page" style="padding: 6px 4px;">
       <!--自动填充tab-->
     </div>
     <div data-mainset-bottom class="df-lc" style="gap: 4px; margin-left: 2px;">

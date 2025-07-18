@@ -452,7 +452,12 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   background: var(--boxGry);
 }
 
-[data-btn="main"]:hover,[data-btn="skill-main"]:hover{
+[data-btn="main2"]{
+  border-radius: 20px;
+  background: var(--boxGry);
+}
+
+[data-btn="main"]:hover,[data-btn="main2"]:hover,[data-btn="skill-main"]:hover{
   background: var(--boxBod);
 }
 
@@ -540,10 +545,10 @@ input[type="checkbox"]:checked + .btn-moreset{
 [data-help]{
   width: 12px;
   height: 12px;
-  border: 1px solid var(--boxBod); 
+  border: 1px solid var(--mainColor); 
   border-radius: 50%;
   font-size: 10px;
-  color: var(--boxBod);
+  color: var(--mainColor);
   cursor: var(--pointer,pointer);
   margin-left: 4px;
 }
@@ -560,7 +565,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   width: 20px;
   height: 20px;
   position: absolute;
-  cursor: pointer;
+  cursor: var(--pointer,pointer);
   top: 4px;
   right: 4px;
 }
@@ -740,11 +745,52 @@ input[type="checkbox"]:checked + .btn-moreset{
   font-size: 10px;
 }
 
+[data-tableset-thtd] label{
+  cursor: var(--pointer,pointer);
+}
+
+[data-tablestyle-set]{
+  gap: 4px;
+}
+
+[data-tablestyle-chk]{
+  width: 20px;
+  height: 20px;
+  padding: 0.5ch;
+}
+
+[data-selectcomp-mix]{
+  font-size: 10px;
+}
+
+[data-selectcomp-box="false"] [data-selectcomp-mix]{
+  display: none;
+}
+
+[data-selectcomp-box="true"] [data-selectcomp-no]{
+  display: none;
+}
+
+[data-selectcomp-1],[data-selectcomp-2]{
+  color: var(--themeColor2)
+}
+
+input[type="checkbox"]:checked ~ [data-selectcomp-box],
+input[type="checkbox"]:checked ~ [data-tablestyle-box]{
+  width: 100vw;
+}
+
+[data-tablestyle-name]{
+  font-size: 10px;
+  margin-right: 0.5ch;
+}
+
 [data-skilltype-box]{
   max-width: 560px;
   height: 60px;
   padding: 0 10px;
   gap: 6px;
+  margin: 0 auto;
 }
 [data-language="En"] [data-skilltype-box]{
   gap: 4px;
@@ -983,7 +1029,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-clip-view]{
   width: 100%;
-  height: 250px;
+  height: 200px;
   position: relative;
   margin: 4px 0;
 }
@@ -1192,6 +1238,9 @@ input[type="checkbox"]:checked + .btn-moreset{
   [data-any="vw470"]{
     display: none;
   }
+  [data-clip-view] {
+    height: 250px;
+  }
 }
 
 @media (min-width:470px) {
@@ -1229,7 +1278,9 @@ input[type="checkbox"]:checked + .btn-moreset{
   .file-tag{
     max-width: 200px;
   }
-
+  [data-any="vw360"]{
+    display: none;
+  }
 }
 
 @media (min-width:360px) {
@@ -1264,12 +1315,17 @@ input[type="checkbox"]:checked + .btn-moreset{
   [data-transform-center-module]{
     max-width: 72px;
   }
+  [data-clip-view] {
+    height: 160px;
+  }
 }
 
 @media (min-width:300px) {
   [data-skillType-box]{
-    justify-content: center;
     height: 80px;
+  }
+  [data-radio-main="true"] [data-tablestyle-name]{
+    display: block;
   }
 }
 
