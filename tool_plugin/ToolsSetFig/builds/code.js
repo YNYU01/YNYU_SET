@@ -100,7 +100,7 @@ figma.ui.onmessage = (message) => {
     };
     //反传组件信息
     if ( type == "selectComp"){
-        isSendComp = true;
+        isSendComp = info;
         sendSendComp();
     };
     //栅格化-副本
@@ -155,10 +155,13 @@ function sendInfo(){
 function sendSendComp(){
     let a = figma.currentPage;
     let b = a.selection;
-    let info = []
+    let info = [];
+    let th,td;
     let comps = b.filter(item => item.type == 'COMPONENT' || item.type == 'INSTANCE');
-    let th = comps.findOne(item => item.name.split('@th').length > 1);
-    let td = comps.findOne(item => item.name.split('@td').length > 1);
+    if(comps.length > 0){
+        th = comps.find(item => item.name.split('@th').length > 1);
+        td = comps.find(item => item.name.split('@td').length > 1);    
+    }
     if(th){
         info.push(th.name);
     } else {

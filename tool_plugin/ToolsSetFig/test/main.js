@@ -1074,13 +1074,14 @@ chkTablestyle.addEventListener('change',()=>{
   getElementMix('chk-selectcomp').checked = false;
   getElementMix('data-selectcomp-box').style.display = 'none';
   getElementMix('data-tablestyle-box').style.display = 'flex';
+  toolMessage([false,'selectComp'],PLUGINAPP);
 });
 chkSelectcomp.addEventListener('change',()=>{
   chkSelectcomp.checked = true;
   getElementMix('chk-tablestyle').checked = false;
   getElementMix('data-tablestyle-box').style.display = 'none';
   getElementMix('data-selectcomp-box').style.display = 'flex';
-  toolMessage(['','selectComp'],PLUGINAPP);
+  toolMessage([true,'selectComp'],PLUGINAPP);
 });
 function reSelectComp(info){
  console.log(info)

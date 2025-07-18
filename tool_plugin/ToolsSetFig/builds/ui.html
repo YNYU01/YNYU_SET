@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f7b2ed94923eec6beb093869eeff95b3b4237b27/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1356,7 +1356,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f7b2ed94923eec6beb093869eeff95b3b4237b27/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -2276,12 +2276,12 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f7b2ed94923eec6beb093869eeff95b3b4237b27/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f7b2ed94923eec6beb093869eeff95b3b4237b27/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f7b2ed94923eec6beb093869eeff95b3b4237b27/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f7b2ed94923eec6beb093869eeff95b3b4237b27/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f7b2ed94923eec6beb093869eeff95b3b4237b27/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f7b2ed94923eec6beb093869eeff95b3b4237b27/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3360,13 +3360,14 @@ chkTablestyle.addEventListener('change',()=>{
   getElementMix('chk-selectcomp').checked = false;
   getElementMix('data-selectcomp-box').style.display = 'none';
   getElementMix('data-tablestyle-box').style.display = 'flex';
+  toolMessage([false,'selectComp'],PLUGINAPP);
 });
 chkSelectcomp.addEventListener('change',()=>{
   chkSelectcomp.checked = true;
   getElementMix('chk-tablestyle').checked = false;
   getElementMix('data-tablestyle-box').style.display = 'none';
   getElementMix('data-selectcomp-box').style.display = 'flex';
-  toolMessage(['','selectComp'],PLUGINAPP);
+  toolMessage([true,'selectComp'],PLUGINAPP);
 });
 function reSelectComp(info){
  console.log(info)
