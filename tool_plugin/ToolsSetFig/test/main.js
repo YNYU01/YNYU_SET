@@ -218,7 +218,7 @@ let helpData = {
     ""],
     ["br","",""],
   ]
-}
+};
 
 /*静态数据或对象*/
 const UI_MINI = [200,460];
@@ -250,6 +250,9 @@ const convertTags = document.getElementById('upload-set-1');
 const getTableText = document.getElementById('upload-set-2');
 const chkTablestyle = document.getElementById('chk-tablestyle');
 const chkSelectcomp = document.getElementById('chk-selectcomp');
+const createAnyBtn = document.querySelector('[data-create-any]')
+const createTableBtn = document.querySelector('[data-create-table]');
+const tableStyleSet = document.querySelector('[data-tablestyle-set]');
 
 let skillModel = [];
 let skilltypeNameNode = skillTypeBox.querySelectorAll('[data-skilltype-name]');
@@ -260,6 +263,14 @@ skilltypeNameNode.forEach(item => {
   skillModel.push([name1,name2]);
 });
 let isSkillScroll = true;
+let tableStyle = [
+  {th:[0,0,0,0,1],td:[0,0,0,0,'space']},//间格区分色
+  {th:[0,0,0,0,1],td:[0,0,0,0,0]},//无描边
+  {th:[0,0,0,0,1],td:[1,0,1,0,0]},//仅横线
+  {th:[0,0,0,0,1],td:[1,1,1,1,0]},//全描边
+  {th:[0,0,0,0,0],td:[1,0,1,0,0]},//仅横线（表头无区分色
+  {th:[0,0,0,0,0],td:[1,1,1,1,0]},//全描边（表头无区分色
+];
 
 /*表单绑定*/
 const userImg = document.getElementById('input-user-img');
@@ -581,7 +592,7 @@ dropUp.addEventListener('drop',(e)=>{
   
 });
 //创建内容
-document.querySelector('[data-create-any]').addEventListener('click',()=>{
+createAnyBtn.addEventListener('click',()=>{
   let type = createTagsBox.parentNode.getAttribute('data-create-tags-box');
   switch (type){
     case 'image':
@@ -1084,8 +1095,32 @@ chkSelectcomp.addEventListener('change',()=>{
   toolMessage([true,'selectComp'],PLUGINAPP);
 });
 function reSelectComp(info){
- console.log(info)
+ //console.log(info)
+ if(info[0] || info[1]){
+  getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','true')
+  let comp1 = getElementMix('data-selectcomp-1');
+  let comp2 = getElementMix('data-selectcomp-2');
+  comp1.textContent = info[0] ? info[0] : 'none';
+  comp1.style.opacity = info[0] ? '1' : '0.5';
+  comp2.textContent = info[1] ? info[1] : 'none';
+  comp2.style.opacity = info[1] ? '1' : '0.5';
+ } else {
+  getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','false')
+ };
+
 };
+createTableBtn.addEventListener('click',()=>{
+  let comp1 = getElementMix('data-selectcomp-1').textContent;
+  let comp2 = getElementMix('data-selectcomp-2').textContent;
+  comp1 = comp1 == 'none' ? null : comp1;
+  comp2 = comp2 == 'none' ? null : comp2;
+  let styleId = tableStyleSet.getAttribute('data-radio-value') - 1;
+  if(getElementMix('chk-tablestyle').checked){
+    toolMessage([[tableStyle[styleId]],'creTable'],PLUGINAPP);
+  }else{
+    toolMessage([[tableStyle[styleId],comp1,comp2],'creTable'],PLUGINAPP);
+  };
+});
 //上传|拖拽|输入 的规则说明
 btnHelp.forEach(item => {
   item.addEventListener('click',()=>{
@@ -1207,7 +1242,7 @@ skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
 });
 //点击即执行的功能
 skillBtnMain.forEach(btn => {
-  btn.addEventListener('click',() => {
+  btn.addEventListener('click',()=>{
     let skillname = btn.getAttribute('data-en-text');
     switch (skillname){
       case 'As Copy':
@@ -1228,8 +1263,14 @@ skillBtnMain.forEach(btn => {
         },100);
       ;break
       case 'Overwrite':;break
-      default : toolMessage(['',skillname],PLUGINAPP);console.log(skillname);break
+      default : toolMessage(['',skillname],PLUGINAPP);break
     }
+  });
+  btn.addEventListener('dblclick',()=>{
+    let skillname = btn.getAttribute('data-en-text');
+    switch (skillname){
+      case 'Arrange By Ratio': toolMessage([true,skillname],PLUGINAPP);;break
+    };
   });
 });
 

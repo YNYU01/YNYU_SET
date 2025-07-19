@@ -18,7 +18,7 @@ figma.ui.resize(UI[0], UI[1]);
 
 let isSendComp = false;
 //核心功能
-figma.ui.onmessage = (message) => { 
+figma.ui.onmessage = async (message) => { 
     const info = message[0]
     const type = message[1]
     //console.log(message)
@@ -83,8 +83,6 @@ figma.ui.onmessage = (message) => {
     //批量创建画板
     if ( type == "createFrame"){
         //console.log(info)
-        let viewX = Math.floor( figma.viewport.center.x - ((figma.viewport.bounds.width/2  - 300)* figma.viewport.zoom));
-        let viewY = Math.floor( figma.viewport.center.y - ((figma.viewport.bounds.height/2  - 300)* figma.viewport.zoom));
         let selects = []
         for ( let i = 0; i < info.length; i++){
             let node = addFrame([info[i].w,info[i].h,null,null,info[i].name],[]);
@@ -103,6 +101,21 @@ figma.ui.onmessage = (message) => {
         isSendComp = info;
         sendSendComp();
     };
+    //从预设或组件创建表格
+    if ( type == "creTable"){
+        //console.log(info)
+        let a = figma.currentPage;
+        let b = a.selection;
+        let th,td;
+        if(info[1]){
+
+        };
+        if(info[2]){
+            
+        }
+        createTable(th,td,info[0])
+
+    };
     //栅格化-副本
     if ( type == 'pixelCopy'){
         toPixel(info);
@@ -113,7 +126,30 @@ figma.ui.onmessage = (message) => {
     };
     //自动排列
     if ( type == 'Arrange By Ratio'){
-        layoutByRatio(figma.currentPage.selection);
+        if(info){
+            layoutByRatio(figma.currentPage.selection,true);
+        }else{
+            layoutByRatio(figma.currentPage.selection);
+        }
+    };
+    //母组件复制
+    if ( type == 'Clone New'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        b.forEach(item => {
+            if(item.type == 'COMPONENT'){
+                let layerIndex = item.parent.children.findIndex(items => items.id == item.id);
+                let newComp = item.clone();
+                setMain([],newComp,item);
+                item.parent.insertChild((layerIndex + 1),newComp);
+                if(item.height >= item.width){
+                    newComp.x += item.width + 30;
+                } else {
+                    newComp.y -= item.height + 30;
+                };
+                newComp.name = item.name + ' copy';
+            };
+        });
     };
     
 }
@@ -191,7 +227,7 @@ function setMain(info,node,cloneNode){
         x = cloneNode.x;
         y = cloneNode.y;
         n = cloneNode.name;
-        fills = cloneNode.fill;
+        fills = cloneNode.fills;
     }
     x = x ? x : viewX;
     y = y ? y : viewY;
@@ -202,6 +238,7 @@ function setMain(info,node,cloneNode){
     node.name = n;
     node.fills = fills;
 };
+
 //添加图片
 function addImg(node,info){
     let image = figma.createImage(info.img)
@@ -261,7 +298,14 @@ function addCutImg(group){
         cutimg.x = x;
         cutimg.y = y;
         cutimg.resize(w,h);
-        cutimg.name = group.name + '_' + (index + 1);
+        if(cuts.length == 1){
+            cutimg.name = group.name;
+        }else{
+            cutimg.name = group.name + '_' + (index + 1);
+        };
+        if(s !== 1){
+            cutimg.name += ' @' + s + 'x';//命名记录栅格化倍率
+        };
         cutimg.fills = [
             {
             type: 'IMAGE',
@@ -273,6 +317,9 @@ function addCutImg(group){
         item.remove();
         if(old && index == cuts.length - 1){
             old.remove();
+        };
+        if(group.children.length == 1){
+            figma.ungroup(group);
         }
     });
 };
@@ -285,6 +332,7 @@ function toPixel(info,isOverWrite){
     //console.log(info)
     let a = figma.currentPage;
     let b = a.selection;
+    let selects = [];
     for(let i = 0; i < b.length; i++){
         let layerIndex = b[i].parent.children.findIndex(item => item.id == b[i].id);
         //console.log(layerIndex)
@@ -294,11 +342,12 @@ function toPixel(info,isOverWrite){
         group.name = b[i].name;
         addCutArea(group,info[i]);
         addCutImg(group,info[i]);
-        a.selection = [group];
+        selects.push(group);
         if(isOverWrite){
             b[i].remove()
         };
     };
+    a.selection = selects;
 };
 //添加画板
 /**
@@ -310,7 +359,6 @@ function addFrame(info){
     setMain(info,node);
     return node;
 };
-
 
 /**
  * 中英文字数限制兼容
@@ -333,7 +381,7 @@ function TextMaxLength(text,max,add){
 };
 
 //按长、宽、方排列所选
-function layoutByRatio(nodes){
+function layoutByRatio(nodes,isMinToMax){
     let b = nodes;
     let x = Math.min(...b.map(item => item.x)),XX = Math.min(...b.map(item => item.x));
     let y = Math.min(...b.map(item => item.y)),YY = Math.min(...b.map(item => item.y));
@@ -346,6 +394,11 @@ function layoutByRatio(nodes){
     let LL = infos.filter(item => item.w < item.h).sort((a, b) => b.w*b.h - a.w*a.h);//竖版
     let maxH = Math.max(...LL.map(item => item.h))
     let FF = infos.filter(item => item.w == item.h).sort((a, b) => b.w*b.h - a.w*a.h);//方形
+    if(isMinToMax){
+        HH = HH.reverse();
+        LL = LL.reverse();
+        FF = FF.reverse();
+    }
     let gap = 30;
     let lineMaxH = [],lineMaxW = [];
     let lineW = 0,lineH = 0;
@@ -426,3 +479,175 @@ function getMain(nodes){
     };
 };
 
+//创建表格组件
+async function createTable(thComp,tdComp,preset){
+    let th,td;
+    if(thComp){
+        th = thComp;
+    } else {
+        th = addFrame([176,52,null,null,'xxx@th',[]]);
+        addAutoLayout(th,['H','CC']);
+        th.itemReverseZIndex = true;//前面堆叠在上
+        th.resize(176,52);
+
+        let textTh = await addText([{family:'Inter',style:'Regular'},'Header',16]);
+        th.appendChild(textTh);
+
+        let space = figma.createRectangle();
+        setMain([176,52,null,null,'bg',[toRGB('#666666',true)]],space);
+        let spaces = addFrame([176,52,null,null,'--fills',[]]);
+        spaces.appendChild(space);
+        space.x = 0;
+        space.y = 0;
+        space.constraints = {
+            horizontal: "STRETCH",
+            vertical: "STRETCH"
+        };
+        addAbsolute(th,spaces,true);
+
+        figma.createComponentFromNode(th);
+    };
+    if(tdComp){
+        td = tdComp;
+    } else {
+        td = addFrame([176,52,null,null,'xxx@td',[]]);
+        addAutoLayout(td,['H','CC']);
+        td.itemReverseZIndex = true;//前面堆叠在上
+        td.resize(176,52);
+
+        let textTd = await addText([{family:'Inter',style:'Regular'},'Data',12]);
+        td.appendChild(textTd);
+        figma.createComponentFromNode(td);
+    };
+};
+
+//添加自动布局
+/**
+ * @param {node} node - 需自动布局的对象
+ * @param {[HV,TBLR,gap,padding:[H,V]]} layout  - 横竖、定位，间距，边距
+ */
+function addAutoLayout(node,layout){
+    node.layoutPositioning = 'AUTO';
+    node.primaryAxisSizingMode = "FIXED";
+    node.counterAxisSizingMode = "FIXED";
+    node.clipsContent = false;
+    switch (layout[0]){
+        case 'H':
+            node.layoutMode = 'HORIZONTAL'
+        ;break
+        case 'V':
+            node.layoutMode = 'VERTICAL'
+        ;break
+    };
+    switch (layout[1][0]){
+        case 'T':
+            node.primaryAxisAlignItems = 'MIN'
+        ;break
+        case 'C':
+            node.primaryAxisAlignItems = 'CENTER'
+        ;break
+        case 'B':
+            node.primaryAxisAlignItems = 'MAX'
+        ;break
+    };
+    switch (layout[1][1]){
+        case 'L':
+            node.counterAxisAlignItems = 'MIN'
+        ;break
+        case 'C':
+            node.counterAxisAlignItems = 'CENTER'
+        ;break
+        case 'R':
+            node.counterAxisAlignItems = 'MAX';
+        ;break
+    };
+    
+    node.itemSpacing = layout[2] ? layout[2]  : 0;
+    node.horizontalPadding = layout[3]  ? layout[3] [0] : 0;
+    node.verticalPadding = layout[3]  ? layout[3] [1] : 0;
+    
+};
+
+//添加绝对定位元素
+/**
+ * @param {node} parent - 自动布局对象
+ * @param {node} absoluteNode - 绝对定位对象
+ * @param {boolean} isFill - 是否撑满自动布局对象（会同时修改约束
+ * @param {Array | string} position - [x,y] | TBLR , 指定坐标或相对位置（会同时修改约束
+ */
+function addAbsolute(parent,absoluteNode,isFill,position){
+    let a = parent,b = absoluteNode;
+    a.appendChild(b);
+    b.layoutPositioning = "ABSOLUTE";
+    b.x = 0;
+    b.y = 0;
+    if(isFill){
+        b.resize(a.width,a.height);
+        b.constraints = {
+            horizontal: "STRETCH",
+            vertical: "STRETCH"
+        };
+    } else {
+        if(position){
+            if(typeof(position) == 'string'){
+                switch (position[0]){
+                    case 'T':
+                        b.y = 0;
+                    ;break
+                    case 'C':
+                        b.y = (a.height - b.height)/2;
+                    ;break
+                    case 'B':
+                        b.y = a.height - b.height;
+                    ;break
+                };
+                switch (position[1]){
+                    case 'L':
+                        b.x = 0;
+                    ;break
+                    case 'C':
+                        b.x = (a.width - b.width)/2;
+                    ;break
+                    case 'R':
+                        b.x = a.width - b.width;
+                    ;break
+                };
+            }else{
+                b.x = position[0];
+                b.y = position[1];
+            };
+        }else{
+            b.x = 0;
+            b.y = 0; 
+        }
+    };
+};
+
+//添加文字内容
+/**
+ * @param {Array} info - [{family:xxx,style:xxx},text,size,fills?]字体、文案、字号、颜色
+ */
+async function addText(info){
+    let text = figma.createText();
+    await figma.loadFontAsync(info[0]);
+    text.fontName = info[0];
+    text.characters = info[1];
+    text.fontSize = info[2];
+    let fills = info[3] ? info[3] : [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
+    text.fills = fills;
+    return text;
+};
+
+/**
+ * @param {Array} color - css颜色 [#ffffff | rgb(255,255,255) | hsl(0% 0% 100%)]
+ * @param {boolean} isPaint - 带透明度或需要作为fills对象传入时用
+ */
+function toRGB(color,isPaint){
+    if(isPaint){
+        //console.log(figma.util.solidPaint(color))
+        return figma.util.solidPaint(color);
+    } else {
+        //console.log(figma.util.rgb(color))
+        return figma.util.rgb(color);
+    }
+}//

@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1356,7 +1356,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -1733,7 +1733,7 @@ function toolMessage(data,app){
           <div data-tableset-thtd class="df-lc w100">
             <div class="df-lc" style="max-width: 100%; margin:0 auto; gap: 4px;">
               <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px);">
-                <input id="chk-tablestyle" type="checkbox" >
+                <input id="chk-tablestyle" checked type="checkbox" >
                 <label for="chk-tablestyle" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;  width: 22px; height: 22px;
                 --tips-text:'按预设样式生成组件';  --tips-text-en:'Create from the preset';">
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1811,20 +1811,12 @@ function toolMessage(data,app){
                       <span data-any="vw240">
                         <span data-en-text="Header:">表头:</span>
                       </span>
-                      <input id="chk-selectcomp-1" type="checkbox">
-                      <label class="check" for="chk-selectcomp-1" style="width: 16px; height: 16px;">
-                        <btn-check></btn-check>
-                      </label>
                       <span data-selectcomp-1>none</span>
                       <div></div>
                       <div></div>
                       <span data-any="vw240">
                         <span data-en-text="Data:">数据:</span>
                       </span>
-                      <input id="chk-selectcomp-2" type="checkbox">
-                      <label class="check" for="chk-selectcomp-2" style="width: 16px; height: 16px;">
-                        <btn-check></btn-check>
-                      </label>
                       <span data-selectcomp-2>none</span>
                     </div>
                   </div>
@@ -2199,12 +2191,16 @@ function toolMessage(data,app){
                       <span>----</span>
                     </div> 
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Fixed From">组件填充</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="To Fixed">撑满约束</div>  
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Clone to Fill">填充到容器</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Absolute & Fill">自适应底框</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Heavy Chain">重链组件</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Release">解除组件</div>  
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Copy New">重置组件</div>
+                    </div>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Clone New">复制母组件</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Release">解除母组件</div>  
                     </div>
                   </div>
                 </div>
@@ -2276,12 +2272,12 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c163aaaf0ae9d337aa45ec389e9a63740b2a2ce8/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -2504,7 +2500,7 @@ let helpData = {
     ""],
     ["br","",""],
   ]
-}
+};
 
 /*静态数据或对象*/
 const UI_MINI = [200,460];
@@ -2536,6 +2532,9 @@ const convertTags = document.getElementById('upload-set-1');
 const getTableText = document.getElementById('upload-set-2');
 const chkTablestyle = document.getElementById('chk-tablestyle');
 const chkSelectcomp = document.getElementById('chk-selectcomp');
+const createAnyBtn = document.querySelector('[data-create-any]')
+const createTableBtn = document.querySelector('[data-create-table]');
+const tableStyleSet = document.querySelector('[data-tablestyle-set]');
 
 let skillModel = [];
 let skilltypeNameNode = skillTypeBox.querySelectorAll('[data-skilltype-name]');
@@ -2546,6 +2545,14 @@ skilltypeNameNode.forEach(item => {
   skillModel.push([name1,name2]);
 });
 let isSkillScroll = true;
+let tableStyle = [
+  {th:[0,0,0,0,1],td:[0,0,0,0,'space']},//间格区分色
+  {th:[0,0,0,0,1],td:[0,0,0,0,0]},//无描边
+  {th:[0,0,0,0,1],td:[1,0,1,0,0]},//仅横线
+  {th:[0,0,0,0,1],td:[1,1,1,1,0]},//全描边
+  {th:[0,0,0,0,0],td:[1,0,1,0,0]},//仅横线（表头无区分色
+  {th:[0,0,0,0,0],td:[1,1,1,1,0]},//全描边（表头无区分色
+];
 
 /*表单绑定*/
 const userImg = document.getElementById('input-user-img');
@@ -2867,7 +2874,7 @@ dropUp.addEventListener('drop',(e)=>{
   
 });
 //创建内容
-document.querySelector('[data-create-any]').addEventListener('click',()=>{
+createAnyBtn.addEventListener('click',()=>{
   let type = createTagsBox.parentNode.getAttribute('data-create-tags-box');
   switch (type){
     case 'image':
@@ -3370,8 +3377,32 @@ chkSelectcomp.addEventListener('change',()=>{
   toolMessage([true,'selectComp'],PLUGINAPP);
 });
 function reSelectComp(info){
- console.log(info)
+ //console.log(info)
+ if(info[0] || info[1]){
+  getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','true')
+  let comp1 = getElementMix('data-selectcomp-1');
+  let comp2 = getElementMix('data-selectcomp-2');
+  comp1.textContent = info[0] ? info[0] : 'none';
+  comp1.style.opacity = info[0] ? '1' : '0.5';
+  comp2.textContent = info[1] ? info[1] : 'none';
+  comp2.style.opacity = info[1] ? '1' : '0.5';
+ } else {
+  getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','false')
+ };
+
 };
+createTableBtn.addEventListener('click',()=>{
+  let comp1 = getElementMix('data-selectcomp-1').textContent;
+  let comp2 = getElementMix('data-selectcomp-2').textContent;
+  comp1 = comp1 == 'none' ? null : comp1;
+  comp2 = comp2 == 'none' ? null : comp2;
+  let styleId = tableStyleSet.getAttribute('data-radio-value') - 1;
+  if(getElementMix('chk-tablestyle').checked){
+    toolMessage([[tableStyle[styleId]],'creTable'],PLUGINAPP);
+  }else{
+    toolMessage([[tableStyle[styleId],comp1,comp2],'creTable'],PLUGINAPP);
+  };
+});
 //上传|拖拽|输入 的规则说明
 btnHelp.forEach(item => {
   item.addEventListener('click',()=>{
@@ -3493,7 +3524,7 @@ skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
 });
 //点击即执行的功能
 skillBtnMain.forEach(btn => {
-  btn.addEventListener('click',() => {
+  btn.addEventListener('click',()=>{
     let skillname = btn.getAttribute('data-en-text');
     switch (skillname){
       case 'As Copy':
@@ -3514,8 +3545,14 @@ skillBtnMain.forEach(btn => {
         },100);
       ;break
       case 'Overwrite':;break
-      default : toolMessage(['',skillname],PLUGINAPP);console.log(skillname);break
+      default : toolMessage(['',skillname],PLUGINAPP);break
     }
+  });
+  btn.addEventListener('dblclick',()=>{
+    let skillname = btn.getAttribute('data-en-text');
+    switch (skillname){
+      case 'Arrange By Ratio': toolMessage([true,skillname],PLUGINAPP);;break
+    };
   });
 });
 
