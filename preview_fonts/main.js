@@ -362,7 +362,7 @@ function addFontsCard(fontsObj){
     card.appendChild(cardEgBox);
     
     egfontCardList.appendChild(card);
-    cardTitleInput.addEventListener('change',() => {showNext(cardTitleInput,cardEgBox,'flex')})
+    cardTitleInput.addEventListener('change',() => {showNext(cardTitleInput,cardEgBox,'flex',true)})
     
   });
 

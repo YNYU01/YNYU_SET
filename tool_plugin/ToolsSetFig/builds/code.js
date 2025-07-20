@@ -112,8 +112,14 @@ figma.ui.onmessage = async (message) => {
         };
         if(info[2]){
             
-        }
-        createTable(th,td,info[0])
+        };
+        figma.clientStorage.getAsync('userLanguage')
+        .then (language => {
+            createTable(th,td,language)
+        })
+        .catch (error => {
+        })
+        
 
     };
     //栅格化-副本
@@ -212,7 +218,7 @@ function sendSendComp(){
 }
 
 /**
- * @param {Array} info - 宽高、坐标、命名、填充
+ * @param {Array} info - [w,h,x,y,[fills],[align,trbl,strokes]] 宽高、坐标、命名、填充、描边
  * @param {node} node - 需要设置的对象
  * @param {node?} cloneNode - 直接参考的对象
  */
@@ -237,6 +243,23 @@ function setMain(info,node,cloneNode){
     node.y = y;
     node.name = n;
     node.fills = fills;
+
+    if(info[6]){
+        setStroke(node,info[6][0],info[6][1],info[6][2])
+    };
+};
+//设置描边
+function setStroke(node,align,trbl,strokes){
+    //console.log(trbl)
+    align = align ? align : "CENTER";
+    trbl = trbl ? trbl : [1,1,1,1];
+    strokes = strokes ? strokes : [{type:"SOLID",color:{r:0.5,g:0.5,b:0.5}}];
+    node.strokes = strokes;
+    node.strokeTopWeight = trbl[0];
+    node.strokeRightWeight = trbl[1];
+    node.strokeBottomWeight = trbl[2];
+    node.strokeLeftWeight = trbl[3];
+    node.strokeAlign = align;
 };
 
 //添加图片
@@ -351,7 +374,7 @@ function toPixel(info,isOverWrite){
 };
 //添加画板
 /**
- * @param {Array} info - [w,h,x,y,n,fill]
+ * @param {Array} info - [w,h,x,y,[fills],[align,trbl,strokes]] 宽高、坐标、命名、填充、描边
  * @returns {node}
  */
 function addFrame(info){
@@ -479,58 +502,110 @@ function getMain(nodes){
     };
 };
 
-//创建表格组件
-async function createTable(thComp,tdComp,preset){
+//创建表格
+async function createTable(thComp,tdComp,language){
     let th,td;
     if(thComp){
         th = thComp;
     } else {
-        th = addFrame([176,52,null,null,'xxx@th',[]]);
-        addAutoLayout(th,['H','CC']);
-        th.itemReverseZIndex = true;//前面堆叠在上
-        th.resize(176,52);
-
-        let textTh = await addText([{family:'Inter',style:'Regular'},'Header',16]);
-        th.appendChild(textTh);
-
-        let space = figma.createRectangle();
-        setMain([176,52,null,null,'bg',[toRGB('#666666',true)]],space);
-        let spaces = addFrame([176,52,null,null,'--fills',[]]);
-        spaces.appendChild(space);
-        space.x = 0;
-        space.y = 0;
-        space.constraints = {
-            horizontal: "STRETCH",
-            vertical: "STRETCH"
-        };
-        addAbsolute(th,spaces,true);
-
-        figma.createComponentFromNode(th);
+        th = await addTableCompMust('th',language);
     };
     if(tdComp){
         td = tdComp;
     } else {
-        td = addFrame([176,52,null,null,'xxx@td',[]]);
-        addAutoLayout(td,['H','CC']);
-        td.itemReverseZIndex = true;//前面堆叠在上
-        td.resize(176,52);
-
-        let textTd = await addText([{family:'Inter',style:'Regular'},'Data',12]);
-        td.appendChild(textTd);
-        figma.createComponentFromNode(td);
+        td = await addTableCompMust('td',language);
+        //console.log(td)
     };
+    let column = addFrame([176,52,null,null,'@column',[]]);
+    addAutoLayout(column,['V','TC']);
+    if(th.type == 'COMPONENT'){
+        column.appendChild(th.createInstance());
+    } else {
+        column.appendChild(th.clone());
+    };
+    if(td.type == 'COMPONENT'){
+        column.appendChild(td.createInstance());
+    } else {
+        column.appendChild(td.clone());
+    };
+
+    column.children.forEach(item => {
+        item.layoutSizingHorizontal = 'FILL';
+    });
+    
+    let table = addFrame([528,208,null,null,'xxx@table',[toRGB('2D2D2D',true)],[null,null,[toRGB('#666666',true)]]]);
+    table.appendChild(column);
+    addAutoLayout(table,['H','TL'],[0,0]);
+    table.x += 200;
+
+    return table;
 };
+//创建表格组件
+async function addTableCompMust(type,language){
+    let comp = addFrame([176,52,null,null,'xxx@' + type,[]]);
+    if(type == 'td'){
+        comp.y += 72;
+    };
+    addAutoLayout(comp,['H','CC'],[1,1]);
+    comp.resize(176,52);
+    comp.itemReverseZIndex = true;//前面堆叠在上
+    comp = await figma.createComponentFromNode(comp);
+
+    let egtext = {th:['Bold','Header'],td:['Regular','Data']};
+    if(language == 'Zh'){
+        egtext = {th:['Bold','表头文案'],td:['Regular','数据文案']};
+    };
+    let text = await addText([{family:'Inter',style:egtext[type][0]},egtext[type][1],16]);
+    comp.appendChild(text);
+    let fills = {
+        th:[toRGB('#666666',true)],
+        td:[toRGB('#66666688',true)]
+    }
+    let adds = [
+        ['top',[],[null,[1,0,0,0]],'--bod-t'],
+        ['right',[],[null,[0,1,0,0]],'--bod-r'],
+        ['bottom',[],[null,[0,0,1,0]],'--bod-b'],
+        ['left',[],[null,[0,0,0,1]],'--bod-l'],
+        ['fills',fills[type],null,'--fills'],
+    ];
+
+    for(let i = 0; i < adds.length; i++){
+        addBodFill(comp,adds[i]);
+    };
+    
+    return comp;
+};
+//添加描边/区分色
+function addBodFill(node,Array){
+    let bodfill = figma.createRectangle();
+    setMain([176,52,null,null,Array[0],Array[1],Array[2]],bodfill);
+    let bodfills = addFrame([176,52,null,null,Array[3],[]]);
+    bodfills.appendChild(bodfill);
+    asFillChild(bodfill);
+    addAbsolute(node,bodfills,true);
+};
+//重置相对坐标并把约束设为撑满
+function asFillChild(node){
+    node.x = 0;
+    node.y = 0;
+    node.constraints = {
+        horizontal: "STRETCH",
+        vertical: "STRETCH"
+    };
+}
 
 //添加自动布局
 /**
  * @param {node} node - 需自动布局的对象
  * @param {[HV,TBLR,gap,padding:[H,V]]} layout  - 横竖、定位，间距，边距
  */
-function addAutoLayout(node,layout){
+function addAutoLayout(node,layout,isFixed){
     node.layoutPositioning = 'AUTO';
-    node.primaryAxisSizingMode = "FIXED";
-    node.counterAxisSizingMode = "FIXED";
-    node.clipsContent = false;
+    if(isFixed){
+        node.primaryAxisSizingMode = isFixed[0] ? "FIXED" : "AUTO";
+        node.counterAxisSizingMode = isFixed[1] ? "FIXED" : "AUTO";
+    };
+    node.clipsContent = false;//默认超出不裁剪
     switch (layout[0]){
         case 'H':
             node.layoutMode = 'HORIZONTAL'

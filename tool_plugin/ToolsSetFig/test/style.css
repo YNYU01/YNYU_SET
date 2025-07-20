@@ -161,6 +161,11 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   margin-left: -0.5ch;
   border-radius: 0 4px 4px 0;
 }
+
+[data-input-unit="auto"]{
+  width: fit-content;
+  padding:0 0.5ch 0 1ch;
+}
 /*组件修改--*/
 
 html[data-language="En"] {

@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f312060465d7ba92c04892fe4278b151c3ab17a5/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -167,6 +167,11 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   background: var(--boxGry);
   margin-left: -0.5ch;
   border-radius: 0 4px 4px 0;
+}
+
+[data-input-unit="auto"]{
+  width: fit-content;
+  padding:0 0.5ch 0 1ch;
 }
 /*组件修改--*/
 
@@ -1356,7 +1361,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 }
 
 </style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f312060465d7ba92c04892fe4278b151c3ab17a5/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -1725,7 +1730,7 @@ function toolMessage(data,app){
           <!--步骤1-->
           <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
-            <span data-en-text="Create a basic table" >创建一个表格样例</span>
+            <span data-en-text="Get a basic table" >获得一个表格用例</span>
             &nbsp;&nbsp;
             <span data-any="vw300" data-en-text="and make it more diverse" style="opacity: 0.6;">并进一步定制化设计</span>
             <div data-any="vw300" data-help="sheet" class="fl0 df-cc">?</div>
@@ -1735,7 +1740,7 @@ function toolMessage(data,app){
               <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px);">
                 <input id="chk-tablestyle" checked type="checkbox" >
                 <label for="chk-tablestyle" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;  width: 22px; height: 22px;
-                --tips-text:'按预设样式生成组件';  --tips-text-en:'Create from the preset';">
+                --tips-text:'按预设样式生成组件/修改表格';  --tips-text-en:'Create/change from the preset style';">
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="var(--mainColor)" d="M7.96875 7.57129H3V12.0713H6.61914L6.50391 13.0713H3V16.5713C3 17.1236 3.44772 17.5713 4 17.5713H9.5V15.4512L10.5 14.5693V17.5713H16C16.5523 17.5713 17 17.1236 17 16.5713V13.0713H12.1982L12.5205 12.7871L13.332 12.0713H17V7.57129H15.2656L17.5137 3.26758C17.8157 3.61783 17.9999 4.07254 18 4.57129V16.5713L17.9893 16.7754C17.887 17.7841 17.0357 18.5713 16 18.5713H4C2.96435 18.5713 2.113 17.7841 2.01074 16.7754L2 16.5713V4.57129C2.00016 3.46686 2.89553 2.57129 4 2.57129H10.583L7.96875 7.57129Z"/>
                     <path fill="var(--mainColor)" d="M11.8598 12.0372L8.12642 15.3311C7.78273 15.6343 7.24651 15.3537 7.29927 14.8985L7.87154 9.95317L11.8598 12.0372ZM12.7329 0.616255C12.9887 0.127036 13.5931 -0.0621097 14.0825 0.193403L16.269 1.33598C16.7583 1.59183 16.9475 2.19621 16.6919 2.68559L12.4702 10.7618L8.51216 8.69243L12.7329 0.616255Z"/>
@@ -1806,7 +1811,7 @@ function toolMessage(data,app){
                 <div data-selectcomp-box="false" class="df-lc" style="gap: 4px; display: none; overflow: auto;">
                   ▶
                   <div class="noscrollbar df-lc" data-scroll>
-                    <div data-selectcomp-no style="padding: 0 10px;" data-en-text="Has not valid components">未选中有效的组件</div>
+                    <div data-selectcomp-no style="padding: 0 10px;" data-en-text="Has not compliant components">未选中有效的组件</div>
                     <div data-selectcomp-mix class="df-lc" style="gap:4px">
                       <span data-any="vw240">
                         <span data-en-text="Header:">表头:</span>
@@ -1824,8 +1829,42 @@ function toolMessage(data,app){
               </div>
             </div>
           </div> 
-          <div class="w100 df-cc" style="margin: 4px 0;">
-            <div data-create-table data-btn="main2" class="w100 df-cc" data-en-text="Create Table">创建表格</div>  
+          <div class="df-ffc w100" style="gap: 4px; margin: 4px 0;">
+            <div class="w100 df-cc">
+              <div data-create-table class="w100 df-cc" data-btn="skill-main" data-en-text="Create Table">创建表格</div>  
+            </div>
+            <div class="w100 df-cc">
+              <span data-skill-gap>
+                <span>---</span>
+                <span data-en-text="To xxx@th/td/table elements"> 基于xxx@th/td/table元素</span>
+                <span>---</span>
+              </span>
+            </div>
+            <div class="df-lc w100" data-skill-more data-selects-must>
+              <div class="df-lc w100" style="gap: 4px;">
+                <div class="df-lc fl1">
+                  <input id="table-column-num" type="text" value="0" data-input="" data-input-type="int" data-input-must="0,1000" style="text-align: center;">
+                  <div class="df-cc" data-input-unit="auto" data-en-text="Column">列</div>
+                </div>
+                <div class="df-lc fl1" >
+                  <input id="table-row-num" type="text" value="0" data-input="" data-input-type="int" data-input-must="0,1000" style="text-align: center;">
+                  <div class="df-cc" data-input-unit="auto" data-en-text="Row">行</div>
+                </div>
+              </div>
+              <div class="df-lc w100" >
+                <div class="df-cc" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" data-btn="skill-main" data-en-text="Add">增加</div>
+                <div class="df-cc" style="border-left: 0; border-top-left-radius: 0; border-bottom-left-radius: 0;" data-btn="skill-main" data-en-text="Reduce">减少</div>
+              </div>
+              
+            </div>
+            <div class="df-lc w100" data-skill-more data-selects-must>
+              <div class="df-cc" data-btn="skill-main" data-en-text="Apply Style">应用样式</div>
+              <div class="df-cc" data-btn="skill-main" data-en-text="Make Compliant">合规化组件</div>
+            </div>
+            <div class="df-lc w100" data-skill-more data-selects-must>
+              <div class="df-cc" data-btn="skill-main" data-en-text="Row ⇵ Column">反转行列</div>
+              <div class="df-cc" data-btn="skill-main" data-en-text="Make Compliant">合规化组件</div>
+            </div>
           </div>
         </div>
       </div>
@@ -2272,12 +2311,12 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df06e7eb278ef92a4cef7d68d16d23b9b934192f/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f312060465d7ba92c04892fe4278b151c3ab17a5/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f312060465d7ba92c04892fe4278b151c3ab17a5/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f312060465d7ba92c04892fe4278b151c3ab17a5/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f312060465d7ba92c04892fe4278b151c3ab17a5/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f312060465d7ba92c04892fe4278b151c3ab17a5/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f312060465d7ba92c04892fe4278b151c3ab17a5/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/

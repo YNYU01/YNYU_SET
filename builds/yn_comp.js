@@ -1502,8 +1502,8 @@ function hsvTohsl(h, s, v) {
 function showNext(node1,node2,display,checked){
   let nodeA = getElementMix(node1),nodeB = getElementMix(node2);
   display = display || 'block';
-  checked = checked || true;//一般是选中情况下收起，未选中情况下展开，如需反转，要设为false
-  nodeB.style.display = (nodeA.checked == checked) ? 'none' : display;
+  checked = checked ? false : true;//一般是选中情况下收起，未选中情况下展开，如需反转，要设为false
+  nodeB.style.display = (nodeA.checked == checked) ? display : 'none';
 }
 
 /**
