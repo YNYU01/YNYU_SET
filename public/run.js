@@ -81,25 +81,28 @@ function getUnicode(text){
 
 //console.log(getUnicode(COPYRIGHT_ZH))
 
-fetchIPBasedLocation();
-function fetchIPBasedLocation() {
-  // Step 1: 获取访问者的IP地址
-  fetch('https://ipapi.co/json/')
-  .then(response => response.json())
-  .then(data => {
-    const visitorIP = data.ip;
-    console.log(visitorIP)
-    // Step 2: 解析IP地址
-    // Step 3: 查询国家/地区信息
-    fetch(`https://ipapi.co/${visitorIP}/json/`)
-      .then(response => response.json())
-      .then(data => {
-        // Step 4: 提取国家/地区信息
-        const country = data.country_name;
-        const countryCode = data.country_code;
+let USER_VISITOR = null;
+fetch('https://ipapi.co/json/')
+.then(async (response) => response.json())
+.then(data => {
+    USER_VISITOR = data;
+    const country = data.country_name;
+    const countryCode = data.country_code;
+    if(countryCode !== "CN"){
+      let links = document.querySelectorAll('link');
+      let scripts = document.querySelectorAll('script');
 
-        // 在控制台输出国家/地区信息
-        console.log(`访问者国家/地区：${country} (${countryCode})`);
-      });
-  });
-}
+      links.forEach(item => {
+        let oldHref = item.getAttribute('href');
+        item.setAttribute('href',oldHref.replace('.cn',''))
+      })
+      scripts.forEach(item => {
+        let oldSrc = item.getAttribute('src');
+        item.setAttribute('href',oldSrc.replace('.cn',''))
+      })
+
+      console.log(`访问者国家/地区：${country} (${countryCode}),已切换对应资源链接`)
+    }
+});
+
+//setTimeout(()=>{console.log(USER_VISITOR)},500)
