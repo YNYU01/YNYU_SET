@@ -98,7 +98,9 @@ fetch('https://ipapi.co/json/')
       });
       scripts.forEach(item => {
         let oldSrc = item.getAttribute('src');
-        item.setAttribute('src',oldSrc.replace('.cn',''));
+        if(oldSrc){
+          item.setAttribute('src',oldSrc.replace('.cn',''));
+        };
       });
 
       console.log(`访问者国家/地区：${country} (${countryCode}),已切换对应资源链接`)
