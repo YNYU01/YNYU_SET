@@ -81,36 +81,7 @@ function getUnicode(text){
 
 //console.log(getUnicode(COPYRIGHT_ZH))
 
-determineLocation()
-function determineLocation() {
-  // 检查浏览器是否支持 Geolocation API
-  if (navigator.geolocation) {
-    console.log("浏览器支持 Geolocation API，尝试获取位置...");
-    
-    // 尝试获取当前地理位置
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        // 成功获取位置
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        console.log("纬度:", latitude);
-        console.log("经度:", longitude);
-        // 在这里处理位置信息（例如显示地图或进行后续操作）
-      },
-      (error) => {
-        // 处理错误（例如用户拒绝权限或无法获取位置）
-        console.error("获取地理位置失败:", error.message);
-        
-        // 转而使用 IP 服务获取位置
-        fetchIPBasedLocation();
-      }
-    );
-  } else {
-    console.log("浏览器不支持 Geolocation API，使用 IP 服务获取位置...");
-    fetchIPBasedLocation();
-  }
-}
-
+fetchIPBasedLocation();
 function fetchIPBasedLocation() {
   // Step 1: 获取访问者的IP地址
   fetch('https://ipapi.co/json/')

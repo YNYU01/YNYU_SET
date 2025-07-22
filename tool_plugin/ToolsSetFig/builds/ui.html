@@ -1,8 +1,60 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@aae6fead2bb0689e65dceca0079a460385dae1a6/public/run.js"></script>
+  <!-- INLINE_RUN -->
+  <script>
+PULGIN_LOCAL = true;
+let userSkillStar = [];
+if (ISPLUGIN){
+  ROOT.setAttribute('data-mobile','false');
+  ISMOBILE = false;
+  toolMessage(['userTheme','getlocal'],PLUGINAPP);
+  toolMessage(['userLanguage','getlocal'],PLUGINAPP);
+  toolMessage(['userResize','getlocal'],PLUGINAPP);
+  toolMessage(['tabPick','getlocal'],PLUGINAPP);
+  toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
+}
+
+window.addEventListener('message',(message)=>{
+  let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
+  if(!isPluginMessge){
+    let messages = message.data.pluginMessage.pluginMessage || ['',''];
+    let info = messages[0];
+    let type = messages[1];
+    if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
+      info = JSON.parse(info);
+    }
+    switch (type){
+      case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
+      case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
+      case 'userResize': reRootSize(info);break
+      case 'tabPick': viewPage(info);break
+      case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
+      case 'selectInfo': reSelectInfo(info);break
+      case 'selectInfoMain': addTableText(tableObjToText(info));break
+      case 'selectComp': reSelectComp(info);break
+    };
+  };
+});
+
+/**
+ * @param {Array} data - [info,typeName/skillName]
+ * @param {string} app - PLUGINAPP(需定义) | 'fig' | 'mg'
+ */
+function toolMessage(data,app){
+  switch (app){
+    case 'fig': parent.postMessage({pluginMessage:data},"*"); break
+    case 'mg' : parent.postMessage(data,"*");break
+  }
+}
+
+
+
+
+</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eb74ca1173fc18fa95cab4216c1bdd4a6264d2c7/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@aae6fead2bb0689e65dceca0079a460385dae1a6/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1357,59 +1409,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 
 }
 
-</style>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eb74ca1173fc18fa95cab4216c1bdd4a6264d2c7/public/run.js"></script>
-  <!-- INLINE_RUN -->
-  <script>
-PULGIN_LOCAL = true;
-let userSkillStar = [];
-if (ISPLUGIN){
-  ROOT.setAttribute('data-mobile','false');
-  ISMOBILE = false;
-  toolMessage(['userTheme','getlocal'],PLUGINAPP);
-  toolMessage(['userLanguage','getlocal'],PLUGINAPP);
-  toolMessage(['userResize','getlocal'],PLUGINAPP);
-  toolMessage(['tabPick','getlocal'],PLUGINAPP);
-  toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
-}
-
-window.addEventListener('message',(message)=>{
-  let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
-  if(!isPluginMessge){
-    let messages = message.data.pluginMessage.pluginMessage || ['',''];
-    let info = messages[0];
-    let type = messages[1];
-    if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
-      info = JSON.parse(info);
-    }
-    switch (type){
-      case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
-      case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
-      case 'userResize': reRootSize(info);break
-      case 'tabPick': viewPage(info);break
-      case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
-      case 'selectInfo': reSelectInfo(info);break
-      case 'selectInfoMain': addTableText(tableObjToText(info));break
-      case 'selectComp': reSelectComp(info);break
-    };
-  };
-});
-
-/**
- * @param {Array} data - [info,typeName/skillName]
- * @param {string} app - PLUGINAPP(需定义) | 'fig' | 'mg'
- */
-function toolMessage(data,app){
-  switch (app){
-    case 'fig': parent.postMessage({pluginMessage:data},"*"); break
-    case 'mg' : parent.postMessage(data,"*");break
-  }
-}
-
-
-
-
-</script>
+</style> 
 </head>
 
 <body class="noselect df-ffc df-cc">
@@ -2452,12 +2452,12 @@ function toolMessage(data,app){
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eb74ca1173fc18fa95cab4216c1bdd4a6264d2c7/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eb74ca1173fc18fa95cab4216c1bdd4a6264d2c7/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eb74ca1173fc18fa95cab4216c1bdd4a6264d2c7/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eb74ca1173fc18fa95cab4216c1bdd4a6264d2c7/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eb74ca1173fc18fa95cab4216c1bdd4a6264d2c7/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eb74ca1173fc18fa95cab4216c1bdd4a6264d2c7/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@aae6fead2bb0689e65dceca0079a460385dae1a6/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@aae6fead2bb0689e65dceca0079a460385dae1a6/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@aae6fead2bb0689e65dceca0079a460385dae1a6/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@aae6fead2bb0689e65dceca0079a460385dae1a6/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@aae6fead2bb0689e65dceca0079a460385dae1a6/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@aae6fead2bb0689e65dceca0079a460385dae1a6/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -2763,7 +2763,8 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 
 window.addEventListener('load',()=>{
   /*
-  viewPage('sheet')/**/;
+  viewPage('sheet')
+  /**/;
   if(window.innerWidth < 300){
     TV_MOVE = true;
   } else {

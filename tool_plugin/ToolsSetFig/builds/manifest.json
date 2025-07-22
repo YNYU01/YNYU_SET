@@ -5,6 +5,7 @@
   "main": "code.js",
   "capabilities": [],
   "documentAccess": "dynamic-page",
+  "permissions": ["payments"],
   "editorType": [
     "figma"
   ],
@@ -13,7 +14,8 @@
     "allowedDomains": [
       "https://cdn.jsdelivr.net",
       "https://cdn.jsdelivr.net.cn",
-      "https://cdnjs.cloudflare.com"
+      "https://cdnjs.cloudflare.com",
+      "https://ipapi.co"
     ]
   }
 }
