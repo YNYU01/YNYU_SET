@@ -94,12 +94,12 @@ fetch('https://ipapi.co/json/')
 
       links.forEach(item => {
         let oldHref = item.getAttribute('href');
-        item.setAttribute('href',oldHref.replace('.cn',''))
-      })
+        item.setAttribute('href',oldHref.replace('.cn',''));
+      });
       scripts.forEach(item => {
         let oldSrc = item.getAttribute('src');
-        item.setAttribute('href',oldSrc.replace('.cn',''))
-      })
+        item.setAttribute('src',oldSrc.replace('.cn',''));
+      });
 
       console.log(`访问者国家/地区：${country} (${countryCode}),已切换对应资源链接`)
     }
