@@ -5,6 +5,7 @@ if (ISPLUGIN){
   ISMOBILE = false;
   toolMessage(['userTheme','getlocal'],PLUGINAPP);
   toolMessage(['userLanguage','getlocal'],PLUGINAPP);
+  toolMessage(['userResize','getlocal'],PLUGINAPP);
   toolMessage(['tabPick','getlocal'],PLUGINAPP);
   toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
 }
@@ -21,6 +22,7 @@ window.addEventListener('message',(message)=>{
     switch (type){
       case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
       case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
+      case 'userResize': reRootSize(info);break
       case 'tabPick': viewPage(info);break
       case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
       case 'selectInfo': reSelectInfo(info);break

@@ -169,16 +169,16 @@ let helpData = {
     "因为【组件属性】功能的强大, 我们会有很多办法实现批量替换数据, 不仅限于表格, 因此【表格】可视为【批量替换数据】的一种特殊情况",
     ""],
     ["li",
-    "使用【表格数据填充】时, 仅检索xxx@table下,每列xxx@column的xxx@th和xxx@td的--data属性进行修改",
+    "使用【表格数据映射】时, 仅检索xxx@table下,每列xxx@column的xxx@th和xxx@td的--data属性进行修改",
     ""],
     ["li",
-    "如需要更复杂的组件属性组合, 需使用【批量组件属性】功能来完成数据映射",
+    "如需要更复杂的组件属性组合, 需使用【组件属性映射】功能来完成数据映射",
     ""],
     ["li",
-    "【表格数据填充】不需要表头作为查找组件属性的依据, 直接按行列对应关系填充数据, 【批量组件属性】则需要将对应组件属性名作为表头, 按图层顺序修改对应的值",
+    "【文本数据映射】不需要表头作为查找组件属性的依据, 直接按行列对应关系填充数据, 【组件属性映射】则需要将对应组件属性名作为表头, 按图层顺序修改对应的值",
     ""],
     ["li",
-    "【批量组件属性】对变体的选项值也同样生效,需设置唯一的变体属性名(默认是Property) 需避免存在同名的情况, 变体集内的组件命名无影响",
+    "【组件属性映射】对变体的选项值也同样生效,需设置唯一的变体属性名(默认是Property) 需避免存在同名的情况, 变体集内的组件命名无影响",
     ""],
     ["br","",""],
     ["p",
@@ -300,7 +300,9 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 });
 
 window.addEventListener('load',()=>{
-  viewPage('sheet');
+  /*clear*/
+  viewPage('sheet')
+  /**/;
   if(window.innerWidth < 300){
     TV_MOVE = true;
   } else {
@@ -431,6 +433,14 @@ function reSelectInfo(info){
   ROOT.setAttribute('data-selects','false')
  }
 };
+//按用户偏好修改界面大小
+function reRootSize(info){
+  if(info[0] > UI[0]){
+    btnBig.checked = true;
+  } else {
+    btnBig.checked = false;
+  }
+}
 
 
 /* ---界面交互--- */
@@ -488,6 +498,7 @@ btnResize.addEventListener('mousedown',(event)=>{
           clearTimeout(MOVE_TIMEOUT)
       };
       MOVE_TIMEOUT = setTimeout(()=>{
+        storageMix.set('userResize',[w,h]);
         if(w > UI[0]){
           btnBig.checked = true;
         } else {
@@ -1245,24 +1256,9 @@ skillBtnMain.forEach(btn => {
   btn.addEventListener('click',()=>{
     let skillname = btn.getAttribute('data-en-text');
     switch (skillname){
-      case 'As Copy':
-        //返回裁切方案以栅格化
-        let mix = skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
-        let s = pixelScale.value;
-        let cuts = [];
-        tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],SelectNodeInfo.length * 800);
-        setTimeout(()=>{
-          SelectNodeInfo.forEach((item) => {
-          let w = item[1];
-          let h = item[2];
-          let cut = tool.CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix);
-          cuts.push(cut);
-        });
-        //console.log(cuts);
-        toolMessage([cuts,'pixelCopy'],PLUGINAPP);
-        },100);
-      ;break
-      case 'Overwrite':;break
+      case 'Pixel As Copy':sendPixel(skillname);break
+      case 'Pixel Overwrite':sendPixel(skillname);break
+      case 'Reset All Transform':;break
       default : toolMessage(['',skillname],PLUGINAPP);break
     }
   });
@@ -1272,6 +1268,24 @@ skillBtnMain.forEach(btn => {
       case 'Arrange By Ratio': toolMessage([true,skillname],PLUGINAPP);;break
     };
   });
+
+  function sendPixel(name){
+    //返回裁切方案以栅格化
+    let mix = skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+    let s = pixelScale.value;
+    let cuts = [];
+    tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],SelectNodeInfo.length * 800);
+    setTimeout(()=>{
+      SelectNodeInfo.forEach((item) => {
+      let w = item[1];
+      let h = item[2];
+      let cut = tool.CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix);
+      cuts.push(cut);
+    });
+    //console.log(cuts);
+    toolMessage([cuts,name],PLUGINAPP);
+    },100);
+  };
 });
 
 

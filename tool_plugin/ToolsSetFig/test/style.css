@@ -104,25 +104,6 @@ p [data-highlight]{
   content: var(--tips-text-en,'something there');
 }
 
-[data-mode-id="upload"] [data-tips-x="left"]::after,
-#upload-set-main [data-tips-x="left"]::after,
-#upload-moreset-box [data-tips-x="left"]::after{
-  --x: -20px;
-}
-
-[data-mode-id="upload"] [data-tips-x="right"]::after {
-  --x: calc(-100% + 70px);
-}
-
-[data-mode-id="upload"] [data-tips-x="center"]::after,
-#upload-set-main [data-tips-x="center"]::after {
-  --x:calc(-50% + 20px)
-}
-
-
-[data-tips-x="right"]::after {
-  --x: calc(-100% + 40px);
-}
 
 #tips-all{
   display: none;
@@ -353,6 +334,22 @@ input[type="checkbox"]:checked + label [data-icon-more-path="2"]{
 }
 input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
   transform: matrix(0.7,-0.7,0.7,0.7,3.64,16.37);
+}
+
+[data-page-id="page"] [data-icon-more-path="1"] path{
+  transform: matrix(0.25, 0, 0, 2, -2, 6);
+}
+[data-page-id="page"] [data-icon-more-path="2"] path{
+  transform: matrix(0.25, 0, 0, 2, 7, 0);
+}
+[data-page-id="page"] [data-icon-more-path="3"] path{
+  transform: matrix(0.25, 0, 0, 2, 16, -6);
+}
+
+input[type="checkbox"]:checked + label [data-icon-more-path="1"] path,
+input[type="checkbox"]:checked + label [data-icon-more-path="2"] path,
+input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
+  transform: matrix(1,0,0,1,0,0);
 }
 
 #btn-theme-1,#btn-theme-2,#btn-theme-3{

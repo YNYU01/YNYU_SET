@@ -23,6 +23,7 @@ class InlineJsCssPlugin {
 
       try {
         jsContent = fs.readFileSync(mainJsPath, 'utf-8');
+        jsContent = jsContent.replace(/clear\*\//g,'')//注释掉非生产内容
       } catch (e) {
         console.warn('找不到 main.js');
       }

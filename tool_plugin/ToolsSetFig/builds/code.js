@@ -14,7 +14,15 @@ let vX = figma.viewport.bounds.x,vY = figma.viewport.bounds.y;
 figma.skipInvisibleInstanceChildren = true;//忽略不可见元素及其子集
  
 figma.showUI(__html__,{position:{x:vX,y:vY},themeColors:true});
-figma.ui.resize(UI[0], UI[1]);
+figma.clientStorage.getAsync('userResize')
+.then (data => {
+    figma.ui.resize(data[0], data[1]);
+})
+.catch (error => {
+    figma.ui.resize(UI[0], UI[1]);
+    postmessage([[UI[0], UI[1]],'userResize']);
+});
+
 
 let isSendComp = false;
 //核心功能
@@ -33,7 +41,6 @@ figma.ui.onmessage = async (message) => {
     };
     //设置用户偏好
     if ( type == "setlocal"){
-        //console.log(info)
         figma.clientStorage.setAsync(info[0],info[1]);
     };
     //按需发送选中内容信息
@@ -48,8 +55,10 @@ figma.ui.onmessage = async (message) => {
     if ( type == "big"){
         if (info){
             figma.ui.resize(UI_BIG[0], UI_BIG[1]);  
+            figma.clientStorage.setAsync('userResize',[UI_BIG[0], UI_BIG[1]]);
         } else {
             figma.ui.resize(UI[0], UI[1]);
+            figma.clientStorage.setAsync('userResize',[UI[0], UI[1]]);
         };
     };
     //双击底部获取当前节点信息(开发用)
@@ -108,14 +117,26 @@ figma.ui.onmessage = async (message) => {
         let b = a.selection;
         let th,td;
         if(info[1]){
-
+            th = b.find(item => item.name == info[1]);
         };
         if(info[2]){
-            
+            td = b.find(item => item.name == info[2]);
         };
         figma.clientStorage.getAsync('userLanguage')
-        .then (language => {
-            createTable(th,td,language)
+        .then (async (language) => {
+            let all = await createTable(th,td,language);
+            let newth = all[0];
+            let newtd = all[1];
+            let table = all[2]
+            //如果用了自定义组件，则重新排列，避免太分散
+            if(newth == th || newtd == td){
+                let layerIndex = th.parent.children.findIndex(item => item.id == th.id);
+                layoutByRatio(all,true);
+                all.forEach(item => {
+                    th.parent.insertChild((layerIndex - 1),item)
+                });
+            };
+            a.selection = all
         })
         .catch (error => {
         })
@@ -123,11 +144,11 @@ figma.ui.onmessage = async (message) => {
 
     };
     //栅格化-副本
-    if ( type == 'pixelCopy'){
+    if ( type == 'Pixel As Copy'){
         toPixel(info);
     };
     //栅格化-覆盖
-    if ( type == 'overWrite'){
+    if ( type == 'Pixel Overwrite'){
         toPixel(info,true);
     };
     //自动排列
@@ -538,7 +559,7 @@ async function createTable(thComp,tdComp,language){
     addAutoLayout(table,['H','TL'],[0,0]);
     table.x += 200;
 
-    return table;
+    return [th,td,table];
 };
 //创建表格组件
 async function addTableCompMust(type,language){

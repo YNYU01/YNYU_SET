@@ -403,6 +403,10 @@ input[type="range"] {
   overflow-x: scroll;
 }
 
+.tx-ove{
+  text-overflow: ellipsis;
+}
+
 .fl0{
   flex: 0 0 auto;
 }
@@ -538,6 +542,7 @@ input[type="file" i]::after{
   flex: 0 0 auto;
   border-radius:calc(var(--swi-r) - 2px);
   background:var(--swi-af);
+  opacity: 0.5;
   cursor: var(--pointer,pointer);
 }
 .switch::after{
@@ -546,6 +551,7 @@ transition:transform 0.2s ease-out;
 
 input[type="checkbox"]:checked+.switch::after{
   transform: translateX(var(--swi-h,18px));
+  opacity: 1;
 }
 
 .switch::before{
@@ -775,6 +781,7 @@ input[type="checkbox"]:checked+.btn-theme {
   display: var(--tips-df);
   border-radius: 4px;
   background-color: rgba(0, 0, 0, 0.8);
+  left: 0;
   transform: translateX(var(--x,0));
   animation: boxUp 0.2s;
 }
@@ -801,11 +808,11 @@ input[type="checkbox"]:checked+.btn-theme {
 }
 
 [data-tips-x="center"]::after{
-  --x:calc(-50% + var(--x,8px))
+  --x:calc(-50% + var(--xx,8px))
 }
 
 [data-tips-x="right"]::after{
-  --x:calc(-100% + var(--x,16px))
+  --x:calc(-100% + var(--xx,22px))
 }
 
 [data-turnto]{

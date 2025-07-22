@@ -80,3 +80,55 @@ function getUnicode(text){
 }
 
 //console.log(getUnicode(COPYRIGHT_ZH))
+
+determineLocation()
+function determineLocation() {
+  // 检查浏览器是否支持 Geolocation API
+  if (navigator.geolocation) {
+    console.log("浏览器支持 Geolocation API，尝试获取位置...");
+    
+    // 尝试获取当前地理位置
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        // 成功获取位置
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        console.log("纬度:", latitude);
+        console.log("经度:", longitude);
+        // 在这里处理位置信息（例如显示地图或进行后续操作）
+      },
+      (error) => {
+        // 处理错误（例如用户拒绝权限或无法获取位置）
+        console.error("获取地理位置失败:", error.message);
+        
+        // 转而使用 IP 服务获取位置
+        fetchIPBasedLocation();
+      }
+    );
+  } else {
+    console.log("浏览器不支持 Geolocation API，使用 IP 服务获取位置...");
+    fetchIPBasedLocation();
+  }
+}
+
+function fetchIPBasedLocation() {
+  // Step 1: 获取访问者的IP地址
+  fetch('https://ipapi.co/json/')
+  .then(response => response.json())
+  .then(data => {
+    const visitorIP = data.ip;
+    console.log(visitorIP)
+    // Step 2: 解析IP地址
+    // Step 3: 查询国家/地区信息
+    fetch(`https://ipapi.co/${visitorIP}/json/`)
+      .then(response => response.json())
+      .then(data => {
+        // Step 4: 提取国家/地区信息
+        const country = data.country_name;
+        const countryCode = data.country_code;
+
+        // 在控制台输出国家/地区信息
+        console.log(`访问者国家/地区：${country} (${countryCode})`);
+      });
+  });
+}
