@@ -3,62 +3,62 @@ let skillSecInfo = [
   {
     id: 'inSituRasterize',
     name: ["原地栅格化","in-situ rasterize"],
-    tips:  ["",""],
+    tips: ["瓦片式栅格化","Auto rasterize as tile"],
   },
   {
     id: 'easeTransform',
     name: ["简单变形","ease transform"],
-    tips:  ["",""],
+    tips: ["斜切和拉伸","Skew and top-bottom/left-right stretch"],
   },
   {
     id: 'uniformScale',
     name: ["等比缩放","uniform scale"],
-    tips:  ["",""],
+    tips: ["逐个进行等比缩放","Scaling one by one"],
   },
   {
     id: 'alterImageFill',
     name: ["图片填充修改","alter image fill"],
-    tips:  ["",""],
+    tips: ["处理填充里的图片","Alter the image of fills"],
   },
   {
     id: 'clipGrid',
     name: ["宫格裁切","clip grid"],
-    tips:  ["",""],
+    tips: ["按宫格裁切处理成组件（推荐）或多图","Clip as components(preferred) or images"],
   },
   {
     id: 'SplitText',
     name: ["拆分文本","split text"],
-    tips:  ["",""],
+    tips: ["可能会丢失字体和样式","Possible loss of fonts and styles"],
   },
   {
     id: 'MergeText',
     name: ["合并文本","merge text"],
-    tips:  ["",""],
+    tips: ["可能会丢失字体和样式","Possible loss of fonts and styles"],
   },
   {
     id: 'LayersLayout',
     name: ["图层&布局","layers layout"],
-    tips:  ["",""],
+    tips: ["更便捷地排布和填充内容","Layout and fill content more conveniently"],
   },
   {
     id: '',
     name: ["",""],
-    tips:  ["",""],
+    tips: ["",""],
   },
   {
     id: '',
     name: ["",""],
-    tips:  ["",""],
+    tips: ["",""],
   },
   {
     id: '',
     name: ["",""],
-    tips:  ["",""],
+    tips: ["",""],
   },
   {
     id: '',
     name: ["",""],
-    tips:  ["",""],
+    tips: ["",""],
   },
 ]
 
@@ -301,7 +301,7 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 
 window.addEventListener('load',()=>{
   /*clear*/
-  viewPage('sheet')
+  viewPage('more tools')
   /**/;
   if(window.innerWidth < 300){
     TV_MOVE = true;
@@ -391,7 +391,7 @@ function addSkillTitle(){
       node.setAttribute('data-skill-title','');
       node.className = 'df-lc';
       let tips = document.createElement('div');
-      tips.setAttribute('data-tips','');
+      tips.setAttribute('data-tips','auto');
       tips.setAttribute('data-tips-x','left');
       tips.setAttribute('data-tips-y','top');
       tips.setAttribute('style',`--tips-text:'${info.tips[0]}'; --tips-text-en:'${info.tips[1]}';`);
@@ -1251,6 +1251,7 @@ pixelScale.addEventListener('change',()=>{
 skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
   
 });
+//按各自比例/统一宽高进行等比缩放
 //点击即执行的功能
 skillBtnMain.forEach(btn => {
   btn.addEventListener('click',()=>{

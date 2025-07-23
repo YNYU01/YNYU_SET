@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@52bdaff1464710f73341400a9f5f20ecec768b13/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -54,7 +54,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@52bdaff1464710f73341400a9f5f20ecec768b13/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -2345,6 +2345,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
+                  <div class="df-sc" data-skill-line="">
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By Line">按行拆分</div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By Style">按样式拆分</div>
+                  </div>
                 </div>
                 <div class="fl1"  data-skill-sec="MergeText">
                   <div data-skill-star="false">
@@ -2452,12 +2456,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@52bdaff1464710f73341400a9f5f20ecec768b13/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@52bdaff1464710f73341400a9f5f20ecec768b13/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@52bdaff1464710f73341400a9f5f20ecec768b13/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@52bdaff1464710f73341400a9f5f20ecec768b13/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@52bdaff1464710f73341400a9f5f20ecec768b13/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@52bdaff1464710f73341400a9f5f20ecec768b13/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -2465,62 +2469,62 @@ let skillSecInfo = [
   {
     id: 'inSituRasterize',
     name: ["原地栅格化","in-situ rasterize"],
-    tips:  ["",""],
+    tips: ["瓦片式栅格化","Auto rasterize as tile"],
   },
   {
     id: 'easeTransform',
     name: ["简单变形","ease transform"],
-    tips:  ["",""],
+    tips: ["斜切和拉伸","Skew and top-bottom/left-right stretch"],
   },
   {
     id: 'uniformScale',
     name: ["等比缩放","uniform scale"],
-    tips:  ["",""],
+    tips: ["逐个进行等比缩放","Scaling one by one"],
   },
   {
     id: 'alterImageFill',
     name: ["图片填充修改","alter image fill"],
-    tips:  ["",""],
+    tips: ["处理填充里的图片","Alter the image of fills"],
   },
   {
     id: 'clipGrid',
     name: ["宫格裁切","clip grid"],
-    tips:  ["",""],
+    tips: ["按宫格裁切成多图或处理成组件（推荐）","Clip as images or process into components (preferred)"],
   },
   {
     id: 'SplitText',
     name: ["拆分文本","split text"],
-    tips:  ["",""],
+    tips: ["可能会丢失字体和样式","Possible loss of fonts and styles"],
   },
   {
     id: 'MergeText',
     name: ["合并文本","merge text"],
-    tips:  ["",""],
+    tips: ["可能会丢失字体和样式","Possible loss of fonts and styles"],
   },
   {
     id: 'LayersLayout',
     name: ["图层&布局","layers layout"],
-    tips:  ["",""],
+    tips: ["更便捷地排布和填充内容","Make the layout and filling of content more convenient"],
   },
   {
     id: '',
     name: ["",""],
-    tips:  ["",""],
+    tips: ["",""],
   },
   {
     id: '',
     name: ["",""],
-    tips:  ["",""],
+    tips: ["",""],
   },
   {
     id: '',
     name: ["",""],
-    tips:  ["",""],
+    tips: ["",""],
   },
   {
     id: '',
     name: ["",""],
-    tips:  ["",""],
+    tips: ["",""],
   },
 ]
 
@@ -2853,7 +2857,7 @@ function addSkillTitle(){
       node.setAttribute('data-skill-title','');
       node.className = 'df-lc';
       let tips = document.createElement('div');
-      tips.setAttribute('data-tips','');
+      tips.setAttribute('data-tips','auto');
       tips.setAttribute('data-tips-x','left');
       tips.setAttribute('data-tips-y','top');
       tips.setAttribute('style',`--tips-text:'${info.tips[0]}'; --tips-text-en:'${info.tips[1]}';`);
@@ -3713,6 +3717,7 @@ pixelScale.addEventListener('change',()=>{
 skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
   
 });
+//按各自比例/统一宽高进行等比缩放
 //点击即执行的功能
 skillBtnMain.forEach(btn => {
   btn.addEventListener('click',()=>{

@@ -724,27 +724,35 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-create-tags],[data-create-catalogues]{
-  height: fit-content;
   display: none;
 }
+
+[data-create-tags],[data-create-catalogues],[data-split-tags]{
+  height: fit-content;
+}
+
 
 [data-create-tags-box="image"] [data-create-tags],
 [data-create-tags-box="table"] [data-create-tags]{
   display: flex;
 }
 
-[data-create-tags]{
+[data-create-tags],[data-split-tags]{
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
-[data-create-tag]{
+[data-create-tag],[data-split-tag]{
   height: 24px;
   padding: 2px 4px;
   background: var(--boxGry);
   border-radius: 6px;
   gap: 4px;
   font-size: 10px;
+}
+
+[data-split-tag]{
+  height: 16px;
 }
 
 [data-tableset-thtd] label{
@@ -790,7 +798,6 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 [data-skilltype-box]{
   max-width: 560px;
   height: 60px;
-  padding: 0 10px;
   gap: 6px;
   margin: 0 auto;
 }

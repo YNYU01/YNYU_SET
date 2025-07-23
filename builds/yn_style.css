@@ -784,6 +784,7 @@ input[type="checkbox"]:checked+.btn-theme {
   left: 0;
   transform: translateX(var(--x,0));
   animation: boxUp 0.2s;
+  white-space: nowrap;
 }
 
 [data-tips]:hover{
@@ -796,15 +797,14 @@ input[type="checkbox"]:checked+.btn-theme {
 
 [data-tips="set"]::after{
   width: var(--tips-w);
-  white-space: wrap;
 }
 
 [data-tips-y="top"]::after{
-  top: var(--tips-gap,-22px);
+  bottom: var(--tips-gap,102%);
 }
 
 [data-tips-y="bottom"]::after{
-  bottom: var(--tips-gap,-22px);
+  top: var(--tips-gap,102%);
 }
 
 [data-tips-x="center"]::after{

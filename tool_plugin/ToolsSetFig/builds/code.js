@@ -151,6 +151,35 @@ figma.ui.onmessage = async (message) => {
     if ( type == 'Pixel Overwrite'){
         toPixel(info,true);
     };
+    //拆分文案
+    if (type == 'Split By Line'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let texts = b.filter(item => item.type == 'TEXT');
+        for(let i = 0; i < texts.length; i++){
+            let oldnode = texts[i]
+            let textSplit = oldnode.getStyledTextSegments(['fontName','fills','fontSize']);
+            console.log(textSplit)
+        }
+
+        /*
+        texts.forEach(item => { 
+            let textSafe = item.clone();
+            if(item.hasMissingFont == true){
+                let fontN = {family:'Inter',style:'Regular'}
+                figma.loadFontAsync(fontN)
+                .then(()=>{
+                    textSafe.fontName = fontN;
+                    splitText(textSafe,'line',item);
+                })
+                
+            } else {
+                splitText(textSafe,'line',item);
+            };
+        });
+        */
+
+    }
     //自动排列
     if ( type == 'Arrange By Ratio'){
         if(info){
@@ -188,7 +217,7 @@ function postmessage(data){
     /*figma*/
     figma.ui.postMessage({pluginMessage:data})
     /*mastergo*/
-    //mg.ui.postMessage(data)
+    //figma.ui.postMessage(data)
 }
 
 figma.on('selectionchange',()=>{
@@ -248,6 +277,7 @@ function setMain(info,node,cloneNode){
     let viewY = Math.floor( figma.viewport.center.y - ((figma.viewport.bounds.height/2  - 300)* figma.viewport.zoom));
 
     let w = info[0],h = info[1],x = info[2],y = info[3],n = info[4],fills = info[5];
+    //console.log(cloneNode)
     if(cloneNode){
         w = cloneNode.width;
         h = cloneNode.height;
@@ -398,9 +428,9 @@ function toPixel(info,isOverWrite){
  * @param {Array} info - [w,h,x,y,[fills],[align,trbl,strokes]] 宽高、坐标、命名、填充、描边
  * @returns {node}
  */
-function addFrame(info){
+function addFrame(info,cloneNode){
     let node = figma.createFrame();
-    setMain(info,node);
+    setMain(info,node,cloneNode);
     return node;
 };
 
@@ -747,3 +777,46 @@ function toRGB(color,isPaint){
         return figma.util.rgb(color);
     }
 }//
+
+//拆分文案
+function splitText(safenode,type,oldnode){
+    let node = safenode;
+    let layerIndex = oldnode.parent.children.findIndex(items => items.id == oldnode.id);
+    let lines = node.characters.split('\n');
+    let lineHeigh = node.getRangeLineHeight(0,1);
+    let fontS = node.getRangeFontSize(0,1);
+    let fontN = node.getRangeFontName(0,1);
+    figma.loadFontAsync(fontN)
+    .then(()=>{
+        node.fontName = fontN;
+        let linH = (fontS * 125)/100;
+        switch (lineHeigh.unit){
+            case 'PIXELS': linH = lineHeigh.value;
+            case 'PERCENT': linH = (fontS * lineHeigh.value)/100
+        };
+        let newtexts = [];
+        switch (type){
+            case 'line':
+                for(let i = 0; i < lines.length; i++){
+                    let text = safenode.clone();
+                    text.characters = lines[i].trim();
+                    text.y += linH * i;
+                    newtexts.push(text);
+                    if(i == lines.length - 1){
+                        let group = figma.group(newtexts,node.parent,(layerIndex + 1))
+                        group.name = TextMaxLength(node.name, 20, '...');
+                        figma.currentPage.selection = [group];
+                        safenode.remove();
+                    };
+                };   
+            ;break
+            case 'style':
+            ;break
+            case 'number':
+            ;break
+            case 'key':
+            ;break
+        }
+    })
+    
+}
