@@ -916,7 +916,10 @@ function addTag(type,info){
     checkbox.appendChild(checkinput);
     checkbox.appendChild(checklabel);
     tag.appendChild(checkbox);
-    
+    let tagNum = document.createElement('span');
+    tagNum.setAttribute('data-tags-index','')
+    tagNum.innerHTML += index + 1 + '.';
+    tag.appendChild(tagNum);
     checkinput.addEventListener('change',()=>{
       if(checkinput.checked){
         tag.setAttribute('data-check-checked','true');
@@ -926,6 +929,7 @@ function addTag(type,info){
         tag.setAttribute('data-create-final','false');
       };
     });
+    
   };
   //重置文字样式
   loadFont(createTagsBox.parentNode);
@@ -1174,30 +1178,33 @@ skillStar.forEach(item =>{
   item.addEventListener('click',()=>{
     let isStar = item.getAttribute('data-skill-star');
     let skillId = item.parentNode.getAttribute('data-skill-sec');
-    let cover = document.querySelector(`[data-skill-cover="${skillId}"]`);
-    let skillNode = document.querySelector(`[data-skill-sec="${skillId}"]`);
-    if(isStar == "true"){
-      item.setAttribute('data-skill-star','false');
-      cover.parentNode.insertBefore(skillNode,cover);
-      userSkillStar = userSkillStar.filter(id => id !== skillId);
-      storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
-      cover.remove();
-    } else {
-      let numModel = skillNode.parentNode.getAttribute('data-skillnum');
-      if(numModel == 2){
-        tipsAll(['禁止收藏整个模块的功能',"Don't star all functions of same module"],3000,4)
-      }else{
-        moveSkillStar([skillId]);
-        userSkillStar.push(skillId);
+    if(skillId){
+      let cover = document.querySelector(`[data-skill-cover="${skillId}"]`);
+      let skillNode = document.querySelector(`[data-skill-sec="${skillId}"]`);
+      if(isStar == "true"){
+        item.setAttribute('data-skill-star','false');
+        cover.parentNode.insertBefore(skillNode,cover);
+        userSkillStar = userSkillStar.filter(id => id !== skillId);
         storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
-      }
+        cover.remove();
+      } else {
+        let numModel = skillNode.parentNode.getAttribute('data-skillnum');
+        if(numModel == 2){
+          tipsAll(['禁止收藏整个模块的功能',"Don't star all functions of same module"],3000,4)
+        }else{
+          moveSkillStar([skillId]);
+          userSkillStar.push(skillId);
+          storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
+          /*
+          skillNode.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest',
+          });
+          */
+        };
+      };
     };
-    reSkillNum();
-    skillNode.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'nearest',
-    });
   });
 });
 function moveSkillStar(stars){
@@ -1213,6 +1220,7 @@ function moveSkillStar(stars){
       star.setAttribute('data-skill-star','true')
     };
   });
+  reSkillNum();
 };
 function reSkillNum(){
   let models = document.querySelectorAll('[data-skillmodule]');
@@ -1252,6 +1260,23 @@ skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
   
 });
 //按各自比例/统一宽高进行等比缩放
+function scaleRWH(){
+
+};
+//split标签绑定
+getElementMix('data-split-tags').querySelectorAll('input').forEach(item => {
+  item.addEventListener('change',()=>{
+    let tag = item.parentNode.parentNode
+    if(item.checked){
+      tag.setAttribute('data-check-checked','true');
+      tag.setAttribute('data-split-final','true');
+    }else{
+      tag.setAttribute('data-check-checked','false');
+      tag.setAttribute('data-split-final','false');
+    };
+  });
+});
+
 //点击即执行的功能
 skillBtnMain.forEach(btn => {
   btn.addEventListener('click',()=>{
@@ -1260,6 +1285,8 @@ skillBtnMain.forEach(btn => {
       case 'Pixel As Copy':sendPixel(skillname);break
       case 'Pixel Overwrite':sendPixel(skillname);break
       case 'Reset All Transform':;break
+      case 'Split By Conditions':sendSplit('tags',skillname);break
+      case 'Split By Symbol':sendSplit('inputs',skillname);break
       default : toolMessage(['',skillname],PLUGINAPP);break
     }
   });
@@ -1287,6 +1314,24 @@ skillBtnMain.forEach(btn => {
     toolMessage([cuts,name],PLUGINAPP);
     },100);
   };
+
+  function sendSplit(type){
+    if(type == 'tags'){
+      let tagsBox = getElementMix('data-split-tags').querySelectorAll('[data-split-final="true"]');
+      let tags = [];
+      tagsBox.forEach(item => {
+        let tag = item.querySelector('[data-split-info="name"]').getAttribute('data-en-text');
+        tags.push(tag);
+      });
+      //console.log(tags)
+      toolMessage([[tags,'tags'],'splitText'],PLUGINAPP);
+    };
+    if(type == 'inputs'){
+      let inputs = document.getElementById('split-word').value;
+      let typeNum = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
+      toolMessage([[[inputs,typeNum],'inputs'],'splitText'],PLUGINAPP);
+    };
+  }
 });
 
 

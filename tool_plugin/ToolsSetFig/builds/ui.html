@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -54,7 +54,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -774,6 +774,10 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: none;
 }
 
+[data-tags-index]{
+  opacity: 0.6;
+}
+
 [data-create-tags-box]{
   resize: vertical;
   height: 200px;
@@ -783,27 +787,35 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-create-tags],[data-create-catalogues]{
-  height: fit-content;
   display: none;
 }
+
+[data-create-tags],[data-create-catalogues],[data-split-tags]{
+  height: fit-content;
+}
+
 
 [data-create-tags-box="image"] [data-create-tags],
 [data-create-tags-box="table"] [data-create-tags]{
   display: flex;
 }
 
-[data-create-tags]{
+[data-create-tags],[data-split-tags]{
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
-[data-create-tag]{
+[data-create-tag],[data-split-tag]{
   height: 24px;
   padding: 2px 4px;
   background: var(--boxGry);
   border-radius: 6px;
   gap: 4px;
   font-size: 10px;
+}
+
+[data-split-tag]{
+  height: 16px;
 }
 
 [data-tableset-thtd] label{
@@ -849,7 +861,6 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 [data-skilltype-box]{
   max-width: 560px;
   height: 60px;
-  padding: 0 10px;
   gap: 6px;
   margin: 0 auto;
 }
@@ -2345,9 +2356,94 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
+                  <div class="df-ffc bod-d" data-skill-line style="padding: 4px; gap: 4px;">
+                    <div data-split-tags class="w100 df-lc">
+                      <div data-split-tag data-split-final="true" data-check-checked="true" class="df-lc">
+                        <div style="width: 14px; height: 14px;">
+                          <input id="split_chk_0" type="checkbox" checked="true">
+                          <label for="split_chk_0" class="check">
+                            <btn-check>
+                            </btn-check>
+                          </label>
+                        </div>
+                        <div data-split-info="name" data-en-text="Wrap">换行</div>
+                      </div>
+                      <div data-split-tag data-split-final="true" data-check-checked="true" class="df-lc">
+                        <div style="width: 14px; height: 14px;">
+                          <input id="split_chk_1" type="checkbox" checked="true">
+                          <label for="split_chk_1" class="check">
+                            <btn-check>
+                            </btn-check>
+                          </label>
+                        </div>
+                        <div data-split-info="name" data-en-text="FontSize">字号</div>
+                      </div>
+                      <div data-split-tag data-split-final="true" data-check-checked="true" class="df-lc">
+                        <div style="width: 14px; height: 14px;">
+                          <input id="split_chk_2" type="checkbox" checked="true">
+                          <label for="split_chk_2" class="check">
+                            <btn-check>
+                            </btn-check>
+                          </label>
+                        </div>
+                        <div data-split-info="name" data-en-text="Fills">填充</div>
+                      </div>
+                      <div data-split-tag data-split-final="true" data-check-checked="true" class="df-lc">
+                        <div style="width: 14px; height: 14px;">
+                          <input id="split_chk_3" type="checkbox" checked="true">
+                          <label for="split_chk_3" class="check">
+                            <btn-check>
+                            </btn-check>
+                          </label>
+                        </div>
+                        <div data-split-info="name" data-en-text="FillStyle">填充样式</div>
+                      </div>
+                      <div data-split-tag data-split-final="false" data-check-checked="false" class="df-lc">
+                        <div style="width: 14px; height: 14px;">
+                          <input id="split_chk_4" type="checkbox">
+                          <label for="split_chk_4" class="check">
+                            <btn-check>
+                            </btn-check>
+                          </label>
+                        </div>
+                        <div data-split-info="name" data-en-text="Number">数字</div>
+                      </div>
+                      <div data-split-tag data-split-final="false" data-check-checked="false" class="df-lc">
+                        <div style="width: 14px; height: 14px;">
+                          <input id="split_chk_5" type="checkbox">
+                          <label for="split_chk_5" class="check">
+                            <btn-check>
+                            </btn-check>
+                          </label>
+                        </div>
+                        <div data-split-info="name" data-en-text="FontName">字体(含字重)</div>
+                      </div>
+                      <div data-split-tag data-split-final="false" data-check-checked="false" class="df-lc">
+                        <div style="width: 14px; height: 14px;">
+                          <input id="split_chk_6" type="checkbox">
+                          <label for="split_chk_6" class="check">
+                            <btn-check>
+                            </btn-check>
+                          </label>
+                        </div>
+                        <div data-split-info="name" data-en-text="TextStyle">字体样式</div>
+                      </div>
+                    </div>
+                  </div>
                   <div class="df-sc" data-skill-line="">
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By Line">按行拆分</div>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By Style">按样式拆分</div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By Conditions">按条件拆分</div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Symbol">分割符</div>
+                    <input id="split-word" data-input type="text">
+                    <div data-splitword-set class="df-lc fl1" data-clip-w-set data-radio-value="1" style="gap: 4px; min-width: 110px;">
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="1" data-en-text="Suf">接后</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2" data-en-text="Pre">接前</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="3" data-en-text="Null">剔除</div>
+                    </div>
+                  </div>
+                  <div class="df-sc" data-skill-line="">
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By Symbol">按关键词拆分</div>
                   </div>
                 </div>
                 <div class="fl1"  data-skill-sec="MergeText">
@@ -2391,7 +2487,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
               <div class="w100 df" data-skillmodule="Vector & Generate">
-                <div class="fl1"  data-skill-sec="easeTransform">
+                <div class="fl1"  data-skill-sec="">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -2399,7 +2495,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
               <div class="w100 df" data-skillmodule="Style & Prototype">
-                <div class="fl1"  data-skill-sec="easeTransform">
+                <div class="fl1"  data-skill-sec="">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -2456,12 +2552,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b759efe79dab81d30b09aba2321a3acb67c74f14/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -2489,7 +2585,7 @@ let skillSecInfo = [
   {
     id: 'clipGrid',
     name: ["宫格裁切","clip grid"],
-    tips: ["按宫格裁切成多图或处理成组件（推荐）","Clip as images or process into components (preferred)"],
+    tips: ["按宫格裁切处理成组件（推荐）或多图","Clip as components(preferred) or images"],
   },
   {
     id: 'SplitText',
@@ -2504,7 +2600,7 @@ let skillSecInfo = [
   {
     id: 'LayersLayout',
     name: ["图层&布局","layers layout"],
-    tips: ["更便捷地排布和填充内容","Make the layout and filling of content more convenient"],
+    tips: ["更便捷地排布和填充内容","Layout and fill content more conveniently"],
   },
   {
     id: '',
@@ -2767,7 +2863,7 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 
 window.addEventListener('load',()=>{
   /*
-  viewPage('sheet')
+  viewPage('more tools')
   /**/;
   if(window.innerWidth < 300){
     TV_MOVE = true;
@@ -3382,7 +3478,10 @@ function addTag(type,info){
     checkbox.appendChild(checkinput);
     checkbox.appendChild(checklabel);
     tag.appendChild(checkbox);
-    
+    let tagNum = document.createElement('span');
+    tagNum.setAttribute('data-tags-index','')
+    tagNum.innerHTML += index + 1 + '.';
+    tag.appendChild(tagNum);
     checkinput.addEventListener('change',()=>{
       if(checkinput.checked){
         tag.setAttribute('data-check-checked','true');
@@ -3392,6 +3491,7 @@ function addTag(type,info){
         tag.setAttribute('data-create-final','false');
       };
     });
+    
   };
   //重置文字样式
   loadFont(createTagsBox.parentNode);
@@ -3640,30 +3740,33 @@ skillStar.forEach(item =>{
   item.addEventListener('click',()=>{
     let isStar = item.getAttribute('data-skill-star');
     let skillId = item.parentNode.getAttribute('data-skill-sec');
-    let cover = document.querySelector(`[data-skill-cover="${skillId}"]`);
-    let skillNode = document.querySelector(`[data-skill-sec="${skillId}"]`);
-    if(isStar == "true"){
-      item.setAttribute('data-skill-star','false');
-      cover.parentNode.insertBefore(skillNode,cover);
-      userSkillStar = userSkillStar.filter(id => id !== skillId);
-      storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
-      cover.remove();
-    } else {
-      let numModel = skillNode.parentNode.getAttribute('data-skillnum');
-      if(numModel == 2){
-        tipsAll(['禁止收藏整个模块的功能',"Don't star all functions of same module"],3000,4)
-      }else{
-        moveSkillStar([skillId]);
-        userSkillStar.push(skillId);
+    if(skillId){
+      let cover = document.querySelector(`[data-skill-cover="${skillId}"]`);
+      let skillNode = document.querySelector(`[data-skill-sec="${skillId}"]`);
+      if(isStar == "true"){
+        item.setAttribute('data-skill-star','false');
+        cover.parentNode.insertBefore(skillNode,cover);
+        userSkillStar = userSkillStar.filter(id => id !== skillId);
         storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
-      }
+        cover.remove();
+      } else {
+        let numModel = skillNode.parentNode.getAttribute('data-skillnum');
+        if(numModel == 2){
+          tipsAll(['禁止收藏整个模块的功能',"Don't star all functions of same module"],3000,4)
+        }else{
+          moveSkillStar([skillId]);
+          userSkillStar.push(skillId);
+          storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
+          /*
+          skillNode.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest',
+          });
+          */
+        };
+      };
     };
-    reSkillNum();
-    skillNode.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'nearest',
-    });
   });
 });
 function moveSkillStar(stars){
@@ -3679,6 +3782,7 @@ function moveSkillStar(stars){
       star.setAttribute('data-skill-star','true')
     };
   });
+  reSkillNum();
 };
 function reSkillNum(){
   let models = document.querySelectorAll('[data-skillmodule]');
@@ -3718,6 +3822,23 @@ skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
   
 });
 //按各自比例/统一宽高进行等比缩放
+function scaleRWH(){
+
+};
+//split标签绑定
+getElementMix('data-split-tags').querySelectorAll('input').forEach(item => {
+  item.addEventListener('change',()=>{
+    let tag = item.parentNode.parentNode
+    if(item.checked){
+      tag.setAttribute('data-check-checked','true');
+      tag.setAttribute('data-split-final','true');
+    }else{
+      tag.setAttribute('data-check-checked','false');
+      tag.setAttribute('data-split-final','false');
+    };
+  });
+});
+
 //点击即执行的功能
 skillBtnMain.forEach(btn => {
   btn.addEventListener('click',()=>{
@@ -3726,6 +3847,8 @@ skillBtnMain.forEach(btn => {
       case 'Pixel As Copy':sendPixel(skillname);break
       case 'Pixel Overwrite':sendPixel(skillname);break
       case 'Reset All Transform':;break
+      case 'Split By Conditions':sendSplit('tags',skillname);break
+      case 'Split By Symbol':sendSplit('inputs',skillname);break
       default : toolMessage(['',skillname],PLUGINAPP);break
     }
   });
@@ -3753,6 +3876,24 @@ skillBtnMain.forEach(btn => {
     toolMessage([cuts,name],PLUGINAPP);
     },100);
   };
+
+  function sendSplit(type){
+    if(type == 'tags'){
+      let tagsBox = getElementMix('data-split-tags').querySelectorAll('[data-split-final="true"]');
+      let tags = [];
+      tagsBox.forEach(item => {
+        let tag = item.querySelector('[data-split-info="name"]').getAttribute('data-en-text');
+        tags.push(tag);
+      });
+      //console.log(tags)
+      toolMessage([[tags,'tags'],'splitText'],PLUGINAPP);
+    };
+    if(type == 'inputs'){
+      let inputs = document.getElementById('split-word').value;
+      let typeNum = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
+      toolMessage([[[inputs,typeNum],'inputs'],'splitText'],PLUGINAPP);
+    };
+  }
 });
 
 

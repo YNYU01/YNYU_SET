@@ -715,6 +715,10 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: none;
 }
 
+[data-tags-index]{
+  opacity: 0.6;
+}
+
 [data-create-tags-box]{
   resize: vertical;
   height: 200px;

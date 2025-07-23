@@ -152,33 +152,80 @@ figma.ui.onmessage = async (message) => {
         toPixel(info,true);
     };
     //拆分文案
-    if (type == 'Split By Line'){
+    if ( type == "splitText"){
         let a = figma.currentPage;
         let b = a.selection;
         let texts = b.filter(item => item.type == 'TEXT');
-        for(let i = 0; i < texts.length; i++){
-            let oldnode = texts[i]
-            let textSplit = oldnode.getStyledTextSegments(['fontName','fills','fontSize']);
-            console.log(textSplit)
+        let safeTexts = texts.filter(item => item.hasMissingFont == false)
+        let splitTags = {
+            FontSize: 'fontSize',
+            FontName: 'fontName',
+            Fills: 'fills',
+            FillStyle: 'fillStyleId',
+            TextStyle: 'textStyle',
+        };
+        let splitKeys = info[0], splitType = info[1];
+        //console.log(safeTexts.length,splitKeys,splitType)
+        /**/
+        //不处理缺失字体的对象，并提示用户
+        if(safeTexts.length < texts){
+            figma.clientStorage.getAsync('userLanguage')
+            .then (async (language) => {
+                let text = language == 'Zh' ? '已忽略缺失字体的对象' : 'Nodes with missing fonts have been ignored'
+                figma.notify(text,{
+                    timeout: 3000,
+                });
+            });
+        } else {
+            switch (splitType){
+                case 'tags':
+                    let splitTag = splitKeys.filter(item => splitTags[item]).map(item => splitTags[item]);
+                    for(let i = 0; i < safeTexts.length; i++){
+                        let oldnode = safeTexts[i];
+                        //要加载的字体
+                        let fonts = [...new Set(oldnode.getStyledTextSegments(['fontName']).map(item => JSON.stringify(item.fontName)))];
+                        fonts = fonts.map(item => JSON.parse(item));
+                        let promises = fonts.map(item => figma.loadFontAsync(item));
+                        Promise.all(promises)
+                        .then(()=>{
+                            safeTexts.forEach(item => { 
+                                let textSafe = item.clone();
+                                splitText(textSafe,item,splitTag,splitKeys);
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                    };   
+                ;break
+                case 'inputs':
+                    for(let i = 0; i < safeTexts.length; i++){
+                        let oldnode = safeTexts[i];
+                        //要加载的字体
+                        let fonts = [...new Set(oldnode.getStyledTextSegments(['fontName']).map(item => JSON.stringify(item.fontName)))];
+                        fonts = fonts.map(item => JSON.parse(item));
+                        let promises = fonts.map(item => figma.loadFontAsync(item));
+                        Promise.all(promises)
+                        .then(()=>{
+                            safeTexts.forEach(item => { 
+                                let textSafe = item.clone();
+                                splitText(textSafe,item,null,splitKeys);
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                    };
+                ;break
+            }
+             
         }
-
-        /*
-        texts.forEach(item => { 
-            let textSafe = item.clone();
-            if(item.hasMissingFont == true){
-                let fontN = {family:'Inter',style:'Regular'}
-                figma.loadFontAsync(fontN)
-                .then(()=>{
-                    textSafe.fontName = fontN;
-                    splitText(textSafe,'line',item);
-                })
-                
-            } else {
-                splitText(textSafe,'line',item);
-            };
-        });
-        */
-
+        /**/
+    };
+    if( type == 'Split By Symbol'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let texts = b.filter(item => item.type == 'TEXT');
     }
     //自动排列
     if ( type == 'Arrange By Ratio'){
@@ -779,6 +826,7 @@ function toRGB(color,isPaint){
 }//
 
 //拆分文案
+/*
 function splitText(safenode,type,oldnode){
     let node = safenode;
     let layerIndex = oldnode.parent.children.findIndex(items => items.id == oldnode.id);
@@ -820,3 +868,28 @@ function splitText(safenode,type,oldnode){
     })
     
 }
+*/
+function splitText(safenode,oldnode,splitTag,splitKeys){
+    let node = safenode;
+    let layerIndex = oldnode.parent.children.findIndex(items => items.id == oldnode.id);
+    let lineslength = node.characters.split('\n').map(item => item.length);
+    let lines = [];
+    let start = 0;
+    // 如有分段
+    for (let length of lineslength) {
+        let end = start + length;
+        lines.push([start, end]);
+        start = end;
+    };
+    
+    if(splitTag){
+        //console.log(lines,splitTag,splitKeys)
+        if(splitTag.length > 0 && splitKeys.length > 0){
+
+        };
+        //如勾选了按分段拆分
+    }else{
+        console.log(666)
+    }
+    safenode.remove()
+};
