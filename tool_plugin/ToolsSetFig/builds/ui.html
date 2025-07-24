@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fcb1e8f44892e2ecdad534e681104a090e7290e8/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -54,7 +54,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fcb1e8f44892e2ecdad534e681104a090e7290e8/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -78,6 +78,7 @@ function toolMessage(data,app){
   --code8:#527ac4;
   --code9:#e09524;
   --code10:#ec657c;
+  --impColor1:var(--boxBak);
   /*初始化*/
   --select-w: 100;
   --select-h: 100;
@@ -505,6 +506,15 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
 
 [data-btn]:active{
   transform: translateY(1px);
+}
+
+[data-btn-important]::before{
+  content: '✦';
+  margin-right: 0.25ch;
+}
+
+[data-btn-important="skill"]:hover{
+  border-color: var(--themeColor);
 }
 
 [data-btn="main"]{
@@ -2139,6 +2149,11 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         <div data-option="option" data-option-main="true" data-option-value="≤ 4096px">≤ 4096px</div>
                         <div data-option="option" data-option-main="false" data-option-value="≤ 2048px">≤ 2048px</div>
                         <div data-option="option" data-option-main="false" data-option-value="≤ 1024px">≤ 1024px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 512px">≤ 512px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 256px">≤ 256px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 128px">≤ 128px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 64px">≤ 64px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 32px">≤ 32px</div>
                       </div>
                     </div>
                   </div>
@@ -2309,10 +2324,16 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="4">x4</div>
                     </div>
                   </div>
-                  <div class="df-sc" data-skill-line="">
+                  <div class="df-sc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="As Copy">仅裁切</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="As Component">转组件（推荐）</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Copy Clip">复制裁剪</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Frames Clip">画板裁剪</div>
+                    </div>
+                  </div>
+                  <div class="df-sc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Clips @2x">转@2x切片</div>
+                      <div class="df-cc" data-btn="skill-main" data-btn-important="skill" data-en-text="Component Clip">转组件(推荐)</div>
                     </div>
                   </div>
                 </div>
@@ -2397,16 +2418,6 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                           </label>
                         </div>
                         <div data-split-info="name" data-en-text="FillStyle">填充样式</div>
-                      </div>
-                      <div data-split-tag data-split-final="false" data-check-checked="false" class="df-lc">
-                        <div style="width: 14px; height: 14px;">
-                          <input id="split_chk_4" type="checkbox">
-                          <label for="split_chk_4" class="check">
-                            <btn-check>
-                            </btn-check>
-                          </label>
-                        </div>
-                        <div data-split-info="name" data-en-text="Number">数字</div>
                       </div>
                       <div data-split-tag data-split-final="false" data-check-checked="false" class="df-lc">
                         <div style="width: 14px; height: 14px;">
@@ -2552,12 +2563,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f37872da1a375a6030ad8f537bd43885c9d08d03/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fcb1e8f44892e2ecdad534e681104a090e7290e8/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fcb1e8f44892e2ecdad534e681104a090e7290e8/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fcb1e8f44892e2ecdad534e681104a090e7290e8/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fcb1e8f44892e2ecdad534e681104a090e7290e8/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fcb1e8f44892e2ecdad534e681104a090e7290e8/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@fcb1e8f44892e2ecdad534e681104a090e7290e8/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -2590,12 +2601,12 @@ let skillSecInfo = [
   {
     id: 'SplitText',
     name: ["拆分文本","split text"],
-    tips: ["可能会丢失字体和样式","Possible loss of fonts and styles"],
+    tips: ["缺失字体时无法使用","Can not run without fonts"],
   },
   {
     id: 'MergeText',
     name: ["合并文本","merge text"],
-    tips: ["可能会丢失字体和样式","Possible loss of fonts and styles"],
+    tips: ["缺失字体时无法使用","Can not run without fonts"],
   },
   {
     id: 'LayersLayout',
@@ -3891,7 +3902,7 @@ skillBtnMain.forEach(btn => {
     if(type == 'inputs'){
       let inputs = document.getElementById('split-word').value;
       let typeNum = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
-      toolMessage([[[inputs,typeNum],'inputs'],'splitText'],PLUGINAPP);
+      toolMessage([[[inputs,typeNum * 1],'inputs'],'splitText'],PLUGINAPP);
     };
   }
 });

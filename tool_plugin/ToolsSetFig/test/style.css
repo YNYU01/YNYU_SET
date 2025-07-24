@@ -19,6 +19,7 @@
   --code8:#527ac4;
   --code9:#e09524;
   --code10:#ec657c;
+  --impColor1:var(--boxBak);
   /*初始化*/
   --select-w: 100;
   --select-h: 100;
@@ -446,6 +447,15 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
 
 [data-btn]:active{
   transform: translateY(1px);
+}
+
+[data-btn-important]::before{
+  content: '✦';
+  margin-right: 0.25ch;
+}
+
+[data-btn-important="skill"]:hover{
+  border-color: var(--themeColor);
 }
 
 [data-btn="main"]{

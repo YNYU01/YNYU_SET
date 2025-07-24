@@ -28,12 +28,12 @@ let skillSecInfo = [
   {
     id: 'SplitText',
     name: ["拆分文本","split text"],
-    tips: ["可能会丢失字体和样式","Possible loss of fonts and styles"],
+    tips: ["缺失字体时无法使用","Can not run without fonts"],
   },
   {
     id: 'MergeText',
     name: ["合并文本","merge text"],
-    tips: ["可能会丢失字体和样式","Possible loss of fonts and styles"],
+    tips: ["缺失字体时无法使用","Can not run without fonts"],
   },
   {
     id: 'LayersLayout',
@@ -1329,7 +1329,7 @@ skillBtnMain.forEach(btn => {
     if(type == 'inputs'){
       let inputs = document.getElementById('split-word').value;
       let typeNum = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
-      toolMessage([[[inputs,typeNum],'inputs'],'splitText'],PLUGINAPP);
+      toolMessage([[[inputs,typeNum * 1],'inputs'],'splitText'],PLUGINAPP);
     };
   }
 });

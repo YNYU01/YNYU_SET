@@ -173,54 +173,35 @@ figma.ui.onmessage = async (message) => {
             .then (async (language) => {
                 let text = language == 'Zh' ? '已忽略缺失字体的对象' : 'Nodes with missing fonts have been ignored'
                 figma.notify(text,{
+                    error:true,
                     timeout: 3000,
                 });
             });
         } else {
-            switch (splitType){
-                case 'tags':
-                    let splitTag = splitKeys.filter(item => splitTags[item]).map(item => splitTags[item]);
-                    for(let i = 0; i < safeTexts.length; i++){
-                        let oldnode = safeTexts[i];
-                        //要加载的字体
-                        let fonts = [...new Set(oldnode.getStyledTextSegments(['fontName']).map(item => JSON.stringify(item.fontName)))];
-                        fonts = fonts.map(item => JSON.parse(item));
-                        let promises = fonts.map(item => figma.loadFontAsync(item));
-                        Promise.all(promises)
-                        .then(()=>{
-                            safeTexts.forEach(item => { 
-                                let textSafe = item.clone();
-                                splitText(textSafe,item,splitTag,splitKeys);
-                            });
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                    };   
-                ;break
-                case 'inputs':
-                    for(let i = 0; i < safeTexts.length; i++){
-                        let oldnode = safeTexts[i];
-                        //要加载的字体
-                        let fonts = [...new Set(oldnode.getStyledTextSegments(['fontName']).map(item => JSON.stringify(item.fontName)))];
-                        fonts = fonts.map(item => JSON.parse(item));
-                        let promises = fonts.map(item => figma.loadFontAsync(item));
-                        Promise.all(promises)
-                        .then(()=>{
-                            safeTexts.forEach(item => { 
-                                let textSafe = item.clone();
-                                splitText(textSafe,item,null,splitKeys);
-                            });
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                    };
-                ;break
-            }
-             
+            for(let i = 0; i < safeTexts.length; i++){
+                let oldnode = safeTexts[i];
+                //要加载的字体
+                let fonts = [...new Set(oldnode.getStyledTextSegments(['fontName']).map(item => JSON.stringify(item.fontName)))];
+                fonts = fonts.map(item => JSON.parse(item));
+                let promises = fonts.map(item => figma.loadFontAsync(item));
+                await Promise.all(promises)
+                .then(()=>{
+                    let textSafe = oldnode.clone();
+                        switch (splitType){
+                            case 'tags':
+                                let splitTag = splitKeys.filter(item => splitTags[item]).map(item => splitTags[item]);
+                                splitText(textSafe,oldnode,splitTag,splitKeys);
+                            ;break
+                            case 'inputs':
+                                splitText(textSafe,oldnode,null,splitKeys);
+                            ;break
+                        };
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            }; 
         }
-        /**/
     };
     if( type == 'Split By Symbol'){
         let a = figma.currentPage;
@@ -322,17 +303,23 @@ function sendSendComp(){
 function setMain(info,node,cloneNode){
     let viewX = Math.floor( figma.viewport.center.x - ((figma.viewport.bounds.width/2  - 300)* figma.viewport.zoom));
     let viewY = Math.floor( figma.viewport.center.y - ((figma.viewport.bounds.height/2  - 300)* figma.viewport.zoom));
-
     let w = info[0],h = info[1],x = info[2],y = info[3],n = info[4],fills = info[5];
     //console.log(cloneNode)
+    let hasnoFills = [
+        'TEXT','GROUP',
+    ]
     if(cloneNode){
         w = cloneNode.width;
         h = cloneNode.height;
         x = cloneNode.x;
         y = cloneNode.y;
         n = cloneNode.name;
-        fills = cloneNode.fills;
-    }
+        if(hasnoFills.includes(cloneNode.type)){
+            fills = [];
+        } else {
+            fills = cloneNode.fills;
+        }
+    };
     x = x ? x : viewX;
     y = y ? y : viewY;
     fills = fills ? fills : [];
@@ -706,34 +693,60 @@ function addAutoLayout(node,layout,isFixed){
     node.clipsContent = false;//默认超出不裁剪
     switch (layout[0]){
         case 'H':
-            node.layoutMode = 'HORIZONTAL'
+            node.layoutMode = 'HORIZONTAL';
+            switch (layout[1][0]){
+                case 'T':
+                    node.primaryAxisAlignItems = 'MAX'
+                ;break
+                case 'C':
+                    node.primaryAxisAlignItems = 'CENTER'
+                ;break
+                case 'B':
+                    node.primaryAxisAlignItems = 'MIN'
+                ;break
+            };
+            switch (layout[1][1]){
+                case 'L':
+                    node.counterAxisAlignItems = 'MAX'
+                ;break
+                case 'C':
+                    node.counterAxisAlignItems = 'CENTER'
+                ;break
+                case 'R':
+                    node.counterAxisAlignItems = 'MIN';
+                ;break
+                case 'B':
+                    node.counterAxisAlignItems = 'BASELINE'
+                ;break
+            };
         ;break
         case 'V':
-            node.layoutMode = 'VERTICAL'
+            node.layoutMode = 'VERTICAL';
+            switch (layout[1][0]){
+                case 'T':
+                    node.primaryAxisAlignItems = 'MIN'
+                ;break
+                case 'C':
+                    node.primaryAxisAlignItems = 'CENTER'
+                ;break
+                case 'B':
+                    node.primaryAxisAlignItems = 'MAX'
+                ;break
+            };
+            switch (layout[1][1]){
+                case 'L':
+                    node.counterAxisAlignItems = 'MIN'
+                ;break
+                case 'C':
+                    node.counterAxisAlignItems = 'CENTER'
+                ;break
+                case 'R':
+                    node.counterAxisAlignItems = 'MAX';
+                ;break
+            };
         ;break
     };
-    switch (layout[1][0]){
-        case 'T':
-            node.primaryAxisAlignItems = 'MIN'
-        ;break
-        case 'C':
-            node.primaryAxisAlignItems = 'CENTER'
-        ;break
-        case 'B':
-            node.primaryAxisAlignItems = 'MAX'
-        ;break
-    };
-    switch (layout[1][1]){
-        case 'L':
-            node.counterAxisAlignItems = 'MIN'
-        ;break
-        case 'C':
-            node.counterAxisAlignItems = 'CENTER'
-        ;break
-        case 'R':
-            node.counterAxisAlignItems = 'MAX';
-        ;break
-    };
+    
     
     node.itemSpacing = layout[2] ? layout[2]  : 0;
     node.horizontalPadding = layout[3]  ? layout[3] [0] : 0;
@@ -826,49 +839,6 @@ function toRGB(color,isPaint){
 }//
 
 //拆分文案
-/*
-function splitText(safenode,type,oldnode){
-    let node = safenode;
-    let layerIndex = oldnode.parent.children.findIndex(items => items.id == oldnode.id);
-    let lines = node.characters.split('\n');
-    let lineHeigh = node.getRangeLineHeight(0,1);
-    let fontS = node.getRangeFontSize(0,1);
-    let fontN = node.getRangeFontName(0,1);
-    figma.loadFontAsync(fontN)
-    .then(()=>{
-        node.fontName = fontN;
-        let linH = (fontS * 125)/100;
-        switch (lineHeigh.unit){
-            case 'PIXELS': linH = lineHeigh.value;
-            case 'PERCENT': linH = (fontS * lineHeigh.value)/100
-        };
-        let newtexts = [];
-        switch (type){
-            case 'line':
-                for(let i = 0; i < lines.length; i++){
-                    let text = safenode.clone();
-                    text.characters = lines[i].trim();
-                    text.y += linH * i;
-                    newtexts.push(text);
-                    if(i == lines.length - 1){
-                        let group = figma.group(newtexts,node.parent,(layerIndex + 1))
-                        group.name = TextMaxLength(node.name, 20, '...');
-                        figma.currentPage.selection = [group];
-                        safenode.remove();
-                    };
-                };   
-            ;break
-            case 'style':
-            ;break
-            case 'number':
-            ;break
-            case 'key':
-            ;break
-        }
-    })
-    
-}
-*/
 function splitText(safenode,oldnode,splitTag,splitKeys){
     let node = safenode;
     let layerIndex = oldnode.parent.children.findIndex(items => items.id == oldnode.id);
@@ -877,19 +847,86 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
     let start = 0;
     // 如有分段
     for (let length of lineslength) {
-        let end = start + length;
+        let end = start + length + 1;
         lines.push([start, end]);
         start = end;
     };
     
-    if(splitTag){
+    if(splitKeys.length == 1 || (splitKeys[1] && typeof(splitKeys[1]) !== 'number')){
         //console.log(lines,splitTag,splitKeys)
-        if(splitTag.length > 0 && splitKeys.length > 0){
-
-        };
+        let splitnodes = [node];
         //如勾选了按分段拆分
+        if(splitKeys.includes('Wrap')){
+            splitnodes = [];
+            let group = addFrame([null,null,null,null],oldnode);
+            oldnode.parent.insertChild((layerIndex + 1),group);
+            group.name = TextMaxLength(oldnode.name,20,'...');
+            addAutoLayout(group,['V','TL',0,[0,0]],[true,false]);
+            for(let i = 0; i < lines.length; i++){
+                let splitnode = node.clone();
+                removeText(splitnode,lines[i][0],lines[i][1],true);
+                group.appendChild(splitnode);
+                splitnodes.push(splitnode);
+            };
+            figma.currentPage.selection = [group];
+        };
+        if(splitKeys == ['Wrap'] ){
+            figma.clientStorage.getAsync('userLanguage')
+            .then (async (language) => {
+                let text = language == 'Zh' ? '成功拆分文本（原始文本已隐藏）' : 'Split text successfully!(original has been hidden)'
+                figma.notify(text,{
+                    timeout: 3000,
+                });
+            });
+        } else {
+            for(let i = 0; i < splitnodes.length; i++){
+                let layerIndex2 = splitnodes[i].parent.children.findIndex(items => items.id == splitnodes[i].id);
+                let group2 = addFrame([null,null,null,null],splitnodes[i]);
+                splitnodes[i].parent.insertChild((layerIndex2 + 1),group2);
+                group2.name = TextMaxLength(splitnodes[i].name,20,'...');
+                addAutoLayout(group2,['H','BB',0,[0,0]],[false,true]);
+                let lines2 = splitnodes[i].getStyledTextSegments(splitTag).map(item => [item.start,item.end]);
+                let lineHights = splitnodes[i].getStyledTextSegments(['lineHeight']);
+                if(lineHights.length > 1){
+                    figma.clientStorage.getAsync('userLanguage')
+                    .then (async (language) => {
+                        let text = language == 'Zh' ? '存在不同的行高，会导致拆分后与原排版不符' : 'Mixed line-height will make splitting layout errors'
+                        figma.notify(text,{
+                            error:true,
+                            timeout: 3000,
+                        });
+                    });
+                };
+                for(let ii = 0; ii < lines2.length; ii++){
+                    let splitnode2 = splitnodes[i].clone();
+                    removeText(splitnode2,lines2[ii][0],lines2[ii][1],true,true);
+                    group2.appendChild(splitnode2);
+                };
+                splitnodes[i].remove()
+            };
+        };
+        
     }else{
+        console.log(splitKeys)
         console.log(666)
     }
-    safenode.remove()
+    safenode.remove();
+    oldnode.visible = false;
+};
+
+function removeText(node,start,end,isReverse,isInine){
+    
+    if(isReverse){
+        //console.log(start,end)
+        node.deleteCharacters(0,start);
+        let newlength = node.characters.length;
+        //如果是行内就不需要加多一个占位符的长度
+        if(isInine){
+            node.deleteCharacters(end - start,newlength);
+        } else {
+            node.deleteCharacters(end - start - 1,newlength);
+        }
+    } else {
+        node.deleteCharacters(start,end)
+    };
 };
