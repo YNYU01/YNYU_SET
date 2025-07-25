@@ -169,7 +169,7 @@ let helpData = {
     "因为【组件属性】功能的强大, 我们会有很多办法实现批量替换数据, 不仅限于表格, 因此【表格】可视为【批量替换数据】的一种特殊情况",
     ""],
     ["li",
-    "使用【表格数据映射】时, 仅检索xxx@table下,每列xxx@column的xxx@th和xxx@td的--data属性进行修改",
+    "使用【文本数据映射】时, 仅检索xxx@table下,每列xxx@column的xxx@th和xxx@td的--data属性进行修改",
     ""],
     ["li",
     "如需要更复杂的组件属性组合, 需使用【组件属性映射】功能来完成数据映射",
@@ -201,7 +201,7 @@ let helpData = {
     "为弥补组件属性的局限性问题, 可使用【标签属性映射】来完成 /++ #xxx.fill(填充色值) | #xxx.stroke(描边色值) | #xxx.fillStyle(填充样式名) | #xxx.strokeStyle(描边样式名)| #xxx.visible(可见性true/false) | #xxx.opacity(透明度0~1) | #xxx.fontSize(字号) ++/ 的参数化控制",
     ""],
     ["li",
-    "选中的对象将按图层顺序对应每一行的数值,修改时会先判断对象是否带标签, 然后再遍历子对象, 对象/子对象本身可以包含多个标签, 可以存在不同的标签组合, 这对实现更复杂的样式变化很有用 ",
+    "选中的对象将按图层顺序对应每一行的数值,修改时会先判断对象是否带标签, 然后再遍历子对象, 对象/子对象本身可以包含多个标签, 可以存在不同的标签组合，/++ 注意标签与命名或其他标签之间要用空格隔开 ++/, 这对实现更复杂的样式变化很有用 ",
     ""],
     ["li",
     "",
@@ -1285,8 +1285,12 @@ skillBtnMain.forEach(btn => {
       case 'Pixel As Copy':sendPixel(skillname);break
       case 'Pixel Overwrite':sendPixel(skillname);break
       case 'Reset All Transform':;break
-      case 'Split By Conditions':sendSplit('tags',skillname);break
-      case 'Split By Symbol':sendSplit('inputs',skillname);break
+      case 'Split By Conditions':sendSplit('tags');break
+      case 'Split By Symbol':sendSplit('inputs');break
+      case 'Mapping Names':sendTable('mapName');break
+      case 'Mapping Texts':sendTable('mapText');break
+      case 'Mapping Properties':sendTable('mapPro');break
+      case 'Mapping Tags':sendTable('mapTag');break
       default : toolMessage(['',skillname],PLUGINAPP);break
     }
   });
@@ -1331,7 +1335,16 @@ skillBtnMain.forEach(btn => {
       let typeNum = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
       toolMessage([[[inputs,typeNum * 1],'inputs'],'splitText'],PLUGINAPP);
     };
-  }
+  };
+
+  function sendTable(type){
+    let data = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
+    if(type == 'mapPro' || type == 'maptag' ){
+      data = tableArrayToObj(tableTextToArray(getElementMix('upload-tablearea').value.trim()))
+    };
+    let clone = true,reduce = true,enters = '[enter]',nulls = '--';
+    toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
+  };
 });
 
 

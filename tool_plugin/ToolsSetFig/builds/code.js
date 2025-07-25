@@ -127,7 +127,16 @@ figma.ui.onmessage = async (message) => {
             let all = await createTable(th,td,language);
             let newth = all[0];
             let newtd = all[1];
-            let table = all[2]
+            let table = all[2];
+            //模拟输入的数据，注意是按列记录而不是按行
+            let test = [
+                ["A1","a2","a3","a4"],
+                ["B1","b2","b3","b4"],
+                ["C1","c2","c3","c4"]
+            ];
+            reCompNum(table,2,2);
+            reTableByArray(table,test);
+            reTableStyle(table,info[0]);
             //如果用了自定义组件，则重新排列，避免太分散
             if(newth == th || newtd == td){
                 let layerIndex = th.parent.children.findIndex(item => item.id == th.id);
@@ -136,12 +145,42 @@ figma.ui.onmessage = async (message) => {
                     th.parent.insertChild((layerIndex - 1),item)
                 });
             };
-            a.selection = all
+            a.selection = all;
         })
         .catch (error => {
         })
         
 
+    };
+    //填充文本数据
+    if( type == 'mapText'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        console.log(info)
+        /**/
+        let tables = b.filter(item => item.name.includes('@table'));
+        if(!tables || tables.length == 0){
+            tables = b.map(node => node.findAll(item => item.name.includes('@table'))).flat();
+        };
+        
+        tables.forEach(table => {
+            let HH = table.children.length;
+            let VV = table.children[0].children.length;
+            let H = info.data.length - HH;
+            let V = info.data[0].length - VV;
+            if(info.clone == false){
+                H = H > 0 ? 0 : H;
+                V = V > 0 ? 0 : V;
+            }
+            if(info.reduce == false){
+                H = H < 0 ? 0 : H;
+                V = V < 0 ? 0 : V;
+            };
+            console.log(H,V)
+            reCompNum(table,H,V)
+            //reTableByArray(table,info.data)
+        });
+        /**/
     };
     //栅格化-副本
     if ( type == 'Pixel As Copy'){
@@ -498,9 +537,9 @@ function layoutByRatio(nodes,isMinToMax){
         infos.push({x:b[i].x,y:b[i].y,w:b[i].width,h:b[i].height,i:i,});
     };
     let HH = infos.filter(item => item.w > item.h).sort((a, b) => b.w*b.h - a.w*a.h);//横板
-    let maxW = Math.max(Math.max(...HH.map(item => item.w)),1920)
+    let maxW = Math.max(...HH.map(item => item.w));
     let LL = infos.filter(item => item.w < item.h).sort((a, b) => b.w*b.h - a.w*a.h);//竖版
-    let maxH = Math.max(...LL.map(item => item.h))
+    let maxH = Math.max(...LL.map(item => item.h));
     let FF = infos.filter(item => item.w == item.h).sort((a, b) => b.w*b.h - a.w*a.h);//方形
     if(isMinToMax){
         HH = HH.reverse();
@@ -642,6 +681,7 @@ async function addTableCompMust(type,language){
     };
     let text = await addText([{family:'Inter',style:egtext[type][0]},egtext[type][1],16]);
     comp.appendChild(text);
+    
     let fills = {
         th:[toRGB('#666666',true)],
         td:[toRGB('#66666688',true)]
@@ -655,8 +695,11 @@ async function addTableCompMust(type,language){
     ];
 
     for(let i = 0; i < adds.length; i++){
+        //添加描边、填充并绑定组件属性
         addBodFill(comp,adds[i]);
     };
+    //绑定数据的组件属性
+    addCompPro(comp,text,'--data','TEXT',egtext[type][1]);
     
     return comp;
 };
@@ -668,6 +711,68 @@ function addBodFill(node,Array){
     bodfills.appendChild(bodfill);
     asFillChild(bodfill);
     addAbsolute(node,bodfills,true);
+    addCompPro(node,bodfills,Array[3],'BOOLEAN',true);
+};
+//绑定图层和组件属性
+/**
+ * @param {*} type - 'BOOLEAN''TEXT''VARIANT'
+ */
+function addCompPro(node,layer,name,type,value){
+    let typekey = {
+        BOOLEAN: 'visible',
+        TEXT: 'characters',
+        VARIANT: 'mainComponent'
+    }
+    let proid = node.addComponentProperty(name,type,value);
+    layer.componentPropertyReferences = {[typekey[type]]:proid};
+};
+//修改表格样式
+function reTableStyle(table,style){
+    let columns = table.findChildren(item => item.name.includes('@column'));
+    for(let i = 0; i < columns.length; i++){
+        let headers = columns[i].findChildren(item => item.name.includes('@th'));
+        let datas  = columns[i].findChildren(item => item.name.includes('@td'));
+        //console.log(headers,datas)
+        headers.forEach((item) => {
+            //console.log(style.th)
+            if(style.th){
+                findSetPro(item,style.th);
+            };
+        });
+        datas.forEach((item,index)=> {
+            if(style.td){
+                findSetPro(item,style.td,(index + 1));
+            };
+        });
+    };
+    //找到相关组件属性并修改
+    function findSetPro(comp,Array,num){
+        let proKeys = Object.keys(comp.componentProperties);
+        //console.log(Array[4],num)
+        proKeys.forEach(key => {
+            //console.log(key.split('#')[0])
+            /**/
+            switch (key.split('#')[0]){
+                case '--bod-t': comp.setProperties({[key]: Array[0] == 0 ? false : true});break
+                case '--bod-r': comp.setProperties({[key]: Array[1] == 0 ? false : true});break
+                case '--bod-b': comp.setProperties({[key]: Array[2] == 0 ? false : true});break
+                case '--bod-l': comp.setProperties({[key]: Array[3] == 0 ? false : true});break
+                case '--fills':
+                    //是否为间格区分色
+                    if(Array[4] == 'space' && num){
+                        if(num%2 == 0){
+                            comp.setProperties({[key]: true});
+                        } else {
+                            comp.setProperties({[key]: false});
+                        };
+                    } else {
+                        comp.setProperties({[key]: Array[4] == 0 ? false : true});
+                    }
+                ;break
+            }
+            /**/
+        });
+    };
 };
 //重置相对坐标并把约束设为撑满
 function asFillChild(node){
@@ -677,7 +782,157 @@ function asFillChild(node){
         horizontal: "STRETCH",
         vertical: "STRETCH"
     };
-}
+};
+
+//调整实例数量以匹配数据长度
+function reCompNum(nodes,H,V){
+    //console.log(nodes.name,H,V)
+    if(H > 0){
+        let end = nodes.children[nodes.children.length - 1]
+        for(let i = 0; i < H; i++){
+            nodes.appendChild(end.clone());
+        };
+    } else {
+        for(let i = H; i < 0; i++){
+            nodes.children[nodes.children.length - 1].remove();
+        };
+    };
+    if(nodes.name.includes('@table') && V){
+        let columns = nodes.findChildren(item => item.name.includes('@column'));
+        console.log(columns.length)
+        for(let i = 0; i < columns.length; i++){
+            if(V > 0){
+                let end = columns[i].children[columns[i].children.length - 1]
+                for(let ii = 0; ii < V; ii++){
+                    //console.log(666)
+                    columns[i].appendChild(end.clone());
+                };
+            } else {
+                for(let ii = V; ii < 0; ii++){
+                    columns[i].children[columns[i].children.length - 1].remove();
+                };
+            };
+        };
+    };
+};
+//按数组修改组件属性
+function reTableByArray(table,Array){
+    let columns = table.findChildren(item => item.name.includes('@column'));
+    for(let i = 0; i < columns.length; i++){
+        let datas  = columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td'));
+        
+        datas.forEach((comp,index)=> {
+            /**/
+            let textPros = Object.keys(comp.componentProperties).filter(pro => comp.componentProperties[pro].type == 'TEXT');
+            let dataPros = textPros.filter(key => key.split('#')[0] == '--data');
+            //表格优先，其次任意文本类型组件属性
+            if(dataPros && dataPros.length > 0){
+                textPros = dataPros;
+            };
+            textPros.forEach(item => {
+                comp.setProperties({[item]: Array[i][index]});
+            });
+            /**/
+        });
+        
+    };
+};
+//按对象修改组件属性
+function reTableByObj(table,obj){
+    let columns = table.findChildren(item => item.name.includes('@column'));
+    for(let i = 0; i < columns.length; i++){
+        let datas  = columns[i].findChildren(item =>item.name.includes('@th') || item.name.includes('@td'));
+        datas.forEach((comp,index)=> {
+            let keyPros = Object.keys(obj[0]);
+            let rePros = Object.keys(comp.componentProperties).filter(pro => keyPros.includes(pro.split('#')[0]));
+            rePros.forEach(item => {
+                comp.setProperties({[item]: obj[i][item.split('#')[0]]});
+            });
+        });
+    };
+};
+//按标签修改对象属性
+function reAnyByTags(nodes,obj){
+    let tagsKey = [
+        '.fill',
+        '.stroke',
+        '.fillStyle',
+        '.strokeStyle',
+        '.visible',
+        '.opacity',
+        '.fontSize',
+        '.xywh'];
+    for(let i = 0; i < nodes.length; i++){
+        let node = nodes[i]
+        let hasTags = node.findAll(item => tagsKey.some(key => item.name.includes(key)));
+        if(tagsKey.some(key => node.name.includes(key))){
+            hasTags = [node,...hasTags]
+        };
+        hasTags.forEach(layer => {
+            let tags = layer.name.split(' ').filter(item => tagsKey.some(key => item.includes(key)));
+            tags.forEach(tag => {
+                setByTags(layer,tags.split('.')[1],obj[i][tag])
+            });
+        });
+    };
+
+    function setByTags(layer,tagkey,value){
+        switch (tagkey){
+            case 'fill':
+                layer.fills = toRGB(value,true);
+            ;break
+            case 'stroke':
+                layer.strokes = toRGB(value,true);
+            ;break
+            case 'fillStyle':
+                figma.getLocalPaintStylesAsync()
+                .then(list => {
+                    let id = list.find(item => item.name == value).id
+                    if(id){
+                        layer.setFillStyleIdAsync(id);
+                    };
+                });
+            ;break
+            case 'strokeStyle':
+                figma.getLocalPaintStylesAsync()
+                .then(list => {
+                    let id = list.find(item => item.name == value).id
+                    if(id){
+                        layer.setStrokeStyleIdAsync(id);
+                    };
+                });
+            ;break
+            case 'visible':
+                let trues = ['true','1','show'];
+                let falses = ['false','0','hide'];
+                value = trues.includes(value) ? true : falses.includes(value) ? false : true; 
+                layer.visible = value;
+            ;break
+            case 'opacity':
+                value = value.replace(/[^0-9]/g,'').trim();
+                value = value ? value * 1 : 1;
+                value = value > 1 ? value/100 : value;
+                layer.opacity = value;
+            ;break
+            case 'fontSize':
+                value = value.replace(/[^0-9]/g,'').trim();
+                value = value ? value * 1 : 12;
+                if(layer.type == 'TEXT'){
+                    layer.fontSize = value;
+                };
+            ;break
+            case 'xywh':
+                let main = value.replace('[','').replace(']','').split(',');
+                main[0] = main[0] == 'null' ? layer.x : main[0];
+                main[1] = main[1] == 'null' ? layer.y : main[1];
+                main[2] = main[2] == 'null' ? layer.width : main[2];
+                main[3] = main[3] == 'null' ? layer.height : main[3];
+                setMain(main,layer);
+            ;break
+        }
+    };
+    
+};
 
 //添加自动布局
 /**
