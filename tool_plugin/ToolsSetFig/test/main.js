@@ -268,8 +268,8 @@ let tableStyle = [
   {th:[0,0,0,0,1],td:[0,0,0,0,0]},//无描边
   {th:[0,0,0,0,1],td:[1,0,1,0,0]},//仅横线
   {th:[0,0,0,0,1],td:[1,1,1,1,0]},//全描边
-  {th:[0,0,0,0,0],td:[1,0,1,0,0]},//仅横线（表头无区分色
-  {th:[0,0,0,0,0],td:[1,1,1,1,0]},//全描边（表头无区分色
+  {th:[1,0,1,0,0],td:[1,0,1,0,0]},//仅横线（表头无区分色
+  {th:[1,1,1,1,0],td:[1,1,1,1,0]},//全描边（表头无区分色
 ];
 
 /*表单绑定*/
@@ -1291,6 +1291,9 @@ skillBtnMain.forEach(btn => {
       case 'Mapping Texts':sendTable('mapText');break
       case 'Mapping Properties':sendTable('mapPro');break
       case 'Mapping Tags':sendTable('mapTag');break
+      case 'Apply Preset Style':sendTableSet('style');break
+      case 'Add C/R':sendTableSet('add');break
+      case 'Reduce C/R':sendTableSet('reduce');break
       default : toolMessage(['',skillname],PLUGINAPP);break
     }
   });
@@ -1339,11 +1342,35 @@ skillBtnMain.forEach(btn => {
 
   function sendTable(type){
     let data = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
-    if(type == 'mapPro' || type == 'maptag' ){
+    if(type == 'mapPro' || type == 'mapTag' ){
       data = tableArrayToObj(tableTextToArray(getElementMix('upload-tablearea').value.trim()))
     };
-    let clone = true,reduce = true,enters = '[enter]',nulls = '--';
+    let clone = getElementMix('switch-autoclone').checked;
+    let reduce = getElementMix('switch-autoreduce').checked;
+    let enters = getElementMix('input-linefeed').value;
+    let nulls = getElementMix('input-nulldata').value;
     toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
+  };
+
+  function sendTableSet(type){
+    let styleId = tableStyleSet.getAttribute('data-radio-value') - 1;
+    let H = getElementMix('table-column-num');
+    let V = getElementMix('table-row-num');
+    switch (type){
+      case 'style':
+        toolMessage([[tableStyle[styleId],type],'reTable'],PLUGINAPP);
+      ;break
+      case 'add':
+        toolMessage([[[H.value,V.value],type],'reTable'],PLUGINAPP);
+        H.value = 0;
+        V.value = 0;
+      ;break
+      case 'reduce':
+        toolMessage([[[H.value * -1,V.value * -1],type],'reTable'],PLUGINAPP);
+        H.value = 0;
+        V.value = 0;
+      ;break
+    };
   };
 });
 

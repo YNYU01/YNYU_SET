@@ -430,9 +430,9 @@
             </div> 
             <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px;">
               <div data-create-table class="w100 df-cc" data-btn="main2" data-en-text="Create Table">创建表格</div>  
-              <div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px; padding: 4px;">
+              <div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
                 <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
-                <label for="table-more" class="btn-more">
+                <label for="table-more" class="wh100 df-cc btn-more" style=" padding: 4px;">
                   <svg data-icon-more width="100%" height="100%" viewBox="0 0 20 20">
                     <g data-icon-more-path="1">
                       <path fill="none" d="M18 0L0 0"></path>
@@ -448,9 +448,9 @@
               </div>
             </div>
             <div class="df-ffc" data-tableset-more data-skill-sec style="gap: 4px; margin: 4px 0; display: none;">
-              <div class="df-lc w100" data-skill-more data-selects-must>
+              <div class="df-lc w100" data-skill-more>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Only Create @th/td">仅创建组件</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Make Compliant">合规化组件</div>
+                <div class="df-cc"  data-selects-must data-btn="skill-main" data-en-text="Make Compliant">合规化组件</div>
               </div>
               <div class="w100 df-cc">
                 <span data-skill-gap>
@@ -477,7 +477,7 @@
                 
               </div>
               <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Apply Preset Style">应用样式</div>
+                <div class="df-cc" data-btn="skill-main" data-btn-important="skill" data-en-text="Apply Preset Style">应用样式</div>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Row Column Swap">反转行列</div>
               </div>
               <div class="w100 df-cc">
@@ -500,7 +500,7 @@
                 <div class="df-cc" data-btn="skill-main" data-en-text="Select Inline">连续选中</div>
               </div>
             </div>
-            <div style="height: 4px;"></div>
+            <div style="min-height: 4px;"></div>
             <!--步骤2-->
             <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
@@ -560,7 +560,8 @@
                 </div> 
               </div>
             </div>
-            <div class="df-ffc" data-tableset-more data-skill-sec style="gap: 4px; margin: 4px 0;">
+            <div class="df-ffc w100 bod-d" style=" max-width: 560px; padding: 4px; gap: 4px; box-sizing: border-box;">
+              <div class="df-cc" style="text-wrap: wrap; font-size: 8px; transform: skewX(-8deg); opacity: 0.6;" data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one frame/group with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个画板组 时生效</div>
               <div class="df-lc w100" data-skill-more style="flex-wrap: wrap; text-wrap: nowrap; font-size: 10px; gap: 4px; margin-bottom: 4px;">
                 <div class="fl1 df-lc" style=" gap: 4px; min-width: 160px;">
                   <div class="df ovh noscrollbar" data-scroll data-en-text="· Clone instance by data quantity">· 数据数量&gt;实例数量时, 复制最末实列</div>
@@ -579,6 +580,8 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="df-ffc" data-skill-sec style="gap: 4px; margin: 4px 0;">
               <div class="df-lc w100" data-skill-more data-selects-must>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Names">图层命名映射</div>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Texts">文本数据映射</div>

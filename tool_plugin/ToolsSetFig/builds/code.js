@@ -25,6 +25,8 @@ figma.clientStorage.getAsync('userResize')
 
 
 let isSendComp = false;
+let TRUES = ['true',true,'1',1,'show','是','有'];
+let FALSES = ['false',false,'0',0,'hide','否','无'];
 //核心功能
 figma.ui.onmessage = async (message) => { 
     const info = message[0]
@@ -152,35 +154,128 @@ figma.ui.onmessage = async (message) => {
         
 
     };
-    //填充文本数据
+    //仅创建表头、表格组件
+    if ( type == 'Only Create @th/td'){
+        figma.clientStorage.getAsync('userLanguage')
+        .then (async (language) => {
+            let th = await addTableCompMust('th',language);
+            let td = await addTableCompMust('td',language);
+            figma.currentPage.selection = [th,td]
+        });
+    };
+    //使所选元素符合表格组件
+    if ( type == 'Make Compliant'){
+        let a = figma.currentPage;
+        let b = a.selection;
+    };
+    //批量填充文本数据
     if( type == 'mapText'){
         let a = figma.currentPage;
         let b = a.selection;
-        console.log(info)
         /**/
         let tables = b.filter(item => item.name.includes('@table'));
         if(!tables || tables.length == 0){
             tables = b.map(node => node.findAll(item => item.name.includes('@table'))).flat();
         };
+        //没有table就说明是普通的文本数据填充
+        if(!tables  || tables.length == 0){
+            let comps = b.filter(item => item.type == 'INSTANCE');
+            //没有实例可能要自动填充
+            if(!comps || comps.length == 0){
+                if(b.length == 1){
+                    comps = b[0].children;
+                    let HH = comps.length;
+                    let H = info.data[0].length - HH;
+                    if(info.clone == false){
+                        H = H > 0 ? 0 : H;
+                    }
+                    if(info.reduce == false){
+                        H = H < 0 ? 0 : H;
+                    };
+                    reCompNum(b[0],H);
+                    reAnyByArray(b[0].children,info.data[0])
+                }
+            } else {
+                reAnyByArray(comps,info.data[0])
+            };
+        } else {
+            tables.forEach(table => {
+                let HH = table.children.length;
+                let VV = table.children[0].children.length;
+                let H = info.data.length - HH;
+                let V = info.data[0].length - VV;
+                if(info.clone == false){
+                    H = H > 0 ? 0 : H;
+                    V = V > 0 ? 0 : V;
+                }
+                if(info.reduce == false){
+                    H = H < 0 ? 0 : H;
+                    V = V < 0 ? 0 : V;
+                };
+                reCompNum(table,H,V)
+                reTableByArray(table,info.data)
+            });
+        };
+    };
+    //批量命名
+    if( type == 'mapName'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let nodes = b;
+        if(b.length == 1){
+            nodes = b[0].children
+        };
+        nodes.forEach((node,index) => {
+            node.name = info.data[0][index];
+        });
+    };
+    //批量组件属性
+    if( type == 'mapPro'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let nodes = b;
+        if(b.length == 1){
+            nodes = b[0].children;
+        };
+        nodes = nodes.filter(node => node.type == 'INSTANCE');
+        //console.log(info.data)
+        reAnyByObj(nodes,info.data);
+    };
+    //批量标签属性
+    if( type == 'mapTag'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let nodes = b;
+        if(b.length == 1){
+            nodes = b[0].children;
+        };
+        nodes = nodes.filter(node => node.type == 'INSTANCE');
+        reAnyByTags(nodes,info.data);
+    };
+    //应用表格样式
+    if( type == 'reTable'){
+        let a = figma.currentPage;
+        let b = a.selection;
+
+        let tables = b.filter(item => item.name.includes('@table'));
+        if(!tables || tables.length == 0){
+            tables = b.map(node => node.findAll(item => item.name.includes('@table'))).flat();
+        };
+        let setdata = info[0],retype = info[1]
         
         tables.forEach(table => {
-            let HH = table.children.length;
-            let VV = table.children[0].children.length;
-            let H = info.data.length - HH;
-            let V = info.data[0].length - VV;
-            if(info.clone == false){
-                H = H > 0 ? 0 : H;
-                V = V > 0 ? 0 : V;
-            }
-            if(info.reduce == false){
-                H = H < 0 ? 0 : H;
-                V = V < 0 ? 0 : V;
-            };
-            console.log(H,V)
-            reCompNum(table,H,V)
-            //reTableByArray(table,info.data)
+            switch (retype){
+                case 'style':
+                    reTableStyle(table,setdata);
+                ;break
+                case 'add':
+                    reCompNum(table,setdata[0],setdata[1]);
+                ;break
+                case 'reduce':
+                    reCompNum(table,setdata[0],setdata[1]);
+                ;break
+             };
         });
-        /**/
     };
     //栅格化-副本
     if ( type == 'Pixel As Copy'){
@@ -799,7 +894,7 @@ function reCompNum(nodes,H,V){
     };
     if(nodes.name.includes('@table') && V){
         let columns = nodes.findChildren(item => item.name.includes('@column'));
-        console.log(columns.length)
+        //console.log(columns.length)
         for(let i = 0; i < columns.length; i++){
             if(V > 0){
                 let end = columns[i].children[columns[i].children.length - 1]
@@ -815,44 +910,53 @@ function reCompNum(nodes,H,V){
         };
     };
 };
-//按数组修改组件属性
+//填充表格数据
 function reTableByArray(table,Array){
     let columns = table.findChildren(item => item.name.includes('@column'));
     for(let i = 0; i < columns.length; i++){
         let datas  = columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td'));
-        
-        datas.forEach((comp,index)=> {
-            /**/
-            let textPros = Object.keys(comp.componentProperties).filter(pro => comp.componentProperties[pro].type == 'TEXT');
-            let dataPros = textPros.filter(key => key.split('#')[0] == '--data');
-            //表格优先，其次任意文本类型组件属性
-            if(dataPros && dataPros.length > 0){
-                textPros = dataPros;
-            };
-            textPros.forEach(item => {
-                comp.setProperties({[item]: Array[i][index]});
-            });
-            /**/
-        });
-        
+        reAnyByArray(datas,Array[i],true)
     };
 };
+//按数组修改组件属性
+function reAnyByArray(comps,Array,istable){
+    for(let i = 0; i < comps.length; i++){
+        console.log(222)
+        let comp = comps[i];
+        let textPros = Object.keys(comp.componentProperties).filter(pro => comp.componentProperties[pro].type == 'TEXT');
+        let dataPros = textPros.filter(key => key.split('#')[0] == '--data');
+        console.log(dataPros)
+        //表格优先，其次任意文本类型组件属性
+        if(istable && dataPros && dataPros.length > 0){
+            textPros = dataPros;
+        };
+        textPros.forEach((item,index)=> {
+            comp.setProperties({[item]: Array[i].toString()});
+        });
+    };
+}
 //按对象修改组件属性
-function reTableByObj(table,obj){
-    let columns = table.findChildren(item => item.name.includes('@column'));
-    for(let i = 0; i < columns.length; i++){
-        let datas  = columns[i].findChildren(item =>item.name.includes('@th') || item.name.includes('@td'));
-        datas.forEach((comp,index)=> {
-            let keyPros = Object.keys(obj[0]);
-            let rePros = Object.keys(comp.componentProperties).filter(pro => keyPros.includes(pro.split('#')[0]));
-            rePros.forEach(item => {
-                comp.setProperties({[item]: obj[i][item.split('#')[0]]});
-            });
+function reAnyByObj(comps,obj){
+    let keyPros = Object.keys(obj[0]);
+    for(let i = 0; i < comps.length; i++){
+        let comp = comps[i];
+        let rePros = Object.keys(comp.componentProperties).filter(pro => keyPros.includes(pro.split('#')[0]));
+        //console.log(rePros,comp)
+        rePros.forEach(item => {
+            //console.log(item,obj[i][item.split('#')[0]])
+            let value = obj[i][item.split('#')[0]];
+            if(comp.componentProperties[item].type !== 'BOOLEAN'){
+                value = value.toString();
+            }else{
+                value = TRUES.includes(value) ? true : FALSES.includes(value) ? false : true; 
+            }
+            comp.setProperties({[item]: value});
         });
     };
 };
 //按标签修改对象属性
 function reAnyByTags(nodes,obj){
+    
     let tagsKey = [
         '.fill',
         '.stroke',
@@ -862,27 +966,34 @@ function reAnyByTags(nodes,obj){
         '.opacity',
         '.fontSize',
         '.xywh'];
+    
     for(let i = 0; i < nodes.length; i++){
         let node = nodes[i]
         let hasTags = node.findAll(item => tagsKey.some(key => item.name.includes(key)));
+        
         if(tagsKey.some(key => node.name.includes(key))){
             hasTags = [node,...hasTags]
         };
+        
         hasTags.forEach(layer => {
             let tags = layer.name.split(' ').filter(item => tagsKey.some(key => item.includes(key)));
+            
             tags.forEach(tag => {
-                setByTags(layer,tags.split('.')[1],obj[i][tag])
+                console.log(tag,obj[i][tag])
+                if(obj[i][tag]){
+                    setByTags(layer,tag.split('.')[1],obj[i][tag])
+                };
             });
         });
     };
-
+    
     function setByTags(layer,tagkey,value){
         switch (tagkey){
             case 'fill':
-                layer.fills = toRGB(value,true);
+                layer.fills = [toRGB(value,true)];
             ;break
             case 'stroke':
-                layer.strokes = toRGB(value,true);
+                layer.strokes = [toRGB(value,true)];
             ;break
             case 'fillStyle':
                 figma.getLocalPaintStylesAsync()
@@ -903,9 +1014,7 @@ function reAnyByTags(nodes,obj){
                 });
             ;break
             case 'visible':
-                let trues = ['true','1','show'];
-                let falses = ['false','0','hide'];
-                value = trues.includes(value) ? true : falses.includes(value) ? false : true; 
+                value = TRUES.includes(value) ? true : FALSES.includes(value) ? false : true; 
                 layer.visible = value;
             ;break
             case 'opacity':
