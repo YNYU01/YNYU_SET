@@ -264,11 +264,15 @@ skilltypeNameNode.forEach(item => {
 });
 let isSkillScroll = true;
 let tableStyle = [
-  {th:[0,0,0,0,1],td:[0,0,0,0,'space']},//间格区分色
+  {th:[0,0,0,0,1],td:[0,0,0,0,'rowSpace']},//横间格区分色
+  {th:[0,0,0,0,'columnSpace'],td:[0,0,0,0,'columnSpace']},//竖间格区分色
   {th:[0,0,0,0,1],td:[0,0,0,0,0]},//无描边
   {th:[0,0,0,0,1],td:[1,0,1,0,0]},//仅横线
+  {th:[0,0,0,0,1],td:[0,1,0,1,0]},//仅竖线
   {th:[0,0,0,0,1],td:[1,1,1,1,0]},//全描边
+  {th:[0,0,0,0,0],td:[0,0,0,0,0]},//无描边（表头无区分色
   {th:[1,0,1,0,0],td:[1,0,1,0,0]},//仅横线（表头无区分色
+  {th:[0,1,0,1,0],td:[0,1,0,1,0]},//仅竖线（表头无区分色
   {th:[1,1,1,1,0],td:[1,1,1,1,0]},//全描边（表头无区分色
 ];
 
@@ -1109,6 +1113,7 @@ chkSelectcomp.addEventListener('change',()=>{
   getElementMix('data-selectcomp-box').style.display = 'flex';
   toolMessage([true,'selectComp'],PLUGINAPP);
 });
+//处理回传的选中对象的数据
 function reSelectComp(info){
  //console.log(info)
  if(info[0] || info[1]){
@@ -1123,6 +1128,12 @@ function reSelectComp(info){
   getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','false')
  };
 
+};
+function reSelectDatas(info){
+  let text = tableArrayToObj(info);
+  let textarea = getElementMix('upload-tablearea');
+  textarea.focus();
+  textarea.value = text;
 };
 createTableBtn.addEventListener('click',()=>{
   let comp1 = getElementMix('data-selectcomp-1').textContent;
@@ -1291,7 +1302,11 @@ skillBtnMain.forEach(btn => {
       case 'Mapping Texts':sendTable('mapText');break
       case 'Mapping Properties':sendTable('mapPro');break
       case 'Mapping Tags':sendTable('mapTag');break
-      case 'Apply Preset Style':sendTableSet('style');break
+      case 'Get Names':sendTable('getName');break
+      case 'Get Texts':sendTable('getText');break
+      case 'Get Properties':sendTable('getPro');break
+      case 'Get Tags':sendTable('getTag');break
+      case 'Apply Preset':sendTableSet('style');break
       case 'Add C/R':sendTableSet('add');break
       case 'Reduce C/R':sendTableSet('reduce');break
       default : toolMessage(['',skillname],PLUGINAPP);break
@@ -1341,14 +1356,22 @@ skillBtnMain.forEach(btn => {
   };
 
   function sendTable(type){
-    let data = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
+    let data = '';
+    let clone = true;
+    let reduce = false;
+    let enters = getElementMix('input-linefeed').value;
+    let nulls = getElementMix('input-nulldata').value;
+    if(type == 'mapName' || type == 'mapText' ){
+      data = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
+    };
     if(type == 'mapPro' || type == 'mapTag' ){
       data = tableArrayToObj(tableTextToArray(getElementMix('upload-tablearea').value.trim()))
     };
-    let clone = getElementMix('switch-autoclone').checked;
-    let reduce = getElementMix('switch-autoreduce').checked;
-    let enters = getElementMix('input-linefeed').value;
-    let nulls = getElementMix('input-nulldata').value;
+    if(type.includes('map')){
+      clone = getElementMix('switch-autoclone').checked;
+      reduce = getElementMix('switch-autoreduce').checked;
+    };
+    
     toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
   };
 

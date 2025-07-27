@@ -810,7 +810,23 @@ input[type="checkbox"]:checked + .btn-moreset{
 [data-tableset-more]::after{
   contain: '';
   position: absolute;
+}
 
+[data-text-mini]{
+  font-size: 8px;
+  transform: skewX(-8deg);
+  opacity: 0.6;
+  text-wrap: wrap;
+}
+
+[data-language="En"] [data-retable-moreset]{
+  justify-content: center;
+  align-items: center;
+}
+
+[data-language="En"] [data-retable-moreset] [data-text-mini]{
+  text-align: center;
+  max-width: 260px;
 }
 
 [data-selectcomp-mix]{

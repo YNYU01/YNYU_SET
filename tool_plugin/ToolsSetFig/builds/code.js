@@ -193,10 +193,10 @@ figma.ui.onmessage = async (message) => {
                         H = H < 0 ? 0 : H;
                     };
                     reCompNum(b[0],H);
-                    reAnyByArray(b[0].children,info.data[0])
-                }
+                    reAnyByArray(b[0].children,info.data[0]);
+                };
             } else {
-                reAnyByArray(comps,info.data[0])
+                reAnyByArray(comps,info.data[0]);
             };
         } else {
             tables.forEach(table => {
@@ -212,8 +212,9 @@ figma.ui.onmessage = async (message) => {
                     H = H < 0 ? 0 : H;
                     V = V < 0 ? 0 : V;
                 };
-                reCompNum(table,H,V)
-                reTableByArray(table,info.data)
+                //console.log(H,V)
+                reCompNum(table,H,V);
+                reTableByArray(table,info.data);
             });
         };
     };
@@ -276,6 +277,21 @@ figma.ui.onmessage = async (message) => {
                 ;break
              };
         });
+    };
+    //反转行列
+    if( type == 'Row Column Swap'){
+        let a = figma.currentPage;
+            let b = a.selection;
+    
+            let tables = b.filter(item => item.name.includes('@table'));
+            if(!tables || tables.length == 0){
+                tables = b.map(node => node.findAll(item => item.name.includes('@table'))).flat();
+            };
+            
+            tables.forEach(table => {
+                //console.log(666)
+                swapTable(table);
+            });
     };
     //栅格化-副本
     if ( type == 'Pixel As Copy'){
@@ -782,11 +798,11 @@ async function addTableCompMust(type,language){
         td:[toRGB('#66666688',true)]
     }
     let adds = [
-        ['top',[],[null,[1,0,0,0]],'--bod-t'],
-        ['right',[],[null,[0,1,0,0]],'--bod-r'],
-        ['bottom',[],[null,[0,0,1,0]],'--bod-b'],
-        ['left',[],[null,[0,0,0,1]],'--bod-l'],
-        ['fills',fills[type],null,'--fills'],
+        ['#top.stroke',[],[null,[1,0,0,0]],'--bod-t'],
+        ['#right.stroke',[],[null,[0,1,0,0]],'--bod-r'],
+        ['#bottom.stroke',[],[null,[0,0,1,0]],'--bod-b'],
+        ['#left.stroke',[],[null,[0,0,0,1]],'--bod-l'],
+        ['#bg.fill',fills[type],null,'--fills'],
     ];
 
     for(let i = 0; i < adds.length; i++){
@@ -828,20 +844,20 @@ function reTableStyle(table,style){
         let headers = columns[i].findChildren(item => item.name.includes('@th'));
         let datas  = columns[i].findChildren(item => item.name.includes('@td'));
         //console.log(headers,datas)
-        headers.forEach((item) => {
+        headers.forEach((item,index) => {
             //console.log(style.th)
             if(style.th){
-                findSetPro(item,style.th);
+                findSetPro(item,style.th,(index + 1),(i + 1));
             };
         });
         datas.forEach((item,index)=> {
             if(style.td){
-                findSetPro(item,style.td,(index + 1));
+                findSetPro(item,style.td,(index + 1),(i + 1));
             };
         });
     };
     //找到相关组件属性并修改
-    function findSetPro(comp,Array,num){
+    function findSetPro(comp,Array,row,column){
         let proKeys = Object.keys(comp.componentProperties);
         //console.log(Array[4],num)
         proKeys.forEach(key => {
@@ -854,11 +870,17 @@ function reTableStyle(table,style){
                 case '--bod-l': comp.setProperties({[key]: Array[3] == 0 ? false : true});break
                 case '--fills':
                     //是否为间格区分色
-                    if(Array[4] == 'space' && num){
-                        if(num%2 == 0){
+                    if(Array[4] == 'rowSpace' && row){
+                        if(row%2 == 0){
                             comp.setProperties({[key]: true});
                         } else {
                             comp.setProperties({[key]: false});
+                        };
+                    } else if(Array[4] == 'columnSpace' && column){
+                        if(column%2 == 0){
+                            comp.setProperties({[key]: false});
+                        } else {
+                            comp.setProperties({[key]: true});
                         };
                     } else {
                         comp.setProperties({[key]: Array[4] == 0 ? false : true});
@@ -882,24 +904,28 @@ function asFillChild(node){
 //调整实例数量以匹配数据长度
 function reCompNum(nodes,H,V){
     //console.log(nodes.name,H,V)
+    //console.log(111)
     if(H > 0){
+        //console.log(222)
         let end = nodes.children[nodes.children.length - 1]
         for(let i = 0; i < H; i++){
             nodes.appendChild(end.clone());
         };
-    } else {
+    }
+    if (H < 0) {
+        //console.log(333)
         for(let i = H; i < 0; i++){
             nodes.children[nodes.children.length - 1].remove();
         };
     };
-    if(nodes.name.includes('@table') && V){
+    if(nodes.name.includes('@table') && V && V !== 0){
+        //console.log(444)
         let columns = nodes.findChildren(item => item.name.includes('@column'));
         //console.log(columns.length)
         for(let i = 0; i < columns.length; i++){
             if(V > 0){
                 let end = columns[i].children[columns[i].children.length - 1]
                 for(let ii = 0; ii < V; ii++){
-                    //console.log(666)
                     columns[i].appendChild(end.clone());
                 };
             } else {
@@ -915,26 +941,30 @@ function reTableByArray(table,Array){
     let columns = table.findChildren(item => item.name.includes('@column'));
     for(let i = 0; i < columns.length; i++){
         let datas  = columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td'));
-        reAnyByArray(datas,Array[i],true)
+        if(Array[i]){
+            reAnyByArray(datas,Array[i],true);
+        };
     };
 };
 //按数组修改组件属性
 function reAnyByArray(comps,Array,istable){
     for(let i = 0; i < comps.length; i++){
-        console.log(222)
+        //console.log(222)
         let comp = comps[i];
         let textPros = Object.keys(comp.componentProperties).filter(pro => comp.componentProperties[pro].type == 'TEXT');
         let dataPros = textPros.filter(key => key.split('#')[0] == '--data');
-        console.log(dataPros)
+        //console.log(dataPros)
         //表格优先，其次任意文本类型组件属性
         if(istable && dataPros && dataPros.length > 0){
             textPros = dataPros;
         };
         textPros.forEach((item,index)=> {
-            comp.setProperties({[item]: Array[i].toString()});
+            if(Array[i]){
+                comp.setProperties({[item]: Array[i].toString()});
+            };
         });
     };
-}
+};
 //按对象修改组件属性
 function reAnyByObj(comps,obj){
     let keyPros = Object.keys(obj[0]);
@@ -1041,6 +1071,43 @@ function reAnyByTags(nodes,obj){
         }
     };
     
+};
+//反转表格行列
+function swapTable(table){
+    let layerIndex = table.parent.children.findIndex(item => item.id == table.id);
+    let columns = table.findChildren(item => item.name.includes('@column'));
+    let datas = []
+    for(let i = 0; i < columns.length; i++){
+        datas.push(columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td')));    
+    };
+    let H = datas[0].length - columns.length;
+    console.log(H)
+    let newTable = table.clone();
+    setMain([null,null,null,null],newTable,table);
+    if(newTable.name.includes('-swap')){
+        newTable.name = newTable.name.replace('-swap','');
+    } else {
+        newTable.name += '-swap';
+    };
+    table.parent.insertChild((layerIndex + 1),newTable);
+    
+    for(let i = 0; i < columns.length; i++){
+        let numColum = newTable.children[i];
+        numColum.children.map(node => node.remove())
+    };
+    
+    reCompNum(newTable,H);
+    let newColumns = newTable.children;
+    for(let i = 0; i < newColumns.length; i++){
+        //console.log(datas[0][i].name)
+        /**/
+        datas.forEach(oldDatas =>{
+            newColumns[i].appendChild(oldDatas[i]);
+        });
+        /**/
+    };   
+    table.remove();
+    figma.currentPage.selection = [newTable]
 };
 
 //添加自动布局
@@ -1199,8 +1266,8 @@ function toRGB(color,isPaint){
     } else {
         //console.log(figma.util.rgb(color))
         return figma.util.rgb(color);
-    }
-}//
+    };
+};
 
 //拆分文案
 function splitText(safenode,oldnode,splitTag,splitKeys){
@@ -1272,7 +1339,6 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
         
     }else{
         console.log(splitKeys)
-        console.log(666)
     }
     safenode.remove();
     oldnode.visible = false;

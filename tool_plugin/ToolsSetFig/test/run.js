@@ -28,6 +28,7 @@ window.addEventListener('message',(message)=>{
       case 'selectInfo': reSelectInfo(info);break
       case 'selectInfoMain': addTableText(tableObjToText(info));break
       case 'selectComp': reSelectComp(info);break
+      case 'selectDatas': reSelectDatas(info);break
     };
   };
 });
