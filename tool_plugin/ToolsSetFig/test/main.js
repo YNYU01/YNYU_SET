@@ -188,13 +188,16 @@ let helpData = {
     "【选中单行】功能可以查找相邻父级同位置的图层, 请确保图层结构的一致性",
     ""],
     ["li",
-    "【选中多行】功能可以在选中单行的基础上, 将所在行之间的其他行一并选中",
+    "【选中多行】功能可以选中多个单行",
     ""],
     ["li",
     "【区域选中】功能类似框选, 会在选中两个xxx@td形成的框内所有的xxx@td ",
     ""],
     ["li",
     "【连续选中】功能可类似文本段落的连选, 会从第一个xxx@td开始逐行选中, 到第二个xxx@td结束",
+    ""],
+    ["li",
+    "选中后插件还是聚焦状态，此时无法对画布内容进行操作，可以用鼠标中建点击画布区域以重新聚焦到画布",
     ""],
     ["br","",""],
     ["p",
@@ -964,6 +967,19 @@ function tableArrayToObj(tableArray){
   };
   return objs;
 };
+//制表数组转制表文案
+function tableArrayToText(Array){
+  let values = '';
+  for(let i = 0; i < Array.length; i++){
+    let text = Array[i].join('\t');
+    if(i == Array.length - 1){
+      values += text;
+    }else{
+      values += text + '\n';
+    };
+  };
+  return values;
+};
 //对象组转制表文案
 function tableObjToText(obj){
   let header = Object.keys(obj[0]).join('\t') + '\n';
@@ -974,7 +990,7 @@ function tableObjToText(obj){
       values += text;
     }else{
       values += text + '\n';
-    }
+    };
   };
   return header + values;
 };
@@ -1130,7 +1146,7 @@ function reSelectComp(info){
 
 };
 function reSelectDatas(info){
-  let text = tableArrayToObj(info);
+  let text = tableArrayToText(info);
   let textarea = getElementMix('upload-tablearea');
   textarea.focus();
   textarea.value = text;
@@ -1309,13 +1325,18 @@ skillBtnMain.forEach(btn => {
       case 'Apply Preset':sendTableSet('style');break
       case 'Add C/R':sendTableSet('add');break
       case 'Reduce C/R':sendTableSet('reduce');break
+      case 'Select a Row':sendTablePick('row');break
+      case 'Select many Rows':sendTablePick('allrow');break
+      case 'Select Block':sendTablePick('block');break
+      case 'Select Inline':sendTablePick('inline');break
       default : toolMessage(['',skillname],PLUGINAPP);break
-    }
+    };
   });
   btn.addEventListener('dblclick',()=>{
     let skillname = btn.getAttribute('data-en-text');
     switch (skillname){
-      case 'Arrange By Ratio': toolMessage([true,skillname],PLUGINAPP);;break
+      case 'Arrange By Ratio': toolMessage([true,skillname],PLUGINAPP);break
+      case 'Release Comp.':toolMessage([true,skillname],PLUGINAPP);break
     };
   });
 
@@ -1394,6 +1415,10 @@ skillBtnMain.forEach(btn => {
         V.value = 0;
       ;break
     };
+  };
+
+  function sendTablePick(type){
+    toolMessage([type,'pickTable'],PLUGINAPP);
   };
 });
 

@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e0cb178a081edf9622db28a8727fcc5d15723169/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -55,7 +55,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e0cb178a081edf9622db28a8727fcc5d15723169/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1938,7 +1938,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               <div data-create-table class="w100 df-cc" data-btn="main2" data-en-text="Create Table">创建表格</div>
               <div data-create-table class="w100 df-cc" data-btn="skill-main" data-selects-must data-en-text="Apply Preset" style="border-radius: 20px;">应用预设样式</div>    
               <div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
-                <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
+                <input id="table-more" type="checkbox" checked="true" onchange="showNext(this,'data-tableset-more','flex')">
                 <label for="table-more" class="wh100 df-cc btn-more" style=" padding: 4px;">
                   <svg data-icon-more width="100%" height="100%" viewBox="0 0 20 20">
                     <g data-icon-more-path="1">
@@ -1954,7 +1954,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </label>
               </div>
             </div>
-            <div class="df-ffc" data-tableset-more data-skill-sec style="gap: 4px; margin: 4px 0; display: none;">
+            <div class="df-ffc" data-tableset-more data-skill-sec style="gap: 4px; margin: 4px 0;">
               <div class="df-lc w100" data-skill-more>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Only Create @th/td">仅创建组件</div>
                 <div class="df-cc"  data-selects-must data-btn="skill-main" data-en-text="Make Compliant">合规化组件</div>
@@ -1997,7 +1997,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               </div>
               <div class="df-lc w100" data-skill-more data-selects-must>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Select a Row">选中单行</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Select many Rows ">选中多行</div>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Select many Rows">选中多行</div>
               </div>
               <div class="df-lc w100" data-skill-more data-selects-must>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Select Block">区域选中</div>
@@ -2039,7 +2039,6 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </svg>       
                 </div>
                 <input id="input-linefeed" data-input class="nobod fl1" type="text" 
-                placeholder="[enter]" 
                 value="[enter]"> 
                 <!--重置-->
                 <div data-input-reset data-btn="reset">
@@ -2056,7 +2055,6 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </svg>       
                 </div>
                 <input id="input-nulldata" data-input class="nobod fl1" type="text"
-                placeholder="--" 
                 value="--">  
                 <!--重置-->
                 <div data-input-reset data-btn="reset">
@@ -2103,7 +2101,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               </div>
               <div class="df-lc w100" data-skill-more data-selects-must>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Get Names">获取图层命名</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Get Datas">获取表格数据</div>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Get Texts">获取表格数据</div>
               </div>
               <div class="df-lc w100" data-skill-more data-selects-must>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Get Properties">获取组件属性</div>
@@ -2571,11 +2569,11 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     </div>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Heavy Chain">重链组件</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Copy New">重置组件</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Refresh Set">重置组件</div>
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Clone New">复制母组件</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Release">解除母组件</div>  
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Clone Comp.">复制母组件</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Release Comp.">解除母组件</div>  
                     </div>
                   </div>
                 </div>
@@ -2647,12 +2645,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e0cb178a081edf9622db28a8727fcc5d15723169/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e0cb178a081edf9622db28a8727fcc5d15723169/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e0cb178a081edf9622db28a8727fcc5d15723169/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e0cb178a081edf9622db28a8727fcc5d15723169/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e0cb178a081edf9622db28a8727fcc5d15723169/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e0cb178a081edf9622db28a8727fcc5d15723169/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3621,6 +3619,19 @@ function tableArrayToObj(tableArray){
   };
   return objs;
 };
+//制表数组转制表文案
+function tableArrayToText(Array){
+  let values = '';
+  for(let i = 0; i < Array.length; i++){
+    let text = Array[i].join('\t');
+    if(i == Array.length - 1){
+      values += text;
+    }else{
+      values += text + '\n';
+    };
+  };
+  return values;
+};
 //对象组转制表文案
 function tableObjToText(obj){
   let header = Object.keys(obj[0]).join('\t') + '\n';
@@ -3631,7 +3642,7 @@ function tableObjToText(obj){
       values += text;
     }else{
       values += text + '\n';
-    }
+    };
   };
   return header + values;
 };
@@ -3787,7 +3798,7 @@ function reSelectComp(info){
 
 };
 function reSelectDatas(info){
-  let text = tableArrayToObj(info);
+  let text = tableArrayToText(info);
   let textarea = getElementMix('upload-tablearea');
   textarea.focus();
   textarea.value = text;
@@ -3966,13 +3977,18 @@ skillBtnMain.forEach(btn => {
       case 'Apply Preset':sendTableSet('style');break
       case 'Add C/R':sendTableSet('add');break
       case 'Reduce C/R':sendTableSet('reduce');break
+      case 'Select a Row':sendTablePick('row');break
+      case 'Select many Rows':sendTablePick('allrow');break
+      case 'Select Block':sendTablePick('block');break
+      case 'Select Inline':sendTablePick('inline');break
       default : toolMessage(['',skillname],PLUGINAPP);break
-    }
+    };
   });
   btn.addEventListener('dblclick',()=>{
     let skillname = btn.getAttribute('data-en-text');
     switch (skillname){
-      case 'Arrange By Ratio': toolMessage([true,skillname],PLUGINAPP);;break
+      case 'Arrange By Ratio': toolMessage([true,skillname],PLUGINAPP);break
+      case 'Release Comp.':toolMessage([true,skillname],PLUGINAPP);break
     };
   });
 
@@ -4051,6 +4067,10 @@ skillBtnMain.forEach(btn => {
         V.value = 0;
       ;break
     };
+  };
+
+  function sendTablePick(type){
+    toolMessage([type,'pickTable'],PLUGINAPP);
   };
 });
 

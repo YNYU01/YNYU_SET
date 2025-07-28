@@ -27,6 +27,7 @@ figma.clientStorage.getAsync('userResize')
 let isSendComp = false;
 let TRUES = ['true',true,'1',1,'show','是','有'];
 let FALSES = ['false',false,'0',0,'hide','否','无'];
+let TAGS_KEY = ['.fill','.stroke','.fillStyle','.strokeStyle','.visible','.opacity','.fontSize','.xywh'];
 //核心功能
 figma.ui.onmessage = async (message) => { 
     const info = message[0]
@@ -137,7 +138,7 @@ figma.ui.onmessage = async (message) => {
                 ["C1","c2","c3","c4"]
             ];
             reCompNum(table,2,2);
-            reTableByArray(table,test);
+            reTableByArray(table,test,'[enter]','--');
             reTableStyle(table,info[0]);
             //如果用了自定义组件，则重新排列，避免太分散
             if(newth == th || newtd == td){
@@ -168,6 +169,35 @@ figma.ui.onmessage = async (message) => {
         let a = figma.currentPage;
         let b = a.selection;
     };
+    //便捷选中表格
+    if ( type == 'pickTable'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        if(!b.some(item => item.type !== 'INSTANCE') && [...new Set(b.map(item => item.parent.parent))].length == 1){
+            switch (info){
+                case 'row':
+                    if(b.length == 1){
+                        easePickTable(info,[...b,...b]);
+                    };
+                ;break
+                case 'allrow':
+                    if(b.length >= 2){
+                        easePickTable(info,b);
+                    };
+                ;break
+                case 'block':
+                    if(b.length == 2){
+                        easePickTable(info,b);
+                    };
+                ;break
+                case 'inline':
+                    if(b.length == 2){
+                        easePickTable(info,b);
+                    };
+                ;break
+            }
+        };
+    };
     //批量填充文本数据
     if( type == 'mapText'){
         let a = figma.currentPage;
@@ -193,67 +223,132 @@ figma.ui.onmessage = async (message) => {
                         H = H < 0 ? 0 : H;
                     };
                     reCompNum(b[0],H);
-                    reAnyByArray(b[0].children,info.data[0]);
+                    reAnyByArray(b[0].children,info.data[0],false,info.enters,info.nulls);
                 };
             } else {
-                reAnyByArray(comps,info.data[0]);
+                reAnyByArray(comps,info.data[0],false,info.enters,info.nulls);
             };
         } else {
             tables.forEach(table => {
-                let HH = table.children.length;
-                let VV = table.children[0].children.length;
-                let H = info.data.length - HH;
-                let V = info.data[0].length - VV;
-                if(info.clone == false){
-                    H = H > 0 ? 0 : H;
-                    V = V > 0 ? 0 : V;
-                }
-                if(info.reduce == false){
-                    H = H < 0 ? 0 : H;
-                    V = V < 0 ? 0 : V;
+                let Array = info.data;
+                //数据太少会导致删光表格
+                if(Array.length > 0 && Array[0].length > 1){
+                    if(table.name.includes('swap')){
+                        Array = Array[0].map((_, i) => Array.map(row => row[i]));
+                    };
+                    let HH = table.children.length;
+                    let VV = table.children[0].children.length;
+                    let H = Array.length - HH;
+                    let V = Array[0].length - VV;
+                    if(info.clone == false){
+                        H = H > 0 ? 0 : H;
+                        V = V > 0 ? 0 : V;
+                    }
+                    if(info.reduce == false){
+                        H = H < 0 ? 0 : H;
+                        V = V < 0 ? 0 : V;
+                    };
+                    //console.log(H,V)
+                    reCompNum(table,H,V);
+                    reTableByArray(table,Array,info.enters,info.nulls);
                 };
-                //console.log(H,V)
-                reCompNum(table,H,V);
-                reTableByArray(table,info.data);
             });
         };
     };
-    //批量命名
+    //批量设置命名
     if( type == 'mapName'){
         let a = figma.currentPage;
         let b = a.selection;
         let nodes = b;
-        if(b.length == 1){
-            nodes = b[0].children
+        if(info.data[0] && info.data[0].length > 0){
+            if(b.length == 1){
+                nodes = b[0].children
+            };
+            nodes.forEach((node,index) => {
+                node.name = info.data[0][index];
+            });
         };
-        nodes.forEach((node,index) => {
-            node.name = info.data[0][index];
-        });
     };
-    //批量组件属性
+    //批量设置组件属性
     if( type == 'mapPro'){
         let a = figma.currentPage;
         let b = a.selection;
         let nodes = b;
-        if(b.length == 1){
-            nodes = b[0].children;
+        if(info.data[0] && info.data[0].length > 0){
+            if(b.length == 1){
+                nodes = b[0].children;
+            };
+            nodes = nodes.filter(node => node.type == 'INSTANCE');
+            //console.log(info.data)
+            reAnyByObj(nodes,info.data);
         };
-        nodes = nodes.filter(node => node.type == 'INSTANCE');
-        //console.log(info.data)
-        reAnyByObj(nodes,info.data);
     };
-    //批量标签属性
+    //批量设置标签属性
     if( type == 'mapTag'){
         let a = figma.currentPage;
         let b = a.selection;
         let nodes = b;
-        if(b.length == 1){
-            nodes = b[0].children;
+        if(info.data[0] && info.data[0].length > 0){
+            if(b.length == 1){
+                nodes = b[0].children;
+            };
+            nodes = nodes.filter(node => node.type == 'INSTANCE');
+            reAnyByTags(nodes,info.data);
         };
-        nodes = nodes.filter(node => node.type == 'INSTANCE');
-        reAnyByTags(nodes,info.data);
     };
-    //应用表格样式
+    //批量获取文本数据
+    if( type == 'getText'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        //console.log(666);
+        let tables = b.filter(item => item.name.includes('@table'));
+        if(!tables || tables.length == 0){
+            tables = b.map(node => node.findAll(item => item.name.includes('@table'))).flat();
+        };
+        //没有table就说明是普通的文本数据填充
+        if(!tables  || tables.length == 0){
+            
+            let comps = b.filter(item => item.type == 'INSTANCE');
+            if(b.length == 1){
+                comps = b[0].children.filter(item => item.type == 'INSTANCE');
+            };
+
+            if(comps || comps.length > 0){
+                //console.log(666);
+                let data = [getProArray(comps,false,info.enters,info.nulls)];
+                data = data[0].map((_, i) => data.map(row => row[i]));
+                //console.log(data);
+                postmessage([data,'selectDatas'])
+            };
+        } else {
+            let table = tables[0];
+            let data = getTableText(table,info.enters,info.nulls);
+            if(!table.name.includes('swap')){
+                data = data[0].map((_, i) => data.map(row => row[i]));
+            };
+            //console.log(data);
+            postmessage([data,'selectDatas'])
+        };
+    };
+    //批量获取命名
+    if( type == 'getName'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let names = [];
+        b.forEach((node) => {
+            names.push(node.name);
+        });
+        //console.log(names);
+    };
+    //批量获取组件属性
+    if( type == 'getPro'){
+
+    };
+    //批量获取标签属性
+    if( type == 'getTag'){
+
+    };
+    //更新表格样式、行列
     if( type == 'reTable'){
         let a = figma.currentPage;
         let b = a.selection;
@@ -265,17 +360,24 @@ figma.ui.onmessage = async (message) => {
         let setdata = info[0],retype = info[1]
         
         tables.forEach(table => {
+            let HH = table.children.length;
+            let VV = table.children[0].children.length;
+            let H = setdata[0];
+            let V = setdata[1];
+            //行数不能少于2，列数不能少于1
+            H = H + HH < 1 ? 1 - HH : H;
+            V = V + VV < 2 ? 2 - VV : V;
             switch (retype){
                 case 'style':
                     reTableStyle(table,setdata);
                 ;break
                 case 'add':
-                    reCompNum(table,setdata[0],setdata[1]);
+                    reCompNum(table,H,V);
                 ;break
                 case 'reduce':
-                    reCompNum(table,setdata[0],setdata[1]);
+                    reCompNum(table,H,V);
                 ;break
-             };
+            };
         });
     };
     //反转行列
@@ -293,6 +395,8 @@ figma.ui.onmessage = async (message) => {
                 swapTable(table);
             });
     };
+    //选中表格行/区域
+
     //栅格化-副本
     if ( type == 'Pixel As Copy'){
         toPixel(info);
@@ -367,7 +471,7 @@ figma.ui.onmessage = async (message) => {
         }
     };
     //母组件复制
-    if ( type == 'Clone New'){
+    if ( type == 'Clone Comp.'){
         let a = figma.currentPage;
         let b = a.selection;
         b.forEach(item => {
@@ -385,8 +489,37 @@ figma.ui.onmessage = async (message) => {
             };
         });
     };
+    //母组件解除
+    if ( type == 'Release Comp.'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let selects = [];
+        b.forEach(item => {
+            if(item.type == 'COMPONENT'){
+                let layerIndex = item.parent.children.findIndex(items => items.id == item.id);
+                let newComp = item.createInstance();
+                let newNode = newComp.detachInstance();
+                setMain([],newNode,item);
+                item.parent.insertChild((layerIndex + 1),newNode);
+                if(info){
+                    item.remove();
+                } else {
+                    if(item.height >= item.width){
+                        newNode.x += item.width + 30;
+                    } else {
+                        newNode.y -= item.height + 30;
+                    };
+                    newNode.name = item.name + ' copy';
+                };
+                
+                selects.push(newNode);
+                newComp.remove();
+            };
+        });
+        a.selection = selects;
+    };
     
-}
+};
 
 
 //封装postMessage
@@ -826,13 +959,13 @@ function addBodFill(node,Array){
 };
 //绑定图层和组件属性
 /**
- * @param {*} type - 'BOOLEAN''TEXT''VARIANT'
+ * @param {*} type - 'BOOLEAN''TEXT''letIANT'
  */
 function addCompPro(node,layer,name,type,value){
     let typekey = {
         BOOLEAN: 'visible',
         TEXT: 'characters',
-        VARIANT: 'mainComponent'
+        letIANT: 'mainComponent'
     }
     let proid = node.addComponentProperty(name,type,value);
     layer.componentPropertyReferences = {[typekey[type]]:proid};
@@ -937,17 +1070,17 @@ function reCompNum(nodes,H,V){
     };
 };
 //填充表格数据
-function reTableByArray(table,Array){
+function reTableByArray(table,Array,enters,nulls){
     let columns = table.findChildren(item => item.name.includes('@column'));
     for(let i = 0; i < columns.length; i++){
         let datas  = columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td'));
         if(Array[i]){
-            reAnyByArray(datas,Array[i],true);
+            reAnyByArray(datas,Array[i],true,enters,nulls);
         };
     };
 };
 //按数组修改组件属性
-function reAnyByArray(comps,Array,istable){
+function reAnyByArray(comps,Array,istable,enters,nulls){
     for(let i = 0; i < comps.length; i++){
         //console.log(222)
         let comp = comps[i];
@@ -959,14 +1092,20 @@ function reAnyByArray(comps,Array,istable){
             textPros = dataPros;
         };
         textPros.forEach((item,index)=> {
-            if(Array[i]){
-                comp.setProperties({[item]: Array[i].toString()});
+            if(Array[i] !== undefined){
+                if(Array[i] == ''){
+                    comp.setProperties({[item]: nulls});
+                } else {
+                    comp.setProperties({[item]: Array[i].toString().replace(new RegExp(enters,'g'),'\n')});
+                };
+            } else if (i == comps.length - 1){
+                comp.setProperties({[item]: nulls});
             };
         });
     };
 };
 //按对象修改组件属性
-function reAnyByObj(comps,obj){
+function reAnyByObj(comps,obj,enters,nulls){
     let keyPros = Object.keys(obj[0]);
     for(let i = 0; i < comps.length; i++){
         let comp = comps[i];
@@ -974,39 +1113,35 @@ function reAnyByObj(comps,obj){
         //console.log(rePros,comp)
         rePros.forEach(item => {
             //console.log(item,obj[i][item.split('#')[0]])
-            let value = obj[i][item.split('#')[0]];
-            if(comp.componentProperties[item].type !== 'BOOLEAN'){
-                value = value.toString();
-            }else{
-                value = TRUES.includes(value) ? true : FALSES.includes(value) ? false : true; 
-            }
-            comp.setProperties({[item]: value});
+            if(obj[i]){
+                let value = obj[i][item.split('#')[0]];
+                if(comp.componentProperties[item].type !== 'BOOLEAN'){
+                    value = value.toString();
+                    if(value == ''){
+                        value = nulls;
+                    } else {
+                        value = value.replace(new RegExp(enters,'g'),'\n')
+                    }
+                }else{
+                    value = TRUES.includes(value) ? true : FALSES.includes(value) ? false : true; 
+                }
+                comp.setProperties({[item]: value});
+            };
         });
     };
 };
 //按标签修改对象属性
 function reAnyByTags(nodes,obj){
-    
-    let tagsKey = [
-        '.fill',
-        '.stroke',
-        '.fillStyle',
-        '.strokeStyle',
-        '.visible',
-        '.opacity',
-        '.fontSize',
-        '.xywh'];
-    
     for(let i = 0; i < nodes.length; i++){
         let node = nodes[i]
-        let hasTags = node.findAll(item => tagsKey.some(key => item.name.includes(key)));
+        let hasTags = node.findAll(item => TAGS_KEY.some(key => item.name.includes(key)));
         
-        if(tagsKey.some(key => node.name.includes(key))){
+        if(TAGS_KEY.some(key => node.name.includes(key))){
             hasTags = [node,...hasTags]
         };
         
         hasTags.forEach(layer => {
-            let tags = layer.name.split(' ').filter(item => tagsKey.some(key => item.includes(key)));
+            let tags = layer.name.split(' ').filter(item => TAGS_KEY.some(key => item.includes(key)));
             
             tags.forEach(tag => {
                 console.log(tag,obj[i][tag])
@@ -1072,6 +1207,43 @@ function reAnyByTags(nodes,obj){
     };
     
 };
+//获取表格数据
+function getTableText(table,enters,nulls){
+    let Array = [];
+    let columns = table.findChildren(item => item.name.includes('@column'));
+    for(let i = 0; i < columns.length; i++){
+        let datas  = columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td'));
+        Array.push(getProArray(datas,true,enters,nulls));
+    };
+    return Array;
+};
+//获取文本类组件属性值
+function getProArray(comps,istable,enters,nulls){
+    let Array = [];
+    for(let i = 0; i < comps.length; i++){
+        let comp = comps[i];
+        let textPros = Object.keys(comp.componentProperties).filter(pro => comp.componentProperties[pro].type == 'TEXT');
+        let dataPros = textPros.filter(key => key.split('#')[0] == '--data');
+        if(istable && dataPros && dataPros.length > 0){
+            textPros = dataPros
+        };
+        let value = comp.componentProperties[textPros[0]].value;
+        if(value == nulls){
+            Array.push('');
+        } else {
+            Array.push(value.replace(/[\r\n]/g,enters));
+        };
+    };
+    return Array;
+};
+//获取所有组件属性值
+function getProObj(comps,enters,nulls){
+    
+};
+//获取所有标签属性值
+function getTagObj(comps,enters,nulls){
+    
+};
 //反转表格行列
 function swapTable(table){
     let layerIndex = table.parent.children.findIndex(item => item.id == table.id);
@@ -1083,7 +1255,7 @@ function swapTable(table){
     let H = datas[0].length - columns.length;
     console.log(H)
     let newTable = table.clone();
-    setMain([null,null,null,null],newTable,table);
+    setMain([],newTable,table);
     if(newTable.name.includes('-swap')){
         newTable.name = newTable.name.replace('-swap','');
     } else {
@@ -1109,6 +1281,81 @@ function swapTable(table){
     table.remove();
     figma.currentPage.selection = [newTable]
 };
+//选中表格行/区域
+function easePickTable(type,nodes){
+    let a = figma.currentPage;
+    let b = nodes;
+    let table = b[0].parent.parent;
+    let Hs = [];
+    for ( let i = 0; i < b.length ; i++ ){
+        Hs.push(b[i].parent.children.findIndex(item => item == b[i]));
+    };
+    let Ls = [];
+    for ( let i = 0; i < b.length ; i++ ){
+        Ls.push(table.children.findIndex(item => item == b[i].parent));
+    };
+    //记录对象所在行列和总行列
+    let H1 = Hs[0];
+    let L1 = Ls[0];
+    let H2 = Hs[1];
+    let L2 = Ls[1];
+    let LL = table.children.length;
+    //console.log(H1,L1,H2,L2,LL)
+
+    let picks = [];
+    let starH = Math.min(H1,H2);
+    let endH = Math.max(H1,H2);
+    let starL = Math.min(L1,L2);
+    let endL = Math.max(L1,L2);
+
+    switch (type){
+        case 'row':
+            for ( let i = 0; i < LL ; i++ ){
+                picks.push(table.children[i].children[H1]);
+            };
+            a.selection = picks;
+        ;break
+        case 'allrow':
+            console.log(Hs,LL)
+            for ( let i = 0; i < LL ; i++ ){
+                for ( let ii = 0; ii < Hs.length; ii++){
+                    picks.push(table.children[i].children[Hs[ii]]);
+                };
+            };
+            console.log(picks)
+            a.selection = picks;
+        ;break
+        case 'block':
+            for ( let i = starL; i <= endL ; i++ ){
+                for ( let ii = starH; ii <= endH; ii++){
+                    picks.push(table.children[i].children[ii]);
+                };
+            };
+            a.selection = picks
+        ;break
+        case 'inline':
+            if ( starH == H2 ){
+                starL = L2;
+                endL = L1;
+            } else {
+                starL = L1;
+                endL = L2;
+            };
+            for ( let i = starL; i < LL; i++){
+                picks.push(table.children[i].children[starH]);
+            };
+            for ( let i = 0; i < LL; i++){
+                for ( let ii = starH + 1; ii < endH; ii++){
+                    picks.push(table.children[i].children[ii]);
+                };
+            };
+            for ( let i = 0; i <= endL; i++){
+                picks.push(table.children[i].children[endH]);
+            };
+            a.selection = picks
+        ;break
+    };
+}
 
 //添加自动布局
 /**
@@ -1289,7 +1536,7 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
         //如勾选了按分段拆分
         if(splitKeys.includes('Wrap')){
             splitnodes = [];
-            let group = addFrame([null,null,null,null],oldnode);
+            let group = addFrame([],oldnode);
             oldnode.parent.insertChild((layerIndex + 1),group);
             group.name = TextMaxLength(oldnode.name,20,'...');
             addAutoLayout(group,['V','TL',0,[0,0]],[true,false]);
@@ -1312,7 +1559,7 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
         } else {
             for(let i = 0; i < splitnodes.length; i++){
                 let layerIndex2 = splitnodes[i].parent.children.findIndex(items => items.id == splitnodes[i].id);
-                let group2 = addFrame([null,null,null,null],splitnodes[i]);
+                let group2 = addFrame([],splitnodes[i]);
                 splitnodes[i].parent.insertChild((layerIndex2 + 1),group2);
                 group2.name = TextMaxLength(splitnodes[i].name,20,'...');
                 addAutoLayout(group2,['H','BB',0,[0,0]],[false,true]);
