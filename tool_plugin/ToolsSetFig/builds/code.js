@@ -173,7 +173,7 @@ figma.ui.onmessage = async (message) => {
     if ( type == 'pickTable'){
         let a = figma.currentPage;
         let b = a.selection;
-        if(!b.some(item => item.type !== 'INSTANCE') && [...new Set(b.map(item => item.parent.parent))].length == 1){
+        if(b.every(item => item.type == 'INSTANCE') && [...new Set(b.map(item => item.parent.parent))].length == 1){
             switch (info){
                 case 'row':
                     if(b.length == 1){
@@ -209,24 +209,42 @@ figma.ui.onmessage = async (message) => {
         };
         //没有table就说明是普通的文本数据填充
         if(!tables  || tables.length == 0){
+            let Array = info.data[0];
             let comps = b.filter(item => item.type == 'INSTANCE');
             //没有实例可能要自动填充
             if(!comps || comps.length == 0){
-                if(b.length == 1){
-                    comps = b[0].children;
-                    let HH = comps.length;
-                    let H = info.data[0].length - HH;
-                    if(info.clone == false){
-                        H = H > 0 ? 0 : H;
-                    }
-                    if(info.reduce == false){
-                        H = H < 0 ? 0 : H;
+                if(b.length == 1 && Array.length > 1){
+                    comps = b[0].findChildren(item => item.type == 'INSTANCE');
+                    //仅自动布局时生效
+                    if(b[0].layoutMode && b[0].layoutMode == 'AUTO'){
+                        let HH = comps.length;
+                        let H = Array.length - HH;
+                        if(info.clone == false){
+                            H = H > 0 ? 0 : H;
+                        }
+                        if(info.reduce == false){
+                            H = H < 0 ? 0 : H;
+                        };
+                        reCompNum(b[0],H);
+                        reAnyByArray(b[0].children,Array,false,info.enters,info.nulls);
+                    } else {
+                        sortLRTB(comps);
+                        reAnyByArray(comps,Array,false,info.enters,info.nulls);
                     };
-                    reCompNum(b[0],H);
-                    reAnyByArray(b[0].children,info.data[0],false,info.enters,info.nulls);
                 };
             } else {
-                reAnyByArray(comps,info.data[0],false,info.enters,info.nulls);
+                if(Array.length > 1){
+                    //console.log(111,comps.map(item => item.componentProperties))
+                    //按从左到右从上到下排序
+                    sortLRTB(comps);
+                    if(Array.length < comps.length){
+                        comps.splice(Array.length,comps.length - Array.length);
+                    };
+                    if(Array.length > comps.length){
+                        Array.splice(comps.length,Array.length - comps.length);
+                    };
+                    reAnyByArray(comps,Array,false,info.enters,info.nulls);
+                };
             };
         } else {
             tables.forEach(table => {
@@ -313,8 +331,8 @@ figma.ui.onmessage = async (message) => {
                 comps = b[0].children.filter(item => item.type == 'INSTANCE');
             };
 
-            if(comps || comps.length > 0){
-                //console.log(666);
+            if(comps && comps.length > 0){
+                sortLRTB(comps);
                 let data = [getProArray(comps,false,info.enters,info.nulls)];
                 data = data[0].map((_, i) => data.map(row => row[i]));
                 //console.log(data);
@@ -342,7 +360,24 @@ figma.ui.onmessage = async (message) => {
     };
     //批量获取组件属性
     if( type == 'getPro'){
-
+        let a = figma.currentPage;
+        let b = a.selection;
+        let comps = b.filter(node => node.type == 'INSTANCE');
+        if(!comps  || comps.length == 0){
+            if(b.length == 1){
+                comps = b[0].findChildren(node => node.type == 'INSTANCE');
+            };
+        };
+        if(comps  && comps.length > 0){
+            let proKeys = comps.map(item => Object.keys(item.componentProperties).map(key => key.split('#')[0]).sort());
+            let proNames = [...new Set(proKeys.map(item => JSON.stringify(item)))].map(item => JSON.parse(item))
+            //console.log(proNames.length)
+            //必须有相同的组件属性才能提取
+            if(proNames.length == 1){
+                let datas = getProObj(comps,info.enters,info.nulls);
+                console.log(datas)
+            };
+        };
     };
     //批量获取标签属性
     if( type == 'getTag'){
@@ -671,7 +706,7 @@ function addCutArea(group,info){
 /**
  * @param {group} group - 由addCutArea生成的包含切片和源对象的组
  */
-function addCutImg(group){
+function addCutImg(group,isOverWrite,isfinal){
     let cuts = group.findChildren(item => item.type == 'SLICE');
     let old = group.findOne(item => item.name == group.name);
     cuts.forEach(async (item,index) => {
@@ -706,39 +741,50 @@ function addCutImg(group){
         ];
         group.appendChild(cutimg);
         item.remove();
-        if(old && index == cuts.length - 1){
-            old.remove();
+        if(isOverWrite){
+            if(old && index == cuts.length - 1){
+                old.remove();
+            };
+            if(group.children.length == 1){
+                pixelSelects.push(group.children[0])
+                figma.ungroup(group);
+            } else {
+                pixelSelects.push(group)
+            };
+        } else {
+            pixelSelects.push(group)
         };
-        if(group.children.length == 1){
-            figma.ungroup(group);
-        }
+        
+        if(isfinal){
+            figma.currentPage.selection = pixelSelects;
+            pixelSelects = [];
+        };
     });
 };
+let pixelSelects = []
 //通过切片实现原地栅格化
 /**
  * @param {[{w:num,h:num,x:num,y:num,s:num}]} info - 切片大小位置信息栅格化倍率集
  * @param {boolean} isOverWrite - 是否覆盖
  */
-function toPixel(info,isOverWrite){
+async function toPixel(info,isOverWrite){
     //console.log(info)
+    pixelSelects = [];
     let a = figma.currentPage;
     let b = a.selection;
-    let selects = [];
     for(let i = 0; i < b.length; i++){
         let layerIndex = b[i].parent.children.findIndex(item => item.id == b[i].id);
         //console.log(layerIndex)
-        let group = figma.group([b[i].clone()],b[i].parent,(layerIndex + 1));
+        let group = figma.group([b[i]],b[i].parent,(layerIndex + 1));
         group.x = b[i].x;
         group.y = b[i].y;
         group.name = b[i].name;
-        addCutArea(group,info[i]);
-        addCutImg(group,info[i]);
-        selects.push(group);
-        if(isOverWrite){
-            b[i].remove()
-        };
+        setTimeout(()=>{
+            addCutArea(group,info[i]);
+            let isfinal = i == b.length - 1 ? true : false;
+            addCutImg(group,isOverWrite,isfinal);
+        },100);
     };
-    a.selection = selects;
 };
 //添加画板
 /**
@@ -1098,7 +1144,7 @@ function reAnyByArray(comps,Array,istable,enters,nulls){
                 } else {
                     comp.setProperties({[item]: Array[i].toString().replace(new RegExp(enters,'g'),'\n')});
                 };
-            } else if (i == comps.length - 1){
+            } else if (i == comps.length - 1 && comps.length == Array.length){
                 comp.setProperties({[item]: nulls});
             };
         });
@@ -1238,7 +1284,15 @@ function getProArray(comps,istable,enters,nulls){
 };
 //获取所有组件属性值
 function getProObj(comps,enters,nulls){
-    
+    let proKeys = comps.map(item => Object.keys(item.componentProperties).map(key => key.split('#')[0]).sort());
+    let datas = [];
+    for(let i = 0; i < comps.length; i++){
+        let comp = comps[i];
+        let pros = {};
+        Object.entries(comp.componentProperties).forEach(item => {
+            pros[item[0].split('#')[0]]
+        });
+    };
 };
 //获取所有标签属性值
 function getTagObj(comps,enters,nulls){
@@ -1607,3 +1661,19 @@ function removeText(node,start,end,isReverse,isInine){
         node.deleteCharacters(start,end)
     };
 };
+
+//将节点数组重新排序，按坐标从左到右从上到下Z字型
+function sortLRTB(nodes){
+    nodes.sort((a,b) => {
+        let x1 = a.absoluteBoundingBox.x;
+        let x2 = b.absoluteBoundingBox.x;
+        let y1 = a.absoluteBoundingBox.y;
+        let y2 = b.absoluteBoundingBox.y;
+        //节点上下边延长线有重叠的视为同一行
+        if(y1 - (y2 + b.height) >= 0){
+            return y1 - y2;
+        } else {
+            return x1 - x2;
+        };
+    });
+}

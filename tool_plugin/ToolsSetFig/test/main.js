@@ -397,6 +397,7 @@ function addSkillTitle(){
       let node = document.createElement('div');
       node.setAttribute('data-skill-title','');
       node.className = 'df-lc';
+      /*
       let tips = document.createElement('div');
       tips.setAttribute('data-tips','auto');
       tips.setAttribute('data-tips-x','left');
@@ -404,6 +405,13 @@ function addSkillTitle(){
       tips.setAttribute('style',`--tips-text:'${info.tips[0]}'; --tips-text-en:'${info.tips[1]}';`);
       tips.innerHTML = '<btn-info></btn-info>'
       node.appendChild(tips);
+      */
+      let layerindex = Array.from(secnode.parentNode.children).findIndex(item => item == secnode);
+      let num = document.createElement('div');
+      num.textContent = (layerindex + 1) + '.';
+      node.appendChild(num);
+      num.setAttribute('style','opacity: 0.3;');
+      num.setAttribute('data-skill-index','');
       let name = document.createElement('div');
       let languge = ROOT.getAttribute('data-language');
       name.setAttribute('data-zh-text',info.name[0]);

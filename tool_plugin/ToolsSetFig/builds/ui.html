@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -55,7 +55,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -215,7 +215,7 @@ html[data-language="En"] {
 }
 
 html[data-language="Zh"] {
-  --mainFontSize: 12px;
+  --mainFontSize: 11px;
 }
 
 body{
@@ -499,6 +499,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   border: 1px solid var(--boxBod);
   box-sizing: border-box;
   cursor: var(--pointer,pointer);
+  position: relative;
 }
 
 [data-btn]:hover{
@@ -536,6 +537,14 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
 
 [data-btn-important="skill"]:hover{
   border-color: var(--themeColor);
+}
+
+[data-btn-dblclick]::after{
+  content: '●●';
+  position: absolute;
+  font-size: 6px;
+  top: 0;
+  right: 1px;
 }
 
 [data-btn="main"]{
@@ -721,7 +730,13 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-language="Zh"] [data-dailog-box] li{
-  line-height: 2em;
+  line-height: 1.5em;
+  margin: 0.5ch 0;
+}
+
+[data-language="En"] [data-dailog-box] li{
+  line-height: 1.25em;
+  margin: 1ch 0;
 }
 
 [data-dailog-box] p::before{
@@ -868,8 +883,15 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-tableset-more]::after{
-  contain: '';
+  content: '';
   position: absolute;
+  width: 10px;
+  height: 10px;
+  transform: rotate(45deg);
+  flex: 0 0 auto;
+  background: inherit;
+  top: -4px;
+  right: 6px;
 }
 
 [data-text-mini]{
@@ -939,7 +961,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 
 [data-skills-box]{
   padding-top: 10px;
-  gap: 6px;
+  gap: 12px;
 }
 
 [data-skillmodule]{
@@ -949,10 +971,63 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   min-height: 180px;
   flex-wrap: wrap;
   gap: 6px;
+  position: relative;
+}
+
+[data-skillmodule]::after{
+  content: attr(data-skillmodule);
+  color: var(--boxBod);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  position: absolute;
+  filter: 
+  drop-shadow(0 1px 0 var(--boxBak))
+  drop-shadow(1px 0 0 var(--boxBak))
+  drop-shadow(0 -1px 0 var(--boxBak))
+  drop-shadow(-1px 0 0 var(--boxBak))
+  drop-shadow(0 2px 0 var(--boxBak))
+  drop-shadow(2px 0 0 var(--boxBak))
+  drop-shadow(0 -2px 0 var(--boxBak))
+  drop-shadow(-2px 0 0 var(--boxBak));
+  width: calc(100% - 10px);  
+  height: 1;
+  top :-4px;
+  left: 5px;
+}
+
+[data-language="Zh"] [data-skillmodule]::after{
+  content: attr(data-skillmodule-zh);
+}
+
+[data-skillmodule]::before{
+  content: '';
+  position: absolute;
+  background: var(--boxBod);
+  width: calc(100% - 10px);  
+  height: 1;
+  top :-4px;
+  left: 5px;
+  opacity: 0.3;
 }
 
 [data-skillmodule="Useful & Starts"]{
   min-height: 80px;
+}
+
+[data-skillmodule="Useful & Starts"]::after,
+[data-skillmodule="Useful & Starts"]::before{
+  display: none;
+}
+
+[data-skillmodule="Useful & Starts"] [data-skill-index]{
+  display: none;
+}
+
+[data-skillmodule="Useful & Starts"] [data-skill-title]::before{
+  content: '👌';
+  opacity: 0.6;
 }
 
 [data-skill-sec]{
@@ -980,6 +1055,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   opacity: 0.5;
   position: relative;
   overflow: hidden;
+  font-size: 10px;
 }
 
 [data-skillnum-odd="1"] [data-skill-cover="end"]{
@@ -1014,14 +1090,19 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 
 
 [data-skill-title]{
+  font-size: 11px;
   --icon-info: var(--boxBod);
   height: 14px;
   gap: 4px;
-  margin-bottom: 4px;
+  margin-bottom: 1ch;
+  align-items: baseline;
+}
+
+[data-skill-title] [data-tips]{
+  transform: translateY(0.35ch);
 }
 
 [data-skill-sec-name]{
-  font-size: 12px;
   opacity: 0.6;
   text-transform: capitalize;
 }
@@ -2109,6 +2190,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               </div>
 
             </div>
+            <div style="min-height: 20px;"></div>
           </div>
         </div>
       </div>
@@ -2200,7 +2282,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           <!--功能列表-->
           <div  data-skills-scroll class="wh100 df-ffc ovy noscrollbar">
             <div data-skills-box class="w100 df-ffc">
-              <div class="w100 df" data-skillmodule="Useful & Starts">
+              <div class="w100 df" data-skillmodule-zh="常用功能" data-skillmodule="Useful & Starts">
                 <!--自动添加-->
                 <div class="fl1 df-cc" data-skill-sec data-skill-cover="end" style="display: flex;">
                   <span data-any="vw240" data-skill-cover="tips">
@@ -2216,7 +2298,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </span>
                 </div>
               </div>
-              <div class="w100 df" data-skillmodule="Pixel & Transform">
+              <div class="w100 df" data-skillmodule-zh="像素&变换" data-skillmodule="Pixel & Transform">
                 <div class="fl1" data-skill-sec="inSituRasterize">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -2454,7 +2536,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodule="Text & Layer">
+              <div class="w100 df" data-skillmodule-zh="文本&图层" data-skillmodule="Text & Layer">
                 <div class="fl1"  data-skill-sec="SplitText">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -2550,7 +2632,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Arrange By Ratio">自动重排</div>
+                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Arrange By Ratio">自动重排</div>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Auto Constraints">简单约束</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
@@ -2569,17 +2651,17 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     </div>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Heavy Chain">重链组件</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Refresh Set">重置组件</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Rebind Style">重绑样式</div>
                     </div>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Clone Comp.">复制母组件</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Release Comp.">解除母组件</div>  
+                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Release Comp.">解除母组件</div>  
                     </div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodule="Vector & Generate">
+              <div class="w100 df" data-skillmodule-zh="矢量&生成" data-skillmodule="Vector & Generate">
                 <div class="fl1"  data-skill-sec="">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -2587,7 +2669,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodule="Style & Prototype">
+              <div class="w100 df" data-skillmodule-zh="样式&原型" data-skillmodule="Style & Prototype">
                 <div class="fl1"  data-skill-sec="">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -2645,12 +2727,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@0781bc2cf4d25744f271bdb79e69254a71247111/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -2843,13 +2925,16 @@ let helpData = {
     "【选中单行】功能可以查找相邻父级同位置的图层, 请确保图层结构的一致性",
     ""],
     ["li",
-    "【选中多行】功能可以在选中单行的基础上, 将所在行之间的其他行一并选中",
+    "【选中多行】功能可以选中多个单行",
     ""],
     ["li",
     "【区域选中】功能类似框选, 会在选中两个xxx@td形成的框内所有的xxx@td ",
     ""],
     ["li",
     "【连续选中】功能可类似文本段落的连选, 会从第一个xxx@td开始逐行选中, 到第二个xxx@td结束",
+    ""],
+    ["li",
+    "选中后插件还是聚焦状态，此时无法对画布内容进行操作，可以用鼠标中建点击画布区域以重新聚焦到画布",
     ""],
     ["br","",""],
     ["p",
@@ -3049,6 +3134,7 @@ function addSkillTitle(){
       let node = document.createElement('div');
       node.setAttribute('data-skill-title','');
       node.className = 'df-lc';
+      /*
       let tips = document.createElement('div');
       tips.setAttribute('data-tips','auto');
       tips.setAttribute('data-tips-x','left');
@@ -3056,6 +3142,13 @@ function addSkillTitle(){
       tips.setAttribute('style',`--tips-text:'${info.tips[0]}'; --tips-text-en:'${info.tips[1]}';`);
       tips.innerHTML = '<btn-info></btn-info>'
       node.appendChild(tips);
+      */
+      let layerindex = Array.from(secnode.parentNode.children).findIndex(item => item == secnode);
+      let num = document.createElement('div');
+      num.textContent = (layerindex + 1) + '.';
+      node.appendChild(num);
+      num.setAttribute('style','opacity: 0.3;');
+      num.setAttribute('data-skill-index','');
       let name = document.createElement('div');
       let languge = ROOT.getAttribute('data-language');
       name.setAttribute('data-zh-text',info.name[0]);
