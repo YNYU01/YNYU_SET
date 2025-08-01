@@ -430,8 +430,6 @@ figma.ui.onmessage = async (message) => {
                 swapTable(table);
             });
     };
-    //选中表格行/区域
-
     //栅格化-副本
     if ( type == 'Pixel As Copy'){
         toPixel(info);
@@ -439,6 +437,25 @@ figma.ui.onmessage = async (message) => {
     //栅格化-覆盖
     if ( type == 'Pixel Overwrite'){
         toPixel(info,true);
+    };
+    //斜切拉伸
+    if( type == 'transformMix'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        //console.log(info)
+        b.forEach(item => {
+            let skewX = Math.tan(info.x*(Math.PI/180));
+            let scaleX = item.relativeTransform[0][0];
+            let x = item.relativeTransform[0][2];
+            let skewY = Math.tan(info.y*(Math.PI/180));
+            let scaleY = item.relativeTransform[1][1];
+            let y = item.relativeTransform[1][2];
+            //console.log(scaleX,scaleY)
+            if(skewX !== item.relativeTransform[0][1] || skewY !== item.relativeTransform[1][0]){
+                //console.log(666)
+                item.relativeTransform = [[scaleX,skewX,x],[skewY,scaleY,y]];
+            };
+        });
     };
     //拆分文案
     if ( type == "splitText"){
@@ -496,7 +513,7 @@ figma.ui.onmessage = async (message) => {
         let a = figma.currentPage;
         let b = a.selection;
         let texts = b.filter(item => item.type == 'TEXT');
-    }
+    };
     //自动排列
     if ( type == 'Arrange By Ratio'){
         if(info){
@@ -553,6 +570,107 @@ figma.ui.onmessage = async (message) => {
         });
         a.selection = selects;
     };
+    //拆分路径
+    if ( type == 'Split Path'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let vectors = b.filter(item => item.type == 'VECTOR');
+        let selects = [];
+        vectors.forEach(vector => {
+            let paths = vector.vectorPaths;
+            let styles = vector.vectorNetwork.vertices
+            let layerIndex = vector.parent.children.findIndex(items => items.id == vector.id);
+            let newVectors = [];
+            for(let i = 0; i < paths.length; i++){
+                let path = paths[i];
+                if(path.data.split('M').length > 2 && !info){
+                    let cutPaths = path.data.split('M').map(data => 'M ' + data.trim());
+                    cutPaths = cutPaths.filter(item => item !== 'M ');
+                    //console.log(cutPaths)
+                    let cuts = [];
+                    cutPaths.forEach((item,index) => {
+                        let newVector = vector.clone();
+                        let name = newVector.name + ' ' + (i + 1)  + '-' + (index + 1);
+                        newVector.name = name;
+                        let newpath = JSON.parse(JSON.stringify(path));
+                        newpath.data = item;
+                        //console.log(newpath)
+                        newVector.vectorPaths = [newpath];
+                        let keystyle = styles.find(items => items.x == item.split(' ')[1] * 1 && items.y ==  item.split(' ')[2] * 1);
+                        let strokeCap = keystyle.strokeCap;
+                        let strokeJoin = keystyle.strokeJoin;
+                        newVector.strokeCap = strokeCap;
+                        newVector.strokeJoin = strokeJoin;
+                        cuts.push(newVector);
+                    });
+                    /**/
+                    if(vector.strokes.length == 0 && paths.length > 1){
+                        let subtract = figma.subtract(cuts,vector.parent);
+                        newVectors.push(subtract);
+                    } else {
+                        let newVectorCut = figma.group(cuts,vector.parent);
+                        newVectorCut.name = vector.name + ' ' + (i + 1);
+                        newVectors.push(newVectorCut);
+                    };
+                    /**/
+                    /**
+                    let newVectorCut = figma.group(cuts,vector.parent);
+                    newVectorCut.name = vector.name + ' ' + (i + 1);
+                    newVectors.push(newVectorCut);
+                    /**/
+                } else {
+                    let newVector = vector.clone();
+                    newVector.name += ' ' + (i + 1 );
+                    newVector.vectorPaths = [path];
+                    let keystyle = styles.find(item => item.x == path.data.split(' ')[1] * 1 && item.y ==  path.data.split(' ')[2] * 1);
+                    let strokeCap = keystyle.strokeCap;
+                    let strokeJoin = keystyle.strokeJoin;
+                    newVector.strokeCap = strokeCap;
+                    newVector.strokeJoin = strokeJoin;
+                    newVectors.push(newVector);
+                };
+            };
+            let group;
+            if(vector.strokes.length == 0){
+                group = figma.union(newVectors,vector.parent,(layerIndex + 1));
+                group.fills = vector.fills;
+                group.x = vector.x;
+                group.y = vector.y;
+            } else {
+                group = figma.group(newVectors,vector.parent,(layerIndex + 1));
+            }
+            group.name = vector.name;
+            if(group.children.length == 1 && group.children[0].type == 'GROUP'){
+                figma.ungroup(group.children[0]);
+            };
+
+            selects.push(group);
+            vector.visible = false;
+        });
+        a.selection = selects;
+    };
+    //获取为svg代码
+    if ( type == 'getSvg'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let vectors = b.filter(item => item.typa == 'VECTOR');
+        let info = {floors: 1};
+        vectors.forEach(vector => {
+            let paths = vector.vectorPaths;
+            paths.map(item => item.data);
+            if(info.floors){
+                let num = info.floors;
+                paths.map(item => 
+                    item.split(' ').map(data => {
+                        if(data.includes('.')){
+                            return data.split('.')[0] + '.' + data.split('.')[1].substring(0,num)
+                        }
+                    }
+                ).join(' '))
+            };
+            console.log(paths)
+        });
+    };
     
 };
 
@@ -573,20 +691,33 @@ figma.on('selectionchange',()=>{
     };
 });
 
+setTimeout(()=>{
+    console.clear()
+    console.log(`- [YNYU_SET] OPEN DESIGN & SOURCE
+- © 2024-2025 YNYU lvynyu2@gmail.com;`)
+},500)
+
 sendInfo()
 function sendInfo(){
     let a = figma.currentPage;
     let b = a.selection;
-    if(b){
+    if(b && b.length > 0){
         let data = [];
         b.forEach(node => {
             let n = TextMaxLength(node.name,20,'...');
-            let w = node.width;
-            let h = node.height;
-            //console.log(lengthE,lengthZ,n)
-            data.push([n,w,h])
+            let w = node.absoluteRenderBounds ? node.absoluteRenderBounds.width : node.absoluteBoundingBox.width;
+            let h = node.absoluteRenderBounds ? node.absoluteRenderBounds.height : node.absoluteBoundingBox.height;
+            let transform = node.absoluteTransform;
+            //let scaleX = 100// Math.floor(transform[0][0] * 100);
+            //let scaleY = 100//Math.floor(transform[1][1] * 100);
+            let skewX = Math.floor(Math.atan(transform[0][1])/(Math.PI/180));
+            let skewY = Math.floor(Math.atan(transform[1][0])/(Math.PI/180));
+            //console.log([skewX,skewY])
+            data.push([n,w,h,[skewX,skewY]])
         });
         postmessage([data,'selectInfo']);
+    } else {
+        postmessage([[[null,null,null,[0,0]]],'selectInfo']);
     };
 };
 
@@ -618,11 +749,10 @@ function sendSendComp(){
  * @param {node} node - 需要设置的对象
  * @param {node?} cloneNode - 直接参考的对象
  */
-function setMain(info,node,cloneNode){
+function setMain(info,node,cloneNode,isBound){
     let viewX = Math.floor( figma.viewport.center.x - ((figma.viewport.bounds.width/2  - 300)* figma.viewport.zoom));
     let viewY = Math.floor( figma.viewport.center.y - ((figma.viewport.bounds.height/2  - 300)* figma.viewport.zoom));
     let w = info[0],h = info[1],x = info[2],y = info[3],n = info[4],fills = info[5];
-    //console.log(cloneNode)
     let hasnoFills = [
         'TEXT','GROUP',
     ]
@@ -642,6 +772,15 @@ function setMain(info,node,cloneNode){
     y = y ? y : viewY;
     fills = fills ? fills : [];
     node.resize(w,h);
+    /*
+    if(isBound){
+        node.absoluteBoundingBox.x = x;
+        node.absoluteBoundingBox.y = y;
+    } else {
+        node.x = x;
+        node.y = y;
+    }
+    */
     node.x = x;
     node.y = y;
     node.name = n;
@@ -695,8 +834,8 @@ function addCutArea(group,info){
         let y = item.y;
         let s = item.s;
         let cut = figma.createSlice();
-        cut.x = group.x + x;
-        cut.y = group.y + y;
+        cut.x = x;
+        cut.y = y;
         cut.resize(w,h);
         cut.name = 'cut ' + (index + 1) + '@' + s + 'x';//命名记录栅格化倍率
         group.appendChild(cut);
@@ -741,18 +880,16 @@ function addCutImg(group,isOverWrite,isfinal){
         ];
         group.appendChild(cutimg);
         item.remove();
+        if(group.children.length == 2){
+            pixelSelects.push(group.children[1])
+            figma.ungroup(group);
+        } else {
+            pixelSelects.push(group)
+        };
         if(isOverWrite){
             if(old && index == cuts.length - 1){
                 old.remove();
             };
-            if(group.children.length == 1){
-                pixelSelects.push(group.children[0])
-                figma.ungroup(group);
-            } else {
-                pixelSelects.push(group)
-            };
-        } else {
-            pixelSelects.push(group)
         };
         
         if(isfinal){
@@ -775,14 +912,47 @@ async function toPixel(info,isOverWrite){
     for(let i = 0; i < b.length; i++){
         let layerIndex = b[i].parent.children.findIndex(item => item.id == b[i].id);
         //console.log(layerIndex)
+        /*
         let group = figma.group([b[i]],b[i].parent,(layerIndex + 1));
         group.x = b[i].x;
         group.y = b[i].y;
         group.name = b[i].name;
+        */
+        let w = b[i].absoluteRenderBounds ? b[i].absoluteRenderBounds.width : b[i].absoluteBoundingBox.width;
+        let h = b[i].absoluteRenderBounds ? b[i].absoluteRenderBounds.height : b[i].absoluteBoundingBox.height;
+        let x = b[i].absoluteRenderBounds ? b[i].absoluteRenderBounds.x : b[i].absoluteBoundingBox.x;
+        let y = b[i].absoluteRenderBounds ? b[i].absoluteRenderBounds.y : b[i].absoluteBoundingBox.y;
+        let isSkew = false
+        if(b[i].parent !== a){
+            let transform = b[i].parent.absoluteTransform;
+            let key1 = transform[0][0] == 1 ? true : false;
+            let key2 = transform[0][1] == 0 ? true : false;
+            let key3 = transform[1][0] == 0 ? true : false;
+            let key4 = transform[1][1] == 1 ? true : false;
+            if([key1,key2,key3,key4].includes(false)){
+                x -= b[i].x;
+                y += b[i].y;
+                isSkew = true;
+            };
+        };
+        let box = addFrame([w,h,x,y,b[i].name,[]]);
+        b[i].parent.insertChild((layerIndex + 1),box);
+        if(box.parent !== a){
+            box.x -= box.parent.absoluteBoundingBox.x;
+            box.y -= box.parent.absoluteBoundingBox.y;
+        };
+        box.appendChild(b[i]);
+        if(box.parent !== a){
+            b[i].x -= b[i].parent.x;
+            b[i].y -= b[i].parent.y;
+        }else{
+            b[i].x -= b[i].parent.absoluteBoundingBox.x;
+            b[i].y -= b[i].parent.absoluteBoundingBox.y;
+        };
         setTimeout(()=>{
-            addCutArea(group,info[i]);
+            addCutArea(box,info[i],isSkew);
             let isfinal = i == b.length - 1 ? true : false;
-            addCutImg(group,isOverWrite,isfinal);
+            addCutImg(box,isOverWrite,isfinal);
         },100);
     };
 };
@@ -793,7 +963,8 @@ async function toPixel(info,isOverWrite){
  */
 function addFrame(info,cloneNode){
     let node = figma.createFrame();
-    setMain(info,node,cloneNode);
+    node.clipsContent = false;
+    setMain(info,node,cloneNode,true);
     return node;
 };
 
@@ -1677,3 +1848,28 @@ function sortLRTB(nodes){
         };
     });
 }
+
+//添加网格参考线用于设置裁切拉伸范围
+/**
+ * @param {Array} info -[type,xy,wh]
+ */
+function addClipGrids(info,node){
+    let type = {
+      row: "ROWS",
+      column: "COLUMNS",
+    };
+    let grids = [];
+    info.forEach(item => {
+      let grid = {
+        alignment: "MIN",//左上角为起点，依次计算好拉伸区域，标上色值
+        color: {r: 1, g: 0, b: 0, a :0.1},
+        pattern: type[item[0]],
+        count: 1,
+        gutterSize: 1,
+        offset: item[1],//拉伸区域起点
+        sectionSize: item[2],//拉伸区域大小
+      };
+      grids.push(grid);
+    });
+    node.layoutGrids = grids;
+  };

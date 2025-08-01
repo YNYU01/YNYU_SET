@@ -84,7 +84,7 @@ p [data-highlight]{
   min-width: fit-content;
   height: 20px;
   box-sizing: border-box;
-  font-size: 12px;
+  font-size: 11px;
   border: 1px solid var(--boxBod);
   flex: 1;
 }
@@ -484,7 +484,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   position: absolute;
   font-size: 6px;
   top: 0;
-  right: 1px;
+  right: 2px;
 }
 
 [data-btn="main"]{

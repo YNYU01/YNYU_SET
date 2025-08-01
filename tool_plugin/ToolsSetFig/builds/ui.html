@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -55,7 +55,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -544,7 +544,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   position: absolute;
   font-size: 6px;
   top: 0;
-  right: 1px;
+  right: 2px;
 }
 
 [data-btn="main"]{
@@ -2144,7 +2144,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               </div>
             </div>
             <div class="df-ffc w100 bod-d" data-retable-moreset  style=" max-width: 560px; padding: 4px; gap: 4px; box-sizing: border-box;">
-              <div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one frame/group with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个画板组 时生效</div>
+              <div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one auto-layout with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个自动布局 时生效</div>
               <div class="df-lc w100" data-skill-more style="flex-wrap: wrap; text-wrap: nowrap; font-size: 10px; gap: 4px; margin-bottom: 4px;">
                 <div class="fl1 df-lc" style=" gap: 4px; min-width: 160px;">
                   <div class="df ovh noscrollbar" data-scroll data-en-text="· Clone instance by data quantity">· 数据数量&gt;实例数量时, 复制最末实列</div>
@@ -2395,11 +2395,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div class="df-cc" data-skill-line>
+                  <!--figma不支持拉伸变形-->
+                  <!--div class="df-cc" data-skill-line>
                     <div data-skewscale-box class="fl0 df-cc">
                       <div data-skewscale-view ></div>
                     </div>
-                  </div>
+                  </div-->
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Skew X">左右倾斜</div>
                     <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
@@ -2424,7 +2425,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       </div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line>
+                  <!--div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右变形</div>
                     <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
@@ -2450,7 +2451,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="Reset All Transform">重置全部</div>
-                  </div>
+                  </div-->
                 </div>
                 <div class="fl1"  data-skill-sec="clipGrid">
                   <div data-skill-star="false">
@@ -2662,6 +2663,16 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
               <div class="w100 df" data-skillmodule-zh="矢量&生成" data-skillmodule="Vector & Generate">
+                <div class="fl1"  data-skill-sec="GetPath">
+                  <div data-skill-star="false">
+                    <btn-star></btn-star>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Split Path">拆分路径</div>
+                    </div>
+                  </div>
+                </div>
                 <div class="fl1"  data-skill-sec="">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -2727,12 +2738,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@34d5f6149971484d4206125d63e014980b2c2b52/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -2740,62 +2751,51 @@ let skillSecInfo = [
   {
     id: 'inSituRasterize',
     name: ["原地栅格化","in-situ rasterize"],
-    tips: ["瓦片式栅格化","Auto rasterize as tile"],
   },
   {
     id: 'easeTransform',
-    name: ["简单变形","ease transform"],
-    tips: ["斜切和拉伸","Skew and top-bottom/left-right stretch"],
+    name: ["斜切","skew"],
+    /*name: ["简单变形","ease transform"],*/
   },
   {
     id: 'uniformScale',
     name: ["等比缩放","uniform scale"],
-    tips: ["逐个进行等比缩放","Scaling one by one"],
   },
   {
     id: 'alterImageFill',
     name: ["图片填充修改","alter image fill"],
-    tips: ["处理填充里的图片","Alter the image of fills"],
   },
   {
     id: 'clipGrid',
     name: ["宫格裁切","clip grid"],
-    tips: ["按宫格裁切处理成组件（推荐）或多图","Clip as components(preferred) or images"],
   },
   {
     id: 'SplitText',
     name: ["拆分文本","split text"],
-    tips: ["缺失字体时无法使用","Can not run without fonts"],
   },
   {
     id: 'MergeText',
     name: ["合并文本","merge text"],
-    tips: ["缺失字体时无法使用","Can not run without fonts"],
   },
   {
     id: 'LayersLayout',
     name: ["图层&布局","layers layout"],
-    tips: ["更便捷地排布和填充内容","Layout and fill content more conveniently"],
+  },
+  {
+    id: 'GetPath',
+    name: ["提取路径","get path"],
   },
   {
     id: '',
     name: ["",""],
-    tips: ["",""],
   },
   {
     id: '',
     name: ["",""],
-    tips: ["",""],
   },
   {
     id: '',
     name: ["",""],
-    tips: ["",""],
-  },
-  {
-    id: '',
-    name: ["",""],
-    tips: ["",""],
   },
 ]
 
@@ -3025,6 +3025,10 @@ const frameName =  document.getElementById('input-framename');
 const userText = document.getElementById('upload-textarea');
 
 const pixelScale = document.getElementById('input-pixelScale');
+let scaleSetX = getElementMix('data-scaleset-x').querySelector('[data-input="value"]');
+let scaleSetY = getElementMix('data-scaleset-y').querySelector('[data-input="value"]');
+let skewSetX = getElementMix('data-skewset-x').querySelector('[data-input="value"]');
+let skewSetY = getElementMix('data-skewset-y').querySelector('[data-input="value"]');
 
 /*动态数据或对象*/
 let CreateImageInfo = [];
@@ -3134,15 +3138,6 @@ function addSkillTitle(){
       let node = document.createElement('div');
       node.setAttribute('data-skill-title','');
       node.className = 'df-lc';
-      /*
-      let tips = document.createElement('div');
-      tips.setAttribute('data-tips','auto');
-      tips.setAttribute('data-tips-x','left');
-      tips.setAttribute('data-tips-y','top');
-      tips.setAttribute('style',`--tips-text:'${info.tips[0]}'; --tips-text-en:'${info.tips[1]}';`);
-      tips.innerHTML = '<btn-info></btn-info>'
-      node.appendChild(tips);
-      */
       let layerindex = Array.from(secnode.parentNode.children).findIndex(item => item == secnode);
       let num = document.createElement('div');
       num.textContent = (layerindex + 1) + '.';
@@ -3166,7 +3161,7 @@ function addSkillTitle(){
 //处理选中图层的信息
 function reSelectInfo(info){
   SelectNodeInfo = info;
-  if(info.length > 0){
+  if(info[0][0] !== null){
     ROOT.setAttribute('data-selects','true');
     selectInfoBox.forEach(item => {
       let main = item.querySelector('[data-selects-info="main"]');
@@ -3176,14 +3171,27 @@ function reSelectInfo(info){
       sec.textContent = info[1] ? info[1][0] : '';
       num.textContent = info.length;
     });
+  } else{
+    ROOT.setAttribute('data-selects','false')
+  };  
+  if(info.length == 1){
+    //console.log(info[0][3])
+    let transform = info[0][3];
+    skewSetX.value = transform[0];
+    skewSetY.value = transform[1];
+    //scaleSetX.value = transform[2];
+    //scaleSetY.value = transform[3];
+    const inputEvent = new Event('input', { bubbles: true });
+    skewSetX.dispatchEvent(inputEvent);
+    skewSetY.dispatchEvent(inputEvent);
+    //scaleSetX.dispatchEvent(inputEvent);
+    //scaleSetY.dispatchEvent(inputEvent);
+  };
   if(info.length > 1){
     ROOT.setAttribute('data-selects-more','true');
   }else{
     ROOT.setAttribute('data-selects-more','false');
-  }
- }else{
-  ROOT.setAttribute('data-selects','false')
- }
+  };
 };
 //按用户偏好修改界面大小
 function reRootSize(info){
@@ -3191,8 +3199,8 @@ function reRootSize(info){
     btnBig.checked = true;
   } else {
     btnBig.checked = false;
-  }
-}
+  };
+};
 
 
 /* ---界面交互--- */
@@ -4048,42 +4056,63 @@ getElementMix('data-split-tags').querySelectorAll('input').forEach(item => {
     };
   });
 });
-
+//斜切拉伸
+function sendTransform(){
+  let data = {
+    x: skewSetX.value * 1,
+    y: skewSetY.value * 1,
+    w: scaleSetX.value * 1,
+    h: scaleSetY.value * 1,
+  }
+  toolMessage([data,'transformMix'],PLUGINAPP);
+};
 //点击即执行的功能
 skillBtnMain.forEach(btn => {
+  let MOVE_TIMEOUT;
+  btn.addEventListener('dblclick',()=>{
+    if(MOVE_TIMEOUT){
+        clearTimeout(MOVE_TIMEOUT);
+    };
+    let skillname = btn.getAttribute('data-en-text');
+    if(btn.getAttribute('data-btn-dblclick') !== null){
+      switch (skillname){
+        default : toolMessage([true,skillname],PLUGINAPP);break
+      };
+    };
+  });
   btn.addEventListener('click',()=>{
     let skillname = btn.getAttribute('data-en-text');
-    switch (skillname){
-      case 'Pixel As Copy':sendPixel(skillname);break
-      case 'Pixel Overwrite':sendPixel(skillname);break
-      case 'Reset All Transform':;break
-      case 'Split By Conditions':sendSplit('tags');break
-      case 'Split By Symbol':sendSplit('inputs');break
-      case 'Mapping Names':sendTable('mapName');break
-      case 'Mapping Texts':sendTable('mapText');break
-      case 'Mapping Properties':sendTable('mapPro');break
-      case 'Mapping Tags':sendTable('mapTag');break
-      case 'Get Names':sendTable('getName');break
-      case 'Get Texts':sendTable('getText');break
-      case 'Get Properties':sendTable('getPro');break
-      case 'Get Tags':sendTable('getTag');break
-      case 'Apply Preset':sendTableSet('style');break
-      case 'Add C/R':sendTableSet('add');break
-      case 'Reduce C/R':sendTableSet('reduce');break
-      case 'Select a Row':sendTablePick('row');break
-      case 'Select many Rows':sendTablePick('allrow');break
-      case 'Select Block':sendTablePick('block');break
-      case 'Select Inline':sendTablePick('inline');break
-      default : toolMessage(['',skillname],PLUGINAPP);break
+    /*防抖*/
+    if(MOVE_TIMEOUT){
+        clearTimeout(MOVE_TIMEOUT)
     };
+    MOVE_TIMEOUT = setTimeout(()=>{
+      switch (skillname){
+        case 'Pixel As Copy':sendPixel(skillname);break
+        case 'Pixel Overwrite':sendPixel(skillname);break
+        case 'Reset All Transform':;break
+        case 'Split By Conditions':sendSplit('tags');break
+        case 'Split By Symbol':sendSplit('inputs');break
+        case 'Mapping Names':sendTable('mapName');break
+        case 'Mapping Texts':sendTable('mapText');break
+        case 'Mapping Properties':sendTable('mapPro');break
+        case 'Mapping Tags':sendTable('mapTag');break
+        case 'Get Names':sendTable('getName');break
+        case 'Get Texts':sendTable('getText');break
+        case 'Get Properties':sendTable('getPro');break
+        case 'Get Tags':sendTable('getTag');break
+        case 'Apply Preset':sendTableSet('style');break
+        case 'Add C/R':sendTableSet('add');break
+        case 'Reduce C/R':sendTableSet('reduce');break
+        case 'Select a Row':sendTablePick('row');break
+        case 'Select many Rows':sendTablePick('allrow');break
+        case 'Select Block':sendTablePick('block');break
+        case 'Select Inline':sendTablePick('inline');break
+        default : toolMessage(['',skillname],PLUGINAPP);break
+      };
+    },500);
   });
-  btn.addEventListener('dblclick',()=>{
-    let skillname = btn.getAttribute('data-en-text');
-    switch (skillname){
-      case 'Arrange By Ratio': toolMessage([true,skillname],PLUGINAPP);break
-      case 'Release Comp.':toolMessage([true,skillname],PLUGINAPP);break
-    };
-  });
+  
 
   function sendPixel(name){
     //返回裁切方案以栅格化
@@ -4255,15 +4284,19 @@ function getUserNumber(node){
   let number = node.getAttribute('data-number-value');
   if(node.getAttribute('data-skewset-x') !== null){
     node.parentNode.parentNode.parentNode.style.setProperty('--skewX',number)
+    sendTransform();
   };
   if(node.getAttribute('data-skewset-y') !== null){
     node.parentNode.parentNode.parentNode.style.setProperty('--skewY',number)
+    sendTransform();
   };
   if(node.getAttribute('data-scaleset-x') !== null){
     node.parentNode.parentNode.parentNode.style.setProperty('--scaleX',number)
+    sendTransform();
   };
   if(node.getAttribute('data-scaleset-y') !== null){
     node.parentNode.parentNode.parentNode.style.setProperty('--scaleY',number)
+    sendTransform();
   };
 };
 

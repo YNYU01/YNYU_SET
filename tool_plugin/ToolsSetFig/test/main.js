@@ -3,62 +3,51 @@ let skillSecInfo = [
   {
     id: 'inSituRasterize',
     name: ["原地栅格化","in-situ rasterize"],
-    tips: ["瓦片式栅格化","Auto rasterize as tile"],
   },
   {
     id: 'easeTransform',
-    name: ["简单变形","ease transform"],
-    tips: ["斜切和拉伸","Skew and top-bottom/left-right stretch"],
+    name: ["斜切","skew"],
+    /*name: ["简单变形","ease transform"],*/
   },
   {
     id: 'uniformScale',
     name: ["等比缩放","uniform scale"],
-    tips: ["逐个进行等比缩放","Scaling one by one"],
   },
   {
     id: 'alterImageFill',
     name: ["图片填充修改","alter image fill"],
-    tips: ["处理填充里的图片","Alter the image of fills"],
   },
   {
-    id: 'clipGrid',
-    name: ["宫格裁切","clip grid"],
-    tips: ["按宫格裁切处理成组件（推荐）或多图","Clip as components(preferred) or images"],
+    id: 'clipByGrid',
+    name: ["宫格裁切","clip by grid"],
   },
   {
     id: 'SplitText',
     name: ["拆分文本","split text"],
-    tips: ["缺失字体时无法使用","Can not run without fonts"],
   },
   {
     id: 'MergeText',
     name: ["合并文本","merge text"],
-    tips: ["缺失字体时无法使用","Can not run without fonts"],
   },
   {
     id: 'LayersLayout',
     name: ["图层&布局","layers layout"],
-    tips: ["更便捷地排布和填充内容","Layout and fill content more conveniently"],
+  },
+  {
+    id: 'GetPath',
+    name: ["提取路径","get path"],
+  },
+  {
+    id: 'GetEditableSVG',
+    name: ["获取可编辑SVG","get editable SVG"],
   },
   {
     id: '',
     name: ["",""],
-    tips: ["",""],
   },
   {
     id: '',
     name: ["",""],
-    tips: ["",""],
-  },
-  {
-    id: '',
-    name: ["",""],
-    tips: ["",""],
-  },
-  {
-    id: '',
-    name: ["",""],
-    tips: ["",""],
   },
 ]
 
@@ -288,6 +277,10 @@ const frameName =  document.getElementById('input-framename');
 const userText = document.getElementById('upload-textarea');
 
 const pixelScale = document.getElementById('input-pixelScale');
+let scaleSetX = getElementMix('data-scaleset-x').querySelector('[data-input="value"]');
+let scaleSetY = getElementMix('data-scaleset-y').querySelector('[data-input="value"]');
+let skewSetX = getElementMix('data-skewset-x').querySelector('[data-input="value"]');
+let skewSetY = getElementMix('data-skewset-y').querySelector('[data-input="value"]');
 
 /*动态数据或对象*/
 let CreateImageInfo = [];
@@ -397,15 +390,6 @@ function addSkillTitle(){
       let node = document.createElement('div');
       node.setAttribute('data-skill-title','');
       node.className = 'df-lc';
-      /*
-      let tips = document.createElement('div');
-      tips.setAttribute('data-tips','auto');
-      tips.setAttribute('data-tips-x','left');
-      tips.setAttribute('data-tips-y','top');
-      tips.setAttribute('style',`--tips-text:'${info.tips[0]}'; --tips-text-en:'${info.tips[1]}';`);
-      tips.innerHTML = '<btn-info></btn-info>'
-      node.appendChild(tips);
-      */
       let layerindex = Array.from(secnode.parentNode.children).findIndex(item => item == secnode);
       let num = document.createElement('div');
       num.textContent = (layerindex + 1) + '.';
@@ -429,7 +413,7 @@ function addSkillTitle(){
 //处理选中图层的信息
 function reSelectInfo(info){
   SelectNodeInfo = info;
-  if(info.length > 0){
+  if(info[0][0] !== null){
     ROOT.setAttribute('data-selects','true');
     selectInfoBox.forEach(item => {
       let main = item.querySelector('[data-selects-info="main"]');
@@ -439,14 +423,27 @@ function reSelectInfo(info){
       sec.textContent = info[1] ? info[1][0] : '';
       num.textContent = info.length;
     });
+  } else{
+    ROOT.setAttribute('data-selects','false')
+  };  
+  if(info.length == 1){
+    //console.log(info[0][3])
+    let transform = info[0][3];
+    skewSetX.value = transform[0];
+    skewSetY.value = transform[1];
+    //scaleSetX.value = transform[2];
+    //scaleSetY.value = transform[3];
+    const inputEvent = new Event('input', { bubbles: true });
+    skewSetX.dispatchEvent(inputEvent);
+    skewSetY.dispatchEvent(inputEvent);
+    //scaleSetX.dispatchEvent(inputEvent);
+    //scaleSetY.dispatchEvent(inputEvent);
+  };
   if(info.length > 1){
     ROOT.setAttribute('data-selects-more','true');
   }else{
     ROOT.setAttribute('data-selects-more','false');
-  }
- }else{
-  ROOT.setAttribute('data-selects','false')
- }
+  };
 };
 //按用户偏好修改界面大小
 function reRootSize(info){
@@ -454,8 +451,8 @@ function reRootSize(info){
     btnBig.checked = true;
   } else {
     btnBig.checked = false;
-  }
-}
+  };
+};
 
 
 /* ---界面交互--- */
@@ -1311,42 +1308,63 @@ getElementMix('data-split-tags').querySelectorAll('input').forEach(item => {
     };
   });
 });
-
+//斜切拉伸
+function sendTransform(){
+  let data = {
+    x: skewSetX.value * 1,
+    y: skewSetY.value * 1,
+    w: scaleSetX.value * 1,
+    h: scaleSetY.value * 1,
+  }
+  toolMessage([data,'transformMix'],PLUGINAPP);
+};
 //点击即执行的功能
 skillBtnMain.forEach(btn => {
+  let MOVE_TIMEOUT;
+  btn.addEventListener('dblclick',()=>{
+    if(MOVE_TIMEOUT){
+        clearTimeout(MOVE_TIMEOUT);
+    };
+    let skillname = btn.getAttribute('data-en-text');
+    if(btn.getAttribute('data-btn-dblclick') !== null){
+      switch (skillname){
+        default : toolMessage([true,skillname],PLUGINAPP);break
+      };
+    };
+  });
   btn.addEventListener('click',()=>{
     let skillname = btn.getAttribute('data-en-text');
-    switch (skillname){
-      case 'Pixel As Copy':sendPixel(skillname);break
-      case 'Pixel Overwrite':sendPixel(skillname);break
-      case 'Reset All Transform':;break
-      case 'Split By Conditions':sendSplit('tags');break
-      case 'Split By Symbol':sendSplit('inputs');break
-      case 'Mapping Names':sendTable('mapName');break
-      case 'Mapping Texts':sendTable('mapText');break
-      case 'Mapping Properties':sendTable('mapPro');break
-      case 'Mapping Tags':sendTable('mapTag');break
-      case 'Get Names':sendTable('getName');break
-      case 'Get Texts':sendTable('getText');break
-      case 'Get Properties':sendTable('getPro');break
-      case 'Get Tags':sendTable('getTag');break
-      case 'Apply Preset':sendTableSet('style');break
-      case 'Add C/R':sendTableSet('add');break
-      case 'Reduce C/R':sendTableSet('reduce');break
-      case 'Select a Row':sendTablePick('row');break
-      case 'Select many Rows':sendTablePick('allrow');break
-      case 'Select Block':sendTablePick('block');break
-      case 'Select Inline':sendTablePick('inline');break
-      default : toolMessage(['',skillname],PLUGINAPP);break
+    /*防抖*/
+    if(MOVE_TIMEOUT){
+        clearTimeout(MOVE_TIMEOUT)
     };
+    MOVE_TIMEOUT = setTimeout(()=>{
+      switch (skillname){
+        case 'Pixel As Copy':sendPixel(skillname);break
+        case 'Pixel Overwrite':sendPixel(skillname);break
+        case 'Reset All Transform':;break
+        case 'Split By Conditions':sendSplit('tags');break
+        case 'Split By Symbol':sendSplit('inputs');break
+        case 'Mapping Names':sendTable('mapName');break
+        case 'Mapping Texts':sendTable('mapText');break
+        case 'Mapping Properties':sendTable('mapPro');break
+        case 'Mapping Tags':sendTable('mapTag');break
+        case 'Get Names':sendTable('getName');break
+        case 'Get Texts':sendTable('getText');break
+        case 'Get Properties':sendTable('getPro');break
+        case 'Get Tags':sendTable('getTag');break
+        case 'Apply Preset':sendTableSet('style');break
+        case 'Add C/R':sendTableSet('add');break
+        case 'Reduce C/R':sendTableSet('reduce');break
+        case 'Select a Row':sendTablePick('row');break
+        case 'Select many Rows':sendTablePick('allrow');break
+        case 'Select Block':sendTablePick('block');break
+        case 'Select Inline':sendTablePick('inline');break
+        default : toolMessage(['',skillname],PLUGINAPP);break
+      };
+    },500);
   });
-  btn.addEventListener('dblclick',()=>{
-    let skillname = btn.getAttribute('data-en-text');
-    switch (skillname){
-      case 'Arrange By Ratio': toolMessage([true,skillname],PLUGINAPP);break
-      case 'Release Comp.':toolMessage([true,skillname],PLUGINAPP);break
-    };
-  });
+  
 
   function sendPixel(name){
     //返回裁切方案以栅格化
@@ -1518,15 +1536,19 @@ function getUserNumber(node){
   let number = node.getAttribute('data-number-value');
   if(node.getAttribute('data-skewset-x') !== null){
     node.parentNode.parentNode.parentNode.style.setProperty('--skewX',number)
+    sendTransform();
   };
   if(node.getAttribute('data-skewset-y') !== null){
     node.parentNode.parentNode.parentNode.style.setProperty('--skewY',number)
+    sendTransform();
   };
   if(node.getAttribute('data-scaleset-x') !== null){
     node.parentNode.parentNode.parentNode.style.setProperty('--scaleX',number)
+    sendTransform();
   };
   if(node.getAttribute('data-scaleset-y') !== null){
     node.parentNode.parentNode.parentNode.style.setProperty('--scaleY',number)
+    sendTransform();
   };
 };
 
@@ -1550,6 +1572,7 @@ function getUserRadio(node){
     if(node.getAttribute('data-pixelscale-set') !== null){
       pixelScale.value = userRadio;
     };
+    
     if(node.getAttribute('data-clip-w-set') !== null){
       let set = node.parentNode.parentNode.querySelector('[data-clip-w]');
       let sets = set.querySelectorAll('[data-clip-set]');
@@ -1566,6 +1589,7 @@ function getUserRadio(node){
         item.setAttribute('style','');
       });
     };
+    
     if(node.getAttribute('data-skilltype-box') !== null){
       let modelid = skillModel[userRadio - 1][1];
       //console.log(modelid);
@@ -1581,3 +1605,5 @@ function getUserRadio(node){
     };
   }
 };
+
+

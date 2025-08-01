@@ -840,11 +840,12 @@
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div class="df-cc" data-skill-line>
+                  <!--figma不支持拉伸变形-->
+                  <!--div class="df-cc" data-skill-line>
                     <div data-skewscale-box class="fl0 df-cc">
                       <div data-skewscale-view ></div>
                     </div>
-                  </div>
+                  </div-->
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Skew X">左右倾斜</div>
                     <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
@@ -869,7 +870,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line>
+                  <!--div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右变形</div>
                     <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
@@ -895,13 +896,13 @@
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="Reset All Transform">重置全部</div>
-                  </div>
+                  </div-->
                 </div>
-                <div class="fl1"  data-skill-sec="clipGrid">
+                <div class="fl1"  data-skill-sec="clipByGrid">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div data-clip-view class="fl0 df-cc" data-skill-line>
+                  <!--div data-clip-view class="fl0 df-cc" data-skill-line>
                     <div data-clip-select data-clip-w="2" data-clip-h="2" class="bod-d pos-r">
                       <div class="pos-a df" data-clip-set-box="w">
                         <div data-clip-set="x1" class="ovh fl0 pos-r"></div>
@@ -916,21 +917,21 @@
                         <div data-clip-set="y4" class="ovh fl0 pos-r"></div>
                       </div>
                     </div>
-                  </div>
+                  </div-->
                   <div class="df-lc" data-skill-line>
-                    <div data-any="vw240" data-skill-btnname data-en-text="Clip LR">左右裁切</div>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Stretch Zone LR">左右拉伸数量</div>
                     <div class="df-lc fl1" data-clip-w-set data-radio-value="2" style="gap: 4px;">
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="0">x0</div>
-                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="2">x2</div>
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="4">x4</div>
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="0">none</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="1">x1</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2">x2</div>
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
-                    <div data-any="vw240" data-skill-btnname data-en-text="Clip TB">上下裁切</div>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Stretch Zone TB">上下拉伸数量</div>
                     <div class="df-lc fl1" data-clip-h-set data-radio-value="2" style="gap: 4px;">
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="0">x0</div>
-                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="2">x2</div>
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="4">x4</div>
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="0">none</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="1">x1</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2">x2</div>
                     </div>
                   </div>
                   <div class="df-sc" data-skill-line>
@@ -1107,6 +1108,29 @@
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
               <div class="w100 df" data-skillmodule-zh="矢量&生成" data-skillmodule="Vector & Generate">
+                <div class="fl1"  data-skill-sec="GetPath">
+                  <div data-skill-star="false">
+                    <btn-star></btn-star>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Split Path">拆分路径</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fl1"  data-skill-sec="GetEditableSVG">
+                  <div data-skill-star="false">
+                    <btn-star></btn-star>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Get SVG">获取SVG</div>
+                    </div>
+                    <div id="svgcode-box" data-resize class="pos-r w100">
+                      <textarea spellcheck="false" data-textarea id="svgcode"></textarea>
+                    </div>
+                  </div>
+                </div>
                 <div class="fl1"  data-skill-sec="">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
