@@ -28,6 +28,24 @@ let isSendComp = false;
 let TRUES = ['true',true,'1',1,'show','是','有'];
 let FALSES = ['false',false,'0',0,'hide','否','无'];
 let TAGS_KEY = ['.fill','.stroke','.fillStyle','.strokeStyle','.visible','.opacity','.fontSize','.xywh'];
+let CLIP_NAME = [
+    ['@T?','@C?','@B?'],
+    ['@?L','@?C','@?R'],
+    ['@TC','@CT-C','@CC-C','@CB-C','@BC'],
+    ['@CL','@CC-L','@CC-C','@CC-R','@CR'],
+    [
+        '@TL','@TC','@TR',
+        '@CL','@CC','@CR',
+        '@BL','@BC','@BR',
+    ],
+    [
+        '@TL',  '@TC-L','@TC',  '@TC-R','@TR',
+        '@CL-T','@CT-L','@CT-C','@CT-R','@CR-T',
+        '@CL',  '@CC-L','@CC-C','@CC-R','@CR',
+        '@CL-B','@CB-L','@CB-C','@CB-R','@CR-B',
+        '@BL',  '@BC-L','@BC',  '@BC-R','@BR',
+    ]
+];
 //核心功能
 figma.ui.onmessage = async (message) => { 
     const info = message[0]
@@ -457,6 +475,101 @@ figma.ui.onmessage = async (message) => {
             };
         });
     };
+    //网格裁切
+    if( type == 'addClipGrid'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        if(b.length == 1){
+            //console.log(info)
+            let final = b[0];
+            let main = getSafeMain(b[0]);
+
+            if(!b[0].layoutGrids || (b[0].layoutGrids && b[0].layoutGrids.length > 0 && !b[0].name.includes('@clip'))){
+                //console.log(666)
+                let gridset = addFrame([...main,b[0].name + ' @clip',[]])
+                fullInFrameSafa(b[0],gridset);
+                final = gridset;
+                a.selection = [gridset];
+            } else {
+                if(!b[0].name.includes('@clip')){
+                    b[0].name += ' @clip'
+                };
+            };
+
+            let gridstyle = {
+                w:[
+                    [['column',main[0]/3,main[0]/3]],
+                    [
+                        ['column',main[0]/9,main[0]/3],
+                        ['column',main[0]/9 + main[0]/3 + main[0]/9,main[0]/3]
+                    ]
+                ],h:[
+                    [['row',main[0]/3,main[0]/3]],
+                    [
+                        ['row',main[0]/9,main[0]/3],
+                        ['row',main[0]/9 + main[0]/3 + main[0]/9,main[0]/3]
+                    ]
+                ],
+            };
+            let row = info[0] == 0 ? null : gridstyle.w[info[0] - 1];
+            let column = info[1] == 0 ? null : gridstyle.h[info[1] - 1];
+            let grids = []
+            if(row)grids.push(...row);
+            if(column)grids.push(...column);
+            if(grids.length == 0){
+                b[0].name = b[0].name.replace(' @clip','');
+            } else {
+                grids.forEach(grid =>{ 
+                    grid.forEach((item,index) => {
+                        if(typeof(item) == 'number'){
+                            //console.log(item.toFixed(2))
+                            grid[index] = Math.round(item)
+                        };
+                    });
+                });
+            }
+            //console.log(grids)
+            addClipGrids(grids,final);
+        };
+    };
+    if( type == 'Image@2x Clip'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        if(b.length == 1 && b[0].layoutGrids && b[0].layoutGrids.length > 0 && b[0].name.includes('@clip')){
+            let RC = getClipGrids(b[0]);
+            let safaMain = getSafeMain(b[0]);
+            let cuts = clipGridsToCut(RC,[safaMain[0],safaMain[1]]);
+            toPixel(cuts,false,true);
+        };
+    };
+    if( type == 'Component Clip'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        if(b.length == 1 && b[0].layoutGrids && b[0].layoutGrids.length > 0 && b[0].name.includes('@clip')){
+            let RC = getClipGrids(b[0]);
+            let safaMain = getSafeMain(b[0]);
+            let cuts = clipGridsToCut(RC,[safaMain[0],safaMain[1]]);
+            let layerIndex = b[0].parent.children.findIndex(item => item.id == b[0].id)
+            let clipsframe = addFrame([...safaMain,b[0].name,[]]);
+            b[0].parent.insertChild((layerIndex + 1),clipsframe);
+            
+            clipsframe.x = safaMain[0] + safaMain[2] + 30;
+            clipsframe.y = safaMain[1] + safaMain[3] + 30;
+            let comp;
+            if(b[0].type == 'COMPONENT'){
+                comp = b[0];
+            } else if(b[0].type == 'INSTANCE'){
+                comp = b[0].clone();
+            } else {
+                comp = figma.createComponentFromNode(b[0].clone());
+                b[0].parent.insertChild((layerIndex + 1),comp);
+                comp.x = safaMain[0] + safaMain[2] + 30;
+                comp.y = safaMain[3];
+            }
+            creAutoClip(cuts,clipsframe,null,comp);
+            clipsframe.name = clipsframe.name.replace('@clip','@clip-final')
+        };
+    };
     //拆分文案
     if ( type == "splitText"){
         let a = figma.currentPage;
@@ -745,7 +858,7 @@ function sendSendComp(){
 }
 
 /**
- * @param {Array} info - [w,h,x,y,[fills],[align,trbl,strokes]] 宽高、坐标、命名、填充、描边
+ * @param {Array} info - [w,h,x,y,name,[fills],[align,trbl,strokes]] 宽高、坐标、命名、填充、描边
  * @param {node} node - 需要设置的对象
  * @param {node?} cloneNode - 直接参考的对象
  */
@@ -827,7 +940,8 @@ function addImg(node,info){
  * @param {[{w:num,h:num,x:num,y:num,s:num}]} info - 切片大小位置栅格化倍率信息集
  */
 function addCutArea(group,info){
-    info.forEach(async (item,index) => {
+    info.forEach((item,index) => {
+        //console.log(info)
         let w = item.w;
         let h = item.h;
         let x = item.x;
@@ -845,7 +959,7 @@ function addCutArea(group,info){
 /**
  * @param {group} group - 由addCutArea生成的包含切片和源对象的组
  */
-function addCutImg(group,isOverWrite,isfinal){
+function addCutImg(group,isOverWrite,isfinal,isClip,clips){
     let cuts = group.findChildren(item => item.type == 'SLICE');
     let old = group.findOne(item => item.name == group.name);
     cuts.forEach(async (item,index) => {
@@ -859,26 +973,38 @@ function addCutImg(group,isOverWrite,isfinal){
             constraint: { type: 'SCALE', value: s},
         });
         let image = figma.createImage(code);
-        let cutimg = figma.createRectangle();
-        cutimg.x = x;
-        cutimg.y = y;
-        cutimg.resize(w,h);
-        if(cuts.length == 1){
-            cutimg.name = group.name;
+        
+        if(isClip){
+            //console.log(clips)
+            /**/
+            let clipimg = addFrame([w,h,x,y,group.name.replace('@clip','@clip-final'),[]]);
+            creAutoClip(clips,clipimg,image);
+            group.appendChild(clipimg);
+            clipimg.x = 0;
+            clipimg.y = h + 30;
+            /**/
         }else{
-            cutimg.name = group.name + '_' + (index + 1);
-        };
-        if(s !== 1){
-            cutimg.name += ' @' + s + 'x';//命名记录栅格化倍率
-        };
-        cutimg.fills = [
-            {
-            type: 'IMAGE',
-            imageHash: image.hash,
-            scaleMode: 'FILL'
-            }
-        ];
-        group.appendChild(cutimg);
+            let cutimg = figma.createRectangle();
+            cutimg.x = x;
+            cutimg.y = y;
+            cutimg.resize(w,h);
+            if(cuts.length == 1){
+                cutimg.name = group.name;
+            }else{
+                cutimg.name = group.name + '_' + (index + 1);
+            };
+            if(s !== 1){
+                cutimg.name += ' @' + s + 'x';//命名记录栅格化倍率
+            };
+            cutimg.fills = [
+                {
+                type: 'IMAGE',
+                imageHash: image.hash,
+                scaleMode: 'FILL'
+                }
+            ];
+            group.appendChild(cutimg);
+        }
         item.remove();
         if(group.children.length == 2){
             pixelSelects.push(group.children[1])
@@ -904,61 +1030,29 @@ let pixelSelects = []
  * @param {[{w:num,h:num,x:num,y:num,s:num}]} info - 切片大小位置信息栅格化倍率集
  * @param {boolean} isOverWrite - 是否覆盖
  */
-async function toPixel(info,isOverWrite){
+function toPixel(info,isOverWrite,isClip){
     //console.log(info)
     pixelSelects = [];
     let a = figma.currentPage;
     let b = a.selection;
     for(let i = 0; i < b.length; i++){
-        let layerIndex = b[i].parent.children.findIndex(item => item.id == b[i].id);
-        //console.log(layerIndex)
-        /*
-        let group = figma.group([b[i]],b[i].parent,(layerIndex + 1));
-        group.x = b[i].x;
-        group.y = b[i].y;
-        group.name = b[i].name;
-        */
-        let w = b[i].absoluteRenderBounds ? b[i].absoluteRenderBounds.width : b[i].absoluteBoundingBox.width;
-        let h = b[i].absoluteRenderBounds ? b[i].absoluteRenderBounds.height : b[i].absoluteBoundingBox.height;
-        let x = b[i].absoluteRenderBounds ? b[i].absoluteRenderBounds.x : b[i].absoluteBoundingBox.x;
-        let y = b[i].absoluteRenderBounds ? b[i].absoluteRenderBounds.y : b[i].absoluteBoundingBox.y;
-        let isSkew = false
-        if(b[i].parent !== a){
-            let transform = b[i].parent.absoluteTransform;
-            let key1 = transform[0][0] == 1 ? true : false;
-            let key2 = transform[0][1] == 0 ? true : false;
-            let key3 = transform[1][0] == 0 ? true : false;
-            let key4 = transform[1][1] == 1 ? true : false;
-            if([key1,key2,key3,key4].includes(false)){
-                x -= b[i].x;
-                y += b[i].y;
-                isSkew = true;
-            };
-        };
-        let box = addFrame([w,h,x,y,b[i].name,[]]);
-        b[i].parent.insertChild((layerIndex + 1),box);
-        if(box.parent !== a){
-            box.x -= box.parent.absoluteBoundingBox.x;
-            box.y -= box.parent.absoluteBoundingBox.y;
-        };
-        box.appendChild(b[i]);
-        if(box.parent !== a){
-            b[i].x -= b[i].parent.x;
-            b[i].y -= b[i].parent.y;
-        }else{
-            b[i].x -= b[i].parent.absoluteBoundingBox.x;
-            b[i].y -= b[i].parent.absoluteBoundingBox.y;
-        };
+        let safeMain = getSafeMain(b[i]);
+        let box = addFrame([...safeMain,b[i].name,[]]);
+        fullInFrameSafa(b[i],box);
         setTimeout(()=>{
-            addCutArea(box,info[i],isSkew);
+            if(isClip){
+                addCutArea(box,[{x: 0, y: 0, w: safeMain[0], h: safeMain[1], s: 2}]);
+            }else{
+                addCutArea(box,info[i]);
+            }
             let isfinal = i == b.length - 1 ? true : false;
-            addCutImg(box,isOverWrite,isfinal);
+            addCutImg(box,isOverWrite,isfinal,isClip,info);
         },100);
     };
 };
 //添加画板
 /**
- * @param {Array} info - [w,h,x,y,[fills],[align,trbl,strokes]] 宽高、坐标、命名、填充、描边
+ * @param {Array} info - [w,h,x,y,name,[fills],[align,trbl,strokes]] 宽高、坐标、命名、填充、描边
  * @returns {node}
  */
 function addFrame(info,cloneNode){
@@ -967,7 +1061,48 @@ function addFrame(info,cloneNode){
     setMain(info,node,cloneNode,true);
     return node;
 };
+//获取有效的whxy
+/**
+ * @returns {Array} - [w,h,x,y]
+ */
+function getSafeMain(node){
+    let w = node.absoluteRenderBounds ? node.absoluteRenderBounds.width : node.absoluteBoundingBox.width;
+    let h = node.absoluteRenderBounds ? node.absoluteRenderBounds.height : node.absoluteBoundingBox.height;
+    let x = node.absoluteRenderBounds ? node.absoluteRenderBounds.x : node.absoluteBoundingBox.x;
+    let y = node.absoluteRenderBounds ? node.absoluteRenderBounds.y : node.absoluteBoundingBox.y;
+    if(node.parent !== figma.currentPage){
+        let transform = node.parent.absoluteTransform;
+        let key1 = transform[0][0] == 1 ? true : false;
+        let key2 = transform[0][1] == 0 ? true : false;
+        let key3 = transform[1][0] == 0 ? true : false;
+        let key4 = transform[1][1] == 1 ? true : false;
+        if([key1,key2,key3,key4].includes(false)){
+            x -= node.x;
+            y += node.y;
+        };
+    };
+    return [w,h,x,y]
+};
+//将目标安全地放进一个画板里
+function fullInFrameSafa(keynode,frame){
+    let layerIndex = keynode.parent.children.findIndex(item => item.id == keynode.id);
+    keynode.parent.insertChild((layerIndex + 1),frame);
+    if(frame.parent !== figma.currentPage){
+        frame.x -= frame.parent.absoluteBoundingBox.x;
+        frame.y -= frame.parent.absoluteBoundingBox.y;
+    };
+    frame.appendChild(keynode);
+    
+    if(frame.parent !== figma.currentPage){
+        keynode.x -= keynode.parent.x;
+        keynode.y -= keynode.parent.y;
+    }else{
+        keynode.x -= keynode.parent.absoluteBoundingBox.x;
+        keynode.y -= keynode.parent.absoluteBoundingBox.y;
+    };
+};
 
+//将文字限定在合理范围，并指定省略符
 /**
  * 中英文字数限制兼容
  */
@@ -1711,6 +1846,38 @@ function addAbsolute(parent,absoluteNode,isFill,position){
         }
     };
 };
+//添加到画板并设置约束
+function addConstraints(parent,absoluteNode,position,isFill){
+    parent.appendChild(absoluteNode);
+    let H = 'MIN';
+    let V = 'MIN';
+    switch (position[0]){
+        case 'T':
+            V = 'MIN';
+        ;break
+        case 'C':
+            V = isFill ? 'STRETCH' : 'CENTER';
+        ;break
+        case 'B':
+            V = 'MAX';
+        ;break
+    };
+    switch (position[1]){
+        case 'L':
+            H = 'MIN';
+        ;break
+        case 'C':
+            H = isFill ? 'STRETCH' : 'CENTER';
+        ;break
+        case 'R':
+            H = 'MAX';
+        ;break
+    };
+    absoluteNode.constraints = {
+        horizontal: H,
+        vertical: V,
+    };
+};
 
 //添加文字内容
 /**
@@ -1847,7 +2014,8 @@ function sortLRTB(nodes){
             return x1 - x2;
         };
     });
-}
+};
+
 
 //添加网格参考线用于设置裁切拉伸范围
 /**
@@ -1872,4 +2040,181 @@ function addClipGrids(info,node){
       grids.push(grid);
     });
     node.layoutGrids = grids;
-  };
+};
+//获取网格参考线数据并简化
+function getClipGrids(node){
+    let grids = node.layoutGrids.map(item => [item.pattern,item.offset,item.sectionSize])
+    let R = grids.filter(item => item[0] == 'ROWS');
+    let C = grids.filter(item => item[0] == 'COLUMNS');
+    R = R.map(item => [item[1],item[2]]).sort((a,b) => a[0] - b[0]);
+    C = C.map(item => [item[1],item[2]]).sort((a,b) => a[0] - b[0]);
+    return [R,C]
+};
+//网格参考线转xywh分割数据
+function clipGridsToCut(RC,WH){
+    let [rows, columns] = RC;
+    let [canvasWidth, canvasHeight] = WH;
+    
+    // 计算行分割点和行区域
+    let rowSegments = [0];
+    rows.forEach(([y, height]) => {
+      rowSegments.push(y);
+      rowSegments.push(y + height);
+    });
+    rowSegments.push(canvasHeight); // 添加底部边界
+  
+    // 计算列分割点和列区域
+    let colSegments = [0];
+    columns.forEach(([x, width]) => {
+      colSegments.push(x);
+      colSegments.push(x + width);
+    });
+    colSegments.push(canvasWidth); // 添加右侧边界
+  
+    // 生成所有区域
+    let regions = [];
+    for (let i = 0; i < rowSegments.length - 1; i++) {
+        let yStart = rowSegments[i];
+        let h = rowSegments[i + 1] - yStart;
+      for (let ii = 0; ii < colSegments.length - 1; ii++) {
+        let xStart = colSegments[ii];
+        let w = colSegments[ii + 1] - xStart;
+        regions.push({ w, h, x: xStart, y: yStart, s: 2});
+      };
+    };
+  
+    return regions;
+};
+//从网格数据创建拉伸区域
+function creAutoClip(clips,clipsbox,image,comp){
+    let clipsnode = [];
+    let w = clipsbox.width;
+    let h = clipsbox.height;
+    let name = clipsbox.name;
+    //console.log(w,h,name,clips,comp)
+    clips.forEach((clip,num) => {
+        let namekey = '';
+        let isFill = true;
+        let Layout = false;
+        //标识后缀，方便其他操作
+        switch (clips.length){
+            case 3 :
+                if(clip.w < w - 1){//保险起见减个1
+                    namekey = CLIP_NAME[1][num];
+                } else {
+                    namekey = CLIP_NAME[0][num];
+                };
+            ;break
+            case 5 :
+                if(clip.w < w - 1){//保险起见减个1
+                    namekey = CLIP_NAME[3][num];
+                    Layout = 'H';
+                } else {
+                    namekey = CLIP_NAME[2][num];
+                    Layout = 'V';
+                };
+                isFill = false;
+            ;break
+            case 9 :
+                namekey = CLIP_NAME[4][num];
+            ;break
+            case 25 :
+                namekey = CLIP_NAME[5][num];
+                isFill = false;
+                Layout = 'HV';
+            ;break
+        }
+        let clipnode = null;
+        //如果作为图片
+        if(image){
+            clipnode = figma.createRectangle();
+            clipnode.resize(clip.w,clip.h);
+            clipnode.fills = [
+                {
+                    type: 'IMAGE',
+                    imageHash: image.hash,
+                    scaleMode: 'CROP',
+                    imageTransform: [
+                        [clip.w/w,0,clip.x/w],
+                        [0,clip.h/h,clip.y/h]
+                    ],
+                }
+            ];
+        };
+        if(comp){
+            clipnode = figma.createFrame();
+            clipnode.resize(clip.w,clip.h);
+            clipnode.fills = [];
+            let instance = comp.createInstance();
+            instance.layoutGrids = [];
+            clipnode.appendChild(instance)
+            instance.x = clip.x * -1;
+            instance.y = clip.y * -1;
+            instance.constraints = {
+                horizontal: 'SCALE',
+                vertical: 'SCALE'
+            }
+            clipnode.clipsContent = true;
+        };
+
+        if(clipnode){
+            clipnode.name = name + ' ' + namekey;
+            addConstraints(clipsbox,clipnode,namekey.replace('@',''),isFill);
+            clipnode.x = clip.x;
+            clipnode.y = clip.y;
+            if(num == clips.length - 1 && Layout){
+                switch (Layout){
+                    case 'H':
+                        addAutoLayout(clipsbox,['H','CC']);
+                        clipsbox.children[1].layoutSizingHorizontal = 'FILL';
+                        clipsbox.children[3].layoutSizingHorizontal = 'FILL';
+                    ;break
+                    case 'V':
+                        addAutoLayout(clipsbox,['V','CC']);
+                        clipsbox.children[1].layoutSizingVertical = 'FILL';
+                        clipsbox.children[3].layoutSizingVertical = 'FILL';
+                    ;break
+                    case 'HV':
+                        let clipnodes = clipsbox.children;
+                        let clipRows = [];
+                        for(let i = 0; i < clipnodes.length; i += 5){
+                            clipRows.push([clipnodes[i],clipnodes[i + 1],clipnodes[i + 2],clipnodes[i + 3],clipnodes[i + 4]])
+                        };
+                        //console.log(clipRows)
+                        clipRows.forEach((row,RNum) => {
+                            let rownode = addFrame([clipsbox.width,row[0].height,null,null,clipsbox.name + ' @row',[]]);
+                            clipsbox.appendChild(rownode);
+                            rownode.x = row[0].x;
+                            rownode.y = row[0].y;
+                            addAutoLayout(rownode,['H','CC']);
+                            row.forEach((items,CNum)=> {
+                                rownode.appendChild(items);
+                                if(RNum%2 == 1){
+                                    items.layoutSizingVertical = 'FILL';
+                                    if(CNum%2 == 1){
+                                        items.layoutSizingHorizontal = 'FILL';
+                                    };
+                                }else{
+                                    if(CNum%2 == 1){
+                                        items.layoutSizingHorizontal = 'FILL';
+                                    };
+                                };
+                            });
+                        });
+                        addAutoLayout(clipsbox,['V','CC'],true);
+                        clipsbox.layoutSizingHorizontal = 'FIXED';
+                        clipsbox.layoutSizingVertical = 'FIXED';
+                        clipsbox.children.forEach((row,RNum) => {
+                            row.layoutSizingHorizontal = 'FILL';
+                            if(RNum%2 == 1){
+                                row.layoutSizingVertical = 'FILL';
+                            };
+                        });
+                        clipsbox.resize(w,h);
+                    ;break
+                }
+            };
+            clipsnode.push(clipnode);
+        };
+    });
+}

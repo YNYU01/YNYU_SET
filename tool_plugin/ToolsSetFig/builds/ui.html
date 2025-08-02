@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -55,7 +55,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -144,7 +144,7 @@ p [data-highlight]{
   min-width: fit-content;
   height: 20px;
   box-sizing: border-box;
-  font-size: 12px;
+  font-size: 11px;
   border: 1px solid var(--boxBod);
   flex: 1;
 }
@@ -2453,11 +2453,11 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="Reset All Transform">重置全部</div>
                   </div-->
                 </div>
-                <div class="fl1"  data-skill-sec="clipGrid">
+                <div class="fl1"  data-skill-sec="clipByGrid">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div data-clip-view class="fl0 df-cc" data-skill-line>
+                  <!--div data-clip-view class="fl0 df-cc" data-skill-line>
                     <div data-clip-select data-clip-w="2" data-clip-h="2" class="bod-d pos-r">
                       <div class="pos-a df" data-clip-set-box="w">
                         <div data-clip-set="x1" class="ovh fl0 pos-r"></div>
@@ -2472,33 +2472,27 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         <div data-clip-set="y4" class="ovh fl0 pos-r"></div>
                       </div>
                     </div>
-                  </div>
+                  </div-->
                   <div class="df-lc" data-skill-line>
-                    <div data-any="vw240" data-skill-btnname data-en-text="Clip LR">左右裁切</div>
-                    <div class="df-lc fl1" data-clip-w-set data-radio-value="2" style="gap: 4px;">
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="0">x0</div>
-                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="2">x2</div>
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="4">x4</div>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Stretch Zone LR">左右拉伸数量</div>
+                    <div class="df-lc fl1" data-clip-w-set data-radio-value="0" style="gap: 4px;">
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="0">none</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="1">x1</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2">x2</div>
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
-                    <div data-any="vw240" data-skill-btnname data-en-text="Clip TB">上下裁切</div>
-                    <div class="df-lc fl1" data-clip-h-set data-radio-value="2" style="gap: 4px;">
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="0">x0</div>
-                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="2">x2</div>
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="4">x4</div>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Stretch Zone TB">上下拉伸数量</div>
+                    <div class="df-lc fl1" data-clip-h-set data-radio-value="0" style="gap: 4px;">
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="0">none</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="1">x1</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2">x2</div>
                     </div>
                   </div>
                   <div class="df-sc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Copy Clip">复制裁剪</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Frames Clip">画板裁剪</div>
-                    </div>
-                  </div>
-                  <div class="df-sc" data-skill-line>
-                    <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Clips @2x">转@2x切片</div>
-                      <div class="df-cc" data-btn="skill-main" data-btn-important="skill" data-en-text="Component Clip">转组件(推荐)</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Image@2x Clip">栅格化裁切</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Component Clip">组件化裁切</div>
                     </div>
                   </div>
                 </div>
@@ -2612,7 +2606,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Symbol">分割符</div>
                     <input id="split-word" data-input type="text">
-                    <div data-splitword-set class="df-lc fl1" data-clip-w-set data-radio-value="1" style="gap: 4px; min-width: 110px;">
+                    <div data-splitword-set class="df-lc fl1" data-radio-value="1" style="gap: 4px; min-width: 110px;">
                       <div class="df-cc" data-radio data-radio-main="true" data-radio-data="1" data-en-text="Suf">接后</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2" data-en-text="Pre">接前</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="3" data-en-text="Null">剔除</div>
@@ -2670,6 +2664,19 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Split Path">拆分路径</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fl1"  data-skill-sec="GetEditableSVG">
+                  <div data-skill-star="false">
+                    <btn-star></btn-star>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Get SVG">获取SVG</div>
+                    </div>
+                    <div id="svgcode-box" data-resize class="pos-r w100">
+                      <textarea spellcheck="false" data-textarea id="svgcode"></textarea>
                     </div>
                   </div>
                 </div>
@@ -2738,12 +2745,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@716afd44620f3e48a30517f41db4460a38126867/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -2766,8 +2773,8 @@ let skillSecInfo = [
     name: ["图片填充修改","alter image fill"],
   },
   {
-    id: 'clipGrid',
-    name: ["宫格裁切","clip grid"],
+    id: 'clipByGrid',
+    name: ["宫格裁切","clip by grid"],
   },
   {
     id: 'SplitText',
@@ -2786,8 +2793,8 @@ let skillSecInfo = [
     name: ["提取路径","get path"],
   },
   {
-    id: '',
-    name: ["",""],
+    id: 'GetEditableSVG',
+    name: ["获取可编辑SVG","get editable SVG"],
   },
   {
     id: '',
@@ -4320,22 +4327,16 @@ function getUserRadio(node){
     if(node.getAttribute('data-pixelscale-set') !== null){
       pixelScale.value = userRadio;
     };
+    
     if(node.getAttribute('data-clip-w-set') !== null){
-      let set = node.parentNode.parentNode.querySelector('[data-clip-w]');
-      let sets = set.querySelectorAll('[data-clip-set]');
-      set.setAttribute('data-clip-w',userRadio);
-      sets.forEach(item => {
-        item.setAttribute('style','');
-      });
+      let clipH = getElementMix('data-clip-h-set').getAttribute('data-radio-value');
+      toolMessage([[userRadio * 1,clipH * 1],'addClipGrid'],PLUGINAPP);
     };
     if(node.getAttribute('data-clip-h-set') !== null){
-      let set = node.parentNode.parentNode.querySelector('[data-clip-h]');
-      let sets = set.querySelectorAll('[data-clip-set]');
-      set.setAttribute('data-clip-h',userRadio);
-      sets.forEach(item => {
-        item.setAttribute('style','');
-      });
+      let clipW = getElementMix('data-clip-w-set').getAttribute('data-radio-value');
+      toolMessage([[clipW * 1,userRadio * 1],'addClipGrid'],PLUGINAPP);
     };
+    
     if(node.getAttribute('data-skilltype-box') !== null){
       let modelid = skillModel[userRadio - 1][1];
       //console.log(modelid);

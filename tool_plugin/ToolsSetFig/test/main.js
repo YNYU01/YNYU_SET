@@ -1574,20 +1574,12 @@ function getUserRadio(node){
     };
     
     if(node.getAttribute('data-clip-w-set') !== null){
-      let set = node.parentNode.parentNode.querySelector('[data-clip-w]');
-      let sets = set.querySelectorAll('[data-clip-set]');
-      set.setAttribute('data-clip-w',userRadio);
-      sets.forEach(item => {
-        item.setAttribute('style','');
-      });
+      let clipH = getElementMix('data-clip-h-set').getAttribute('data-radio-value');
+      toolMessage([[userRadio * 1,clipH * 1],'addClipGrid'],PLUGINAPP);
     };
     if(node.getAttribute('data-clip-h-set') !== null){
-      let set = node.parentNode.parentNode.querySelector('[data-clip-h]');
-      let sets = set.querySelectorAll('[data-clip-set]');
-      set.setAttribute('data-clip-h',userRadio);
-      sets.forEach(item => {
-        item.setAttribute('style','');
-      });
+      let clipW = getElementMix('data-clip-w-set').getAttribute('data-radio-value');
+      toolMessage([[clipW * 1,userRadio * 1],'addClipGrid'],PLUGINAPP);
     };
     
     if(node.getAttribute('data-skilltype-box') !== null){
@@ -1605,5 +1597,3 @@ function getUserRadio(node){
     };
   }
 };
-
-
