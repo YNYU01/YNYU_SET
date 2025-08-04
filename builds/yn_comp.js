@@ -331,9 +331,10 @@ function COMP_MAIN(){
       item.addEventListener('change',() => {
         if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0 || item.value.replace(/[0-9]/g,'').trim().length > 0){
           inputMust(item,['int',...info]);
-        }
+        };
+        item.parentNode.setAttribute('data-int-value',item.value);
       });
-    }
+    };
   });
   INPUT_MUST_FLOAT.forEach(item => {
     if(!item.getAttribute('data-value')){//类型冲突
@@ -346,9 +347,11 @@ function COMP_MAIN(){
       item.addEventListener('change',() => {
         if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0 || item.value.replace(/[0-9]/g,'').trim().length > 0){
           inputMust(item,['float',...info]);
-        }
+        };
+        item.parentNode.setAttribute('data-float-value',item.value);
       });
-    }
+      
+    };
   });
 
   INPUT_MAX.forEach(item => {

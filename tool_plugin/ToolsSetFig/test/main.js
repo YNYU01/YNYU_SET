@@ -281,6 +281,11 @@ let scaleSetX = getElementMix('data-scaleset-x').querySelector('[data-input="val
 let scaleSetY = getElementMix('data-scaleset-y').querySelector('[data-input="value"]');
 let skewSetX = getElementMix('data-skewset-x').querySelector('[data-input="value"]');
 let skewSetY = getElementMix('data-skewset-y').querySelector('[data-input="value"]');
+let skewRangeX = getElementMix('data-skewset-x').querySelector('[data-input="range"]');
+let skewRangeY = getElementMix('data-skewset-y').querySelector('[data-input="range"]');
+let uniformS = document.getElementById('uniform-set-s');
+let uniformW = document.getElementById('uniform-set-w');
+let uniformH = document.getElementById('uniform-set-h');
 
 /*动态数据或对象*/
 let CreateImageInfo = [];
@@ -430,14 +435,20 @@ function reSelectInfo(info){
     //console.log(info[0][3])
     let transform = info[0][3];
     skewSetX.value = transform[0];
+    skewRangeX.value = transform[0];
     skewSetY.value = transform[1];
-    //scaleSetX.value = transform[2];
-    //scaleSetY.value = transform[3];
+    skewRangeY.value = transform[1];
+    /*
     const inputEvent = new Event('input', { bubbles: true });
     skewSetX.dispatchEvent(inputEvent);
     skewSetY.dispatchEvent(inputEvent);
-    //scaleSetX.dispatchEvent(inputEvent);
-    //scaleSetY.dispatchEvent(inputEvent);
+    */
+    
+    let clipRC = info[0][4];
+    getElementMix('data-clip-h-set').querySelector(`[data-radio-main="true"]`).setAttribute('data-radio-main','false');
+    getElementMix('data-clip-w-set').querySelector(`[data-radio-main="true"]`).setAttribute('data-radio-main','false');
+    getElementMix('data-clip-h-set').querySelector(`[data-radio-data="${clipRC[1]}"]`).setAttribute('data-radio-main','true');
+    getElementMix('data-clip-w-set').querySelector(`[data-radio-data="${clipRC[0]}"]`).setAttribute('data-radio-main','true');
   };
   if(info.length > 1){
     ROOT.setAttribute('data-selects-more','true');
@@ -879,17 +890,17 @@ function addTag(type,info){
         .replace(/w/g,list.w)
         .replace(/h/g,list.h)
 
-        if(list.type){
+        if(list.type && list.type  !== ''){
           end = end.replace(/type/g,list.type)
         }else{
           end = end.replace(/type/g,'')
         }
-        if(list.add){
+        if(list.add && list.add !== ''){
           end = end.replace(/add/g,list.add)
         }else{
           end = end.replace(/add/g,'')
         }
-        if(list.s){
+        if(list.s && list.s !== ''){
           end = end.replace(/s/g,list.s + 'k');
         } else {
           end = end.replace(/s/g,'');
@@ -947,12 +958,25 @@ function addTag(type,info){
   loadFont(createTagsBox.parentNode);
 };
 //制表文案转数组, 兼容反转行列
-function tableTextToArray(tableText,isColumn){
+function tableTextToArray(tableText,isColumn,mustTitle){
   let lines = tableText.split('\n');
   lines.forEach((item,index) => {
     lines[index] = item.split('\t');
   });
+  if(mustTitle){
+    let unneed = lines[0].filter(item => !mustTitle.includes(item));
+    if(unneed){
+      unneed = unneed.map(item => lines[0].findIndex(items => items == item));
+      unneed.forEach(num => {
+        lines.forEach(line => {
+          line.splice(num,1);
+        });
+      });
+    };
+  };
+
   let columns = lines[0].map((_, i) => lines.map(row => row[i]));
+
   if(isColumn){
     return columns;
   }else{
@@ -1012,17 +1036,13 @@ convertTags.addEventListener('click',()=>{
   let firstline = userText.value.trim().split('\n')[0];
   let isTableText = !['name','w','h'].some(item => !firstline.includes(item));
   if(isTableText){
-    let tableArray = tableTextToArray(userText.value.trim());
+    let tableArray = tableTextToArray(userText.value.trim(),false,userTableTitle.value.split(','));
     let tableObj = tableArrayToObj(tableArray);
     CreateTableInfo = tableObj;
-    if(CreateTableInfo.some(item => item.add) && !frameName.value.includes('add') && userTableTitle.value.includes('add')){
+
+    if(CreateTableInfo.some(item => item.add || item.s)){
       document.getElementById('upload-moreset').checked = true;
       document.querySelector('[for="upload-moreset"]').click();
-      document.querySelector('[data-option-value="add w×h s"]').click();
-    } else if(CreateTableInfo.some(item => item.s) && !frameName.value.includes('s') && userTableTitle.value.includes('s')){
-      document.getElementById('upload-moreset').checked = true;
-      document.querySelector('[for="upload-moreset"]').click();
-      document.querySelector('[data-option-value=" w×h s"]').click();
     };
     setTimeout(()=>{
       addTableTags();
@@ -1061,6 +1081,9 @@ frameName.addEventListener('input',()=>{
   }else{
     frameName.nextElementSibling.querySelector(`[data-select-input]`).value = '';
   };
+});
+frameName.addEventListener('change',()=>{
+  convertTags.click();
 });
 //设置画板数据表头规则
 userTableTitle.addEventListener('change',()=>{
@@ -1472,6 +1495,8 @@ let observer = new MutationObserver((mutations) => {
         case 'data-color-hex':getUserColor(mutation.target); break;
         case 'data-number-value':getUserNumber(mutation.target); break;
         case 'data-text-value':getUserText(mutation.target); break;
+        case 'data-int-value':getUserInt(mutation.target); break;
+        case 'data-float-value':getUserFloat(mutation.target); break;
         case 'data-select-value':getUserSelect(mutation.target); break;
         case 'data-radio-value':getUserRadio(mutation.target); break;
       }
@@ -1496,6 +1521,16 @@ userEvent_number.forEach(item => {
 let userEvent_text = document.querySelectorAll('[data-text]');
 userEvent_text.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-text-value']};
+  observer.observe(item,config);
+});
+let userEvent_int = document.querySelectorAll('[data-int-value]');
+userEvent_int.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-int-value']};
+  observer.observe(item,config);
+});
+let userEvent_float = document.querySelectorAll('[data-float-value]');
+userEvent_float.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-float-value']};
   observer.observe(item,config);
 });
 let userEvent_select = document.querySelectorAll('[data-select]');
@@ -1557,11 +1592,27 @@ function getUserText(node){
   //console.log(text)
 };
 
+function getUserInt(node){
+  let int = node.getAttribute('data-int-value');
+  //console.log(int)
+};
+
+function getUserFloat(node){
+  let float = node.getAttribute('data-float-value');
+  if(node == uniformS.parentNode){
+    let value = float * 1;
+    let center = getElementMix('data-transform-center-box').getAttribute('data-radio-value');
+    toolMessage([['S',value,center],'rescaleMix'],PLUGINAPP);
+  };
+  //console.log(float)
+};
+
 function getUserSelect(node){
   let userSelect = node.getAttribute('data-select-value');
   if(userSelect){
     if(node.previousElementSibling == frameName){
       frameName.value = userSelect;
+      convertTags.click();
     };
   };
 };
@@ -1574,11 +1625,11 @@ function getUserRadio(node){
     };
     
     if(node.getAttribute('data-clip-w-set') !== null){
-      let clipH = getElementMix('data-clip-h-set').getAttribute('data-radio-value');
+      let clipH = getElementMix('data-clip-h-set').querySelector('[data-radio-main="true"]').getAttribute('data-radio-data');
       toolMessage([[userRadio * 1,clipH * 1],'addClipGrid'],PLUGINAPP);
     };
     if(node.getAttribute('data-clip-h-set') !== null){
-      let clipW = getElementMix('data-clip-w-set').getAttribute('data-radio-value');
+      let clipW = getElementMix('data-clip-w-set').querySelector('[data-radio-main="true"]').getAttribute('data-radio-data');
       toolMessage([[clipW * 1,userRadio * 1],'addClipGrid'],PLUGINAPP);
     };
     

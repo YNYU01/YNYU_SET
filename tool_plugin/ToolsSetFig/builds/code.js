@@ -1,3 +1,4 @@
+/// <reference types="@figma/plugin-typings" />
 /*
 - [ToolsSet 工具集1.0]
 - ©版权所有：2024-2025 YNYU @lvynyu2.gmail.com
@@ -37,6 +38,18 @@ let CLIP_NAME = [
         '@TL','@TC','@TR',
         '@CL','@CC','@CR',
         '@BL','@BC','@BR',
+    ],
+    [
+        '@TL',  '@TC',  '@TR',
+        '@CL-T','@CT-C','@CR-T',
+        '@CL',  '@CC',  '@CR',
+        '@CL-B','@CB-C','@CR-B',
+        '@BL',  '@BC',  '@BR',
+    ],
+    [
+        '@TL',  '@TC-L','@TC',  '@TC-R','@TR',
+        '@CL',  '@CC-L','@CC-C','@CC-R','@CR',
+        '@BL',  '@BC-L','@BC',  '@BC-R','@BR',
     ],
     [
         '@TL',  '@TC-L','@TC',  '@TC-R','@TR',
@@ -115,7 +128,33 @@ figma.ui.onmessage = async (message) => {
         //console.log(info)
         let selects = []
         for ( let i = 0; i < info.length; i++){
-            let node = addFrame([info[i].w,info[i].h,null,null,info[i].name],[]);
+            let fills = [toRGB('#ffffff',true)];
+            if(info[i].type){
+                if(info[i].type.toLowerCase() == 'png'){
+                    fills = []
+                };
+            };
+            let node = addFrame([info[i].w,info[i].h,null,null,info[i].name,fills]);
+            if(info[i].node){
+                let setobj = eval('(' + info[i].node + ')')//JSON.parse(info[i].node)
+                let keys = Object.keys(setobj);
+                //console.log(info[i].node,setobj,keys)
+                keys.forEach(item => {
+                    switch (item){
+                        case 'guid'://["X" | "Y",123]
+                            let guides = setobj.guid.map(guid => ({axis:guid[0],offset: guid[1]}))
+                            //console.log(guides)
+                            if(guides){
+                                node.guides = guides;
+                            };
+                        ;break
+                    };
+                });
+            };
+            if(info[i].s){
+                console.log(info[i].s)
+                node.setPluginData('exportSize',info[i].s.toString())
+            };
             selects.push(node);
         };
         figma.currentPage.selection = selects;
@@ -456,6 +495,26 @@ figma.ui.onmessage = async (message) => {
     if ( type == 'Pixel Overwrite'){
         toPixel(info,true);
     };
+    //批量等比缩放
+    if ( type == 'rescaleMix'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        b.forEach(item => {
+            switch (info[0]){
+                case 'S' :
+                    rescaleMix(item,info[1],info[2]);
+                ;break
+                case 'W':
+                    let numW = info[1]/item.width;
+                    rescaleMix(item,numW,info[2]);
+                ;break
+                case 'H':
+                    let numH = info[1]/item.width;
+                    rescaleMix(item,numH,info[2]);
+                ;break
+            };
+        });
+    };
     //斜切拉伸
     if( type == 'transformMix'){
         let a = figma.currentPage;
@@ -484,7 +543,7 @@ figma.ui.onmessage = async (message) => {
             let final = b[0];
             let main = getSafeMain(b[0]);
 
-            if(!b[0].layoutGrids || (b[0].layoutGrids && b[0].layoutGrids.length > 0 && !b[0].name.includes('@clip'))){
+            if(!b[0].layoutGrids || (b[0].layoutGrids && !b[0].name.split(' ').includes('@clip'))){
                 //console.log(666)
                 let gridset = addFrame([...main,b[0].name + ' @clip',[]])
                 fullInFrameSafa(b[0],gridset);
@@ -492,50 +551,62 @@ figma.ui.onmessage = async (message) => {
                 a.selection = [gridset];
             } else {
                 if(!b[0].name.includes('@clip')){
-                    b[0].name += ' @clip'
+                    b[0].name += ' @clip';
                 };
             };
 
-            let gridstyle = {
-                w:[
-                    [['column',main[0]/3,main[0]/3]],
-                    [
-                        ['column',main[0]/9,main[0]/3],
-                        ['column',main[0]/9 + main[0]/3 + main[0]/9,main[0]/3]
-                    ]
-                ],h:[
-                    [['row',main[0]/3,main[0]/3]],
-                    [
-                        ['row',main[0]/9,main[0]/3],
-                        ['row',main[0]/9 + main[0]/3 + main[0]/9,main[0]/3]
-                    ]
-                ],
-            };
-            let row = info[0] == 0 ? null : gridstyle.w[info[0] - 1];
-            let column = info[1] == 0 ? null : gridstyle.h[info[1] - 1];
-            let grids = []
-            if(row)grids.push(...row);
-            if(column)grids.push(...column);
-            if(grids.length == 0){
-                b[0].name = b[0].name.replace(' @clip','');
-            } else {
-                grids.forEach(grid =>{ 
-                    grid.forEach((item,index) => {
-                        if(typeof(item) == 'number'){
-                            //console.log(item.toFixed(2))
-                            grid[index] = Math.round(item)
-                        };
+            let RC = getClipGrids(b[0],true);
+
+            if(final.layoutGrids.length !== (info[0] + info[1])){
+                let gridstyle = {
+                    w:[
+                        [['COLUMNS',main[0]/3,main[0]/3]],
+                        [
+                            ['COLUMNS',main[0]/9,main[0]/3],
+                            ['COLUMNS',main[0]/9 + main[0]/3 + main[0]/9,main[0]/3]
+                        ]
+                    ],
+                    h:[
+                        [['ROWS',main[1]/3,main[1]/3]],
+                        [
+                            ['ROWS',main[1]/9,main[1]/3],
+                            ['ROWS',main[1]/9 + main[1]/3 + main[1]/9,main[1]/3]
+                        ]
+                    ],
+                };
+                let row = info[0] == 0 ? null : gridstyle.w[info[0] - 1];
+                if(RC[1].length == info[0]){
+                    row = RC[1];
+                };
+                let column = info[1] == 0 ? null : gridstyle.h[info[1] - 1];
+                if(RC[0].length == info[1]){
+                    column = RC[0];
+                };
+                let grids = []
+                if(row)grids.push(...row);
+                if(column)grids.push(...column);
+                if(grids.length == 0){
+                    b[0].name = b[0].name.replace(' @clip','');
+                } else {
+                    grids.forEach(grid =>{ 
+                        grid.forEach((item,index) => {
+                            if(typeof(item) == 'number'){
+                                //console.log(item.toFixed(2))
+                                grid[index] = Math.round(item)
+                            };
+                        });
                     });
-                });
-            }
-            //console.log(grids)
-            addClipGrids(grids,final);
+                }
+                //console.log(grids)
+                addClipGrids(grids,final);
+            };
+            
         };
     };
     if( type == 'Image@2x Clip'){
         let a = figma.currentPage;
         let b = a.selection;
-        if(b.length == 1 && b[0].layoutGrids && b[0].layoutGrids.length > 0 && b[0].name.includes('@clip')){
+        if(b.length == 1 && b[0].layoutGrids && b[0].layoutGrids.length > 0 && b[0].name.split(' ').includes('@clip')){
             let RC = getClipGrids(b[0]);
             let safaMain = getSafeMain(b[0]);
             let cuts = clipGridsToCut(RC,[safaMain[0],safaMain[1]]);
@@ -545,7 +616,7 @@ figma.ui.onmessage = async (message) => {
     if( type == 'Component Clip'){
         let a = figma.currentPage;
         let b = a.selection;
-        if(b.length == 1 && b[0].layoutGrids && b[0].layoutGrids.length > 0 && b[0].name.includes('@clip')){
+        if(b.length == 1 && b[0].layoutGrids && b[0].layoutGrids.length > 0 && b[0].name.split(' ').includes('@clip')){
             let RC = getClipGrids(b[0]);
             let safaMain = getSafeMain(b[0]);
             let cuts = clipGridsToCut(RC,[safaMain[0],safaMain[1]]);
@@ -557,17 +628,49 @@ figma.ui.onmessage = async (message) => {
             clipsframe.y = safaMain[1] + safaMain[3] + 30;
             let comp;
             if(b[0].type == 'COMPONENT'){
-                comp = b[0];
-            } else if(b[0].type == 'INSTANCE'){
-                comp = b[0].clone();
+                comp = b[0].clone();;
             } else {
                 comp = figma.createComponentFromNode(b[0].clone());
                 b[0].parent.insertChild((layerIndex + 1),comp);
                 comp.x = safaMain[0] + safaMain[2] + 30;
                 comp.y = safaMain[3];
-            }
+            };
+            //必须全部为可缩放约束
+            comp.children.forEach(item => {
+                item.unlockAspectRatio();
+                if(item.type == 'BOOLEAN_OPERATION'){
+                    item.findAll(child => child.type !== 'BOOLEAN_OPERATION').forEach(child => {
+                        child.constraints = {
+                            horizontal: 'SCALE',
+                            vertical: 'SCALE'
+                        };
+                    });
+                } else {
+                    item.constraints = {
+                        horizontal: 'SCALE',
+                        vertical: 'SCALE'
+                    };
+                };
+                
+                if(item.fills && item.fills.some(fill => fill.type == 'IMAGE')){
+                    let newFills = JSON.parse(JSON.stringify(item.fills))
+                    newFills.forEach(fill => {
+                        if(fill.type == 'IMAGE'){
+                            fill.scaleMode = 'CROP';
+                        };
+                    });
+                    item.fills  = newFills;
+                };
+            });
+            figma.clientStorage.getAsync('userLanguage')
+            .then (async (language) => {
+                let text = language == 'Zh' ? '已修改子元素约束，以实现自适应' : 'The constraint of the child has been changed'
+                figma.notify(text,{
+                    timeout: 3000,
+                });
+            });
             creAutoClip(cuts,clipsframe,null,comp);
-            clipsframe.name = clipsframe.name.replace('@clip','@clip-final')
+            clipsframe.name = clipsframe.name.replace('@clip','@clip-final');
         };
     };
     //拆分文案
@@ -634,6 +737,87 @@ figma.ui.onmessage = async (message) => {
         }else{
             layoutByRatio(figma.currentPage.selection);
         }
+    };
+    //简单约束
+    if ( type == 'Auto Constraints'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let final = b.filter(item => item.type !== 'INSTANCE' && item.children)
+        //console.log(final)
+        if(final.length > 0){
+            final.forEach(item => {
+                let c = item.children
+                let [w1,h1,x1,y1] = getSafeMain(item);
+                let axisX,axisY;
+                
+                for ( let e = 0; e < c.length; e++){
+                    let [w2,h2,x2,y2] = getSafeMain(c[e]);
+                    let xc2 = x2 + w2/2,yc2 = y2 + h2/2;
+                    //console.log([w1,h1,x1,y1],[w2,h2,x2,y2])
+                    if ( h2 <= h1 * 6/8){
+                        if ( yc2 < y1 + h1/2){
+                            axisY = 'MIN';
+                        } else if (yc2 > y1 + h1/2) {
+                            axisY = 'MAX';
+                        } else {
+                            axisY = 'CENTER';
+                        };
+                    } else {
+                        //console.log('超高')
+                        if (y2 <= y1 && y2 + h2 >= y1 + h1){
+                            //console.log('高超出')
+                            axisY = 'STRETCH'
+                        } else {
+                            if ( yc2 <= y1 + h1 * 3/8){
+                                axisY = 'MIN'
+                            } else if (yc2 >= y1 + h1 * 5/8) {
+                                axisY = 'MAX'
+                            } else {
+                                axisY = 'CENTER'
+                            };
+                        };
+                    };
+                    if ( w2 <= w1 * 4/8){
+                        if ( xc2 < x1 + w1/2){
+                            axisX = 'MIN';
+                        } else if (xc2 > x1 + w1/2) {
+                            axisX = 'MAX';
+                        } else {
+                            axisX = 'CENTER';
+                        };
+                    } else {
+                        //console.log('超宽')
+                        if (x2 <= x1 && x2 + w2 >= x1 + w1){
+                            //console.log('宽超出')
+                            axisX = 'STRETCH'
+                        } else {
+                            if ( xc2 <= x1 + w1 * 3/8){
+                                axisX = 'MIN'
+                            } else if (xc2 >= x1 + w1 * 5/8) {
+                                axisX = 'MAX'
+                            } else {
+                                axisX = 'CENTER'
+                            };
+                        };
+                    }
+                    //console.log(axisX,axisY)
+                    c[e].constraints = {
+                        horizontal:axisX,
+                        vertical:axisY,
+                    };
+                };
+            });
+        };
+    };
+    //反转顺序
+    if( type == 'Reversing Index'){
+
+    };
+    //调换位置
+    if( type == 'Exchange Position'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let final = '';
     };
     //母组件复制
     if ( type == 'Clone Comp.'){
@@ -826,11 +1010,24 @@ function sendInfo(){
             let skewX = Math.floor(Math.atan(transform[0][1])/(Math.PI/180));
             let skewY = Math.floor(Math.atan(transform[1][0])/(Math.PI/180));
             //console.log([skewX,skewY])
-            data.push([n,w,h,[skewX,skewY]])
+            let column = 0;
+            let row = 0;
+            if(node.layoutGrids){
+                column = node.layoutGrids.filter(item => item.pattern == 'COLUMNS').length
+                row = node.layoutGrids.filter(item => item.pattern == 'ROWS').length
+            };
+            column = column <= 2 ? column : 0;
+            row = row <= 2 ? row : 0;
+            let exportSize = node.getPluginData('exportSize');
+            if(!exportSize){
+                exportSize = null
+            };
+            //console.log(exportSize)
+            data.push([n,w,h,[skewX,skewY],[column,row]]);
         });
         postmessage([data,'selectInfo']);
     } else {
-        postmessage([[[null,null,null,[0,0]]],'selectInfo']);
+        postmessage([[[null,null,null,[0,0],[0,0]]],'selectInfo']);
     };
 };
 
@@ -1878,7 +2075,10 @@ function addConstraints(parent,absoluteNode,position,isFill){
         vertical: V,
     };
 };
+//自动按位置、大小设置约束
+function autoConstraints(parent,child){
 
+}
 //添加文字内容
 /**
  * @param {Array} info - [{family:xxx,style:xxx},text,size,fills?]字体、文案、字号、颜色
@@ -1907,7 +2107,6 @@ function toRGB(color,isPaint){
         return figma.util.rgb(color);
     };
 };
-
 //拆分文案
 function splitText(safenode,oldnode,splitTag,splitKeys){
     let node = safenode;
@@ -1982,7 +2181,6 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
     safenode.remove();
     oldnode.visible = false;
 };
-
 function removeText(node,start,end,isReverse,isInine){
     
     if(isReverse){
@@ -1999,7 +2197,6 @@ function removeText(node,start,end,isReverse,isInine){
         node.deleteCharacters(start,end)
     };
 };
-
 //将节点数组重新排序，按坐标从左到右从上到下Z字型
 function sortLRTB(nodes){
     nodes.sort((a,b) => {
@@ -2015,23 +2212,17 @@ function sortLRTB(nodes){
         };
     });
 };
-
-
 //添加网格参考线用于设置裁切拉伸范围
 /**
  * @param {Array} info -[type,xy,wh]
  */
 function addClipGrids(info,node){
-    let type = {
-      row: "ROWS",
-      column: "COLUMNS",
-    };
     let grids = [];
     info.forEach(item => {
       let grid = {
         alignment: "MIN",//左上角为起点，依次计算好拉伸区域，标上色值
         color: {r: 1, g: 0, b: 0, a :0.1},
-        pattern: type[item[0]],
+        pattern: item[0],
         count: 1,
         gutterSize: 1,
         offset: item[1],//拉伸区域起点
@@ -2042,10 +2233,13 @@ function addClipGrids(info,node){
     node.layoutGrids = grids;
 };
 //获取网格参考线数据并简化
-function getClipGrids(node){
+function getClipGrids(node,isNoSort){
     let grids = node.layoutGrids.map(item => [item.pattern,item.offset,item.sectionSize])
     let R = grids.filter(item => item[0] == 'ROWS');
     let C = grids.filter(item => item[0] == 'COLUMNS');
+    if(isNoSort){
+        return [R,C]
+    };
     R = R.map(item => [item[1],item[2]]).sort((a,b) => a[0] - b[0]);
     C = C.map(item => [item[1],item[2]]).sort((a,b) => a[0] - b[0]);
     return [R,C]
@@ -2096,6 +2290,7 @@ function creAutoClip(clips,clipsbox,image,comp){
         let namekey = '';
         let isFill = true;
         let Layout = false;
+        let LayoutRC = [0,0]
         //标识后缀，方便其他操作
         switch (clips.length){
             case 3 :
@@ -2118,10 +2313,22 @@ function creAutoClip(clips,clipsbox,image,comp){
             case 9 :
                 namekey = CLIP_NAME[4][num];
             ;break
+            case 15 :
+                if(clips[0].y == clips[4].y){
+                    namekey = CLIP_NAME[6][num];
+                    LayoutRC = [5,3]
+                } else {
+                    namekey = CLIP_NAME[5][num];
+                    LayoutRC = [3,5]
+                };
+                Layout = 'HV';
+                isFill = false;
+            ;break
             case 25 :
-                namekey = CLIP_NAME[5][num];
+                namekey = CLIP_NAME[7][num];
                 isFill = false;
                 Layout = 'HV';
+                LayoutRC = [5,5]
             ;break
         }
         let clipnode = null;
@@ -2177,8 +2384,12 @@ function creAutoClip(clips,clipsbox,image,comp){
                     case 'HV':
                         let clipnodes = clipsbox.children;
                         let clipRows = [];
-                        for(let i = 0; i < clipnodes.length; i += 5){
-                            clipRows.push([clipnodes[i],clipnodes[i + 1],clipnodes[i + 2],clipnodes[i + 3],clipnodes[i + 4]])
+                        for(let i = 0; i < clipnodes.length; i += LayoutRC[0]){
+                            if(LayoutRC[0] == 5){
+                                clipRows.push([clipnodes[i],clipnodes[i + 1],clipnodes[i + 2],clipnodes[i + 3],clipnodes[i + 4]])
+                            }else{
+                                clipRows.push([clipnodes[i],clipnodes[i + 1],clipnodes[i + 2]])
+                            };
                         };
                         //console.log(clipRows)
                         clipRows.forEach((row,RNum) => {
@@ -2217,4 +2428,31 @@ function creAutoClip(clips,clipsbox,image,comp){
             clipsnode.push(clipnode);
         };
     });
-}
+};
+
+//模拟缩放中心
+function rescaleMix(node,num,center){
+    node.rescale(num);
+    switch (center[0]){
+        case 'T':
+
+        ;break
+        case 'C':
+            node.y -= node.height/2;
+        ;break
+        case 'B':
+            node.y -= node.height;
+        ;break
+    };
+    switch (center[1]){
+        case 'L':
+
+        ;break
+        case 'C':
+            node.x -= node.width/2;
+        ;break
+        case 'R':
+            node.x -= node.width;
+        ;break
+    };
+};

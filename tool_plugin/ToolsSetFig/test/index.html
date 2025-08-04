@@ -265,7 +265,7 @@
                     <path fill="var(--mainColor)" d="M11.3154 11.5259L7.35709 9.45685L11.5784 1.38079C11.8343 0.891339 12.4385 0.701954 12.9279 0.957792L15.1138 2.10035C15.6032 2.35618 15.7926 2.96036 15.5368 3.44982L11.3154 11.5259Z"/>
                   </svg>
                 </div>
-                <input id="input-framename" data-input class="nobod fl1" type="text" data-input-type="text" data-input-must="none" value=" w×h">  
+                <input id="input-framename" data-input class="nobod fl1" type="text" value=" w×h">  
                 <div class="df-lc pos-r" data-select data-select-value=" w×h" style="gap: 4px; width: 90px; z-index:2;">
                   <input id="select-value-1" type="text" data-select-input readonly value=" w×h">
                   <input id="select-show-1" data-select-pick=" w×h" type="checkbox">
@@ -804,34 +804,34 @@
                   <div class="df-sc" data-skill-line>
                     <div class="df-ffc fl1" style="gap: 7px; max-width: 160px;">
                       <div data-any="vw240" style="height: 6px;"></div>
-                      <div class="df-lc w100" style="max-width: 160px;">
+                      <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Each ratio">按百分比</div>
-                        <input id="uniform-set-s" type="text" value="1" data-input data-input-type="float" data-input-must="0.001,100" style="text-align: center;">
+                        <input id="uniform-set-s" type="text" value="1" data-input data-input-type="float" data-input-must="0.01,1000" style="text-align: center;">
                         <div class="df-cc" data-input-unit="">x</div>
                       </div>
-                      <div class="df-lc w100" style="max-width: 160px;">
+                      <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Same width">按宽度</div>
-                        <input id="uniform-set-w" type="text" value="" data-input data-input-type="float" data-input-must="0.001,100" style="text-align: center;">
+                        <input id="uniform-set-w" type="text" value="" data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
                         <div class="df-cc" data-input-unit="">w</div>
                       </div>
-                      <div class="df-lc w100" style="max-width: 160px;">
+                      <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Same height">按高度</div>
-                        <input id="uniform-set-h" type="text" value="" data-input data-input-type="float" data-input-must="0.001,100" style="text-align: center;">
+                        <input id="uniform-set-h" type="text" value="" data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
                         <div class="df-cc" data-input-unit="">h</div>
                       </div>
                     </div>
                     <div data-transform-center-module class="df-ffc df-cc fl1" style="gap: 4px; margin-left: 10px;">
                       <div data-skill-btnname-top data-any="vw240" data-en-text="Scale center">缩放中心</div>
-                      <div data-transform-center-box data-radio-value="1" class="w100" >
-                        <div data-radio data-radio-data="1" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="2" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="3" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="4" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="5" data-radio-main="true" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="6" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="7" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="8" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="9" data-radio-main="false" class="df-cc">▪</div>
+                      <div data-transform-center-box data-radio-value="CC" class="w100" >
+                        <div data-radio data-radio-data="TL" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="TC" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="TR" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="CL" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="CC" data-radio-main="true" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="CR" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="BL" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="BC" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="BR" data-radio-main="false" class="df-cc">▪</div>
                       </div>
                     </div>                    
                   </div>
@@ -1077,7 +1077,7 @@
                     </div>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Reversing Index">反转顺序</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Exchange Position">调换位置</div>  
+                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Exchange Position">调换位置</div>  
                     </div>
                     <div data-skill-gap>
                       <span>----</span>

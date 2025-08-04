@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -55,7 +55,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1820,7 +1820,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <path fill="var(--mainColor)" d="M11.3154 11.5259L7.35709 9.45685L11.5784 1.38079C11.8343 0.891339 12.4385 0.701954 12.9279 0.957792L15.1138 2.10035C15.6032 2.35618 15.7926 2.96036 15.5368 3.44982L11.3154 11.5259Z"/>
                   </svg>
                 </div>
-                <input id="input-framename" data-input class="nobod fl1" type="text" data-input-type="text" data-input-must="none" value=" w×h">  
+                <input id="input-framename" data-input class="nobod fl1" type="text" value=" w×h">  
                 <div class="df-lc pos-r" data-select data-select-value=" w×h" style="gap: 4px; width: 90px; z-index:2;">
                   <input id="select-value-1" type="text" data-select-input readonly value=" w×h">
                   <input id="select-show-1" data-select-pick=" w×h" type="checkbox">
@@ -2632,7 +2632,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     </div>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Reversing Index">反转顺序</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Exchange Position">调换位置</div>  
+                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Exchange Position">调换位置</div>  
                     </div>
                     <div data-skill-gap>
                       <span>----</span>
@@ -2745,12 +2745,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@947d5f132ff41aa204110cf108916b6bd3399d48/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3036,6 +3036,9 @@ let scaleSetX = getElementMix('data-scaleset-x').querySelector('[data-input="val
 let scaleSetY = getElementMix('data-scaleset-y').querySelector('[data-input="value"]');
 let skewSetX = getElementMix('data-skewset-x').querySelector('[data-input="value"]');
 let skewSetY = getElementMix('data-skewset-y').querySelector('[data-input="value"]');
+let skewRangeX = getElementMix('data-skewset-x').querySelector('[data-input="range"]');
+let skewRangeY = getElementMix('data-skewset-y').querySelector('[data-input="range"]');
+
 
 /*动态数据或对象*/
 let CreateImageInfo = [];
@@ -3185,14 +3188,20 @@ function reSelectInfo(info){
     //console.log(info[0][3])
     let transform = info[0][3];
     skewSetX.value = transform[0];
+    skewRangeX.value = transform[0];
     skewSetY.value = transform[1];
-    //scaleSetX.value = transform[2];
-    //scaleSetY.value = transform[3];
+    skewRangeY.value = transform[1];
+    /*
     const inputEvent = new Event('input', { bubbles: true });
     skewSetX.dispatchEvent(inputEvent);
     skewSetY.dispatchEvent(inputEvent);
-    //scaleSetX.dispatchEvent(inputEvent);
-    //scaleSetY.dispatchEvent(inputEvent);
+    */
+    
+    let clipRC = info[0][4];
+    getElementMix('data-clip-h-set').querySelector(`[data-radio-main="true"]`).setAttribute('data-radio-main','false');
+    getElementMix('data-clip-w-set').querySelector(`[data-radio-main="true"]`).setAttribute('data-radio-main','false');
+    getElementMix('data-clip-h-set').querySelector(`[data-radio-data="${clipRC[1]}"]`).setAttribute('data-radio-main','true');
+    getElementMix('data-clip-w-set').querySelector(`[data-radio-data="${clipRC[0]}"]`).setAttribute('data-radio-main','true');
   };
   if(info.length > 1){
     ROOT.setAttribute('data-selects-more','true');
@@ -3634,17 +3643,17 @@ function addTag(type,info){
         .replace(/w/g,list.w)
         .replace(/h/g,list.h)
 
-        if(list.type){
+        if(list.type && list.type  !== ''){
           end = end.replace(/type/g,list.type)
         }else{
           end = end.replace(/type/g,'')
         }
-        if(list.add){
+        if(list.add && list.add !== ''){
           end = end.replace(/add/g,list.add)
         }else{
           end = end.replace(/add/g,'')
         }
-        if(list.s){
+        if(list.s && list.s !== ''){
           end = end.replace(/s/g,list.s + 'k');
         } else {
           end = end.replace(/s/g,'');
@@ -3702,12 +3711,25 @@ function addTag(type,info){
   loadFont(createTagsBox.parentNode);
 };
 //制表文案转数组, 兼容反转行列
-function tableTextToArray(tableText,isColumn){
+function tableTextToArray(tableText,isColumn,mustTitle){
   let lines = tableText.split('\n');
   lines.forEach((item,index) => {
     lines[index] = item.split('\t');
   });
+  if(mustTitle){
+    let unneed = lines[0].filter(item => !mustTitle.includes(item));
+    if(unneed){
+      unneed = unneed.map(item => lines[0].findIndex(items => items == item));
+      unneed.forEach(num => {
+        lines.forEach(line => {
+          line.splice(num,1);
+        });
+      });
+    };
+  };
+
   let columns = lines[0].map((_, i) => lines.map(row => row[i]));
+
   if(isColumn){
     return columns;
   }else{
@@ -3767,17 +3789,13 @@ convertTags.addEventListener('click',()=>{
   let firstline = userText.value.trim().split('\n')[0];
   let isTableText = !['name','w','h'].some(item => !firstline.includes(item));
   if(isTableText){
-    let tableArray = tableTextToArray(userText.value.trim());
+    let tableArray = tableTextToArray(userText.value.trim(),false,userTableTitle.value.split(','));
     let tableObj = tableArrayToObj(tableArray);
     CreateTableInfo = tableObj;
-    if(CreateTableInfo.some(item => item.add) && !frameName.value.includes('add') && userTableTitle.value.includes('add')){
+
+    if(CreateTableInfo.some(item => item.add || item.s)){
       document.getElementById('upload-moreset').checked = true;
       document.querySelector('[for="upload-moreset"]').click();
-      document.querySelector('[data-option-value="add w×h s"]').click();
-    } else if(CreateTableInfo.some(item => item.s) && !frameName.value.includes('s') && userTableTitle.value.includes('s')){
-      document.getElementById('upload-moreset').checked = true;
-      document.querySelector('[for="upload-moreset"]').click();
-      document.querySelector('[data-option-value=" w×h s"]').click();
     };
     setTimeout(()=>{
       addTableTags();
@@ -3816,6 +3834,9 @@ frameName.addEventListener('input',()=>{
   }else{
     frameName.nextElementSibling.querySelector(`[data-select-input]`).value = '';
   };
+});
+frameName.addEventListener('change',()=>{
+  convertTags.click();
 });
 //设置画板数据表头规则
 userTableTitle.addEventListener('change',()=>{
@@ -4317,6 +4338,7 @@ function getUserSelect(node){
   if(userSelect){
     if(node.previousElementSibling == frameName){
       frameName.value = userSelect;
+      convertTags.click();
     };
   };
 };
@@ -4329,11 +4351,11 @@ function getUserRadio(node){
     };
     
     if(node.getAttribute('data-clip-w-set') !== null){
-      let clipH = getElementMix('data-clip-h-set').getAttribute('data-radio-value');
+      let clipH = getElementMix('data-clip-h-set').querySelector('[data-radio-main="true"]').getAttribute('data-radio-data');
       toolMessage([[userRadio * 1,clipH * 1],'addClipGrid'],PLUGINAPP);
     };
     if(node.getAttribute('data-clip-h-set') !== null){
-      let clipW = getElementMix('data-clip-w-set').getAttribute('data-radio-value');
+      let clipW = getElementMix('data-clip-w-set').querySelector('[data-radio-main="true"]').getAttribute('data-radio-data');
       toolMessage([[clipW * 1,userRadio * 1],'addClipGrid'],PLUGINAPP);
     };
     
