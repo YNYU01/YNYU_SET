@@ -1603,6 +1603,19 @@ function getUserFloat(node){
     let value = float * 1;
     let center = getElementMix('data-transform-center-box').getAttribute('data-radio-value');
     toolMessage([['S',value,center],'rescaleMix'],PLUGINAPP);
+    uniformS.value = 1;
+  };
+  if(node == uniformW.parentNode){
+    let value = float * 1;
+    let center = getElementMix('data-transform-center-box').getAttribute('data-radio-value');
+    toolMessage([['W',value,center],'rescaleMix'],PLUGINAPP);
+    uniformW.value = '';
+  };
+  if(node == uniformH.parentNode){
+    let value = float * 1;
+    let center = getElementMix('data-transform-center-box').getAttribute('data-radio-value');
+    toolMessage([['H',value,center],'rescaleMix'],PLUGINAPP);
+    uniformH.value = '';
   };
   //console.log(float)
 };

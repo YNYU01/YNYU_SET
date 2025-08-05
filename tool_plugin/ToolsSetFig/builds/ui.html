@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -55,7 +55,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -208,6 +208,24 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   width: fit-content;
   padding:0 0.5ch 0 1ch;
 }
+
+[data-selects="false"] [data-pixel-mix] [data-select-options]{
+  visibility: hidden;
+}
+
+[data-pixel-mix] [data-select-options]{
+  white-space: normal;
+  top: 24px;
+  flex-wrap: wrap;
+  width: 170;
+}
+
+[data-pixel-mix] [data-option="option"]{
+  width: 56px;
+  padding: 0.5ch;
+  box-sizing: border-box;
+}
+
 /*组件修改--*/
 
 html[data-language="En"] {
@@ -1040,11 +1058,13 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 }
 
 [data-skill-sec]:hover{
+  /**/
   filter: 
   drop-shadow(0 1px 0 var(--boxBod))
   drop-shadow(1px 0 0 var(--boxBod))
   drop-shadow(0 -1px 0 var(--boxBod))
   drop-shadow(-1px 0 0 var(--boxBod));
+  /**/
 }
 
 [data-theme="dark"] [data-skill-sec]{
@@ -2309,7 +2329,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       <input id="select-value-2" type="text" data-select-input readonly="" value="≤4096">
                       <input id="select-show-2" data-select-pick="≤4096" type="checkbox">
                       <label for="select-show-2" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
-                      <div data-select-options="" class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
+                      <div data-select-options="" class="df-lc pos-a noscrollbar" style="display: none;">
                         <div data-option="option" data-option-main="true" data-option-value="≤ 4096px">≤ 4096px</div>
                         <div data-option="option" data-option-main="false" data-option-value="≤ 2048px">≤ 2048px</div>
                         <div data-option="option" data-option-main="false" data-option-value="≤ 1024px">≤ 1024px</div>
@@ -2359,34 +2379,34 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div class="df-sc" data-skill-line>
                     <div class="df-ffc fl1" style="gap: 7px; max-width: 160px;">
                       <div data-any="vw240" style="height: 6px;"></div>
-                      <div class="df-lc w100" style="max-width: 160px;">
+                      <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Each ratio">按百分比</div>
-                        <input id="uniform-set-s" type="text" value="1" data-input data-input-type="float" data-input-must="0.001,100" style="text-align: center;">
+                        <input id="uniform-set-s" type="text" value="1" data-input data-input-type="float" data-input-must="0.01,1000" style="text-align: center;">
                         <div class="df-cc" data-input-unit="">x</div>
                       </div>
-                      <div class="df-lc w100" style="max-width: 160px;">
+                      <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Same width">按宽度</div>
-                        <input id="uniform-set-w" type="text" value="" data-input data-input-type="float" data-input-must="0.001,100" style="text-align: center;">
+                        <input id="uniform-set-w" type="text" value="" data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
                         <div class="df-cc" data-input-unit="">w</div>
                       </div>
-                      <div class="df-lc w100" style="max-width: 160px;">
+                      <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Same height">按高度</div>
-                        <input id="uniform-set-h" type="text" value="" data-input data-input-type="float" data-input-must="0.001,100" style="text-align: center;">
+                        <input id="uniform-set-h" type="text" value="" data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
                         <div class="df-cc" data-input-unit="">h</div>
                       </div>
                     </div>
                     <div data-transform-center-module class="df-ffc df-cc fl1" style="gap: 4px; margin-left: 10px;">
                       <div data-skill-btnname-top data-any="vw240" data-en-text="Scale center">缩放中心</div>
-                      <div data-transform-center-box data-radio-value="1" class="w100" >
-                        <div data-radio data-radio-data="1" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="2" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="3" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="4" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="5" data-radio-main="true" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="6" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="7" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="8" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="9" data-radio-main="false" class="df-cc">▪</div>
+                      <div data-transform-center-box data-radio-value="CC" class="w100" >
+                        <div data-radio data-radio-data="TL" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="TC" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="TR" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="CL" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="CC" data-radio-main="true" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="CR" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="BL" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="BC" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="BR" data-radio-main="false" class="df-cc">▪</div>
                       </div>
                     </div>                    
                   </div>
@@ -2745,12 +2765,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@effd92a2fe3c6a6f65050a2faf6ea154f9e539ff/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3038,7 +3058,9 @@ let skewSetX = getElementMix('data-skewset-x').querySelector('[data-input="value
 let skewSetY = getElementMix('data-skewset-y').querySelector('[data-input="value"]');
 let skewRangeX = getElementMix('data-skewset-x').querySelector('[data-input="range"]');
 let skewRangeY = getElementMix('data-skewset-y').querySelector('[data-input="range"]');
-
+let uniformS = document.getElementById('uniform-set-s');
+let uniformW = document.getElementById('uniform-set-w');
+let uniformH = document.getElementById('uniform-set-h');
 
 /*动态数据或对象*/
 let CreateImageInfo = [];
@@ -4248,6 +4270,8 @@ let observer = new MutationObserver((mutations) => {
         case 'data-color-hex':getUserColor(mutation.target); break;
         case 'data-number-value':getUserNumber(mutation.target); break;
         case 'data-text-value':getUserText(mutation.target); break;
+        case 'data-int-value':getUserInt(mutation.target); break;
+        case 'data-float-value':getUserFloat(mutation.target); break;
         case 'data-select-value':getUserSelect(mutation.target); break;
         case 'data-radio-value':getUserRadio(mutation.target); break;
       }
@@ -4272,6 +4296,16 @@ userEvent_number.forEach(item => {
 let userEvent_text = document.querySelectorAll('[data-text]');
 userEvent_text.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-text-value']};
+  observer.observe(item,config);
+});
+let userEvent_int = document.querySelectorAll('[data-int-value]');
+userEvent_int.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-int-value']};
+  observer.observe(item,config);
+});
+let userEvent_float = document.querySelectorAll('[data-float-value]');
+userEvent_float.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-float-value']};
   observer.observe(item,config);
 });
 let userEvent_select = document.querySelectorAll('[data-select]');
@@ -4331,6 +4365,34 @@ function getUserNumber(node){
 function getUserText(node){
   let text = node.getAttribute('data-text-value');
   //console.log(text)
+};
+
+function getUserInt(node){
+  let int = node.getAttribute('data-int-value');
+  //console.log(int)
+};
+
+function getUserFloat(node){
+  let float = node.getAttribute('data-float-value');
+  if(node == uniformS.parentNode){
+    let value = float * 1;
+    let center = getElementMix('data-transform-center-box').getAttribute('data-radio-value');
+    toolMessage([['S',value,center],'rescaleMix'],PLUGINAPP);
+    uniformS.value = 1;
+  };
+  if(node == uniformW.parentNode){
+    let value = float * 1;
+    let center = getElementMix('data-transform-center-box').getAttribute('data-radio-value');
+    toolMessage([['W',value,center],'rescaleMix'],PLUGINAPP);
+    uniformW.value = '';
+  };
+  if(node == uniformH.parentNode){
+    let value = float * 1;
+    let center = getElementMix('data-transform-center-box').getAttribute('data-radio-value');
+    toolMessage([['H',value,center],'rescaleMix'],PLUGINAPP);
+    uniformH.value = '';
+  };
+  //console.log(float)
 };
 
 function getUserSelect(node){

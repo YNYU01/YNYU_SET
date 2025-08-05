@@ -148,6 +148,24 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   width: fit-content;
   padding:0 0.5ch 0 1ch;
 }
+
+[data-selects="false"] [data-pixel-mix] [data-select-options]{
+  visibility: hidden;
+}
+
+[data-pixel-mix] [data-select-options]{
+  white-space: normal;
+  top: 24px;
+  flex-wrap: wrap;
+  width: 170;
+}
+
+[data-pixel-mix] [data-option="option"]{
+  width: 56px;
+  padding: 0.5ch;
+  box-sizing: border-box;
+}
+
 /*组件修改--*/
 
 html[data-language="En"] {
@@ -980,11 +998,13 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 }
 
 [data-skill-sec]:hover{
+  /**/
   filter: 
   drop-shadow(0 1px 0 var(--boxBod))
   drop-shadow(1px 0 0 var(--boxBod))
   drop-shadow(0 -1px 0 var(--boxBod))
   drop-shadow(-1px 0 0 var(--boxBod));
+  /**/
 }
 
 [data-theme="dark"] [data-skill-sec]{

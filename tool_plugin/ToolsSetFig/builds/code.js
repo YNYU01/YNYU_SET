@@ -152,12 +152,13 @@ figma.ui.onmessage = async (message) => {
                 });
             };
             if(info[i].s){
-                console.log(info[i].s)
+                //console.log(info[i].s)
                 node.setPluginData('exportSize',info[i].s.toString())
             };
             selects.push(node);
         };
         figma.currentPage.selection = selects;
+        console.log(selects)
         layoutByRatio(selects);
     };
     //反传画板数据
@@ -542,9 +543,18 @@ figma.ui.onmessage = async (message) => {
             //console.log(info)
             let final = b[0];
             let main = getSafeMain(b[0]);
-
-            if(!b[0].layoutGrids || (b[0].layoutGrids && !b[0].name.split(' ').includes('@clip'))){
-                //console.log(666)
+            let oldRC = getClipGrids(b[0],true);
+            let safeGridsNum = oldRC[0].length + oldRC[1].length;
+            //console.log(oldRC)
+            if(!oldRC || (oldRC && safeGridsNum !== b[0].layoutGrids.length)){
+                b[0].name = b[0].name.replace(' @clip','').replace('@clip','').trim();
+                if(b[0].layoutGrids){
+                    let newgrids = JSON.parse(JSON.stringify(b[0].layoutGrids));
+                    console.log(newgrids)
+                    newgrids.forEach(item => item.visible = false);
+                    console.log(newgrids)
+                    b[0].layoutGrids = newgrids;
+                };
                 let gridset = addFrame([...main,b[0].name + ' @clip',[]])
                 fullInFrameSafa(b[0],gridset);
                 final = gridset;
@@ -555,7 +565,7 @@ figma.ui.onmessage = async (message) => {
                 };
             };
 
-            let RC = getClipGrids(b[0],true);
+            let RC = getClipGrids(final,true);
 
             if(final.layoutGrids.length !== (info[0] + info[1])){
                 let gridstyle = {
@@ -811,13 +821,92 @@ figma.ui.onmessage = async (message) => {
     };
     //反转顺序
     if( type == 'Reversing Index'){
-
+        let a = figma.currentPage;
+        let b = a.selection;
+        if(b.length == 1 && b[0].children && b[0].type !== 'INSTANCE'){
+            let olds = b[0].children;
+            for(let i = 0; i < olds.length; i++){
+                b[0].insertChild(0,olds[i]);
+            };
+        }else{
+            if([...new Set(b.map(item => item.parent.id))].length == 1){
+                let indexs = b.map(item => [b[0].parent.children.findIndex(items => items == item),item]).sort();
+                if(indexs.length - 1 == indexs[indexs.length - 1][0] - indexs[0][0]){
+                    for(let i = 0; i < indexs.length; i++){
+                        //console.log(indexs[i][1].name)
+                        b[0].parent.insertChild(indexs[0][0],indexs[i][1]);
+                    };
+                };
+            };
+        };
     };
     //调换位置
     if( type == 'Exchange Position'){
         let a = figma.currentPage;
         let b = a.selection;
-        let final = '';
+        let final = b.filter(item => !getParentAll(item,'INSTANCE'));
+        final = final.filter(item => !(item.parent.type == 'GROUP' && item.parent.children.length == 1))
+        if(final.length == 2){
+            console.log(666)
+            let [x1,y1,w1,h1,p1,i1] = [
+                final[0].x,
+                final[0].y,
+                final[0].width,
+                final[0].height,
+                final[0].parent,
+                final[0].parent.children.findIndex(item => item.id == final[0].id)
+            ];
+            let [x2,y2,w2,h2,p2,i2] = [
+                final[1].x,
+                final[1].y,
+                final[1].width,
+                final[1].height,
+                final[1].parent,
+                final[1].parent.children.findIndex(item => item.id == final[1].id)
+            ];
+            p1.insertChild(i1,final[1]);
+            final[1].x = x1;
+            final[1].y = y1;
+            p2.insertChild(i2,final[0]);
+            final[0].x = x2;
+            final[0].y = y2;
+
+            if(info){
+                final[0].x -= (w1 - w2)/2;
+                final[0].y -= (h1 - h2)/2;
+                final[1].x -= (w2 - w1)/2;
+                final[1].y -= (h2 - h1)/2;
+            };
+        };
+    };
+    //填充组件到容器
+    if( type == 'Clone to Fill'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let comp = b.find(item => item.type == 'COMPONENT' || item.type == 'INSTANCE');
+        let frames = b.filter(item => item.type == 'FRAME' && item.layoutMode == 'NONE');
+        let selects = []
+        frames.forEach(item => {
+            let clone = comp.type == 'COMPONENT' ? comp.createInstance() : comp.clone();
+            clone.unlockAspectRatio();
+            let scale = Math.min(item.width,item.height)/Math.max(clone.width,clone.height)
+            clone.rescale(scale);
+            addAbsoluteFill(item,clone,true);
+            selects.push(clone)
+        });
+        a.selection = selects;
+    };
+    //作为自适应底框
+    if( type == 'Absolute & Fill'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        if(b.length == 1){
+            if(b[0].type == 'INSTANCE' && b[0].parent.layoutMode == 'AUTO'){
+                
+            };
+        } else {
+
+        }
     };
     //母组件复制
     if ( type == 'Clone Comp.'){
@@ -1007,14 +1096,15 @@ function sendInfo(){
             let transform = node.absoluteTransform;
             //let scaleX = 100// Math.floor(transform[0][0] * 100);
             //let scaleY = 100//Math.floor(transform[1][1] * 100);
-            let skewX = Math.floor(Math.atan(transform[0][1])/(Math.PI/180));
-            let skewY = Math.floor(Math.atan(transform[1][0])/(Math.PI/180));
+            let skewX = Math.round(Math.atan(transform[0][1])/(Math.PI/180));
+            let skewY = Math.round(Math.atan(transform[1][0])/(Math.PI/180));
             //console.log([skewX,skewY])
             let column = 0;
             let row = 0;
             if(node.layoutGrids){
-                column = node.layoutGrids.filter(item => item.pattern == 'COLUMNS').length
-                row = node.layoutGrids.filter(item => item.pattern == 'ROWS').length
+                let [R,C] = getClipGrids(node)
+                column = C.length
+                row = R.length
             };
             column = column <= 2 ? column : 0;
             row = row <= 2 ? row : 0;
@@ -1329,79 +1419,76 @@ function layoutByRatio(nodes,isMinToMax){
     for ( let i = 0; i < b.length; i++){
         infos.push({x:b[i].x,y:b[i].y,w:b[i].width,h:b[i].height,i:i,});
     };
+    //console.log(infos)
     let HH = infos.filter(item => item.w > item.h).sort((a, b) => b.w*b.h - a.w*a.h);//横板
-    let maxW = Math.max(...HH.map(item => item.w));
+    let maxW = Math.max(...HH.map(item => item.w)) | 0;
     let LL = infos.filter(item => item.w < item.h).sort((a, b) => b.w*b.h - a.w*a.h);//竖版
-    let maxH = Math.max(...LL.map(item => item.h));
+    let maxH = Math.max(...LL.map(item => item.h)) | 0;
     let FF = infos.filter(item => item.w == item.h).sort((a, b) => b.w*b.h - a.w*a.h);//方形
+    //console.log(HH,maxW,LL,maxH,FF)
     if(isMinToMax){
         HH = HH.reverse();
         LL = LL.reverse();
         FF = FF.reverse();
-    }
+    };
     let gap = 30;
     let lineMaxH = [],lineMaxW = [];
     let lineW = 0,lineH = 0;
     for(let e = 0; e < HH.length; e++){
         if ( e !== HH.length - 1){
             lineW += HH[e].w + HH[e + 1].w ;
-        }
+        };
         lineMaxH.push([HH[e].h]);
-        //console.log(lineMaxH)                   
         b[HH[e].i].x = x
         b[HH[e].i].y = y
-        
         if ( lineW > maxW){
-            //console.log(lineMaxH) 
             lineW = 0;
             x = XX;
             y = y + Math.max(...lineMaxH) + gap;
-            lineMaxH = []
+            lineMaxH = [];
         } else {
             x = x + HH[e].w + gap; 
-        }
+        };
     };
     x = XX + maxW + gap;
     y = YY;
+    //console.log(x,y)
     for(let e = 0; e < LL.length; e++){
         if ( e !== LL.length - 1){
             lineH += LL[e].h + LL[e + 1].h ;
-        }
+        };
         lineMaxW.push([LL[e].w]);
-        //console.log(lineMaxH)                   
         b[LL[e].i].x = x
         b[LL[e].i].y = y
         
         if ( lineH > maxH){
-
             lineH = 0;
             y = YY;
             x = x + Math.max(...lineMaxW) + gap;
             lineMaxW = []
         } else {
             y = y + LL[e].h + gap; 
-        }
+        };
     };
     x = XX + maxW + gap;
     y = YY + maxH + gap;
+    //console.log(x,y)
     for(let e = 0; e < FF.length; e++){
         if ( e !== FF.length - 1){
             lineW += FF[e].w + FF[e + 1].w ;
-        }
+        };
         lineMaxH.push([FF[e].h]);
-        //console.log(lineMaxH)                   
         b[FF[e].i].x = x
         b[FF[e].i].y = y
         
         if ( lineW > maxW){
-
             lineW = 0;
             x = XX + maxW + gap;
             y = y + Math.max(...lineMaxH) + gap;
-            lineMaxW = []
+            lineMaxW = [];
         } else {
             x = x + FF[e].w + gap; 
-        }
+        };
     };
 };
 
@@ -1503,7 +1590,7 @@ function addBodFill(node,Array){
     let bodfills = addFrame([176,52,null,null,Array[3],[]]);
     bodfills.appendChild(bodfill);
     asFillChild(bodfill);
-    addAbsolute(node,bodfills,true);
+    addAbsoluteFill(node,bodfills,true);
     addCompPro(node,bodfills,Array[3],'BOOLEAN',true);
 };
 //绑定图层和组件属性
@@ -1993,16 +2080,22 @@ function addAutoLayout(node,layout,isFixed){
 /**
  * @param {node} parent - 自动布局对象
  * @param {node} absoluteNode - 绝对定位对象
- * @param {boolean} isFill - 是否撑满自动布局对象（会同时修改约束
- * @param {Array | string} position - [x,y] | TBLR , 指定坐标或相对位置（会同时修改约束
+ * @param {boolean} fill - 是否撑满自动布局对象（会同时修改约束
+ * @param {Array | string} position - [x,y] | TBLR , 如果不撑满，则指定坐标或相对位置（会同时修改约束
  */
-function addAbsolute(parent,absoluteNode,isFill,position){
+function addAbsoluteFill(parent,absoluteNode,fill,position){
     let a = parent,b = absoluteNode;
-    a.appendChild(b);
-    b.layoutPositioning = "ABSOLUTE";
+    if(a){
+        a.appendChild(b);
+    };
+    if(a.layoutMode == 'AUTO'){
+        b.layoutPositioning = "ABSOLUTE";
+    }else{
+        b.layoutPositioning = "AUTO";
+    };
     b.x = 0;
     b.y = 0;
-    if(isFill){
+    if(fill){
         b.resize(a.width,a.height);
         b.constraints = {
             horizontal: "STRETCH",
@@ -2044,11 +2137,19 @@ function addAbsolute(parent,absoluteNode,isFill,position){
     };
 };
 //添加到画板并设置约束
-function addConstraints(parent,absoluteNode,position,isFill){
-    parent.appendChild(absoluteNode);
+/**
+ * @param {node} parent - 画板类对象
+ * @param {node} constraintNode - 可添加约束的对象
+ * @param {string} TBLR - TBLR,各轴约束简写
+ * @param {boolean} isFill - 是则撑满，否则居中
+ */
+function addConstraints(parent,constraintNode,TBLR,isFill){
+    if(parent){
+        parent.appendChild(constraintNode);
+    };
     let H = 'MIN';
     let V = 'MIN';
-    switch (position[0]){
+    switch (TBLR[0]){
         case 'T':
             V = 'MIN';
         ;break
@@ -2059,7 +2160,7 @@ function addConstraints(parent,absoluteNode,position,isFill){
             V = 'MAX';
         ;break
     };
-    switch (position[1]){
+    switch (TBLR[1]){
         case 'L':
             H = 'MIN';
         ;break
@@ -2070,7 +2171,7 @@ function addConstraints(parent,absoluteNode,position,isFill){
             H = 'MAX';
         ;break
     };
-    absoluteNode.constraints = {
+    constraintNode.constraints = {
         horizontal: H,
         vertical: V,
     };
@@ -2233,16 +2334,26 @@ function addClipGrids(info,node){
     node.layoutGrids = grids;
 };
 //获取网格参考线数据并简化
+/**
+ * @returns {Array} - [R,C] R:[[top,h]] C:[[left,w]]
+ */
 function getClipGrids(node,isNoSort){
-    let grids = node.layoutGrids.map(item => [item.pattern,item.offset,item.sectionSize])
-    let R = grids.filter(item => item[0] == 'ROWS');
-    let C = grids.filter(item => item[0] == 'COLUMNS');
-    if(isNoSort){
-        return [R,C]
+    if(node.layoutGrids){
+        let safeGrids = node.layoutGrids.filter(item => item.alignment == 'MIN' && item.count == 1)
+        let grids = safeGrids.map(item => [item.pattern,item.offset,item.sectionSize])
+        let R = grids.filter(item => item[0] == 'ROWS');
+        let C = grids.filter(item => item[0] == 'COLUMNS');
+        if(isNoSort){
+            return [R,C]
+        };
+        R = R.map(item => [item[1],item[2]]).sort((a,b) => a[0] - b[0]);
+        C = C.map(item => [item[1],item[2]]).sort((a,b) => a[0] - b[0]);
+        //R = R.filter(item => item.every(items => items !== undefined));
+        //C = C.filter(item => item.every(items => items !== undefined));
+        return [R,C];
+    }else{
+        return null;
     };
-    R = R.map(item => [item[1],item[2]]).sort((a,b) => a[0] - b[0]);
-    C = C.map(item => [item[1],item[2]]).sort((a,b) => a[0] - b[0]);
-    return [R,C]
 };
 //网格参考线转xywh分割数据
 function clipGridsToCut(RC,WH){
@@ -2429,19 +2540,19 @@ function creAutoClip(clips,clipsbox,image,comp){
         };
     });
 };
-
 //模拟缩放中心
 function rescaleMix(node,num,center){
+    let oldW = node.width,oldH = node.height;
     node.rescale(num);
     switch (center[0]){
         case 'T':
 
         ;break
         case 'C':
-            node.y -= node.height/2;
+            node.y -= (oldH * (num - 1))/2
         ;break
         case 'B':
-            node.y -= node.height;
+            node.y -= oldH * (num - 1)
         ;break
     };
     switch (center[1]){
@@ -2449,10 +2560,33 @@ function rescaleMix(node,num,center){
 
         ;break
         case 'C':
-            node.x -= node.width/2;
+            node.x -= (oldW * (num - 1))/2
         ;break
         case 'R':
-            node.x -= node.width;
+            node.x -= oldW * (num - 1)
         ;break
     };
+};
+//向上递归检查父级
+function getParentAll(node,keytype){
+    let parents = [];
+    let key = keytype ? keytype : 'PAGE';
+    getParentOne(node);
+    function getParentOne(node){
+        if(node.parent && node.parent.type !== key && node.parent !== figma.currentPage){
+            parents.push(node.parent);
+            return getParentOne(node.parent);
+        } else {
+            //console.log(parents)
+            if(keytype){
+                if(node.parent.type == key){
+                    parents = true
+                } else {
+                    parents = false;
+                }
+            }
+            return parents
+        };
+    };
+    return parents
 };
