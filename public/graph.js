@@ -403,8 +403,24 @@ class btnstyle extends HTMLElement {
 }
 customElements.define('btn-style', btnstyle);
 
+class btnchecktick extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="100%" height="100%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path stroke="var(--check,transparent)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path stroke="var(--mainColor)" d="M11.2 0.699951H2.79995C1.64015 0.699951 0.699951 1.64015 0.699951 2.79995V11.2C0.699951 12.3597 1.64015 13.3 2.79995 13.3H11.2C12.3597 13.3 13.3 12.3597 13.3 11.2V2.79995C13.3 1.64015 12.3597 0.699951 11.2 0.699951Z" stroke-width="1.4"/>
+    </svg>
+    `;
+  }
+};
+
+customElements.define('btn-check-tick', btnchecktick);
 /*
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 1024 1024">
-        <path d="M512 0c279.04 0 512 204.8 512 460.8a310.784 310.784 0 0 1-307.2 312.32h-92.672a19.456 19.456 0 0 0-19.456 18.944s0 5.12 6.144 11.264a121.856 121.856 0 0 1 31.744 84.992A132.608 132.608 0 0 1 512 1024a512 512 0 0 1 0-1024z m0 81.92a430.08 430.08 0 0 0 0 860.16 51.2 51.2 0 0 0 51.2-51.2 44.544 44.544 0 0 0-7.168-26.624l-7.168-7.68a102.4 102.4 0 0 1-24.064-64.512 102.4 102.4 0 0 1 102.4-102.4H716.8A228.864 228.864 0 0 0 942.08 460.8c-3.584-204.8-195.584-378.88-430.08-378.88z m240.64 261.12A117.76 117.76 0 1 1 633.344 460.8a117.76 117.76 0 0 1 117.76-117.76zM256 337.92a117.76 117.76 0 1 1-117.76 117.76A117.76 117.76 0 0 1 256 337.92z m496.128 87.04a35.84 35.84 0 1 0 35.84 35.84 35.84 35.84 0 0 0-36.864-35.84zM256 419.84a35.84 35.84 0 1 0 0 71.68 35.84 35.84 0 0 0 0-71.68zM536.576 153.6a117.76 117.76 0 1 1-117.76 117.76 117.76 117.76 0 0 1 117.76-117.76z m0 81.92a35.84 35.84 0 1 0 35.84 35.84 35.84 35.84 0 0 0-35.84-36.352z" fill-rule="evenodd" fill="var(--mainColor)" fill-opacity="1"></path>
-        </svg>
+<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path stroke="var(--check,transparent)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path stroke="var(--mainColor)" d="M11.2 0.699951H2.79995C1.64015 0.699951 0.699951 1.64015 0.699951 2.79995V11.2C0.699951 12.3597 1.64015 13.3 2.79995 13.3H11.2C12.3597 13.3 13.3 12.3597 13.3 11.2V2.79995C13.3 1.64015 12.3597 0.699951 11.2 0.699951Z" stroke-width="1.4"/>
+</svg>
+
+
 */

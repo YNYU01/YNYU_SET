@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@639d1596cd093bfc4a2125c4fb92fa862da2e6a0/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -55,7 +55,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@639d1596cd093bfc4a2125c4fb92fa862da2e6a0/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -225,6 +225,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   padding: 0.5ch;
   box-sizing: border-box;
 }
+
 
 /*组件修改--*/
 
@@ -602,6 +603,14 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   background: var(--code1);
 }
 
+[data-btn="text"]{
+  border: none;
+}
+
+[data-btn="text"]:hover{
+  opacity: 0.5;
+}
+
 [data-btn="icon"]{
   display: block;
   width: 40px;
@@ -869,13 +878,17 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 8px;
 }
 
-[data-create-tag],[data-split-tag]{
+[data-create-tag],[data-split-tag],[data-export-tag]{
   height: 24px;
   padding: 2px 4px;
   background: var(--boxGry);
   border-radius: 6px;
   gap: 4px;
   font-size: 10px;
+}
+
+[data-export-tag]{
+  height: fit-content;
 }
 
 [data-split-tag]{
@@ -886,17 +899,17 @@ input[type="checkbox"]:checked + .btn-moreset{
   cursor: var(--pointer,pointer);
 }
 
-[data-tablestyle-set]{
+[data-tablestyle-set],[data-exporttype-set]{
   gap: 4px;
 }
 
-[data-tablestyle-chk]{
+[data-tablestyle-chk],[data-exporttype-chk]{
   width: 20px;
   height: 20px;
   padding: 0.5ch;
 }
 
-[data-tableset-more]{
+[data-tableset-more],[data-exportset-more]{
   position: relative;
 }
 
@@ -910,6 +923,40 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: inherit;
   top: -4px;
   right: 6px;
+}
+
+[data-tablestyle-name],[data-exporttype-name]{
+  font-size: 10px;
+  margin-right: 0.5ch;
+}
+
+[for="export-more"]{
+  transform: rotate(180deg) rotateX(45deg);
+  background: var(--boxGry);
+  border-radius:  0 0 50px 50px;
+  margin-bottom: -4px;
+}
+
+#export-more +.show-next::after{
+  right: calc(50% - 4px);
+}
+
+[data-exportset-more]{
+  background: var(--boxGry);
+  margin-bottom: -2px;
+  border-radius: 8px 8px 0 0;
+  box-sizing: border-box;
+  padding: 4px 10px;
+  max-width: 560px;
+  display: none;
+}
+
+[data-export-tags-box]{
+  resize: vertical;
+  height: 400px;
+  max-width: 560px;
+  min-height: 20vh;
+  max-height: 80vh;
 }
 
 [data-text-mini]{
@@ -948,11 +995,6 @@ input[type="checkbox"]:checked + .btn-moreset{
 input[type="checkbox"]:checked ~ [data-selectcomp-box],
 input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   width: 100vw;
-}
-
-[data-tablestyle-name]{
-  font-size: 10px;
-  margin-right: 0.5ch;
 }
 
 [data-skilltype-box]{
@@ -1558,7 +1600,8 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   [data-skillType-box]{
     height: 80px;
   }
-  [data-radio-main="true"] [data-tablestyle-name]{
+  [data-radio-main="true"] [data-tablestyle-name],
+  [data-radio-main="true"] [data-exporttype-name]{
     display: block;
   }
 }
@@ -1887,6 +1930,100 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
       </div>
       <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
         <div class="w100 df-ffc" style="height: calc(100% - 40px); align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+          <!--步骤1-->
+          <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <span>▼&nbsp;</span>
+            <span data-en-text="Add selects to list" >添加所选对象到队列</span>
+            &nbsp;&nbsp;
+            <span data-any="vw300" data-en-text="by the export-type" style="opacity: 0.6;"> 按所选导出类型</span>
+            <div data-any="vw300" data-help="export" class="fl0 df-cc">?</div>
+          </div>
+          <!--导出类型-->
+          <div class="df-lc pos-r upload-set w100" style="gap:4px; padding: 4px; border-radius: 8px; max-width: 560px; ">
+            <div class="noscrollbar" data-scroll style="margin: 0 auto;">
+              <div data-exporttype-set class="df-lc" data-radio-value="1" >
+                <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="true">
+                  <div data-exporttype-chk>
+                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill="var(--mainColor)" d="M17 1.5C18.1046 1.5 19 2.39543 19 3.5V14.8975L19.124 15.084L19 15.166V16.5C19 17.5357 18.2128 18.387 17.2041 18.4893L17 18.5H3L2.7959 18.4893C1.85435 18.3938 1.1062 17.6457 1.01074 16.7041L1 16.5V12.6787L0.869141 12.5947L1 12.3906V3.5C1 2.39543 1.89543 1.5 3 1.5H17ZM7.05469 9.01074C6.56123 8.2485 5.44533 8.25001 4.9541 9.01367L2.5 12.8311V16.5C2.5 16.7761 2.72386 17 3 17H17C17.2761 17 17.5 16.7761 17.5 16.5V15.3516L16.1406 13.3135C15.7217 12.6853 14.8456 12.5692 14.2773 13.0664L11.9941 15.0645L11.3418 15.6357L10.8701 14.9072L7.05469 9.01074ZM3 3C2.72386 3 2.5 3.22386 2.5 3.5V10.0576L3.69238 8.20312C4.77297 6.52221 7.22888 6.51858 8.31445 8.19629L11.6582 13.3643L13.29 11.9375C14.5402 10.8436 16.4671 11.0993 17.3887 12.4814L17.5 12.6475V3.5C17.5 3.22386 17.2761 3 17 3H3Z"/>
+                      <circle fill="var(--mainColor)" cx="13.5" cy="7.15747" r="2.5"/>
+                    </svg>
+                  </div>
+                  <div data-any="vw360" data-exporttype-name data-en-text="Image(Pixel)">普通图片</div>         
+                </div>
+                <div class="fl0 df-lc" data-radio data-radio-data="2" data-radio-main="false">
+                  <div data-exporttype-chk>
+                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill="var(--mainColor)" d="M17 1.5C18.1046 1.5 19 2.39543 19 3.5V16.5C19 17.5357 18.2128 18.387 17.2041 18.4893L17 18.5H3L2.7959 18.4893C1.85435 18.3938 1.1062 17.6457 1.01074 16.7041L1 16.5V3.5C1 2.39543 1.89543 1.5 3 1.5H17ZM3 3C2.72386 3 2.5 3.22386 2.5 3.5V16.5C2.5 16.7761 2.72386 17 3 17H17C17.2761 17 17.5 16.7761 17.5 16.5V3.5C17.5 3.22386 17.2761 3 17 3H3ZM13.0537 10.7266L14.3027 6.85742H15.9492L13.2695 14.1279C13.1374 14.4763 12.993 14.7404 12.8008 14.9326C12.4403 15.2931 11.9718 15.4131 11.4551 15.4131H10.8418V14.0078H11.2031C11.6474 14.0077 11.8272 13.8989 11.9834 13.4424L12.248 12.6738L10.1094 6.85742H11.7559L13.0537 10.7266ZM10.0186 8.04688L7.20605 11.7119H10.0186V13.1182H5.24707V11.9287L8.02344 8.2627H5.40332V6.85742H10.0186V8.04688Z"/>
+                    </svg>  
+                  </div>
+                  <div data-any="vw360" data-exporttype-name data-en-text=".zy(Pulgin)">系列兼容格式</div>         
+                </div>
+                <div class="fl0 df-lc" data-radio data-radio-data="3" data-radio-main="false">
+                  <div data-exporttype-chk>
+                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill="var(--mainColor)" d="M17 1.5C18.1046 1.5 19 2.39543 19 3.5V16.5C19 17.5357 18.2128 18.387 17.2041 18.4893L17 18.5H3L2.7959 18.4893C1.85435 18.3938 1.1062 17.6457 1.01074 16.7041L1 16.5V3.5C1 2.39543 1.89543 1.5 3 1.5H17ZM3 3C2.72386 3 2.5 3.22386 2.5 3.5V16.5C2.5 16.7761 2.72386 17 3 17H17C17.2761 17 17.5 16.7761 17.5 16.5V3.5C17.5 3.22386 17.2761 3 17 3H3Z"/>
+                      <path fill="var(--mainColor)" d="M16.1181 13.5933C16.685 13.7505 16.7002 14.5498 16.1396 14.728L10.2509 16.5972C10.1359 16.6336 10.0117 16.6339 9.89641 16.5981L3.87395 14.729C3.30848 14.5533 3.32303 13.7472 3.89446 13.5923L4.98137 13.2983L10.0741 14.8784L15.0507 13.2983L16.1181 13.5933ZM16.1181 10.9487C16.6851 11.1059 16.7003 11.9043 16.1396 12.0825L10.2519 13.9526C10.1368 13.9892 10.0127 13.9893 9.89739 13.9536L3.87395 12.0835C3.30864 11.9078 3.32321 11.1028 3.89446 10.9478L7.15813 10.064V12.0522H12.6259V9.98291L16.1181 10.9487Z"/>
+                      <path fill="var(--mainColor)" d="M13.5 4.33447L13.4999 7.14766H12.528L12.4413 6.23008H10.6935L10.683 9.46251L11.6259 9.61635V11.0522H8.15778V9.61635L9.22159 9.46251L9.23214 6.23008H7.55867L7.47767 7.14766H6.5L6.50008 4.33447H13.5Z"/>
+                    </svg>                          
+                  </div>
+                  <div data-any="vw360" data-exporttype-name data-en-text="Rich Text">复合文本内容</div>         
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px; max-width: 560px; ">
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">按导出设置上传</div>
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">默认上传</div>    
+          </div>
+          <!--步骤2-->
+          <div class="w100 df-lc"  style="max-width: 560px; padding:10px 0 4px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <span>▼&nbsp;</span>
+            <span data-en-text="Set rendering list" >设置渲染队列</span>
+            &nbsp;&nbsp;
+            <span data-any="vw300" data-en-text="name/type/size..." style="opacity: 0.6;"> 目标格式和文件大小等</span>
+          </div>
+          <div class="df-cc fl0" style="width: 120px; height: 12px; border-radius: 8px 8px 0 0;">
+            <input id="export-more" type="checkbox" onchange="showNext(this,'data-exportset-more','flex')">
+            <label for="export-more" class="wh100 df-cc show-next">
+            </label>
+          </div>
+          <div data-exportset-more class="w100">
+            <div class="w100 df-sc">
+              <div class="df-lc" style="gap: 8px;">
+                <div class="df-lc" data-btn="text" style="gap: 2px;">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke="var(--mainColor)" d="M2 4.27539H12" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path stroke="var(--mainColor)" d="M10 2.5V1.5H4V2.5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path stroke="var(--mainColor)" d="M11 4.27539L9.85714 12.2754H4.14286L3 4.27539" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path stroke="var(--mainColor)" d="M6 6.27539V10.2754" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path stroke="var(--mainColor)" d="M8 6.27539V10.2754" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>  
+                  <div data-en-text="Delete">删除</div>                
+                </div>
+                <div class="df-lc" data-btn="text" style="gap: 2px;">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke="var(--mainColor)" d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path stroke="var(--mainColor)" d="M2.99911 2.18428L3.20218 4.65075L5.66323 4.49707" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>                     
+                  <div data-en-text="Re-Upload">重新上传</div>                
+                </div>
+              </div>
+              <div class="df-lc" style="gap: 4px;">
+                <div data-en-text="All">全选</div>
+                <input id="exportset-chkall" type="checkbox"/>
+                <label for="exportset-chkall" class="check" style="gap: 4px; width: 16px; height: 16px;">
+                  <btn-check-tick></btn-check-tick>
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div data-export-tags-box class="wh100 upload-set pos-r ovy noscrollbar">
+            <div data-export-tags data-export-set class="w100 df-lc">
+              <!--动态填充-->
+            </div>
+          </div>
         </div>
         <div data-btn="main" class="df-cc" data-en-text="EXPORT">导出</div>
       </div>
@@ -1909,6 +2046,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               <span data-any="vw300" data-en-text="and make it more diverse" style="opacity: 0.6;">并进一步定制化设计</span>
               <div data-any="vw300" data-help="sheet" class="fl0 df-cc">?</div>
             </div>
+            <!--预设表格样式-->
             <div data-tableset-thtd class="df-lc w100">
               <div class="df-lc" style="max-width: 100%; margin:0 auto; gap: 4px;">
                 <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px);">
@@ -2037,7 +2175,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div> 
             <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px;">
               <div data-create-table class="w100 df-cc" data-btn="main2" data-en-text="Create Table">创建表格</div>
-              <div data-create-table class="w100 df-cc" data-btn="skill-main" data-selects-must data-en-text="Apply Preset" style="border-radius: 20px;">应用预设样式</div>    
+              <div class="w100 df-cc" data-btn="skill-main" data-selects-must data-en-text="Apply Preset" style="border-radius: 20px;">应用预设样式</div>    
               <div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
                 <input id="table-more" type="checkbox" checked="true" onchange="showNext(this,'data-tableset-more','flex')">
                 <label for="table-more" class="wh100 df-cc btn-more" style=" padding: 4px;">
@@ -2765,12 +2903,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ab1b9a899c2fd44d4e6227adf1c1a420fa6e8784/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@639d1596cd093bfc4a2125c4fb92fa862da2e6a0/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@639d1596cd093bfc4a2125c4fb92fa862da2e6a0/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@639d1596cd093bfc4a2125c4fb92fa862da2e6a0/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@639d1596cd093bfc4a2125c4fb92fa862da2e6a0/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@639d1596cd093bfc4a2125c4fb92fa862da2e6a0/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@639d1596cd093bfc4a2125c4fb92fa862da2e6a0/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3012,7 +3150,7 @@ const selectInfoBox = document.querySelectorAll('[data-selects-node]');
 const createTagsBox = document.querySelector('[data-create-tags]');
 const cataloguesBox = document.querySelector('[data-create-catalogues]');
 const skillBtnMain = document.querySelectorAll('[data-btn="skill-main"]');
-const clearTags = document.querySelector('[data-create-tags-box]').querySelector('btn-close').parentNode;
+const clearCreateTags = document.querySelector('[data-create-tags-box]').querySelector('btn-close').parentNode;
 const convertTags = document.getElementById('upload-set-1');
 const getTableText = document.getElementById('upload-set-2');
 const chkTablestyle = document.getElementById('chk-tablestyle');
@@ -3066,6 +3204,7 @@ let uniformH = document.getElementById('uniform-set-h');
 let CreateImageInfo = [];
 let CreateTableInfo = [];
 let SelectNodeInfo = [];
+let ExportImageInfo = [];
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -3081,7 +3220,8 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 
 window.addEventListener('load',()=>{
   /*
-  viewPage('more tools')
+  let tabs = ['create','export','editor','variable','sheet','more tools']
+  viewPage(tabs[1])
   /**/;
   if(window.innerWidth < 300){
     TV_MOVE = true;
@@ -3553,7 +3693,7 @@ function loadTable(file){
 
 //添加标签前处理
 async function addImageTags(files,isCreate){
-  clearTags.click();
+  clearCreateTags.click();
   let sizes = files.map(item => item.size);
   let sizeAll = sizes.reduce((a,b) => a + b, 0);
   sizeAll = sizeAll*1 == NaN ? files.length : sizeAll; //大图至少算1M大小
@@ -3578,7 +3718,7 @@ async function addImageTags(files,isCreate){
   };
 }
 async function addTableText(files,isTags){
-  clearTags.click();
+  clearCreateTags.click();
   userText.focus();
   userText.value = '';
   let tableText;
@@ -3609,7 +3749,7 @@ function addTag(type,info){
       info.forEach((img,index) => {
         let tag = document.createElement('div');
         createTagsBox.parentNode.setAttribute('data-create-tags-box','image');
-        addTagMain(tag,index);
+        addTagMain(tag,index,'create');
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
         name.innerHTML = tool.TextMaxLength(img.n,16,'...');
@@ -3658,7 +3798,7 @@ function addTag(type,info){
       info.forEach((list,index) => {
         let tag = document.createElement('div');
         createTagsBox.parentNode.setAttribute('data-create-tags-box','table');
-        addTagMain(tag,index);
+        addTagMain(tag,index,'create');
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
         let end = nameRegex
@@ -3693,16 +3833,28 @@ function addTag(type,info){
         
       });
     break
+    case 'export-img':
+      info.forEach(layer => {
+        ExportImageInfo.push(layer);
+        let index = ExportImageInfo.findIndex(item => item == layer);
+        let tag = document.createElement('div');
+        addTagMain(tag,index,'export');
+      });
+    break
   };
   //所有tag都支持二次确认, 以得到最终要生成的内容
-  function addTagMain(tag,index){
-    tag.setAttribute('data-create-tag','');
-    tag.setAttribute('data-create-final','true');
-    tag.className = 'df-lc';
+  function addTagMain(tag,index,type){
+    tag.setAttribute('data-' + type + '-tag','');
+    tag.setAttribute('data-' + type + '-final','true');
+    tag.className = type == 'create' ? 'df-lc' : 'df-ffc';
+
+    let main = document.createElement('div');
+    main.className = 'df-lc';
+    main.setAttribute('style','gap: 4px');
 
     let checkbox = document.createElement('div');
     checkbox.setAttribute('style','width: 14px; height: 14px;');
-    let checkid = 'cr_chk_' + index;
+    let checkid = type + '_chk_' + index;
     let checkinput = document.createElement('input');
     checkinput.id = checkid;
     checkinput.type = 'checkbox';
@@ -3713,18 +3865,19 @@ function addTag(type,info){
     checklabel.innerHTML = '<btn-check></btn-check>'
     checkbox.appendChild(checkinput);
     checkbox.appendChild(checklabel);
-    tag.appendChild(checkbox);
+    main.appendChild(checkbox);
     let tagNum = document.createElement('span');
     tagNum.setAttribute('data-tags-index','')
     tagNum.innerHTML += index + 1 + '.';
-    tag.appendChild(tagNum);
+    main.appendChild(tagNum);
+    tag.appendChild(main);
     checkinput.addEventListener('change',()=>{
       if(checkinput.checked){
         tag.setAttribute('data-check-checked','true');
-        tag.setAttribute('data-create-final','true');
+        tag.setAttribute('data-' + type + '-final','true');
       }else{
         tag.setAttribute('data-check-checked','false');
-        tag.setAttribute('data-create-final','false');
+        tag.setAttribute('data-' + type + '-final','false');
       };
     });
     
@@ -3799,7 +3952,7 @@ function tableObjToText(obj){
   return header + values;
 };
 //移除标签
-clearTags.addEventListener('click',()=>{
+clearCreateTags.addEventListener('click',()=>{
   CreateImageInfo = [];
   CreateTableInfo = [];
   createTagsBox.innerHTML = '';
@@ -3807,7 +3960,7 @@ clearTags.addEventListener('click',()=>{
 });
 //文本框内容转标签/大纲
 convertTags.addEventListener('click',()=>{
-  clearTags.click();
+  clearCreateTags.click();
   let firstline = userText.value.trim().split('\n')[0];
   let isTableText = !['name','w','h'].some(item => !firstline.includes(item));
   if(isTableText){

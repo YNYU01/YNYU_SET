@@ -236,8 +236,9 @@ const skillStarModel = document.querySelector('[data-skillmodule="Useful & Start
 const selectInfoBox = document.querySelectorAll('[data-selects-node]');
 const createTagsBox = document.querySelector('[data-create-tags]');
 const cataloguesBox = document.querySelector('[data-create-catalogues]');
+const exportTagsBox = document.querySelector('[data-export-tags]');
 const skillBtnMain = document.querySelectorAll('[data-btn="skill-main"]');
-const clearTags = document.querySelector('[data-create-tags-box]').querySelector('btn-close').parentNode;
+const clearCreateTags = document.querySelector('[data-create-tags-box]').querySelector('btn-close').parentNode;
 const convertTags = document.getElementById('upload-set-1');
 const getTableText = document.getElementById('upload-set-2');
 const chkTablestyle = document.getElementById('chk-tablestyle');
@@ -291,6 +292,7 @@ let uniformH = document.getElementById('uniform-set-h');
 let CreateImageInfo = [];
 let CreateTableInfo = [];
 let SelectNodeInfo = [];
+let ExportImageInfo = [];
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -306,7 +308,8 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 
 window.addEventListener('load',()=>{
   /*clear*/
-  viewPage('more tools')
+  let tabs = ['create','export','editor','variable','sheet','more tools']
+  viewPage(tabs[1])
   /**/;
   if(window.innerWidth < 300){
     TV_MOVE = true;
@@ -778,7 +781,7 @@ function loadTable(file){
 
 //添加标签前处理
 async function addImageTags(files,isCreate){
-  clearTags.click();
+  clearCreateTags.click();
   let sizes = files.map(item => item.size);
   let sizeAll = sizes.reduce((a,b) => a + b, 0);
   sizeAll = sizeAll*1 == NaN ? files.length : sizeAll; //大图至少算1M大小
@@ -803,7 +806,7 @@ async function addImageTags(files,isCreate){
   };
 }
 async function addTableText(files,isTags){
-  clearTags.click();
+  clearCreateTags.click();
   userText.focus();
   userText.value = '';
   let tableText;
@@ -834,7 +837,7 @@ function addTag(type,info){
       info.forEach((img,index) => {
         let tag = document.createElement('div');
         createTagsBox.parentNode.setAttribute('data-create-tags-box','image');
-        addTagMain(tag,index);
+        addTagMain(tag,index,'create');
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
         name.innerHTML = tool.TextMaxLength(img.n,16,'...');
@@ -883,7 +886,7 @@ function addTag(type,info){
       info.forEach((list,index) => {
         let tag = document.createElement('div');
         createTagsBox.parentNode.setAttribute('data-create-tags-box','table');
-        addTagMain(tag,index);
+        addTagMain(tag,index,'create');
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
         let end = nameRegex
@@ -918,45 +921,119 @@ function addTag(type,info){
         
       });
     break
+    case 'export-img':
+      info.forEach(layer => {
+        ExportImageInfo.push(layer);
+        let index = ExportImageInfo.findIndex(item => item == layer);
+        let tag = document.createElement('div');
+        let main = addTagMain(tag,index,'export');
+
+        let name = document.createElement('input');
+        name.type = 'text';
+        name.value = layer.n;
+        name.id = 'export_n_' + index;
+        name.setAttribute('data-input','');
+        name.setAttribute('data-export-info','name');
+        name.className = 'nobod fl1';
+        name.addEventListener('change',() => {
+          inputMust(name,['text',layer.n]);
+        });
+        main.appendChild(name);
+        let checksetbox = document.createElement('div');
+        checksetbox.setAttribute('data-export-pick','false');
+        checksetbox.setAttribute('data-export-picknum',index);
+        checksetbox.setAttribute('style','width: 14px; height: 14px;');
+        let checksetid = 'export_pick_' + index;
+        let checkset = document.createElement('input');
+        checkset.type = 'checkbox';
+        checkset.id = checksetid;
+        checkset.addEventListener('change',()=>{
+          if(checkset.checked){
+            checksetbox.setAttribute('data-export-pick','true');
+          } else {
+            checksetbox.setAttribute('data-export-pick','false');
+          };
+        });
+        checksetbox.appendChild(checkset)
+        let checksetlabel = document.createElement('label');
+        checksetlabel.setAttribute('for',checksetid);
+        checksetlabel.className = 'check';
+        checksetlabel.innerHTML = '<btn-check-tick></btn-check-tick>';
+        checksetbox.appendChild(checksetlabel);
+        main.appendChild(checksetbox);
+        exportTagsBox.appendChild(tag);
+      });
+    break
   };
   //所有tag都支持二次确认, 以得到最终要生成的内容
-  function addTagMain(tag,index){
-    tag.setAttribute('data-create-tag','');
-    tag.setAttribute('data-create-final','true');
-    tag.className = 'df-lc';
+  function addTagMain(tag,index,type){
+    tag.setAttribute('data-' + type + '-tag','');
+    tag.setAttribute('data-' + type + '-final','true');
+    tag.className = type == 'create' ? 'df-lc' : 'df-ffc';
+
+    let main = document.createElement('div');
+    main.className = 'df-lc';
+    main.setAttribute('style','gap: 4px');
 
     let checkbox = document.createElement('div');
     checkbox.setAttribute('style','width: 14px; height: 14px;');
-    let checkid = 'cr_chk_' + index;
+    let checkid = type + '_chk_' + index;
     let checkinput = document.createElement('input');
     checkinput.id = checkid;
     checkinput.type = 'checkbox';
     checkinput.setAttribute('checked','true');
     let checklabel = document.createElement('label');
     checklabel.setAttribute('for',checkid);
-    checklabel.className = 'check'
-    checklabel.innerHTML = '<btn-check></btn-check>'
+    checklabel.className = 'check';
+    checklabel.innerHTML = '<btn-check></btn-check>';
     checkbox.appendChild(checkinput);
     checkbox.appendChild(checklabel);
-    tag.appendChild(checkbox);
+    main.appendChild(checkbox);
+
     let tagNum = document.createElement('span');
     tagNum.setAttribute('data-tags-index','')
     tagNum.innerHTML += index + 1 + '.';
-    tag.appendChild(tagNum);
+    main.appendChild(tagNum);
+    tag.appendChild(main);
     checkinput.addEventListener('change',()=>{
       if(checkinput.checked){
         tag.setAttribute('data-check-checked','true');
-        tag.setAttribute('data-create-final','true');
+        tag.setAttribute('data-' + type + '-final','true');
       }else{
         tag.setAttribute('data-check-checked','false');
-        tag.setAttribute('data-create-final','false');
+        tag.setAttribute('data-' + type + '-final','false');
       };
     });
-    
+    return main;
   };
   //重置文字样式
   loadFont(createTagsBox.parentNode);
 };
+//addTag('export-img',[{n:'666'},{n:'666'},{n:'666'},{n:'666'}])
+//管理导出标签
+document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
+  let picks = exportTagsBox.querySelectorAll('[data-export-pick]');
+  picks.forEach(item => {
+    let input = item.querySelector('input');
+    if(e.target.checked){
+      input.checked = true;
+      item.setAttribute('data-export-pick','true');
+    } else {
+      input.checked = false;
+      item.setAttribute('data-export-pick','false');
+    };
+  });
+});
+getElementMix('data-export-delete').addEventListener('click',()=>{
+  let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
+  let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
+  console.log(picknums)
+});
+getElementMix('data-export-reup').addEventListener('click',()=>{
+  let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
+  let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
+  console.log(picknums)
+});
 //制表文案转数组, 兼容反转行列
 function tableTextToArray(tableText,isColumn,mustTitle){
   let lines = tableText.split('\n');
@@ -1024,7 +1101,7 @@ function tableObjToText(obj){
   return header + values;
 };
 //移除标签
-clearTags.addEventListener('click',()=>{
+clearCreateTags.addEventListener('click',()=>{
   CreateImageInfo = [];
   CreateTableInfo = [];
   createTagsBox.innerHTML = '';
@@ -1032,7 +1109,7 @@ clearTags.addEventListener('click',()=>{
 });
 //文本框内容转标签/大纲
 convertTags.addEventListener('click',()=>{
-  clearTags.click();
+  clearCreateTags.click();
   let firstline = userText.value.trim().split('\n')[0];
   let isTableText = !['name','w','h'].some(item => !firstline.includes(item));
   if(isTableText){

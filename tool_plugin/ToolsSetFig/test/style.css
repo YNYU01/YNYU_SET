@@ -166,6 +166,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   box-sizing: border-box;
 }
 
+
 /*组件修改--*/
 
 html[data-language="En"] {
@@ -542,6 +543,14 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   background: var(--code1);
 }
 
+[data-btn="text"]{
+  border: none;
+}
+
+[data-btn="text"]:hover{
+  opacity: 0.5;
+}
+
 [data-btn="icon"]{
   display: block;
   width: 40px;
@@ -798,6 +807,9 @@ input[type="checkbox"]:checked + .btn-moreset{
   height: fit-content;
 }
 
+[data-create-catalogues],[data-export-tags]{
+  gap: 6px;
+}
 
 [data-create-tags-box="image"] [data-create-tags],
 [data-create-tags-box="table"] [data-create-tags]{
@@ -809,13 +821,26 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 8px;
 }
 
-[data-create-tag],[data-split-tag]{
+[data-create-tag],[data-split-tag],[data-export-tag]{
   height: 24px;
   padding: 2px 4px;
   background: var(--boxGry);
   border-radius: 6px;
   gap: 4px;
   font-size: 10px;
+}
+
+[data-export-tag]{
+  height: fit-content;
+}
+
+[data-export-info="name"]{
+  font-size: 10px !important;
+  background: var(--boxGry) !important;
+}
+
+[data-export-pickall="false"] [data-export-pick]{
+  display: none;
 }
 
 [data-split-tag]{
@@ -826,17 +851,17 @@ input[type="checkbox"]:checked + .btn-moreset{
   cursor: var(--pointer,pointer);
 }
 
-[data-tablestyle-set]{
+[data-tablestyle-set],[data-exporttype-set]{
   gap: 4px;
 }
 
-[data-tablestyle-chk]{
+[data-tablestyle-chk],[data-exporttype-chk]{
   width: 20px;
   height: 20px;
   padding: 0.5ch;
 }
 
-[data-tableset-more]{
+[data-tableset-more],[data-exportset-more]{
   position: relative;
 }
 
@@ -850,6 +875,40 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: inherit;
   top: -4px;
   right: 6px;
+}
+
+[data-tablestyle-name],[data-exporttype-name]{
+  font-size: 10px;
+  margin-right: 0.5ch;
+}
+
+[for="export-more"]{
+  transform: rotate(180deg) rotateX(45deg);
+  background: var(--boxGry);
+  border-radius:  0 0 50px 50px;
+  margin-bottom: -4px;
+}
+
+#export-more +.show-next::after{
+  right: calc(50% - 4px);
+}
+
+[data-exportset-more]{
+  background: var(--boxGry);
+  margin-bottom: -2px;
+  border-radius: 8px 8px 0 0;
+  box-sizing: border-box;
+  padding: 4px 10px;
+  max-width: 560px;
+  display: none;
+}
+
+[data-export-tags-box]{
+  resize: vertical;
+  height: 400px;
+  max-width: 560px;
+  min-height: 20vh;
+  max-height: 80vh;
 }
 
 [data-text-mini]{
@@ -888,11 +947,6 @@ input[type="checkbox"]:checked + .btn-moreset{
 input[type="checkbox"]:checked ~ [data-selectcomp-box],
 input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   width: 100vw;
-}
-
-[data-tablestyle-name]{
-  font-size: 10px;
-  margin-right: 0.5ch;
 }
 
 [data-skilltype-box]{
@@ -1498,7 +1552,8 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   [data-skillType-box]{
     height: 80px;
   }
-  [data-radio-main="true"] [data-tablestyle-name]{
+  [data-radio-main="true"] [data-tablestyle-name],
+  [data-radio-main="true"] [data-exporttype-name]{
     display: block;
   }
 }
