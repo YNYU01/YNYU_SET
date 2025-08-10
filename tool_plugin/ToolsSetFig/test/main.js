@@ -213,7 +213,7 @@ let helpData = {
 };
 
 /*静态数据或对象*/
-const UI_MINI = [200,460];
+const UI_MINI = [208,460];
 const UI = [300,660];
 const UI_BIG = [620,660];
 const sideMix = document.querySelector('[data-side-mix]');

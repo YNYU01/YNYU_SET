@@ -8,7 +8,7 @@
 - 引用开源库的部分应遵循对应许可
 - 使用当前代码时禁止删除或修改本声明
 */
-let UI_MINI = [200,460];
+let UI_MINI = [208,460];
 let UI = [300,660];
 let UI_BIG = [620,660];
 let vX = figma.viewport.bounds.x,vY = figma.viewport.bounds.y;
@@ -350,13 +350,16 @@ figma.ui.onmessage = async (message) => {
         let a = figma.currentPage;
         let b = a.selection;
         let nodes = b;
-        if(info.data[0] && info.data[0].length > 0){
+        if(info.data[0]){
             if(b.length == 1){
+                if(b[0].layoutMode && b[0].layoutMode == 'AUTO' && b[0].children.length == 1 && b[0].children[0].type == 'INSTANCE'){
+
+                };
                 nodes = b[0].children;
             };
             nodes = nodes.filter(node => node.type == 'INSTANCE');
-            //console.log(info.data)
-            reAnyByObj(nodes,info.data);
+            //console.log(info)
+            reAnyByObj(nodes,info.data,info.enters,info.nulls);
         };
     };
     //批量设置标签属性
@@ -1368,6 +1371,7 @@ function getSafeMain(node){
             y += node.y;
         };
     };
+    //console.log([w,h,x,y])
     return [w,h,x,y]
 };
 //将目标安全地放进一个画板里
@@ -1732,7 +1736,8 @@ function reAnyByArray(comps,Array,istable,enters,nulls){
                 if(Array[i] == ''){
                     comp.setProperties({[item]: nulls});
                 } else {
-                    comp.setProperties({[item]: Array[i].toString().replace(new RegExp(enters,'g'),'\n')});
+                    let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&')
+                    comp.setProperties({[item]: Array[i].toString().replace(new RegExp(reg,'g'),'\n')});
                 };
             } else if (i == comps.length - 1 && comps.length == Array.length){
                 comp.setProperties({[item]: nulls});
@@ -1746,22 +1751,56 @@ function reAnyByObj(comps,obj,enters,nulls){
     for(let i = 0; i < comps.length; i++){
         let comp = comps[i];
         let rePros = Object.keys(comp.componentProperties).filter(pro => keyPros.includes(pro.split('#')[0]));
-        //console.log(rePros,comp)
-        rePros.forEach(item => {
-            //console.log(item,obj[i][item.split('#')[0]])
-            if(obj[i]){
-                let value = obj[i][item.split('#')[0]];
-                if(comp.componentProperties[item].type !== 'BOOLEAN'){
+        setPro(comp,rePros,obj[i])
+
+        //内嵌组件时，也要替换
+        let compChilds = comp.findAll(items => items.type == 'INSTANCE');// && items.componentProperties.length > 0
+        //console.log(compChilds)
+        for(let ii = 0; ii < compChilds.length; ii++){
+            let compChild = compChilds[ii];
+            //console.log(compChild)
+            let childRePros = Object.keys(compChild.componentProperties).filter(pro => keyPros.includes(pro.split('#')[0]));
+            //console.log(childRePros)
+            setPro(compChild,childRePros,obj[i]);
+        };
+    };
+
+    function setPro(node,pros,data){
+        pros.forEach(pro => {
+            //console.log(pro,data[pro.split('#')[0]]);
+            if(data){
+                //console.log(pro,obj)
+                let value = data[pro.split('#')[0]];
+                //console.log(pro,value)
+                if(node.componentProperties[pro].type !== 'BOOLEAN'){
                     value = value.toString();
                     if(value == ''){
                         value = nulls;
                     } else {
-                        value = value.replace(new RegExp(enters,'g'),'\n')
-                    }
+                        if(enters){
+                            //let reg = enters.replace('\\','\\\\').replace('[','\\[').replace(']','\\]');
+                            //value = value.replace(new RegExp(reg,'g'),'\n');
+                            let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&')
+                            value = value.replace(new RegExp(reg,'g'),'\n');
+                            //console.log(reg)
+                        };
+                    };
                 }else{
                     value = TRUES.includes(value) ? true : FALSES.includes(value) ? false : true; 
+                };
+                try {
+                    node.setProperties({[pro]: value});
+                } catch (error) {
+                    console.log(error);
+                    figma.clientStorage.getAsync('userLanguage')
+                    .then (async (language) => {
+                        let text = language == 'Zh' ? '含无效数据' : 'Erroneous data'
+                        figma.notify(text,{
+                            error:true,
+                            timeout: 4000,
+                        });
+                    });
                 }
-                comp.setProperties({[item]: value});
             };
         });
     };
