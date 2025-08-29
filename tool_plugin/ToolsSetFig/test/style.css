@@ -241,6 +241,7 @@ input[type="checkbox"]:checked + .tab-top{
   font-size: 10px;
 }
 
+/**
 [data-tv-text]::before,
 [data-tv-text]::after{
   content: '❤';
@@ -261,6 +262,7 @@ input[type="checkbox"]:checked + .tab-top{
     transform: scale(0.86);
   }
 }
+/**/
 
 .btn-big{
   width: 12px;

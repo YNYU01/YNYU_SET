@@ -1251,7 +1251,12 @@ function reSelectComp(info){
 
 };
 function reSelectDatas(info){
-  let text = tableArrayToText(info);
+  let text = '';
+  if(Array.isArray(info[0])){
+    text = tableArrayToText(info);
+  }else{
+    text = tableObjToText(info);
+  };
   let textarea = getElementMix('upload-tablearea');
   textarea.focus();
   textarea.value = text;
@@ -1456,10 +1461,13 @@ skillBtnMain.forEach(btn => {
         case 'Apply Preset':sendTableSet('style');break
         case 'Add C/R':sendTableSet('add');break
         case 'Reduce C/R':sendTableSet('reduce');break
+        case 'Random Theme':sendTableSet('theme');break
         case 'Select a Row':sendTablePick('row');break
         case 'Select many Rows':sendTablePick('allrow');break
         case 'Select Block':sendTablePick('block');break
         case 'Select Inline':sendTablePick('inline');break
+        case 'Up Export-set':upSelect('exportset');break
+        case 'Up Default':upSelect('default');break
         default : toolMessage(['',skillname],PLUGINAPP);break
       };
     },500);
@@ -1540,11 +1548,22 @@ skillBtnMain.forEach(btn => {
         H.value = 0;
         V.value = 0;
       ;break
+      case 'theme':
+        //let num = Math.floor(Math.random() * tableStyle.length * 2)
+        //toolMessage([[[...tableStyle,...tableStyle][num],type],'reTable'],PLUGINAPP);
+        toolMessage([[tableStyle[styleId],type],'reTable'],PLUGINAPP);
+        break
     };
   };
 
   function sendTablePick(type){
     toolMessage([type,'pickTable'],PLUGINAPP);
+  };
+
+  function upSelect(type){
+    let exporttype = getElementMix('data-exporttype-set').getAttribute('data-radio-value');
+    let types = ['image','zy','rich']
+    toolMessage([[types[exporttype - 1],type],'upSelect'],PLUGINAPP);
   };
 });
 

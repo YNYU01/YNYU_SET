@@ -29,6 +29,7 @@ let isSendComp = false;
 let TRUES = ['true',true,'1',1,'show','是','有'];
 let FALSES = ['false',false,'0',0,'hide','否','无'];
 let TAGS_KEY = ['.fill','.stroke','.fillStyle','.strokeStyle','.visible','.opacity','.fontSize','.xywh'];
+let FRAME_TYPE = ['FRAME','COMPONENT']
 let CLIP_NAME = [
     ['@T?','@C?','@B?'],
     ['@?L','@?C','@?R'],
@@ -171,6 +172,24 @@ figma.ui.onmessage = async (message) => {
         isSendComp = info;
         sendSendComp();
     };
+    //上传所选对象以导出为图片/兼容格式/富文本
+    if ( type == "upSelect"){
+        console.log(info)
+        let a = figma.currentPage;
+        let b = a.selection;
+        let [exporttype,exportset] = info;
+        switch (exporttype){
+            case 'image':
+                exportImgInfo(exportset);
+            break
+            case 'zy':
+                exportZyInfo(exportset);
+            break
+            case 'rich':
+                exportRichInfo(exportset);
+            break
+        };
+    };
     //从预设或组件创建表格
     if ( type == "creTable"){
         //console.log(info)
@@ -226,6 +245,36 @@ figma.ui.onmessage = async (message) => {
     if ( type == 'Make Compliant'){
         let a = figma.currentPage;
         let b = a.selection;
+        let final = b.filter(item => item.type == 'COMPONENT' && item.children.map(item => item.type).includes("TEXT") && item.name.includes('@t'));
+        final.forEach(comp => {
+            let type = comp.name.split('@')[1];
+            //没命名则默认为表格，而不是表头
+            if(!['th','td'].includes(type)){
+                type = 'td';
+                comp.name += ' @td';
+            };
+            comp.children.forEach(item => {
+                if(item.type !== 'TEXT'){
+                    item.remove();
+                };
+            });
+            Object.keys(comp.componentPropertyDefinitions).forEach(item => {
+                comp.deleteComponentProperty(item);
+            });
+            
+            let texts = comp.children.filter(item => item.type == 'TEXT');
+            let proid = addCompPro(comp,texts[0],'--data','TEXT',texts[0].characters);
+            for(let i = 1; i < texts.length; i++){
+                texts[i].componentPropertyReferences = {[characters]:proid};
+            };
+            let [w,h] = [comp.width,comp.height]
+            if(comp.layoutMode == 'NONE'){
+                addAutoLayout(comp,['H','CC',0,[0,0]],true)
+            };
+            comp.resize(w,h);
+            comp.itemReverseZIndex = true;//前面堆叠在上
+            makeCompliant(type,comp);
+        });
     };
     //便捷选中表格
     if ( type == 'pickTable'){
@@ -274,7 +323,7 @@ figma.ui.onmessage = async (message) => {
                 if(b.length == 1 && Array.length > 1){
                     comps = b[0].findChildren(item => item.type == 'INSTANCE');
                     //仅自动布局时生效
-                    if(b[0].layoutMode && b[0].layoutMode == 'AUTO'){
+                    if(b[0].layoutMode && b[0].layoutMode !== 'NONE'){
                         let HH = comps.length;
                         let H = Array.length - HH;
                         if(info.clone == false){
@@ -352,8 +401,11 @@ figma.ui.onmessage = async (message) => {
         let nodes = b;
         if(info.data[0]){
             if(b.length == 1){
-                if(b[0].layoutMode && b[0].layoutMode == 'AUTO' && b[0].children.length == 1 && b[0].children[0].type == 'INSTANCE'){
-
+                if(b[0].layoutMode && b[0].layoutMode !== 'NONE' && b[0].children.length == 1 && b[0].children[0].type == 'INSTANCE'){
+                    let c = b[0].children[0];
+                    for(let i = 1; i < info.data.length; i++){
+                        b[0].appendChild(c.clone());
+                    };
                 };
                 nodes = b[0].children;
             };
@@ -369,6 +421,12 @@ figma.ui.onmessage = async (message) => {
         let nodes = b;
         if(info.data[0] && info.data[0].length > 0){
             if(b.length == 1){
+                if(b[0].layoutMode && b[0].layoutMode !== 'NONE' && b[0].children.length == 1 && b[0].children[0].type == 'INSTANCE'){
+                    let c = b[0].children[0];
+                    for(let i = 1; i < info.data.length; i++){
+                        b[0].appendChild(c.clone());
+                    };
+                };
                 nodes = b[0].children;
             };
             nodes = nodes.filter(node => node.type == 'INSTANCE');
@@ -382,13 +440,13 @@ figma.ui.onmessage = async (message) => {
         //console.log(666);
         let tables = b.filter(item => item.name.includes('@table'));
         if(!tables || tables.length == 0){
-            tables = b.map(node => node.findAll(item => item.name.includes('@table'))).flat();
+            tables = b.filter(item => item.children).map(node => node.findAll(item => item.name.includes('@table'))).flat();
         };
         //没有table就说明是普通的文本数据填充
         if(!tables  || tables.length == 0){
             
             let comps = b.filter(item => item.type == 'INSTANCE');
-            if(b.length == 1){
+            if(b.length == 1 && b[0].children){
                 comps = b[0].children.filter(item => item.type == 'INSTANCE');
             };
 
@@ -396,7 +454,7 @@ figma.ui.onmessage = async (message) => {
                 sortLRTB(comps);
                 let data = [getProArray(comps,false,info.enters,info.nulls)];
                 data = data[0].map((_, i) => data.map(row => row[i]));
-                //console.log(data);
+                //console.log(data,typeof data);
                 postmessage([data,'selectDatas'])
             };
         } else {
@@ -414,10 +472,16 @@ figma.ui.onmessage = async (message) => {
         let a = figma.currentPage;
         let b = a.selection;
         let names = [];
-        b.forEach((node) => {
-            names.push(node.name);
-        });
-        //console.log(names);
+        if(b.length == 1){
+            b[0].children.forEach((node) => {
+                names.push([node.name]);
+            });
+        }else{
+            b.forEach((node) => {
+                names.push([node.name]);
+            });
+        }
+        postmessage([names,'selectDatas'])
     };
     //批量获取组件属性
     if( type == 'getPro'){
@@ -432,11 +496,13 @@ figma.ui.onmessage = async (message) => {
         if(comps  && comps.length > 0){
             let proKeys = comps.map(item => Object.keys(item.componentProperties).map(key => key.split('#')[0]).sort());
             let proNames = [...new Set(proKeys.map(item => JSON.stringify(item)))].map(item => JSON.parse(item))
-            //console.log(proNames.length)
+            //console.log(proKeys,proNames)
             //必须有相同的组件属性才能提取
             if(proNames.length == 1){
                 let datas = getProObj(comps,info.enters,info.nulls);
-                console.log(datas)
+                //console.log(datas)
+                //console.log(typeof datas[0])
+                postmessage([datas,'selectDatas'])
             };
         };
     };
@@ -454,15 +520,18 @@ figma.ui.onmessage = async (message) => {
             tables = b.map(node => node.findAll(item => item.name.includes('@table'))).flat();
         };
         let setdata = info[0],retype = info[1]
-        
+        //console.log(setdata)
         tables.forEach(table => {
             let HH = table.children.length;
             let VV = table.children[0].children.length;
-            let H = setdata[0];
-            let V = setdata[1];
-            //行数不能少于2，列数不能少于1
-            H = H + HH < 1 ? 1 - HH : H;
-            V = V + VV < 2 ? 2 - VV : V;
+            let H = 0,V = 0;
+            if(typeof setdata == 'object'){
+                H = setdata[0];
+                V = setdata[1];
+                //行数不能少于2，列数不能少于1
+                H = H + HH < 1 ? 1 - HH : H;
+                V = V + VV < 2 ? 2 - VV : V;
+            };
             switch (retype){
                 case 'style':
                     reTableStyle(table,setdata);
@@ -472,6 +541,13 @@ figma.ui.onmessage = async (message) => {
                 ;break
                 case 'reduce':
                     reCompNum(table,H,V);
+                ;break
+                case 'theme':
+                    //reTableStyle(table,setdata);
+                    let [H,S,L] = [Math.random()*360,Math.random()*100,Math.random()*100];
+                    [H,S,L] = [Math.floor(H),Math.floor(S) + '%',Math.floor(L) + '%']
+                    console.log(`hsl(${[H,S,L].join(',')})`)
+                    reTableTheme()
                 ;break
             };
         });
@@ -757,67 +833,12 @@ figma.ui.onmessage = async (message) => {
         let b = a.selection;
         let final = b.filter(item => item.type !== 'INSTANCE' && item.children)
         //console.log(final)
+        
         if(final.length > 0){
             final.forEach(item => {
                 let c = item.children
-                let [w1,h1,x1,y1] = getSafeMain(item);
-                let axisX,axisY;
-                
                 for ( let e = 0; e < c.length; e++){
-                    let [w2,h2,x2,y2] = getSafeMain(c[e]);
-                    let xc2 = x2 + w2/2,yc2 = y2 + h2/2;
-                    //console.log([w1,h1,x1,y1],[w2,h2,x2,y2])
-                    if ( h2 <= h1 * 6/8){
-                        if ( yc2 < y1 + h1/2){
-                            axisY = 'MIN';
-                        } else if (yc2 > y1 + h1/2) {
-                            axisY = 'MAX';
-                        } else {
-                            axisY = 'CENTER';
-                        };
-                    } else {
-                        //console.log('超高')
-                        if (y2 <= y1 && y2 + h2 >= y1 + h1){
-                            //console.log('高超出')
-                            axisY = 'STRETCH'
-                        } else {
-                            if ( yc2 <= y1 + h1 * 3/8){
-                                axisY = 'MIN'
-                            } else if (yc2 >= y1 + h1 * 5/8) {
-                                axisY = 'MAX'
-                            } else {
-                                axisY = 'CENTER'
-                            };
-                        };
-                    };
-                    if ( w2 <= w1 * 4/8){
-                        if ( xc2 < x1 + w1/2){
-                            axisX = 'MIN';
-                        } else if (xc2 > x1 + w1/2) {
-                            axisX = 'MAX';
-                        } else {
-                            axisX = 'CENTER';
-                        };
-                    } else {
-                        //console.log('超宽')
-                        if (x2 <= x1 && x2 + w2 >= x1 + w1){
-                            //console.log('宽超出')
-                            axisX = 'STRETCH'
-                        } else {
-                            if ( xc2 <= x1 + w1 * 3/8){
-                                axisX = 'MIN'
-                            } else if (xc2 >= x1 + w1 * 5/8) {
-                                axisX = 'MAX'
-                            } else {
-                                axisX = 'CENTER'
-                            };
-                        };
-                    }
-                    //console.log(axisX,axisY)
-                    c[e].constraints = {
-                        horizontal:axisX,
-                        vertical:axisY,
-                    };
+                    autoConstraints(c,c[e])
                 };
             });
         };
@@ -894,7 +915,7 @@ figma.ui.onmessage = async (message) => {
             clone.unlockAspectRatio();
             let scale = Math.min(item.width,item.height)/Math.max(clone.width,clone.height)
             clone.rescale(scale);
-            addAbsoluteFill(item,clone,true);
+            asFillChild(clone,true)
             selects.push(clone)
         });
         a.selection = selects;
@@ -904,7 +925,7 @@ figma.ui.onmessage = async (message) => {
         let a = figma.currentPage;
         let b = a.selection;
         if(b.length == 1){
-            if(b[0].type == 'INSTANCE' && b[0].parent.layoutMode == 'AUTO'){
+            if(b[0].type == 'INSTANCE' && b[0].parent.layoutMode !== 'NONE'){
                 
             };
         } else {
@@ -1071,12 +1092,12 @@ function postmessage(data){
     figma.ui.postMessage({pluginMessage:data})
     /*mastergo*/
     //figma.ui.postMessage(data)
-}
+};
 
 figma.on('selectionchange',()=>{
     sendInfo();
     if(isSendComp){
-        sendSendComp()
+        sendSendComp();
     };
 });
 
@@ -1086,7 +1107,7 @@ setTimeout(()=>{
 - © 2024-2025 YNYU lvynyu2@gmail.com;`)
 },500)
 
-sendInfo()
+sendInfo();
 function sendInfo(){
     let a = figma.currentPage;
     let b = a.selection;
@@ -1325,17 +1346,18 @@ function toPixel(info,isOverWrite,isClip){
     pixelSelects = [];
     let a = figma.currentPage;
     let b = a.selection;
-    for(let i = 0; i < b.length; i++){
-        let safeMain = getSafeMain(b[i]);
-        let box = addFrame([...safeMain,b[i].name,[]]);
-        fullInFrameSafa(b[i],box);
+    let final = b.filter(item => item.type !== 'SECTION')
+    for(let i = 0; i < final.length; i++){
+        let safeMain = getSafeMain(final[i]);
+        let box = addFrame([...safeMain,final[i].name,[]]);
+        fullInFrameSafa(final[i],box);
         setTimeout(()=>{
             if(isClip){
                 addCutArea(box,[{x: 0, y: 0, w: safeMain[0], h: safeMain[1], s: 2}]);
             }else{
                 addCutArea(box,info[i]);
             }
-            let isfinal = i == b.length - 1 ? true : false;
+            let isfinal = i == final.length - 1 ? true : false;
             addCutImg(box,isOverWrite,isfinal,isClip,info);
         },100);
     };
@@ -1557,7 +1579,7 @@ async function addTableCompMust(type,language){
     addAutoLayout(comp,['H','CC'],[1,1]);
     comp.resize(176,52);
     comp.itemReverseZIndex = true;//前面堆叠在上
-    comp = await figma.createComponentFromNode(comp);
+    comp = figma.createComponentFromNode(comp);
 
     let egtext = {th:['Bold','Header'],td:['Regular','Data']};
     if(language == 'Zh'){
@@ -1565,7 +1587,13 @@ async function addTableCompMust(type,language){
     };
     let text = await addText([{family:'Inter',style:egtext[type][0]},egtext[type][1],16]);
     comp.appendChild(text);
-    
+    makeCompliant(type,comp)
+    //绑定数据的组件属性
+    addCompPro(comp,text,'--data','TEXT',egtext[type][1]);
+    return comp;
+};
+//表格初始化
+function makeCompliant(type,comp){
     let fills = {
         th:[toRGB('#666666',true)],
         td:[toRGB('#66666688',true)]
@@ -1577,38 +1605,36 @@ async function addTableCompMust(type,language){
         ['#left.stroke',[],[null,[0,0,0,1]],'--bod-l'],
         ['#bg.fill',fills[type],null,'--fills'],
     ];
-
     for(let i = 0; i < adds.length; i++){
         //添加描边、填充并绑定组件属性
         addBodFill(comp,adds[i]);
     };
-    //绑定数据的组件属性
-    addCompPro(comp,text,'--data','TEXT',egtext[type][1]);
-    
-    return comp;
 };
 //添加描边/区分色
-function addBodFill(node,Array){
+function addBodFill(node,Array,wh){
     let bodfill = figma.createRectangle();
     setMain([176,52,null,null,Array[0],Array[1],Array[2]],bodfill);
     let bodfills = addFrame([176,52,null,null,Array[3],[]]);
     bodfills.appendChild(bodfill);
-    asFillChild(bodfill);
-    addAbsoluteFill(node,bodfills,true);
+    addAbsolute(node,bodfills);
+    asFillChild(bodfills,true);
+    asFillChild(bodfill,true);
     addCompPro(node,bodfills,Array[3],'BOOLEAN',true);
 };
+
 //绑定图层和组件属性
 /**
- * @param {*} type - 'BOOLEAN''TEXT''letIANT'
+ * @param {*} type - 'BOOLEAN''TEXT''VARIANT'
  */
 function addCompPro(node,layer,name,type,value){
     let typekey = {
         BOOLEAN: 'visible',
         TEXT: 'characters',
-        letIANT: 'mainComponent'
+        VARIANT: 'mainComponent'
     }
     let proid = node.addComponentProperty(name,type,value);
     layer.componentPropertyReferences = {[typekey[type]]:proid};
+    return proid;
 };
 //修改表格样式
 function reTableStyle(table,style){
@@ -1664,16 +1690,10 @@ function reTableStyle(table,style){
         });
     };
 };
-//重置相对坐标并把约束设为撑满
-function asFillChild(node){
-    node.x = 0;
-    node.y = 0;
-    node.constraints = {
-        horizontal: "STRETCH",
-        vertical: "STRETCH"
-    };
-};
+//修改表格主题色
+function reTableTheme(){
 
+}
 //调整实例数量以匹配数据长度
 function reCompNum(nodes,H,V){
     //console.log(nodes.name,H,V)
@@ -1736,7 +1756,7 @@ function reAnyByArray(comps,Array,istable,enters,nulls){
                 if(Array[i] == ''){
                     comp.setProperties({[item]: nulls});
                 } else {
-                    let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&')
+                    let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&');
                     comp.setProperties({[item]: Array[i].toString().replace(new RegExp(reg,'g'),'\n')});
                 };
             } else if (i == comps.length - 1 && comps.length == Array.length){
@@ -1748,6 +1768,7 @@ function reAnyByArray(comps,Array,istable,enters,nulls){
 //按对象修改组件属性
 function reAnyByObj(comps,obj,enters,nulls){
     let keyPros = Object.keys(obj[0]);
+    let errornode = []
     for(let i = 0; i < comps.length; i++){
         let comp = comps[i];
         let rePros = Object.keys(comp.componentProperties).filter(pro => keyPros.includes(pro.split('#')[0]));
@@ -1765,6 +1786,21 @@ function reAnyByObj(comps,obj,enters,nulls){
         };
     };
 
+    //选中错误处
+    //console.log(errornode)
+    if(errornode.length > 0){
+        let errordata = errornode.map(item => item[1]).join(',')
+        figma.clientStorage.getAsync('userLanguage')
+        .then (async (language) => {
+            let text = language == 'Zh' ? '无效数据: ' + errordata : 'Erroneous data:' +  errordata;
+            figma.notify(text,{
+                error:true,
+                timeout: 6000,
+            });
+        });
+        figma.currentPage.selection = errornode.map(item => item[0]);
+    };
+
     function setPro(node,pros,data){
         pros.forEach(pro => {
             //console.log(pro,data[pro.split('#')[0]]);
@@ -1773,34 +1809,59 @@ function reAnyByObj(comps,obj,enters,nulls){
                 let value = data[pro.split('#')[0]];
                 //console.log(pro,value)
                 if(node.componentProperties[pro].type !== 'BOOLEAN'){
-                    value = value.toString();
-                    if(value == ''){
-                        value = nulls;
-                    } else {
-                        if(enters){
-                            //let reg = enters.replace('\\','\\\\').replace('[','\\[').replace(']','\\]');
-                            //value = value.replace(new RegExp(reg,'g'),'\n');
-                            let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&')
-                            value = value.replace(new RegExp(reg,'g'),'\n');
-                            //console.log(reg)
+                    if(typeof value == 'number' && node.componentProperties[pro].type == "VARIANT"){
+                        node.getMainComponentAsync()
+                        .then(compset => {
+                            //console.log(compset.parent.componentPropertyDefinitions[pro].variantOptions);
+                            let findByNum = compset.parent.componentPropertyDefinitions[pro].variantOptions[value - 1];
+                            //console.log(findByNum)
+                            value = findByNum ? findByNum : value;
+                            value = value.toString();
+                            if(value == ''){
+                                value = nulls;
+                            } else {
+                                if(enters){
+                                    let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&')
+                                    value = value.replace(new RegExp(reg,'g'),'\n');
+                                };
+                            };
+                            try {
+                                node.setProperties({[pro]: value});
+                            } catch (error) {
+                                console.log(error);
+                                errornode.push([node,value]);
+                            };
+                        });
+                    }else{
+                        value = value.toString();
+                        if(value == ''){
+                            value = nulls;
+                        } else {
+                            if(enters){
+                                let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&')
+                                value = value.replace(new RegExp(reg,'g'),'\n');
+                            };
+                        };
+                        try {
+                            node.setProperties({[pro]: value});
+                        } catch (error) {
+                            console.log(error);
+                            errornode.push([node,value]);
                         };
                     };
                 }else{
+                    if(typeof value == 'string'){
+                        value = value.toLocaleLowerCase();
+                    };
                     value = TRUES.includes(value) ? true : FALSES.includes(value) ? false : true; 
+                    try {
+                        node.setProperties({[pro]: value});
+                    } catch (error) {
+                        console.log(error);
+                        errornode.push([node,value]);
+                    };
                 };
-                try {
-                    node.setProperties({[pro]: value});
-                } catch (error) {
-                    console.log(error);
-                    figma.clientStorage.getAsync('userLanguage')
-                    .then (async (language) => {
-                        let text = language == 'Zh' ? '含无效数据' : 'Erroneous data'
-                        figma.notify(text,{
-                            error:true,
-                            timeout: 4000,
-                        });
-                    });
-                }
+                
             };
         });
     };
@@ -1819,9 +1880,22 @@ function reAnyByTags(nodes,obj){
             let tags = layer.name.split(' ').filter(item => TAGS_KEY.some(key => item.includes(key)));
             
             tags.forEach(tag => {
-                console.log(tag,obj[i][tag])
+                //console.log(tag,obj[i][tag])
                 if(obj[i][tag]){
-                    setByTags(layer,tag.split('.')[1],obj[i][tag])
+                    
+                    try {
+                        setByTags(layer,tag.split('.')[1],obj[i][tag]);
+                    } catch (error) {
+                        console.log(error);
+                        figma.clientStorage.getAsync('userLanguage')
+                        .then (async (language) => {
+                            let text = language == 'Zh' ? '含无效数据' : 'Erroneous data'
+                            figma.notify(text,{
+                                error:true,
+                                timeout: 4000,
+                            });
+                        });
+                    }
                 };
             });
         });
@@ -1854,6 +1928,9 @@ function reAnyByTags(nodes,obj){
                 });
             ;break
             case 'visible':
+                if(typeof value == 'string'){
+                    value = value.toLocaleLowerCase();
+                };
                 value = TRUES.includes(value) ? true : FALSES.includes(value) ? false : true; 
                 layer.visible = value;
             ;break
@@ -1913,15 +1990,16 @@ function getProArray(comps,istable,enters,nulls){
 };
 //获取所有组件属性值
 function getProObj(comps,enters,nulls){
-    let proKeys = comps.map(item => Object.keys(item.componentProperties).map(key => key.split('#')[0]).sort());
     let datas = [];
     for(let i = 0; i < comps.length; i++){
         let comp = comps[i];
         let pros = {};
-        Object.entries(comp.componentProperties).forEach(item => {
-            pros[item[0].split('#')[0]]
+        Object.entries(comp.componentProperties).sort().forEach(item => {
+            pros[item[0].split('#')[0]] = item[1].value
         });
+        datas.push(pros)
     };
+    return datas
 };
 //获取所有标签属性值
 function getTagObj(comps,enters,nulls){
@@ -2115,64 +2193,55 @@ function addAutoLayout(node,layout,isFixed){
     
 };
 
-//添加绝对定位元素
+//添加绝对定位元素并放置合适位置
 /**
  * @param {node} parent - 自动布局对象
  * @param {node} absoluteNode - 绝对定位对象
  * @param {boolean} fill - 是否撑满自动布局对象（会同时修改约束
  * @param {Array | string} position - [x,y] | TBLR , 如果不撑满，则指定坐标或相对位置（会同时修改约束
  */
-function addAbsoluteFill(parent,absoluteNode,fill,position){
+function addAbsolute(parent,absoluteNode,position){
     let a = parent,b = absoluteNode;
     if(a){
         a.appendChild(b);
+    }else{
+        a = b.parent;
     };
-    if(a.layoutMode == 'AUTO'){
+    if(a.layoutMode !== 'NONE'){
         b.layoutPositioning = "ABSOLUTE";
     }else{
         b.layoutPositioning = "AUTO";
     };
     b.x = 0;
     b.y = 0;
-    if(fill){
-        b.resize(a.width,a.height);
-        b.constraints = {
-            horizontal: "STRETCH",
-            vertical: "STRETCH"
-        };
-    } else {
-        if(position){
-            if(typeof(position) == 'string'){
-                switch (position[0]){
-                    case 'T':
-                        b.y = 0;
-                    ;break
-                    case 'C':
-                        b.y = (a.height - b.height)/2;
-                    ;break
-                    case 'B':
-                        b.y = a.height - b.height;
-                    ;break
-                };
-                switch (position[1]){
-                    case 'L':
-                        b.x = 0;
-                    ;break
-                    case 'C':
-                        b.x = (a.width - b.width)/2;
-                    ;break
-                    case 'R':
-                        b.x = a.width - b.width;
-                    ;break
-                };
-            }else{
-                b.x = position[0];
-                b.y = position[1];
+    if(position){
+        if(typeof(position) == 'string'){
+            switch (position[0]){
+                case 'T':
+                    b.y = 0;
+                ;break
+                case 'C':
+                    b.y = (a.height - b.height)/2;
+                ;break
+                case 'B':
+                    b.y = a.height - b.height;
+                ;break
+            };
+            switch (position[1]){
+                case 'L':
+                    b.x = 0;
+                ;break
+                case 'C':
+                    b.x = (a.width - b.width)/2;
+                ;break
+                case 'R':
+                    b.x = a.width - b.width;
+                ;break
             };
         }else{
-            b.x = 0;
-            b.y = 0; 
-        }
+            b.x = position[0];
+            b.y = position[1];
+        };
     };
 };
 //添加到画板并设置约束
@@ -2182,43 +2251,112 @@ function addAbsoluteFill(parent,absoluteNode,fill,position){
  * @param {string} TBLR - TBLR,各轴约束简写
  * @param {boolean} isFill - 是则撑满，否则居中
  */
-function addConstraints(parent,constraintNode,TBLR,isFill){
+function addConstraints(parent,constraintNode,TBLR){
     if(parent){
         parent.appendChild(constraintNode);
     };
     let H = 'MIN';
     let V = 'MIN';
-    switch (TBLR[0]){
-        case 'T':
-            V = 'MIN';
-        ;break
-        case 'C':
-            V = isFill ? 'STRETCH' : 'CENTER';
-        ;break
-        case 'B':
-            V = 'MAX';
-        ;break
-    };
-    switch (TBLR[1]){
-        case 'L':
-            H = 'MIN';
-        ;break
-        case 'C':
-            H = isFill ? 'STRETCH' : 'CENTER';
-        ;break
-        case 'R':
-            H = 'MAX';
-        ;break
-    };
+    if(TBLR && typeof(TBLR) == 'string'){
+        switch (TBLR[0]){
+            case 'T':
+                V = 'MIN';
+            ;break
+            case 'C':
+                V = 'CENTER';
+            ;break
+            case 'B':
+                V = 'MAX';
+            ;break
+        };
+        switch (TBLR[1]){
+            case 'L':
+                H = 'MIN';
+            ;break
+            case 'C':
+                H = 'CENTER';
+            ;break
+            case 'R':
+                H = 'MAX';
+            ;break
+        };
+    }
     constraintNode.constraints = {
         horizontal: H,
         vertical: V,
     };
 };
+//重置相对坐标并把约束设为撑满
+function asFillChild(node,isResize){
+    node.x = 0;
+    node.y = 0;
+    if(isResize){
+        node.resize(node.parent.width,node.parent.height);
+    };
+    node.constraints = {
+        horizontal: "STRETCH",
+        vertical: "STRETCH"
+    };
+};
 //自动按位置、大小设置约束
 function autoConstraints(parent,child){
-
-}
+    let [w1,h1,x1,y1] = getSafeMain(parent);
+    let axisX,axisY;
+    let [w2,h2,x2,y2] = getSafeMain(child);
+    let xc2 = x2 + w2/2,yc2 = y2 + h2/2;
+    //console.log([w1,h1,x1,y1],[w2,h2,x2,y2])
+    if ( h2 <= h1 * 6/8){
+        if ( yc2 < y1 + h1/2){
+            axisY = 'MIN';
+        } else if (yc2 > y1 + h1/2) {
+            axisY = 'MAX';
+        } else {
+            axisY = 'CENTER';
+        };
+    } else {
+        //console.log('超高')
+        if (y2 <= y1 && y2 + h2 >= y1 + h1){
+            //console.log('高超出')
+            axisY = 'STRETCH'
+        } else {
+            if ( yc2 <= y1 + h1 * 3/8){
+                axisY = 'MIN'
+            } else if (yc2 >= y1 + h1 * 5/8) {
+                axisY = 'MAX'
+            } else {
+                axisY = 'CENTER'
+            };
+        };
+    };
+    if ( w2 <= w1 * 4/8){
+        if ( xc2 < x1 + w1/2){
+            axisX = 'MIN';
+        } else if (xc2 > x1 + w1/2) {
+            axisX = 'MAX';
+        } else {
+            axisX = 'CENTER';
+        };
+    } else {
+        //console.log('超宽')
+        if (x2 <= x1 && x2 + w2 >= x1 + w1){
+            //console.log('宽超出')
+            axisX = 'STRETCH'
+        } else {
+            if ( xc2 <= x1 + w1 * 3/8){
+                axisX = 'MIN'
+            } else if (xc2 >= x1 + w1 * 5/8) {
+                axisX = 'MAX'
+            } else {
+                axisX = 'CENTER'
+            };
+        };
+    }
+    //console.log(axisX,axisY)
+    child.constraints = {
+        horizontal:axisX,
+        vertical:axisY,
+    };
+};
 //添加文字内容
 /**
  * @param {Array} info - [{family:xxx,style:xxx},text,size,fills?]字体、文案、字号、颜色

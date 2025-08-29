@@ -542,7 +542,7 @@ input[type="file" i]::after{
   flex: 0 0 auto;
   border-radius:calc(var(--swi-r) - 2px);
   background:var(--swi-af);
-  opacity: 0.5;
+  /*opacity: 0.5;*/
   cursor: var(--pointer,pointer);
 }
 .switch::after{
