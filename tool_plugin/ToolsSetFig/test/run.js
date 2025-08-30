@@ -29,6 +29,7 @@ window.addEventListener('message',(message)=>{
       case 'selectInfoMain': addTableText(tableObjToText(info));break
       case 'selectComp': reSelectComp(info);break
       case 'selectDatas': reSelectDatas(info);break
+      case 'exportImgInfo': addTag('export-img',info);break
     };
   };
 });

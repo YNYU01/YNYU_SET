@@ -174,9 +174,7 @@ figma.ui.onmessage = async (message) => {
     };
     //上传所选对象以导出为图片/兼容格式/富文本
     if ( type == "upSelect"){
-        console.log(info)
-        let a = figma.currentPage;
-        let b = a.selection;
+        //console.log(info)
         let [exporttype,exportset] = info;
         switch (exporttype){
             case 'image':
@@ -1530,6 +1528,73 @@ function getMain(nodes){
         });
         return data;
     };
+};
+
+//上传导出为图片所需的信息
+async function exportImgInfo(set){
+    let a = figma.currentPage;
+    let b = a.selection;
+    //console.log(b[0].exportSettings)
+    for(let i = 0; i < b.length; i++){
+        let c = b[i];
+        let format = 'PNG';
+        let info = [] ;
+        let size = c.getPluginData('exportSize');
+        if(!size){
+            size = null
+        };
+        let wh = getSafeMain(c);
+        let [w,h] = [wh[0],wh[1]]
+        if(set == 'exportset'){
+            let settings = c.exportSettings;
+            for(let ii = 0; ii < settings.length; ii++){
+                let setting = settings[ii];
+                let exportsizeset = setting.constraint;
+                switch (exportsizeset.type){
+                    case 'SCALE':
+                        [w,h] = [w*exportsizeset.value,h*exportsizeset.value];
+                    break
+                    case 'WIDTH':
+                        [w,h] = [exportsizeset.value,h*(exportsizeset.value/w)];
+                    break
+                    case 'HEIGHT':
+                        [w,h] = [w*(exportsizeset.value/h),exportsizeset.value];
+                    break
+                };
+                info.push(
+                    {
+                        fileName:c.name + setting.suffix,
+                        id:c.id,
+                        format:setting.format,
+                        u8a: await c.exportAsync(setting),
+                        finalSize:size,
+                        width: Math.round(w),
+                        height: Math.round(h),
+                    }
+                );
+            };
+            //console.log(info)
+
+        }else{
+            info.push(
+                {
+                    fileName:c.name,
+                    id:c.id,
+                    format:format,
+                    u8a: await c.exportAsync({
+                        format: 'PNG',
+                        constraint: { type: 'SCALE', value: 1 },
+                      }),
+                    finalSize:size,
+                    width: Math.round(w),
+                    height: Math.round(h),
+                }
+            );
+            //console.log(info)
+        };
+        postmessage([info,'exportImgInfo']);
+    };
+    
 };
 
 //创建表格

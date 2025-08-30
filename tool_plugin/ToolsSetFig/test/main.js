@@ -243,7 +243,8 @@ const convertTags = document.getElementById('upload-set-1');
 const getTableText = document.getElementById('upload-set-2');
 const chkTablestyle = document.getElementById('chk-tablestyle');
 const chkSelectcomp = document.getElementById('chk-selectcomp');
-const createAnyBtn = document.querySelector('[data-create-any]')
+const createAnyBtn = document.querySelector('[data-create-any]');
+const exportAnyBtn = document.querySelector('[data-export-any]');
 const createTableBtn = document.querySelector('[data-create-table]');
 const tableStyleSet = document.querySelector('[data-tablestyle-set]');
 
@@ -777,7 +778,7 @@ function loadTable(file){
       reader.readAsText(file);
      };
   });
-}
+};
 
 //添加标签前处理
 async function addImageTags(files,isCreate){
@@ -922,21 +923,21 @@ function addTag(type,info){
       });
     break
     case 'export-img':
-      info.forEach(layer => {
-        ExportImageInfo.push(layer);
-        let index = ExportImageInfo.findIndex(item => item == layer);
+      ExportImageInfo.push(...info);
+      exportTagsBox.innerHTML = '<!--动态填充-->'
+      ExportImageInfo.forEach((layer,index) => {
         let tag = document.createElement('div');
         let main = addTagMain(tag,index,'export');
-
         let name = document.createElement('input');
         name.type = 'text';
-        name.value = layer.n;
+        name.value = layer.fileName;
         name.id = 'export_n_' + index;
         name.setAttribute('data-input','');
         name.setAttribute('data-export-info','name');
         name.className = 'nobod fl1';
         name.addEventListener('change',() => {
-          inputMust(name,['text',layer.n]);
+          inputMust(name,['text',layer.fileName]);
+          layer.fileName = name.value;
         });
         main.appendChild(name);
         let checksetbox = document.createElement('div');
@@ -947,11 +948,15 @@ function addTag(type,info){
         let checkset = document.createElement('input');
         checkset.type = 'checkbox';
         checkset.id = checksetid;
+        if(getElementMix('exportset-pickall').checked){
+          checkset.setAttribute('checked','true');
+        };
         checkset.addEventListener('change',()=>{
           if(checkset.checked){
             checksetbox.setAttribute('data-export-pick','true');
           } else {
             checksetbox.setAttribute('data-export-pick','false');
+            getElementMix('exportset-pickall').checked = false;
           };
         });
         checksetbox.appendChild(checkset)
@@ -961,19 +966,69 @@ function addTag(type,info){
         checksetlabel.innerHTML = '<btn-check-tick></btn-check-tick>';
         checksetbox.appendChild(checksetlabel);
         main.appendChild(checksetbox);
+
+        let exportset = document.createElement('div');
+        exportset.className = 'df-lc';
+        exportset.setAttribute('style','gap: 4px; flex-wrap: wrap;');
+        let formatSelect = addSelect(index,['PNG','JPG','JPEG','WEBP'],layer.format)
+        exportset.appendChild(formatSelect);
+
+        let sizesetbox = document.createElement('div');
+        sizesetbox.className = 'df-lc';
+        sizesetbox.setAttribute('data-int-value','');
+        sizesetbox.setAttribute('data-export-size',index);
+        sizesetbox.setAttribute('style','width: 82px;');
+        let sizeset = document.createElement('input');
+        sizeset.type = 'text';
+        sizeset.id = 'export-size-' + index;
+        sizeset.setAttribute('style','height: 22px;');
+        sizeset.setAttribute('data-input','');
+        sizeset.setAttribute('data-input-type','int');
+        sizeset.setAttribute('data-input-must','1,10000');
+        if(layer.finalSize){
+          sizeset.value = layer.finalSize;
+        };
+        sizesetbox.appendChild(sizeset);
+        let unit = document.createElement('div');
+        unit.setAttribute('style','height: fit-content; font-size: 11px');
+        unit.setAttribute('data-input-unit','auto');
+        unit.textContent = 'KB';
+        sizesetbox.appendChild(unit);
+        exportset.appendChild(sizesetbox);
+
+        let sizeinfo = document.createElement('div');
+        sizeinfo.className = 'df-rc fl1';
+        sizeinfo.setAttribute('style','min-width: 64px; flex-wrap: wrap; opacity: 0.6;');
+        sizeinfo.innerHTML += '<div style="width: fit-content">' + layer.width + '×' + layer.height + '</div>';
+        let sizebox = document.createElement('div');
+        sizebox.className = 'df-rc';
+        sizebox.setAttribute('style','width: fit-content; padding-left: 4px;');
+        let realsize = document.createElement('div');
+        realsize.setAttribute('data-export-realsize','');// ''|true|false
+        realsize.textContent = Math.floor(layer.u8a.length/10)/100;
+        sizebox.appendChild(realsize);
+        sizebox.innerHTML += 'KB /';
+        let quality  = document.createElement('div');
+        quality.setAttribute('data-export-quality','');
+        quality.textContent = '10';
+        sizebox.appendChild(quality);
+        sizeinfo.appendChild(sizebox);
+        exportset.appendChild(sizeinfo);
+
+        tag.appendChild(exportset);
         exportTagsBox.appendChild(tag);
       });
     break
   };
   //所有tag都支持二次确认, 以得到最终要生成的内容
   function addTagMain(tag,index,type){
-    tag.setAttribute('data-' + type + '-tag','');
+    tag.setAttribute('data-' + type + '-tag',index);
     tag.setAttribute('data-' + type + '-final','true');
     tag.className = type == 'create' ? 'df-lc' : 'df-ffc';
 
     let main = document.createElement('div');
     main.className = 'df-lc';
-    main.setAttribute('style','gap: 4px');
+    main.setAttribute('style','gap: 4px;');
 
     let checkbox = document.createElement('div');
     checkbox.setAttribute('style','width: 14px; height: 14px;');
@@ -1006,6 +1061,56 @@ function addTag(type,info){
     });
     return main;
   };
+  //生成下拉选项
+  function addSelect(index,options,def){
+    let select = document.createElement('div');
+    select.className = 'df-lc pos-r';
+    select.setAttribute('data-select','');
+    select.setAttribute('data-select-value',def);
+    select.setAttribute('style','gap: 4px; width: 72px;');
+    let value = document.createElement('input');
+    value.setAttribute('data-select-input','');
+    value.setAttribute('readonly','');
+    value.type = 'text'
+    value.id = 'export-format-' + index;
+    //console.log(def)
+    value.value = def;
+    
+    select.appendChild(value)
+    let show = document.createElement('input');
+    show.setAttribute('data-select-pick',def);
+    show.type = 'checkbox'
+    show.id = 'format-show-' + index;
+    let showlabel =  document.createElement('label');
+    showlabel.setAttribute('for','format-show-' + index);
+    showlabel.className = 'show-next wh100';
+    showlabel.setAttribute('style','position: absolute; top: 0; right: 0;')
+    select.appendChild(show);
+    select.appendChild(showlabel);
+    let optionbox = document.createElement('div');
+    optionbox.setAttribute('data-select-options','');
+    optionbox.className = 'df-ffc pos-a w100 noscrollbar';
+    optionbox.setAttribute('style','display: none; top: 24px; z-index:3;');
+    options.forEach(item => {
+      let option = document.createElement('div');
+      option.setAttribute('data-option','option');
+      let isMain = item == def ? 'true' : 'false';
+      option.setAttribute('data-option-main',isMain);
+      option.setAttribute('data-option-value',item);
+      option.textContent = item;
+      optionbox.appendChild(option);
+    });
+    select.appendChild(optionbox);
+
+    value.addEventListener('change',()=>{
+      ExportImageInfo[index].format = value.value;
+      show.setAttribute('data-select-pick',value.value);
+    });
+    return select;
+  };
+  //更新绑定和钩子
+  COMP_MAIN();
+  getCompChange();
   //重置文字样式
   loadFont(createTagsBox.parentNode);
 };
@@ -1027,13 +1132,189 @@ document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
 getElementMix('data-export-delete').addEventListener('click',()=>{
   let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
   let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
-  console.log(picknums)
+  //console.log(picknums)
+  picknums.sort((a,b) => b - a).forEach(num => {
+    ExportImageInfo.splice(num,1);
+    //console.log(ExportImageInfo)
+  });
+  picks.forEach(item => {
+    item.parentNode.parentNode.remove();
+  });
+  let finals = exportTagsBox.querySelectorAll('[data-export-pick]');
+  finals.forEach((item,index) => {
+    item.parentNode.querySelector('[data-tags-index]').textContent = (index + 1) + '. '
+    item.parentNode.parentNode.setAttribute('data-export-tag',index)
+  });
 });
 getElementMix('data-export-reup').addEventListener('click',()=>{
   let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
   let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
   console.log(picknums)
 });
+
+//导出内容
+exportAnyBtn.addEventListener('click',()=>{
+
+});
+//导出图片为zip
+async function exportImg(){
+  if(imgExportData.length > 0){
+    try {
+      const compressedImages = await compressImages(imgExportData);
+      createZipAndDownload(compressedImages);
+    } catch (error) {
+      console.error('处理过程中发生错误:', error);
+    }
+  }
+  
+}
+//单个图片的压缩
+function compressImage(blob,quality,type,colorBox) {
+    if (type == 'jpg' || type == 'jpeg'){
+      return new Promise((resolve, reject) => {
+        let file = new File([blob],'image.jpg',{type:'image/jpeg'})
+        //console.log(file)
+        new Compressor(file, {
+          quality:quality/10,
+          success(result) {
+            resolve(result);
+          },
+          error(err) {
+            reject(err);
+          },
+        });
+      });
+    } else if ( type == 'png') {
+      return new Promise((resolve, reject) => {
+        let blob = new Blob([u8a], { type: 'image/png' });    
+        if(quality == 10){
+          resolve(blob)
+        } else {
+          let url = URL.createObjectURL(blob);
+          let img = new Image()
+          img.src = url;
+
+          img.onload = function(){
+            let canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            let ctx = canvas.getContext('2d')
+            ctx.drawImage(img,0,0)
+            let imageData = ctx.getImageData(0,0,img.width,img.height)
+            let data = imageData.data;
+            let colorcut = new Promise((resolve, reject) => {
+              ctx.putImageData(imageData,0,0);
+              canvas.toBlob(function(blob){
+                resolve(blob)
+              },'image/png')
+            });
+            resolve(colorcut)
+          };
+        };
+        
+      });
+    } else if ( type == 'webp') {
+      return new Promise((resolve, reject) => {
+        //let blob = new Blob([u8a], { type: 'image/png' });
+        let url = URL.createObjectURL(blob);
+        let img = new Image()
+        img.src = url;
+
+        img.onload = function(){
+          let canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          let ctx = canvas.getContext('2d')
+          ctx.drawImage(img,0,0)
+          canvas.toBlob(function(blob){
+            resolve(blob)
+          },'image/webp',(quality/10))
+        };
+      });
+    };
+};
+// 批量压缩
+async function compressImages(imgExportData) {
+  let imageDataArray = imgExportData.map(item => item.u8a)
+  let targetSize = imgExportData.map(item => item.s*1000)
+  let type = imgExportData.map(item => item.fileName.split('.').pop())
+  let colorBox = imgExportData.map(item => item.col)
+  const compressedImages = [];
+  for (let i = 0; i < imageDataArray.length; i++) {
+    let quality = 10; // 初始压缩质量
+    let result = new Blob([imageDataArray[i]], { type: 'image/png' });//初始化
+    let newBlob = new Blob([imageDataArray[i]], { type: 'image/jpeg' });
+      do {
+        try {
+          result = await compressImage(newBlob, quality,type[i],colorBox[i]);
+          if (quality == 9){//先上256色+扩散算法，后面靠减色压缩
+            newBlob = result;
+          }
+          if (targetSize[i] && result.size > targetSize[i] && quality > 1) {
+            if ( quality - 1 >= 0){
+              console.log("压缩质量:" + quality )
+              quality -= 1; // 如果超过目标大小，减少质量再次尝试
+            } else {
+              quality = 0;
+            }
+            
+            //console.log(result.size/1000 + 'k')
+          } else {
+            if ( !targetSize[i] || result.size <= targetSize[i] ){
+              //console.log(targetSize[i])
+              document.getElementById('imgsize-' + i ).innerHTML =  Math.floor(result.size/1000) + "k /质量:" + Math.ceil(quality) 
+            } else {
+              if (result.size){
+                document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.size/1000) + "k /压缩失败</span>"
+              } else {
+                document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.length/1000) + "k /压缩失败</span>"
+              }
+              
+            }
+            //console.log(result)
+            break;
+          }
+        } catch (error) {
+          console.error('压缩过程中发生错误:', error);
+          break;
+        }
+      } while (result.size > targetSize[i]);
+
+    compressedImages.push(result);
+  }
+  return compressedImages;
+};
+// 创建ZIP文件并提供下载
+function createZipAndDownload(compressedImages) {
+  let timeName = getDate('YYYYMMDD')[0].slice(2) + '_' + getTime('HHMMSS')[0]
+  let zip = new JSZip();
+
+  let imgs = imgExportData;
+  compressedImages.forEach((blob, index) => {
+    let path = imgs[index].fileName.split('/');
+    let name = path.pop();
+    if (imgs[index].fileName.split('/').length == 2) {
+      let folder = zip.folder(path[0]);
+      folder.file(name,blob);
+    } else if (imgs[index].fileName.split('/').length == 3) {
+      let folder1 = zip.folder(path[0]);
+      let folder2 = folder1.folder(path[1]);
+      folder2.file(name,blob);
+    } else if (imgs[index].fileName.split('/').length == 4) {
+      let folder2 = zip.folder(path[0]);
+      let folder3 = folder2.folder(path[2]);
+      folder3.file(name,blob);
+    } else {
+      zip.file(name,blob);
+    }
+  });
+
+
+  zip.generateAsync({ type: "blob" }).then(function (content) {
+    saveAs(content, timeName + '.zip');
+  });
+}
+
 //制表文案转数组, 兼容反转行列
 function tableTextToArray(tableText,isColumn,mustTitle){
   let lines = tableText.split('\n');
@@ -1581,64 +1862,67 @@ function viewPage(name){
 
 
 /* ---钩子--- */
-
+getCompChange()
 /*监听组件的自定义属性值, 变化时触发函数, 用于已经绑定事件用于自身的组件, 如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
-let observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    if(mutation.type === 'attributes'){
-      switch(mutation.attributeName){
-        case 'data-tab-pick':getUserTab(mutation.target); break;
-        case 'data-color-hex':getUserColor(mutation.target); break;
-        case 'data-number-value':getUserNumber(mutation.target); break;
-        case 'data-text-value':getUserText(mutation.target); break;
-        case 'data-int-value':getUserInt(mutation.target); break;
-        case 'data-float-value':getUserFloat(mutation.target); break;
-        case 'data-select-value':getUserSelect(mutation.target); break;
-        case 'data-radio-value':getUserRadio(mutation.target); break;
+function getCompChange(){
+  let observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if(mutation.type === 'attributes'){
+        switch(mutation.attributeName){
+          case 'data-tab-pick':getUserTab(mutation.target); break;
+          case 'data-color-hex':getUserColor(mutation.target); break;
+          case 'data-number-value':getUserNumber(mutation.target); break;
+          case 'data-text-value':getUserText(mutation.target); break;
+          case 'data-int-value':getUserInt(mutation.target); break;
+          case 'data-float-value':getUserFloat(mutation.target); break;
+          case 'data-select-value':getUserSelect(mutation.target); break;
+          case 'data-radio-value':getUserRadio(mutation.target); break;
+        }
       }
-    }
-  })
-});
-let userEvent_tab = document.querySelectorAll('[data-tab-pick]');
-userEvent_tab.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-tab-pick']};
-  observer.observe(item,config);
-});
-let userEvent_color = document.querySelectorAll('[data-color]');
-userEvent_color.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-color-hex']};
-  observer.observe(item,config);
-});
-let userEvent_number = document.querySelectorAll('[data-number]');
-userEvent_number.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-number-value']};
-  observer.observe(item,config);
-});
-let userEvent_text = document.querySelectorAll('[data-text]');
-userEvent_text.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-text-value']};
-  observer.observe(item,config);
-});
-let userEvent_int = document.querySelectorAll('[data-int-value]');
-userEvent_int.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-int-value']};
-  observer.observe(item,config);
-});
-let userEvent_float = document.querySelectorAll('[data-float-value]');
-userEvent_float.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-float-value']};
-  observer.observe(item,config);
-});
-let userEvent_select = document.querySelectorAll('[data-select]');
-userEvent_select.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-select-value']};
-  observer.observe(item,config);
-});
-let userEvent_radio = document.querySelectorAll('[data-radio-value]');
-userEvent_radio.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-radio-value']};
-  observer.observe(item,config);
-});
+    })
+  });
+  let userEvent_tab = document.querySelectorAll('[data-tab-pick]');
+  userEvent_tab.forEach(item => {
+    let config = {attributes:true,attributeFilter:['data-tab-pick']};
+    observer.observe(item,config);
+  });
+  let userEvent_color = document.querySelectorAll('[data-color]');
+  userEvent_color.forEach(item => {
+    let config = {attributes:true,attributeFilter:['data-color-hex']};
+    observer.observe(item,config);
+  });
+  let userEvent_number = document.querySelectorAll('[data-number]');
+  userEvent_number.forEach(item => {
+    let config = {attributes:true,attributeFilter:['data-number-value']};
+    observer.observe(item,config);
+  });
+  let userEvent_text = document.querySelectorAll('[data-text]');
+  userEvent_text.forEach(item => {
+    let config = {attributes:true,attributeFilter:['data-text-value']};
+    observer.observe(item,config);
+  });
+  let userEvent_int = document.querySelectorAll('[data-int-value]');
+  userEvent_int.forEach(item => {
+    let config = {attributes:true,attributeFilter:['data-int-value']};
+    observer.observe(item,config);
+  });
+  let userEvent_float = document.querySelectorAll('[data-float-value]');
+  userEvent_float.forEach(item => {
+    let config = {attributes:true,attributeFilter:['data-float-value']};
+    observer.observe(item,config);
+  });
+  let userEvent_select = document.querySelectorAll('[data-select]');
+  userEvent_select.forEach(item => {
+    let config = {attributes:true,attributeFilter:['data-select-value']};
+    observer.observe(item,config);
+  });
+  let userEvent_radio = document.querySelectorAll('[data-radio-value]');
+  userEvent_radio.forEach(item => {
+    let config = {attributes:true,attributeFilter:['data-radio-value']};
+    observer.observe(item,config);
+  });
+  
+}
 
 /**
  * @param {Element} node -带有data-tab-pick值的元素, 用于记录用户关闭前所选的tab
@@ -1690,6 +1974,9 @@ function getUserText(node){
 
 function getUserInt(node){
   let int = node.getAttribute('data-int-value');
+  if(node.getAttribute('data-export-size') !== null){
+    ExportImageInfo[node.getAttribute('data-export-size')].finalSize = int;
+  };
   //console.log(int)
 };
 

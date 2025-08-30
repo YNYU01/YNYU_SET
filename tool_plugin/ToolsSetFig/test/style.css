@@ -810,6 +810,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-create-catalogues],[data-export-tags]{
+  padding-bottom: 80px;
   gap: 6px;
 }
 
@@ -825,7 +826,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-create-tag],[data-split-tag],[data-export-tag]{
   height: 24px;
-  padding: 2px 4px;
+  padding: 0px 4px;
   background: var(--boxGry);
   border-radius: 6px;
   gap: 4px;
@@ -833,12 +834,25 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-export-tag]{
+  padding: 4px 6px;
   height: fit-content;
 }
 
 [data-export-info="name"]{
   font-size: 10px !important;
   background: var(--boxGry) !important;
+  padding: 0 !important;
+}
+
+[data-export-tag] [data-select-input]{
+  font-size: 11px !important;
+  padding-left: 1ch;
+  height: 22px;
+}
+
+[data-export-tag] [data-option="option"]{
+  padding: 0.5ch;
+  text-align: center;
 }
 
 [data-export-pickall="false"] [data-export-pick]{
