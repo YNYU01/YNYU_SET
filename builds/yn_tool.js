@@ -1,3 +1,4 @@
+
 function TOOL_JS() {
 /**
  * Base64转Uint8Array
@@ -17,7 +18,7 @@ function B64ToU8A(b64) {
   }
 
   return array;
-}
+};
 TOOL_JS.prototype.B64ToU8A = B64ToU8A;
 
 /**
@@ -169,4 +170,27 @@ function CUT_AREA(info,mix) {
 };
 TOOL_JS.prototype.CUT_AREA = CUT_AREA;
 
+function TrueImageFormat(file) {
+  return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          const arrayBuf = new Uint8Array(e.target.result);
+          // 检查JPEG、PNG、GIF、BMP的魔数
+          if (arrayBuf[0] === 0xFF && arrayBuf[1] === 0xD8 && arrayBuf[2] === 0xFF) {
+              resolve('jpeg');
+          } else if (arrayBuf[0] === 0x89 && arrayBuf[1] === 0x50 && arrayBuf[2] === 0x4E && arrayBuf[3] === 0x47) {
+              resolve('png');
+          } else if (arrayBuf[0] === 0x47 && arrayBuf[1] === 0x49 && arrayBuf[2] === 0x46 && arrayBuf[3] === 0x38) {
+              resolve('gif');
+          } else if (arrayBuf[0] === 0x42 && arrayBuf[1] === 0x4D) {
+              resolve('bmp');
+          } else {
+              reject(new Error('Invalid image format'));
+          }
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+  });
+};
+TOOL_JS.prototype.TrueImageFormat = TrueImageFormat;
 }

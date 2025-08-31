@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00585938b2bda3d455ecbc160457177866d03295/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00585938b2bda3d455ecbc160457177866d03295/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -2948,12 +2948,13 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00585938b2bda3d455ecbc160457177866d03295/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00585938b2bda3d455ecbc160457177866d03295/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00585938b2bda3d455ecbc160457177866d03295/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00585938b2bda3d455ecbc160457177866d03295/public/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00585938b2bda3d455ecbc160457177866d03295/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00585938b2bda3d455ecbc160457177866d03295/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00585938b2bda3d455ecbc160457177866d03295/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4036,7 +4037,7 @@ function addTag(type,info){
     
     select.appendChild(value)
     let show = document.createElement('input');
-    show.setAttribute('data-select-pick',def);
+    show.setAttribute('data-select-pick','');
     show.type = 'checkbox'
     show.id = 'format-show-' + index;
     let showlabel =  document.createElement('label');
@@ -4060,10 +4061,13 @@ function addTag(type,info){
     });
     select.appendChild(optionbox);
 
+    /*
     value.addEventListener('change',()=>{
       ExportImageInfo[index].format = value.value;
       show.setAttribute('data-select-pick',value.value);
+      console.log(ExportImageInfo)
     });
+    */
     return select;
   };
   //更新绑定和钩子
@@ -4148,7 +4152,6 @@ function compressImage(blob,quality,type) {
       });
     } else if ( type == 'png') {
       return new Promise((resolve, reject) => {
-        let blob = new Blob([u8a], { type: 'image/png' });    
         if(quality == 10){
           resolve(blob)
         } else {
@@ -4252,7 +4255,7 @@ function createZipAndDownload(compressedImages) {
   let imgs = ExportImageInfo;
   compressedImages.forEach((blob, index) => {
     let path = imgs[index].fileName.split('/');
-    let name = path.pop();
+    let name = path.pop() + '.' + imgs[index].format.toLowerCase();
     if (imgs[index].fileName.split('/').length == 2) {
       let folder = zip.folder(path[0]);
       folder.file(name,blob);
@@ -4965,12 +4968,17 @@ function getUserFloat(node){
 
 function getUserSelect(node){
   let userSelect = node.getAttribute('data-select-value');
+  /*
   if(userSelect){
     if(node.previousElementSibling == frameName){
       frameName.value = userSelect;
       convertTags.click();
     };
   };
+  */
+ if(node.parentNode.parentNode.getAttribute('data-export-tag') !== null){
+  ExportImageInfo[node.parentNode.parentNode.getAttribute('data-export-tag')].format = userSelect;
+ };
 };
 
 function getUserRadio(node){

@@ -604,6 +604,10 @@ dropUp.addEventListener('drop',(e)=>{
   dropUp.style.filter = '';
   dropUp.style.setProperty('--drop-df','visible');
   let files = Array.from(e.dataTransfer.files);
+  tool.TrueImageFormat(files[0])
+  .then(result => {
+    console.log(result);
+  })
   let filesTypes = [...new Set(files.map(item => item.name.split('.')[item.name.split('.').length - 1].toLowerCase()))];
   let sameType = null;
   
@@ -1078,7 +1082,7 @@ function addTag(type,info){
     
     select.appendChild(value)
     let show = document.createElement('input');
-    show.setAttribute('data-select-pick',def);
+    show.setAttribute('data-select-pick','');
     show.type = 'checkbox'
     show.id = 'format-show-' + index;
     let showlabel =  document.createElement('label');
@@ -1102,10 +1106,13 @@ function addTag(type,info){
     });
     select.appendChild(optionbox);
 
+    /*
     value.addEventListener('change',()=>{
       ExportImageInfo[index].format = value.value;
       show.setAttribute('data-select-pick',value.value);
+      console.log(ExportImageInfo)
     });
+    */
     return select;
   };
   //更新绑定和钩子
@@ -1158,7 +1165,7 @@ getElementMix('data-export-tags-delete').addEventListener('click',()=>{
 
 //导出内容
 exportAnyBtn.addEventListener('click',()=>{
-  exportImg()
+  exportImg();
 });
 //导出图片为zip
 async function exportImg(){
@@ -1190,7 +1197,6 @@ function compressImage(blob,quality,type) {
       });
     } else if ( type == 'png') {
       return new Promise((resolve, reject) => {
-        let blob = new Blob([u8a], { type: 'image/png' });    
         if(quality == 10){
           resolve(blob)
         } else {
@@ -1294,7 +1300,7 @@ function createZipAndDownload(compressedImages) {
   let imgs = ExportImageInfo;
   compressedImages.forEach((blob, index) => {
     let path = imgs[index].fileName.split('/');
-    let name = path.pop();
+    let name = path.pop() + '.' + imgs[index].format.toLowerCase();
     if (imgs[index].fileName.split('/').length == 2) {
       let folder = zip.folder(path[0]);
       folder.file(name,blob);
@@ -2007,12 +2013,17 @@ function getUserFloat(node){
 
 function getUserSelect(node){
   let userSelect = node.getAttribute('data-select-value');
+  /*
   if(userSelect){
     if(node.previousElementSibling == frameName){
       frameName.value = userSelect;
       convertTags.click();
     };
   };
+  */
+ if(node.parentNode.parentNode.getAttribute('data-export-tag') !== null){
+  ExportImageInfo[node.parentNode.parentNode.getAttribute('data-export-tag')].format = userSelect;
+ };
 };
 
 function getUserRadio(node){
