@@ -805,8 +805,9 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: none;
 }
 
-[data-create-tags],[data-create-catalogues],[data-split-tags]{
+[data-create-tags],[data-create-catalogues],[data-split-tags],[data-export-tags]{
   height: fit-content;
+  margin-top: -10px;
 }
 
 [data-create-catalogues],[data-export-tags]{

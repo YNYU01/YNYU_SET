@@ -924,7 +924,7 @@ function addTag(type,info){
     break
     case 'export-img':
       ExportImageInfo.push(...info);
-      exportTagsBox.innerHTML = '<!--动态填充-->'
+      exportTagsBox.innerHTML = '<!--动态填充-->';
       ExportImageInfo.forEach((layer,index) => {
         let tag = document.createElement('div');
         let main = addTagMain(tag,index,'export');
@@ -1151,16 +1151,20 @@ getElementMix('data-export-reup').addEventListener('click',()=>{
   let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
   console.log(picknums)
 });
+getElementMix('data-export-tags-delete').addEventListener('click',()=>{
+  ExportImageInfo = [];
+  exportTagsBox.innerHTML = '<!--动态填充-->';
+});
 
 //导出内容
 exportAnyBtn.addEventListener('click',()=>{
-
+  exportImg()
 });
 //导出图片为zip
 async function exportImg(){
-  if(imgExportData.length > 0){
+  if(ExportImageInfo.length > 0){
     try {
-      const compressedImages = await compressImages(imgExportData);
+      const compressedImages = await compressImages(ExportImageInfo);
       createZipAndDownload(compressedImages);
     } catch (error) {
       console.error('处理过程中发生错误:', error);
@@ -1169,7 +1173,7 @@ async function exportImg(){
   
 }
 //单个图片的压缩
-function compressImage(blob,quality,type,colorBox) {
+function compressImage(blob,quality,type) {
     if (type == 'jpg' || type == 'jpeg'){
       return new Promise((resolve, reject) => {
         let file = new File([blob],'image.jpg',{type:'image/jpeg'})
@@ -1235,10 +1239,9 @@ function compressImage(blob,quality,type,colorBox) {
 };
 // 批量压缩
 async function compressImages(imgExportData) {
-  let imageDataArray = imgExportData.map(item => item.u8a)
-  let targetSize = imgExportData.map(item => item.s*1000)
-  let type = imgExportData.map(item => item.fileName.split('.').pop())
-  let colorBox = imgExportData.map(item => item.col)
+  let imageDataArray = imgExportData.map(item => item.u8a);
+  let targetSize = imgExportData.map(item => item.finalSize*1000);
+  let type = imgExportData.map(item => item.format.toLowerCase());
   const compressedImages = [];
   for (let i = 0; i < imageDataArray.length; i++) {
     let quality = 10; // 初始压缩质量
@@ -1246,34 +1249,33 @@ async function compressImages(imgExportData) {
     let newBlob = new Blob([imageDataArray[i]], { type: 'image/jpeg' });
       do {
         try {
-          result = await compressImage(newBlob, quality,type[i],colorBox[i]);
+          result = await compressImage(newBlob, quality,type[i]);
           if (quality == 9){//先上256色+扩散算法，后面靠减色压缩
             newBlob = result;
-          }
+          };
           if (targetSize[i] && result.size > targetSize[i] && quality > 1) {
             if ( quality - 1 >= 0){
               console.log("压缩质量:" + quality )
               quality -= 1; // 如果超过目标大小，减少质量再次尝试
             } else {
               quality = 0;
-            }
+            };
             
-            //console.log(result.size/1000 + 'k')
           } else {
             if ( !targetSize[i] || result.size <= targetSize[i] ){
               //console.log(targetSize[i])
-              document.getElementById('imgsize-' + i ).innerHTML =  Math.floor(result.size/1000) + "k /质量:" + Math.ceil(quality) 
+              //document.getElementById('imgsize-' + i ).innerHTML =  Math.floor(result.size/1000) + "k /质量:" + Math.ceil(quality) 
             } else {
               if (result.size){
-                document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.size/1000) + "k /压缩失败</span>"
+                //document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.size/1000) + "k /压缩失败</span>"
               } else {
-                document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.length/1000) + "k /压缩失败</span>"
+                //document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.length/1000) + "k /压缩失败</span>"
               }
               
             }
             //console.log(result)
             break;
-          }
+          };
         } catch (error) {
           console.error('压缩过程中发生错误:', error);
           break;
@@ -1281,7 +1283,7 @@ async function compressImages(imgExportData) {
       } while (result.size > targetSize[i]);
 
     compressedImages.push(result);
-  }
+  };
   return compressedImages;
 };
 // 创建ZIP文件并提供下载
@@ -1289,7 +1291,7 @@ function createZipAndDownload(compressedImages) {
   let timeName = getDate('YYYYMMDD')[0].slice(2) + '_' + getTime('HHMMSS')[0]
   let zip = new JSZip();
 
-  let imgs = imgExportData;
+  let imgs = ExportImageInfo;
   compressedImages.forEach((blob, index) => {
     let path = imgs[index].fileName.split('/');
     let name = path.pop();

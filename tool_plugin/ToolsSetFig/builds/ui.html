@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcffd19bdfa998e5190e8e41c4bdbb9e5b064a11/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcffd19bdfa998e5190e8e41c4bdbb9e5b064a11/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -866,8 +866,9 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: none;
 }
 
-[data-create-tags],[data-create-catalogues],[data-split-tags]{
+[data-create-tags],[data-create-catalogues],[data-split-tags],[data-export-tags]{
   height: fit-content;
+  margin-top: -10px;
 }
 
 [data-create-catalogues],[data-export-tags]{
@@ -1941,15 +1942,15 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div>
             <div class="wh100 pos-r" data-resize style="max-width: 560px;">
               <div data-create-tags-box class="wh100 upload-set pos-r ovy noscrollbar">
+                <!--清空-->
+                <div style="left: 100%; top:0; position: sticky; width: 12px; height: 12px; z-index: 2;">
+                  <btn-close></btn-close>
+                </div>
                 <div data-create-tags class="w100 df-lc">
                   <!--动态填充-->
                 </div>
                 <div data-create-catalogues class="w100 df-ffc">
                   <!--动态填充-->
-                </div>
-                <!--清空-->
-                <div class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;">
-                  <btn-close></btn-close>
                 </div>
               </div>
             </div>
@@ -2002,8 +2003,8 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div>
           </div>
           <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px; max-width: 560px; ">
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (默认设置)</div>    
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
           </div>
           <!--步骤2-->
           <div class="w100 df-lc"  style="max-width: 560px; padding:10px 0 4px 0; opacity: 0.6; vertical-align: baseline;"> 
@@ -2055,6 +2056,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           </div>
           
           <div data-export-tags-box class="wh100 upload-set pos-r ovy noscrollbar">
+            <!--清空-->
+            <div data-export-tags-delete style="left: 100%; top:0; width: 12px; height: 12px; position: sticky; z-index: 2;">
+              <btn-close></btn-close>
+            </div>
             <div data-export-tags data-export-pickall="false" data-export-set class="w100 df-ffc">
               <!--动态填充-->
             </div>
@@ -2943,12 +2948,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcffd19bdfa998e5190e8e41c4bdbb9e5b064a11/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcffd19bdfa998e5190e8e41c4bdbb9e5b064a11/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcffd19bdfa998e5190e8e41c4bdbb9e5b064a11/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcffd19bdfa998e5190e8e41c4bdbb9e5b064a11/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcffd19bdfa998e5190e8e41c4bdbb9e5b064a11/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcffd19bdfa998e5190e8e41c4bdbb9e5b064a11/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b7f6d9e8248db2051f56ac98e3701478bb190031/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3877,7 +3882,7 @@ function addTag(type,info){
     break
     case 'export-img':
       ExportImageInfo.push(...info);
-      exportTagsBox.innerHTML = '<!--动态填充-->'
+      exportTagsBox.innerHTML = '<!--动态填充-->';
       ExportImageInfo.forEach((layer,index) => {
         let tag = document.createElement('div');
         let main = addTagMain(tag,index,'export');
@@ -4104,16 +4109,20 @@ getElementMix('data-export-reup').addEventListener('click',()=>{
   let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
   console.log(picknums)
 });
+getElementMix('data-export-tags-delete').addEventListener('click',()=>{
+  ExportImageInfo = [];
+  exportTagsBox.innerHTML = '<!--动态填充-->';
+});
 
 //导出内容
 exportAnyBtn.addEventListener('click',()=>{
-
+  exportImg()
 });
 //导出图片为zip
 async function exportImg(){
-  if(imgExportData.length > 0){
+  if(ExportImageInfo.length > 0){
     try {
-      const compressedImages = await compressImages(imgExportData);
+      const compressedImages = await compressImages(ExportImageInfo);
       createZipAndDownload(compressedImages);
     } catch (error) {
       console.error('处理过程中发生错误:', error);
@@ -4122,7 +4131,7 @@ async function exportImg(){
   
 }
 //单个图片的压缩
-function compressImage(blob,quality,type,colorBox) {
+function compressImage(blob,quality,type) {
     if (type == 'jpg' || type == 'jpeg'){
       return new Promise((resolve, reject) => {
         let file = new File([blob],'image.jpg',{type:'image/jpeg'})
@@ -4188,10 +4197,9 @@ function compressImage(blob,quality,type,colorBox) {
 };
 // 批量压缩
 async function compressImages(imgExportData) {
-  let imageDataArray = imgExportData.map(item => item.u8a)
-  let targetSize = imgExportData.map(item => item.s*1000)
-  let type = imgExportData.map(item => item.fileName.split('.').pop())
-  let colorBox = imgExportData.map(item => item.col)
+  let imageDataArray = imgExportData.map(item => item.u8a);
+  let targetSize = imgExportData.map(item => item.finalSize*1000);
+  let type = imgExportData.map(item => item.format.toLowerCase());
   const compressedImages = [];
   for (let i = 0; i < imageDataArray.length; i++) {
     let quality = 10; // 初始压缩质量
@@ -4199,34 +4207,33 @@ async function compressImages(imgExportData) {
     let newBlob = new Blob([imageDataArray[i]], { type: 'image/jpeg' });
       do {
         try {
-          result = await compressImage(newBlob, quality,type[i],colorBox[i]);
+          result = await compressImage(newBlob, quality,type[i]);
           if (quality == 9){//先上256色+扩散算法，后面靠减色压缩
             newBlob = result;
-          }
+          };
           if (targetSize[i] && result.size > targetSize[i] && quality > 1) {
             if ( quality - 1 >= 0){
               console.log("压缩质量:" + quality )
               quality -= 1; // 如果超过目标大小，减少质量再次尝试
             } else {
               quality = 0;
-            }
+            };
             
-            //console.log(result.size/1000 + 'k')
           } else {
             if ( !targetSize[i] || result.size <= targetSize[i] ){
               //console.log(targetSize[i])
-              document.getElementById('imgsize-' + i ).innerHTML =  Math.floor(result.size/1000) + "k /质量:" + Math.ceil(quality) 
+              //document.getElementById('imgsize-' + i ).innerHTML =  Math.floor(result.size/1000) + "k /质量:" + Math.ceil(quality) 
             } else {
               if (result.size){
-                document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.size/1000) + "k /压缩失败</span>"
+                //document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.size/1000) + "k /压缩失败</span>"
               } else {
-                document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.length/1000) + "k /压缩失败</span>"
+                //document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.length/1000) + "k /压缩失败</span>"
               }
               
             }
             //console.log(result)
             break;
-          }
+          };
         } catch (error) {
           console.error('压缩过程中发生错误:', error);
           break;
@@ -4234,7 +4241,7 @@ async function compressImages(imgExportData) {
       } while (result.size > targetSize[i]);
 
     compressedImages.push(result);
-  }
+  };
   return compressedImages;
 };
 // 创建ZIP文件并提供下载
@@ -4242,7 +4249,7 @@ function createZipAndDownload(compressedImages) {
   let timeName = getDate('YYYYMMDD')[0].slice(2) + '_' + getTime('HHMMSS')[0]
   let zip = new JSZip();
 
-  let imgs = imgExportData;
+  let imgs = ExportImageInfo;
   compressedImages.forEach((blob, index) => {
     let path = imgs[index].fileName.split('/');
     let name = path.pop();

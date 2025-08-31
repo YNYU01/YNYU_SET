@@ -1531,70 +1531,78 @@ function getMain(nodes){
 };
 
 //上传导出为图片所需的信息
-async function exportImgInfo(set){
+function exportImgInfo(set){
     let a = figma.currentPage;
     let b = a.selection;
+    let load = figma.notify('Uploading ( ' + b.length + ' layer)',{
+        timeout: 6000,
+    });
     //console.log(b[0].exportSettings)
-    for(let i = 0; i < b.length; i++){
-        let c = b[i];
-        let format = 'PNG';
-        let info = [] ;
-        let size = c.getPluginData('exportSize');
-        if(!size){
-            size = null
-        };
-        let wh = getSafeMain(c);
-        let [w,h] = [wh[0],wh[1]]
-        if(set == 'exportset'){
-            let settings = c.exportSettings;
-            for(let ii = 0; ii < settings.length; ii++){
-                let setting = settings[ii];
-                let exportsizeset = setting.constraint;
-                switch (exportsizeset.type){
-                    case 'SCALE':
-                        [w,h] = [w*exportsizeset.value,h*exportsizeset.value];
-                    break
-                    case 'WIDTH':
-                        [w,h] = [exportsizeset.value,h*(exportsizeset.value/w)];
-                    break
-                    case 'HEIGHT':
-                        [w,h] = [w*(exportsizeset.value/h),exportsizeset.value];
-                    break
+    setTimeout(async ()=>{
+        for(let i = 0; i < b.length; i++){
+            let c = b[i];
+            let format = 'PNG';
+            let info = [] ;
+            let size = c.getPluginData('exportSize');
+            if(!size){
+                size = null
+            };
+            let wh = getSafeMain(c);
+            let [w,h] = [wh[0],wh[1]]
+            if(set == 'exportset' && c.exportSettings.length > 0){
+                let settings = c.exportSettings;
+                for(let ii = 0; ii < settings.length; ii++){
+                    let setting = settings[ii];
+                    let exportsizeset = setting.constraint;
+                    switch (exportsizeset.type){
+                        case 'SCALE':
+                            [w,h] = [w*exportsizeset.value,h*exportsizeset.value];
+                        break
+                        case 'WIDTH':
+                            [w,h] = [exportsizeset.value,h*(exportsizeset.value/w)];
+                        break
+                        case 'HEIGHT':
+                            [w,h] = [w*(exportsizeset.value/h),exportsizeset.value];
+                        break
+                    };
+                    info.push(
+                        {
+                            fileName:c.name + setting.suffix,
+                            id:c.id,
+                            format:setting.format,
+                            u8a: await c.exportAsync(setting),
+                            finalSize:size,
+                            width: Math.round(w),
+                            height: Math.round(h),
+                        }
+                    );
                 };
+                //console.log(info)
+    
+            }else{
                 info.push(
                     {
-                        fileName:c.name + setting.suffix,
+                        fileName:c.name,
                         id:c.id,
-                        format:setting.format,
-                        u8a: await c.exportAsync(setting),
+                        format:format,
+                        u8a: await c.exportAsync({
+                            format: 'PNG',
+                            constraint: { type: 'SCALE', value: 1 },
+                          }),
                         finalSize:size,
                         width: Math.round(w),
                         height: Math.round(h),
                     }
                 );
+                //console.log(info)
             };
-            //console.log(info)
-
-        }else{
-            info.push(
-                {
-                    fileName:c.name,
-                    id:c.id,
-                    format:format,
-                    u8a: await c.exportAsync({
-                        format: 'PNG',
-                        constraint: { type: 'SCALE', value: 1 },
-                      }),
-                    finalSize:size,
-                    width: Math.round(w),
-                    height: Math.round(h),
-                }
-            );
-            //console.log(info)
+            postmessage([info,'exportImgInfo']);
+            if(i == b.length - 1){
+                //load.cancel();
+            };
         };
-        postmessage([info,'exportImgInfo']);
-    };
-    
+        load.cancel();
+    },200);
 };
 
 //创建表格

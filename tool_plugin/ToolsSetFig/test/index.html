@@ -294,15 +294,15 @@
             </div>
             <div class="wh100 pos-r" data-resize style="max-width: 560px;">
               <div data-create-tags-box class="wh100 upload-set pos-r ovy noscrollbar">
+                <!--清空-->
+                <div style="left: 100%; top:0; position: sticky; width: 12px; height: 12px; z-index: 2;">
+                  <btn-close></btn-close>
+                </div>
                 <div data-create-tags class="w100 df-lc">
                   <!--动态填充-->
                 </div>
                 <div data-create-catalogues class="w100 df-ffc">
                   <!--动态填充-->
-                </div>
-                <!--清空-->
-                <div class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;">
-                  <btn-close></btn-close>
                 </div>
               </div>
             </div>
@@ -355,8 +355,8 @@
             </div>
           </div>
           <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px; max-width: 560px; ">
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (默认设置)</div>    
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
           </div>
           <!--步骤2-->
           <div class="w100 df-lc"  style="max-width: 560px; padding:10px 0 4px 0; opacity: 0.6; vertical-align: baseline;"> 
@@ -408,6 +408,10 @@
           </div>
           
           <div data-export-tags-box class="wh100 upload-set pos-r ovy noscrollbar">
+            <!--清空-->
+            <div data-export-tags-delete style="left: 100%; top:0; width: 12px; height: 12px; position: sticky; z-index: 2;">
+              <btn-close></btn-close>
+            </div>
             <div data-export-tags data-export-pickall="false" data-export-set class="w100 df-ffc">
               <!--动态填充-->
             </div>
@@ -1299,6 +1303,7 @@
   <script src="../../../builds/yn_comp.js"></script>
   <script src="../../../builds/yn_tool.js"></script>
   <script src="../../../public/compressor.min.js"></script>
+  <script src="../../../public/FileSaver.min.js"></script>
   <script src="../../../public/xlsx.min.js"></script>
   <script src="../../../public/jszip.js"></script>
   <script src="../../../public/graph.js"></script>
