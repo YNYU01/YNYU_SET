@@ -1,3 +1,4 @@
+//import UPNG from 'upng-js';
 /*初始数据*/
 let skillSecInfo = [
   {

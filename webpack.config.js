@@ -6,7 +6,8 @@ const GIT_HASH = execSync('git rev-parse HEAD').toString().trim()
 
 module.exports = async()=> {
   return{
-    mode:'development',
+    mode:'production',//development | production
+    devtool:false,
     stats:{
       children: true,
     },
@@ -19,6 +20,9 @@ module.exports = async()=> {
       path: path.resolve(__dirname, './tool_plugin/ToolsSetFig/builds'), // 输出目录，修改为希望输出的文件夹路径
       filename: 'bundle.js', // 打包后的JavaScript文件名
     },
+    optimization:{
+      minimize: false,
+    },
     // 模块规则
     module: {
       rules: [
@@ -26,6 +30,11 @@ module.exports = async()=> {
           test: /\.css$/,
           use: [MiniCssExtractPlugin.loader/*'style-loader'*/, 'css-loader'], // 处理CSS文件
         },
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          loader: 'babel-loader',
+        }
       ],
     },
     // 插件配置

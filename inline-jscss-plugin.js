@@ -12,7 +12,7 @@ class InlineJsCssPlugin {
     compiler.hooks.afterEmit.tapAsync('InlineJsCssPlugin', (compilation, callback) => {
       // 获取输出路径和文件名
       const outputDir = this.templatePath.replace('/index.html','');//compilation.options.output.path;
-      const mainJsPath = path.join(outputDir, 'main.js');
+      const mainJsPath = path.join(outputDir, 'main.js');//outputDir.replace('/test','/builds'),'bundle.js') | outputDir, 'main.js'
       const mainCssPath = path.join(outputDir, 'style.css');
       const mainRunPath = path.join(outputDir, 'run.js');
 

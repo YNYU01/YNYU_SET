@@ -19,6 +19,7 @@
   "homepage": "https://github.com/YNYU01/YNYU_SET#readme",
   "devDependencies": {
     "@figma/plugin-typings": "^1.116.0",
+    "babel-loader": "^10.0.0",
     "css-loader": "^7.1.2",
     "execa": "^9.6.0",
     "html-webpack-plugin": "^5.6.3",
