@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@38c683b5894cf241eafc671365c8d014620c56a6/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9fa0d7883265798d5ed21b258282dc8b363ab4cd/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@38c683b5894cf241eafc671365c8d014620c56a6/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9fa0d7883265798d5ed21b258282dc8b363ab4cd/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -2968,13 +2968,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@38c683b5894cf241eafc671365c8d014620c56a6/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@38c683b5894cf241eafc671365c8d014620c56a6/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@38c683b5894cf241eafc671365c8d014620c56a6/public/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@38c683b5894cf241eafc671365c8d014620c56a6/public/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@38c683b5894cf241eafc671365c8d014620c56a6/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@38c683b5894cf241eafc671365c8d014620c56a6/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@38c683b5894cf241eafc671365c8d014620c56a6/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9fa0d7883265798d5ed21b258282dc8b363ab4cd/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9fa0d7883265798d5ed21b258282dc8b363ab4cd/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9fa0d7883265798d5ed21b258282dc8b363ab4cd/public/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9fa0d7883265798d5ed21b258282dc8b363ab4cd/public/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9fa0d7883265798d5ed21b258282dc8b363ab4cd/public/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9fa0d7883265798d5ed21b258282dc8b363ab4cd/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9fa0d7883265798d5ed21b258282dc8b363ab4cd/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9fa0d7883265798d5ed21b258282dc8b363ab4cd/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4189,6 +4190,7 @@ function compressImage(blob,quality,type) {
         
       });
     } else if ( type == 'png') {
+      
       return new Promise((resolve, reject) => {
         if(quality == 10){
           resolve(blob)
@@ -4205,7 +4207,11 @@ function compressImage(blob,quality,type) {
             ctx.drawImage(img,0,0)
             let imageData = ctx.getImageData(0,0,img.width,img.height);
             let data = imageData.data;
+            console.log(data.buffer, img.width, img.height)
+            let newimg = new Blob([UPNG.encode([data.buffer], img.width, img.height, 0)],{type: 'image/png'})
+            console.log(newimg)
             let colorcut = new Promise((resolve, reject) => {
+              /*
               // 提取非透明像素,并记录索引，以便后续重新上色
               let pixels = [];
               for (let i = 0; i < data.length; i += 4) {
@@ -4254,7 +4260,7 @@ function compressImage(blob,quality,type) {
               //应用扩散将临近区域颜色同化
               for (var i = 0; i < data.length; i += 4){
                 let x = (i / 4) % img.width,y = Math.floor((i / 4) / img.width);//获取像素坐标
-                /**/
+                
                 floyd(1,0,7/32)
                 floyd(-1,1,3/32)
                 floyd(0,1,4/32)
@@ -4263,7 +4269,7 @@ function compressImage(blob,quality,type) {
                 floyd(-2,2,2/32)
                 floyd(0,2,5/32)
                 floyd(2,2,3/32)
-                /**/
+                
                 //误差扩散
                 function floyd(dx,dy,factor){
                   if (x + dx >= 0 && x + dx < img.width && y + dy < img.height){
@@ -4309,15 +4315,15 @@ function compressImage(blob,quality,type) {
                 //console.log(pixeldata)
                 return pixeldata.flat();
               };
-
+              */
 
               ctx.putImageData(imageData,0,0);
               canvas.toBlob(function(finalblob){
                   resolve(finalblob)
               },'image/png')
             });
-
-            resolve(colorcut)
+            
+            resolve(newimg)
           };
         };
         

@@ -1210,6 +1210,7 @@ function compressImage(blob,quality,type) {
         
       });
     } else if ( type == 'png') {
+      
       return new Promise((resolve, reject) => {
         if(quality == 10){
           resolve(blob)
@@ -1226,7 +1227,9 @@ function compressImage(blob,quality,type) {
             ctx.drawImage(img,0,0)
             let imageData = ctx.getImageData(0,0,img.width,img.height);
             let data = imageData.data;
-            
+            console.log(data.buffer, img.width, img.height)
+            let newimg = new Blob([UPNG.encode([data.buffer], img.width, img.height, 0)],{type: 'image/png'})
+            console.log(newimg)
             let colorcut = new Promise((resolve, reject) => {
               /*
               // 提取非透明像素,并记录索引，以便后续重新上色
@@ -1340,7 +1343,7 @@ function compressImage(blob,quality,type) {
               },'image/png')
             });
             
-            resolve(colorcut)
+            resolve(newimg)
           };
         };
         
