@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d683e8d8c3af1a1add3d0c12d264e3eee3fcab2/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48038475f508bcc46de1e192892e33282de1eb20/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d683e8d8c3af1a1add3d0c12d264e3eee3fcab2/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48038475f508bcc46de1e192892e33282de1eb20/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -2968,16 +2968,16 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d683e8d8c3af1a1add3d0c12d264e3eee3fcab2/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d683e8d8c3af1a1add3d0c12d264e3eee3fcab2/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d683e8d8c3af1a1add3d0c12d264e3eee3fcab2/public/compressor.min.js"></script>
-  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d683e8d8c3af1a1add3d0c12d264e3eee3fcab2/public/UPNG.js"></script-->
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48038475f508bcc46de1e192892e33282de1eb20/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48038475f508bcc46de1e192892e33282de1eb20/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48038475f508bcc46de1e192892e33282de1eb20/public/compressor.min.js"></script>
+  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48038475f508bcc46de1e192892e33282de1eb20/public/UPNG.js"></script-->
   <script src="https://unpkg.com/pako@2.0.4/dist/pako.min.js"></script>
   <script src="https://unpkg.com/upng-js@latest/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d683e8d8c3af1a1add3d0c12d264e3eee3fcab2/public/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d683e8d8c3af1a1add3d0c12d264e3eee3fcab2/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d683e8d8c3af1a1add3d0c12d264e3eee3fcab2/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d683e8d8c3af1a1add3d0c12d264e3eee3fcab2/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48038475f508bcc46de1e192892e33282de1eb20/public/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48038475f508bcc46de1e192892e33282de1eb20/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48038475f508bcc46de1e192892e33282de1eb20/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48038475f508bcc46de1e192892e33282de1eb20/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 //import UPNG from 'upng-js';
@@ -4211,205 +4211,264 @@ function compressImage(blob,quality,type) {
             let imageData = ctx.getImageData(0,0,img.width,img.height);
             let data = imageData.data;
             //console.log(data.buffer, img.width, img.height)
+            // 提取非透明像素,并记录索引，以便后续重新上色
+            let pixels = [];
+            for (let i = 0; i < data.length; i += 4) {
+              const [r, g, b, a] = [data[i], data[i+1], data[i+2], data[i+3]];
+              if (a === 0) continue;
+              const [h, s, l] = rgbTohsl(r, g, b);
+              pixels.push({ r, g, b, a, h, s, l, index: i });
+            };
+            //console.log(pixels)
+            //按h分组
+            pixels = pixels.reduce((groups,item) => {
+              const keyValue = item['h'].toString();
+              if(!groups[keyValue]) groups[keyValue] = [];
+              groups[keyValue].push(item);
+              return groups;
+            },{});
+            //console.log(pixels,Object.values(pixels))
+            pixels = Object.values(pixels).sort((a,b) => b.length - a.length)
+            //console.log(pixels)
+
+            //通过hsl进行量化得到新的hsl值
+            let newpixels =  pixelsCut(pixels);
+            //将新的hsl值转为新的rgb，混合原来的rgb，得到新的map
+            const quantizedMap = new Map();
+            newpixels.forEach(item => {
+              let [r,g,b] = hslTorgb(item.h,item.s,item.l,255)
+              quantizedMap.set(item.index,[r,g,b])
+            });
+
+            //console.log(quantizedMap)
+
+            //应用量化颜色到 ImageData
+            for (let i = 0; i < data.length; i += 4) {
+                if (quantizedMap.has(i)) {
+                    const [r, g, b] = quantizedMap.get(i);
+                    data[i] = r;
+                    data[i + 1] = g;
+                    data[i + 2] = b;
+                    // 透明度保持不变
+                }
+                // 否则保持原色（比如透明像素）
+            };
+            //量化颜色
+            function pixelsCut(pixeldata){
+              /**/
+              let lengths = [];
+              pixeldata.forEach(item => {
+                if(item.length){
+                  lengths.push(item.length)
+                };
+              });
+              let average = lengths.reduce((a,b)=> a + b)/lengths.length;
+              let min = Math.min(...lengths);
+              let max = Math.max(...lengths);
+              //console.log(Math.max(...lengths),Math.min(...lengths),lengths.reduce((a,b)=> a + b)/lengths.length)
+              pixeldata.forEach(item => {
+                if(item.length < Math.max(average,(max - min)/2) ){
+                  item.forEach((p,index) => {
+                    if(p.r !== p.g && p.r !== p.b && p.g !== p.b ){
+                      //item[index].h = Math.floor(p.h/10) * 10;
+                      //item[index].s = Math.floor(p.s/4) * 4;
+                      //item[index].l = Math.floor(p.l/4) * 4;
+                      item[index].s = item[index].s >= 30 ? Math.floor(p.s * 0.8) : p.s;
+                    };
+                  });
+                }else{
+                  item.forEach((p,index) => {
+                    if(p.r !== p.g && p.r !== p.b && p.g !== p.b ){
+                      item[index].h = Math.floor(p.h/5) * 5;
+                      //item[index].l = Math.floor(p.l/4) * 4;
+                    };
+                  });
+                };
+              });
+              //console.log(pixeldata)
+              /**/
+              return pixeldata.flat();
+            };
             let depth = 256
-            if(quality < 8){
+            if(quality <= 4){
               depth = 128;
             };
-            if(quality < 4){
-              depth = 64;
-            };
-            if(quality < 2){
-              depth = 32;
-            };
-            let newimg = new Blob([UPNG.encode([data.buffer], img.width, img.height, quality*depth)],{type: 'image/png'});
+            let diff = ditherColor(data, img.width, img.height).pixels
+            let diffimg = new Blob([UPNG.encode([diff.buffer], img.width, img.height,0)],{type: 'image/png'})
+            //console.log(diff,diffimg)
+
+            //let newimg = new Blob([UPNG.encode([data.buffer], img.width, img.height, quality*depth)],{type: 'image/png'});
             //console.log(data.buffer,UPNG.encode([data.buffer], img.width, img.height, 0),newimg)
-            
-            let url2 = URL.createObjectURL(newimg);
-            let img2 = new Image()
-            img2.src = url2;
 
-            img2.onload = function(){
-              let canvas2 = document.createElement('canvas');
-              canvas2.width = img2.width;
-              canvas2.height = img2.height;
-              let ctx2 = canvas2.getContext('2d');
-              ctx2.drawImage(img2,0,0)
-              let imageData2 = ctx2.getImageData(0,0,img2.width,img2.height);
-              let data2 = imageData2.data;
-
-              // dither with stucki dithering algorithm 
-              // https://tannerhelland.com/2012/12/28/dithering-eleven-algorithms-source-code.html#stucki-dithering
-              //单色
-              function calculateLightness(r, g, b){
-                const max = Math.max(r, g, b);
-                const min = Math.min(r, g, b);
-                return (max + min) / 2;
-              };
-              function dither(pixels, imageWidth, imageHeight){
-                const ditheredPixels = pixels//.slice().fill(255);
-                // add 2 to beginning and end so we don't need to do bounds checks
-                const errorDiffusionWidth = imageWidth + 4;
-                const errorBuffer = new ArrayBuffer(errorDiffusionWidth * 3 * 4);
-                let errorRow1 = new Float32Array(errorBuffer, 0, errorDiffusionWidth);
-                let errorRow2 = new Float32Array(errorBuffer, errorDiffusionWidth * 4, errorDiffusionWidth);
-                let errorRow3 = new Float32Array(errorBuffer, errorDiffusionWidth * 8, errorDiffusionWidth);
-            
-                const startTime = performance.now();
-                for(let y=0,pixelIndex=0; y<imageHeight; y++){
-                    for(let x=0,errorIndex=2;x<imageWidth;x++,pixelIndex+=4,errorIndex++){
-                        const storedError = errorRow1[errorIndex];
-                        const lightness = calculateLightness(pixels[pixelIndex], pixels[pixelIndex+1], pixels[pixelIndex+2]);
-                        const adjustedLightness = storedError + lightness;
-                        const outputValue = adjustedLightness > 127 ? 255 : 0;
-            
-                        ditheredPixels[pixelIndex] = outputValue;
-                        ditheredPixels[pixelIndex+1] = outputValue;
-                        ditheredPixels[pixelIndex+2] = outputValue;
-            
-                        let errorFraction = (adjustedLightness - outputValue) / 42;
-                        const errorFraction2 =  errorFraction * 2;
-                        const errorFraction4 =  errorFraction * 4;
-                        const errorFraction8 =  errorFraction * 8;
-            
-                        errorRow1[errorIndex+1] += errorFraction8;
-                        errorRow1[errorIndex+2] += errorFraction4;
-            
-                        errorRow2[errorIndex-2] += errorFraction2;
-                        errorRow2[errorIndex-1] += errorFraction4;
-                        errorRow2[errorIndex] += errorFraction8;
-                        errorRow2[errorIndex+1] += errorFraction4;
-                        errorRow2[errorIndex+2] += errorFraction2;
-            
-                        errorRow3[errorIndex-2] += errorFraction;
-                        errorRow3[errorIndex-1] += errorFraction2;
-                        errorRow3[errorIndex] += errorFraction4;
-                        errorRow3[errorIndex+1] += errorFraction2;
-                        errorRow3[errorIndex+2] += errorFraction;
-                    }
-                    errorRow1.fill(0);
-                    const temp = errorRow1;
-                    errorRow1 = errorRow2;
-                    errorRow2 = errorRow3;
-                    errorRow3 = temp;
-                };
-                const timeElapsed = (performance.now() - startTime) / 1000;
-                return {
-                    pixels: ditheredPixels,
-                    timeElapsed,
-                };
-              };
-              //彩色
-              function ditherColor(pixels, imageWidth, imageHeight) {
-                let ditheredPixels = new Uint8ClampedArray(pixels); // 复制像素
-                let levels = quality * 25; // 每通道量化级别，例如 4 表示 0, 85, 170, 255
-                let step = 255 / levels;
-            
-                // 误差缓冲区（每行 +4 避免边界检查）
-                let errorDiffusionWidth = imageWidth + 4;
-                let bufferLength = errorDiffusionWidth * 3; // R, G, B 各一行
-                let errorBuffer = new ArrayBuffer(bufferLength * 4 * 3); // 3 行 × 3 通道 × Float32
-            
-                // 每个通道的三行误差（当前行 + 下两行）
-                let er1R = new Float32Array(errorBuffer, 0, errorDiffusionWidth);
-                let er1G = new Float32Array(errorBuffer, errorDiffusionWidth * 4, errorDiffusionWidth);
-                let er1B = new Float32Array(errorBuffer, errorDiffusionWidth * 8, errorDiffusionWidth);
-            
-                let er2R = new Float32Array(errorBuffer, errorDiffusionWidth * 12, errorDiffusionWidth);
-                let er2G = new Float32Array(errorBuffer, errorDiffusionWidth * 16, errorDiffusionWidth);
-                let er2B = new Float32Array(errorBuffer, errorDiffusionWidth * 20, errorDiffusionWidth);
-            
-                let er3R = new Float32Array(errorBuffer, errorDiffusionWidth * 24, errorDiffusionWidth);
-                let er3G = new Float32Array(errorBuffer, errorDiffusionWidth * 28, errorDiffusionWidth);
-                let er3B = new Float32Array(errorBuffer, errorDiffusionWidth * 32, errorDiffusionWidth);
-            
-                let startTime = performance.now();
-            
-                for (let y = 0, pixelIndex = 0; y < imageHeight; y++) {
-                    // 清除上上行误差（复用为下下行）
-                    er3R.fill(0);
-                    er3G.fill(0);
-                    er3B.fill(0);
-            
-                    for (let x = 0, errorIndex = 2; x < imageWidth; x++, pixelIndex += 4, errorIndex++) {
-                      let r = pixels[pixelIndex];
-                      let g = pixels[pixelIndex + 1];
-                      let b = pixels[pixelIndex + 2];
-            
-                      // 获取累积误差
-                      let errR = er1R[errorIndex];
-                      let errG = er1G[errorIndex];
-                      let errB = er1B[errorIndex];
-          
-                      // 加上误差后的值
-                      let rAdj = r + errR;
-                      let gAdj = g + errG;
-                      let bAdj = b + errB;
-          
-                      // 限制范围
-                      rAdj = Math.max(0, Math.min(255, rAdj));
-                      gAdj = Math.max(0, Math.min(255, gAdj));
-                      bAdj = Math.max(0, Math.min(255, bAdj));
-          
-                      // 量化：映射到有限颜色级别
-                      let rOut = Math.round(rAdj / step) * step;
-                      let gOut = Math.round(gAdj / step) * step;
-                      let bOut = Math.round(bAdj / step) * step;
-          
-                      // 保存结果
-                      ditheredPixels[pixelIndex] = rOut;
-                      ditheredPixels[pixelIndex + 1] = gOut;
-                      ditheredPixels[pixelIndex + 2] = bOut;
-          
-                      // 计算误差
-                      let rErr = rAdj - rOut;
-                      let gErr = gAdj - gOut;
-                      let bErr = bAdj - bOut;
-          
-                      // Floyd-Steinberg 矩阵扩散 (1/16)
-                      let rErr7 = rErr * 7/16, gErr7 = gErr * 7/16, bErr7 = bErr * 7/16;
-                      let rErr3 = rErr * 3/16, gErr3 = gErr * 3/16, bErr3 = bErr * 3/16;
-                      let rErr5 = rErr * 5/16, gErr5 = gErr * 5/16, bErr5 = bErr * 5/16;
-                      let rErr1 = rErr * 1/16, gErr1 = gErr * 1/16, bErr1 = bErr * 1/16;
-          
-                      // 右
-                      er1R[errorIndex + 1] += rErr7;
-                      er1G[errorIndex + 1] += gErr7;
-                      er1B[errorIndex + 1] += bErr7;
-          
-                      // 左下
-                      er2R[errorIndex - 1] += rErr3;
-                      er2G[errorIndex - 1] += gErr3;
-                      er2B[errorIndex - 1] += bErr3;
-          
-                      // 正下
-                      er2R[errorIndex] += rErr5;
-                      er2G[errorIndex] += gErr5;
-                      er2B[errorIndex] += bErr5;
-          
-                      // 右下
-                      er2R[errorIndex + 1] += rErr1;
-                      er2G[errorIndex + 1] += gErr1;
-                      er2B[errorIndex + 1] += bErr1;
-                    }
-            
-                    // 移动误差行：上移一行
-                    [er1R, er1G, er1B] = [er2R, er2G, er2B];
-                    [er2R, er2G, er2B] = [er3R, er3G, er3B];
-                    [er3R, er3G, er3B] = [er1R, er1G, er1B]; // 重用（实际会被 fill(0)）
-                }
-            
-                let timeElapsed = (performance.now() - startTime) / 1000;
-                return {
-                    pixels: ditheredPixels,
-                    timeElapsed,
-                };
-              }
-              let diff = ditherColor(data2, img.width, img.height).pixels
-              let diffimg = new Blob([UPNG.encode([diff.buffer], img.width, img.height, 0)],{type: 'image/png'})
-              //console.log(diff,diffimg)
-              
-              resolve(diffimg)
+            // dither with stucki dithering algorithm 
+            // https://tannerhelland.com/2012/12/28/dithering-eleven-algorithms-source-code.html#stucki-dithering
+            //单色
+            function calculateLightness(r, g, b){
+              const max = Math.max(r, g, b);
+              const min = Math.min(r, g, b);
+              return (max + min) / 2;
             };
+            function dither(pixels, imageWidth, imageHeight){
+              const ditheredPixels = pixels//.slice().fill(255);
+              // add 2 to beginning and end so we don't need to do bounds checks
+              const errorDiffusionWidth = imageWidth + 4;
+              const errorBuffer = new ArrayBuffer(errorDiffusionWidth * 3 * 4);
+              let errorRow1 = new Float32Array(errorBuffer, 0, errorDiffusionWidth);
+              let errorRow2 = new Float32Array(errorBuffer, errorDiffusionWidth * 4, errorDiffusionWidth);
+              let errorRow3 = new Float32Array(errorBuffer, errorDiffusionWidth * 8, errorDiffusionWidth);
+          
+              const startTime = performance.now();
+              for(let y=0,pixelIndex=0; y<imageHeight; y++){
+                  for(let x=0,errorIndex=2;x<imageWidth;x++,pixelIndex+=4,errorIndex++){
+                      const storedError = errorRow1[errorIndex];
+                      const lightness = calculateLightness(pixels[pixelIndex], pixels[pixelIndex+1], pixels[pixelIndex+2]);
+                      const adjustedLightness = storedError + lightness;
+                      const outputValue = adjustedLightness > 127 ? 255 : 0;
+          
+                      ditheredPixels[pixelIndex] = outputValue;
+                      ditheredPixels[pixelIndex+1] = outputValue;
+                      ditheredPixels[pixelIndex+2] = outputValue;
+          
+                      let errorFraction = (adjustedLightness - outputValue) / 42;
+                      const errorFraction2 =  errorFraction * 2;
+                      const errorFraction4 =  errorFraction * 4;
+                      const errorFraction8 =  errorFraction * 8;
+          
+                      errorRow1[errorIndex+1] += errorFraction8;
+                      errorRow1[errorIndex+2] += errorFraction4;
+          
+                      errorRow2[errorIndex-2] += errorFraction2;
+                      errorRow2[errorIndex-1] += errorFraction4;
+                      errorRow2[errorIndex] += errorFraction8;
+                      errorRow2[errorIndex+1] += errorFraction4;
+                      errorRow2[errorIndex+2] += errorFraction2;
+          
+                      errorRow3[errorIndex-2] += errorFraction;
+                      errorRow3[errorIndex-1] += errorFraction2;
+                      errorRow3[errorIndex] += errorFraction4;
+                      errorRow3[errorIndex+1] += errorFraction2;
+                      errorRow3[errorIndex+2] += errorFraction;
+                  }
+                  errorRow1.fill(0);
+                  const temp = errorRow1;
+                  errorRow1 = errorRow2;
+                  errorRow2 = errorRow3;
+                  errorRow3 = temp;
+              };
+              const timeElapsed = (performance.now() - startTime) / 1000;
+              return {
+                  pixels: ditheredPixels,
+                  timeElapsed,
+              };
+            };
+            //彩色
+            function ditherColor(pixels, imageWidth, imageHeight) {
+              let ditheredPixels = new Uint8ClampedArray(pixels); // 复制像素
+              let levels = quality * 25; // 每通道量化级别，例如 4 表示 0, 85, 170, 255
+              let step = 255 / levels;
+          
+              // 误差缓冲区（每行 +4 避免边界检查）
+              let errorDiffusionWidth = imageWidth + 4;
+              let bufferLength = errorDiffusionWidth * 3; // R, G, B 各一行
+              let errorBuffer = new ArrayBuffer(bufferLength * 4 * 3); // 3 行 × 3 通道 × Float32
+          
+              // 每个通道的三行误差（当前行 + 下两行）
+              let er1R = new Float32Array(errorBuffer, 0, errorDiffusionWidth);
+              let er1G = new Float32Array(errorBuffer, errorDiffusionWidth * 4, errorDiffusionWidth);
+              let er1B = new Float32Array(errorBuffer, errorDiffusionWidth * 8, errorDiffusionWidth);
+          
+              let er2R = new Float32Array(errorBuffer, errorDiffusionWidth * 12, errorDiffusionWidth);
+              let er2G = new Float32Array(errorBuffer, errorDiffusionWidth * 16, errorDiffusionWidth);
+              let er2B = new Float32Array(errorBuffer, errorDiffusionWidth * 20, errorDiffusionWidth);
+          
+              let er3R = new Float32Array(errorBuffer, errorDiffusionWidth * 24, errorDiffusionWidth);
+              let er3G = new Float32Array(errorBuffer, errorDiffusionWidth * 28, errorDiffusionWidth);
+              let er3B = new Float32Array(errorBuffer, errorDiffusionWidth * 32, errorDiffusionWidth);
+          
+              let startTime = performance.now();
+          
+              for (let y = 0, pixelIndex = 0; y < imageHeight; y++) {
+                  // 清除上上行误差（复用为下下行）
+                  er3R.fill(0);
+                  er3G.fill(0);
+                  er3B.fill(0);
+          
+                  for (let x = 0, errorIndex = 2; x < imageWidth; x++, pixelIndex += 4, errorIndex++) {
+                    let r = pixels[pixelIndex];
+                    let g = pixels[pixelIndex + 1];
+                    let b = pixels[pixelIndex + 2];
+          
+                    // 获取累积误差
+                    let errR = er1R[errorIndex];
+                    let errG = er1G[errorIndex];
+                    let errB = er1B[errorIndex];
+        
+                    // 加上误差后的值
+                    let rAdj = r + errR;
+                    let gAdj = g + errG;
+                    let bAdj = b + errB;
+        
+                    // 限制范围
+                    rAdj = Math.max(0, Math.min(255, rAdj));
+                    gAdj = Math.max(0, Math.min(255, gAdj));
+                    bAdj = Math.max(0, Math.min(255, bAdj));
+        
+                    // 量化：映射到有限颜色级别
+                    let rOut = Math.round(rAdj / step) * step;
+                    let gOut = Math.round(gAdj / step) * step;
+                    let bOut = Math.round(bAdj / step) * step;
+        
+                    // 保存结果
+                    ditheredPixels[pixelIndex] = rOut;
+                    ditheredPixels[pixelIndex + 1] = gOut;
+                    ditheredPixels[pixelIndex + 2] = bOut;
+        
+                    // 计算误差
+                    let rErr = rAdj - rOut;
+                    let gErr = gAdj - gOut;
+                    let bErr = bAdj - bOut;
+        
+                    // Floyd-Steinberg 矩阵扩散 (1/16)
+                    let rErr7 = rErr * 7/16, gErr7 = gErr * 7/16, bErr7 = bErr * 7/16;
+                    let rErr3 = rErr * 3/16, gErr3 = gErr * 3/16, bErr3 = bErr * 3/16;
+                    let rErr5 = rErr * 5/16, gErr5 = gErr * 5/16, bErr5 = bErr * 5/16;
+                    let rErr1 = rErr * 1/16, gErr1 = gErr * 1/16, bErr1 = bErr * 1/16;
+        
+                    // 右
+                    er1R[errorIndex + 1] += rErr7;
+                    er1G[errorIndex + 1] += gErr7;
+                    er1B[errorIndex + 1] += bErr7;
+        
+                    // 左下
+                    er2R[errorIndex - 1] += rErr3;
+                    er2G[errorIndex - 1] += gErr3;
+                    er2B[errorIndex - 1] += bErr3;
+        
+                    // 正下
+                    er2R[errorIndex] += rErr5;
+                    er2G[errorIndex] += gErr5;
+                    er2B[errorIndex] += bErr5;
+        
+                    // 右下
+                    er2R[errorIndex + 1] += rErr1;
+                    er2G[errorIndex + 1] += gErr1;
+                    er2B[errorIndex + 1] += bErr1;
+                  }
+          
+                  // 移动误差行：上移一行
+                  [er1R, er1G, er1B] = [er2R, er2G, er2B];
+                  [er2R, er2G, er2B] = [er3R, er3G, er3B];
+                  [er3R, er3G, er3B] = [er1R, er1G, er1B]; // 重用（实际会被 fill(0)）
+              }
+          
+              let timeElapsed = (performance.now() - startTime) / 1000;
+              return {
+                  pixels: ditheredPixels,
+                  timeElapsed,
+              };
+            }
+            
+            resolve(diffimg)
           };
         };
         
