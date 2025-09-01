@@ -13,10 +13,6 @@
 	
 		
 	
-	var UPNG = {};
-	
-		
-	
 	UPNG.toRGBA8 = function(out)
 	{
 		var w = out.width, h = out.height;
@@ -117,7 +113,7 @@
 		{
 			var len  = bin.readUint(data, offset);  offset += 4;
 			var type = bin.readASCII(data, offset, 4);  offset += 4;
-			//console.log(type,len);
+			//log(type,len);
 			
 			if     (type=="IHDR")  {  UPNG.decode._IHDR(data, offset, out);  }
 			else if(type=="IDAT") {
@@ -191,17 +187,15 @@
 				else if(out.ctype==3) out.tabs[type] = data[offset];
 			}
 			else if(type=="IEND") {
-				break;
+				if(foff!=0) {  var fr = out.frames[out.frames.length-1];
+					fr.data = UPNG.decode._decompress(out, fd.slice(0,foff), fr.rect.width, fr.rect.height);  foff=0;
+				}	
+				out.data = UPNG.decode._decompress(out, dd, out.width, out.height);  break;
 			}
 			//else {  log("unknown chunk type", type, len);  }
 			offset += len;
 			var crc = bin.readUint(data, offset);  offset += 4;
 		}
-		if(foff!=0) {  var fr = out.frames[out.frames.length-1];
-			fr.data = UPNG.decode._decompress(out, fd.slice(0,foff), fr.rect.width, fr.rect.height);  foff=0;
-		}	
-		out.data = UPNG.decode._decompress(out, dd, out.width, out.height);
-		
 		delete out.compress;  delete out.interlace;  delete out.filter;
 		return out;
 	}
@@ -388,55 +382,17 @@
 	
 	
 	
-	
-	
-	
 	UPNG.encode = function(bufs, w, h, ps, dels, forbidPlte)
 	{
 		if(ps==null) ps=0;
 		if(forbidPlte==null) forbidPlte = false;
-	
-		var nimg = UPNG.encode.compress(bufs, w, h, ps, false, forbidPlte);
-		UPNG.encode.compressPNG(nimg, -1);
-		
-		return UPNG.encode._main(nimg, w, h, dels);
-	}
-	
-	UPNG.encodeLL = function(bufs, w, h, cc, ac, depth, dels) {
-		var nimg = {  ctype: 0 + (cc==1 ? 0 : 2) + (ac==0 ? 0 : 4),      depth: depth,  frames: []  };
-		
-		var bipp = (cc+ac)*depth, bipl = bipp * w;
-		for(var i=0; i<bufs.length; i++)
-			nimg.frames.push({  rect:{x:0,y:0,width:w,height:h},  img:new Uint8Array(bufs[i]), blend:0, dispose:1, bpp:Math.ceil(bipp/8), bpl:Math.ceil(bipl/8)  });
-		
-		UPNG.encode.compressPNG(nimg, 4);
-		
-		return UPNG.encode._main(nimg, w, h, dels);
-	}
-	
-	UPNG.encode._main = function(nimg, w, h, dels) {
-		var crc = UPNG.crc.crc, wUi = UPNG._bin.writeUint, wUs = UPNG._bin.writeUshort, wAs = UPNG._bin.writeASCII;
-		var offset = 8, anim = nimg.frames.length>1, pltAlpha = false;
-		
-		var leng = 8 + (16+5+4)  + (9+4) + (anim ? 20 : 0);
-		if(nimg.ctype==3) {
-			var dl = nimg.plte.length;
-			for(var i=0; i<dl; i++) if((nimg.plte[i]>>>24)!=255) pltAlpha = true;
-			leng += (8 + dl*3 + 4) + (pltAlpha ? (8 + dl*1 + 4) : 0);
-		}
-		for(var j=0; j<nimg.frames.length; j++)
-		{
-			var fr = nimg.frames[j];
-			if(anim) leng += 38;
-			leng += fr.cimg.length + 12;
-			if(j!=0) leng+=4;
-		}
-		leng += 12; 
-		
-		var data = new Uint8Array(leng);
+		var data = new Uint8Array(bufs[0].byteLength*bufs.length+100);
 		var wr=[0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 		for(var i=0; i<8; i++) data[i]=wr[i];
-		
+		var offset = 8,  bin = UPNG._bin, crc = UPNG.crc.crc, wUi = bin.writeUint, wUs = bin.writeUshort, wAs = bin.writeASCII;
+	
+		var nimg = UPNG.encode.compressPNG(bufs, w, h, ps, forbidPlte);
+	
 		wUi(data,offset, 13);     offset+=4;
 		wAs(data,offset,"IHDR");  offset+=4;
 		wUi(data,offset,w);  offset+=4;
@@ -454,10 +410,11 @@
 		data[offset] = 1;  offset++;
 		wUi(data,offset,crc(data,offset-5,5));  offset+=4; // crc
 	
+		var anim = bufs.length>1;
 		if(anim) {
 			wUi(data,offset, 8);      offset+=4;
 			wAs(data,offset,"acTL");  offset+=4;
-			wUi(data,offset, nimg.frames.length);     offset+=4;
+			wUi(data,offset, bufs.length);      offset+=4;
 			wUi(data,offset, 0);      offset+=4;
 			wUi(data,offset,crc(data,offset-12,12));  offset+=4; // crc
 		}
@@ -467,16 +424,16 @@
 			wUi(data,offset, dl*3);  offset+=4;
 			wAs(data,offset,"PLTE");  offset+=4;
 			for(var i=0; i<dl; i++){
-				var ti=i*3, c=nimg.plte[i], r=(c)&255, g=(c>>>8)&255, b=(c>>>16)&255;
+				var ti=i*3, c=nimg.plte[i], r=(c)&255, g=(c>>8)&255, b=(c>>16)&255;
 				data[offset+ti+0]=r;  data[offset+ti+1]=g;  data[offset+ti+2]=b;
 			}
 			offset+=dl*3;
 			wUi(data,offset,crc(data,offset-dl*3-4,dl*3+4));  offset+=4; // crc
 	
-			if(pltAlpha) {
+			if(nimg.gotAlpha) {
 				wUi(data,offset, dl);  offset+=4;
 				wAs(data,offset,"tRNS");  offset+=4;
-				for(var i=0; i<dl; i++)  data[offset+i]=(nimg.plte[i]>>>24)&255;
+				for(var i=0; i<dl; i++)  data[offset+i]=(nimg.plte[i]>>24)&255;
 				offset+=dl;
 				wUi(data,offset,crc(data,offset-dl-4,dl+4));  offset+=4; // crc
 			}
@@ -487,8 +444,8 @@
 		{
 			var fr = nimg.frames[j];
 			if(anim) {
-				wUi(data, offset, 26);     offset+=4;
-				wAs(data, offset,"fcTL");  offset+=4;
+				wUi(data,offset, 26);     offset+=4;
+				wAs(data,offset,"fcTL");  offset+=4;
 				wUi(data, offset, fi++);   offset+=4;
 				wUi(data, offset, fr.rect.width );   offset+=4;
 				wUi(data, offset, fr.rect.height);   offset+=4;
@@ -515,107 +472,62 @@
 		wAs(data,offset,"IEND");  offset+=4;
 		wUi(data,offset,crc(data,offset-4,4));  offset+=4; // crc
 	
-		return data.buffer;
+		return data.buffer.slice(0,offset);
 	}
 	
-	UPNG.encode.compressPNG = function(out, filter) {
-		for(var i=0; i<out.frames.length; i++) {
-			var frm = out.frames[i], nw=frm.rect.width, nh=frm.rect.height;
-			var fdata = new Uint8Array(nh*frm.bpl+nh);
-			frm.cimg = UPNG.encode._filterZero(frm.img,nh,frm.bpp,frm.bpl,fdata, filter);
-		}
+	UPNG.encode.compressPNG = function(bufs, w, h, ps, forbidPlte)
+	{
+		var out = UPNG.encode.compress(bufs, w, h, ps, false, forbidPlte);
+		for(var i=0; i<bufs.length; i++) {
+			var frm = out.frames[i], nw=frm.rect.width, nh=frm.rect.height, bpl=frm.bpl, bpp=frm.bpp;
+			var fdata = new Uint8Array(nh*bpl+nh);
+			frm.cimg = UPNG.encode._filterZero(frm.img,nh,bpp,bpl,fdata);
+		}	
+		return out;
 	}
-	
-	
 	
 	UPNG.encode.compress = function(bufs, w, h, ps, forGIF, forbidPlte)
 	{
-		//var time = Date.now();
 		if(forbidPlte==null) forbidPlte = false;
 		
-		var ctype = 6, depth = 8, alphaAnd=255
+		var ctype = 6, depth = 8, bpp = 4, alphaAnd=255
 		
 		for(var j=0; j<bufs.length; j++)  {  // when not quantized, other frames can contain colors, that are not in an initial frame
 			var img = new Uint8Array(bufs[j]), ilen = img.length;
 			for(var i=0; i<ilen; i+=4) alphaAnd &= img[i+3];
 		}
-		var gotAlpha = (alphaAnd!=255);
+		var gotAlpha = (alphaAnd)!=255;
 		
-		//console.log("alpha check", Date.now()-time);  time = Date.now();
+		var cmap={}, plte=[];  if(bufs.length!=0) {  cmap[0]=0;  plte.push(0);  if(ps!=0) ps--;  } 
 		
-		var brute = gotAlpha && forGIF;		// brute : frames can only be copied, not "blended"
-		var frms = UPNG.encode.framize(bufs, w, h, forGIF, brute);
-		//console.log("framize", Date.now()-time);  time = Date.now();
-		
-		var cmap={}, plte=[], inds=[];  
 		
 		if(ps!=0) {
-			var nbufs = [];  for(var i=0; i<frms.length; i++) nbufs.push(frms[i].img.buffer);
-			
-			var abuf = UPNG.encode.concatRGBA(nbufs, forGIF), qres = UPNG.quantize(abuf, ps);  
-			var cof = 0, bb = new Uint8Array(qres.abuf);
-			for(var i=0; i<frms.length; i++) {  var ti=frms[i].img, bln=ti.length;  inds.push(new Uint8Array(qres.inds.buffer, cof>>2, bln>>2));
-				for(var j=0; j<bln; j+=4) {  ti[j]=bb[cof+j];  ti[j+1]=bb[cof+j+1];  ti[j+2]=bb[cof+j+2];  ti[j+3]=bb[cof+j+3];  }    cof+=bln;  }
-			
-			for(var i=0; i<qres.plte.length; i++) plte.push(qres.plte[i].est.rgba);
-			//console.log("quantize", Date.now()-time);  time = Date.now();
+			var qres = UPNG.quantize(bufs, ps, forGIF);  bufs = qres.bufs;
+			for(var i=0; i<qres.plte.length; i++) {  var c=qres.plte[i].est.rgba;  if(cmap[c]==null) {  cmap[c]=plte.length;  plte.push(c);  }     }
 		}
 		else {
 			// what if ps==0, but there are <=256 colors?  we still need to detect, if the palette could be used
-			for(var j=0; j<frms.length; j++)  {  // when not quantized, other frames can contain colors, that are not in an initial frame
-				var frm = frms[j], img32 = new Uint32Array(frm.img.buffer), nw=frm.rect.width, ilen = img32.length;
-				var ind = new Uint8Array(ilen);  inds.push(ind);
+			for(var j=0; j<bufs.length; j++)  {  // when not quantized, other frames can contain colors, that are not in an initial frame
+				var img32 = new Uint32Array(bufs[j]), ilen = img32.length;
 				for(var i=0; i<ilen; i++) {
 					var c = img32[i];
-					if     (i!=0 && c==img32[i- 1]) ind[i]=ind[i-1];
-					else if(i>nw && c==img32[i-nw]) ind[i]=ind[i-nw];
-					else {
-						var cmc = cmap[c];
-						if(cmc==null) {  cmap[c]=cmc=plte.length;  plte.push(c);  if(plte.length>=300) break;  }
-						ind[i]=cmc;
-					}
+					if((i<w || (c!=img32[i-1] && c!=img32[i-w])) && cmap[c]==null) {  cmap[c]=plte.length;  plte.push(c);  if(plte.length>=300) break;  }
 				}
 			}
-			//console.log("make palette", Date.now()-time);  time = Date.now();
 		}
 		
-		var cc=plte.length; //console.log("colors:",cc);
+		var brute = gotAlpha ? forGIF : false;		// brute : frames can only be copied, not "blended"
+		var cc=plte.length;  //console.log(cc);
 		if(cc<=256 && forbidPlte==false) {
 			if(cc<= 2) depth=1;  else if(cc<= 4) depth=2;  else if(cc<=16) depth=4;  else depth=8;
 			if(forGIF) depth=8;
+			gotAlpha = true;
 		}
 		
-		for(var j=0; j<frms.length; j++)
-		{
-			var frm = frms[j], nx=frm.rect.x, ny=frm.rect.y, nw=frm.rect.width, nh=frm.rect.height;
-			var cimg = frm.img, cimg32 = new Uint32Array(cimg.buffer);
-			var bpl = 4*nw, bpp=4;
-			if(cc<=256 && forbidPlte==false) {
-				bpl = Math.ceil(depth*nw/8);
-				var nimg = new Uint8Array(bpl*nh);
-				var inj = inds[j];
-				for(var y=0; y<nh; y++) {  var i=y*bpl, ii=y*nw;
-					if     (depth==8) for(var x=0; x<nw; x++) nimg[i+(x)   ]   =  (inj[ii+x]             );
-					else if(depth==4) for(var x=0; x<nw; x++) nimg[i+(x>>1)]  |=  (inj[ii+x]<<(4-(x&1)*4));
-					else if(depth==2) for(var x=0; x<nw; x++) nimg[i+(x>>2)]  |=  (inj[ii+x]<<(6-(x&3)*2));
-					else if(depth==1) for(var x=0; x<nw; x++) nimg[i+(x>>3)]  |=  (inj[ii+x]<<(7-(x&7)*1));
-				}
-				cimg=nimg;  ctype=3;  bpp=1;
-			}
-			else if(gotAlpha==false && frms.length==1) {	// some next "reduced" frames may contain alpha for blending
-				var nimg = new Uint8Array(nw*nh*3), area=nw*nh;
-				for(var i=0; i<area; i++) { var ti=i*3, qi=i*4;  nimg[ti]=cimg[qi];  nimg[ti+1]=cimg[qi+1];  nimg[ti+2]=cimg[qi+2];  }
-				cimg=nimg;  ctype=2;  bpp=3;  bpl=3*nw;
-			}
-			frm.img=cimg;  frm.bpl=bpl;  frm.bpp=bpp;
-		}
-		//console.log("colors => palette indices", Date.now()-time);  time = Date.now();
 		
-		return {ctype:ctype, depth:depth, plte:plte, frames:frms  };
-	}
-	UPNG.encode.framize = function(bufs,w,h,forGIF,brute) {
 		var frms = [];
-		for(var j=0; j<bufs.length; j++) {
+		for(var j=0; j<bufs.length; j++)
+		{
 			var cimg = new Uint8Array(bufs[j]), cimg32 = new Uint32Array(cimg.buffer);
 			
 			var nx=0, ny=0, nw=w, nh=h, blend=0;
@@ -651,20 +563,32 @@
 				else {
 					UPNG._copyTile(cimg,w,h, nimg,nw,nh, -nx,-ny, 0);  blend = 0;
 				}
-				cimg = nimg;
+				cimg = nimg;  cimg32 = new Uint32Array(cimg.buffer);
 			}
-			else cimg = cimg.slice(0);	// img may be rewrited further ... don't rewrite input
-			frms.push({rect:{x:nx,y:ny,width:nw,height:nh}, img:cimg, blend:blend, dispose:brute?1:0});
+			var bpl = 4*nw;
+			if(cc<=256 && forbidPlte==false) {
+				bpl = Math.ceil(depth*nw/8);
+				var nimg = new Uint8Array(bpl*nh);
+				for(var y=0; y<nh; y++) {  var i=y*bpl, ii=y*nw;
+					if     (depth==8) for(var x=0; x<nw; x++) nimg[i+(x)   ]   =  (cmap[cimg32[ii+x]]             );
+					else if(depth==4) for(var x=0; x<nw; x++) nimg[i+(x>>1)]  |=  (cmap[cimg32[ii+x]]<<(4-(x&1)*4));
+					else if(depth==2) for(var x=0; x<nw; x++) nimg[i+(x>>2)]  |=  (cmap[cimg32[ii+x]]<<(6-(x&3)*2));
+					else if(depth==1) for(var x=0; x<nw; x++) nimg[i+(x>>3)]  |=  (cmap[cimg32[ii+x]]<<(7-(x&7)*1));
+				}
+				cimg=nimg;  ctype=3;  bpp=1;
+			}
+			else if(gotAlpha==false && bufs.length==1) {	// some next "reduced" frames may contain alpha for blending
+				var nimg = new Uint8Array(nw*nh*3), area=nw*nh;
+				for(var i=0; i<area; i++) { var ti=i*3, qi=i*4;  nimg[ti]=cimg[qi];  nimg[ti+1]=cimg[qi+1];  nimg[ti+2]=cimg[qi+2];  }
+				cimg=nimg;  ctype=2;  bpp=3;  bpl=3*nw;
+			}
+			frms.push({rect:{x:nx,y:ny,width:nw,height:nh}, img:cimg, bpl:bpl, bpp:bpp, blend:blend, dispose:brute?1:0});
 		}
-		return frms;
+		return {ctype:ctype, depth:depth, plte:plte, gotAlpha:gotAlpha, frames:frms  };
 	}
 	
-	UPNG.encode._filterZero = function(img,h,bpp,bpl,data, filter)
+	UPNG.encode._filterZero = function(img,h,bpp,bpl,data)
 	{
-		if(filter!=-1) {
-			for(var y=0; y<h; y++) UPNG.encode._filterLine(data, img, y, bpl, bpp, filter);
-			return pako["deflate"](data);
-		}
 		var fls = [];
 		for(var t=0; t<5; t++) {  if(h*bpl>500000 && (t==2 || t==3 || t==4)) continue;
 			for(var y=0; y<h; y++) UPNG.encode._filterLine(data, img, y, bpl, bpp, t);
@@ -719,34 +643,17 @@
 	}
 	
 	
-	UPNG.quantize = function(abuf, ps)
+	UPNG.quantize = function(bufs, ps, roundAlpha)
 	{	
-		var oimg = new Uint8Array(abuf), nimg = oimg.slice(0), nimg32 = new Uint32Array(nimg.buffer);
+		var imgs = [], totl = 0;
+		for(var i=0; i<bufs.length; i++) {  imgs.push(UPNG.encode.alphaMul(new Uint8Array(bufs[i]), roundAlpha));  totl+=bufs[i].byteLength;  }
 		
-		var KD = UPNG.quantize.getKDtree(nimg, ps);
-		var root = KD[0], leafs = KD[1];
-		
-		var planeDst = UPNG.quantize.planeDst;
-		var sb = oimg, tb = nimg32, len=sb.length;
-			
-		var inds = new Uint8Array(oimg.length>>2);
-		for(var i=0; i<len; i+=4) {
-			var r=sb[i]*(1/255), g=sb[i+1]*(1/255), b=sb[i+2]*(1/255), a=sb[i+3]*(1/255);
-			
-			//  exact, but too slow :(
-			var nd = UPNG.quantize.getNearest(root, r, g, b, a);
-			//var nd = root;
-			//while(nd.left) nd = (planeDst(nd.est,r,g,b,a)<=0) ? nd.left : nd.right;
-			
-			inds[i>>2] = nd.ind;
-			tb[i>>2] = nd.est.rgba;
+		var nimg = new Uint8Array(totl), nimg32 = new Uint32Array(nimg.buffer), noff=0;
+		for(var i=0; i<imgs.length; i++) {
+			var img = imgs[i], il = img.length;
+			for(var j=0; j<il; j++) nimg[noff+j] = img[j];
+			noff += il;
 		}
-		return {  abuf:nimg.buffer, inds:inds, plte:leafs  };
-	}
-	
-	UPNG.quantize.getKDtree = function(nimg, ps, err) {
-		if(err==null) err = 0.0001;
-		var nimg32 = new Uint32Array(nimg.buffer);
 		
 		var root = {i0:0, i1:nimg.length, bst:null, est:null, tdst:0, left:null, right:null };  // basic statistic, extra statistic
 		root.bst = UPNG.quantize.stats(  nimg,root.i0, root.i1  );  root.est = UPNG.quantize.estats( root.bst );
@@ -756,14 +663,10 @@
 		{
 			var maxL = 0, mi=0;
 			for(var i=0; i<leafs.length; i++) if(leafs[i].est.L > maxL) {  maxL=leafs[i].est.L;  mi=i;  }
-			if(maxL<err) break;
+			if(maxL<1e-3) break;
 			var node = leafs[mi];
 			
 			var s0 = UPNG.quantize.splitPixels(nimg,nimg32, node.i0, node.i1, node.est.e, node.est.eMq255);
-			var s0wrong = (node.i0>=s0 || node.i1<=s0);
-			//console.log(maxL, leafs.length, mi);
-			if(s0wrong) {  node.est.L=0;  continue;  }
-			
 			
 			var ln = {i0:node.i0, i1:s0, bst:null, est:null, tdst:0, left:null, right:null };  ln.bst = UPNG.quantize.stats( nimg, ln.i0, ln.i1 );  
 			ln.est = UPNG.quantize.estats( ln.bst );
@@ -776,10 +679,26 @@
 			leafs[mi]=ln;  leafs.push(rn);
 		}
 		leafs.sort(function(a,b) {  return b.bst.N-a.bst.N;  });
-		for(var i=0; i<leafs.length; i++) leafs[i].ind=i;
-		return [root, leafs];
+		
+		for(var ii=0; ii<imgs.length; ii++) {
+			var planeDst = UPNG.quantize.planeDst;
+			var sb = new Uint8Array(imgs[ii].buffer), tb = new Uint32Array(imgs[ii].buffer), len = sb.length;
+			
+			var stack = [], si=0;
+			for(var i=0; i<len; i+=4) {
+				var r=sb[i]*(1/255), g=sb[i+1]*(1/255), b=sb[i+2]*(1/255), a=sb[i+3]*(1/255);
+				
+				//  exact, but too slow :(
+				//var nd = UPNG.quantize.getNearest(root, r, g, b, a);
+				var nd = root;
+				while(nd.left) nd = (planeDst(nd.est,r,g,b,a)<=0) ? nd.left : nd.right;
+				
+				tb[i>>2] = nd.est.rgba;
+			}
+			imgs[ii]=tb.buffer;
+		}
+		return {  bufs:imgs, plte:leafs  };
 	}
-	
 	UPNG.quantize.getNearest = function(nd, r,g,b,a)
 	{
 		if(nd.left==null) {  nd.tdst = UPNG.quantize.dist(nd.est.q,r,g,b,a);  return nd;  }
@@ -833,14 +752,13 @@
 																		R[10] += b*b;  R[11] += b*a;  
 																									 R[15] += a*a;  
 		}
-		R[4]=R[1];  R[8]=R[2];  R[9]=R[6];  R[12]=R[3];  R[13]=R[7];  R[14]=R[11];
+		R[4]=R[1];  R[8]=R[2];  R[12]=R[3];  R[9]=R[6];  R[13]=R[7];  R[14]=R[11];
 		
 		return {R:R, m:m, N:N};
 	}
 	UPNG.quantize.estats = function(stats){
 		var R = stats.R, m = stats.m, N = stats.N;
 		
-		// when all samples are equal, but N is large (millions), the Rj can be non-zero ( 0.0003.... - precission error)
 		var m0 = m[0], m1 = m[1], m2 = m[2], m3 = m[3], iN = (N==0 ? 0 : 1/N);
 		var Rj = [
 			R[ 0] - m0*m0*iN,  R[ 1] - m0*m1*iN,  R[ 2] - m0*m2*iN,  R[ 3] - m0*m3*iN,  
@@ -861,8 +779,10 @@
 		var q = [m0*iN, m1*iN, m2*iN, m3*iN];
 		var eMq255 = M.dot(M.sml(255,q),b);
 		
+		var ia = (q[3]<0.001) ? 0 : 1/q[3];
+		
 		return {  Cov:Rj, q:q, e:b, L:mi,  eMq255:eMq255, eMq : M.dot(b,q),
-					rgba: (((Math.round(255*q[3])<<24) | (Math.round(255*q[2])<<16) |  (Math.round(255*q[1])<<8) | (Math.round(255*q[0])<<0))>>>0)  };
+					rgba: (((Math.round(255*q[3])<<24) | (Math.round(255*q[2]*ia)<<16) |  (Math.round(255*q[1]*ia)<<8) | (Math.round(255*q[0]*ia)<<0))>>>0)  };
 	}
 	UPNG.M4 = {
 		multVec : function(m,v) {
@@ -877,20 +797,15 @@
 		sml : function(a,y) {  return [a*y[0],a*y[1],a*y[2],a*y[3]];  }
 	}
 	
-	UPNG.encode.concatRGBA = function(bufs, roundAlpha) {
-		var tlen = 0;
-		for(var i=0; i<bufs.length; i++) tlen += bufs[i].byteLength;
-		var nimg = new Uint8Array(tlen), noff=0;
-		for(var i=0; i<bufs.length; i++) {
-			var img = new Uint8Array(bufs[i]), il = img.length;
-			for(var j=0; j<il; j+=4) {  
-				var r=img[j], g=img[j+1], b=img[j+2], a = img[j+3];
-				if(roundAlpha)  a = (a&128)==0?0:255;
-				if(a==0) r=g=b=0;
-				nimg[noff+j]=r;  nimg[noff+j+1]=g;  nimg[noff+j+2]=b;  nimg[noff+j+3]=a;  }
-			noff += il;
+	UPNG.encode.alphaMul = function(img, roundA) {
+		var nimg = new Uint8Array(img.length), area = img.length>>2; 
+		for(var i=0; i<area; i++) {
+			var qi=i<<2, ia=img[qi+3];   
+			if(roundA) ia = ((ia<128))?0:255;
+			var a = ia*(1/255);
+			nimg[qi+0] = img[qi+0]*a;  nimg[qi+1] = img[qi+1]*a;  nimg[qi+2] = img[qi+2]*a;  nimg[qi+3] = ia;
 		}
-		return nimg.buffer;
+		return nimg;
 	}
 	
 		
@@ -898,14 +813,9 @@
 		
 		
 		
-		
-		
-	
-	
-	
-		
-		
 	
 	
 	})(UPNG, pako);
 	})();
+	
+	

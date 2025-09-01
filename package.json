@@ -26,5 +26,8 @@
     "style-loader": "^4.0.0",
     "webpack": "^5.99.9",
     "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "upng-js": "^2.1.0"
   }
 }
