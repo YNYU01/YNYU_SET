@@ -903,7 +903,7 @@ function addTag(type,info){
         }else{
           end = end.replace(/type/g,'')
         }
-        if(list.add && list.add !== ''){
+        if(list.note && list.note !== ''){
           end = end.replace(/add/g,list.add)
         }else{
           end = end.replace(/add/g,'')
@@ -1183,17 +1183,31 @@ async function exportImg(){
 function compressImage(blob,quality,type) {
     if (type == 'jpg' || type == 'jpeg'){
       return new Promise((resolve, reject) => {
-        let file = new File([blob],'image.jpg',{type:'image/jpeg'})
-        //console.log(file)
-        new Compressor(file, {
-          quality:quality/10,
-          success(result) {
-            resolve(result);
-          },
-          error(err) {
-            reject(err);
-          },
-        });
+        let url = URL.createObjectURL(blob);
+        let img = new Image();
+        img.src = url;
+
+        img.onload = function(){
+          let canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          let ctx = canvas.getContext('2d')
+          ctx.drawImage(img,0,0)
+          canvas.toBlob(function(blob){
+            let file = new File([blob],'image.jpg',{type:'image/jpeg'});
+            //console.log(file)
+            new Compressor(file, {
+              quality:quality/10,
+              success(result) {
+                resolve(result);
+              },
+              error(err) {
+                reject(err);
+              },
+            });
+          },'image/jpeg',(quality/10));
+        };
+        
       });
     } else if ( type == 'png') {
       return new Promise((resolve, reject) => {
@@ -1208,16 +1222,124 @@ function compressImage(blob,quality,type) {
             let canvas = document.createElement('canvas');
             canvas.width = img.width;
             canvas.height = img.height;
-            let ctx = canvas.getContext('2d')
+            let ctx = canvas.getContext('2d');
             ctx.drawImage(img,0,0)
-            let imageData = ctx.getImageData(0,0,img.width,img.height)
+            let imageData = ctx.getImageData(0,0,img.width,img.height);
             let data = imageData.data;
+            
             let colorcut = new Promise((resolve, reject) => {
+              /*
+              // 提取非透明像素,并记录索引，以便后续重新上色
+              let pixels = [];
+              for (let i = 0; i < data.length; i += 4) {
+                  const [r, g, b, a] = [data[i], data[i+1], data[i+2], data[i+3]];
+                  if (a === 0) continue;
+                  const [h, s, l] = rgbTohsl(r, g, b);
+                  pixels.push({ r, g, b, a, h, s, l, index: i });
+              };
+              //console.log(pixels)
+              //按h分组
+              pixels = pixels.reduce((groups,item) => {
+                const keyValue = item['h'].toString();
+                if(!groups[keyValue]){
+                  groups[keyValue] = [];
+                };
+                groups[keyValue].push(item);
+                return groups;
+              },{});
+              //console.log(pixels,Object.values(pixels))
+              pixels = Object.values(pixels).sort((a,b) => b.length - a.length)
+              //console.log(pixels)
+
+              //通过hsl进行量化得到新的hsl值
+              let newpixels =  pixelsCut(pixels);
+              //将新的hsl值转为新的rgb，混合原来的rgb，得到新的map
+              const quantizedMap = new Map();
+              newpixels.forEach(item => {
+                let [r,g,b] = hslTorgb(item.h,item.s,item.l,255)
+                quantizedMap.set(item.index,[r,g,b])
+              });
+
+              //console.log(quantizedMap)
+
+              //应用量化颜色到 ImageData
+              for (let i = 0; i < data.length; i += 4) {
+                  if (quantizedMap.has(i)) {
+                      const [r, g, b] = quantizedMap.get(i);
+                      data[i] = r;
+                      data[i + 1] = g;
+                      data[i + 2] = b;
+                      // 透明度保持不变
+                  }
+                  // 否则保持原色（比如透明像素）
+              };
+
+              //应用扩散将临近区域颜色同化
+              for (var i = 0; i < data.length; i += 4){
+                let x = (i / 4) % img.width,y = Math.floor((i / 4) / img.width);//获取像素坐标
+                
+                floyd(1,0,7/32)
+                floyd(-1,1,3/32)
+                floyd(0,1,4/32)
+                floyd(1,1,2/32)
+                floyd(2,0,6/32)
+                floyd(-2,2,2/32)
+                floyd(0,2,5/32)
+                floyd(2,2,3/32)
+                
+                //误差扩散
+                function floyd(dx,dy,factor){
+                  if (x + dx >= 0 && x + dx < img.width && y + dy < img.height){
+                    let newIndex = ((y + dy) * img.width + (x + dx)) * 4;//当前像素的周围像素
+                    if(data[i + 3] == 1 && data[newIndex + 3] == 1){
+                      data[newIndex] += data[i] * factor;
+                      data[newIndex + 1] += data[i + 1] * factor;
+                      data[newIndex + 2] += data[i + 2] * factor;//抖动
+                    };
+                  };
+                };
+              };
+
+              //量化颜色
+              function pixelsCut(pixeldata){
+                let lengths = [];
+                pixeldata.forEach(item => {
+                  item.forEach((p,index) => {
+                    item[index].s = item[index].s >= 50 ? Math.floor(p.s * 0.8) : p.s;
+                    //item[index].l = item[index].l >= 50 ? Math.floor(p.l * 0.9) :  Math.floor(p.l * 1.1);
+                  });
+                });
+                pixeldata.forEach(item => {
+                  if(item.length){
+                    lengths.push(item.length)
+                  };
+                });
+                let average = lengths.reduce((a,b)=> a + b)/lengths.length;
+                let min = Math.min(...lengths);
+                let max = Math.max(...lengths);
+                //console.log(Math.max(...lengths),Math.min(...lengths),lengths.reduce((a,b)=> a + b)/lengths.length)
+                pixeldata.forEach(item => {
+                  if(item.length > Math.min(average,(max - min)/2) ){
+                    item.forEach((p,index) => {
+                      if(p.r !== p.g && p.r !== p.b && p.g !== p.b ){
+                        item[index].h = Math.floor(p.h/10) * 10;
+                        item[index].s = Math.floor(p.s/4) * 4;
+                        item[index].l = Math.floor(p.l/4) * 4;
+                      };
+                    });
+                  };
+                });
+                //console.log(pixeldata)
+                return pixeldata.flat();
+              };
+              */
+
               ctx.putImageData(imageData,0,0);
-              canvas.toBlob(function(blob){
-                resolve(blob)
+              canvas.toBlob(function(finalblob){
+                  resolve(finalblob)
               },'image/png')
             });
+            
             resolve(colorcut)
           };
         };
@@ -1225,7 +1347,6 @@ function compressImage(blob,quality,type) {
       });
     } else if ( type == 'webp') {
       return new Promise((resolve, reject) => {
-        //let blob = new Blob([u8a], { type: 'image/png' });
         let url = URL.createObjectURL(blob);
         let img = new Image()
         img.src = url;
@@ -1250,45 +1371,59 @@ async function compressImages(imgExportData) {
   let type = imgExportData.map(item => item.format.toLowerCase());
   const compressedImages = [];
   for (let i = 0; i < imageDataArray.length; i++) {
-    let quality = 10; // 初始压缩质量
-    let result = new Blob([imageDataArray[i]], { type: 'image/png' });//初始化
-    let newBlob = new Blob([imageDataArray[i]], { type: 'image/jpeg' });
-      do {
-        try {
-          result = await compressImage(newBlob, quality,type[i]);
-          if (quality == 9){//先上256色+扩散算法，后面靠减色压缩
-            newBlob = result;
-          };
-          if (targetSize[i] && result.size > targetSize[i] && quality > 1) {
-            if ( quality - 1 >= 0){
-              console.log("压缩质量:" + quality )
-              quality -= 1; // 如果超过目标大小，减少质量再次尝试
-            } else {
-              quality = 0;
-            };
-            
-          } else {
-            if ( !targetSize[i] || result.size <= targetSize[i] ){
-              //console.log(targetSize[i])
-              //document.getElementById('imgsize-' + i ).innerHTML =  Math.floor(result.size/1000) + "k /质量:" + Math.ceil(quality) 
-            } else {
-              if (result.size){
-                //document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.size/1000) + "k /压缩失败</span>"
+    let finaltag = getElementMix('data-export-tag="'+ i +'"')
+    let isExport = finaltag.getAttribute('data-export-final') == 'true' ? true : false;
+    if(isExport == true){
+      if(ExportImageInfo[i].compressed){
+        compressedImages.push(ExportImageInfo[i].compressed);
+      }else{
+        let quality = 10; // 初始压缩质量
+        let result = new Blob([imageDataArray[i]], {type: 'image/png'});//初始化
+        let newBlob = new Blob([imageDataArray[i]], {type: 'image/png'});
+        let sizespan = getElementMix('data-export-tag="'+ i +'"').querySelector('[data-export-realsize]');
+        let qualityspan = getElementMix('data-export-tag="'+ i +'"').querySelector('[data-export-quality]');
+        if(!targetSize[i]){
+          //console.log('导出格式： ' + type[i])
+          result = await compressImage(newBlob, 10,type[i]);
+          let finalSize = Math.floor(result.size/10)/100;
+          sizespan.textContent = finalSize;
+          sizespan.setAttribute('data-export-realsize','true');
+        } else {
+          do {
+            try {
+              result = await compressImage(newBlob, quality,type[i]);
+              if (targetSize[i] && result.size > targetSize[i] && quality > 1) {
+                if ( quality - 1 >= 0){
+                  console.log("压缩质量:" + quality )
+                  quality -= 1; // 如果超过目标大小，减少质量再次尝试
+                } else {
+                  quality = 0;
+                };
+                
               } else {
-                //document.getElementById('imgsize-' + i ).innerHTML = '<span style="color:var(--liColor1)">' +  Math.floor(result.length/1000) + "k /压缩失败</span>"
-              }
-              
+                let finalSize = Math.floor(result.size/10)/100;
+                sizespan.textContent = finalSize;
+                qualityspan.textContent = quality;
+                if ( result.size <= targetSize[i] ){
+                  sizespan.setAttribute('data-export-realsize','true');
+                } else {
+                  sizespan.setAttribute('data-export-realsize','false');
+                }
+                //console.log(result)
+                break;
+              };
+            } catch (error) {
+              console.error('压缩过程中发生错误:', error);
+              break;
             }
-            //console.log(result)
-            break;
-          };
-        } catch (error) {
-          console.error('压缩过程中发生错误:', error);
-          break;
-        }
-      } while (result.size > targetSize[i]);
-
-    compressedImages.push(result);
+          } while (result.size > targetSize[i]);
+        };
+        compressedImages.push(result);
+        ExportImageInfo[i].compressed = result;
+      };
+    }else{
+      compressedImages.push(null);
+    };
   };
   return compressedImages;
 };
@@ -1298,30 +1433,34 @@ function createZipAndDownload(compressedImages) {
   let zip = new JSZip();
 
   let imgs = ExportImageInfo;
-  compressedImages.forEach((blob, index) => {
-    let path = imgs[index].fileName.split('/');
-    let name = path.pop() + '.' + imgs[index].format.toLowerCase();
-    if (imgs[index].fileName.split('/').length == 2) {
-      let folder = zip.folder(path[0]);
-      folder.file(name,blob);
-    } else if (imgs[index].fileName.split('/').length == 3) {
-      let folder1 = zip.folder(path[0]);
-      let folder2 = folder1.folder(path[1]);
-      folder2.file(name,blob);
-    } else if (imgs[index].fileName.split('/').length == 4) {
-      let folder2 = zip.folder(path[0]);
-      let folder3 = folder2.folder(path[2]);
-      folder3.file(name,blob);
-    } else {
-      zip.file(name,blob);
-    }
-  });
-
-
-  zip.generateAsync({ type: "blob" }).then(function (content) {
-    saveAs(content, timeName + '.zip');
-  });
-}
+  if(!compressedImages.every(item => item == null)){
+    compressedImages.forEach((blob, index) => {
+      if(blob){
+        let path = imgs[index].fileName.split('/');
+        let name = path.pop() + '.' + imgs[index].format.toLowerCase();
+        if (imgs[index].fileName.split('/').length == 2) {
+          let folder = zip.folder(path[0]);
+          folder.file(name,blob);
+        } else if (imgs[index].fileName.split('/').length == 3) {
+          let folder1 = zip.folder(path[0]);
+          let folder2 = folder1.folder(path[1]);
+          folder2.file(name,blob);
+        } else if (imgs[index].fileName.split('/').length == 4) {
+          let folder2 = zip.folder(path[0]);
+          let folder3 = folder2.folder(path[2]);
+          folder3.file(name,blob);
+        } else {
+          zip.file(name,blob);
+        };
+      };
+    });
+  
+  
+    zip.generateAsync({ type: "blob" }).then(function (content) {
+      saveAs(content, timeName + '.zip');
+    });
+  };
+};
 
 //制表文案转数组, 兼容反转行列
 function tableTextToArray(tableText,isColumn,mustTitle){
@@ -1406,7 +1545,7 @@ convertTags.addEventListener('click',()=>{
     let tableObj = tableArrayToObj(tableArray);
     CreateTableInfo = tableObj;
 
-    if(CreateTableInfo.some(item => item.add || item.s)){
+    if(CreateTableInfo.some(item => item.note || item.s)){
       document.getElementById('upload-moreset').checked = true;
       document.querySelector('[for="upload-moreset"]').click();
     };
@@ -2054,6 +2193,11 @@ function getUserRadio(node){
           inline: 'nearest',
         });
       };
+    };
+
+    if(node.getAttribute('data-exporttype-set') !== null){
+      let type = ['image','zy','rich'];
+      getElementMix('data-export-tags-box').setAttribute('data-export-tags-box',type[(userRadio - 1)]);
     };
   }
 };

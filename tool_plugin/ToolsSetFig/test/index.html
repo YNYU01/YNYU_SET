@@ -196,7 +196,7 @@
                 <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: wrap; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
                   <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
                   <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
-                  <li data-li-style="2" data-en-text="Table header must with: name | w | h (optional: s | type | add | node)" >表头固定用：name,w,h,(可选：s,type,add,node), 无顺序要求</li>
+                  <li data-li-style="2" data-en-text="Table header must with: name | w | h (optional: s | type | note | node)" >表头固定用：name,w,h,(可选：s,type,add,node), 无顺序要求</li>
                 </div>
               </div>
               <div id="upload-set-box" class="df" style="flex-wrap: wrap; max-width: 560px; margin:0 0 4px 0; gap: 4px;">
@@ -278,8 +278,8 @@
                     <div data-option="type" data-en-text="Complex">复杂</div>
                     <div data-option="option" data-option-main="false" data-option-value=" w×h s">&nbsp;w×h s</div>
                     <div data-option="option" data-option-main="false" data-option-value=" w_h s">&nbsp;w_h s</div>
-                    <div data-option="option" data-option-main="false" data-option-value="add w×h s">add w×h s</div>
-                    <div data-option="option" data-option-main="false" data-option-value="add w_h s">add w_h s</div>
+                    <div data-option="option" data-option-main="false" data-option-value="note w×h s">note w×h s</div>
+                    <div data-option="option" data-option-main="false" data-option-value="note w_h s">note w_h s</div>
                   </div>
                 </div>
               </div>
@@ -322,7 +322,7 @@
           </div>
           <!--导出类型-->
           <div class="df-lc pos-r upload-set w100" style="gap:4px; padding: 4px; border-radius: 8px; max-width: 560px; ">
-            <div class="noscrollbar" data-scroll style="margin: 0 auto;">
+            <div class="noscrollbar" style="margin: 0 auto;">
               <div data-exporttype-set class="df-lc" data-radio-value="1" >
                 <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="true">
                   <div data-exporttype-chk>
@@ -355,8 +355,8 @@
             </div>
           </div>
           <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px; max-width: 560px; ">
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (默认设置)</div>    
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (插件设置)</div>    
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (figma设置)</div>
           </div>
           <!--步骤2-->
           <div class="w100 df-lc"  style="max-width: 560px; padding:10px 0 4px 0; opacity: 0.6; vertical-align: baseline;"> 
@@ -407,12 +407,18 @@
             </div>
           </div>
           
-          <div data-export-tags-box class="wh100 upload-set pos-r ovy noscrollbar">
+          <div data-export-tags-box="image" class="wh100 upload-set pos-r ovy noscrollbar">
             <!--清空-->
             <div data-export-tags-delete style="left: 100%; top:0; width: 12px; height: 12px; position: sticky; z-index: 2;">
               <btn-close></btn-close>
             </div>
-            <div data-export-tags data-export-pickall="false" data-export-set class="w100 df-ffc">
+            <div data-export-tags="image" data-export-pickall="false" class="w100 df-ffc">
+              <!--动态填充-->
+            </div>
+            <div data-export-tags="zy" data-export-pickall="false" class="w100 df-ffc">
+              <!--动态填充-->
+            </div>
+            <div data-export-tags="rich" data-export-pickall="false" class="w100 df-ffc">
               <!--动态填充-->
             </div>
           </div>
@@ -1303,6 +1309,7 @@
   <script src="../../../builds/yn_comp.js"></script>
   <script src="../../../builds/yn_tool.js"></script>
   <script src="../../../public/compressor.min.js"></script>
+  <script src="../../../public/UPNG.js"></script>
   <script src="../../../public/FileSaver.min.js"></script>
   <script src="../../../public/xlsx.min.js"></script>
   <script src="../../../public/jszip.js"></script>

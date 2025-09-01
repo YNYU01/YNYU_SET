@@ -119,10 +119,10 @@ figma.ui.onmessage = async (message) => {
                 addImg(node,{w:item.w,h:item.h,x:item.x,y:item.y,n:'cut ' + (index + 1),img:item.img});
                 });
             } else {
-                addImg(a,{w:info[i].w,h:info[i].h,x:viewX,y:viewY,n:info[i].n,img:info[i].cuts[0].img});
+                addImg(null,{w:info[i].w,h:info[i].h,x:viewX,y:viewY,n:info[i].n,img:info[i].cuts[0].img});
             }
             viewX += info[i].w + gap;
-        }
+        };
     };
     //批量创建画板
     if ( type == "createFrame"){
@@ -132,11 +132,30 @@ figma.ui.onmessage = async (message) => {
             let fills = [toRGB('#ffffff',true)];
             if(info[i].type){
                 if(info[i].type.toLowerCase() == 'png'){
-                    fills = []
+                    fills = [];
                 };
             };
             let node = addFrame([info[i].w,info[i].h,null,null,info[i].name,fills]);
-            if(info[i].node){
+            if(info[i].type  && info[i].type !== ''){
+                node.setPluginData('exportType',info[i].type.toUpperCase());
+                if(info[i].type.toLowerCase() == 'png'){
+                    node.layoutGrids = [{
+                        pattern: "COLUMNS",
+                        visible: true,
+                        color: {
+                            r: 1,
+                            g: 0,
+                            b: 0,
+                            a: 0.1
+                        },
+                        gutterSize: 1,
+                        alignment: "STRETCH",
+                        count: 1,
+                        offset: 0,
+                    }];
+                };
+            };
+            if(info[i].node && info[i].node !== ''){
                 let setobj = eval('(' + info[i].node + ')')//JSON.parse(info[i].node)
                 let keys = Object.keys(setobj);
                 //console.log(info[i].node,setobj,keys)
@@ -152,14 +171,14 @@ figma.ui.onmessage = async (message) => {
                     };
                 });
             };
-            if(info[i].s){
+            if(info[i].s  && info[i].s !== ''){
                 //console.log(info[i].s)
-                node.setPluginData('exportSize',info[i].s.toString())
+                node.setPluginData('exportSize',info[i].s.toString());
             };
             selects.push(node);
         };
         figma.currentPage.selection = selects;
-        console.log(selects)
+        //console.log(selects)
         layoutByRatio(selects);
     };
     //反传画板数据
@@ -913,6 +932,7 @@ figma.ui.onmessage = async (message) => {
             clone.unlockAspectRatio();
             let scale = Math.min(item.width,item.height)/Math.max(clone.width,clone.height)
             clone.rescale(scale);
+            item.appendChild(clone);
             asFillChild(clone,true)
             selects.push(clone)
         });
@@ -1130,11 +1150,6 @@ function sendInfo(){
             };
             column = column <= 2 ? column : 0;
             row = row <= 2 ? row : 0;
-            let exportSize = node.getPluginData('exportSize');
-            if(!exportSize){
-                exportSize = null
-            };
-            //console.log(exportSize)
             data.push([n,w,h,[skewX,skewY],[column,row]]);
         });
         postmessage([data,'selectInfo']);
@@ -1228,6 +1243,7 @@ function setStroke(node,align,trbl,strokes){
 
 //添加图片
 function addImg(node,info){
+    node = node ? node : figma.currentPage;
     let image = figma.createImage(info.img)
     let img = figma.createRectangle();
     img.resize(info.w,info.h);
@@ -1541,12 +1557,15 @@ function exportImgInfo(set){
     setTimeout(async ()=>{
         for(let i = 0; i < b.length; i++){
             let c = b[i];
-            let format = 'PNG';
-            let info = [] ;
+            let format = c.getPluginData('exportType');
+            if(!format){
+                format = 'PNG';
+            };
             let size = c.getPluginData('exportSize');
             if(!size){
-                size = null
+                size = null;
             };
+            let info = [] ;
             let wh = getSafeMain(c);
             let [w,h] = [wh[0],wh[1]]
             if(set == 'exportset' && c.exportSettings.length > 0){
@@ -1574,6 +1593,7 @@ function exportImgInfo(set){
                             finalSize:size,
                             width: Math.round(w),
                             height: Math.round(h),
+                            compressed:null,
                         }
                     );
                 };
@@ -1592,6 +1612,7 @@ function exportImgInfo(set){
                         finalSize:size,
                         width: Math.round(w),
                         height: Math.round(h),
+                        compressed:null,
                     }
                 );
                 //console.log(info)
