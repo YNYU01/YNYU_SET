@@ -15,7 +15,8 @@
       "https://cdn.jsdelivr.net",
       "https://cdn.jsdelivr.net.cn",
       "https://cdnjs.cloudflare.com",
-      "https://ipapi.co"
+      "https://ipapi.co",
+      "https://unpkg.com"
     ]
   }
 }
