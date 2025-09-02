@@ -227,6 +227,8 @@ const fileInfo = document.querySelector('[data-file-info]');
 const btnHelp = document.querySelectorAll('[data-help]');
 const dailog = document.querySelector('[data-dailog]');
 const dailogBox = document.querySelector('[data-dailog-box]');
+const dailogImg = document.querySelector('[data-dailogimg]');
+const dailogBoxImg = document.querySelector('[data-dailogimg-box]');
 const skillTypeBox = document.querySelector('[data-skilltype-box]');
 const skillAllBox = document.querySelector('[data-skills-box]');
 const skillSecNode = document.querySelectorAll('[data-skill-sec]');
@@ -1011,16 +1013,30 @@ function addTag(type,info){
         sizebox.className = 'df-rc';
         sizebox.setAttribute('style','width: fit-content; padding-left: 4px;');
         let realsize = document.createElement('div');
-        realsize.setAttribute('data-export-realsize','');// ''|true|false
-        realsize.textContent = layer.compressed ? Math.floor(layer.compressed.length/10)/100 : '--';
+        realsize.textContent = layer.compressed ? Math.floor(layer.compressed.size/10)/100 : '--';
+        let isminRealsize = layer.compressed ? (layer.u8a.length > layer.compressed.size ? 'true' : 'false') : ''
+        realsize.setAttribute('data-export-realsize',isminRealsize);// ''|true|false
         sizebox.appendChild(realsize);
         sizebox.innerHTML += 'KB /';
         let quality  = document.createElement('div');
         quality.setAttribute('data-export-quality','');
         quality.textContent = '10';
-        let view = document.createElement('div');
-        view.innerHTML = '<btn-view></btn-view>'
         sizebox.appendChild(quality);
+        let view = document.createElement('div');
+        view.innerHTML = '<btn-view></btn-view>';
+        view.setAttribute('style','width:14px; height: 14px;');
+        view.className = 'btn-op';
+        view.addEventListener('click',()=>{
+          let img = layer.compressed ? layer.compressed : layer.u8a;
+          dailogBoxImg.innerHTML = '';
+          dailogImg.style.display = 'flex';
+          let viewimg = document.createElement('img');
+          let ismaxW = layer.width >= layer.height ? 'true' : 'false';
+          viewimg.setAttribute('data-ismaxW',ismaxW);
+          viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
+          dailogBoxImg.appendChild(viewimg);
+        });
+        sizebox.appendChild(view);
         sizeinfo.appendChild(sizebox);
         exportset.appendChild(sizeinfo);
 
@@ -1126,6 +1142,14 @@ function addTag(type,info){
   //重置文字样式
   loadFont(createTagsBox.parentNode);
 };
+//预览导出图片-放大
+getElementMix('fullimg').addEventListener('change',(e)=>{
+  if(e.target.checked){
+    dailogBoxImg.setAttribute('data-isfull','true');
+  }else{
+    dailogBoxImg.setAttribute('data-isfull','false');
+  };
+});
 //选中导出标签进行管理
 document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
   let picks = exportTagsBox.querySelectorAll('[data-export-pick]');
@@ -1887,6 +1911,16 @@ function sendTransform(){
   }
   toolMessage([data,'transformMix'],PLUGINAPP);
 };
+//拆分文本条件标签选中
+getElementMix('data-split-tags').querySelectorAll('[type="checkbox"]').forEach(check => {
+  check.addEventListener('change',()=>{
+    if(check.checked){
+      check.parentNode.parentNode.setAttribute('data-check-checked','true')
+    }else{
+      check.parentNode.parentNode.setAttribute('data-check-checked','false')
+    };
+  });
+});
 //点击即执行的功能
 skillBtnMain.forEach(btn => {
   let MOVE_TIMEOUT;
@@ -1958,7 +1992,7 @@ skillBtnMain.forEach(btn => {
 
   function sendSplit(type){
     if(type == 'tags'){
-      let tagsBox = getElementMix('data-split-tags').querySelectorAll('[data-split-final="true"]');
+      let tagsBox = getElementMix('data-split-tags').querySelectorAll('[data-check-checked="true"]');
       let tags = [];
       tagsBox.forEach(item => {
         let tag = item.querySelector('[data-split-info="name"]').getAttribute('data-en-text');
@@ -2184,7 +2218,14 @@ function getUserText(node){
 function getUserInt(node){
   let int = node.getAttribute('data-int-value');
   if(node.getAttribute('data-export-size') !== null){
-    ExportImageInfo[node.getAttribute('data-export-size')].finalSize = int;
+    let index = node.getAttribute('data-export-size');
+    ExportImageInfo[index].finalSize = int;
+    ExportImageInfo[index].compressed = null;
+    let tag = getElementMix('data-export-tag="'+ index +'"');
+    let realSize = tag.querySelector('[data-export-realsize]');
+    realSize.textContent = '--';
+    realSize.setAttribute('data-export-realsize','');
+    realSize.nextElementSibling.textContent = '10';
   };
   //console.log(int)
 };
@@ -2214,17 +2255,16 @@ function getUserFloat(node){
 
 function getUserSelect(node){
   let userSelect = node.getAttribute('data-select-value');
-  /*
-  if(userSelect){
-    if(node.previousElementSibling == frameName){
-      frameName.value = userSelect;
-      convertTags.click();
-    };
+  if(node.parentNode.parentNode.getAttribute('data-export-tag') !== null){
+    let index = node.parentNode.parentNode.getAttribute('data-export-tag');
+    ExportImageInfo[index].format = userSelect;
+    ExportImageInfo[index].compressed = null;
+    let tag = getElementMix('data-export-tag="'+ index +'"');
+    let realSize = tag.querySelector('[data-export-realsize]');
+    realSize.textContent = '--';
+    realSize.setAttribute('data-export-realsize','');
+    realSize.nextElementSibling.textContent = '10';
   };
-  */
- if(node.parentNode.parentNode.getAttribute('data-export-tag') !== null){
-  ExportImageInfo[node.parentNode.parentNode.getAttribute('data-export-tag')].format = userSelect;
- };
 };
 
 function getUserRadio(node){

@@ -2485,19 +2485,18 @@ function toRGB(color,isPaint){
 };
 //拆分文案
 function splitText(safenode,oldnode,splitTag,splitKeys){
-    let node = safenode;
-    let layerIndex = oldnode.parent.children.findIndex(items => items.id == oldnode.id);
-    let lineslength = node.characters.split('\n').map(item => item.length);
-    let lines = [];
-    let start = 0;
-    // 如有分段
-    for (let length of lineslength) {
-        let end = start + length + 1;
-        lines.push([start, end]);
-        start = end;
-    };
-    
-    if(splitKeys.length == 1 || (splitKeys[1] && typeof(splitKeys[1]) !== 'number')){
+    if(splitTag){
+        let node = safenode;
+        let layerIndex = oldnode.parent.children.findIndex(items => items.id == oldnode.id);
+        let lineslength = node.characters.split('\n').map(item => item.length);
+        let lines = [];
+        let start = 0;
+        // 如有分段
+        for (let length of lineslength) {
+            let end = start + length + 1;
+            lines.push([start, end]);
+            start = end;
+        };
         //console.log(lines,splitTag,splitKeys)
         let splitnodes = [node];
         //如勾选了按分段拆分
@@ -2505,7 +2504,7 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
             splitnodes = [];
             let group = addFrame([],oldnode);
             oldnode.parent.insertChild((layerIndex + 1),group);
-            group.name = TextMaxLength(oldnode.name,20,'...');
+            group.name = '@split-p';
             addAutoLayout(group,['V','TL',0,[0,0]],[true,false]);
             for(let i = 0; i < lines.length; i++){
                 let splitnode = node.clone();
@@ -2525,10 +2524,14 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
             });
         } else {
             for(let i = 0; i < splitnodes.length; i++){
-                let layerIndex2 = splitnodes[i].parent.children.findIndex(items => items.id == splitnodes[i].id);
                 let group2 = addFrame([],splitnodes[i]);
-                splitnodes[i].parent.insertChild((layerIndex2 + 1),group2);
-                group2.name = TextMaxLength(splitnodes[i].name,20,'...');
+                if(!splitKeys.includes('Wrap')){
+                    oldnode.parent.insertChild((layerIndex + 1),group2);
+                }else{
+                    let layerIndex2 = splitnodes[i].parent.children.findIndex(items => items.id == splitnodes[i].id);
+                    splitnodes[i].parent.insertChild((layerIndex2 + 1),group2);
+                };
+                group2.name = '@split-l';
                 addAutoLayout(group2,['H','BB',0,[0,0]],[false,true]);
                 let lines2 = splitnodes[i].getStyledTextSegments(splitTag).map(item => [item.start,item.end]);
                 let lineHights = splitnodes[i].getStyledTextSegments(['lineHeight']);
@@ -2547,14 +2550,17 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
                     removeText(splitnode2,lines2[ii][0],lines2[ii][1],true,true);
                     group2.appendChild(splitnode2);
                 };
-                splitnodes[i].remove()
+                splitnodes[i].remove();
+                
+                figma.currentPage.selection = [group2];
             };
         };
-        
     }else{
-        console.log(splitKeys)
+        console.log(splitKeys);
+    };
+    if(!safenode.removed){
+        safenode.remove();
     }
-    safenode.remove();
     oldnode.visible = false;
 };
 function removeText(node,start,end,isReverse,isInine){

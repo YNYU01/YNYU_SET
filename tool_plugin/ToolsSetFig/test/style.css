@@ -418,6 +418,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   right: 2px;
   width: 8px;
   height: 8px;
+  z-index: 20;
   background: linear-gradient(to top left,
   transparent 20%,
   var(--boxBod) 21%,
@@ -675,6 +676,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: var(--themeColor);
 }
 
+
 /*按钮类--*/
 
 /*--模块类*/
@@ -682,7 +684,6 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: none;
   width: 100vw;
   height: 100vh;
-  padding: 50px 20px;
   background: rgba(0, 0, 0, 0.6);
   z-index: 12;
   gap: 4px;
@@ -732,6 +733,65 @@ input[type="checkbox"]:checked + .btn-moreset{
   border: 1px solid var(--boxBod);
   background: var(--boxGry); 
   gap: 4px;
+}
+
+[data-dailogimg]{
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 30px 0 100px 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 12;
+}
+
+[data-dailogimg-box] {
+  width: 100%;
+  height: fit-content;
+  max-height: 80%;
+}
+
+[data-dailogimg-box] img{
+  margin: auto;
+  pointer-events: none;
+}
+
+[data-dailogimg-close]{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+[data-dailogimg-close] [data-close]{
+  width: 20px;
+  height: 20px;
+}
+
+[for="fullimg"]{
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px var(--boxBod) solid;
+}
+
+[for="fullimg"]:hover,
+input[type="checkbox"]:checked + [for="fullimg"]{
+  background: var(--boxGry);
+}
+
+[data-isfull="true"] [data-ismaxW="true"]{
+  width: auto;
+  height: 100%;
+}
+[data-isfull="true"] [data-ismaxW="false"]{
+  width: 100%;
+  height: auto;
+}
+[data-isfull="false"] [data-ismaxW="true"]{
+  width: 100%;
+}
+[data-isfull="false"] [data-ismaxW="false"]{
+  height: 100%;
 }
 
 .bod-d{
@@ -815,7 +875,6 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-create-tags],
 [data-create-catalogues],
-[data-split-tags],
 [data-export-tags]{
   height: fit-content;
   margin-top: -10px;
@@ -833,7 +892,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: flex;
 }
 
-[data-create-tags],[data-split-tags]{
+[data-create-tags]{
   flex-wrap: wrap;
   gap: 8px;
 }
@@ -846,7 +905,6 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 4px;
   font-size: 10px;
 }
-
 
 [data-export-tag]{
   padding: 4px 6px;
@@ -886,6 +944,12 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-export-realsize="false"]{
   color: var(--liColor);
+}
+
+[data-split-tags]{
+  height: fit-content;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 [data-split-tag]{

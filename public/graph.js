@@ -100,6 +100,30 @@ class logoseten extends HTMLElement {
 };
 customElements.define('set-en', logoseten);
 
+class logosetzhworks extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="94%" height="94%" viewBox="110 0 260 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+    `+ LOGO_SET_ZH +`
+    </svg> 
+    `;
+  }
+};
+customElements.define('set-zh-works', logosetzhworks);
+
+class logosetenworks extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="94%" height="94%" viewBox="20 0 420 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+    `+ LOGO_SET_EN +`
+    </svg> 
+    `;
+  }
+};
+customElements.define('set-en-works', logosetenworks);
+
 class logoynyuzhworks extends HTMLElement {
   constructor() {
     super();

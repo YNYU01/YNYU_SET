@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f6b41f927ea539c9ff5de6c31f316fe818b42168/public/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78cd9ecbad256385bc2595d8aceeb293c336a73d/public/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f6b41f927ea539c9ff5de6c31f316fe818b42168/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78cd9ecbad256385bc2595d8aceeb293c336a73d/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -479,6 +479,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   right: 2px;
   width: 8px;
   height: 8px;
+  z-index: 20;
   background: linear-gradient(to top left,
   transparent 20%,
   var(--boxBod) 21%,
@@ -736,6 +737,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: var(--themeColor);
 }
 
+
 /*按钮类--*/
 
 /*--模块类*/
@@ -743,7 +745,6 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: none;
   width: 100vw;
   height: 100vh;
-  padding: 50px 20px;
   background: rgba(0, 0, 0, 0.6);
   z-index: 12;
   gap: 4px;
@@ -793,6 +794,65 @@ input[type="checkbox"]:checked + .btn-moreset{
   border: 1px solid var(--boxBod);
   background: var(--boxGry); 
   gap: 4px;
+}
+
+[data-dailogimg]{
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 30px 0 100px 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 12;
+}
+
+[data-dailogimg-box] {
+  width: 100%;
+  height: fit-content;
+  max-height: 80%;
+}
+
+[data-dailogimg-box] img{
+  margin: auto;
+  pointer-events: none;
+}
+
+[data-dailogimg-close]{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+[data-dailogimg-close] [data-close]{
+  width: 20px;
+  height: 20px;
+}
+
+[for="fullimg"]{
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px var(--boxBod) solid;
+}
+
+[for="fullimg"]:hover,
+input[type="checkbox"]:checked + [for="fullimg"]{
+  background: var(--boxGry);
+}
+
+[data-isfull="true"] [data-ismaxW="true"]{
+  width: auto;
+  height: 100%;
+}
+[data-isfull="true"] [data-ismaxW="false"]{
+  width: 100%;
+  height: auto;
+}
+[data-isfull="false"] [data-ismaxW="true"]{
+  width: 100%;
+}
+[data-isfull="false"] [data-ismaxW="false"]{
+  height: 100%;
 }
 
 .bod-d{
@@ -876,7 +936,6 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-create-tags],
 [data-create-catalogues],
-[data-split-tags],
 [data-export-tags]{
   height: fit-content;
   margin-top: -10px;
@@ -894,7 +953,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: flex;
 }
 
-[data-create-tags],[data-split-tags]{
+[data-create-tags]{
   flex-wrap: wrap;
   gap: 8px;
 }
@@ -907,7 +966,6 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 4px;
   font-size: 10px;
 }
-
 
 [data-export-tag]{
   padding: 4px 6px;
@@ -947,6 +1005,12 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-export-realsize="false"]{
   color: var(--liColor);
+}
+
+[data-split-tags]{
+  height: fit-content;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 [data-split-tag]{
@@ -1728,7 +1792,27 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
     <div data-dailog-box class="ovy scrollbar df-ffc">
       <!--生成内容-->
     </div>
-    
+  </div>
+  <!--弹窗-图片查看器-->
+  <div data-dailogimg data-close-id="dailogimg" class="pos-a df-ffc df-cc">
+    <!--关闭-->
+    <div data-dailogimg-close class="df-sc">
+      <input type="checkbox" id="fullimg"/>
+      <label for="fullimg" class="df-cc">
+        <svg width="80%" height="80%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="var(--mainColor)" d="M10.8219 8.1537L16.2146 2.76098L12.6399 2.76162C12.2562 2.76162 11.9447 2.45006 11.9447 2.06643C11.9447 1.68279 12.2562 1.37123 12.6399 1.37123L17.8915 1.37187C18.2752 1.37187 18.5861 1.68279 18.5861 2.06643L18.5867 7.31806C18.5867 7.7017 18.2752 8.01326 17.8915 8.01326C17.5079 8.01326 17.1963 7.7017 17.1963 7.31806L17.197 3.74334L11.8042 9.13605C11.533 9.40732 11.0932 9.40732 10.8219 9.13605C10.5506 8.86478 10.5506 8.42497 10.8219 8.1537Z"/>
+          <path fill="var(--mainColor)" d="M11.796 10.8138L17.1887 16.2066L17.1881 12.6318C17.1881 12.2482 17.4996 11.9366 17.8833 11.9366C18.2669 11.9366 18.5785 12.2482 18.5785 12.6318L18.5778 17.8835C18.5778 18.2671 18.2669 18.578 17.8833 18.578L12.6316 18.5787C12.248 18.5787 11.9364 18.2671 11.9364 17.8835C11.9364 17.4998 12.248 17.1883 12.6316 17.1883L16.2064 17.1889L10.8137 11.7962C10.5424 11.5249 10.5424 11.0851 10.8137 10.8138C11.0849 10.5426 11.5247 10.5426 11.796 10.8138Z"/>
+          <path fill="var(--mainColor)" d="M9.13636 11.796L3.74364 17.1887L7.31837 17.1881C7.702 17.1881 8.01356 17.4996 8.01356 17.8833C8.01356 18.2669 7.702 18.5785 7.31837 18.5785L2.06673 18.5778C1.6831 18.5778 1.37218 18.2669 1.37218 17.8833L1.37154 12.6316C1.37154 12.248 1.6831 11.9364 2.06673 11.9364C2.45037 11.9364 2.76193 12.248 2.76193 12.6316L2.76129 16.2064L8.15401 10.8137C8.42527 10.5424 8.86509 10.5424 9.13636 10.8137C9.40763 11.0849 9.40763 11.5247 9.13636 11.796Z"/>
+          <path fill="var(--mainColor)" d="M8.162 9.13587L2.76928 3.74315L2.76992 7.31788C2.76992 7.70152 2.45836 8.01308 2.07473 8.01308C1.69109 8.01308 1.37953 7.70152 1.37953 7.31788L1.38017 2.06624C1.38017 1.68261 1.69109 1.37169 2.07473 1.37169L7.32636 1.37105C7.71 1.37105 8.02156 1.68261 8.02156 2.06625C8.02156 2.44988 7.71 2.76144 7.32636 2.76144L3.75164 2.7608L9.14435 8.15352C9.41562 8.42479 9.41562 8.8646 9.14435 9.13587C8.87308 9.40714 8.43327 9.40714 8.162 9.13587Z"/>
+        </svg>          
+      </label>
+      <div data-close="close" data-close-for="dailogimg">
+        <btn-close></btn-close>
+      </div>
+    </div>
+    <div data-dailogimg-box data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc">
+      <!--生成内容-->
+    </div>
   </div>
   <!--侧边栏-->
   <div data-side data-any="vw240" class="df pos-a" style="top: 0; left: 0; --fill: var(--mainColor)">
@@ -1864,7 +1948,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: wrap; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
                   <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
                   <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
-                  <li data-li-style="2" data-en-text="Table header must with: name | w | h (optional: s | type | note | node)" >表头固定用：name,w,h,(可选：s,type,add,node), 无顺序要求</li>
+                  <li data-li-style="2" data-en-text="Table header must with: name | w | h (optional: s | type | note | node)" >表头固定用：name,w,h,(可选：s,type,note,node), 无顺序要求</li>
                 </div>
               </div>
               <div id="upload-set-box" class="df" style="flex-wrap: wrap; max-width: 560px; margin:0 0 4px 0; gap: 4px;">
@@ -1912,8 +1996,8 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </svg>
                 </div>
                 <input id="input-user-table-title" data-input class="nobod fl1" type="text" 
-                placeholder="name,w,h,s,type,add,node" 
-                value="name,w,h,s,type,add,node"
+                placeholder="name,w,h,s,type,note,node" 
+                value="name,w,h,s,type,note,node"
                 data-input-must="name,w,h" data-input-type="text"> 
                 <!--重置-->
                 <div data-input-reset data-btn="reset">
@@ -2762,7 +2846,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </div>
                   <div class="df-ffc bod-d" data-skill-line style="padding: 4px; gap: 4px;">
                     <div data-split-tags class="w100 df-lc">
-                      <div data-split-tag data-split-final="true" data-check-checked="true" class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_0" type="checkbox" checked="true">
                           <label for="split_chk_0" class="check">
@@ -2772,7 +2856,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         </div>
                         <div data-split-info="name" data-en-text="Wrap">换行</div>
                       </div>
-                      <div data-split-tag data-split-final="true" data-check-checked="true" class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_1" type="checkbox" checked="true">
                           <label for="split_chk_1" class="check">
@@ -2782,7 +2866,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         </div>
                         <div data-split-info="name" data-en-text="FontSize">字号</div>
                       </div>
-                      <div data-split-tag data-split-final="true" data-check-checked="true" class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_2" type="checkbox" checked="true">
                           <label for="split_chk_2" class="check">
@@ -2792,7 +2876,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         </div>
                         <div data-split-info="name" data-en-text="Fills">填充</div>
                       </div>
-                      <div data-split-tag data-split-final="true" data-check-checked="true" class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_3" type="checkbox" checked="true">
                           <label for="split_chk_3" class="check">
@@ -2802,7 +2886,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         </div>
                         <div data-split-info="name" data-en-text="FillStyle">填充样式</div>
                       </div>
-                      <div data-split-tag data-split-final="false" data-check-checked="false" class="df-lc">
+                      <div data-split-tag data-check-checked="false" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_5" type="checkbox">
                           <label for="split_chk_5" class="check">
@@ -2812,7 +2896,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         </div>
                         <div data-split-info="name" data-en-text="FontName">字体(含字重)</div>
                       </div>
-                      <div data-split-tag data-split-final="false" data-check-checked="false" class="df-lc">
+                      <div data-split-tag data-check-checked="false" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_6" type="checkbox">
                           <label for="split_chk_6" class="check">
@@ -2974,16 +3058,16 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f6b41f927ea539c9ff5de6c31f316fe818b42168/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f6b41f927ea539c9ff5de6c31f316fe818b42168/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f6b41f927ea539c9ff5de6c31f316fe818b42168/public/compressor.min.js"></script>
-  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f6b41f927ea539c9ff5de6c31f316fe818b42168/public/UPNG.js"></script-->
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78cd9ecbad256385bc2595d8aceeb293c336a73d/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78cd9ecbad256385bc2595d8aceeb293c336a73d/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78cd9ecbad256385bc2595d8aceeb293c336a73d/public/compressor.min.js"></script>
+  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78cd9ecbad256385bc2595d8aceeb293c336a73d/public/UPNG.js"></script-->
   <script src="https://unpkg.com/pako@2.0.4/dist/pako.min.js"></script>
   <script src="https://unpkg.com/upng-js@latest/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f6b41f927ea539c9ff5de6c31f316fe818b42168/public/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f6b41f927ea539c9ff5de6c31f316fe818b42168/public/xlsx.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f6b41f927ea539c9ff5de6c31f316fe818b42168/public/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f6b41f927ea539c9ff5de6c31f316fe818b42168/public/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78cd9ecbad256385bc2595d8aceeb293c336a73d/public/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78cd9ecbad256385bc2595d8aceeb293c336a73d/public/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78cd9ecbad256385bc2595d8aceeb293c336a73d/public/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@78cd9ecbad256385bc2595d8aceeb293c336a73d/public/graph.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3215,6 +3299,8 @@ const fileInfo = document.querySelector('[data-file-info]');
 const btnHelp = document.querySelectorAll('[data-help]');
 const dailog = document.querySelector('[data-dailog]');
 const dailogBox = document.querySelector('[data-dailog-box]');
+const dailogImg = document.querySelector('[data-dailogimg]');
+const dailogBoxImg = document.querySelector('[data-dailogimg-box]');
 const skillTypeBox = document.querySelector('[data-skilltype-box]');
 const skillAllBox = document.querySelector('[data-skills-box]');
 const skillSecNode = document.querySelectorAll('[data-skill-sec]');
@@ -3999,14 +4085,30 @@ function addTag(type,info){
         sizebox.className = 'df-rc';
         sizebox.setAttribute('style','width: fit-content; padding-left: 4px;');
         let realsize = document.createElement('div');
-        realsize.setAttribute('data-export-realsize','');// ''|true|false
-        realsize.textContent = layer.compressed ? Math.floor(layer.compressed.length/10)/100 : '--';
+        realsize.textContent = layer.compressed ? Math.floor(layer.compressed.size/10)/100 : '--';
+        let isminRealsize = layer.compressed ? (layer.u8a.length > layer.compressed.size ? 'true' : 'false') : ''
+        realsize.setAttribute('data-export-realsize',isminRealsize);// ''|true|false
         sizebox.appendChild(realsize);
         sizebox.innerHTML += 'KB /';
         let quality  = document.createElement('div');
         quality.setAttribute('data-export-quality','');
         quality.textContent = '10';
         sizebox.appendChild(quality);
+        let view = document.createElement('div');
+        view.innerHTML = '<btn-view></btn-view>';
+        view.setAttribute('style','width:14px; height: 14px;');
+        view.className = 'btn-op';
+        view.addEventListener('click',()=>{
+          let img = layer.compressed ? layer.compressed : layer.u8a;
+          dailogBoxImg.innerHTML = '';
+          dailogImg.style.display = 'flex';
+          let viewimg = document.createElement('img');
+          let ismaxW = layer.width >= layer.height ? 'true' : 'false';
+          viewimg.setAttribute('data-ismaxW',ismaxW);
+          viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
+          dailogBoxImg.appendChild(viewimg);
+        });
+        sizebox.appendChild(view);
         sizeinfo.appendChild(sizebox);
         exportset.appendChild(sizeinfo);
 
@@ -4112,6 +4214,14 @@ function addTag(type,info){
   //重置文字样式
   loadFont(createTagsBox.parentNode);
 };
+//预览导出图片-放大
+getElementMix('fullimg').addEventListener('change',(e)=>{
+  if(e.target.checked){
+    dailogBoxImg.setAttribute('data-isfull','true');
+  }else{
+    dailogBoxImg.setAttribute('data-isfull','false');
+  };
+});
 //选中导出标签进行管理
 document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
   let picks = exportTagsBox.querySelectorAll('[data-export-pick]');
@@ -4873,6 +4983,16 @@ function sendTransform(){
   }
   toolMessage([data,'transformMix'],PLUGINAPP);
 };
+//拆分文本条件标签选中
+getElementMix('data-split-tags').querySelectorAll('[type="checkbox"]').forEach(check => {
+  check.addEventListener('change',()=>{
+    if(check.checked){
+      check.parentNode.parentNode.setAttribute('data-check-checked','true')
+    }else{
+      check.parentNode.parentNode.setAttribute('data-check-checked','false')
+    };
+  });
+});
 //点击即执行的功能
 skillBtnMain.forEach(btn => {
   let MOVE_TIMEOUT;
@@ -4944,7 +5064,7 @@ skillBtnMain.forEach(btn => {
 
   function sendSplit(type){
     if(type == 'tags'){
-      let tagsBox = getElementMix('data-split-tags').querySelectorAll('[data-split-final="true"]');
+      let tagsBox = getElementMix('data-split-tags').querySelectorAll('[data-check-checked="true"]');
       let tags = [];
       tagsBox.forEach(item => {
         let tag = item.querySelector('[data-split-info="name"]').getAttribute('data-en-text');
@@ -5170,7 +5290,14 @@ function getUserText(node){
 function getUserInt(node){
   let int = node.getAttribute('data-int-value');
   if(node.getAttribute('data-export-size') !== null){
-    ExportImageInfo[node.getAttribute('data-export-size')].finalSize = int;
+    let index = node.getAttribute('data-export-size');
+    ExportImageInfo[index].finalSize = int;
+    ExportImageInfo[index].compressed = null;
+    let tag = getElementMix('data-export-tag="'+ index +'"');
+    let realSize = tag.querySelector('[data-export-realsize]');
+    realSize.textContent = '--';
+    realSize.setAttribute('data-export-realsize','');
+    realSize.nextElementSibling.textContent = '10';
   };
   //console.log(int)
 };
@@ -5200,17 +5327,16 @@ function getUserFloat(node){
 
 function getUserSelect(node){
   let userSelect = node.getAttribute('data-select-value');
-  /*
-  if(userSelect){
-    if(node.previousElementSibling == frameName){
-      frameName.value = userSelect;
-      convertTags.click();
-    };
+  if(node.parentNode.parentNode.getAttribute('data-export-tag') !== null){
+    let index = node.parentNode.parentNode.getAttribute('data-export-tag');
+    ExportImageInfo[index].format = userSelect;
+    ExportImageInfo[index].compressed = null;
+    let tag = getElementMix('data-export-tag="'+ index +'"');
+    let realSize = tag.querySelector('[data-export-realsize]');
+    realSize.textContent = '--';
+    realSize.setAttribute('data-export-realsize','');
+    realSize.nextElementSibling.textContent = '10';
   };
-  */
- if(node.parentNode.parentNode.getAttribute('data-export-tag') !== null){
-  ExportImageInfo[node.parentNode.parentNode.getAttribute('data-export-tag')].format = userSelect;
- };
 };
 
 function getUserRadio(node){
