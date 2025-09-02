@@ -1594,6 +1594,8 @@ function exportImgInfo(set){
                             width: Math.round(w),
                             height: Math.round(h),
                             compressed:null,
+                            realSize:size,
+                            quality:10,
                         }
                     );
                 };
@@ -1613,6 +1615,8 @@ function exportImgInfo(set){
                         width: Math.round(w),
                         height: Math.round(h),
                         compressed:null,
+                        realSize:size,
+                        quality:10,
                     }
                 );
                 //console.log(info)

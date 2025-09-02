@@ -1,4 +1,3 @@
-//import UPNG from 'upng-js';
 /*初始数据*/
 let skillSecInfo = [
   {
@@ -391,7 +390,7 @@ function addToUserTips(){
   TV_text.parentNode.style.setProperty('--tv-w',textW)
 
 };
-//添加带tips的功能标题
+//添加更多功能的二级标题
 function addSkillTitle(){
   skillSecNode.forEach(secnode =>{
     let secid = secnode.getAttribute('data-skill-sec');
@@ -420,7 +419,7 @@ function addSkillTitle(){
     };
   });
 };
-//处理选中图层的信息
+//处理选中图层的信息（基础）
 function reSelectInfo(info){
   SelectNodeInfo = info;
   if(info[0][0] !== null){
@@ -955,6 +954,7 @@ function addTag(type,info){
         checkset.id = checksetid;
         if(getElementMix('exportset-pickall').checked){
           checkset.setAttribute('checked','true');
+          checksetbox.setAttribute('data-export-pick','true');
         };
         checkset.addEventListener('change',()=>{
           if(checkset.checked){
@@ -1003,19 +1003,23 @@ function addTag(type,info){
 
         let sizeinfo = document.createElement('div');
         sizeinfo.className = 'df-rc fl1';
+        sizeinfo.setAttribute('data-sizeinfo','')
         sizeinfo.setAttribute('style','min-width: 64px; flex-wrap: wrap; opacity: 0.6;');
         sizeinfo.innerHTML += '<div style="width: fit-content">' + layer.width + '×' + layer.height + '</div>';
+        sizeinfo.innerHTML += '<div style="width: fit-content; padding-left: 4px">' + Math.floor(layer.u8a.length/10)/100 + ' KB ▷</div>';
         let sizebox = document.createElement('div');
         sizebox.className = 'df-rc';
         sizebox.setAttribute('style','width: fit-content; padding-left: 4px;');
         let realsize = document.createElement('div');
         realsize.setAttribute('data-export-realsize','');// ''|true|false
-        realsize.textContent = Math.floor(layer.u8a.length/10)/100;
+        realsize.textContent = layer.compressed ? Math.floor(layer.compressed.length/10)/100 : '--';
         sizebox.appendChild(realsize);
         sizebox.innerHTML += 'KB /';
         let quality  = document.createElement('div');
         quality.setAttribute('data-export-quality','');
         quality.textContent = '10';
+        let view = document.createElement('div');
+        view.innerHTML = '<btn-view></btn-view>'
         sizebox.appendChild(quality);
         sizeinfo.appendChild(sizebox);
         exportset.appendChild(sizeinfo);
@@ -1122,8 +1126,7 @@ function addTag(type,info){
   //重置文字样式
   loadFont(createTagsBox.parentNode);
 };
-//addTag('export-img',[{n:'666'},{n:'666'},{n:'666'},{n:'666'}])
-//管理导出标签
+//选中导出标签进行管理
 document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
   let picks = exportTagsBox.querySelectorAll('[data-export-pick]');
   picks.forEach(item => {
@@ -1137,6 +1140,7 @@ document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
     };
   });
 });
+//删除所选导出标签
 getElementMix('data-export-delete').addEventListener('click',()=>{
   let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
   let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
@@ -1154,11 +1158,13 @@ getElementMix('data-export-delete').addEventListener('click',()=>{
     item.parentNode.parentNode.setAttribute('data-export-tag',index)
   });
 });
+//刷新所选导出标签
 getElementMix('data-export-reup').addEventListener('click',()=>{
   let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
   let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
   console.log(picknums)
 });
+//移除所有导出标签
 getElementMix('data-export-tags-delete').addEventListener('click',()=>{
   ExportImageInfo = [];
   exportTagsBox.innerHTML = '<!--动态填充-->';
@@ -1229,90 +1235,13 @@ function compressImage(blob,quality,type) {
             let imageData = ctx.getImageData(0,0,img.width,img.height);
             let data = imageData.data;
             //console.log(data.buffer, img.width, img.height)
-            // 提取非透明像素,并记录索引，以便后续重新上色
-            let pixels = [];
-            for (let i = 0; i < data.length; i += 4) {
-              const [r, g, b, a] = [data[i], data[i+1], data[i+2], data[i+3]];
-              if (a === 0) continue;
-              const [h, s, l] = rgbTohsl(r, g, b);
-              pixels.push({ r, g, b, a, h, s, l, index: i });
-            };
-            //console.log(pixels)
-            //按h分组
-            pixels = pixels.reduce((groups,item) => {
-              const keyValue = item['h'].toString();
-              if(!groups[keyValue]) groups[keyValue] = [];
-              groups[keyValue].push(item);
-              return groups;
-            },{});
-            //console.log(pixels,Object.values(pixels))
-            pixels = Object.values(pixels).sort((a,b) => b.length - a.length)
-            //console.log(pixels)
-
-            //通过hsl进行量化得到新的hsl值
-            let newpixels =  pixelsCut(pixels);
-            //将新的hsl值转为新的rgb，混合原来的rgb，得到新的map
-            const quantizedMap = new Map();
-            newpixels.forEach(item => {
-              let [r,g,b] = hslTorgb(item.h,item.s,item.l,255)
-              quantizedMap.set(item.index,[r,g,b])
-            });
-
-            //console.log(quantizedMap)
-
-            //应用量化颜色到 ImageData
-            for (let i = 0; i < data.length; i += 4) {
-                if (quantizedMap.has(i)) {
-                    const [r, g, b] = quantizedMap.get(i);
-                    data[i] = r;
-                    data[i + 1] = g;
-                    data[i + 2] = b;
-                    // 透明度保持不变
-                }
-                // 否则保持原色（比如透明像素）
-            };
-            //量化颜色
-            function pixelsCut(pixeldata){
-              /**/
-              let lengths = [];
-              pixeldata.forEach(item => {
-                if(item.length){
-                  lengths.push(item.length)
-                };
-              });
-              let average = lengths.reduce((a,b)=> a + b)/lengths.length;
-              let min = Math.min(...lengths);
-              let max = Math.max(...lengths);
-              //console.log(Math.max(...lengths),Math.min(...lengths),lengths.reduce((a,b)=> a + b)/lengths.length)
-              pixeldata.forEach(item => {
-                if(item.length < Math.max(average,(max - min)/2) ){
-                  item.forEach((p,index) => {
-                    if(p.r !== p.g && p.r !== p.b && p.g !== p.b ){
-                      //item[index].h = Math.floor(p.h/10) * 10;
-                      //item[index].s = Math.floor(p.s/4) * 4;
-                      //item[index].l = Math.floor(p.l/4) * 4;
-                      item[index].s = item[index].s >= 30 ? Math.floor(p.s * 0.8) : p.s;
-                    };
-                  });
-                }else{
-                  item.forEach((p,index) => {
-                    if(p.r !== p.g && p.r !== p.b && p.g !== p.b ){
-                      item[index].h = Math.floor(p.h/5) * 5;
-                      //item[index].l = Math.floor(p.l/4) * 4;
-                    };
-                  });
-                };
-              });
-              //console.log(pixeldata)
-              /**/
-              return pixeldata.flat();
-            };
+            
             let depth = 256
             if(quality <= 4){
               depth = 128;
             };
             let diff = ditherColor(data, img.width, img.height).pixels
-            let diffimg = new Blob([UPNG.encode([diff.buffer], img.width, img.height,0)],{type: 'image/png'})
+            let diffimg = new Blob([UPNG.encode([diff.buffer], img.width, img.height,quality*depth)],{type: 'image/png'})
             //console.log(diff,diffimg)
 
             //let newimg = new Blob([UPNG.encode([data.buffer], img.width, img.height, quality*depth)],{type: 'image/png'});
@@ -1674,7 +1603,7 @@ function tableObjToText(obj){
   };
   return header + values;
 };
-//移除标签
+//移除所有创建标签
 clearCreateTags.addEventListener('click',()=>{
   CreateImageInfo = [];
   CreateTableInfo = [];
@@ -1685,7 +1614,7 @@ clearCreateTags.addEventListener('click',()=>{
 convertTags.addEventListener('click',()=>{
   clearCreateTags.click();
   let firstline = userText.value.trim().split('\n')[0];
-  let isTableText = !['name','w','h'].some(item => !firstline.includes(item));
+  let isTableText = ['name','w','h'].every(item => firstline.includes(item));
   if(isTableText){
     let tableArray = tableTextToArray(userText.value.trim(),false,userTableTitle.value.split(','));
     let tableObj = tableArrayToObj(tableArray);
@@ -1808,33 +1737,7 @@ chkSelectcomp.addEventListener('change',()=>{
   getElementMix('data-selectcomp-box').style.display = 'flex';
   toolMessage([true,'selectComp'],PLUGINAPP);
 });
-//处理回传的选中对象的数据
-function reSelectComp(info){
- //console.log(info)
- if(info[0] || info[1]){
-  getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','true')
-  let comp1 = getElementMix('data-selectcomp-1');
-  let comp2 = getElementMix('data-selectcomp-2');
-  comp1.textContent = info[0] ? info[0] : 'none';
-  comp1.style.opacity = info[0] ? '1' : '0.5';
-  comp2.textContent = info[1] ? info[1] : 'none';
-  comp2.style.opacity = info[1] ? '1' : '0.5';
- } else {
-  getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','false')
- };
-
-};
-function reSelectDatas(info){
-  let text = '';
-  if(Array.isArray(info[0])){
-    text = tableArrayToText(info);
-  }else{
-    text = tableObjToText(info);
-  };
-  let textarea = getElementMix('upload-tablearea');
-  textarea.focus();
-  textarea.value = text;
-};
+//创建表格
 createTableBtn.addEventListener('click',()=>{
   let comp1 = getElementMix('data-selectcomp-1').textContent;
   let comp2 = getElementMix('data-selectcomp-2').textContent;
@@ -1974,19 +1877,6 @@ skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
 function scaleRWH(){
 
 };
-//split标签绑定
-getElementMix('data-split-tags').querySelectorAll('input').forEach(item => {
-  item.addEventListener('change',()=>{
-    let tag = item.parentNode.parentNode
-    if(item.checked){
-      tag.setAttribute('data-check-checked','true');
-      tag.setAttribute('data-split-final','true');
-    }else{
-      tag.setAttribute('data-check-checked','false');
-      tag.setAttribute('data-split-final','false');
-    };
-  });
-});
 //斜切拉伸
 function sendTransform(){
   let data = {
@@ -2140,7 +2030,33 @@ skillBtnMain.forEach(btn => {
     toolMessage([[types[exporttype - 1],type],'upSelect'],PLUGINAPP);
   };
 });
-
+//处理回传的选中对象的数据
+function reSelectComp(info){//判断是否选中表格组件
+  //console.log(info)
+  if(info[0] || info[1]){
+   getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','true')
+   let comp1 = getElementMix('data-selectcomp-1');
+   let comp2 = getElementMix('data-selectcomp-2');
+   comp1.textContent = info[0] ? info[0] : 'none';
+   comp1.style.opacity = info[0] ? '1' : '0.5';
+   comp2.textContent = info[1] ? info[1] : 'none';
+   comp2.style.opacity = info[1] ? '1' : '0.5';
+  } else {
+   getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','false')
+  };
+ 
+};
+function reSelectDatas(info){//显示收集的表格/组件属性数据
+  let text = '';
+  if(Array.isArray(info[0])){
+    text = tableArrayToText(info);
+  }else{
+    text = tableObjToText(info);
+  };
+  let textarea = getElementMix('upload-tablearea');
+  textarea.focus();
+  textarea.value = text;
+};
 
 /**
  * 模拟点击tab切换页面, 测试时更方便, 能直接显示目标页面

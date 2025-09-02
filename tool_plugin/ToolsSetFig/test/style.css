@@ -870,8 +870,14 @@ input[type="checkbox"]:checked + .btn-moreset{
   text-align: center;
 }
 
-[data-export-pickall="false"] [data-export-pick]{
+[data-export-pickall="false"] [data-export-pick],
+[data-export-pickall="true"] [data-sizeinfo]
+{
   display: none;
+}
+
+[data-export-pick]{
+  transform: translateY(50%);
 }
 
 [data-export-realsize="true"]{
