@@ -94,7 +94,7 @@ class FontManager {
 
   // 确保请求持久化存储（只在用户交互中有效）
   async ensurePersistentStorage() {
-    if (!navigator.storage || !navigator.storage.persist) return false;
+    //if (!navigator.storage || !navigator.storage.persist) return false;
 
     const persisted = await navigator.storage.persisted();
     if (persisted) return true;
