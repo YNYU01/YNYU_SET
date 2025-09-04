@@ -3,4 +3,6 @@
 /node_modules/
 .idea
 .vscode
+*.pem
+server.js
 bundle.js

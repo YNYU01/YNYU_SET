@@ -1612,6 +1612,66 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
 }
 
+[data-addlocalfont-box]{
+  width: var(--layout-w);
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 12px;
+  text-wrap: wrap;
+  gap: 4px;
+}
+
+[data-addlocalfont-btn]{
+  border-radius: 4px;
+  width: fit-content;
+}
+
+/*--组件修改*/
+
+[data-font-select]{
+  --option-font: 14px
+}
+
+[data-font-select] [data-option="option"]{
+  padding: 0.2rem 0 0.2rem 1rem;
+}
+
+
+/*组件修改--*/
+
+/*--按钮类*/
+[data-btn]{
+  max-width: 580px;
+  padding: 2px 0;
+  border: 1px solid var(--boxBod);
+  box-sizing: border-box;
+  cursor: var(--pointer,pointer);
+  position: relative;
+}
+
+[data-btn]:disabled{
+  background: var(--boxGry);
+  transform: translateY(1px);
+  cursor: default;
+  opacity: 0.6;
+}
+
+[data-btn]:hover{
+  background: var(--boxGry);
+}
+
+[data-btn]:active{
+  transform: translateY(1px);
+}
+
+
+/*按钮类--*/
+
+.bod-d{
+  border: 1px var(--boxBod) dashed;
+  border-radius: 10px;
+}
+
 @media (max-width:950px) {
   :root{
     --banner-h:28px;
