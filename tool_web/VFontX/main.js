@@ -49,216 +49,6 @@ getElementMix('data-addlocalfont-btn').addEventListener('click',async ()=>{
 });
 */
 
-class FontManager1 {
-  constructor() {
-    this.dirHandle = null;
-    this.fonts = [];
-    this.isInitialized = false;
-
-    this.button = getElementMix('data-addlocalfont-btn');
-    this.statusEl = document.getElementById('status');
-    this.listEl = document.getElementById('font-list');
-
-    // 绑定事件
-    this.button.addEventListener('click', () => this.requestPermission());
-  }
-
-  // =============== 初始化入口 ===============
-  async init() {
-    this.updateStatus('检查权限...');
-    this.updateButton('disabled', '正在检查...');
-
-    try {
-      // 尝试恢复已有权限
-      this.dirHandle = await this.restoreDirectoryHandle();
-
-      if (this.dirHandle) {
-        console.log('✅ 已恢复目录权限，自动加载');
-        this.updateButton('disabled', '权限已授予');
-        await this.loadFonts(); // 自动加载
-      } else {
-        console.log('⚠️ 无权限或目录失效');
-        this.updateButton('enabled');
-        this.updateStatus('请授权访问字体目录');
-      }
-    } catch (err) {
-      console.error('初始化失败:', err);
-      this.updateButton('enabled', '重新授权');
-      this.updateStatus('授权失败，请重试');
-    } finally {
-      this.isInitialized = true;
-      // 可触发“准备就绪”事件
-      this.onReady();
-    }
-  }
-
-  // =============== 恢复权限 ===============
-  async restoreDirectoryHandle() {
-    try {
-      // 方法1：尝试使用 storage.getDirectory()（Chrome 持久化支持）
-      const root = await navigator.storage.getDirectory();
-      const savedName = localStorage.getItem('savedDirectoryName');
-      console.log(root)
-      if (!savedName) return null;
-
-      // 遍历根目录，找匹配的目录
-      for await (const [name, handle] of root.entries()) {
-        if (handle.kind === 'directory' && name === savedName) {
-          const perm = await handle.queryPermission({ mode: 'read' });
-          if (perm === 'granted') {
-            return handle;
-          }
-        }
-      }
-    } catch (e) {
-      console.warn('恢复权限失败:', e);
-    }
-    return null;
-  }
-
-  // =============== 请求权限 ===============
-  async requestPermission() {
-    if (!this.buttonEnabled()) return;
-
-    this.updateButton('disabled', '请选择目录...');
-
-    try {
-      const handle = await window.showDirectoryPicker();
-      const perm = await handle.requestPermission({ mode: 'read' });
-      if (perm !== 'granted') {
-        throw new Error('权限被拒绝');
-      }
-
-      // 保存目录名用于后续恢复
-      localStorage.setItem('savedDirectoryName', handle.name);
-      this.dirHandle = handle;
-
-      this.updateButton('disabled', '权限已授予');
-      await this.loadFonts(); // 授权后立即加载
-
-    } catch (err) {
-      console.error('授权失败:', err);
-      this.updateButton('enabled', '重新授权');
-      this.updateStatus('授权失败，请重试');
-    }
-  }
-
-  // =============== 加载字体（支持子文件夹分类） ===============
-  async loadFonts() {
-    this.updateStatus('正在扫描字体文件...');
-
-    try {
-      const fontMap = new Map(); // 使用 Map 更灵活：路径 → 字体数组
-
-      // 递归遍历目录
-      await this.scanDirectory(this.dirHandle, '', fontMap);
-
-      this.fontMap = fontMap; // 保存分类结果
-      this.renderFontList();
-      this.updateStatus(`✅ 扫描完成，共 ${this.getTotalFontCount()} 个字体`);
-
-    } catch (err) {
-      console.error('扫描失败:', err);
-      this.updateStatus('目录读取失败，请重新授权');
-      this.clearSavedDirectory();
-      this.updateButton('enabled', '重新授权');
-      this.dirHandle = null;
-    }
-  }
-
-  // 递归扫描目录
-  async scanDirectory(handle, currentPath, fontMap) {
-    for await (const [name, entry] of handle.entries()) {
-      const fullPath = currentPath ? `${currentPath}/${name}` : name;
-
-      if (entry.kind === 'file') {
-        if (/\.(ttf|otf|woff|woff2)$/i.test(name)) {
-          const file = await entry.getFile();
-          const fontObj = await this.parseFont(file);
-
-          // 按父路径分类（只取文件夹名）
-          const folder = currentPath || ''; // 根目录用空字符串
-
-          if (!fontMap.has(folder)) {
-            fontMap.set(folder, []);
-          }
-          fontMap.get(folder).push(fontObj);
-        }
-      }
-
-      else if (entry.kind === 'directory') {
-        // 递归进入子目录
-        await this.scanDirectory(entry, fullPath, fontMap);
-      }
-    }
-  }
-
-  // 获取总字体数量
-  getTotalFontCount() {
-    let count = 0;
-    for (const fonts of this.fontMap.values()) {
-      count += fonts.length;
-    }
-    return count;
-  }
-
-  // =============== 字体解析（示例） ===============
-  async parseFont(file) {
-    // 这里可以集成 opentype.js 等库
-    let fontinfo = {
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      lastModified: file.lastModified,
-      // 可添加更多元数据
-    };
-
-    console.log(fontinfo)
-    return fontinfo
-  }
-
-  // =============== 渲染列表 ===============
-  renderFontList() {
-    this.listEl.innerHTML = '';
-    this.fonts.forEach(font => {
-      const li = document.createElement('li');
-      li.textContent = `${font.name} (${(font.size / 1024).toFixed(1)} KB)`;
-      this.listEl.appendChild(li);
-    });
-  }
-
-  // =============== UI 状态管理 ===============
-  updateButton(state, text) {
-    if (state === 'disabled') {
-      this.button.disabled = true;
-    } else {
-      this.button.disabled = false;
-    }
-    if(text){
-      tipsAll(text,2000);
-    };
-  }
-
-  buttonEnabled() {
-    return !this.button.disabled;
-  }
-
-  updateStatus(text) {
-    this.statusEl.textContent = text;
-  }
-
-  // =============== 工具方法 ===============
-  clearSavedDirectory() {
-    localStorage.removeItem('savedDirectoryName');
-  }
-
-  // =============== 生命周期钩子 ===============
-  onReady() {
-    console.log('FontManager 初始化完成');
-    // 可用于通知其他模块
-  }
-}
-
 /**
      * 字体管理器 - 支持持久化权限 + 子目录分类
      */
@@ -308,9 +98,10 @@ class FontManager {
 
     const persisted = await navigator.storage.persisted();
     if (persisted) return true;
-
+    console.log(111,persisted)
     // 尝试请求持久化（部分浏览器会弹窗提示）
     const granted = await navigator.storage.persist?.() || false;
+    console.log(222,granted)
     console.log('持久化存储:', granted ? '已启用' : '被拒绝');
     return granted;
   }
@@ -322,10 +113,12 @@ class FontManager {
 
     try {
       const root = await navigator.storage.getDirectory();
-      console.log(root,savedName)
+      console.log(333,[root,savedName])
       for await (const [name, handle] of root.entries()) {
+        console.log(444,handle)
         if (handle.kind === 'directory' && name === savedName) {
           const perm = await handle.queryPermission({ mode: 'read' });
+          console.log(555,perm)
           if (perm === 'granted') {
             return handle;
           }
