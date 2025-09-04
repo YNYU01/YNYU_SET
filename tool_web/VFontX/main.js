@@ -49,7 +49,7 @@ getElementMix('data-addlocalfont-btn').addEventListener('click',async ()=>{
 });
 */
 
-class FontManager1 {
+class FontManager {
   constructor() {
     this.dirHandle = null;
     this.fonts = [];
@@ -262,7 +262,7 @@ class FontManager1 {
 /**
      * 字体管理器 - 支持持久化权限 + 子目录分类
      */
-class FontManager {
+class FontManager1 {
   constructor() {
     this.dirHandle = null;
     this.fontMap = new Map(); // folderPath → fonts[]
