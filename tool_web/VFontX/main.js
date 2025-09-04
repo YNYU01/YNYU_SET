@@ -115,7 +115,9 @@ class FontManager {
     try {
       const root = await navigator.storage.getDirectory();
       console.log(333,[root,savedName])
-      console.log(444,root.entries())
+      root.entries().next().then(re =>{console.log(re)})
+      //console.log(444,root.entries().next().then(re =>{return re}))
+
       for await (const [name, handle] of root.entries()) {
         console.log(555,handle)
         if (handle.kind === 'directory' && name === savedName) {
