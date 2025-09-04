@@ -97,8 +97,9 @@ class FontManager {
     //if (!navigator.storage || !navigator.storage.persist) return false;
 
     const persisted = await navigator.storage.persisted();
-    if (persisted) return true;
     console.log(111,persisted)
+    if (persisted) return true;
+    
     // 尝试请求持久化（部分浏览器会弹窗提示）
     const granted = await navigator.storage.persist?.() || false;
     console.log(222,granted)
