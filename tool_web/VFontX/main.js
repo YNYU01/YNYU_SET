@@ -115,11 +115,12 @@ class FontManager {
     try {
       const root = await navigator.storage.getDirectory();
       console.log(333,[root,savedName])
+      console.log(444,root.entries())
       for await (const [name, handle] of root.entries()) {
-        console.log(444,handle)
+        console.log(555,handle)
         if (handle.kind === 'directory' && name === savedName) {
           const perm = await handle.queryPermission({ mode: 'read' });
-          console.log(555,perm)
+          console.log(666,perm)
           if (perm === 'granted') {
             return handle;
           }
