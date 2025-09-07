@@ -55,6 +55,8 @@ getElementMix('data-addlocalfont-btn').addEventListener('click',async ()=>{
 class FontManager {
   constructor() {
     this.dirHandle = null;
+    this.handleName = localStorage.getItem('handleName') || '';
+    this.localkey = 'localfonts'
     this.fontMap = new Map(); // folderPath → fonts[]
     this.isInitialized = false;
 
@@ -66,119 +68,51 @@ class FontManager {
   }
 
   async init() {
-    this.updateStatus('检查持久化权限...');
-    this.updateButton('disabled', '检查中...');
-
-    // 尝试启用持久化存储（需用户交互，但 query 不会弹窗）
-    await this.ensurePersistentStorage();
-
-    try {
-      this.dirHandle = await this.restoreDirectoryHandle();
-      if (this.dirHandle) {
-        console.log('✅ 恢复权限成功');
-        this.updateButton('disabled', '权限已授予');
-        await this.loadFonts();
-      } else {
-        console.log('❌ 无可用权限');
-        this.updateButton('enabled', '选择字体目录');
-        this.updateStatus('请授权访问字体目录');
-      }
-    } catch (err) {
-      console.error('初始化失败:', err);
-      this.updateButton('enabled', '重试');
-      this.updateStatus('初始化失败，请重试');
-    } finally {
-      this.isInitialized = true;
+    let localfonts = localStorage.getItem(this.localkey);
+    if(localfonts){
+      this.updateStatus(['(上次加载)','(Last fonts)']);
+      this.fontMap = new Map(JSON.parse(localfonts));
+      this.renderFontList();
+    }else{
+      this.updateStatus(['(暂无文件): ','(No fonts)']);
     }
   }
 
-  // 确保请求持久化存储（只在用户交互中有效）
-  async ensurePersistentStorage() {
-    //if (!navigator.storage || !navigator.storage.persist) return false;
-
-    const persisted = await navigator.storage.persisted();
-    console.log('persisted',persisted)
-    //if (persisted) return true;
-    
-    // 尝试请求持久化（部分浏览器会弹窗提示）
-    const granted = await navigator.storage.persist?.() || false;
-    console.log(222,granted)
-    console.log('持久化存储:', granted ? '已启用' : '被拒绝');
-    return granted;
-  }
-
-  // 恢复目录句柄（利用 storage.getDirectory 持久化机制）
-  async restoreDirectoryHandle() {
-    const savedName = localStorage.getItem('savedDirectoryName');
-    if (!savedName) return null;
-
-    try {
-      const root = await navigator.storage.getDirectory();
-      console.log(333,[root,savedName])
-      root.entries().next().then(re =>{console.log(re)})
-      //console.log(444,root.entries().next().then(re =>{return re}))
-
-      for await (const [name, handle] of root.entries()) {
-        console.log(555,handle)
-        if (handle.kind === 'directory' && name === savedName) {
-          const perm = await handle.queryPermission({ mode: 'read' });
-          console.log(666,perm)
-          if (perm === 'granted') {
-            return handle;
-          }
-        }
-      }
-    } catch (e) {
-      console.warn('恢复权限失败:', e);
-    }
-    return null;
-  }
 
   // 请求用户授权目录
   async requestPermission() {
-    if (!this.buttonEnabled()) return;
-
-    this.updateButton('disabled', '请选择目录...');
-
     try {
-      // 👇 关键：在用户点击中调用，确保持久化生效
-      await this.ensurePersistentStorage();
-
       const handle = await window.showDirectoryPicker();
       const perm = await handle.requestPermission({ mode: 'read' });
-      if (perm !== 'granted') throw new Error('权限被拒绝');
-
-      // 保存目录名用于恢复
-      localStorage.setItem('savedDirectoryName', handle.name);
+      if (perm !== 'granted') throw new Error('No permission');
+      
       this.dirHandle = handle;
-
-      this.updateButton('disabled', '权限已授予');
+      localStorage.setItem('handleName',handle.name);
       await this.loadFonts();
 
     } catch (err) {
-      if (err.name !== 'AbortError') { // 用户取消
-        console.error('授权失败:', err);
-        this.updateButton('enabled', '重新授权');
-        this.updateStatus('授权失败，请重试');
-      } else {
-        this.updateButton('enabled', '选择字体目录');
-        this.updateStatus('用户取消授权');
-      }
+      console.error(err);
+      this.updateTips(['无法获取文件',"Can't get any files"]);
     }
   }
 
   // 递归扫描目录并分类
   async loadFonts() {
-    this.updateStatus('正在扫描字体文件...');
     this.fontMap = new Map();
 
     try {
       await this.scanDirectory(this.dirHandle, '');
       this.renderFontList();
-      this.updateStatus(`✅ 扫描完成，共 ${this.getTotalFontCount()} 个字体`);
+      this.updateTips([
+        `✅ 扫描完成，共 ${this.getTotalFontCount()} 个字体`,
+        `✅ Scan completed, ${this.getTotalFontCount()} fonts in total`
+      ]);
     } catch (err) {
-      console.error('扫描失败:', err);
-      this.handleScanError();
+      console.error(err);
+      this.updateTips([
+        `⛔ 扫描失败`,
+        `⛔ Scan failed`
+      ]);
     }
   }
 
@@ -189,74 +123,92 @@ class FontManager {
       if (entry.kind === 'file') {
         if (/\.(ttf|otf|woff|woff2)$/i.test(name)) {
           const file = await entry.getFile();
-          const fontObj = await this.parseFont(file);
-
+          const fontObj = await this.readFontMetadata(file);
+          //console.log(fontObj)
           const folder = currentPath || '';
           if (!this.fontMap.has(folder)) {
             this.fontMap.set(folder, []);
           }
           this.fontMap.get(folder).push(fontObj);
         }
-      }
-
-      else if (entry.kind === 'directory') {
+      } else if (entry.kind === 'directory') {
         await this.scanDirectory(entry, fullPath);
       }
+
+      //console.log(this.fontMap)
     }
   }
 
-  // 解析字体文件（示例）
-  async parseFont(file) {
-    return {
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      lastModified: file.lastModified,
-    };
+  
+  // 读取单个字体的元数据（仅 familyName 和 postScriptName）
+  async readFontMetadata(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    try {
+      const font = opentype.parse(arrayBuffer);
+      //console.log(font)
+      return {
+        filename: file.name,
+        size: file.size,
+        familyName: font.names.fontFamily.en || font.names.fontFamily.zh || 'Unknown',
+        postScriptName: font.names.postScriptName.en || 'Unknown',
+      };
+    } catch (e) {
+      console.warn(`解析失败: ${file.name}`, e);
+      return null;
+    }
   }
+
+
 
   // 渲染分类列表（支持点击折叠）
   renderFontList() {
     this.listEl.innerHTML = '';
 
     if (this.fontMap.size === 0) {
-      const li = document.createElement('li');
+      const li = document.createElement('div');
       li.textContent = '未找到字体文件';
       this.listEl.appendChild(li);
       return;
     }
 
     for (const [folder, fonts] of this.fontMap) {
-      const folderName = folder || '根目录';
-      const header = document.createElement('li');
-      header.role = 'heading';
-      header.textContent = `${folderName} (${fonts.length} 个)`;
+      const folderName = folder == '' ? this.handleName : folder;
+      let input = document.createElement('input');
+      input.type = 'checkbox';
+      input.id = 'show_' + folderName;
+      this.listEl.appendChild(input);
+      let header = document.createElement('label');
+      header.setAttribute('for','show_' + folderName)
+      header.className = 'show-next';
+      header.textContent = `${folderName} ×${fonts.length}`;
       this.listEl.appendChild(header);
 
-      const container = document.createElement('ul');
-      container.dataset.expanded = 'true';
+      const container = document.createElement('div');
+      container.setAttribute('data-fontlist-font','');
 
       fonts.forEach(font => {
-        const li = document.createElement('li');
-        li.className = 'file';
-        li.textContent = `${font.name} (${(font.size / 1024).toFixed(1)} KB)`;
+        const li = document.createElement('div');
+        li.className = 'filename';
+        li.textContent = `${font.filename} (${(font.size / 1024).toFixed(1)} KB)`;
         container.appendChild(li);
       });
 
       this.listEl.appendChild(container);
 
       // 折叠/展开
-      header.addEventListener('click', () => {
-        const isExpanded = container.dataset.expanded === 'true';
-        container.dataset.expanded = String(!isExpanded);
-        container.style.display = isExpanded ? 'none' : 'block';
+      input.addEventListener('change', () => {
+        showNext(input,header.nextElementSibling,'block',true)
       });
     }
-
-    // 默认展开
-    this.listEl.querySelectorAll('ul').forEach(ul => (ul.style.display = 'block'));
+    this.saveToCache();
+    console.log(localStorage.getItem(this.localkey))
   }
 
+  // 保存到 localStorage
+  saveToCache() {
+    localStorage.setItem(this.localkey, JSON.stringify(Array.from(this.fontMap)));
+  }
+  
   getTotalFontCount() {
     let count = 0;
     for (const fonts of this.fontMap.values()) {
@@ -265,33 +217,19 @@ class FontManager {
     return count;
   }
 
-  // 扫描出错处理
-  handleScanError() {
-    this.updateStatus('目录读取失败（可能已移动或权限丢失）');
-    this.clearSavedDirectory();
-    this.dirHandle = null;
-    this.updateButton('enabled', '重新选择');
-  }
-
   // UI 控制
-  updateButton(state, text) {
-    this.button.disabled = state === 'disabled';
+  updateTips(text) {
     if(text){
       tipsAll(text,2000);
     };
   }
 
-  buttonEnabled() {
-    return !this.button.disabled;
-  }
-
   updateStatus(text) {
-    this.statusEl.textContent = text;
+    this.statusEl.setAttribute('data-zh-text',text[0]);
+    this.statusEl.setAttribute('data-en-text',text[1]);
+    this.statusEl.textContent = ROOT.getAttribute('data-language') == 'Zh' ? text[0] : text[1];
   }
 
-  clearSavedDirectory() {
-    localStorage.removeItem('savedDirectoryName');
-  }
 }
 
 

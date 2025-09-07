@@ -54,6 +54,15 @@ html{
   background-size: var(--dot-gap) var(--dot-gap);
 }
 
+[data-theme="light"] .tex-dot{
+  --dot-col: rgba(177, 177, 177, 0.2);
+}
+
+[data-theme="dark"] .tex-dot{
+  --dot-col: rgba(5, 3, 3, 0.432);
+}
+
+
 .tex-line{
   --line-col: rgba(0, 0, 0, 0.8);
   --line-size: 50px;
@@ -151,12 +160,20 @@ html{
   background-repeat: repeat;
 }
 
-[data-theme="light"] .dot{
-  --dot-col: rgba(177, 177, 177, 0.2);
+.tex-pixelbg{
+  --pixel-w: #f7f7f7;
+  --pixel-b: #dddddd;
+  --pixel-wh: 20px;
+  background: conic-gradient(
+    var(--pixel-b) 25%,
+    var(--pixel-w) 0deg 50%,
+    var(--pixel-b) 0deg 75%,
+    var(--pixel-w) 0deg) 0/var(--pixel-wh) var(--pixel-wh);
 }
 
-[data-theme="dark"] .dot{
-  --dot-col: rgba(55, 55, 55, 0.432);
+[data-theme="dark"] .tex-pixelbg{
+  --pixel-w: #333333;
+  --pixel-b: #222222;
 }
 
 [data-grid-all]{
@@ -1612,6 +1629,19 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
 }
 
+[for="show-addlocalfont-rule"]{
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+  border: 1px var(--boxBod) solid;
+  border-radius: 20%;
+}
+
+input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
+  background: var(--themeColor);
+  --mainColor: #242424;
+}
+
 [data-addlocalfont-box]{
   width: var(--layout-w);
   box-sizing: border-box;
@@ -1619,11 +1649,53 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   font-size: 12px;
   text-wrap: wrap;
   gap: 4px;
+  display: none;
+  background: var(--boxBak);
+  height: fit-content;
+  min-height: 400px;
+  z-index: 2;
+}
+
+[data-addlocalfont-filelist]{
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 12px;
+  background: var(--boxGry);
+  height: 160px;
+  min-height: 80px;
+  max-height: 50vh;
+  position: relative;
+  min-width: 100%;
+  max-width: 100%;
+  resize: both;
+}
+
+[data-addlocalfont-filelist]::-webkit-resizer{
+  display: none;
+}
+
+[data-addlocalfont-box] .filename{
+  padding-left: 20px;
+  opacity: 0.6;
+}
+[data-addlocalfont-box] .show-next{
+  margin: 4px 0 2px 0;
+}
+[data-addlocalfont-box] .show-next::before{
+  content: '-';
+  margin-right: 4px;
 }
 
 [data-addlocalfont-btn]{
   border-radius: 4px;
   width: fit-content;
+}
+
+[data-canvas-box]{
+  box-sizing: border-box;
+  border: 1px var(--boxBod) solid;
+  height: calc(100% - 325px);
+  min-height: 300px;
 }
 
 /*--组件修改*/

@@ -1008,12 +1008,12 @@ function addTag(type,info){
         sizeinfo.setAttribute('data-sizeinfo','')
         sizeinfo.setAttribute('style','min-width: 64px; flex-wrap: wrap; opacity: 0.6;');
         sizeinfo.innerHTML += '<div style="width: fit-content">' + layer.width + '×' + layer.height + '</div>';
-        sizeinfo.innerHTML += '<div style="width: fit-content; padding-left: 4px">' + Math.floor(layer.u8a.length/10)/100 + ' KB ▷</div>';
+        sizeinfo.innerHTML += '<div style="width: fit-content; padding-left: 4px">' + Math.floor(layer.u8a.length/10.24)/100 + ' KB ▷</div>';
         let sizebox = document.createElement('div');
         sizebox.className = 'df-rc';
         sizebox.setAttribute('style','width: fit-content; padding-left: 4px;');
         let realsize = document.createElement('div');
-        realsize.textContent = layer.compressed ? Math.floor(layer.compressed.size/10)/100 : '--';
+        realsize.textContent = layer.compressed ? Math.floor(layer.compressed.size/10.24)/100 : '--';
         let isminRealsize = layer.compressed ? (layer.u8a.length > layer.compressed.size ? 'true' : 'false') : ''
         realsize.setAttribute('data-export-realsize',isminRealsize);// ''|true|false
         sizebox.appendChild(realsize);
@@ -1484,7 +1484,7 @@ async function compressImages(imgExportData) {
         if(!targetSize[i]){
           //console.log('导出格式： ' + type[i])
           result = await compressImage(newBlob, 10,type[i]);
-          let finalSize = Math.floor(result.size/10)/100;
+          let finalSize = Math.floor(result.size/10.24)/100;
           sizespan.textContent = finalSize;
           sizespan.setAttribute('data-export-realsize','true');
         } else {
@@ -1500,7 +1500,7 @@ async function compressImages(imgExportData) {
                 };
                 
               } else {
-                let finalSize = Math.floor(result.size/10)/100;
+                let finalSize = Math.floor(result.size/10.24)/100;
                 sizespan.textContent = finalSize;
                 qualityspan.textContent = quality;
                 if ( result.size <= targetSize[i] ){

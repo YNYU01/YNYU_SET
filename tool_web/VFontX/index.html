@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <meta name="description" content="网页内容简介，转发时显示">
+  <meta name="description" content="网页内容简介, 转发时显示">
   <title data-en-text="『YNYU_SET』 VFontX">『云即·字效编辑器』</title>
   <link rel="icon" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@33934c5638337226913f532dfaa0202c8a49c3aa/VI/ICON_YNYUSET_DEV.png" type="image/png">
   <link rel="stylesheet" href="../../builds/yn_style.css" rel="stylesheet">
@@ -12,7 +12,17 @@
 </head>
 <body class="noselect df-ffc df-cc">
   <!--顶部-->
-  <div data-banner-top-mask class="df-rc w100" style="height: 40px;">
+  <div data-banner-top-mask class="df-sc w100" style="background: var(--mainColor);height: 40px;">
+    <a href="../" target="_blank" class="df-lc h100">
+      <set-zh-works data-any="zh" class="df-cc h100" style="--fill: var(--boxBak);"></set-zh-works>        
+      <set-en-works data-any="en" class="df-cc h100" style="--fill: var(--boxBak);"></set-en-works>       
+      <div data-any="zh" data-en-text=">>YN+ VFontX" style="padding-right: 10px; color: var(--boxBak); font-weight: 700; font-size: 16px;">
+        >> 云即·字效编辑器
+      </div>
+      <div data-any="en" data-en-text=">>YN+ VFontX" style="padding-right: 10px; color: var(--boxBak); font-weight: 900;">
+        >> 云即·字效编辑器
+     </div>
+    </a>
     <div class="df-lc" style="gap:4px; padding-right: 10px;">
       <div id="btn-theme" class="fl0" style="width: 22px; height: 22px; padding: 3px; box-sizing: border-box; background: var(--swi-bak); border-radius: 4px;">
         <input id="theme-1" data-theme-check type="checkbox" checked="true">
@@ -39,88 +49,122 @@
           温馨提示
       </div>
   </div>
-  <div data-page-id="VFontX" class="df-ffc pos-r" style="gap: 20px; width: var(--layout-w);">
-    
-    <div data-addlocalfont-box class="bod-d df-ffc">
-      <li data-li-style="1">
-        将需要使用的字体放入一个有公共权限的文件夹，并确保字体已安装
-      </li>
-      <li data-li-style="1">
-        如需要分类，可以嵌套一层文件夹，如粗体字体放 YNYUSET_FONTS/Bold/xxx.ttf
-      </li>
-      <div data-resize="pre">
-        <pre style="height: 120px; max-height: 50vh; border: 1px var(--boxBod) solid;">
-<code>YNYUSET_FONTS/
-├── Chinese/
-│   ├── xxx.ttf
-│   └── xxx.otf
-├── Japanese/
-│   └── xxx.woff
-├── Bold/
-│   └── xxx.woff
-└── default.ttf</code></pre>
+  <div data-page-id="VFontX" class="df-ffc pos-r h100" style="gap: 16px; width: var(--layout-w); margin-top: 10px;">
+    <div class="df-ffc" style="gap: 4px; height: 30px;">
+      <div class="df-sc">
+        <div class="df-lc" style="gap: 4px;">
+          <div data-addlocalfont-btn data-btn class="btn-op" >
+            <span><span data-en-text="&nbsp;+ Local Font ">&nbsp;+ 本地字体</span><span data-any="view750" data-en-text="Folder&nbsp;">文件夹&nbsp; </span>
+            </span>
+          </div>
+          <input type="checkbox" id="show-addlocalfont-rule" onchange="showNext(this,'data-addlocalfont-box','flex')">
+          <label for="show-addlocalfont-rule" class="fl0 df-cc">
+            <svg width="100%" height="100%" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill="var(--mainColor)" d="M13.3184 18.9475C13.3184 19.5289 12.847 20.0002 12.2656 20.0002H7.73535C7.15394 20.0002 6.68262 19.5289 6.68262 18.9475V18.9475C6.68262 18.3661 7.15394 17.8948 7.73535 17.8948H12.2656C12.847 17.8948 13.3184 18.3661 13.3184 18.9475V18.9475ZM10 4.49634C13.1066 4.49634 15.625 7.01474 15.625 10.1213C15.625 11.7417 14.939 13.2007 13.8424 14.2268C13.4752 14.5703 13.2197 15.0312 13.2197 15.534V15.534C13.2197 16.3848 12.53 17.0745 11.6792 17.0745H8.32094C7.47059 17.0745 6.78125 16.3851 6.78125 15.5348V15.5348C6.78125 15.0321 6.52576 14.5714 6.15862 14.228C5.06137 13.2019 4.375 11.7422 4.375 10.1213C4.375 7.01474 6.8934 4.49634 10 4.49634Z"/>
+              <path stroke="var(--mainColor)" d="M10 1V3" stroke-width="2" stroke-linecap="round"/>
+              <path stroke="var(--mainColor)" d="M5.00073 2.34229L6.00073 4.07434" stroke-width="2" stroke-linecap="round"/>
+              <path stroke="var(--mainColor)" d="M1.34229 6.00439L3.07434 7.00439" stroke-width="2" stroke-linecap="round"/>
+              <path stroke="var(--mainColor)" d="M15.0007 2.33716L14.0007 4.06921" stroke-width="2" stroke-linecap="round"/>
+              <path stroke="var(--mainColor)" d="M18.6628 5.99561L16.9308 6.99561" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              
+          </label>
+        </div>
+        <div class="df-lc pos-r" data-font-select data-select data-select-value="Aa诗宋体" style="gap: 4px; width: 180px;">
+          <input id="font-select-value-1" type="text" data-select-input readonly value="Aa诗宋体">
+          <input id="font-select-show-1" data-select-pick type="checkbox">
+          <label for="font-select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
+          <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
+            <div data-option="type" data-en-text="Commercial">非商免</div>
+            <div data-option="option" data-option-main="true" data-option-value="Aa诗宋体" data-fontname="AaShisongti">Aa诗宋体</div>
+            <div data-option="option" data-option-main="false" data-option-value="方正盛世楷书" data-fontname="FZShengShiKaiShuS-EB-GB">方正盛世楷书</div>
+            <div data-option="option" data-option-main="false" data-option-value="方正粗金陵" data-fontname="FZJinLS-B-GB">方正粗金陵</div>
+            <div data-option="option" data-option-main="false" data-option-value="方正粗雅宋" data-fontname="FZYaSongS-B-GB">方正粗雅宋</div>
+            <div data-option="option" data-option-main="false" data-option-value="汉仪小隶书" data-fontname="HYXiaoLiShuJ">汉仪小隶书</div>
+            <div data-option="option" data-option-main="false" data-option-value="汉仪第五人格体简" data-fontname="HYDiWRGJ">汉仪第五人格体简</div>
+            <div data-option="type" data-en-text="Normal">常规</div>
+            <div data-option="option" data-option-main="false" data-option-value="文道潮黑" data-fontname="WDCH">文道潮黑</div>
+            <div data-option="option" data-option-main="false" data-option-value="标小智无界黑" data-fontname="LogoSC Unbounded Sans">标小智无界黑</div>
+            <div data-option="option" data-option-main="false" data-option-value="汤宪滨宋" data-fontname="TangXianBinSong">汤宪滨宋</div>
+            <div data-option="option" data-option-main="false" data-option-value="源意明体" data-fontname="SrcMing">源意明体</div>
+            <div data-option="option" data-option-main="false" data-option-value="猫啃忘形圆" data-fontname="MaoKenWangXingYuan">猫啃忘形圆</div>
+            <div data-option="option" data-option-main="false" data-option-value="荆南波波黑" data-fontname="荆南波波黑">荆南波波黑</div>
+            <div data-option="option" data-option-main="false" data-option-value="问藏书房" data-fontname="WenCang">问藏书房</div>
+            <div data-option="type" data-en-text="Artistic">艺术</div>
+            <div data-option="option" data-option-main="false" data-option-value="Aa剑豪体" data-fontname="AaJianHaoTi">Aa剑豪体</div>
+            <div data-option="option" data-option-main="false" data-option-value="三极泼墨体" data-fontname="三极泼墨体">三极泼墨体</div>
+            <div data-option="option" data-option-main="false" data-option-value="临海隶书" data-fontname="临海体">临海隶书</div>
+            <div data-option="type" data-en-text="Variety">综艺</div>
+            <div data-option="option" data-option-main="false" data-option-value="三极力量体简" data-fontname="SJsanjililiangtijian-cu">三极力量体简</div>
+            <div data-option="option" data-option-main="false" data-option-value="优设标题黑" data-fontname="YouSheBiaoTiHei">优设标题黑</div>
+            <div data-option="option" data-option-main="false" data-option-value="创客贴金刚体" data-fontname="CKTKingKong">创客贴金刚体</div>
+            <div data-option="option" data-option-main="false" data-option-value="千图厚黑体" data-fontname="qiantuhouheiti">千图厚黑体</div>
+            <div data-option="option" data-option-main="false" data-option-value="字体传奇特战体" data-fontname="ziticqtezhanti">字体传奇特战体</div>
+            <div data-option="option" data-option-main="false" data-option-value="庞门正道标题体" data-fontname="PangMenZhengDao">庞门正道标题体</div>
+            <div data-option="option" data-option-main="false" data-option-value="锐字真言体" data-fontname="ZhenyanGB">锐字真言体</div>
+            <div data-option="type" data-en-text="Other">其他</div>
+            <div data-option="option" data-option-main="false" data-option-value="851電機（日）" data-fontname="_851Gkktt">851電機（日）</div>
+            <div data-option="option" data-option-main="false" data-option-value="id-POP手写体（日）" data-fontname="id-POP_FTMARU">id-POP手写体（日）</div>
+            <div data-option="option" data-option-main="false" data-option-value="k8x12像素体（日）" data-fontname="k8x12">k8x12像素体（日）</div>
+            <div data-option="option" data-option-main="false" data-option-value="叛逆（日）" data-fontname="Hangyaku">叛逆（日）</div>
+            <div data-option="option" data-option-main="false" data-option-value="荊棘黑（日）" data-fontname="TogebaraBold">荊棘黑（日）</div>
+            <div data-option="option" data-option-main="false" data-option-value="解星（日）" data-fontname="Kaisei Tokumin">解星（日）</div>
+          </div>
+        </div>
       </div>
-      <li data-li-style="1">
-        <span>找到该文件夹添加读取权限，本权限只用于读取字体目录，不上传任何文件</span>
-        <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/showDirectoryPicker" target="_blank" 
-        data-en-text="&nbsp;About>"> &nbsp;详情></a>
-      </li>
-      <li data-li-style="1">
-        每次打开网页会自动检查文件是否存在，如移动了文件夹需要重新授权
-      </li>
-      <div style="height: 20px;"></div>
-      <button data-addlocalfont-btn data-btn class="btn-op" data-en-text="&nbsp;+ Local Font Folder&nbsp;"> &nbsp;+ 本地字体文件夹&nbsp; </button>
-      <div id="status">加载中...</div>
-      <ul id="font-list"></ul>
+      
+      <div data-addlocalfont-box class="bod-d df-ffc ovy noscrollbar">
+        <li data-li-style="1"
+        data-en-text="Put the required fonts into a folder with public permissions and ensure that the fonts are installed">
+          将需要使用的字体放入一个有公共权限的文件夹, 并确保字体已安装
+        </li>
+        <li data-li-style="1"
+        data-en-text="If classification is required, a nested folder can be used, such as bold font for YNYUSET-FONTS/Bad/xxx.ttf">
+          如需要分类, 可以嵌套一层文件夹, 如粗体字体放 YNYUSET_FONTS/Bold/xxx.ttf
+        </li>
+        <div data-resize="pre">
+          <pre style="height: 120px; max-height: 50vh; border: 1px var(--boxBod) solid;">
+  <code>YNYUSET_FONTS/
+  ├── Chinese/
+  │   ├── xxx.ttf
+  │   └── xxx.otf
+  ├── Japanese/
+  │   └── xxx.woff
+  ├── Bold/
+  │   └── xxx.woff
+  └── default.ttf</code></pre>
+        </div>
+        <li data-li-style="1">
+          <span
+          data-en-text="Click the button then locate to the folder and add read permission. This permission is only used to read the font directory and does not upload any files">
+          点击按钮, 找到该文件夹, 即可添加读取权限, 本权限只用于读取字体目录, 不上传任何文件
+        </span>
+          <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/showDirectoryPicker" target="_blank" 
+          data-en-text="&nbsp;About>"> &nbsp;详情></a>
+        </li>
+        <li data-li-style="1"
+        data-en-text="Cache cannot detect changes in local files, such as moving folders or adding or removing fonts, which require re reading">
+          缓存无法获知本地文件变动, 如移动了文件夹/增减了字体, 需要重新读取
+        </li>
+        <div style="height: 20px;"></div>
+        <div data-resize="pre">
+          <div data-addlocalfont-filelist class="ovy scrollbar">
+            <div id="status" >Loading...</div>
+            <div id="font-list"></div>
+          </div>
+        </div>  
+      </div>
     </div>
+    <div class="w100 tex-pixelbg" data-canvas-box></div>
 
-    <div class="df-lc pos-r" data-font-select data-select data-select-value="Aa诗宋体" style="gap: 4px; width: 180px;">
-      <input id="font-select-value-1" type="text" data-select-input readonly value="Aa诗宋体">
-      <input id="font-select-show-1" data-select-pick type="checkbox">
-      <label for="font-select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
-      <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
-        <div data-option="type" data-en-text="Commercial">非商免</div>
-        <div data-option="option" data-option-main="true" data-option-value="Aa诗宋体" data-fontname="AaShisongti">Aa诗宋体</div>
-        <div data-option="option" data-option-main="false" data-option-value="方正盛世楷书" data-fontname="FZShengShiKaiShuS-EB-GB">方正盛世楷书</div>
-        <div data-option="option" data-option-main="false" data-option-value="方正粗金陵" data-fontname="FZJinLS-B-GB">方正粗金陵</div>
-        <div data-option="option" data-option-main="false" data-option-value="方正粗雅宋" data-fontname="FZYaSongS-B-GB">方正粗雅宋</div>
-        <div data-option="option" data-option-main="false" data-option-value="汉仪小隶书" data-fontname="HYXiaoLiShuJ">汉仪小隶书</div>
-        <div data-option="option" data-option-main="false" data-option-value="汉仪第五人格体简" data-fontname="HYDiWRGJ">汉仪第五人格体简</div>
-        <div data-option="type" data-en-text="Normal">常规</div>
-        <div data-option="option" data-option-main="false" data-option-value="文道潮黑" data-fontname="WDCH">文道潮黑</div>
-        <div data-option="option" data-option-main="false" data-option-value="标小智无界黑" data-fontname="LogoSC Unbounded Sans">标小智无界黑</div>
-        <div data-option="option" data-option-main="false" data-option-value="汤宪滨宋" data-fontname="TangXianBinSong">汤宪滨宋</div>
-        <div data-option="option" data-option-main="false" data-option-value="源意明体" data-fontname="SrcMing">源意明体</div>
-        <div data-option="option" data-option-main="false" data-option-value="猫啃忘形圆" data-fontname="MaoKenWangXingYuan">猫啃忘形圆</div>
-        <div data-option="option" data-option-main="false" data-option-value="荆南波波黑" data-fontname="荆南波波黑">荆南波波黑</div>
-        <div data-option="option" data-option-main="false" data-option-value="问藏书房" data-fontname="WenCang">问藏书房</div>
-        <div data-option="type" data-en-text="Artistic">艺术</div>
-        <div data-option="option" data-option-main="false" data-option-value="Aa剑豪体" data-fontname="AaJianHaoTi">Aa剑豪体</div>
-        <div data-option="option" data-option-main="false" data-option-value="三极泼墨体" data-fontname="三极泼墨体">三极泼墨体</div>
-        <div data-option="option" data-option-main="false" data-option-value="临海隶书" data-fontname="临海体">临海隶书</div>
-        <div data-option="type" data-en-text="Variety">综艺</div>
-        <div data-option="option" data-option-main="false" data-option-value="三极力量体简" data-fontname="SJsanjililiangtijian-cu">三极力量体简</div>
-        <div data-option="option" data-option-main="false" data-option-value="优设标题黑" data-fontname="YouSheBiaoTiHei">优设标题黑</div>
-        <div data-option="option" data-option-main="false" data-option-value="创客贴金刚体" data-fontname="CKTKingKong">创客贴金刚体</div>
-        <div data-option="option" data-option-main="false" data-option-value="千图厚黑体" data-fontname="qiantuhouheiti">千图厚黑体</div>
-        <div data-option="option" data-option-main="false" data-option-value="字体传奇特战体" data-fontname="ziticqtezhanti">字体传奇特战体</div>
-        <div data-option="option" data-option-main="false" data-option-value="庞门正道标题体" data-fontname="PangMenZhengDao">庞门正道标题体</div>
-        <div data-option="option" data-option-main="false" data-option-value="锐字真言体" data-fontname="ZhenyanGB">锐字真言体</div>
-        <div data-option="type" data-en-text="Other">其他</div>
-        <div data-option="option" data-option-main="false" data-option-value="851電機（日）" data-fontname="_851Gkktt">851電機（日）</div>
-        <div data-option="option" data-option-main="false" data-option-value="id-POP手写体（日）" data-fontname="id-POP_FTMARU">id-POP手写体（日）</div>
-        <div data-option="option" data-option-main="false" data-option-value="k8x12像素体（日）" data-fontname="k8x12">k8x12像素体（日）</div>
-        <div data-option="option" data-option-main="false" data-option-value="叛逆（日）" data-fontname="Hangyaku">叛逆（日）</div>
-        <div data-option="option" data-option-main="false" data-option-value="荊棘黑（日）" data-fontname="TogebaraBold">荊棘黑（日）</div>
-        <div data-option="option" data-option-main="false" data-option-value="解星（日）" data-fontname="Kaisei Tokumin">解星（日）</div>
-      </div>
-    </div>
+    
   </div>
   
   <div class="w100 fl0" style=" height: 20px;"></div>
   <script src="../../builds/yn_comp.js"></script>
   <script src="../../publics/opentype.js"></script>
   <script src="../../publics/test.js"></script>
+  <script src="../../publics/graph.js"></script>
   <script src="main.js"></script>
   <script>
     
