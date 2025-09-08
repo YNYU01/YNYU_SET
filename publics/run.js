@@ -82,29 +82,34 @@ function getUnicode(text){
 //console.log(getUnicode(COPYRIGHT_ZH))
 
 let USER_VISITOR = null;
-fetch('https://ipapi.co/json/')
-.then(async (response) => response.json())
-.then(data => {
-    USER_VISITOR = data;
-    const country = data.country_name;
-    const countryCode = data.country_code;
-    if(countryCode !== "CN"){
-      let links = document.querySelectorAll('link');
-      let scripts = document.querySelectorAll('script');
-
-      links.forEach(item => {
-        let oldHref = item.getAttribute('href');
-        item.setAttribute('href',oldHref.replace('.cn',''));
-      });
-      scripts.forEach(item => {
-        let oldSrc = item.getAttribute('src');
-        if(oldSrc){
-          item.setAttribute('src',oldSrc.replace('.cn',''));
-        };
-      });
-
-      console.log(`访问者国家/地区：${country} (${countryCode}),已切换对应资源链接`)
-    }
-});
+if(!(window.location.protocol === 'file:' || window.location.hostname === 'localhost' || PULGIN_LOCAL)){
+  fetch('https://ipapi.co/json/')
+  .then(async (response) => response.json())
+  .then(data => {
+      USER_VISITOR = data;
+      const country = data.country_name;
+      const countryCode = data.country_code;
+      if(countryCode !== "CN"){
+        let links = document.querySelectorAll('link');
+        let scripts = document.querySelectorAll('script');
+  
+        links.forEach(item => {
+          let oldHref = item.getAttribute('href');
+          item.setAttribute('href',oldHref.replace('.cn',''));
+        });
+        scripts.forEach(item => {
+          let oldSrc = item.getAttribute('src');
+          if(oldSrc){
+            item.setAttribute('src',oldSrc.replace('.cn',''));
+          };
+        });
+  
+        console.log(`访问者国家/地区：${country} (${countryCode}),已切换对应资源链接`)
+      }
+  })
+  .catch(e => {
+    console.log(e)
+  });
+}
 
 //setTimeout(()=>{console.log(USER_VISITOR)},500)

@@ -86,8 +86,8 @@ let helpData = {
     "表格支持格式: <br> /++ .csv | .xls | .xlsx ++/",
     "Table file type: <br> /++ .csv | .xls | .xlsx ++/"],
     ["li",
-    "兼容文件支持格式: <br>/++ .zy | .sketch | .svg | .xml | .json | .zip | .rar | .7z ++/",
-    "Compatible file type: <br> /++ .zy | .sketch | .svg | .xml | .json | .zip | .rar | .7z ++/"],
+    "兼容文件支持格式: <br>/++ .zy | .md | .sketch | .svg | .xml | .json | .zip | .rar | .7z ++/",
+    "Compatible file type: <br> /++ .zy | .md | .sketch | .svg | .xml | .json | .zip | .rar | .7z ++/"],
     ["br","",""],
     ["p",
     "拖拽和上传文件会立即生成用以确认最终生成内容的/++ 标签/大纲 ++/",
@@ -312,7 +312,7 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 window.addEventListener('load',()=>{
   /*clear*/
   let tabs = ['create','export','editor','variable','sheet','more tools']
-  viewPage(tabs[1])
+  //viewPage(tabs[1])
   /**/;
   if(window.innerWidth < 300){
     TV_MOVE = true;
@@ -835,7 +835,11 @@ function addTableTags(){
   addTag('table',CreateTableInfo);
 };
 function addZyCatalogue(files,isCreate){
-  
+  if(typeof files == 'string'){
+
+  } else {
+    
+  }
 };
 //添加标签-总
 function addTag(type,info){
@@ -1635,7 +1639,7 @@ clearCreateTags.addEventListener('click',()=>{
   cataloguesBox.innerHTML = '';
 });
 //文本框内容转标签/大纲
-convertTags.addEventListener('click',()=>{
+convertTags.addEventListener('click',async ()=>{
   clearCreateTags.click();
   let firstline = userText.value.trim().split('\n')[0];
   let isTableText = ['name','w','h'].every(item => firstline.includes(item));
@@ -1652,10 +1656,17 @@ convertTags.addEventListener('click',()=>{
       addTableTags();
     },100);
   }else if(firstline.includes('svg')){
-
-  }
-  else{
-    tipsAll(['数据格式错误, 请检查~','Data format error, please check~'],3000)
+    let svgs = await tool.SvgToObj(userText.value.trim())
+    addZyCatalogue(svgs,'svg')
+  }else{
+    //tipsAll(['数据格式错误, 请检查~','Data format error, please check~'],3000)
+    try{
+      let mds = tool.MdToObj(userText.value.trim());
+      //console.log(mds)
+      addZyCatalogue(mds,'md')
+    } catch {e => {
+      console.log(e);
+    }};
   };
 });
 //从所选图层获取数据
