@@ -154,7 +154,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
 }
 
 [data-pixel-mix] [data-select-options]{
-  white-space: normal;
+  white-space: pre;
   top: 24px;
   flex-wrap: wrap;
   width: 170;
@@ -453,6 +453,13 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   text-align: center;
 }
 
+[data-textarea-warp="true"]{
+  white-space: pre-wrap;
+}
+[data-textarea-warp="false"]{
+  white-space: pre;
+}
+
 
 /*--按钮类*/
 [data-btn]{
@@ -687,7 +694,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: rgba(0, 0, 0, 0.6);
   z-index: 12;
   gap: 4px;
-  text-wrap: wrap;
+  white-space: pre-wrap;
 }
 
 [data-dailog-box] p{
@@ -831,7 +838,6 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   min-height: 180px;
   resize: vertical;
   padding: 4px 10px;
-  text-wrap: nowrap;
   line-height: 1.5em;
 }
 
@@ -1016,7 +1022,7 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   font-size: 8px;
   transform: skewX(-8deg);
   opacity: 0.6;
-  text-wrap: wrap;
+  white-space: pre-wrap;
 }
 
 [data-language="En"] [data-retable-moreset]{
@@ -1063,7 +1069,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 [data-skilltype-name]{
   font-size: 10px;
   line-height: 1.25em;
-  text-wrap: wrap;
+  white-space: pre-wrap;
 }
 
 [data-skills-scroll]{
@@ -1149,7 +1155,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   border-radius: 4px;
   background: rgba(230, 230, 230, 1);
   padding: 8px;
-  text-wrap: wrap;
+  white-space: pre-wrap;
 }
 
 [data-skill-sec]:hover{
@@ -1293,7 +1299,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   max-width: 560px;
   height: 38px;
   font-size: 10px;
-  text-wrap: wrap;
+  white-space: pre-wrap;
   text-align: center;
   opacity: 0.6;
   margin: 4px 0;
@@ -1334,7 +1340,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 }
 
 [data-selects-info-box] span{
-  text-wrap: nowrap;
+  white-space: pre;
 }
 
 [data-selects-info="main"],[data-selects-info="num"]{

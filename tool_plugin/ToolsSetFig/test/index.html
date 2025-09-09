@@ -199,16 +199,7 @@
                 <textarea spellcheck="false" id="upload-textarea" data-textarea="eg" 
                 data-eg="name\tw\th\nkv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
                 data-eg-en="name\tw\th\nkv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
-                onfocus="
-                let btn = this.parentNode.parentNode.querySelector('btn-re');
-                btn.style.animation = 'loadRo2 2s linear infinite';
-                btn.parentNode.style.borderColor = 'var(--mainColor)';
-                "
-                onblur="
-                let btn = this.parentNode.parentNode.querySelector('btn-re');
-                btn.style.animation = '';
-                btn.parentNode.style.borderColor = 'var(--boxBod)';
-                "></textarea>
+                ></textarea>
                 <!--清空-->
                 <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
                   <btn-close></btn-close>
@@ -1330,8 +1321,8 @@
   <script src="../../../builds/yn_tool.js"></script>
   <script src="../../../publics/compressor.min.js"></script>
   <!--script src="../../../publics/UPNG.js"></script-->
-  <script src="https://unpkg.com/pako@2.0.4/dist/pako.min.js"></script>
-  <script src="https://unpkg.com/upng-js@latest/UPNG.js"></script>
+  <script src="../../../publics/pako.min.js"></script>
+  <script src="../../../publics/UPNG.js"></script>
   <script src="../../../publics/FileSaver.min.js"></script>
   <!--script src="../../../publics/xlsx.min.js"></script-->
   <script src="../../../publics/jszip.js"></script>

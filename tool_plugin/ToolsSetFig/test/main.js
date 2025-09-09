@@ -635,8 +635,41 @@ dropUp.addEventListener('drop',(e)=>{
   }
   
 });
+
+userText.onfocus = ()=>{
+  let btn = getElementMix('upload-set-1').querySelector('btn-re');
+  btn.style.animation = 'loadRo2 2s linear infinite';
+  btn.parentNode.style.borderColor = 'var(--mainColor)';
+}
+userText.onblur = ()=>{
+  let btn = getElementMix('upload-set-1').querySelector('btn-re');
+  btn.style.animation = '';
+  btn.parentNode.style.borderColor = 'var(--boxBod)';
+  let linelengths = userText.value.split('\n').map(item => item.length).sort((a,b) => b - a);
+  if(linelengths[0] > 1000){
+    userText.setAttribute('data-textarea-warp','true');
+  } else {
+    userText.setAttribute('data-textarea-warp','false');
+  }
+}
+userText.addEventListener('paste',async (e) => {
+  e.preventDefault();
+  let pasted = await navigator.clipboard.readText();
+  let linelengths = pasted.split('\n').map(item => item.length).sort((a,b) => b - a);
+  //console.log(linelengths)
+  if(linelengths[0] > 1000){
+    userText.setAttribute('data-textarea-warp','true');
+  } else {
+    userText.setAttribute('data-textarea-warp','false');
+  }
+  userText.value += pasted
+})
+userText.parentNode.querySelector('[data-close]').addEventListener('click',()=>{
+  userText.setAttribute('data-textarea-warp','false');
+})
+
 //创建内容
-createAnyBtn.addEventListener('click',()=>{
+createAnyBtn.addEventListener('click',() => {
   let type = createTagsBox.parentNode.getAttribute('data-create-tags-box');
   switch (type){
     case 'image':
