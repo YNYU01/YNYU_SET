@@ -645,24 +645,19 @@ userText.onblur = ()=>{
   let btn = getElementMix('upload-set-1').querySelector('btn-re');
   btn.style.animation = '';
   btn.parentNode.style.borderColor = 'var(--boxBod)';
-  let linelengths = userText.value.split('\n').map(item => item.length).sort((a,b) => b - a);
-  if(linelengths[0] > 1000){
-    userText.setAttribute('data-textarea-warp','true');
-  } else {
+  if(userText.value == ''){
     userText.setAttribute('data-textarea-warp','false');
   }
 }
-userText.addEventListener('paste',async (e) => {
-  e.preventDefault();
-  let pasted = await navigator.clipboard.readText();
-  let linelengths = pasted.split('\n').map(item => item.length).sort((a,b) => b - a);
-  //console.log(linelengths)
-  if(linelengths[0] > 1000){
+
+userText.addEventListener('paste',(e) => {
+  let pasted = e.clipboardData.getData('text/plain') //await navigator.clipboard.readText();
+  if(pasted.includes('base64,')){
     userText.setAttribute('data-textarea-warp','true');
-  } else {
+    setTimeout(()=>{userText.scrollTop = 0})
+  }else {
     userText.setAttribute('data-textarea-warp','false');
   }
-  userText.value += pasted
 })
 userText.parentNode.querySelector('[data-close]').addEventListener('click',()=>{
   userText.setAttribute('data-textarea-warp','false');

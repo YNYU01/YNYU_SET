@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9e62fa4f6c6200db45321db6f05740fa8f87ee0d/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6a92dea98443c10a68a84357abc3c54a94c9cdf4/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9e62fa4f6c6200db45321db6f05740fa8f87ee0d/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6a92dea98443c10a68a84357abc3c54a94c9cdf4/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -215,7 +215,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
 }
 
 [data-pixel-mix] [data-select-options]{
-  white-space: normal;
+  white-space: pre;
   top: 24px;
   flex-wrap: wrap;
   width: 170;
@@ -514,6 +514,13 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   text-align: center;
 }
 
+[data-textarea-warp="true"]{
+  white-space: pre-wrap;
+}
+[data-textarea-warp="false"]{
+  white-space: pre;
+}
+
 
 /*--按钮类*/
 [data-btn]{
@@ -748,7 +755,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: rgba(0, 0, 0, 0.6);
   z-index: 12;
   gap: 4px;
-  text-wrap: wrap;
+  white-space: pre-wrap;
 }
 
 [data-dailog-box] p{
@@ -892,7 +899,6 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   min-height: 180px;
   resize: vertical;
   padding: 4px 10px;
-  text-wrap: nowrap;
   line-height: 1.5em;
 }
 
@@ -1077,7 +1083,7 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   font-size: 8px;
   transform: skewX(-8deg);
   opacity: 0.6;
-  text-wrap: wrap;
+  white-space: pre-wrap;
 }
 
 [data-language="En"] [data-retable-moreset]{
@@ -1124,7 +1130,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 [data-skilltype-name]{
   font-size: 10px;
   line-height: 1.25em;
-  text-wrap: wrap;
+  white-space: pre-wrap;
 }
 
 [data-skills-scroll]{
@@ -1210,7 +1216,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   border-radius: 4px;
   background: rgba(230, 230, 230, 1);
   padding: 8px;
-  text-wrap: wrap;
+  white-space: pre-wrap;
 }
 
 [data-skill-sec]:hover{
@@ -1354,7 +1360,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   max-width: 560px;
   height: 38px;
   font-size: 10px;
-  text-wrap: wrap;
+  white-space: pre-wrap;
   text-align: center;
   opacity: 0.6;
   margin: 4px 0;
@@ -1395,7 +1401,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 }
 
 [data-selects-info-box] span{
-  text-wrap: nowrap;
+  white-space: pre;
 }
 
 [data-selects-info="main"],[data-selects-info="num"]{
@@ -1931,16 +1937,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 <textarea spellcheck="false" id="upload-textarea" data-textarea="eg" 
                 data-eg="name\tw\th\nkv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
                 data-eg-en="name\tw\th\nkv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
-                onfocus="
-                let btn = this.parentNode.parentNode.querySelector('btn-re');
-                btn.style.animation = 'loadRo2 2s linear infinite';
-                btn.parentNode.style.borderColor = 'var(--mainColor)';
-                "
-                onblur="
-                let btn = this.parentNode.parentNode.querySelector('btn-re');
-                btn.style.animation = '';
-                btn.parentNode.style.borderColor = 'var(--boxBod)';
-                "></textarea>
+                ></textarea>
                 <!--清空-->
                 <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
                   <btn-close></btn-close>
@@ -3058,16 +3055,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9e62fa4f6c6200db45321db6f05740fa8f87ee0d/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9e62fa4f6c6200db45321db6f05740fa8f87ee0d/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9e62fa4f6c6200db45321db6f05740fa8f87ee0d/publics/compressor.min.js"></script>
-  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9e62fa4f6c6200db45321db6f05740fa8f87ee0d/publics/UPNG.js"></script-->
-  <script src="https://unpkg.com/pako@2.0.4/dist/pako.min.js"></script>
-  <script src="https://unpkg.com/upng-js@latest/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9e62fa4f6c6200db45321db6f05740fa8f87ee0d/publics/FileSaver.min.js"></script>
-  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9e62fa4f6c6200db45321db6f05740fa8f87ee0d/publics/xlsx.min.js"></script-->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9e62fa4f6c6200db45321db6f05740fa8f87ee0d/publics/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9e62fa4f6c6200db45321db6f05740fa8f87ee0d/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6a92dea98443c10a68a84357abc3c54a94c9cdf4/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6a92dea98443c10a68a84357abc3c54a94c9cdf4/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6a92dea98443c10a68a84357abc3c54a94c9cdf4/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6a92dea98443c10a68a84357abc3c54a94c9cdf4/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6a92dea98443c10a68a84357abc3c54a94c9cdf4/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6a92dea98443c10a68a84357abc3c54a94c9cdf4/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6a92dea98443c10a68a84357abc3c54a94c9cdf4/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6a92dea98443c10a68a84357abc3c54a94c9cdf4/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3707,8 +3702,35 @@ dropUp.addEventListener('drop',(e)=>{
   }
   
 });
+
+userText.onfocus = ()=>{
+  let btn = getElementMix('upload-set-1').querySelector('btn-re');
+  btn.style.animation = 'loadRo2 2s linear infinite';
+  btn.parentNode.style.borderColor = 'var(--mainColor)';
+}
+userText.onblur = ()=>{
+  let btn = getElementMix('upload-set-1').querySelector('btn-re');
+  btn.style.animation = '';
+  btn.parentNode.style.borderColor = 'var(--boxBod)';
+  if(userText.value == ''){
+    userText.setAttribute('data-textarea-warp','false');
+  }
+}
+
+userText.addEventListener('paste',async (e) => {
+  let pasted = e.clipboardData.getData('text/plain') //await navigator.clipboard.readText();
+  if(pasted.includes('base64,')){
+    userText.setAttribute('data-textarea-warp','true');
+  }else {
+    userText.setAttribute('data-textarea-warp','false');
+  }
+})
+userText.parentNode.querySelector('[data-close]').addEventListener('click',()=>{
+  userText.setAttribute('data-textarea-warp','false');
+})
+
 //创建内容
-createAnyBtn.addEventListener('click',()=>{
+createAnyBtn.addEventListener('click',() => {
   let type = createTagsBox.parentNode.getAttribute('data-create-tags-box');
   switch (type){
     case 'image':

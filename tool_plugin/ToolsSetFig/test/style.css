@@ -455,6 +455,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
 
 [data-textarea-warp="true"]{
   white-space: pre-wrap;
+  user-select: none;
 }
 [data-textarea-warp="false"]{
   white-space: pre;
