@@ -453,14 +453,95 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   text-align: center;
 }
 
-[data-textarea-warp="true"]{
-  white-space: pre-wrap;
-  user-select: none;
+#upload-textarea-box{
+  border-radius: 4px;
+  border: 1px var(--boxBod) solid;
+  overflow: hidden;
+  min-width: 180px;
 }
-[data-textarea-warp="false"]{
+
+#upload-textarea-box [data-textarea="tips"]{
+  white-space: pre-wrap;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--boxBod);
+  bottom: 0;
+  padding: 0px 10px;
+  box-sizing: border-box;
+  animation: boxUp 0.5s;
+  pointer-events: none;
+}
+
+#upload-textarea-scroll{
+  overflow-y: hidden;
+  min-height: 186px;
+  resize: both;
+}
+
+#upload-textarea{
+  border: none;
+  max-width: none;
+  padding: 4px 10px 4px 16px;
+  line-height: 16px;
+}
+
+#upload-set-box{
+  width:100%;
+  justify-content: space-between;
+  scrollbar-gutter: stable;
+}
+
+
+#upload-set-main{
+  gap: 4px;
+}
+
+[data-textarea-wrap="true"]{
+  white-space: pre-wrap;
+  width: 2000px;
+}
+
+[data-textarea-wrap="false"]{
   white-space: pre;
 }
 
+[data-textarea-linenum-box]{
+  width: 30px;
+  background: var(--boxGry);
+  border-right: 1px var(--boxBod) solid;
+  padding: 6px 2px;
+  box-sizing: border-box;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+[data-textarea-linenum]{
+  height: 20000px;
+  text-align: right;
+  line-height: 16px;
+  gap: 0;
+}
+
+[data-scroll-left]{
+  display: flex;
+  gap: 4px;
+  font-size: 8px;
+  height: calc(100% - 2px);
+  padding: 2px;
+  opacity: 0.3;
+  top: 0;
+  left: 30px;
+}
+
+[data-scroll-left]:hover{
+  opacity: 1;
+}
+
+[data-scroll-left] [data-btn]{
+  width: 10px;
+  height: 14px;
+  border-radius: 2px;
+}
 
 /*--按钮类*/
 [data-btn]{
@@ -832,23 +913,6 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 }
 .nobod {
   --boxBod: transparent;
-}
-
-#upload-textarea{
-  height: 180px;
-  min-height: 180px;
-  resize: vertical;
-  padding: 4px 10px;
-  line-height: 1.5em;
-}
-
-#upload-set-box{
-  width:100%;
-  justify-content: space-between;
-}
-
-#upload-set-main{
-  gap: 4px;
 }
 
 [data-resize]::-webkit-resizer,

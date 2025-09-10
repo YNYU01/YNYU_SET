@@ -703,7 +703,7 @@ function COMP_MAIN(){
       hasvalue.forEach(items => {
         items.value = '';
         if(items.getAttribute('data-textarea') == 'eg'){
-          items.parentNode.querySelector('[data-textarea="tips"]').style.display = "block";
+          items.parentNode.querySelector('[data-textarea="tips"]').style.display = "flex";
         };
         let inputEvent = new Event('input',{bubbles:true});
         items.dispatchEvent(inputEvent);

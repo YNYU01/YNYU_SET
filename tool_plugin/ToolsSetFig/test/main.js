@@ -279,6 +279,7 @@ const userZy = document.getElementById('input-user-zy');
 const userTableTitle = document.getElementById('input-user-table-title');
 const frameName =  document.getElementById('input-framename');
 const userText = document.getElementById('upload-textarea');
+let textareaLineNum = 20;
 
 const pixelScale = document.getElementById('input-pixelScale');
 let scaleSetX = getElementMix('data-scaleset-x').querySelector('[data-input="value"]');
@@ -646,22 +647,106 @@ userText.onblur = ()=>{
   btn.style.animation = '';
   btn.parentNode.style.borderColor = 'var(--boxBod)';
   if(userText.value == ''){
-    userText.setAttribute('data-textarea-warp','false');
+    userText.setAttribute('data-textarea-wrap','false');
   }
 }
 
 userText.addEventListener('paste',(e) => {
   let pasted = e.clipboardData.getData('text/plain') //await navigator.clipboard.readText();
+  
   if(pasted.includes('base64,')){
-    userText.setAttribute('data-textarea-warp','true');
+    userText.setAttribute('data-textarea-wrap','true');
     setTimeout(()=>{userText.scrollTop = 0})
   }else {
-    userText.setAttribute('data-textarea-warp','false');
+    userText.setAttribute('data-textarea-wrap','false');
   }
 })
 userText.parentNode.querySelector('[data-close]').addEventListener('click',()=>{
-  userText.setAttribute('data-textarea-warp','false');
+  userText.setAttribute('data-textarea-wrap','false');
+
+  let linenums = getElementMix('data-textarea-linenum');
+  textareaLineNum = 20;
+  linenums.innerHTML = `<div>1</div>
+  <div>2</div>
+  <div>3</div>
+  <div>4</div>
+  <div>5</div>
+  <div>6</div>
+  <div>7</div>
+  <div>8</div>
+  <div>9</div>
+  <div>10</div>
+  <div>11</div>
+  <div>12</div>
+  <div>13</div>
+  <div>14</div>
+  <div>15</div>
+  <div>16</div>
+  <div>17</div>
+  <div>18</div>
+  <div>19</div>
+  <div>20</div>`;
+
 })
+userText.addEventListener('scroll',()=>{
+  let numbox = getElementMix('data-textarea-linenum-box');
+  let linenums = getElementMix('data-textarea-linenum');
+  numbox.scrollTop = userText.scrollTop;
+  if(textareaLineNum*16 < userText.scrollTop + userText.offsetHeight){
+    let addnum = 100;//Math.min((999 - textareaLineNum),100)
+    if (addnum < 0) return;
+    for(let i = textareaLineNum; i < textareaLineNum + addnum; i++){
+      let linenum = document.createElement('div');
+      let num = (i + 1) // <= 9999 ? (i + 1) : '···';
+      linenum.textContent = num;
+      if(num > 9999 && num <= 99999){
+        linenum.setAttribute('style','font-size:9px;');
+      }
+      if(num > 99999){
+        linenum.setAttribute('style','font-size:8px;');
+      }
+      linenums.appendChild(linenum);
+    };
+    textareaLineNum += addnum;
+  };
+});
+
+let userText_BtnUp = getElementMix('data-btn="up"');
+let userText_BtnDown = getElementMix('data-btn="down"');
+let userText_ScrollUp = null;
+let userText_ScrollDown = null;
+
+userText_BtnUp.addEventListener('dblclick',()=>{
+  userText.scrollTop = 0;
+});
+userText_BtnDown.addEventListener('dblclick',()=>{
+  userText.scrollTop = userText.scrollHeight;
+});
+
+userText_BtnUp.addEventListener('mousedown',()=>{
+  userText_ScrollUp = setInterval(()=>{
+    userText.scrollTop -= userText.offsetHeight;
+  },10);
+});
+userText_BtnDown.addEventListener('mousedown',()=>{
+  userText_ScrollDown = setInterval(()=>{
+    userText.scrollTop += userText.offsetHeight;
+  },10);
+});
+userText_BtnUp.addEventListener('mouseup',()=>{
+  clearInterval(userText_ScrollUp);
+});
+userText_BtnDown.addEventListener('mouseup',()=>{
+  clearInterval(userText_ScrollDown);
+});
+userText_BtnUp.addEventListener('mouseleave',()=>{
+  clearInterval(userText_ScrollUp);
+});
+userText_BtnDown.addEventListener('mouseleave',()=>{
+  clearInterval(userText_ScrollDown);
+});
+
+
 
 //创建内容
 createAnyBtn.addEventListener('click',() => {
