@@ -625,11 +625,11 @@ TOOL_JS.prototype.SvgToObj = SvgToObj;
  *  }]
  * @param {[boolean]} isFinal - 补充信息，是否压缩并导出，需对齐imgExportData的下标
  */
-async function ExportImgByData(callback,imgExportData,isFinal){
+async function ExportImgByData(callback,imgExportData,isFinal,zipName){
   if(imgExportData.length > 0){
     try {
       const compressedImages = await CompressImages(callback,imgExportData,isFinal);
-      CreateZipAndDownload(compressedImages,imgExportData);
+      CreateZipAndDownload(compressedImages,imgExportData,zipName);
     } catch (error) {
       console.error('处理过程中发生错误:', error);
     };
