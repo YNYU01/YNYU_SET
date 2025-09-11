@@ -35,7 +35,7 @@ function B64ToU8A(b64) {
   }
 
   return array;
-}
+};
 TOOL_JS.prototype.B64ToU8A = B64ToU8A;
 
 /**
@@ -67,7 +67,7 @@ function U8AToB64(u8,type) {
   let base64 = btoa(binaryString);
   base64 = type && filetype[type.toLowerCase()] ? filetype[type.toLowerCase()] + base64 : base64;
   return base64;
-}
+};
 TOOL_JS.prototype.U8AToB64 = U8AToB64;
 
 /**
@@ -76,7 +76,7 @@ TOOL_JS.prototype.U8AToB64 = U8AToB64;
 function CanvasToU8A(canvas){
   let dataUrl = canvas.toDataURL('image/png');
   return new Uint8Array(B64ToU8A(dataUrl.split(',')[1]));
-}
+};
 TOOL_JS.prototype.CanvasToU8A = CanvasToU8A;
 
 /**
@@ -97,7 +97,7 @@ function TextMaxLength(text,max,add){
       }
   }
   return newtext;
-}
+};
 TOOL_JS.prototype.TextMaxLength = TextMaxLength;
 
 function CUT_IMAGE(image,mix){
@@ -184,7 +184,7 @@ function CUT_AREA(info,mix) {
 
     return cutAreas;
   };
-}
+};
 TOOL_JS.prototype.CUT_AREA = CUT_AREA;
 
 function TrueImageFormat(file) {
@@ -208,7 +208,7 @@ function TrueImageFormat(file) {
       reader.onerror = reject;
       reader.readAsArrayBuffer(file);
   });
-}
+};
 TOOL_JS.prototype.TrueImageFormat = TrueImageFormat;
 
 /**
@@ -483,7 +483,7 @@ function MdToObj(mdText) {
   }
 
   return ast;
-}
+};
 TOOL_JS.prototype.MdToObj = MdToObj;
 
 async function SvgToObj(svgText)  {
@@ -600,6 +600,406 @@ async function SvgToObj(svgText)  {
       });
     });
   }
-}
+};
 TOOL_JS.prototype.SvgToObj = SvgToObj;
+
+/**==========压缩图片模块==========
+!!! 需引入依赖：UPNG.js + jszip.js
+!!! 传入的必须是可编辑的图片信息数组，压缩会返回一个数据缓存，避免重复执行压缩
+*/
+
+/**
+ * 批量压缩图片并导出为zip
+ * @param {[object]} imgExportData
+ * [{
+ *    fileName:string,
+ *    id:string,
+ *    format:string,
+ *    u8a: Uitt8Array,
+ *    finalSize:number,
+ *    width: number,
+ *    height: number,
+ *    compressed:null | string,
+ *    realSize: number,
+ *    quality: 0-10,
+ *  }]
+ * @param {[boolean]} isFinal - 补充信息，是否压缩并导出，需对齐imgExportData的下标
+ */
+async function ExportImgByData(callback,imgExportData,isFinal){
+  if(imgExportData.length > 0){
+    try {
+      const compressedImages = await CompressImages(callback,imgExportData,isFinal);
+      CreateZipAndDownload(compressedImages,imgExportData);
+    } catch (error) {
+      console.error('处理过程中发生错误:', error);
+    };
+  };
+};
+TOOL_JS.prototype.ExportImgByData = ExportImgByData;
+
+/**
+ * 单个图片的压缩
+ * @param {Blob} blob - 传入一个png文件的blob，
+ * @param {number} quality - 压缩质量 1~10
+ * @param {string} type -输出的格式 png | jpg | jpeg | webp
+ */
+function CompressImage(blob,quality,type) {
+    if (type == 'jpg' || type == 'jpeg'){
+      return new Promise((resolve, reject) => {
+        let url = URL.createObjectURL(blob);
+        let img = new Image();
+        img.src = url;
+        img.onload = function(){
+          let canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          let ctx = canvas.getContext('2d')
+          ctx.drawImage(img,0,0)
+          canvas.toBlob(function(blob){
+            let file = new File([blob],'image.jpg',{type:'image/jpeg'});
+            new Compressor(file, {
+              quality:quality/10,
+              success(result) {
+                resolve(result);
+              },
+              error(err) {
+                reject(err);
+              },
+            });
+          },'image/jpeg',(quality/10));
+        };
+        
+      });
+    } else if ( type == 'png') {
+      return new Promise((resolve, reject) => {
+        if(quality == 10){
+          resolve(blob)
+        } else {
+          let url = URL.createObjectURL(blob);
+          let img = new Image()
+          img.src = url;
+
+          img.onload = function(){
+            let canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            let ctx = canvas.getContext('2d');
+            ctx.drawImage(img,0,0)
+            let imageData = ctx.getImageData(0,0,img.width,img.height);
+            let data = imageData.data;
+            
+            let depth = 256
+            if(quality <= 4){
+              depth = 128;
+            };
+            let diff = ditherColor(data, img.width, img.height).pixels
+            let diffimg = new Blob([UPNG.encode([diff.buffer], img.width, img.height,quality*depth)],{type: 'image/png'})
+
+            // dither with stucki dithering algorithm 
+            // https://tannerhelland.com/2012/12/28/dithering-eleven-algorithms-source-code.html#stucki-dithering
+            //单色
+            function calculateLightness(r, g, b){
+              const max = Math.max(r, g, b);
+              const min = Math.min(r, g, b);
+              return (max + min) / 2;
+            };
+            function dither(pixels, imageWidth, imageHeight){
+              const ditheredPixels = pixels//.slice().fill(255);
+              // add 2 to beginning and end so we don't need to do bounds checks
+              const errorDiffusionWidth = imageWidth + 4;
+              const errorBuffer = new ArrayBuffer(errorDiffusionWidth * 3 * 4);
+              let errorRow1 = new Float32Array(errorBuffer, 0, errorDiffusionWidth);
+              let errorRow2 = new Float32Array(errorBuffer, errorDiffusionWidth * 4, errorDiffusionWidth);
+              let errorRow3 = new Float32Array(errorBuffer, errorDiffusionWidth * 8, errorDiffusionWidth);
+          
+              const startTime = performance.now();
+              for(let y=0,pixelIndex=0; y<imageHeight; y++){
+                  for(let x=0,errorIndex=2;x<imageWidth;x++,pixelIndex+=4,errorIndex++){
+                      const storedError = errorRow1[errorIndex];
+                      const lightness = calculateLightness(pixels[pixelIndex], pixels[pixelIndex+1], pixels[pixelIndex+2]);
+                      const adjustedLightness = storedError + lightness;
+                      const outputValue = adjustedLightness > 127 ? 255 : 0;
+          
+                      ditheredPixels[pixelIndex] = outputValue;
+                      ditheredPixels[pixelIndex+1] = outputValue;
+                      ditheredPixels[pixelIndex+2] = outputValue;
+          
+                      let errorFraction = (adjustedLightness - outputValue) / 42;
+                      const errorFraction2 =  errorFraction * 2;
+                      const errorFraction4 =  errorFraction * 4;
+                      const errorFraction8 =  errorFraction * 8;
+          
+                      errorRow1[errorIndex+1] += errorFraction8;
+                      errorRow1[errorIndex+2] += errorFraction4;
+          
+                      errorRow2[errorIndex-2] += errorFraction2;
+                      errorRow2[errorIndex-1] += errorFraction4;
+                      errorRow2[errorIndex] += errorFraction8;
+                      errorRow2[errorIndex+1] += errorFraction4;
+                      errorRow2[errorIndex+2] += errorFraction2;
+          
+                      errorRow3[errorIndex-2] += errorFraction;
+                      errorRow3[errorIndex-1] += errorFraction2;
+                      errorRow3[errorIndex] += errorFraction4;
+                      errorRow3[errorIndex+1] += errorFraction2;
+                      errorRow3[errorIndex+2] += errorFraction;
+                  }
+                  errorRow1.fill(0);
+                  const temp = errorRow1;
+                  errorRow1 = errorRow2;
+                  errorRow2 = errorRow3;
+                  errorRow3 = temp;
+              };
+              const timeElapsed = (performance.now() - startTime) / 1000;
+              return {
+                  pixels: ditheredPixels,
+                  timeElapsed,
+              };
+            };
+            //彩色
+            function ditherColor(pixels, imageWidth, imageHeight) {
+              let ditheredPixels = new Uint8ClampedArray(pixels); // 复制像素
+              let levels = quality * 25; // 每通道量化级别，例如 4 表示 0, 85, 170, 255
+              let step = 255 / levels;
+          
+              // 误差缓冲区（每行 +4 避免边界检查）
+              let errorDiffusionWidth = imageWidth + 4;
+              let bufferLength = errorDiffusionWidth * 3; // R, G, B 各一行
+              let errorBuffer = new ArrayBuffer(bufferLength * 4 * 3); // 3 行 × 3 通道 × Float32
+          
+              // 每个通道的三行误差（当前行 + 下两行）
+              let er1R = new Float32Array(errorBuffer, 0, errorDiffusionWidth);
+              let er1G = new Float32Array(errorBuffer, errorDiffusionWidth * 4, errorDiffusionWidth);
+              let er1B = new Float32Array(errorBuffer, errorDiffusionWidth * 8, errorDiffusionWidth);
+          
+              let er2R = new Float32Array(errorBuffer, errorDiffusionWidth * 12, errorDiffusionWidth);
+              let er2G = new Float32Array(errorBuffer, errorDiffusionWidth * 16, errorDiffusionWidth);
+              let er2B = new Float32Array(errorBuffer, errorDiffusionWidth * 20, errorDiffusionWidth);
+          
+              let er3R = new Float32Array(errorBuffer, errorDiffusionWidth * 24, errorDiffusionWidth);
+              let er3G = new Float32Array(errorBuffer, errorDiffusionWidth * 28, errorDiffusionWidth);
+              let er3B = new Float32Array(errorBuffer, errorDiffusionWidth * 32, errorDiffusionWidth);
+          
+              let startTime = performance.now();
+          
+              for (let y = 0, pixelIndex = 0; y < imageHeight; y++) {
+                  // 清除上上行误差（复用为下下行）
+                  er3R.fill(0);
+                  er3G.fill(0);
+                  er3B.fill(0);
+          
+                  for (let x = 0, errorIndex = 2; x < imageWidth; x++, pixelIndex += 4, errorIndex++) {
+                    let r = pixels[pixelIndex];
+                    let g = pixels[pixelIndex + 1];
+                    let b = pixels[pixelIndex + 2];
+          
+                    // 获取累积误差
+                    let errR = er1R[errorIndex];
+                    let errG = er1G[errorIndex];
+                    let errB = er1B[errorIndex];
+        
+                    // 加上误差后的值
+                    let rAdj = r + errR;
+                    let gAdj = g + errG;
+                    let bAdj = b + errB;
+        
+                    // 限制范围
+                    rAdj = Math.max(0, Math.min(255, rAdj));
+                    gAdj = Math.max(0, Math.min(255, gAdj));
+                    bAdj = Math.max(0, Math.min(255, bAdj));
+        
+                    // 量化：映射到有限颜色级别
+                    let rOut = Math.round(rAdj / step) * step;
+                    let gOut = Math.round(gAdj / step) * step;
+                    let bOut = Math.round(bAdj / step) * step;
+        
+                    // 保存结果
+                    ditheredPixels[pixelIndex] = rOut;
+                    ditheredPixels[pixelIndex + 1] = gOut;
+                    ditheredPixels[pixelIndex + 2] = bOut;
+        
+                    // 计算误差
+                    let rErr = rAdj - rOut;
+                    let gErr = gAdj - gOut;
+                    let bErr = bAdj - bOut;
+        
+                    // Floyd-Steinberg 矩阵扩散 (1/16)
+                    let rErr7 = rErr * 7/16, gErr7 = gErr * 7/16, bErr7 = bErr * 7/16;
+                    let rErr3 = rErr * 3/16, gErr3 = gErr * 3/16, bErr3 = bErr * 3/16;
+                    let rErr5 = rErr * 5/16, gErr5 = gErr * 5/16, bErr5 = bErr * 5/16;
+                    let rErr1 = rErr * 1/16, gErr1 = gErr * 1/16, bErr1 = bErr * 1/16;
+        
+                    // 右
+                    er1R[errorIndex + 1] += rErr7;
+                    er1G[errorIndex + 1] += gErr7;
+                    er1B[errorIndex + 1] += bErr7;
+        
+                    // 左下
+                    er2R[errorIndex - 1] += rErr3;
+                    er2G[errorIndex - 1] += gErr3;
+                    er2B[errorIndex - 1] += bErr3;
+        
+                    // 正下
+                    er2R[errorIndex] += rErr5;
+                    er2G[errorIndex] += gErr5;
+                    er2B[errorIndex] += bErr5;
+        
+                    // 右下
+                    er2R[errorIndex + 1] += rErr1;
+                    er2G[errorIndex + 1] += gErr1;
+                    er2B[errorIndex + 1] += bErr1;
+                  }
+          
+                  // 移动误差行：上移一行
+                  [er1R, er1G, er1B] = [er2R, er2G, er2B];
+                  [er2R, er2G, er2B] = [er3R, er3G, er3B];
+                  [er3R, er3G, er3B] = [er1R, er1G, er1B]; // 重用（实际会被 fill(0)）
+              }
+          
+              let timeElapsed = (performance.now() - startTime) / 1000;
+              return {
+                  pixels: ditheredPixels,
+                  timeElapsed,
+              };
+            }
+            
+            resolve(diffimg)
+          };
+        };
+        
+      });
+    } else if ( type == 'webp') {
+      return new Promise((resolve, reject) => {
+        let url = URL.createObjectURL(blob);
+        let img = new Image()
+        img.src = url;
+
+        img.onload = function(){
+          let canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          let ctx = canvas.getContext('2d')
+          ctx.drawImage(img,0,0)
+          canvas.toBlob(function(blob){
+            resolve(blob)
+          },'image/webp',(quality/10))
+        };
+      });
+    };
+};
+TOOL_JS.prototype.CompressImage = CompressImage;
+
+/**
+ * 批量压缩
+ * @param {[object]} imgExportData
+ * [{
+      fileName:string,
+      id:string,
+      format:string,
+      u8a: Uitt8Array,
+      finalSize:number,
+      width: number,
+      height: number,
+      compressed:null | string,
+      realSize: number,
+      quality: 0-10,
+    }]
+ */
+async function CompressImages(callback,imgExportData,isFinal) {
+  let imageDataArray = imgExportData.map(item => item.u8a);
+  let targetSize = imgExportData.map(item =>item.finalSize ? item.finalSize*1000 : null);
+  let type = imgExportData.map(item => item.format.toLowerCase());
+  const compressedImages = [];
+  for (let i = 0; i < imageDataArray.length; i++) {
+    let isExport = isFinal ? isFinal[i] : true
+    if(isExport){
+      if(imgExportData[i].compressed){
+        compressedImages.push(imgExportData[i].compressed);
+      }else{
+        let quality = 10; // 初始压缩质量
+        let result = new Blob([imageDataArray[i]], {type: 'image/png'});//初始化
+        let newBlob = new Blob([imageDataArray[i]], {type: 'image/png'});
+        if(!targetSize[i]){
+          result = await CompressImage(newBlob, 10,type[i]);
+          let finalSize = Math.floor(result.size/10.24)/100;
+          callback(i,finalSize,quality,true);
+        } else {
+          do {
+            try {
+              result = await CompressImage(newBlob, quality,type[i]);
+              if (targetSize[i] && result.size > targetSize[i] && quality > 1) {
+                if ( quality - 1 >= 0){
+                  console.log("压缩质量:" + quality )
+                  quality -= 1; // 如果超过目标大小，减少质量再次尝试
+                } else {
+                  quality = 0;
+                };
+                
+              } else {
+                let finalSize = Math.floor(result.size/10.24)/100;
+                if ( result.size <= targetSize[i] ){
+                  callback(i,finalSize,quality,true);
+                } else {
+                  callback(i,finalSize,quality,false);
+                }
+                break;
+              };
+            } catch (error) {
+              console.error('压缩过程中发生错误:', error);
+              break;
+            }
+          } while (result.size > targetSize[i]);
+        };
+        compressedImages.push(result);
+        imgExportData[i].compressed = result;
+      };
+    }else{
+      compressedImages.push(null);
+    };
+  };
+  return compressedImages;
+};
+TOOL_JS.prototype.CompressImages = CompressImages;
+
+/**
+ * 创建ZIP文件并提供下载
+ * @param {[blob]} fileBlobs 
+ * @param {[object]} fileInfos [{fileName: ../xx/name,format: string}]
+ * @param {string | null} zipName
+ */
+function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
+  let timeName = getDate('YYYYMMDD')[0].slice(2) + '_' + getTime('HHMMSS')[0]
+  let zip = new JSZip();
+
+  if(!fileBlobs.every(item => item == null)){
+    fileBlobs.forEach((blob, index) => {
+      if(blob){
+        let path = fileInfos[index].fileName.split('/');
+        let name = path.pop() + '.' + fileInfos[index].format.toLowerCase();
+        if (fileInfos[index].fileName.split('/').length == 2) {
+          let folder = zip.folder(path[0]);
+          folder.file(name,blob);
+        } else if (fileInfos[index].fileName.split('/').length == 3) {
+          let folder1 = zip.folder(path[0]);
+          let folder2 = folder1.folder(path[1]);
+          folder2.file(name,blob);
+        } else if (fileInfos[index].fileName.split('/').length == 4) {
+          let folder2 = zip.folder(path[0]);
+          let folder3 = folder2.folder(path[2]);
+          folder3.file(name,blob);
+        } else {
+          zip.file(name,blob);
+        };
+      };
+    });
+  
+  
+    zip.generateAsync({ type: "blob" }).then(function (content) {
+      zipName = zipName ? zipName : ''
+      saveAs(content,zipName + timeName + '.zip');
+    });
+  };
+};
+TOOL_JS.prototype.CreateZipAndDownload = CreateZipAndDownload;
+
 }

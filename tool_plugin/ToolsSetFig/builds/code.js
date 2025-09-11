@@ -1078,26 +1078,49 @@ figma.ui.onmessage = async (message) => {
         a.selection = selects;
     };
     //获取为svg代码
-    if ( type == 'getSvg'){
+    if ( type == 'Get SVG'){
         let a = figma.currentPage;
         let b = a.selection;
-        let vectors = b.filter(item => item.typa == 'VECTOR');
-        let info = {floors: 1};
-        vectors.forEach(vector => {
-            let paths = vector.vectorPaths;
-            paths.map(item => item.data);
-            if(info.floors){
-                let num = info.floors;
-                paths.map(item => 
-                    item.split(' ').map(data => {
-                        if(data.includes('.')){
-                            return data.split('.')[0] + '.' + data.split('.')[1].substring(0,num)
-                        }
-                    }
-                ).join(' '))
-            };
-            console.log(paths)
-        });
+        let final = b[0];
+        let groups = null;
+        if(b.length > 1){
+            groups = figma.group(b[0].clone());
+            for(let i = 0; i < b.length; i++){
+                groups.appendChild(b[i].clone());
+            }
+            final = groups;
+        }
+        let svgcode = await final.exportAsync({
+            format: 'SVG_STRING',
+            svgOutlineText: false,
+            svgIdAttribute: true,
+        })
+        if(groups){
+            groups.remove()
+        }
+        svgcode = svgcode.replace(/\s*xlink:href\s*=\s*["'][^"']*["']/gi,'').replace(/\s*href\s*=\s*["'][^"']*["']/gi,'')
+        console.log(svgcode)
+    };
+    //转为svg代码再导入
+    if ( type == 'Clone As SVG'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        for(let i = 0; i < b.length; i++){
+            let svgcode = await b[i].exportAsync({
+                format: 'SVG_STRING',
+                svgOutlineText: false,
+                svgIdAttribute: true,
+            });
+            svgcode = svgcode.replace(/\s*xlink:href\s*=\s*["'][^"']*["']/gi,'').replace(/\s*href\s*=\s*["'][^"']*["']/gi,'')
+            console.log(svgcode)
+            let safeMain = getSafeMain(b[i]);
+            let box = addFrame([...safeMain,b[i].name,[]]);
+            fullInFrameSafa(b[i],box);
+            let newnode = figma.createNodeFromSvg(svgcode);
+            box.appendChild(newnode);
+            [newnode.x,newnode.y] = [0,0]
+            b[i].visible = false
+        };
     };
     
 };
