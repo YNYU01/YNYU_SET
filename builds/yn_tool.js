@@ -214,13 +214,13 @@ TOOL_JS.prototype.TrueImageFormat = TrueImageFormat;
 /**
  * 将md格式文案转为节点式对象，以便转为图层
  * @param {string} mdText - md格式文案
- * @returns {Array} [
+ * @returns {Array} {zytype:'md',nodes:[
  * {
  * type: h | p | code | ul | ol | table ...,
  * content: string | [{style:'normal' | 'bold' | 'italic' | 'strike', content: ...}]
  * items?:[{content:...}]
  * }
- * ]
+ * ]}
  */
 function MdToObj(mdText) {
   let ast = [];
@@ -482,7 +482,7 @@ function MdToObj(mdText) {
       : segments;
   }
 
-  return ast;
+  return {zytype:'md',nodes:ast};
 };
 TOOL_JS.prototype.MdToObj = MdToObj;
 
@@ -498,10 +498,10 @@ async function SvgToObj(svgText)  {
   try {
     const images = await traverse(svgRoot);
     console.log('Found images:', images);
-    return images;
+    return {zyType: 'svg', nodes: images};
   } catch (error) {
     console.error('Error processing SVG:', error);
-    return [];
+    return {zyType: null, nodes: null};
   }
 
   function GetAttributes(node){

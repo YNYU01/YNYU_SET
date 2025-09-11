@@ -614,13 +614,13 @@ dropUp.addEventListener('drop',(e)=>{
   let filesTypes = [...new Set(files.map(item => item.name.split('.')[item.name.split('.').length - 1].toLowerCase()))];
   let sameType = null;
   
-  if(filesTypes.filter(item => imageType.includes(item)).length == filesTypes.length){
+  if(filesTypes.every(item => imageType.includes(item))){
     sameType = 'image';
   };
-  if(filesTypes.filter(item => tableType.includes(item)).length == filesTypes.length){
+  if(filesTypes.every(item => tableType.includes(item))){
     sameType = 'table';
   };
-  if(filesTypes.filter(item => zyType.includes(item)).length == filesTypes.length){
+  if(filesTypes.every(item => zyType.includes(item))){
     sameType = 'zy';
   };
   if(sameType){
@@ -629,7 +629,7 @@ dropUp.addEventListener('drop',(e)=>{
     switch (sameType){
       case 'image': addImageTags(files,true);break
       case 'table': addTableText(files,true);break
-      case 'zy': addZyCatalogue(files,true);break
+      case 'zy': addZyCatalogue(files);break
     }
   } else {
     tipsAll(['只能上传同类型文件','The file type must meet the requirements'],3000)
@@ -947,11 +947,37 @@ async function addTableText(files,isTags){
 function addTableTags(){
   addTag('table',CreateTableInfo);
 };
-function addZyCatalogue(files,isCreate){
-  if(typeof files == 'string'){
-
-  } else {
-    
+function addZyCatalogue(files,codetype){
+  if(codetype){
+    addTag('zy',files)
+  } else if ( files instanceof FileList){
+    for(let i = 0; i < files.length; i++){
+      let file = files[i];
+      let format = file.name.split('.')[file.name.split('.').length - 1].toLowerCase();
+      try{
+        let reader = new FileReader();
+        reader.onload = (e)=>{
+          switch (format){
+            case 'md':
+              let mds = tool.MdToObj(reader.result.trim());
+              addTag('zy',mds)
+            break
+            case 'svg':
+      
+            break
+            case 'node':
+      
+            break
+          }
+        };
+        reader.onerror = (error)=>{reject(error)};
+        reader.readAsText(file);
+        
+      } catch (error) {
+        console.log(error)
+      }
+      
+    };
   }
 };
 //添加标签-总
@@ -1042,7 +1068,9 @@ function addTag(type,info){
     break
     case 'zy':
       info.forEach(layer => {
-        
+        if(info.zyType){
+          
+        }
       });
     break
     case 'export-img':

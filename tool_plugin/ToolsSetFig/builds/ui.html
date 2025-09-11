@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5a35690609268304f7dd2ae0ec4c5e412cca3eac/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3e7262fcd4345306b2f2ee1c95c74eea28161e8f/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5a35690609268304f7dd2ae0ec4c5e412cca3eac/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3e7262fcd4345306b2f2ee1c95c74eea28161e8f/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -3152,14 +3152,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5a35690609268304f7dd2ae0ec4c5e412cca3eac/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5a35690609268304f7dd2ae0ec4c5e412cca3eac/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5a35690609268304f7dd2ae0ec4c5e412cca3eac/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5a35690609268304f7dd2ae0ec4c5e412cca3eac/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5a35690609268304f7dd2ae0ec4c5e412cca3eac/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5a35690609268304f7dd2ae0ec4c5e412cca3eac/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5a35690609268304f7dd2ae0ec4c5e412cca3eac/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5a35690609268304f7dd2ae0ec4c5e412cca3eac/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3e7262fcd4345306b2f2ee1c95c74eea28161e8f/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3e7262fcd4345306b2f2ee1c95c74eea28161e8f/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3e7262fcd4345306b2f2ee1c95c74eea28161e8f/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3e7262fcd4345306b2f2ee1c95c74eea28161e8f/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3e7262fcd4345306b2f2ee1c95c74eea28161e8f/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3e7262fcd4345306b2f2ee1c95c74eea28161e8f/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3e7262fcd4345306b2f2ee1c95c74eea28161e8f/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3e7262fcd4345306b2f2ee1c95c74eea28161e8f/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4483,7 +4483,7 @@ exportAnyBtn.addEventListener('click',()=>{
     let isExport = finaltag.getAttribute('data-export-final') == 'true' ? true : false;
     isFinal.push(isExport)
   }
-  tool.ExportImgByData(reExport,ExportImageInfo,isFinal);
+  tool.ExportImgByData(reExport,ExportImageInfo,isFinal,'云即 ');
   //处理返回的压缩导出状态
   function reExport(index,finalSize,quality,isSuccess){
     let sizespan = getElementMix('data-export-tag="'+ index +'"').querySelector('[data-export-realsize]');
