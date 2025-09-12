@@ -441,7 +441,7 @@ function reSelectInfo(info){
     ROOT.setAttribute('data-selects','false')
   };  
   if(info.length == 1){
-    //console.log(info[0][3])
+    console.log(info[0][3])
     let transform = info[0][3];
     skewSetX.value = transform[0];
     skewRangeX.value = transform[0];

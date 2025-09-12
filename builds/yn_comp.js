@@ -329,9 +329,10 @@ function COMP_MAIN(){
       min = min ? min : 0;
       info = [min,max];
       item.addEventListener('change',() => {
-        if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0 || item.value.replace(/[0-9]/g,'').trim().length > 0){
-          inputMust(item,['int',...info]);
-        };
+      if(item.value < min || item.value > max || (item.value.replace(/[0-9]/g,'').trim().length > 0 && item.value.replace(/[0-9]/g,'').trim() !== '-')){
+        tipsAll(['数值错误，已修正','Wrong type, fixed'],1000,3);
+        inputMust(item,['int',...info]);
+      }
         item.parentNode.setAttribute('data-int-value',item.value);
       });
     };
@@ -345,7 +346,7 @@ function COMP_MAIN(){
       min = min ? min : 0;
       info = [min,max];
       item.addEventListener('change',() => {
-        if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0 || item.value.replace(/[0-9]/g,'').trim().length > 0){
+        if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0 || item.value.replace(/[0-9]/g,'').trim().length > 1){
           inputMust(item,['float',...info]);
         };
         item.parentNode.setAttribute('data-float-value',item.value);
@@ -391,7 +392,7 @@ function COMP_MAIN(){
       item.parentNode.setAttribute('data-number-value',item.value);
     });
     item.addEventListener('change',() => {
-      if(item.value < min || item.value > max || item.value.replace(/[0-9]/g,'').trim().length > 0){
+      if(item.value < min || item.value > max || (item.value.replace(/[0-9]/g,'').trim().length > 0 && item.value.replace(/[0-9]/g,'').trim() !== '-')){
         tipsAll(['数值错误，已修正','Wrong type, fixed'],1000,3);
         inputMust(item,['int',...info]);
       }
@@ -958,8 +959,9 @@ function inputMust(node,info){
     }
   }
   function toInt(value,nullText){
+    let add = value[0] == '-' ? -1 : 1;
     let num = value.replace(/\D/g,'').trim()
-    return num ? num*1 : nullText;
+    return num ? num*add : nullText;
   }
   if(type === "float"){
     let min = info[1]

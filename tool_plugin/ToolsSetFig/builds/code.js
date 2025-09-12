@@ -446,7 +446,7 @@ figma.ui.onmessage = async (message) => {
                 };
                 nodes = b[0].children;
             };
-            nodes = nodes.filter(node => node.type == 'INSTANCE');
+            //nodes = nodes.filter(node => node.type == 'INSTANCE');
             reAnyByTags(nodes,info.data);
         };
     };
@@ -534,7 +534,7 @@ figma.ui.onmessage = async (message) => {
 
         let tables = b.filter(item => item.name.includes('@table'));
         if(!tables || tables.length == 0){
-            tables = b.map(node => node.findAll(item => item.name.includes('@table'))).flat();
+            tables = b.filter(item => item.children).map(node => node.findAll(item => item.name.includes('@table'))).flat();
         };
         let setdata = info[0],retype = info[1]
         //console.log(setdata)
@@ -561,10 +561,19 @@ figma.ui.onmessage = async (message) => {
                 ;break
                 case 'theme':
                     //reTableStyle(table,setdata);
-                    let [H,S,L] = [Math.random()*360,Math.random()*100,Math.random()*100];
-                    [H,S,L] = [Math.floor(H),Math.floor(S) + '%',Math.floor(L) + '%']
-                    console.log(`hsl(${[H,S,L].join(',')})`)
-                    reTableTheme()
+                    //一个饱和度、明度适中的颜色
+                    let [H,S,L] = [Math.random()*360,(Math.random()*50) + 10,(Math.random()*80) + 10];
+                    S = S <= 30 && L <= 50 ? S*1.2 : S;
+                    L = S >= 50 && L >= 40 ? L*0.8 : L;
+                    let [S2,L2] = [S >= 50 ? S*0.95 : S*1, L >= 50 ? L*0.8 : L*1.2,];
+                    let [S3,L3] = [S >= 50 ? S*0.9 : S*1, L >= 50 ? L*0.7 : L*1.3,];
+                    let textColor = L2 >= 50 ? '#000000' : '#ffffff';
+                    [H,S,L] = [Math.floor(H),Math.floor(S) + '%',Math.floor(L) + '%'];
+                    [S2,L2] = [Math.floor(S2) + '%',Math.floor(L2) + '%'];
+                    [S3,L3] = [Math.floor(S3) + '%',Math.floor(L3) + '%'];  
+                    let [tableBg,tableFill,tableStroke] = [`hsl(${[H,S,L].join(',')})`,`hsl(${[H,S2,L2].join(',')})`,`hsl(${[H,S3,L3].join(',')})`]                
+                    //console.log([toRGB(tableBg,true),toRGB(tableFill,true),toRGB(tableStroke,true)])
+                    reTableTheme(table,[tableBg,tableFill,tableStroke],textColor)
                 ;break
             };
         });
@@ -1156,6 +1165,7 @@ function sendInfo(){
         let data = [];
         b.forEach(node => {
             let n = TextMaxLength(node.name,20,'...');
+            let nodeType = node.type;
             let w = node.absoluteRenderBounds ? node.absoluteRenderBounds.width : node.absoluteBoundingBox.width;
             let h = node.absoluteRenderBounds ? node.absoluteRenderBounds.height : node.absoluteBoundingBox.height;
             let transform = node.absoluteTransform;
@@ -1173,7 +1183,7 @@ function sendInfo(){
             };
             column = column <= 2 ? column : 0;
             row = row <= 2 ? row : 0;
-            data.push([n,w,h,[skewX,skewY],[column,row]]);
+            data.push([n,w,h,[skewX,skewY],[column,row],nodeType]);
         });
         postmessage([data,'selectInfo']);
     } else {
@@ -1715,25 +1725,24 @@ async function addTableCompMust(type,language){
 };
 //表格初始化
 function makeCompliant(type,comp){
-    let fills = {
-        th:[toRGB('#666666',true)],
-        td:[toRGB('#66666688',true)]
-    }
     let adds = [
-        ['#top.stroke',[],[null,[1,0,0,0]],'--bod-t'],
-        ['#right.stroke',[],[null,[0,1,0,0]],'--bod-r'],
-        ['#bottom.stroke',[],[null,[0,0,1,0]],'--bod-b'],
-        ['#left.stroke',[],[null,[0,0,0,1]],'--bod-l'],
-        ['#bg.fill',fills[type],null,'--fills'],
+        [`#table.stroke`,[],[null,[1,0,0,0]],'--bod-t'],
+        [`#table.stroke`,[],[null,[0,1,0,0]],'--bod-r'],
+        [`#table.stroke`,[],[null,[0,0,1,0]],'--bod-b'],
+        [`#table.stroke`,[],[null,[0,0,0,1]],'--bod-l'],
+        [`#table.fill`,[toRGB('#666666',true)],null,'--fills'],
     ];
     for(let i = 0; i < adds.length; i++){
         //添加描边、填充并绑定组件属性
-        addBodFill(comp,adds[i]);
+        addBodFill(comp,adds[i],type);
     };
 };
 //添加描边/区分色
-function addBodFill(node,Array,wh){
+function addBodFill(node,Array,type){
     let bodfill = figma.createRectangle();
+    if(type == 'td'){
+        bodfill.opacity = 0.66
+    }
     setMain([176,52,null,null,Array[0],Array[1],Array[2]],bodfill);
     let bodfills = addFrame([176,52,null,null,Array[3],[]]);
     bodfills.appendChild(bodfill);
@@ -1812,9 +1821,20 @@ function reTableStyle(table,style){
     };
 };
 //修改表格主题色
-function reTableTheme(){
-
-}
+function reTableTheme(table,hsl,textcolor){
+    table.fills = [toRGB(hsl[0],true)];
+    table.strokes = [toRGB(hsl[2],true)];
+    let columns = table.findAll(item => item.name.includes('@column'));
+    columns.forEach(column => {
+        column.children.forEach(node => {
+            reAnyByTags([node],[{'#table.fill':hsl[1],'#table.stroke':hsl[2],}])
+            let texts = node.children.filter(item => item.type == 'TEXT')
+            texts.forEach(text => {
+                text.fills = [toRGB(textcolor,true)];
+            })
+        });
+    });
+};
 //调整实例数量以匹配数据长度
 function reCompNum(nodes,H,V){
     //console.log(nodes.name,H,V)
