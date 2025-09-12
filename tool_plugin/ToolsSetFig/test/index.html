@@ -39,6 +39,9 @@
       </label>
     </div>
     <div class="df-cc" style="gap:4px; margin-right: 2%; font-size: 12px;">
+      <div data-skill-search class="df-cc" onclick="getElementMix('data-dailogsearch').style.display = 'flex'">
+        <btn-search></btn-search>
+      </div>
       <input id="big" type="checkbox">
       <label for="big" class="btn-big df-cc">
         <btn-show></btn-show>
@@ -79,6 +82,19 @@
       </div>
     </div>
     <div data-dailogimg-box data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc">
+      <!--生成内容-->
+    </div>
+  </div>
+  <!--弹窗-搜索建议-->
+  <div data-dailogsearch data-close-id="dailogsearch" class="pos-a df-ffc df-cc">
+    <!--关闭-->
+    <div data-dailogsearch-close class="df-sc">
+      <input type="text" id="skillsearch"/>
+      <div data-close="close" data-close-for="dailogsearch">
+        <btn-close></btn-close>
+      </div>
+    </div>
+    <div data-dailogsearch-box data-scroll class="ovy scrollbar df-ffc">
       <!--生成内容-->
     </div>
   </div>
@@ -151,10 +167,10 @@
   <div class="df-ffc w100 df-cc">
     <div data-page-id="page" class="df-ffc w100" data-tab-pick="create">
       <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: flex;">
-        <div class="w100 df-ffc ovy noscrollbar" style="height: calc(100% - 40px); align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
-          <div class="w100 df-ffc" style="align-items: center;">
+        <div class="wh100 df-ffc ovy noscrollbar" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+          <div class="wh100 df-ffc" style="align-items: center;">
             <!--步骤1-->
-            <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Upload | Drop | Input" >上传 | 拖拽 | 输入</span>
               &nbsp;&nbsp;
@@ -194,7 +210,7 @@
               </div>
             </div>
             <!--输入参数-->
-            <div class="w100 df" style="flex-wrap: wrap; max-width: 560px; margin: 4px 0; gap: 4px;">
+            <div class="w100 df" style="flex-wrap: wrap; margin: 4px 0; gap: 4px;">
               <div id="upload-textarea-box" data-resize class="pos-r fl1 df-lc">
                 <div class="h100" style="width: 30px;"></div>
                 <div data-textarea-linenum-box data-scroll class="pos-a h100 ovy noscrollbar">
@@ -245,7 +261,7 @@
                 
                 
               </div>
-              <div id="upload-set-box" class="df" style="flex-wrap: wrap; max-width: 560px; margin:0 0 4px 0; gap: 4px;">
+              <div id="upload-set-box" class="df" style="flex-wrap: wrap; margin:0 0 4px 0; gap: 4px;">
                 <div id="upload-set-main" class="df">
                   <div id="upload-set-1" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   style=" --tips-text:'转为标签/大纲';  --tips-text-en:'Convert to tags/catalogue';">
@@ -276,7 +292,7 @@
               </div>
             </div>
             <!--更多设置-->
-            <div id="upload-moreset-box" class="w100 df-lc" style="flex-wrap: wrap; max-width: 560px; gap: 4px; display: none;">
+            <div id="upload-moreset-box" class="w100 df-lc" style="flex-wrap: wrap;gap: 4px; display: none;">
               <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 180px;">
                 <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
                   --tips-text:'修改生效列, 用于剔除数据';  --tips-text-en:'Select columns to take effect'; width: 20px; height: 20px;">
@@ -332,13 +348,13 @@
             </div>
             <div style="height: 4px;"></div>
             <!--步骤2-->
-            <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Edit final tags/catalogue" > 编辑标签/大纲 </span>
                 &nbsp;&nbsp;
                 <span data-en-text="to create finally" data-any="vw240" style="opacity: 0.6;">以确认最终创建内容</span>
             </div>
-            <div class="wh100 pos-r" data-resize style="max-width: 560px;">
+            <div class="wh100 df-cc pos-r" ><!--data-resize-->
               <div data-create-tags-box class="wh100 upload-set pos-r ovy noscrollbar">
                 <!--清空-->
                 <div style="left: 100%; top:0; position: sticky; width: 12px; height: 12px;">
@@ -357,9 +373,9 @@
         <div data-create-any data-btn="main" class="df-cc" data-en-text="CREATER">创建</div>
       </div>
       <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="w100 df-ffc" style="height: calc(100% - 40px); align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovh" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
           <!--步骤1-->
-          <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+          <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
             <span data-en-text="Add selects to list" >添加所选对象到队列</span>
             &nbsp;&nbsp;
@@ -367,7 +383,7 @@
             <div data-any="vw300" data-help="export" class="fl0 df-cc">?</div>
           </div>
           <!--导出类型-->
-          <div class="df-lc pos-r upload-set w100" style="gap:4px; padding: 4px; border-radius: 8px; max-width: 560px; ">
+          <div class="df-lc pos-r upload-set w100" style="gap:4px; padding: 4px; border-radius: 8px;">
             <div class="noscrollbar" style="margin: 0 auto;">
               <div data-exporttype-set class="df-lc" data-radio-value="1" >
                 <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="true">
@@ -400,12 +416,12 @@
               </div>
             </div>
           </div>
-          <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px; max-width: 560px; ">
+          <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px;">
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (插件设置)</div>    
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (figma设置)</div>
           </div>
           <!--步骤2-->
-          <div class="w100 df-lc"  style="max-width: 560px; padding:10px 0 4px 0; opacity: 0.6; vertical-align: baseline;"> 
+          <div class="w100 df-lc"  style="padding:10px 0 4px 0; opacity: 0.6; vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
             <span data-en-text="Set rendering list" >设置渲染队列</span>
             &nbsp;&nbsp;
@@ -472,7 +488,7 @@
         <div data-export-any data-btn="main" class="df-cc" data-en-text="EXPORT">导出</div>
       </div>
       <div data-page-name="编辑" data-page-name-en="editor" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="w100 df-ffc" style="height: calc(100% - 40px); align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
         </div>
         <div data-btn="main" class="df-cc" data-en-text="APPLY">应用</div>
       </div>
@@ -480,10 +496,10 @@
         
       </div>
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="w100 df-ffc ovy noscrollbar" style="height: calc(100% - 20px); align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
-          <div class="wh100 df-ffc" style="box-sizing: border-box; max-width: 560px;">
+        <div class="wh100 df-ffc ovy noscrollbar" style="height: 100%; max-width: 560px; align-items: center; padding: 10px 10px; box-sizing: border-box;">
+          <div class="wh100 df-ffc" style="box-sizing: border-box;">
             <!--步骤1-->
-            <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Get a basic table" >创建基础表格模板</span>
               &nbsp;&nbsp;
@@ -621,7 +637,7 @@
               <div data-create-table class="w100 df-cc" data-btn="main2" data-en-text="Create Table">创建表格</div>
               <div class="w100 df-cc" data-btn="skill-main" data-selects-must data-en-text="Apply Preset" style="border-radius: 20px;">应用预设样式</div>    
               <div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
-                <input id="table-more" type="checkbox" checked="true" onchange="showNext(this,'data-tableset-more','flex')">
+                <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
                 <label for="table-more" class="wh100 df-cc btn-more" style=" padding: 4px;">
                   <svg data-icon-more width="100%" height="100%" viewBox="0 0 20 20">
                     <g data-icon-more-path="1">
@@ -637,7 +653,7 @@
                 </label>
               </div>
             </div>
-            <div class="df-ffc" data-tableset-more data-skill-sec style="gap: 4px; margin: 4px 0;">
+            <div class="df-ffc" data-tableset-more data-skill-sec style="gap: 4px; margin: 4px 0; display: none;">
               <div class="df-lc w100" data-skill-more>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Only Create @th/td">仅创建组件</div>
                 <div class="df-cc"  data-selects-must data-btn="skill-main" data-en-text="Make Compliant">合规化组件</div>
@@ -689,13 +705,13 @@
             </div>
             <div style="min-height: 4px;"></div>
             <!--步骤2-->
-            <div class="w100 df-lc"  style="max-width: 560px; padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Control component properties by sheet" >用表格数据批量+参数化控制组件</span>
             </div>
-            <div class="w100 df" style="max-width: 560px;">
+            <div class="wh100 df">
               <div id="upload-tablearea-box" data-resize class="pos-r fl1">
-                <textarea spellcheck="false" id="upload-tablearea" data-textarea="eg"  style=" min-height: 160px;" 
+                <textarea class="wh100" spellcheck="false" id="upload-tablearea" data-textarea="eg"  style=" min-height: 160px;" 
                 data-eg="A1\tB1\tC1\na2\tb2\tc2\na3\tb3\tc3\na4\tb4\tc4"
                 data-eg-en="A1\tB1\tC1\na2\tb2\tc2\na3\tb3\tc3\na4\tb4\tc4"
                 ></textarea>
@@ -706,12 +722,11 @@
                 <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: wrap; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
                   <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
                   <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
-                  <li data-li-style="2" data-en-text="Only fill-table-data without table header" >表格填充无需表头, 批量组件属性/标签属性映射需要表头</li>
                 </div>
               </div>
             </div>
             <!--更多设置-->
-            <div data-tablearea-moreset class="w100 df-lc" style="flex-wrap: wrap; max-width: 560px; gap: 4px; margin: 4px 0;">
+            <div data-tablearea-moreset class="w100 df-lc" style="flex-wrap: wrap; gap: 4px; margin: 4px 0;">
               <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 120px;">
                 <div data-tips="auto" class="fl0 df-cc" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
                   --tips-text:'设置换行转义符, 用于兼容需要换行的数据';  --tips-text-en:'Set a character to represent line feed'; width: 20px; height: 20px;">
@@ -745,7 +760,7 @@
                 </div> 
               </div>
             </div>
-            <div class="df-ffc w100 bod-d" data-retable-moreset  style=" max-width: 560px; padding: 4px; gap: 4px; box-sizing: border-box;">
+            <div class="df-ffc w100 bod-d" data-retable-moreset  style="padding: 4px; gap: 4px; box-sizing: border-box;">
               <div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one auto-layout with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个自动布局 时生效</div>
               <div class="df-lc w100" data-skill-more style="flex-wrap: wrap; text-wrap: nowrap; font-size: 10px; gap: 4px; margin-bottom: 4px;">
                 <div class="fl1 df-lc" style=" gap: 4px; min-width: 160px;">
@@ -792,12 +807,12 @@
               </div>
 
             </div>
-            <div style="min-height: 20px;"></div>
+            <!--div style="min-height: 20px;"></div-->
           </div>
         </div>
       </div>
       <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc" style="align-items: center; padding: 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc" style="max-width: 560px; align-items: center; padding: 10px; box-sizing: border-box;">
           <!--功能tags-->
           <div class="w100 fl0 noscrollbar df" data-scroll>
             <div data-skilltype-box class="df-lc fl0" data-radio-value="1" >

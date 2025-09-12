@@ -241,41 +241,26 @@ input[type="checkbox"]:checked + .tab-top{
   font-size: 10px;
 }
 
-/**
-[data-tv-text]::before,
-[data-tv-text]::after{
-  content: '❤';
-  color: rgb(248, 153, 169);
-  width: 10px;
-  height: 10px;
-  padding: 1px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  transform: scale(0.8);
-  animation: heartUp 0.5s cubic-bezier(0,10,1,1) infinite;
-}
-
-@keyframes heartUp {
-  to{
-    transform: scale(0.86);
-  }
-}
-/**/
-
-.btn-big{
-  width: 12px;
-  height: 12px;
+[data-skill-search]{
+  --mainColor: var(--boxBod);
+  width: 14px;
+  height: 14px;
   margin-left: 2px;
   cursor: var(--pointer,pointer);
 }
 
-input[type="checkbox"]:checked+.btn-big .path1 {
+[for="big"]{
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+  cursor: var(--pointer,pointer);
+}
+
+input[type="checkbox"]:checked+[for="big"] .path1 {
   transform: translateY(6px) translateX(-6px);
 }
 
-input[type="checkbox"]:checked+.btn-big .path2 {
+input[type="checkbox"]:checked+[for="big"] .path2 {
   transform: translateX(6px) translateY(-6px);
 }
 
@@ -807,11 +792,6 @@ input[type="checkbox"]:checked + .btn-moreset{
   max-width: 480px;
 }
 
-[data-dailog-close] [data-close]{
-  width: 20px;
-  height: 20px;
-}
-
 [data-dailog-box]{
   width: 80%;
   height: 70%;
@@ -824,7 +804,8 @@ input[type="checkbox"]:checked + .btn-moreset{
   gap: 4px;
 }
 
-[data-dailogimg]{
+
+[data-dailogimg],[data-dailogsearch ]{
   display: none;
   width: 100vw;
   height: 100vh;
@@ -840,18 +821,31 @@ input[type="checkbox"]:checked + .btn-moreset{
   max-height: 80%;
 }
 
+[data-dailogsearch-box]{
+  width: calc(100% - 22px);
+  height: 100%;
+  gap: 4px;
+}
+
+#skillsearch{
+  height: 24px;
+}
+
 [data-dailogimg-box] img{
   margin: auto;
   pointer-events: none;
 }
 
-[data-dailogimg-close]{
+[data-dailogimg-close],[data-dailogsearch-close]{
   width: 100%;
   box-sizing: border-box;
   padding: 10px;
 }
 
-[data-dailogimg-close] [data-close]{
+[data-dailog-close] [data-close],
+[data-dailogimg-close] [data-close],
+[data-dailogsearch ] [data-close]
+{
   width: 20px;
   height: 20px;
 }
@@ -905,7 +899,6 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   font-size: 10px;
 }
 .upload-set{
-  height: 40px;
   padding: 8px;
   box-sizing: border-box;
   border: 1px solid var(--boxBod);
@@ -925,14 +918,11 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 }
 
 [data-create-tags-box],[data-export-tags-box]{
-  resize: vertical;
-  height: 200px;
-  max-width: 560px;
+  /*resize: both;*/
+  min-width: 100%;
+  max-width: 100%;
   min-height: 20vh;
-  max-height: 80vh;
-}
-[data-export-tags-box] {
-  height: 400px;
+  /*max-height: 80vh;*/
 }
 
 [data-create-tags],

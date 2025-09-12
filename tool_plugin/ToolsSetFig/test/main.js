@@ -228,7 +228,8 @@ const btnHelp = document.querySelectorAll('[data-help]');
 const dailog = document.querySelector('[data-dailog]');
 const dailogBox = document.querySelector('[data-dailog-box]');
 const dailogImg = document.querySelector('[data-dailogimg]');
-const dailogBoxImg = document.querySelector('[data-dailogimg-box]');
+const dailogImgBox = document.querySelector('[data-dailogimg-box]');
+const dailogSearchBox = document.querySelector('[data-dailogsearch-box]');
 const skillTypeBox = document.querySelector('[data-skilltype-box]');
 const skillAllBox = document.querySelector('[data-skills-box]');
 const skillSecNode = document.querySelectorAll('[data-skill-sec]');
@@ -271,6 +272,7 @@ let tableStyle = [
   {th:[0,1,0,1,0],td:[0,1,0,1,0]},//仅竖线（表头无区分色
   {th:[1,1,1,1,0],td:[1,1,1,1,0]},//全描边（表头无区分色
 ];
+let skillsSearch = []
 
 /*表单绑定*/
 const userImg = document.getElementById('input-user-img');
@@ -471,6 +473,16 @@ function reRootSize(info){
     btnBig.checked = false;
   };
 };
+//提取功能点用于搜索定位
+function addSearchs(){
+  let skillMain = document.querySelectorAll('[data-btn="skill-main"]')
+  skillMain.forEach(skill => {
+    let language = Root.getAttribute('data-language')
+    let name = skill.textContent | '';
+    let key = name.split(' ')
+    skillsSearch.push({name:name,path:path})
+  })
+}
 
 
 /* ---界面交互--- */
@@ -1067,11 +1079,11 @@ function addTag(type,info){
       });
     break
     case 'zy':
-      info.forEach(layer => {
-        if(info.zyType){
-          
-        }
-      });
+      if(info.zyType){
+        info.nodes.forEach(layer => {
+
+        });
+      };
     break
     case 'export-img':
       ExportImageInfo.push(...info);
@@ -1173,13 +1185,13 @@ function addTag(type,info){
         view.className = 'btn-op';
         view.addEventListener('click',()=>{
           let img = layer.compressed ? layer.compressed : layer.u8a;
-          dailogBoxImg.innerHTML = '';
+          dailogImgBox.innerHTML = '';
           dailogImg.style.display = 'flex';
           let viewimg = document.createElement('img');
           let ismaxW = layer.width >= layer.height ? 'true' : 'false';
           viewimg.setAttribute('data-ismaxW',ismaxW);
           viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
-          dailogBoxImg.appendChild(viewimg);
+          dailogImgBox.appendChild(viewimg);
         });
         sizebox.appendChild(view);
         sizeinfo.appendChild(sizebox);
@@ -1290,9 +1302,9 @@ function addTag(type,info){
 //预览导出图片-放大
 getElementMix('fullimg').addEventListener('change',(e)=>{
   if(e.target.checked){
-    dailogBoxImg.setAttribute('data-isfull','true');
+    dailogImgBox.setAttribute('data-isfull','true');
   }else{
-    dailogBoxImg.setAttribute('data-isfull','false');
+    dailogImgBox.setAttribute('data-isfull','false');
   };
 });
 //选中导出标签进行管理
