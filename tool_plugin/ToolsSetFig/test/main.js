@@ -1,24 +1,24 @@
 /*初始数据*/
 let skillSecInfo = [
   {
-    id: 'inSituRasterize',
+    id: 'InSituRasterize',
     name: ["原地栅格化","in-situ rasterize"],
   },
   {
-    id: 'easeTransform',
+    id: 'EaseTransform',
     name: ["斜切","skew"],
     /*name: ["简单变形","ease transform"],*/
   },
   {
-    id: 'uniformScale',
+    id: 'UniformScale',
     name: ["等比缩放","uniform scale"],
   },
   {
-    id: 'alterImageFill',
+    id: 'AlterImageFill',
     name: ["图片填充修改","alter image fill"],
   },
   {
-    id: 'clipByGrid',
+    id: 'ClipByGrid',
     name: ["宫格裁切","clip by grid"],
   },
   {
@@ -40,14 +40,6 @@ let skillSecInfo = [
   {
     id: 'GetEditableSVG',
     name: ["获取可编辑SVG","get editable SVG"],
-  },
-  {
-    id: '',
-    name: ["",""],
-  },
-  {
-    id: '',
-    name: ["",""],
   },
 ]
 
@@ -230,6 +222,7 @@ const dailogBox = document.querySelector('[data-dailog-box]');
 const dailogImg = document.querySelector('[data-dailogimg]');
 const dailogImgBox = document.querySelector('[data-dailogimg-box]');
 const dailogSearchBox = document.querySelector('[data-dailogsearch-box]');
+const skillSearchInput = document.getElementById('skillsearch');
 const skillTypeBox = document.querySelector('[data-skilltype-box]');
 const skillAllBox = document.querySelector('[data-skills-box]');
 const skillSecNode = document.querySelectorAll('[data-skill-sec]');
@@ -330,13 +323,14 @@ window.addEventListener('load',()=>{
   setInterval(() => {
     addToUserTips();
   }, 12000);
+  addSearchs();
 });
 
 window.addEventListener('resize',()=>{
 /*防抖*/
 let MOVE_TIMEOUT;
 if(MOVE_TIMEOUT){
-    clearTimeout(MOVE_TIMEOUT)
+    clearTimeout(MOVE_TIMEOUT);
 };
 MOVE_TIMEOUT = setTimeout(()=>{
   if(window.innerWidth < 300){
@@ -441,7 +435,7 @@ function reSelectInfo(info){
     ROOT.setAttribute('data-selects','false')
   };  
   if(info.length == 1){
-    console.log(info[0][3])
+    //console.log(info[0][3])
     let transform = info[0][3];
     skewSetX.value = transform[0];
     skewRangeX.value = transform[0];
@@ -476,13 +470,82 @@ function reRootSize(info){
 //提取功能点用于搜索定位
 function addSearchs(){
   let skillMain = document.querySelectorAll('[data-btn="skill-main"]')
+  let language = ROOT.getAttribute('data-language');
   skillMain.forEach(skill => {
-    let language = Root.getAttribute('data-language')
-    let name = skill.textContent | '';
-    let key = name.split(' ')
-    skillsSearch.push({name:name,path:path})
-  })
-}
+    let zh = language == 'Zh' ? skill.textContent : skill.getAttribute('data-zh-text') || null;
+    let en = skill.getAttribute('data-en-text') || null;
+    if(!en && !zh){
+      zh = '保留原图层';
+      en = 'Pixel As Copy';
+    }
+    let ens = en ? en.toLowerCase().split(' ') : [];
+    let zhs = zh ? zh.replace(/[a-z0-9\s]/gi,'').split('') : [];
+    let key = [...zhs,...ens];
+    let page = ['更多功能','more tools'];
+    if(!getElementMix('data-page-name-en="more tools"').contains(skill)){
+      let pages = document.querySelectorAll('[data-page-name-en]');
+      pages.forEach(item => {
+        if( item.contains(skill)){
+          page = [item.getAttribute('data-page-name'),item.getAttribute('data-page-name-en')];
+        };
+      });
+    };
+    let path = [`${page[0]} > ... > ${zh}`,`${page[1]} > ... > ${en}`];
+    if(key) skillsSearch.push({name:[zh,en],page:page,key:key,path:path,});
+  });
+
+  skillSecInfo.forEach(sec => {
+    let page = ['更多功能','more tools'];
+    let key = [...sec.name[0].replace(/[a-z0-9\s]/gi,'').split(''),...sec.name[1].toLowerCase().split(' ')]
+    let path = [`更多功能 > ${sec.name[0]}`,`more tools > ${sec.name[1]}`]
+    skillsSearch.push({name:sec.name,page:page,key:key,path:path,});
+  });
+
+  skillsSearch = language == 'Zh' ? skillsSearch.sort((a,b) => a.name[0].localeCompare(b.name[0])) : skillsSearch.sort((a,b) => a.name[1].localeCompare(b.name[1]));
+  
+  skillsSearch.forEach((list,index) => {
+    let turnto = document.createElement('div');
+    turnto.setAttribute('data-search-turnto',index);
+    turnto.className = 'df-sc';
+    let info = document.createElement('div');
+    info.setAttribute('data-scroll','');
+    info.className = 'df-ffc fl1 scrollbar';
+    info.innerHTML = `
+    <div data-search-name class="df-lc"
+      data-zh-text="${list.name[0]}" 
+      data-en-text="${list.name[1]}">
+        ${language == 'Zh' ? list.name[0] : list.name[1]}
+      </div>
+      <div data-search-path 
+      data-zh-text="${list.path[0]}" 
+      data-en-text="${list.path[1]}">
+        ${language == 'Zh' ? list.path[0] : list.path[1]}
+    </div>
+    `;
+    turnto.appendChild(info);
+    let btn = document.createElement('div');
+    btn.className = 'df-cc'
+    btn.setAttribute('data-btn','op');
+    btn.setAttribute('data-zh-text','前往');
+    btn.setAttribute('data-en-text','View');
+    btn.textContent = language == 'Zh' ? '前往' : 'View';
+    btn.onclick = ()=>{
+      dailogSearchBox.parentNode.style.display = 'none';
+      viewPage(list.page[1]);
+      let viewskill = getElementMix('data-page-id="page"').querySelector(`[data-en-text="${list.name[1]}"]`);
+      if(!viewskill) return;
+      viewskill.scrollIntoView({behavior:"smooth",block: "center"});
+      setTimeout(()=>{
+        addFindBox(viewskill,list);
+      },500);
+    };
+    turnto.appendChild(btn);
+    dailogSearchBox.appendChild(turnto)
+  });
+ 
+  //重置文字样式
+  loadFont(dailogSearchBox);
+};
 
 
 /* ---界面交互--- */
@@ -537,7 +600,7 @@ btnResize.addEventListener('mousedown',(event)=>{
       /*防抖*/
       let MOVE_TIMEOUT;
       if(MOVE_TIMEOUT){
-          clearTimeout(MOVE_TIMEOUT)
+          clearTimeout(MOVE_TIMEOUT);
       };
       MOVE_TIMEOUT = setTimeout(()=>{
         storageMix.set('userResize',[w,h]);
@@ -557,6 +620,86 @@ btnResize.addEventListener('mousedown',(event)=>{
 document.getElementById('bottom').addEventListener('dblclick',()=>{
   toolMessage(['','getnode'],PLUGINAPP)
 });
+//搜索功能
+skillSearchInput.addEventListener('input',()=>{
+  /*防抖*/
+  let MOVE_TIMEOUT;
+  if(MOVE_TIMEOUT){
+      clearTimeout(MOVE_TIMEOUT);
+  };
+  MOVE_TIMEOUT = setTimeout(()=>{
+    if(skillSearchInput.value.trim() == ''){
+      document.querySelectorAll('[data-search-turnto]').forEach(item => {
+        item.setAttribute('data-search-pick','false');
+      });
+      return;
+    };
+    let value = skillSearchInput.value.toLowerCase().trim()
+    let values = value.split(' ');
+    values = values.map(item => {
+      if(item.replace(/[a-z0-9]/gi,'').length > 0){
+        return item.replace(/[a-z0-9]/gi,'').split('');
+      }
+      return item;
+    });
+    values = [].concat(...values);
+    values = [...new Set(values)];
+
+    skillsSearch.forEach((skill,index) => {
+      let list = getElementMix(`data-search-turnto="${index}"`);
+      let diff = [...new Set([...skill.key,...values])];
+      if(value == skill.name[0].toLowerCase().trim() || value == skill.name[1].toLowerCase().trim()){
+        list.setAttribute('data-search-pick','true');
+        return;
+      };
+      let samelength = (skill.key.length + values.length - diff.length);
+      
+      if( samelength > 0 ){
+        if(samelength > 1){
+          list.setAttribute('data-search-pick','0');
+        } else {
+          list.setAttribute('data-search-pick','1');
+        }
+      } else {
+        let same = 0;
+        values.filter(item => item.length >= 3).forEach(item => {
+          skill.key.forEach(key => {
+            if(key.includes(item)) same++;
+          });
+        });
+        if(same > 0){
+          list.setAttribute('data-search-pick','2');
+        }else{
+          list.setAttribute('data-search-pick','3');
+        }
+      }
+    })
+  },500);
+});
+function addFindBox(node,info,isForin){
+  let renderBounds = node.getBoundingClientRect();
+  //console.log(renderBounds);
+  if(renderBounds.width == 0 && renderBounds.height == 0){
+    if(isForin) return;
+    let page = document.querySelector(`[data-page-name-en="${info.page[1]}"]`);
+    let inputs = page.querySelectorAll('input[type="checkbox"]');
+    inputs = Array.from(inputs).filter(item => item.id.toLowerCase().includes('more'));
+    if(inputs){
+      inputs.forEach(input => {
+        input.checked = input.checked ? false : true;
+        let inputEvent = new Event('change',{bubbles:true});
+        input.dispatchEvent(inputEvent);
+        addFindBox(node,info,true)
+      });
+    };
+  };
+  let findBox = document.createElement('div');
+  findBox.className = 'pos-a';
+  findBox.setAttribute('data-findbox','')
+  findBox.setAttribute('style',`width:${renderBounds.width}px; height:${renderBounds.height}px; top:${renderBounds.y - 4}px; left:${renderBounds.x - 4}px`)
+  document.querySelector('body').appendChild(findBox);
+  setTimeout(()=>{findBox.remove()},2000);
+}
 //最大化窗口
 btnBig.addEventListener('change',()=>{
   let w = window.innerWidth;
@@ -1757,7 +1900,7 @@ skillBtnMain.forEach(btn => {
     let skillname = btn.getAttribute('data-en-text');
     /*防抖*/
     if(MOVE_TIMEOUT){
-        clearTimeout(MOVE_TIMEOUT)
+        clearTimeout(MOVE_TIMEOUT);
     };
     MOVE_TIMEOUT = setTimeout(()=>{
       switch (skillname){

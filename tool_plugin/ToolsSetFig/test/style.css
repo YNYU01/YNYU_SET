@@ -628,6 +628,10 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   opacity: 0.5;
 }
 
+[data-btn="op"]:hover{
+  opacity: 0.5;
+}
+
 [data-btn="icon"]{
   display: block;
   width: 40px;
@@ -761,7 +765,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: rgba(0, 0, 0, 0.6);
   z-index: 12;
   gap: 4px;
-  white-space: pre-wrap;
+  white-space: normal;
 }
 
 [data-dailog-box] p{
@@ -811,8 +815,17 @@ input[type="checkbox"]:checked + .btn-moreset{
   height: 100vh;
   box-sizing: border-box;
   padding: 30px 0 100px 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.8);
   z-index: 12;
+  backdrop-filter: blur(2px);
+}
+
+[data-theme="light"] [data-dailog],
+[data-theme="light"] [data-dailogimg],
+[data-theme="light"] [data-dailogsearch]{
+  background: rgba(226, 226, 226, 0.8);
+  --boxGry: #ffffff;
+  --boxBak: #ffffff;
 }
 
 [data-dailogimg-box] {
@@ -822,13 +835,108 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-dailogsearch-box]{
+  border-radius: 4px;
   width: calc(100% - 22px);
   height: 100%;
   gap: 4px;
+  padding:0 4px 0 6px;
+}
+
+[data-dailogsearch-close]{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 20px;
+  gap: 4px;
+}
+
+[data-dailogsearch-close] btn-close{
+  --mainColor: var(--boxBod)
 }
 
 #skillsearch{
   height: 24px;
+}
+
+[data-search-turnto]{
+  background: var(--boxBak);
+  border-radius: 4px;
+  padding: 4px 10px;
+  text-transform: capitalize;
+  gap: 4px;
+}
+
+[data-search-turnto] [data-search-name]{
+  width: fit-content;
+  font-size: 14px;
+}
+[data-search-turnto] [data-search-path]{
+  width: fit-content;
+  opacity: 0.6;
+  transform: skewX(-8deg);
+}
+
+[data-search-pick="true"] [data-search-name]::before,
+[data-search-pick="0"] [data-search-name]::before,
+[data-search-pick="1"] [data-search-name]::before,
+[data-search-pick="2"] [data-search-name]::before{
+  content: '';
+  min-width: 10px;
+  min-height: 10px;
+  border-radius: 50%;
+  margin-right: 2px;
+}
+[data-search-pick="true"] [data-search-name]::before{
+  background: var(--liColor);
+}
+[data-search-pick="0"] [data-search-name]::before{
+  background: var(--themeColor2);
+}
+[data-search-pick="1"] [data-search-name]::before{
+  background: var(--themeColor);
+}
+[data-search-pick="2"] [data-search-name]::before{
+  background: var(--boxBod);
+}
+[data-search-pick="true"]{
+  order: -4;
+  animation: boxUp 0.5s;
+}
+[data-search-pick="0"]{
+  order: -3;
+  animation: boxUp 0.5s;
+}
+[data-search-pick="1"]{
+  order: -2;
+  animation: boxUp 0.5s;
+}
+[data-search-pick="2"]{
+  order: -1;
+  animation: boxUp 0.5s;
+}
+[data-search-pick="3"]{
+  filter: brightness(0.5);
+  order: 0;
+  animation: none;
+}
+[data-theme="light"] [data-search-pick="3"]{
+  filter: brightness(0.8);
+  order: 0;
+  animation: none;
+}
+[data-search-pick="false"]{
+  filter: none;
+  order: 0;
+  animation: none;
+}
+
+[data-search-turnto] [data-btn]{
+  width: 8ch;
+  height: 20px;
+  border-radius: 10px;
+}
+
+[data-findbox]{
+  border: 4px var(--themeColor) solid;
 }
 
 [data-dailogimg-box] img{
@@ -836,7 +944,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   pointer-events: none;
 }
 
-[data-dailogimg-close],[data-dailogsearch-close]{
+[data-dailogimg-close]{
   width: 100%;
   box-sizing: border-box;
   padding: 10px;
