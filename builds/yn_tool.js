@@ -982,12 +982,13 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
 
   let finalfileNames = [];
   Object.values(groupSames).forEach(group => {
-    if (group.length === 1) {
+    if (group.length == 1) {
       finalfileNames.push(group[0]);
     } else {
         group.forEach((name, index) => {
-          let oldname = fileInfos[index].fileName.split('/').pop();
-          let newname = `${oldname}(${index + 1})`+ '.' + fileInfos[index].format.toLowerCase();
+          let oldname = name.split('/').pop();
+          let format = '.' + oldname.split('.').pop();
+          let newname = name.replace(format, `(${(index + 1)})` + format)
           finalfileNames.push(newname);
         });
     };
