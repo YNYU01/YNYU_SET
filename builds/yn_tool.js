@@ -1000,16 +1000,16 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
         let paths = fileInfos[index].fileName.split('/');
         createFolder(zip, paths, blob, finalfileNames[index]);
       };
-      function createFolder(zip, pathSegments, blob, fileName) {
-        if (pathSegments.length === 1) {
-            zip.file(fileName, blob);
-        } else {
-            const currentFolder =  pathSegments.shift() ? zip.folder(pathSegments.shift()) : zip;
-            createFolder(currentFolder, [...pathSegments], blob, fileName);
-        };
-      };
     });
-  
+    
+    function createFolder(zip, pathSegments, blob, fileName) {
+      if (pathSegments.length === 1) {
+          zip.file(fileName, blob);
+      } else {
+          const currentFolder =  pathSegments.shift() ? zip.folder(pathSegments.shift()) : zip;
+          createFolder(currentFolder, [...pathSegments], blob, fileName);
+      };
+    };
   
     zip.generateAsync({ type: "blob" }).then(function (content) {
       zipName = zipName ? zipName : ''
