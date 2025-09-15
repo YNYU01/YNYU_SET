@@ -995,30 +995,10 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
   });
 
   if(!fileBlobs.every(item => item == null)){
-    function addToZip(zip, pathSegments, fileName, blob) {
-      // 当只剩最后一级时直接添加文件
-      if (pathSegments.length === 1) {
-        zip.file(fileName, blob);
-        return;
-      };
-      
-      // 处理目录层级
-      if (pathSegments.length > 0) {
-        const [currentDir, ...remaining] = pathSegments;
-        const folder = zip.folder(currentDir);
-        addToZip(folder, remaining, fileName, blob);
-      } else {
-        zip.file(fileName, blob);
-      };
-    };
-    
     fileBlobs.forEach((blob, index) => {
       if (blob) {
-        const fullPath = fileInfos[index].fileName.split('/');
-        fullPath.pop();
-        const fileName = finalfileNames[index];
-        addToZip(zip, fullPath, fileName, blob);
-      }
+        zip.file(finalfileNames[index], blob);
+      };
     });
   
     zip.generateAsync({ type: "blob" }).then(function (content) {
