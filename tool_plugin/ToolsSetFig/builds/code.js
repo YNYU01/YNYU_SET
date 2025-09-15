@@ -193,7 +193,7 @@ figma.ui.onmessage = async (message) => {
     };
     //上传所选对象以导出为图片/兼容格式/富文本
     if ( type == "upSelect"){
-        console.log(info)
+        //console.log(info)
         let [exporttype,exportset] = info;
         switch (exporttype){
             case 'image':
@@ -1152,10 +1152,10 @@ figma.on('selectionchange',()=>{
 });
 
 setTimeout(()=>{
-    //console.clear()
+    console.clear()
     console.log(`- [YNYU_SET] OPEN DESIGN & SOURCE
 - © 2024-2025 YNYU lvynyu2@gmail.com;`)
-},500)
+},100)
 
 sendInfo();
 function sendInfo(){

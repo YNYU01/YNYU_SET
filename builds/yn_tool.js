@@ -972,7 +972,8 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
   let timeName = getDate('YYYYMMDD')[0].slice(2) + '_' + getTime('HHMMSS')[0]
   let zip = new JSZip();
 
-  let names = fileInfos.map(item => item.fileName.split('/').pop() + '.' + item.format.toLowerCase())
+  //处理同文件夹下同名问题
+  let names = fileInfos.map(item => item.fileName + '.' + item.format.toLowerCase());
   let groupSames = names.reduce((acc, name) => {
     if (!acc[name]) acc[name] = [];
       acc[name].push(name);
@@ -985,7 +986,9 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
       finalfileNames.push(group[0]);
     } else {
         group.forEach((name, index) => {
-          finalfileNames.push(`${name}(${index + 1})`);
+          let oldname = fileInfos[index].name.split('/').pop();
+          let newname = `${oldname}(${index + 1})`+ '.' + fileInfos[index].format.toLowerCase();
+          finalfileNames.push(newname);
         });
     };
   });
