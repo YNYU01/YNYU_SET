@@ -998,20 +998,14 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
     fileBlobs.forEach((blob, index) => {
       if(blob){
         let paths = fileInfos[index].fileName.split('/');
-        let name = finalfileNames[index];
-        if (paths.length > 1) {
-          let folder = zip.folder(paths[0]);
-          addFolder(folder,1)
-          function addFolder(folder,index){
-            if(index == paths.length - 1) {
-              folder.file(name,blob);
-              return;
-            };
-            let newfolder = folder.folder(paths[index]);
-            addFolder(newfolder,index + 1)
-          };
+        createFolder(zip, paths, blob, finalfileNames[index]);
+      };
+      function createFolder(zip, pathSegments, blob, fileName) {
+        if (pathSegments.length === 1) {
+            zip.file(fileName, blob);
         } else {
-          zip.file(name,blob);
+            const currentFolder =  pathSegments.shift() ? zip.folder(pathSegments.shift()) : zip;
+            createFolder(currentFolder, [...pathSegments], blob, fileName);
         };
       };
     });
