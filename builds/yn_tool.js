@@ -1015,7 +1015,7 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
     fileBlobs.forEach((blob, index) => {
       if (blob) {
         const fullPath = fileInfos[index].fileName.split('/');
-        const fileName = fullPath.pop(); // 分离文件名
+        const fileName = finalfileNames[index];
         addToZip(zip, fullPath, fileName, blob);
       }
     });
