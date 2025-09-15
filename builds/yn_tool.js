@@ -1003,12 +1003,12 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
           let folder = zip.folder(paths[0]);
           addFolder(folder,1)
           function addFolder(folder,index){
-            if(index >= paths.length) {
+            if(index == paths.length - 1) {
               folder.file(name,blob);
               return;
             };
-            let newfolder1 = zip.folder(folder);
-            addFolder(newfolder1,index + 1)
+            let newfolder = folder.folder(paths[index]);
+            addFolder(newfolder,index + 1)
           };
         } else {
           zip.file(name,blob);
