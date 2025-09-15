@@ -1001,12 +1001,12 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
         createFolder(zip, paths, blob, finalfileNames[index]);
       };
     });
-    
+
     function createFolder(zip, pathSegments, blob, fileName) {
       if (pathSegments.length === 1) {
           zip.file(fileName, blob);
       } else {
-          const currentFolder =  pathSegments.shift() ? zip.folder(pathSegments.shift()) : zip;
+          const currentFolder = zip.folder(pathSegments.shift());//  pathSegments.shift() ? zip.folder(pathSegments.shift()) : zip;
           createFolder(currentFolder, [...pathSegments], blob, fileName);
       };
     };
