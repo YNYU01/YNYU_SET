@@ -207,6 +207,16 @@ figma.ui.onmessage = async (message) => {
             break
         };
     };
+    //修改目标大小
+    if ( type == "setFinalSize"){
+        figma.getNodeByIdAsync(info[0])
+        .then(node => {
+            node.setPluginData('exportSize',info[1].toString());
+        })
+        .catch(e => {
+            console.log(e);
+        })
+    };
     //从预设或组件创建表格
     if ( type == "creTable"){
         //console.log(info)
@@ -1598,9 +1608,15 @@ function exportImgInfo(set){
             if(!size){
                 size = null;
             };
+            let zipName = '';//a.parent.name.replace(/\//g,'_');
+            if(c.parent.type == 'SECTION'){
+                zipName += c.parent.name + ' ';
+            }else{
+                zipName += a.name + ' ';
+            };
             let info = [] ;
             let wh = getSafeMain(c);
-            let [w,h] = [wh[0],wh[1]]
+            let [w,h] = [wh[0],wh[1]];
             if(set == 'exportset' && c.exportSettings.length > 0){
                 let settings = c.exportSettings;
                 for(let ii = 0; ii < settings.length; ii++){
@@ -1619,6 +1635,7 @@ function exportImgInfo(set){
                     };
                     info.push(
                         {
+                            zipName: zipName,
                             fileName:c.name + setting.suffix,
                             id:c.id,
                             format:setting.format,
@@ -1637,6 +1654,7 @@ function exportImgInfo(set){
             }else{
                 info.push(
                     {
+                        zipName: zipName,
                         fileName:c.name,
                         id:c.id,
                         format:format,
@@ -1655,9 +1673,6 @@ function exportImgInfo(set){
                 //console.log(info)
             };
             postmessage([info,'exportImgInfo']);
-            if(i == b.length - 1){
-                //load.cancel();
-            };
         };
         load.cancel();
     },200);

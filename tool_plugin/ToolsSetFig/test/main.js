@@ -1528,11 +1528,16 @@ getElementMix('data-export-tags-delete').addEventListener('click',()=>{
 exportAnyBtn.addEventListener('click',()=>{
   let isFinal = []
   for (let i = 0; i < ExportImageInfo.length; i++) {
-    let finaltag = getElementMix('data-export-tag="'+ i +'"')
+    let finaltag = getElementMix('data-export-tag="'+ i +'"');
     let isExport = finaltag.getAttribute('data-export-final') == 'true' ? true : false;
-    isFinal.push(isExport)
-  }
-  tool.ExportImgByData(reExport,ExportImageInfo,isFinal);
+    isFinal.push(isExport);
+  };
+  let zipnames = ExportImageInfo.map(item => item.zipName);
+  let zipName = '';
+  if([...new Set(zipnames)].length == 1){
+    zipName = zipnames[0];
+  };
+  tool.ExportImgByData(reExport,ExportImageInfo,isFinal,zipName);
   //处理返回的压缩导出状态
   function reExport(index,finalSize,quality,isSuccess){
     let sizespan = getElementMix('data-export-tag="'+ index +'"').querySelector('[data-export-realsize]');
@@ -2212,6 +2217,7 @@ function getUserInt(node){
     let index = node.getAttribute('data-export-size');
     ExportImageInfo[index].finalSize = int;
     ExportImageInfo[index].compressed = null;
+    toolMessage([[ExportImageInfo[index].id,int],'setFinalSize'],PLUGINAPP);
     let tag = getElementMix('data-export-tag="'+ index +'"');
     let realSize = tag.querySelector('[data-export-realsize]');
     realSize.textContent = '--';

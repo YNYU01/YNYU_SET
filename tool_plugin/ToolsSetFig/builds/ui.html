@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cb670684cd8f1ded44d0b397c456bbf453c9982e/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8686f230d50c5b76e3d1f2d19a95d1564c5387db/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cb670684cd8f1ded44d0b397c456bbf453c9982e/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8686f230d50c5b76e3d1f2d19a95d1564c5387db/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -3288,14 +3288,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cb670684cd8f1ded44d0b397c456bbf453c9982e/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cb670684cd8f1ded44d0b397c456bbf453c9982e/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cb670684cd8f1ded44d0b397c456bbf453c9982e/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cb670684cd8f1ded44d0b397c456bbf453c9982e/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cb670684cd8f1ded44d0b397c456bbf453c9982e/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cb670684cd8f1ded44d0b397c456bbf453c9982e/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cb670684cd8f1ded44d0b397c456bbf453c9982e/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@cb670684cd8f1ded44d0b397c456bbf453c9982e/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8686f230d50c5b76e3d1f2d19a95d1564c5387db/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8686f230d50c5b76e3d1f2d19a95d1564c5387db/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8686f230d50c5b76e3d1f2d19a95d1564c5387db/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8686f230d50c5b76e3d1f2d19a95d1564c5387db/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8686f230d50c5b76e3d1f2d19a95d1564c5387db/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8686f230d50c5b76e3d1f2d19a95d1564c5387db/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8686f230d50c5b76e3d1f2d19a95d1564c5387db/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8686f230d50c5b76e3d1f2d19a95d1564c5387db/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4828,11 +4828,16 @@ getElementMix('data-export-tags-delete').addEventListener('click',()=>{
 exportAnyBtn.addEventListener('click',()=>{
   let isFinal = []
   for (let i = 0; i < ExportImageInfo.length; i++) {
-    let finaltag = getElementMix('data-export-tag="'+ i +'"')
+    let finaltag = getElementMix('data-export-tag="'+ i +'"');
     let isExport = finaltag.getAttribute('data-export-final') == 'true' ? true : false;
-    isFinal.push(isExport)
-  }
-  tool.ExportImgByData(reExport,ExportImageInfo,isFinal);
+    isFinal.push(isExport);
+  };
+  let zipnames = ExportImageInfo.map(item => item.zipName);
+  let zipName = '';
+  if([...new Set(zipnames)].length == 1){
+    zipName = zipnames[0];
+  };
+  tool.ExportImgByData(reExport,ExportImageInfo,isFinal,zipName);
   //处理返回的压缩导出状态
   function reExport(index,finalSize,quality,isSuccess){
     let sizespan = getElementMix('data-export-tag="'+ index +'"').querySelector('[data-export-realsize]');
@@ -5512,6 +5517,7 @@ function getUserInt(node){
     let index = node.getAttribute('data-export-size');
     ExportImageInfo[index].finalSize = int;
     ExportImageInfo[index].compressed = null;
+    toolMessage([[ExportImageInfo[index].id,int],'setFinalSize'],PLUGINAPP);
     let tag = getElementMix('data-export-tag="'+ index +'"');
     let realSize = tag.querySelector('[data-export-realsize]');
     realSize.textContent = '--';
