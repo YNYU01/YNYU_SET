@@ -1007,8 +1007,8 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
               folder.file(name,blob);
               return;
             };
-            folder = zip.folder(paths[index]);
-            addFolder(folder,index + 1)
+            let newfolder1 = zip.folder(folder);
+            addFolder(newfolder1,index + 1)
           };
         } else {
           zip.file(name,blob);
