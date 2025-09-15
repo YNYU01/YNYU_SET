@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3edba5af98e56a3ae5c1bb0e6329ed669915aad0/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3edba5af98e56a3ae5c1bb0e6329ed669915aad0/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -3288,14 +3288,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3edba5af98e56a3ae5c1bb0e6329ed669915aad0/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3edba5af98e56a3ae5c1bb0e6329ed669915aad0/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3edba5af98e56a3ae5c1bb0e6329ed669915aad0/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3edba5af98e56a3ae5c1bb0e6329ed669915aad0/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3edba5af98e56a3ae5c1bb0e6329ed669915aad0/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3edba5af98e56a3ae5c1bb0e6329ed669915aad0/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3edba5af98e56a3ae5c1bb0e6329ed669915aad0/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@3edba5af98e56a3ae5c1bb0e6329ed669915aad0/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -5212,6 +5212,7 @@ getElementMix('data-split-tags').querySelectorAll('[type="checkbox"]').forEach(c
     };
   });
 });
+
 //点击即执行的功能
 skillBtnMain.forEach(btn => {
   let MOVE_TIMEOUT;
@@ -5227,6 +5228,7 @@ skillBtnMain.forEach(btn => {
     };
   });
   btn.addEventListener('click',()=>{
+    console.log(666)
     let skillname = btn.getAttribute('data-en-text');
     /*防抖*/
     if(MOVE_TIMEOUT){
@@ -5350,6 +5352,7 @@ skillBtnMain.forEach(btn => {
   };
 
   function upSelect(type){
+    console.log(666)
     let exporttype = getElementMix('data-exporttype-set').getAttribute('data-radio-value');
     let types = ['image','zy','rich']
     toolMessage([[types[exporttype - 1],type],'upSelect'],PLUGINAPP);

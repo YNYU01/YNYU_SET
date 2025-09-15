@@ -1003,7 +1003,7 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
               folder.file(name,blob);
               return;
             };
-            let folder = zip.folder(paths[index]);
+            folder = zip.folder(paths[index]);
             addFolder(folder,index + 1)
           };
         } else {
