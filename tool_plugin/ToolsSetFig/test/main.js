@@ -292,6 +292,7 @@ let CreateImageInfo = [];
 let CreateTableInfo = [];
 let SelectNodeInfo = [];
 let ExportImageInfo = [];
+let CataloguesInfo = [];
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -1102,23 +1103,26 @@ async function addTableText(files,isTags){
 function addTableTags(){
   addTag('table',CreateTableInfo);
 };
-function addZyCatalogue(files,codetype){
+async function addZyCatalogue(files,codetype){
   if(codetype){
     addTag('zy',files)
   } else if ( files instanceof FileList){
     for(let i = 0; i < files.length; i++){
       let file = files[i];
       let format = file.name.split('.')[file.name.split('.').length - 1].toLowerCase();
+      let filenameRegex = new RegExp('.' + format,'gi');
+      let createname = file.name.replace(filenameRegex,'');
       try{
         let reader = new FileReader();
-        reader.onload = (e)=>{
+        reader.onload = async(e)=>{
           switch (format){
             case 'md':
-              let mds = tool.MdToObj(reader.result.trim());
-              addTag('zy',mds)
+              let mds = await tool.MdToObj(reader.result.trim(),createname);
+              addTag('zy',mds);
             break
             case 'svg':
-      
+              let svgs = await tool.SvgToObj(reader.result.trim(),createname);
+              addTag('zy',svgs);
             break
             case 'node':
       
@@ -1141,7 +1145,7 @@ function addTag(type,info){
     case 'image':
       info.forEach((img,index) => {
         let tag = document.createElement('div');
-        createTagsBox.parentNode.setAttribute('data-create-tags-box','image');
+        createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','image');
         addTagMain(tag,index,'create');
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
@@ -1190,7 +1194,7 @@ function addTag(type,info){
       let nameRegex = frameName.value;
       info.forEach((list,index) => {
         let tag = document.createElement('div');
-        createTagsBox.parentNode.setAttribute('data-create-tags-box','table');
+        createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','table');
         addTagMain(tag,index,'create');
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
@@ -1223,9 +1227,35 @@ function addTag(type,info){
     break
     case 'zy':
       if(info.zyType){
-        info.nodes.forEach(layer => {
+        CataloguesInfo.push(info)
+        let index = Array.from(cataloguesBox.children).length;
+        let tag = document.createElement('div');
+        cataloguesBox.parentNode.parentNode.setAttribute('data-create-tags-box','zy');
+        let main = addTagMain(tag,index,'zynode');
+
+        let name = document.createElement('input');
+        name.type = 'text';
+        name.value = info.zyName;
+        name.id = 'zynode_n_' + index;
+        name.setAttribute('data-input','');
+        name.setAttribute('data-zynode-info','name');
+        name.className = 'nobod fl1';
+        name.addEventListener('change',() => {
+          inputMust(name,['text',info.zyName]);
+          CataloguesInfo[index].zyName = name.value;
+        });
+        main.appendChild(name);
+
+        let layerList = document.createElement('div');
+        layerList.setAttribute('data-layerlist','');
+        layerList.className = 'df-ffc ovy scrollbar';
+        info.nodes.forEach(node => {
 
         });
+        tag.appendChild(layerList);
+        cataloguesBox.appendChild(tag);
+      }else{
+
       };
     break
     case 'export-img':
@@ -1308,7 +1338,7 @@ function addTag(type,info){
         sizeinfo.setAttribute('data-sizeinfo','')
         sizeinfo.setAttribute('style','min-width: 64px; flex-wrap: wrap; opacity: 0.6;');
         sizeinfo.innerHTML += '<div style="width: fit-content">' + layer.width + '×' + layer.height + '</div>';
-        sizeinfo.innerHTML += '<div style="width: fit-content; padding-left: 4px">' + Math.floor(layer.u8a.length/10.24)/100 + ' KB ▷</div>';
+        sizeinfo.innerHTML += '<div style="width: fit-content; padding-left: 4px">' + Math.floor(layer.u8a.length/10.24)/100 + ' KB →</div>';
         let sizebox = document.createElement('div');
         sizebox.className = 'df-rc';
         sizebox.setAttribute('style','width: fit-content; padding-left: 4px;');
@@ -1611,7 +1641,7 @@ convertTags.addEventListener('click',async ()=>{
   }else{
     //tipsAll(['数据格式错误, 请检查~','Data format error, please check~'],3000)
     try{
-      let mds = tool.MdToObj(userText.value.trim());
+      let mds = await tool.MdToObj(userText.value.trim());
       //console.log(mds)
       addZyCatalogue(mds,'md')
     } catch {e => {
@@ -2216,6 +2246,9 @@ function getUserFloat(node){
 
 function getUserSelect(node){
   let userSelect = node.getAttribute('data-select-value');
+  if(node.parentNode.parentNode.id == 'upload-moreset-box'){
+    frameName.value = userSelect;
+  }
   if(node.parentNode.parentNode.getAttribute('data-export-tag') !== null){
     let index = node.parentNode.parentNode.getAttribute('data-export-tag');
     ExportImageInfo[index].format = userSelect;

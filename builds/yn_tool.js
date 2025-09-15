@@ -222,7 +222,7 @@ TOOL_JS.prototype.TrueImageFormat = TrueImageFormat;
  * }
  * ]}
  */
-function MdToObj(mdText) {
+function MdToObj(mdText,createname) {
   let ast = [];
   let listStack = [];
   let inlineElements = {
@@ -241,6 +241,7 @@ function MdToObj(mdText) {
   let currentCodeBlock = null;
   let currentTable = null;
   let currentQuote = null;
+  createname = createname ? createname : '@MD_NODE';
 
   lines.forEach((line,index) => {
     //缩进量
@@ -480,13 +481,13 @@ function MdToObj(mdText) {
     return segments.length === 1 && segments[0].style === 'normal' 
       ? segments[0].content 
       : segments;
-  }
+  };
 
-  return {zytype:'md',nodes:ast};
+  return {zyType:'md', zyName: createname, nodes:ast};
 };
 TOOL_JS.prototype.MdToObj = MdToObj;
 
-async function SvgToObj(svgText)  {
+async function SvgToObj(svgText,createname)  {
   const parser = new DOMParser();
   const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
   const svgRoot = svgDoc.documentElement;
@@ -494,14 +495,14 @@ async function SvgToObj(svgText)  {
   const allRects = Array.from(svgRoot.querySelectorAll('rect'));
   const allClips = Array.from(svgRoot.querySelectorAll('clipPath'));
   const allMasks = Array.from(svgRoot.querySelectorAll('mask'));
-
+  createname = createname ? createname : '@SVG_NODE'
   try {
     const images = await traverse(svgRoot);
-    console.log('Found images:', images);
-    return {zyType: 'svg', nodes: images};
+    //console.log('Found images:', images);
+    return {zyType: 'svg', zyName: createname, nodes: images};
   } catch (error) {
     console.error('Error processing SVG:', error);
-    return {zyType: null, nodes: null};
+    return {zyType: null, zyName: null, nodes: null};
   }
 
   function GetAttributes(node){

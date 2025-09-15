@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d5265617871e3edd24362d7883789d974bf2e728/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d5265617871e3edd24362d7883789d974bf2e728/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -823,10 +823,35 @@ input[type="checkbox"]:checked + .btn-moreset{
   display: none;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
   z-index: 12;
   gap: 4px;
   white-space: normal;
+}
+
+[data-dailogimg],[data-dailogsearch]{
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 30px 0 100px 0;
+  z-index: 12;
+}
+
+[data-dailog],[data-dailogimg]{
+  background: rgba(0, 0, 0, 0.6);
+}
+
+[data-dailogsearch]{
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(2px);
+}
+
+[data-theme="light"] [data-dailog],
+[data-theme="light"] [data-dailogimg],
+[data-theme="light"] [data-dailogsearch]{
+  background: rgba(226, 226, 226, 0.8);
+  --boxGry: #ffffff;
+  --boxBak: #ffffff;
 }
 
 [data-dailog-box] p{
@@ -867,26 +892,6 @@ input[type="checkbox"]:checked + .btn-moreset{
   border: 1px solid var(--boxBod);
   background: var(--boxGry); 
   gap: 4px;
-}
-
-
-[data-dailogimg],[data-dailogsearch ]{
-  display: none;
-  width: 100vw;
-  height: 100vh;
-  box-sizing: border-box;
-  padding: 30px 0 100px 0;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 12;
-  backdrop-filter: blur(2px);
-}
-
-[data-theme="light"] [data-dailog],
-[data-theme="light"] [data-dailogimg],
-[data-theme="light"] [data-dailogsearch]{
-  background: rgba(226, 226, 226, 0.8);
-  --boxGry: #ffffff;
-  --boxBak: #ffffff;
 }
 
 [data-dailogimg-box] {
@@ -3265,14 +3270,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d5265617871e3edd24362d7883789d974bf2e728/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d5265617871e3edd24362d7883789d974bf2e728/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d5265617871e3edd24362d7883789d974bf2e728/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d5265617871e3edd24362d7883789d974bf2e728/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d5265617871e3edd24362d7883789d974bf2e728/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d5265617871e3edd24362d7883789d974bf2e728/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d5265617871e3edd24362d7883789d974bf2e728/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d5265617871e3edd24362d7883789d974bf2e728/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4585,7 +4590,7 @@ function addTag(type,info){
         sizeinfo.setAttribute('data-sizeinfo','')
         sizeinfo.setAttribute('style','min-width: 64px; flex-wrap: wrap; opacity: 0.6;');
         sizeinfo.innerHTML += '<div style="width: fit-content">' + layer.width + '×' + layer.height + '</div>';
-        sizeinfo.innerHTML += '<div style="width: fit-content; padding-left: 4px">' + Math.floor(layer.u8a.length/10.24)/100 + ' KB ▷</div>';
+        sizeinfo.innerHTML += '<div style="width: fit-content; padding-left: 4px">' + Math.floor(layer.u8a.length/10.24)/100 + ' KB →</div>';
         let sizebox = document.createElement('div');
         sizebox.className = 'df-rc';
         sizebox.setAttribute('style','width: fit-content; padding-left: 4px;');
@@ -5493,6 +5498,9 @@ function getUserFloat(node){
 
 function getUserSelect(node){
   let userSelect = node.getAttribute('data-select-value');
+  if(node.parentNode.parentNode.id == 'upload-moreset-box'){
+    frameName.value = userSelect;
+  }
   if(node.parentNode.parentNode.getAttribute('data-export-tag') !== null){
     let index = node.parentNode.parentNode.getAttribute('data-export-tag');
     ExportImageInfo[index].format = userSelect;
