@@ -995,21 +995,24 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
   });
 
   if(!fileBlobs.every(item => item == null)){
-    fileBlobs.forEach((blob, index) => {
-      if(blob){
-        let paths = fileInfos[index].fileName.split('/');
-        createFolder(zip, paths, blob, finalfileNames[index]);
-      };
-    });
-
-    function createFolder(zip, pathSegments, blob, fileName) {
-      if (pathSegments.length === 1) {
-          zip.file(fileName, blob);
+    function addToZip(zip, pathSegments, fileName, blob) {
+      if (pathSegments.length === 0) {
+        zip.file(fileName, blob);
       } else {
-          const currentFolder = zip.folder(pathSegments.shift());//  pathSegments.shift() ? zip.folder(pathSegments.shift()) : zip;
-          createFolder(currentFolder, [...pathSegments], blob, fileName);
+        const [currentDir, ...remaining] = pathSegments;
+        let folder = zip.folder(currentDir) || zip;
+        addToZip(folder, remaining, fileName, blob);
       };
     };
+    
+    fileBlobs.forEach((blob, index) => {
+      if (blob) {
+        const fullPath = fileInfos[index].fileName.split('/');
+        const fileName = finalfileNames[index];
+        const dirs = fullPath.slice(0, -1); // 排除最后文件名部分
+        addToZip(zip, dirs, fileName, blob);
+      }
+    });
   
     zip.generateAsync({ type: "blob" }).then(function (content) {
       zipName = zipName ? zipName : ''
