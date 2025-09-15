@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1091,6 +1091,10 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   opacity: 0.6;
 }
 
+[data-create-mix]{
+  max-height: calc(100% - 405px);
+}
+
 [data-create-tags-box],[data-export-tags-box]{
   /*resize: both;*/
   min-width: 100%;
@@ -1108,11 +1112,8 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   display: none;
 }
 
-[data-create-tags],
-[data-create-catalogues],
-[data-export-tags]{
-  height: fit-content;
-  margin-top: -10px;
+[data-create-tags]{
+  padding-bottom: 10px;
 }
 
 [data-create-catalogues],[data-export-tags]{
@@ -1122,6 +1123,7 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 
 [data-create-tags-box="image"] [data-create-tags],
 [data-create-tags-box="table"] [data-create-tags],
+[data-create-tags-box="zy"] [data-create-catalogues],
 [data-export-tags-box="zy"] [data-export-tags="zy"],
 [data-export-tags-box="rich"] [data-export-tags="rich"]{
   display: flex;
@@ -1132,7 +1134,10 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   gap: 8px;
 }
 
-[data-create-tag],[data-split-tag],[data-export-tag]{
+[data-create-tag],
+[data-split-tag],
+[data-export-tag],
+[data-zynode-tag]{
   height: 24px;
   padding: 0px 4px;
   background: var(--boxGry);
@@ -1141,12 +1146,17 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   font-size: 10px;
 }
 
-[data-export-tag]{
+[data-export-tag],
+[data-zynode-tag]{
   padding: 4px 6px;
   height: fit-content;
 }
 
-[data-export-info="name"]{
+[data-layerlist]{
+  background: var(--boxBak);
+}
+
+[data-export-info="name"],[data-zynode-info="name"]{
   font-size: 10px !important;
   background: var(--boxGry) !important;
   padding: 0 !important;
@@ -1863,6 +1873,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   [data-radio]{
     padding: 0.5ch;
   }
+
+  [data-create-mix]{
+    max-height: calc(100% - 356px);
+  }
 }
 @media (max-width:299px) {
   [data-any="vw300"]{
@@ -2259,17 +2273,19 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 &nbsp;&nbsp;
                 <span data-en-text="to create finally" data-any="vw240" style="opacity: 0.6;">以确认最终创建内容</span>
             </div>
-            <div class="wh100 df-cc pos-r" ><!--data-resize-->
-              <div data-create-tags-box class="wh100 upload-set pos-r ovy noscrollbar">
+            <div data-create-mix class="wh100 df-cc pos-r" ><!--data-resize-->
+              <div data-create-tags-box class="wh100 upload-set pos-r">
+                <div class="wh100 ovy noscrollbar">
+                  <div data-create-tags class="w100 df-lc">
+                    <!--动态填充-->
+                  </div>
+                  <div data-create-catalogues class="w100 df-ffc">
+                    <!--动态填充-->
+                  </div>
+                </div>
                 <!--清空-->
-                <div style="left: 100%; top:0; position: sticky; width: 12px; height: 12px;">
+                <div class="pos-a" style="right: 4px; top: 4px; width: 12px; height: 12px;">
                   <btn-close></btn-close>
-                </div>
-                <div data-create-tags class="w100 df-lc">
-                  <!--动态填充-->
-                </div>
-                <div data-create-catalogues class="w100 df-ffc">
-                  <!--动态填充-->
                 </div>
               </div>
             </div>
@@ -2374,19 +2390,21 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div>
           </div>
           
-          <div data-export-tags-box="image" class="wh100 upload-set pos-r ovy noscrollbar">
+          <div data-export-tags-box="image" class="wh100 upload-set pos-r">
+            <div class="wh100 ovy noscrollbar">
+              <div data-export-tags="image" data-export-pickall="false" class="w100 df-ffc">
+                <!--动态填充-->
+              </div>
+              <div data-export-tags="zy" data-export-pickall="false" class="w100 df-ffc">
+                <!--动态填充-->
+              </div>
+              <div data-export-tags="rich" data-export-pickall="false" class="w100 df-ffc">
+                <!--动态填充-->
+              </div>
+            </div>
             <!--清空-->
-            <div data-export-tags-delete style="left: 100%; top:0; width: 12px; height: 12px; position: sticky; z-index: 2;">
+            <div data-export-tags-delete class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;">
               <btn-close></btn-close>
-            </div>
-            <div data-export-tags="image" data-export-pickall="false" class="w100 df-ffc">
-              <!--动态填充-->
-            </div>
-            <div data-export-tags="zy" data-export-pickall="false" class="w100 df-ffc">
-              <!--动态填充-->
-            </div>
-            <div data-export-tags="rich" data-export-pickall="false" class="w100 df-ffc">
-              <!--动态填充-->
             </div>
           </div>
         </div>
@@ -3270,14 +3288,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2fa2a152a7bc0bfb31a827f66af2a0ab24cf2256/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a944023789e6e0a099bdbdb5c3c1b9eadeb6507e/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3574,6 +3592,7 @@ let CreateImageInfo = [];
 let CreateTableInfo = [];
 let SelectNodeInfo = [];
 let ExportImageInfo = [];
+let CataloguesInfo = [];
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -4384,23 +4403,26 @@ async function addTableText(files,isTags){
 function addTableTags(){
   addTag('table',CreateTableInfo);
 };
-function addZyCatalogue(files,codetype){
+async function addZyCatalogue(files,codetype){
   if(codetype){
     addTag('zy',files)
   } else if ( files instanceof FileList){
     for(let i = 0; i < files.length; i++){
       let file = files[i];
       let format = file.name.split('.')[file.name.split('.').length - 1].toLowerCase();
+      let filenameRegex = new RegExp('.' + format,'gi');
+      let createname = file.name.replace(filenameRegex,'');
       try{
         let reader = new FileReader();
-        reader.onload = (e)=>{
+        reader.onload = async(e)=>{
           switch (format){
             case 'md':
-              let mds = tool.MdToObj(reader.result.trim());
-              addTag('zy',mds)
+              let mds = await tool.MdToObj(reader.result.trim(),createname);
+              addTag('zy',mds);
             break
             case 'svg':
-      
+              let svgs = await tool.SvgToObj(reader.result.trim(),createname);
+              addTag('zy',svgs);
             break
             case 'node':
       
@@ -4423,7 +4445,7 @@ function addTag(type,info){
     case 'image':
       info.forEach((img,index) => {
         let tag = document.createElement('div');
-        createTagsBox.parentNode.setAttribute('data-create-tags-box','image');
+        createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','image');
         addTagMain(tag,index,'create');
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
@@ -4472,7 +4494,7 @@ function addTag(type,info){
       let nameRegex = frameName.value;
       info.forEach((list,index) => {
         let tag = document.createElement('div');
-        createTagsBox.parentNode.setAttribute('data-create-tags-box','table');
+        createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','table');
         addTagMain(tag,index,'create');
         let name = document.createElement('div');
         name.setAttribute('data-create-info','name');
@@ -4505,9 +4527,35 @@ function addTag(type,info){
     break
     case 'zy':
       if(info.zyType){
-        info.nodes.forEach(layer => {
+        CataloguesInfo.push(info)
+        let index = Array.from(cataloguesBox.children).length;
+        let tag = document.createElement('div');
+        cataloguesBox.parentNode.parentNode.setAttribute('data-create-tags-box','zy');
+        let main = addTagMain(tag,index,'zynode');
+
+        let name = document.createElement('input');
+        name.type = 'text';
+        name.value = info.zyName;
+        name.id = 'zynode_n_' + index;
+        name.setAttribute('data-input','');
+        name.setAttribute('data-zynode-info','name');
+        name.className = 'nobod fl1';
+        name.addEventListener('change',() => {
+          inputMust(name,['text',info.zyName]);
+          CataloguesInfo[index].zyName = name.value;
+        });
+        main.appendChild(name);
+
+        let layerList = document.createElement('div');
+        layerList.setAttribute('data-layerlist','');
+        layerList.className = 'df-ffc ovy scrollbar';
+        info.nodes.forEach(node => {
 
         });
+        tag.appendChild(layerList);
+        cataloguesBox.appendChild(tag);
+      }else{
+
       };
     break
     case 'export-img':
@@ -4893,7 +4941,7 @@ convertTags.addEventListener('click',async ()=>{
   }else{
     //tipsAll(['数据格式错误, 请检查~','Data format error, please check~'],3000)
     try{
-      let mds = tool.MdToObj(userText.value.trim());
+      let mds = await tool.MdToObj(userText.value.trim());
       //console.log(mds)
       addZyCatalogue(mds,'md')
     } catch {e => {

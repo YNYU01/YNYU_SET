@@ -972,22 +972,40 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
   let timeName = getDate('YYYYMMDD')[0].slice(2) + '_' + getTime('HHMMSS')[0]
   let zip = new JSZip();
 
+  let names = fileInfos.map(item => item.fileName.split('/').pop() + '.' + item.format.toLowerCase())
+  let groupSames = names.reduce((acc, name) => {
+    if (!acc[name]) acc[name] = [];
+      acc[name].push(name);
+      return acc;
+  }, {});
+
+  let finalfileNames = [];
+  Object.values(groupSames).forEach(group => {
+    if (group.length === 1) {
+      finalfileNames.push(group[0]);
+    } else {
+        group.forEach((name, index) => {
+          finalfileNames.push(`${name}(${index + 1})`);
+        });
+    };
+  });
+
   if(!fileBlobs.every(item => item == null)){
     fileBlobs.forEach((blob, index) => {
       if(blob){
-        let path = fileInfos[index].fileName.split('/');
-        let name = path.pop() + '.' + fileInfos[index].format.toLowerCase();
-        if (fileInfos[index].fileName.split('/').length == 2) {
-          let folder = zip.folder(path[0]);
-          folder.file(name,blob);
-        } else if (fileInfos[index].fileName.split('/').length == 3) {
-          let folder1 = zip.folder(path[0]);
-          let folder2 = folder1.folder(path[1]);
-          folder2.file(name,blob);
-        } else if (fileInfos[index].fileName.split('/').length == 4) {
-          let folder2 = zip.folder(path[0]);
-          let folder3 = folder2.folder(path[2]);
-          folder3.file(name,blob);
+        let paths = fileInfos[index].fileName.split('/');
+        let name = finalfileNames[index];
+        if (paths.length > 1) {
+          let folder = zip.folder(paths[0]);
+          addFolder(folder,1)
+          function addFolder(folder,index){
+            if(index >= paths.length) {
+              folder.file(name,blob);
+              return;
+            };
+            let folder = zip.folder(paths[index]);
+            addFolder(folder,index + 1)
+          };
         } else {
           zip.file(name,blob);
         };
