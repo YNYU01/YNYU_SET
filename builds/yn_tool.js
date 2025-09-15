@@ -1015,6 +1015,7 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
     fileBlobs.forEach((blob, index) => {
       if (blob) {
         const fullPath = fileInfos[index].fileName.split('/');
+        fullPath.pop();
         const fileName = finalfileNames[index];
         addToZip(zip, fullPath, fileName, blob);
       }
