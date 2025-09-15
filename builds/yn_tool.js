@@ -986,7 +986,7 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
       finalfileNames.push(group[0]);
     } else {
         group.forEach((name, index) => {
-          let oldname = fileInfos[index].name.split('/').pop();
+          let oldname = fileInfos[index].fileName.split('/').pop();
           let newname = `${oldname}(${index + 1})`+ '.' + fileInfos[index].format.toLowerCase();
           finalfileNames.push(newname);
         });
