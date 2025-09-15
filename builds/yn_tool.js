@@ -996,21 +996,27 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
 
   if(!fileBlobs.every(item => item == null)){
     function addToZip(zip, pathSegments, fileName, blob) {
-      if (pathSegments.length === 0) {
+      // 当只剩最后一级时直接添加文件
+      if (pathSegments.length === 1) {
         zip.file(fileName, blob);
-      } else {
+        return;
+      };
+      
+      // 处理目录层级
+      if (pathSegments.length > 0) {
         const [currentDir, ...remaining] = pathSegments;
-        let folder = zip.folder(currentDir) || zip;
+        const folder = zip.folder(currentDir);
         addToZip(folder, remaining, fileName, blob);
+      } else {
+        zip.file(fileName, blob);
       };
     };
     
     fileBlobs.forEach((blob, index) => {
       if (blob) {
         const fullPath = fileInfos[index].fileName.split('/');
-        const fileName = finalfileNames[index];
-        const dirs = fullPath.slice(0, -1); // 排除最后文件名部分
-        addToZip(zip, dirs, fileName, blob);
+        const fileName = fullPath.pop(); // 分离文件名
+        addToZip(zip, fullPath, fileName, blob);
       }
     });
   
