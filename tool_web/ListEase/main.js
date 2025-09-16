@@ -1,3 +1,8 @@
+const flowBox = document.querySelector('[data-flow-box]');
+const flowBoxRightbtn = document.querySelector('[data-rightbtn-flewbox]');
+const modList = document.querySelector('[data-flow-modlist]');
+const modelAll = document.querySelector('[data-flow-model-all]');
+
 
 window.addEventListener('load',()=>{
   document.getElementById('noise').className = 'tex-noise';
@@ -24,10 +29,64 @@ window.addEventListener('resize',()=>{
   },500);
 });
 
-document.querySelectorAll('[data-fontname]').forEach(node => {
-  node.style.fontFamily = node.getAttribute('data-fontname');
+flowBox.addEventListener('contextmenu',(e)=>{
+  e.preventDefault();
+  flowBoxRightbtn.style.display = 'flex';
+  reSafeTopLeft(e,flowBox,flowBoxRightbtn);
 });
 
+flowBoxRightbtn.addEventListener('contextmenu',(e)=>{
+  e.preventDefault();
+  flowBoxRightbtn.style.display = 'flex';
+  reSafeTopLeft(e,flowBox,flowBoxRightbtn);
+});
+
+function reSafeTopLeft(event,area,node){
+  let popW = node.offsetWidth;
+  let maxX = area.offsetWidth - popW;
+  let popH = node.offsetHeight;
+  let maxY = area.offsetHeight - popH;
+  let X = Math.min(event.clientX,maxX);
+  let Y = Math.min(event.clientY,maxY);
+  X = X == maxX ? event.clientX - popW : X;
+  Y = Y == maxY ? event.clientY - popH : Y;
+  node.style.left = X;
+  node.style.top = Y;
+  return(X,Y)
+};
+
+document.addEventListener('click',(e) => {
+  if(!flowBoxRightbtn.contains(e.target)){
+    flowBoxRightbtn.style.display = 'none';
+  };
+  //closeShowNexts(modList,'show-modsec-all');
+  function closeShowNexts(area,input){
+    if(typeof input == 'string'){
+      input = getElementMix(input);
+    }
+    if(!area.contains(e.target)){
+      input.checked = false;
+      let inputEvent = new Event('change',{bubbles:true});
+      input.dispatchEvent(inputEvent);
+    };
+  };
+});
+
+document.addEventListener('keydown',(e) => {
+  if(e.ctrlKey && (e.key === 'o' || e.key === 'O')){
+    e.preventDefault();
+  };
+  if(e.ctrlKey && (e.key === 's' || e.key === 'S')){
+    e.preventDefault();
+  };
+  if(e.ctrlKey && (e.shiftKey && e.key === 's' || e.key === 'S')){
+    e.preventDefault();
+  };
+  if(e.ctrlKey && e.key === '\\'){
+    e.preventDefault();
+    console.log(e.key)
+  };
+});
 
 
 /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/

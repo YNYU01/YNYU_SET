@@ -49,8 +49,142 @@
           温馨提示
       </div>
   </div>
-  <div data-page-id="ListEase" class="df-ffc pos-r" style="gap: 20px; width: var(--layout-w);">
-    
+  <!--右键菜单-->
+  <div data-rightbtn-flewbox class="df-ffc pos-a">
+    <div data-rightbtn-skill data-btn="op" data-en-text="Import">导入</div>
+    <div data-rightbtn-skill data-btn="op" data-en-text="Import history cache">从缓存加载</div>
+    <div data-rightbtn-gap></div>
+    <div data-rightbtn-skill data-btn="op" data-en-text="Export data only">仅导出数据</div>
+    <div data-rightbtn-skill data-btn="op" data-en-text="Export local file">导出为本地文件</div>
+    <div data-rightbtn-gap></div>
+    <div data-rightbtn-skill data-btn="op" data-en-text="Reset data">重置数据</div>
+    <div data-rightbtn-skill data-btn="op" data-en-text="Delete history cache">清空历史缓存</div>
+  </div>
+  <div data-page-id="ListEase" class="pos-r wh100">
+    <div data-flow-box class="wh100 tex-dot">
+      
+    </div>
+    <div data-flow-modlist class="df-ffc pos-a ovy noscrollbar">
+      <input id="show-modsec-all" checked="true" type="checkbox"
+      onchange="showNext(this,this.nextElementSibling.nextElementSibling,'flex');">
+      <label for="show-modsec-all" class="df-lc show-next">
+        <div class="fl0 df-cc" style="width: 18px; height: 18px;">
+          <svg width="70%" height="70%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle stroke="var(--mainColor3)" cx="4" cy="4" r="3" stroke-width="2"/>
+            <circle stroke="var(--mainColor3)" cx="16" cy="16" r="3" stroke-width="2"/>
+            <path stroke="var(--mainColor3)" d="M7.64286 4H13.3088C14.7951 4 16 5.20488 16 6.69118C16 8.01947 15.0309 9.1491 13.718 9.35107L5.28197 10.6489C3.96912 10.8509 3 11.9805 3 13.3088C3 14.7951 4.20488 16 5.69118 16H13.2143" stroke-width="2"/>
+          </svg>     
+        </div>
+        <div data-en-text="ADD NODE">节点列表</div>
+      </label>
+      <div data-flow-modsec-all class="df-ffc ovy noscrollbar">
+        <input id="show-modsec-1" checked="true" type="checkbox"
+        onchange="showNext(this,this.nextElementSibling.nextElementSibling,'flex');">
+        <label for="show-modsec-1" class="show-next">
+          <div data-en-text="Base">基础</div>
+        </label>
+        <div data-flow-modsec="1" class="df-ffc">
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="main title">主标题</div>
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="main title pro">定制主标题</div>
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="sub title">副标题</div>
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="sub title pro">定制副标题</div>
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="background">主背景图</div>
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="individual">主体元素</div>
+        </div>
+        <input id="show-modsec-2" checked="true" type="checkbox"
+        onchange="showNext(this,this.nextElementSibling.nextElementSibling,'flex');">
+        <label for="show-modsec-2" class="show-next">
+          <div data-en-text="Common">常用</div>
+        </label>
+        <div data-flow-modsec="2" class="df-ffc">
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="logo">单LOGO</div>
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="logo mix">组合LOGO</div>
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="text">普通文本</div>
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="text rich">富文本</div>
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="icon mix">图标组合</div>
+          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="icon mix pro">定制图标组合</div>
+        </div>
+      </div>
+      <input id="show-model-all" checked="true" type="checkbox"
+      onchange="showNext(this,this.nextElementSibling.nextElementSibling,'flex');">
+      <label for="show-model-all" class="df-lc show-next">
+        <div class="fl0 df-cc" style="width: 18px; height: 18px;">
+          <svg width="90%" height="90%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path stroke="var(--mainColor3)" stroke-width="1.5" d="M6.01326 5.85096C5.96172 5.12451 6.67915 4.58838 7.36123 4.84362L9.70784 5.72175C9.94253 5.80957 10.2016 5.80608 10.4339 5.71198L12.756 4.77104C13.431 4.49754 14.1626 5.01417 14.1306 5.74175L14.0206 8.24486C14.0096 8.4952 14.093 8.74054 14.2542 8.93233L15.8667 10.8501C16.3354 11.4075 16.0701 12.2629 15.3683 12.4573L12.9537 13.1262C12.7122 13.1931 12.5046 13.3482 12.372 13.5609L11.0465 15.687C10.6612 16.305 9.76562 16.3171 9.36383 15.7096L7.98153 13.6199C7.84329 13.4109 7.63162 13.2615 7.38843 13.2011L4.9567 12.5974C4.24989 12.4219 3.96169 11.5739 4.41521 11.0041L5.97551 9.04372C6.13155 8.84766 6.2083 8.60016 6.19057 8.35021L6.01326 5.85096Z"/>
+            <path stroke="var(--mainColor3)" stroke-width="1.5" d="M16.8363 18.9283L13.4902 14.4507" stroke-linecap="round"/>
+            <path stroke="var(--mainColor3)" stroke-width="1.5" d="M2.81105 7.75987L1.50659 7.23999" stroke-linecap="round"/>
+            <path stroke="var(--mainColor3)" stroke-width="1.5" d="M9.94467 2.42931L9.81567 1.03101" stroke-linecap="round"/>
+            <path stroke="var(--mainColor3)" stroke-width="1.5" d="M6.07952 16.4947L5.20215 17.5911" stroke-linecap="round"/>
+            <path stroke="var(--mainColor3)" stroke-width="1.5" d="M17.4936 8.16947L18.7937 7.63867" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div data-en-text="USE MODEL">模板列表</div> 
+      </label>
+      <div data-flow-modsec-all class="df-ffc ovy noscrollbar" data-radio-value="1">
+        <div data-model-pick class="df-ffc df-cc" data-radio-value="1">
+          <div class="model-info df-cc pos-r ovh" data-radio data-radio-data="0" data-radio-main="false">
+            <input type="file" id="model-pick-user" style="display: none;">
+            <label for="model-pick-user" style="width: 30px; height: 30px;">
+              <svg width="100%" height="100%" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill="var(--mainColor)" d="M9.5 3.5H7.5V13.5H9.5V3.5Z"/>
+                <path fill="var(--mainColor)" d="M13.5 7.5H3.5V9.5H13.5V7.5Z"/>
+                <path stroke="var(--mainColor)" d="M8.5 16.5C12.9183 16.5 16.5 12.9183 16.5 8.5C16.5 4.08172 12.9183 0.5 8.5 0.5C4.08172 0.5 0.5 4.08172 0.5 8.5C0.5 12.9183 4.08172 16.5 8.5 16.5Z" />
+              </svg>       
+            </label>
+            <div class="pos-a df-cc" data-model-info data-en-text="upload file">上传文件</div>
+          </div>
+          <div class="model-info df-cc pos-r ovh" data-radio data-radio-data="1" data-radio-main="true">
+            <img src="img/icon_mod_layout.png" alt="" height="77%">
+            <div class="pos-a df-cc" data-model-info data-en-text="layout diagram">布局示意</div>
+          </div>
+          <div class="model-info df-cc pos-r ovh" data-radio data-radio-data="2" data-radio-main="false">
+            <img data-any="en" src="img/icon_mod_gufeng_en.png" alt="" height="77%">
+            <img data-any="zh" src="img/icon_mod_gufeng.png" alt="" height="77%">
+            <div class="pos-a df-cc" data-model-info data-en-text="elegant ancient">清新古风</div>
+          </div>
+          <div class="model-info df-cc pos-r ovh" data-radio data-radio-data="3" data-radio-main="false">
+            <img data-any="en" src="img/icon_mod_jianghu_en.png" alt="" height="77%">
+            <img data-any="zh" src="img/icon_mod_jianghu.png" alt="" height="77%">
+            <div class="pos-a df-cc" data-model-info data-en-text="literature serif">江湖快意</div>
+          </div>
+          <div class="model-info df-cc pos-r ovh" data-radio data-radio-data="4" data-radio-main="false">
+            <img data-any="en" src="img/icon_mod_shufa_en.png" alt="" height="77%">
+            <img data-any="zh" src="img/icon_mod_shufa.png" alt="" height="77%">
+            <div class="pos-a df-cc" data-model-info data-en-text="brushstroke art">艺术书法</div>
+          </div>
+          <div class="model-info df-cc pos-r ovh" data-radio data-radio-data="5" data-radio-main="false">
+            <img data-any="en" src="img/icon_mod_jingdian_en.png" alt="" height="77%">
+            <img data-any="zh" src="img/icon_mod_jingdian.png" alt="" height="77%">
+            <div class="pos-a df-cc" data-model-info data-en-text="vintage nostalgia">经典怀旧</div>
+          </div>
+          <div class="model-info df-cc pos-r ovh" data-radio data-radio-data="6" data-radio-main="false">
+            <img data-any="en" src="img/icon_mod_anhei_en.png" alt="" height="77%">
+            <img data-any="zh" src="img/icon_mod_anhei.png" alt="" height="77%">
+            <div class="pos-a df-cc" data-model-info data-en-text="gothic magic">暗黑神秘</div>
+          </div>
+          <div class="model-info df-cc pos-r ovh" data-radio data-radio-data="7" data-radio-main="false">
+            <img data-any="en" src="img/icon_mod_yinghe_en.png" alt="" height="77%">
+            <img data-any="zh" src="img/icon_mod_yinghe.png" alt="" height="77%">
+            <div class="pos-a df-cc" data-model-info data-en-text="future industrial">科技硬核</div>
+          </div>
+          <div class="model-info df-cc pos-r ovh" data-radio data-radio-data="8" data-radio-main="false">
+            <img data-any="en" src="img/icon_mod_youqu_en.png" alt="" height="77%">
+            <img data-any="zh" src="img/icon_mod_youqu.png" alt="" height="77%">
+            <div class="pos-a df-cc" data-model-info data-en-text="funny interesting">搞怪有趣</div>
+          </div>
+          <div class="model-info df-cc pos-r ovh" data-radio data-radio-data="9" data-radio-main="false">
+            <img data-any="en" src="img/icon_mod_weimei_en.png" alt="" height="77%">
+            <img data-any="zh" src="img/icon_mod_weimei.png" alt="" height="77%">
+            <div class="pos-a df-cc" data-model-info data-en-text="artistic dreamlike">唯美梦幻</div>
+          </div>
+          <div class="model-info df-cc pos-r ovh" data-radio data-radio-data="10" data-radio-main="false">
+            <img data-any="en" src="img/icon_mod_huali_en.png" alt="" height="77%">
+            <img data-any="zh" src="img/icon_mod_huali.png" alt="" height="77%">
+            <div class="pos-a df-cc" data-model-info data-en-text="gorgeous noble">华丽高贵</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="w100 fl0" style=" height: 20px;"></div>
   <script src="../../builds/yn_comp.js"></script>
