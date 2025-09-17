@@ -1616,9 +1616,10 @@ function scrollX(node){
  * @param {Element | id | Attribute} node 
  */
 function getElementMix(mix){
+  if(!mix) return null;
   let node = mix;
   node = node instanceof HTMLElement ? node : document.getElementById(mix);
   node = node instanceof HTMLElement ? node : document.querySelector(`[${mix}]`);
-  node = node instanceof HTMLElement ? node : ROOT;
+  node = node instanceof HTMLElement ? node : null;
   return node;
 }
