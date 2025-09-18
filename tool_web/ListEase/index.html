@@ -74,34 +74,8 @@
   <!--选区-->
   <div data-selectarea class="pos-a"></div>
   <div data-page-id="ListEase" class="pos-r wh100">
-    <div data-flow-box class="w100 df-cc tex-dot ovx ovy scrollbar" >
-      <div data-flow-editor class="pos-r">
-        <div data-node-type="main title" data-node-modsec="base" data-node-pick="true" data-node-index="1" class="df-ffc pos-a">
-          <div data-node-resize class="pos-r h100">
-            <div data-node-top data-en-text="main title" class="pos-r">主标题</div>
-            <div data-node-out="node_1"  class="df-rc">
-              <div data-en-text="out">输出</div>
-              <input type="checkbox" id="node_1_dot">
-              <label for="node_1_dot" data-node-dot class="check">
-                <btn-check></btn-check>
-              </label>
-            </div>
-            <div data-node-out="node_1"  class="df-sc">
-              <input class="nobod" type="text" data-input-must="text" value="node_1">
-            </div>
-          </div>
-        </div>
-        <!--div data-node-type="kv" data-node-name="node_2" data-node-index="2" class="df-ffc pos-a">
-          <input class="nobod" type="text" data-input-must="text" value="node_2">
-          <div data-node-in="node_2" data-node-in-for="node_1" class="df-lc">
-
-          </div>
-        </div-->
-        <!--动态生成连接线-->
-        <div data-flow-line-box class="wh100">
-
-        </div>
-      </div>
+    <div data-flow-viewbox class="w100 tex-dot ovx ovy scrollbar" >
+      <!--动态生成-->
     </div>
     <div data-flow-modlist class="df-ffc pos-a ovy noscrollbar">
       <input id="show-modsec-all" checked="true" type="checkbox"
@@ -116,69 +90,8 @@
         </div>
         <div data-en-text="ADD NODE">节点列表</div>
       </label>
-      <div data-flow-modsec-all class="df-ffc ovy noscrollbar">
-        <input id="show-modsec-1" checked="true" type="checkbox"
-        onchange="showNext(this,this.nextElementSibling.nextElementSibling,'flex');">
-        <label for="show-modsec-1" class="show-next">
-          <div data-en-text="Base">基础</div>
-        </label>
-        <div data-flow-modsec="1" class="df-ffc">
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="main title">主标题</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="main title pro">定制主标题</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="sub title">副标题</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="sub title pro">定制副标题</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="background">主背景图</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="individual">主体元素</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="tags">图层集</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="extend">延展</div>
-        </div>
-        <input id="show-modsec-2" checked="true" type="checkbox"
-        onchange="showNext(this,this.nextElementSibling.nextElementSibling,'flex');">
-        <label for="show-modsec-2" class="show-next">
-          <div data-en-text="Common">常用</div>
-        </label>
-        <div data-flow-modsec="2" class="df-ffc">
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="image">图片</div>          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="logo">单LOGO</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="logo mix">组合LOGO</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="text">普通文本</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="text rich">富文本</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="icon mix">图标组合</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="icon mix pro">定制图标组合</div>
-        </div>
-        <input id="show-modsec-3" checked="true" type="checkbox"
-        onchange="showNext(this,this.nextElementSibling.nextElementSibling,'flex');">
-        <label for="show-modsec-3" class="show-next">
-          <div data-en-text="Special">特殊</div>
-        </label>
-        <div data-flow-modsec="3" class="df-ffc">
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="tags">角标</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="tags pro">定制角标</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="floats">浮动元素</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="ST-texture">循环纹理</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="vector">矢量元素</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="location">地点</div>
-        </div>
-        <input id="show-modsec-4" checked="true" type="checkbox"
-        onchange="showNext(this,this.nextElementSibling.nextElementSibling,'flex');">
-        <label for="show-modsec-4" class="show-next">
-          <div data-en-text="Arithmetic">运算</div>
-        </label>
-        <div data-flow-modsec="4" class="df-ffc">
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="variant set">变体集</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="variable">变量</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="number">数值</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="switch">分流</div>
-        </div>
-        <input id="show-modsec-5" checked="true" type="checkbox"
-        onchange="showNext(this,this.nextElementSibling.nextElementSibling,'flex');">
-        <label for="show-modsec-5" class="show-next">
-          <div data-en-text="Trim">调整</div>
-        </label>
-        <div data-flow-modsec="5" class="df-ffc">
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="transform">变换</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="filter">滤镜</div>
-          <div class="df-lc" draggable="true" data-flow-modnode data-en-text="effect">效果</div>
-        </div>
+      <div data-flow-modsec-all data-flow-allnodes 
+      class="df-ffc ovy noscrollbar">
       </div>
       <input id="show-model-all" checked="true" type="checkbox"
       onchange="showNext(this,this.nextElementSibling.nextElementSibling,'flex');">

@@ -1623,3 +1623,19 @@ function getElementMix(mix){
   node = node instanceof HTMLElement ? node : null;
   return node;
 }
+
+//模拟change事件来关闭展开的内容
+function closeShowNexts(e,area,input,isChecked){
+  if(typeof input == 'string'){
+    input = getElementMix(input);
+  }
+  if(typeof area == 'string'){
+    area = getElementMix(area);
+  }
+  if(!area.contains(e.target)){
+    isChecked = isChecked ? true : false
+    input.checked = isChecked;
+    let inputEvent = new Event('change',{bubbles:true});
+    input.dispatchEvent(inputEvent);
+  };
+};

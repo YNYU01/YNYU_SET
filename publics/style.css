@@ -12,6 +12,7 @@
   --code10:#ec657c;
   --bg-mask: 220, 220, 220;
   --modsec1: #48a5a6;
+  --resize-cl: var(--boxBod);
 }
 
 [data-theme="dark"]{
@@ -1791,6 +1792,7 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   padding: 4px 10px;
   border: 1px var(--boxBod) solid ;
   border-radius: 8px;
+  text-transform: capitalize;
 }
 
 [data-flow-modsec-all] label{
@@ -1803,7 +1805,7 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   padding-bottom: 10px;
 }
 
-[data-flow-modnode]{
+[data-flow-node]{
   padding: 4px;
   height: 30px;
   box-sizing: border-box;
@@ -1811,11 +1813,10 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   border-radius: 15px;
   gap: 4px;
   font-size: 13px;
-  text-transform: capitalize;
   cursor: var(--pointer,pointer);;
 }
 
-[data-flow-modnode]::before{
+[data-flow-node]::before{
   content: '';
   display: flex;
   align-items: center;
@@ -1827,7 +1828,7 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   height: 10px;
 }
 
-[data-flow-modnode]:hover{
+[data-flow-node]:hover{
   color: var(--mainColor3);
   background: var(--mainColor);
   --boxBod: var(--mainColor);
@@ -1883,7 +1884,6 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   left: 0;
   bottom: 0;
   font-size: 10px;
-  text-transform: capitalize;
   color: var(--mainColor3);
   background: var(--mainColor);
   --boxBod: var(--mainColor);
@@ -1914,12 +1914,17 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   background: rgba(133, 248, 223, 0.13);
 }
 
-[data-flow-box]{
+[data-flow-viewbox]{
   height: calc(100% - 40px);
+  scroll-behavior: none;
 }
 
-[data-flow-editor]{
-  padding: 100%;
+[data-flow-editorbox]{
+  
+}
+
+[data-flow-linebox]{
+  pointer-events: none;
 }
 
 [data-node-type]{
@@ -1940,18 +1945,41 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   display: none;
 }
 
-[data-node-resize]{
+[data-node-mix]{
   min-width: 140px;
   min-height: fit-content;
-  padding: 4px;
-  gap: 4px;
+  padding: 8px;
+  gap: 8px;
   color: var(--mainColor3);
   background: var(--mainColor);
   --boxBod: var(--mainColor);
   border-radius: 4px;
 }
 
-[data-node-pick="true"] [data-node-resize]::before{
+[data-node-pick="true"]::before{
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  right: 0px;
+  bottom: 0px;
+  background-image: 
+  radial-gradient(
+    circle at 3px 17px,  
+    var(--resize-cl) 0px,
+    var(--resize-cl) 3px,
+    transparent 3px
+  ),
+  radial-gradient(
+    circle at 17px 3px,  
+    var(--resize-cl) 0px,
+    var(--resize-cl) 3px,
+    transparent 3px
+  );
+  pointer-events: none;
+}
+
+[data-node-pick="true"] [data-node-mix]::before{
   content: '';
   position: absolute;
   width: calc(100% + 12px);
@@ -1960,9 +1988,24 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   top: -6px;
   box-sizing: border-box;
   border-radius: 8px;
-  border: 1px var(--mainColor) dashed;
-  opacity: 0.5;
+  border: 1px var(--resize-cl) dotted;
+  pointer-events: none;
   z-index: -1;
+}
+
+[data-node-pick="true"] [data-node-mix]::after{
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  right: -8px;
+  bottom: -8px;
+  box-sizing: border-box;
+  border-radius: 0 0 10px 0;
+  --bod:6px var(--resize-cl) solid;
+  border-right: var(--bod);
+  border-bottom: var(--bod);
+  pointer-events: none;
 }
 
 [data-node-top]{
@@ -1973,9 +2016,9 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
 [data-node-modsec="base"] [data-node-top]::before{
   content: '';
   position: absolute;
-  width: calc(100% + 8px);
+  width: calc(100% + 16px);
   height: 2px;
-  left: -4px;
+  left: -8px;
   bottom: 0;
   background: var(--modsec1);
 }
