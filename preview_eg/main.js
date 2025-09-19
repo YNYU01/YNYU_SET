@@ -10,17 +10,9 @@ window.addEventListener('load',()=>{
 
 window.addEventListener('resize',()=>{
   /*防抖*/
-  let MOVE_TIMEOUT;
-  if(MOVE_TIMEOUT){
-      clearTimeout(MOVE_TIMEOUT)
-  };
-  MOVE_TIMEOUT = setTimeout(()=>{
-    if(window.innerWidth <= 750){
+  debounce(()=>{
 
-    } else {
-
-    }
-  },500);
+  },500,true)
 });
 
 

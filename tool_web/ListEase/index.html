@@ -71,10 +71,18 @@
     <div class="df-sc" data-rightbtn-skill data-keydown="Ctrl+R" data-btn="op" data-en-text="Reset data">重置数据</div>
     <div class="df-sc" data-rightbtn-skill data-keydown="" data-btn="op" data-en-text="Delete history cache">清空历史缓存</div>
   </div>
+  <!--右键菜单-节点-->
+  <div data-rightbtn data-rightbtn-node class="df-ffc pos-a">
+    <div class="df-sc" data-rightbtn-skill data-keydown="Ctrl+D" data-btn="op" data-en-text="Duplicate">拷贝</div>
+    <div class="df-sc" data-rightbtn-skill data-keydown="Ctrl+D" data-btn="op" data-en-text="Duplicate">整合</div>
+    <div class="df-sc" data-rightbtn-gap></div>
+    <div class="df-sc" data-rightbtn-skill data-keydown="" data-btn="op" data-en-text="Delete">删除</div>
+    <div class="df-sc" data-rightbtn-skill data-keydown="Ctrl+Shift+L" data-btn="op" data-en-text="Disconnect all">断开所有连线</div>
+  </div>
   <!--选区-->
   <div data-selectarea class="pos-a"></div>
   <div data-page-id="ListEase" class="pos-r wh100">
-    <div data-flow-viewbox class="w100 tex-dot ovx ovy scrollbar" >
+    <div data-flow-viewbox data-flow-viewzoom="4096" class="w100 tex-dot ovx ovy scrollbar" >
       <!--动态生成-->
     </div>
     <div data-flow-modlist class="df-ffc pos-a ovy noscrollbar">

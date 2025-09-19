@@ -814,18 +814,14 @@ window.addEventListener('load',()=>{
 
 window.addEventListener('resize',()=>{
   /*防抖*/
-  let MOVE_TIMEOUT;
-  if(MOVE_TIMEOUT){
-      clearTimeout(MOVE_TIMEOUT)
-  };
-  MOVE_TIMEOUT = setTimeout(()=>{
-    afterAllMust()
-  },500)
+  debounce(()=>{
+    afterAllMust();
+  },500,true);
 });
 
 function afterAllMust(){
   reTV();
-}
+};
 
 LANGUAGE_SWITCH.forEach(item => {
   item.addEventListener('change',()=>{
@@ -1639,3 +1635,27 @@ function closeShowNexts(e,area,input,isChecked){
     input.dispatchEvent(inputEvent);
   };
 };
+
+//防抖函数
+/**
+ * 立即执行且自动防抖的函数包装器
+ * @param {Function} fn - 要执行的函数
+ * @param {number} delay - 防抖延迟(毫秒)
+ * @param {boolean} immediate - 是否立即执行
+ */
+function debounce(fn, delay, immediate = false) {
+  let timer = null;
+  
+  return (function execute(...args) {
+    clearTimeout(timer);
+    
+    if (immediate && !timer) {
+      fn.apply(this, args);
+    }
+    
+    timer = setTimeout(() => {
+      if (!immediate) fn.apply(this, args);
+      timer = null;
+    }, delay);
+  })();
+} 

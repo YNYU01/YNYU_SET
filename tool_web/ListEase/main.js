@@ -6,168 +6,22 @@ const rightBtn = document.querySelectorAll('[data-rightbtn]');
 const rightBtnList = document.querySelectorAll('[data-rightbtn-list]');
 
 
-window.addEventListener('load',()=>{
-  document.getElementById('noise').className = 'tex-noise';
-  if(ISMOBILE || window.innerWidth <= 750){
-
-  } else {
-
-  }
-
-});
-
-window.addEventListener('resize',()=>{
-  /*防抖*/
-  let MOVE_TIMEOUT;
-  if(MOVE_TIMEOUT){
-      clearTimeout(MOVE_TIMEOUT)
-  };
-  MOVE_TIMEOUT = setTimeout(()=>{
-    if(window.innerWidth <= 750){
-
-    } else {
-
+/*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
+let observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if(mutation.type === 'attributes'){
+      switch(mutation.attributeName){
+        case 'data-color-hex':getUserColor(mutation.target); break;
+        case 'data-number-value':getUserNumber(mutation.target); break;
+        case 'data-text-value':getUserText(mutation.target); break;
+        case 'data-select-value':getUserSelect(mutation.target); break;
+        case 'data-flow-viewzoom':
+          FLOW_RENDER.reViewBoxSize(mutation.target.getAttribute('data-flow-viewzoom')); 
+        break;
+      }
     }
-  },500);
+  })
 });
-
-window.addEventListener('blur',()=>{
-  rightBtn.forEach(item => {
-    item.style.display = 'none';
-  });
-});
-
-//修改右键事件
-flowBoxs.addEventListener('contextmenu',(e)=>{
-  e.preventDefault();
-  flowBoxRightbtn.style.display = 'flex';
-  let xys = reSafeTopLeft(e,flowBoxs,flowBoxRightbtn).xys;
-  let lists = flowBoxRightbtn.querySelectorAll('[data-rightbtn-list]');
-
-  lists.forEach(item => {
-    let x = '',y = '';
-    switch (xys[0]){
-      case 'L':
-        x = 'left: calc(100% + 4px); ';
-      break
-      case 'C':
-        x = 'left: calc(100% + 4px); ';
-      break
-      case 'R':
-        x = 'right: calc(100% + 4px); ';
-      break
-    };
-    switch (xys[1]){
-      case 'T':
-        y = 'top: 0; ';
-      break
-      case 'C':
-        y = 'top: 0; ';
-      break
-      case 'B':
-        y = 'bottom: 0; ';
-      break
-    };
-    item.setAttribute('style',x + y);
-  });
-});
-//重复右键只更新位置
-flowBoxRightbtn.addEventListener('contextmenu',(e)=>{
-  e.preventDefault();
-  flowBoxRightbtn.style.display = 'flex';
-  reSafeTopLeft(e,flowBox,flowBoxRightbtn);
-});
-//全局监听，关闭浮层
-document.addEventListener('click',(e) => {
-  let closeNodes = [];
-  let closeNexts = [];
-  
-  let rightBtnListCloses = Array.from(rightBtnList).map(item =>  [item.parentNode,item]);
-
-  closeNodes.push(...Array.from(rightBtn));
-  closeNexts.push(...rightBtnListCloses);
-
-  closeNodes.forEach(item => {
-    if(!item.contains(e.target)){
-      item.style.display = 'none';
-    };
-  });
-  closeNexts.forEach(item => {
-    if(!item[0].contains(e.target)){
-      item[1].style.display = 'none';
-    };
-  });
-  //closeShowNexts(e,modList,'show-modsec-all');
-});
-//禁用右键
-modList.addEventListener('contextmenu',(e)=>{
-  e.preventDefault();
-});
-
-
-
-//快捷键
-document.addEventListener('keydown',(e) => {
-  if(e.ctrlKey && (e.key === 'o' || e.key === 'O')){
-    e.preventDefault();
-    //导入本地文件
-  };
-  if(e.ctrlKey && (e.key === 's' || e.key === 'S')){
-    e.preventDefault();
-    //导出为本地文件
-  };
-  if(e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S')){
-    e.preventDefault();
-    //仅导出数据
-  };
-  if(e.ctrlKey && e.key === '\\'){
-    e.preventDefault();
-    //隐藏/显示所有菜单
-  };
-  if(e.ctrlKey && (e.key === 'a' || e.key === 'A')){
-    e.preventDefault();
-    //全选
-  };
-  if(e.ctrlKey && e.shiftKey && (e.key === 'a' || e.key === 'A')){
-    e.preventDefault();
-    //反选
-  };
-  if(e.ctrlKey && (e.key === 'r' || e.key === 'R')){
-    e.preventDefault();
-    //刷新数据
-  };
-});
-
-
-
-//生成安全的坐标
-function reSafeTopLeft(event,area,node){
-  let popW = node.offsetWidth;
-  let maxX = area.offsetWidth - popW;
-  let popH = node.offsetHeight;
-  let maxY = area.offsetHeight - popH;
-  let X = Math.min(event.clientX,maxX);
-  let Y = Math.min(event.clientY,maxY);
-  X = X == maxX ? event.clientX - popW : X;
-  Y = Y == maxY ? event.clientY - popH : Y;
-  node.style.left = X;
-  node.style.top = Y;
-  //返回九宫象限
-  let xys = ['L','T']
-  if(X >= (maxX + popW)/3){
-    xys[0] = 'C'
-  };
-  if(X >= (maxX + popW)/1.5){
-    xys[0] = 'R'
-  };
-  if(Y >= (maxY + popH)/3){
-    xys[1] = 'C'
-  };
-  if(Y >= (maxY + popH)/1.5){
-    xys[1] = 'B'
-  };
-  return {x: X, y: Y, w: popW, h: popH, xys: xys}
-};
 
 //节点生成与更新
 class ZY_NODE {
@@ -186,56 +40,143 @@ class ZY_NODE {
               {className: 'df-sc',items:['IN:01','OUT:01']},
               {className: 'df-sc',items:['INPUT:01']},
             ],
+            create:0,
+            reduce:0,
             id:'',
             x:0,
             y:0,
-            with:'auto',
-            height:'auto',
-            ins:[{id:'01',link:['INPUT:01',false]}],
-            outs:[{id:'01',to:'',}],
-            inputs:[{id:'01',value:'',must:['标题标题标题','Title Title Title'], disabled: false,}],
+            width:140,
+            height:140,
+            ins:[{id:'01',link:['INPUT:01',false],inType:['STRING','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[
+              {
+                id:'01',
+                value:'',
+                max:20,
+                must:['标题标题标题','Title Title Title'],
+                disabled: false,
+              },
+              {
+                id:'02',
+                value:'',
+                max:20,
+                must:['标题标题标题','Title Title Title'],
+                disabled: false,
+              }
+            ],
           },
           {
             type:["定制主标题","main title pro"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["副标题","sub title"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["定制副标题","sub title pro"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["主背景图","background"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["主体元素","individual"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["图层集","tags"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["延展","extend"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
         ],
       },
@@ -245,44 +186,114 @@ class ZY_NODE {
           {
             type:["图片","image"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["单LOGO","logo"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["组合LOGO","logo mix"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["普通文本","text"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["富文本","text rich"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["图标组合","icon mix"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["定制图标组合","icon mix pro"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
         ],
       },
@@ -292,38 +303,98 @@ class ZY_NODE {
           {
             type:["角标","tags"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["定制角标","tags pro"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["浮动元素","floats"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["循环纹理","ST-texture"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["矢量元素","vector"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["地点","location"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
         ],
       },
@@ -333,26 +404,66 @@ class ZY_NODE {
           {
             type:["变体集","variant set"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["变量","variable"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["数值","number"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["分流","switch"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
         ],
       },
@@ -362,26 +473,57 @@ class ZY_NODE {
           {
             type:["变换","transform"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["滤镜","filter"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
           {
             type:["效果","effect"],
             layout:[
-              {className: '',items:[]},
+              {className: 'df-rc',items:['IN:01','OUT:01']},
             ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            width:140,
+            height:140,
+            ins:[{id:'01',inType:['FILE','CODE']}],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[],
           },
         ],
       },
     ]
     this.allNodeDatas = allNodeDatas ? this.addNode(allNodeDatas) : [];
     this.allNodes = [];
+    this.pickNodes = [];
     /*初始化控制*/
     this.selectArea = document.querySelector('[data-selectarea]') || this.creSelectarea();
     this.isInit = isInit ? this.init() : null;
@@ -416,12 +558,12 @@ class ZY_NODE {
       this.lineBox = lineBox;
     };
 
-    this.editorBox.style.width = this.flowBox.offsetWidth * 3;
-    this.editorBox.style.height = this.flowBox.offsetHeight * 3;
-    this.lineBox.style.width = this.flowBox.offsetWidth * 3;
-    this.lineBox.style.height = this.flowBox.offsetHeight * 3;
-    this.flowBox.scrollTop = this.flowBox.scrollHeight/3;
-    this.flowBox.scrollLeft= this.flowBox.scrollWidth/3;
+    //监听自定义属性值，修改画布大小
+    let config_flowBox = {attributes:true,attributeFilter:['data-flow-viewzoom']};
+    observer.observe(this.flowBox,config_flowBox);
+    //最小4096，默认为窗口最大边的3倍
+    let maxWH = Math.max(this.flowBox.offsetWidth * 3,this.flowBox.offsetHeight * 3,4096);
+    this.flowBox.setAttribute('data-flow-viewzoom',maxWH);
 
     //生成节点栏,带拖拽事件
     this.flowNodes.forEach((list,index) => {
@@ -434,14 +576,14 @@ class ZY_NODE {
       let label = document.createElement('label');
       label.setAttribute('for',input.id);
       label.className = 'show-next';
-      this.addDiffLanguage(label,list.modsec);
+      this.addDiffLanguage(label,list.modsec,true);
       this.flowNodesBox.appendChild(label);
 
       let modsec = document.createElement('div');
       modsec.className = 'df-ffc';
       modsec.setAttribute('data-flow-modsec',index);
       list.nodes.forEach(item => {
-        let nodetag = this.addDiffLanguage(modsec,item.type);
+        let nodetag = this.addDiffLanguage(modsec,item.type,true);
         nodetag.className = 'df-lc'
         nodetag.setAttribute('data-flow-node','');
         nodetag.setAttribute('draggable','true');
@@ -452,7 +594,9 @@ class ZY_NODE {
       this.flowNodesBox.appendChild(modsec);
     });
 
-    //移动视图
+    const {flowBox,editorBox,lineBox} = this
+
+    //移动视图、通过选区选中节点
     let selectStartX = 0;
     let selectStartY = 0;
     let moveStartX = 0;
@@ -461,47 +605,52 @@ class ZY_NODE {
     let scrollTop = 0;
     let isSelecting = false;
     let isMoving = false;
-    const {flowBox,editorBox,lineBox} = this
 
     flowBox.addEventListener('mousedown', (e) => {
       if (e.button === 0 && (e.target === this.flowBox || e.target === editorBox || e.target === lineBox)) {
         [selectStartX, selectStartY] = [e.clientX, e.clientY];
         isSelecting = true;
         e.preventDefault();
-      }
+      };
       if (e.button === 1) {
         [moveStartX, moveStartY] = [e.clientX, e.clientY];
+        [scrollLeft,scrollTop] = [this.flowBox.scrollLeft, this.flowBox.scrollTop];
         isMoving = true;
         e.preventDefault();
-      }
+      };
+      if((e.button === 0 || e.button === 2) && e.target == this.editorBox){
+        this.pickNodes.forEach(pick => {
+          pick.setAttribute('data-node-pick','false')
+        });
+      };
     });
 
     flowBox.addEventListener('mousemove',(e)=>{
       if(isSelecting){
-        let areaW = e.clientX - selectStartX;
-        let areaH = e.clientY - selectStartY;
-        if(areaW == 0 || areaH == 0 || (Math.abs(areaW) < 10 && Math.abs(areaH) < 10)) return;
+        debounce(()=>{
+          let areaW = e.clientX - selectStartX;
+          let areaH = e.clientY - selectStartY;
+          if(areaW == 0 || areaH == 0 || (Math.abs(areaW) < 10 && Math.abs(areaH) < 10)) return;
 
-        closeShowNexts(e,modList,'show-modsec-all');
-        closeShowNexts(e,modList,'show-model-all');
-        let x,y,w,h;
-        if(areaW > 0){
-          x = 'left: ' + selectStartX + 'px; ';
-          w = 'width: ' + areaW  + 'px; ';
-        } else {
-          x = 'right: ' + (this.flowBox.offsetWidth - selectStartX) + 'px; ';
-          w = 'width: ' + areaW * -1 + 'px; ';
-        };
-
-        if(areaH > 0){
-          y = 'top: ' + selectStartY + 'px; ';
-          h = 'height: ' + areaH  + 'px; ';
-        } else {
-          y = 'bottom: ' + (this.flowBox.offsetHeight + 60 - selectStartY) + 'px; ';
-          h = 'height: ' + areaH * -1 + 'px; ';
-        };
-
-        this.selectArea.setAttribute('style', 'display: block; ' + x + y + w + h);
+          let x,y,w,h;
+          if(areaW > 0){
+            x = 'left: ' + selectStartX + 'px; ';
+            w = 'width: ' + areaW  + 'px; ';
+          } else {
+            x = 'right: ' + (this.flowBox.offsetWidth - selectStartX) + 'px; ';
+            w = 'width: ' + areaW * -1 + 'px; ';
+          };
+  
+          if(areaH > 0){
+            y = 'top: ' + selectStartY + 'px; ';
+            h = 'height: ' + areaH  + 'px; ';
+          } else {
+            y = 'bottom: ' + (this.flowBox.offsetHeight + 100 - selectStartY) + 'px; ';
+            h = 'height: ' + areaH * -1 + 'px; ';
+          };
+  
+          this.selectArea.setAttribute('style', 'display: block; ' + x + y + w + h);
+        },500,true)
       };
       if(isMoving){
         let moveW = e.clientX - moveStartX;
@@ -509,7 +658,7 @@ class ZY_NODE {
 
         this.flowBox.scrollLeft = scrollLeft - moveW;
         this.flowBox.scrollTop = scrollTop - moveH;
-      }
+      };
     });
 
     this.flowBox.addEventListener('mouseup',(e)=>{
@@ -524,7 +673,7 @@ class ZY_NODE {
     let isDraging = false;
     editorBox.addEventListener('dragenter',(e)=>{
       e.preventDefault();
-      isDraging = true;
+      isDraging = e.target == this.editorBox ? true :false;
     });
     editorBox.addEventListener('dragleave',(e)=>{
       e.preventDefault();
@@ -536,12 +685,17 @@ class ZY_NODE {
     editorBox.addEventListener('drop',(e)=>{
       e.preventDefault();
       if(isDraging){
-      let data = JSON.parse(e.dataTransfer.getData('text/plain'));
-      data.id = 'node1';
-      this.addNode([data]);
-      this.reViewBoxSize();
-      //console.log(data)
-      }
+        let data = JSON.parse(e.dataTransfer.getData('text/plain'));
+        let mod = this.flowNodes.find(m => m.modsec[1] == data.modsec[1]);
+        let nod = mod.nodes.find(n => n.type[1] == data.type[1]);
+        data.id = data.type[1].replace(/\s+/g,'') + (nod.create + 1).toString().padStart(3, '0');;
+        //记录当前类型节点的创建操作次数
+        nod.create++;
+        //隐去实际节点数据中的记录值
+        delete data.create;
+        delete data.reduce;
+        this.addNode([data]);
+      };
       isDraging = false;
     });
 
@@ -549,13 +703,13 @@ class ZY_NODE {
   };
 
   addNode(nodeDatas){
-    nodeDatas.forEach(data => {
-      this.allNodeDatas.push(data);
+    nodeDatas.forEach((data,index) => {
       let nodeBox = document.createElement('div');
       nodeBox.setAttribute('data-node-modsec',data.modsec[1]);
       nodeBox.setAttribute('data-node-type',data.type[1]);
       nodeBox.setAttribute('data-node-pick','false');
       nodeBox.className = 'df-ffc pos-a';
+      nodeBox.id = data.id;
 
       let nodeMix = document.createElement('div');
       nodeMix.setAttribute('data-node-mix','');
@@ -606,6 +760,7 @@ class ZY_NODE {
               nodeInput.className = 'nobod'
               nodeInput.setAttribute('data-input','');
               nodeInput.setAttribute('data-input-type','text');
+              nodeInput.setAttribute('data-node-input',data.id + '_input_' + id);
             break
             case 'TEXT':
               this.addDiffLanguage(line,data.texts.find(text => text.id == id).value);
@@ -629,9 +784,9 @@ class ZY_NODE {
                   check.addEventListener('change',()=>{
                     let linkInput = nodeMix.querySelector(`[data-node-input="${data.id + '_input_' + id}"]`);
                     if(check.checked){
-                      linkInput.disabled = link[1];
-                    }else{
                       linkInput.disabled = !link[1];
+                    }else{
+                      linkInput.disabled = link[1];
                     };
                   });
                 break
@@ -644,40 +799,102 @@ class ZY_NODE {
 
         nodeMix.appendChild(line)
       });
-      nodeBox.appendChild(nodeMix)
-      
+      nodeBox.appendChild(nodeMix);
+
+      requestAnimationFrame(()=>{
+        data.width = nodeBox.offsetWidth;
+        data.height = nodeBox.offsetHeight;
+        //log(data)
+        this.allNodeDatas.push(data);
+      });
+      this.allNodes.push(nodeBox);
       this.editorBox.appendChild(nodeBox);
+      //监听样式（大小）变化，以便修改参数；
+      let config_nodeBox = {attributes:true,attributeFilter:['style']};
+      observer.observe(this.flowBox,config_nodeBox);
+      let isDuplicate = false;
+      nodeBox.addEventListener('mousedown',(e)=>{
+        if(e.button === 1) return;
+        if(!e.ctrlKey){
+          this.pickNodes.forEach(pick => {
+            pick.setAttribute('data-node-pick','false')
+          });
+          this.pickNodes = [];
+        };
+        this.pickNodes.push(nodeBox);
+        nodeBox.setAttribute('data-node-pick','true');
+        if(e.altKey){
+          isDuplicate = true;
+        };
+      });
+      nodeBox.addEventListener('mousemove',(e)=>{
+        if(isDuplicate){
+          debounce(()=>{
+            nodeBox.setAttribute('draggable','true');
+          },500,true);
+        };
+      });
+      nodeBox.addEventListener('mouseup',(e)=>{
+        nodeBox.setAttribute('draggable','false');
+        isDuplicate = false;
+      });
+      nodeBox.addEventListener('mouseleave',(e)=>{
+        nodeBox.setAttribute('draggable','false');
+        isDuplicate = false;
+      });
+      nodeBox.addEventListener('contextmenu',(e)=>{
+        e.preventDefault();
+      });
     });
+    //重置绑定
+    COMP_MAIN();
   };
 
-  reViewBoxSize(){
-    let xs = this.allNodeDatas.map(item => item.x);
-    let ys = this.allNodeDatas.map(item => item.y);
+  toRenderXY(e){
+    let [clientX,clientY] = [e.clientX,e.clientY];
+    //计算视口的top/left
+    //计算鼠标相对视口的top/left
+    //计算以左上角为原点的
+  }
+
+  pickByArea([x,y,w,h]){
+
+  }
+
+  reViewBoxSize(wh){
+    this.editorBox.style.width = wh;
+    this.editorBox.style.height = wh;
+    this.lineBox.style.width = wh;
+    this.lineBox.style.height = wh;
+    this.flowBox.scrollTop = (wh - this.flowBox.offsetHeight)/2;
+    this.flowBox.scrollLeft= (wh - this.flowBox.offsetWidth)/2;
+    let xywh = this.allNodeDatas.map(item => [item.x,item.y,item.width,item.width]);
   }
 
   //====工具函数===//
 
-  addDiffLanguage(parent,texts,tagname){
+  addDiffLanguage(parent,texts,tagname,isRun){
     let language = ROOT.getAttribute('data-language');
     tagname = tagname ? tagname : 'div';
     let diff = document.createElement(tagname);
-    let type;
+    let type = 'text';
+    //初始化时不需要考虑语言
+    let text = isRun ? texts[0] : language == 'Zh' ? texts[0] : texts[1] ;
     switch (tagname){
-      case 'div': type = 'text';break
-      case 'input': type = 'input';break
-      default : type = 'text';
-    };
-    diff.setAttribute('data-zh-' + type,texts[0]);
-    diff.setAttribute('data-en-' + type,texts[1]);
-    let text = texts[0];// language == 'Zh' ? texts[0] : texts[1];
-    switch (tagname){
-      case 'div': diff.textContent = text;break
+      case 'div': 
+      diff.textContent = text;
+      diff.setAttribute('data-zh-' + type,texts[0]);
+      diff.setAttribute('data-en-' + type,texts[1]);
+      break
       case 'input': 
       diff.value = text;
       diff.setAttribute('data-input-must',texts[0]);
       diff.setAttribute('data-input-must-en',texts[1]);
       break
-      default : diff.textContent = text;
+      default :
+      diff.textContent = text;
+      diff.setAttribute('data-zh-' + type,texts[0]);
+      diff.setAttribute('data-en-' + type,texts[1]);
     };
     parent.appendChild(diff);
     return diff;
@@ -696,61 +913,180 @@ class ZY_NODE {
       console.log(type);
     }
   };
-}
+};
+
+
+window.addEventListener('load',()=>{
+  document.getElementById('noise').className = 'tex-noise';
+  if(ISMOBILE || window.innerWidth <= 750){
+
+  } else {
+
+  }
+
+});
+
+window.addEventListener('resize',()=>{
+  /*防抖*/
+  debounce(()=>{
+
+  },500,true);
+});
+
+
+window.addEventListener('blur',()=>{
+  rightBtn.forEach(item => {
+    item.style.display = 'none';
+  });
+});
+
 
 let FLOW_RENDER = new ZY_NODE(null,null,true);
 
-let testNodes = [
-  {
-    "modsec": ["基础","base"],
-    "type": ["主标题","main title"],
-    "layout": [
-      {
-        "className": "df-sc",
-        "items": ["IN:01","OUT:01"]
-      },
-      {
-        "className": "df-sc",
-        "items": ["INPUT:01"]
-      }
-    ],
-    "id": "node1",
-    "x": 0,
-    "y": 0,
-    "with": "auto",
-    "height": "auto",
-    "ins": [
-      {"id": "01","link": ["INPUT:01",false]}
-    ],
-    "outs": [
-      {"id": "01","to": ""}
-    ],
-    "inputs": [
-      {
-        "id": "01",
-        "value": "",
-        "must": ["标题标题标题","Title Title Title"],
-        "disabled": false
-      }
-    ]
-  }
-]
-
-//FLOW_RENDER.addNode(testNodes)
-
-/*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
-let observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    if(mutation.type === 'attributes'){
-      switch(mutation.attributeName){
-        case 'data-color-hex':getUserColor(mutation.target); break;
-        case 'data-number-value':getUserNumber(mutation.target); break;
-        case 'data-text-value':getUserText(mutation.target); break;
-        case 'data-select-value':getUserSelect(mutation.target); break;
-      }
-    }
-  })
+//全局监听，修改右键事件
+document.addEventListener('contextmenu',(e)=>{
+  if(e.target == FLOW_RENDER.editorBox || e.target == flowBoxRightbtn){
+    e.preventDefault();
+    flowBoxRightbtn.style.display = 'flex';
+    let xys = reSafeTopLeft(e,flowBoxs,flowBoxRightbtn).xys;
+    let lists = flowBoxRightbtn.querySelectorAll('[data-rightbtn-list]');
+  
+    lists.forEach(item => {
+      let x = '',y = '';
+      switch (xys[0]){
+        case 'L':
+          x = 'left: calc(100% + 4px); ';
+        break
+        case 'C':
+          x = 'left: calc(100% + 4px); ';
+        break
+        case 'R':
+          x = 'right: calc(100% + 4px); ';
+        break
+      };
+      switch (xys[1]){
+        case 'T':
+          y = 'top: 0; ';
+        break
+        case 'C':
+          y = 'top: 0; ';
+        break
+        case 'B':
+          y = 'bottom: 0; ';
+        break
+      };
+      item.setAttribute('style',x + y);
+    });
+  } else {
+    flowBoxRightbtn.style.display = 'none';
+  };
+  if(e.target == modList || modList.contains(e.target)){
+    e.preventDefault();
+  };
+  
 });
+//全局监听，关闭浮层
+document.addEventListener('click',(e) => {
+  let closeNodes = [];
+  let closeNexts = [];
+  
+  let rightBtnListCloses = Array.from(rightBtnList).map(item =>  [item.parentNode,item]);
+
+  closeNodes.push(...Array.from(rightBtn));
+  closeNexts.push(...rightBtnListCloses);
+
+  closeNodes.forEach(item => {
+    if(!item.contains(e.target)){
+      item.style.display = 'none';
+    };
+  });
+  closeNexts.forEach(item => {
+    if(!item[0].contains(e.target)){
+      item[1].style.display = 'none';
+    };
+  });
+  //closeShowNexts(e,modList,'show-modsec-all');
+});
+//全局监听，修改光标
+document.addEventListener('mousedown',(e)=>{
+  if(e.button == 1){
+    ROOT.setAttribute('data-draging','true');
+    e.preventDefault()
+  };
+});
+document.addEventListener('mouseup',(e)=>{
+  if(e.button == 1){
+    ROOT.setAttribute('data-draging','false');
+  };
+});
+document.addEventListener('mouseleave',(e)=>{
+  if(e.button == 1){
+    ROOT.setAttribute('data-draging','false');
+  };
+});
+
+//快捷键
+document.addEventListener('keydown',(e) => {
+  if(e.ctrlKey && (e.key === 'o' || e.key === 'O')){
+    e.preventDefault();
+    //导入本地文件
+  };
+  if(e.ctrlKey && (e.key === 's' || e.key === 'S')){
+    e.preventDefault();
+    //导出为本地文件
+  };
+  if(e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S')){
+    e.preventDefault();
+    //仅导出数据
+  };
+  if(e.ctrlKey && e.key === '\\'){
+    e.preventDefault();
+    //隐藏/显示所有菜单
+  };
+  if(e.ctrlKey && (e.key === 'a' || e.key === 'A')){
+    e.preventDefault();
+    //全选
+  };
+  if(e.ctrlKey && e.shiftKey && (e.key === 'a' || e.key === 'A')){
+    e.preventDefault();
+    //反选
+  };
+  if(e.ctrlKey && (e.key === 'r' || e.key === 'R')){
+    e.preventDefault();
+    //刷新数据
+  };
+});
+
+//生成安全的坐标
+function reSafeTopLeft(event,area,node){
+  let popW = node.offsetWidth;
+  let maxX = area.offsetWidth - popW;
+  let popH = node.offsetHeight;
+  let maxY = area.offsetHeight - popH;
+  let X = Math.min(event.clientX,maxX);
+  let Y = Math.min(event.clientY,maxY);
+  X = X == maxX ? event.clientX - popW : X;
+  Y = Y == maxY ? event.clientY - popH : Y;
+  node.style.left = X;
+  node.style.top = Y;
+  //返回九宫象限
+  let xys = ['L','T']
+  if(X >= (maxX + popW)/3){
+    xys[0] = 'C'
+  };
+  if(X >= (maxX + popW)/1.5){
+    xys[0] = 'R'
+  };
+  if(Y >= (maxY + popH)/3){
+    xys[1] = 'C'
+  };
+  if(Y >= (maxY + popH)/1.5){
+    xys[1] = 'B'
+  };
+  return {x: X, y: Y, w: popW, h: popH, xys: xys}
+};
+
+
 let userEvent_color = document.querySelectorAll('[data-color]');
 userEvent_color.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-color-hex']};

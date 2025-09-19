@@ -329,17 +329,13 @@ window.addEventListener('load',()=>{
 
 window.addEventListener('resize',()=>{
 /*防抖*/
-let MOVE_TIMEOUT;
-if(MOVE_TIMEOUT){
-    clearTimeout(MOVE_TIMEOUT);
-};
-MOVE_TIMEOUT = setTimeout(()=>{
+debounce(()=>{
   if(window.innerWidth < 300){
     TV_MOVE = true;
   } else {
     TV_MOVE = false;
-  }
-},500);
+  };
+},500,true);
 });
 
 
