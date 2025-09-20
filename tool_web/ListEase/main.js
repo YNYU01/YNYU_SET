@@ -57,6 +57,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',link:['INPUT:01',false],inType:['STRING','CODE']}],
@@ -88,6 +90,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -104,6 +108,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -120,6 +126,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -136,6 +144,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -152,6 +162,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -168,6 +180,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -184,6 +198,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -205,6 +221,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -221,6 +239,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -237,6 +257,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -253,6 +275,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -269,6 +293,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -285,6 +311,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -301,6 +329,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -322,6 +352,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -338,6 +370,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -354,6 +388,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -370,6 +406,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -386,6 +424,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -402,6 +442,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -423,6 +465,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -439,6 +483,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -455,6 +501,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -471,6 +519,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -492,6 +542,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -508,6 +560,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -524,6 +578,8 @@ class ZY_NODE {
             id:'',
             x:0,
             y:0,
+            top: 0,
+            left: 0,
             width:140,
             height:140,
             ins:[{id:'01',inType:['FILE','CODE']}],
@@ -721,8 +777,9 @@ class ZY_NODE {
         //隐去实际节点数据中的记录值
         delete data.create;
         delete data.reduce;
+        //更新坐标值
+        [data.top,data.left,data.x,data.y] = Object.values(this.toRenderXY(e));
         this.addNode([data]);
-        this.toRenderXY(e)
       };
       isDraging = false;
     });
@@ -739,6 +796,7 @@ class ZY_NODE {
       nodeBox.setAttribute('data-node-pick','false');
       nodeBox.className = 'df-ffc pos-a';
       nodeBox.id = data.id;
+      nodeBox.setAttribute('style',`top: ${data.top}px; left: ${data.left}px;`)
 
       let nodeMix = document.createElement('div');
       nodeMix.setAttribute('data-node-mix','');
@@ -836,8 +894,16 @@ class ZY_NODE {
       //监听样式（大小）变化，以便修改参数；
       resizeObserver.observe(nodeBox);
       let isDuplicate = false;
+      let isMove = false;
+      let isMoveGroup = false;
+      let moveStartX,moveStartY,moveStartTop,moveStartLeft;
       nodeBox.addEventListener('mousedown',(e)=>{
         if(e.button === 1) return;
+        if(this.pickNodes.length > 1){
+          this.addMoveGroup();
+          isMoveGroup = true;
+          return;
+        }
         if(!e.ctrlKey){
           this.pickNodes.forEach(pick => {
             pick.setAttribute('data-node-pick','false')
@@ -848,6 +914,9 @@ class ZY_NODE {
         nodeBox.setAttribute('data-node-pick','true');
         if(e.altKey){
           isDuplicate = true;
+        }else{
+          [moveStartX,moveStartY,moveStartTop,moveStartLeft] = [e.clientX,e.clientY,nodeBox.offsetTop,nodeBox.offsetLeft]
+          isMove = true;
         };
       });
       nodeBox.addEventListener('mousemove',(e)=>{
@@ -855,15 +924,35 @@ class ZY_NODE {
           debounce(()=>{
             nodeBox.setAttribute('draggable','true');
           },500,true);
+          return;
         };
+        if(isMoveGroup){
+          return
+        }
+        if(isMove){
+          let moveX = moveStartX - e.clientX;
+          let moveY = moveStartY - e.clientY;
+          
+          let newTop = moveStartTop - moveY;
+          let newLeft = moveStartLeft - moveX;
+          data.top = newTop;
+          data.left = newLeft;
+          nodeBox.style.top = newTop + 'px';
+          nodeBox.style.left = newLeft + 'px';
+          
+        }
       });
       nodeBox.addEventListener('mouseup',(e)=>{
         nodeBox.setAttribute('draggable','false');
         isDuplicate = false;
+        isMove = false;
+        isMoveGroup = false;
       });
       nodeBox.addEventListener('mouseleave',(e)=>{
         nodeBox.setAttribute('draggable','false');
         isDuplicate = false;
+        isMove = false;
+        isMoveGroup = false;
       });
       nodeBox.addEventListener('contextmenu',(e)=>{
         e.preventDefault();
@@ -872,6 +961,13 @@ class ZY_NODE {
     //重置绑定
     COMP_MAIN();
   };
+
+  addMoveGroup(){
+    let minX
+    let maxX
+    let minY
+    let maxY
+  }
 
   toRenderXY(e){
     //计算视口的top/left
@@ -887,10 +983,14 @@ class ZY_NODE {
     let x4 = x - this.editorBox.offsetWidth*zoom/2;
     let y4 = (y - this.editorBox.offsetWidth*zoom/2)*-1;
     //console.log([x,y,x4,y4,this.editorBox.offsetWidth])
-    return {top:y, left:y, x:x4, y:y4};
+    return {top:y, left:x, x:x4, y:y4};
   }
 
   pickByArea([x,y,w,h]){
+
+  }
+
+  moveByArea([x,y,w,h]){
 
   }
 
