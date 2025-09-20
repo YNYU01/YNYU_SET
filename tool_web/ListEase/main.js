@@ -7,7 +7,7 @@ const rightBtnList = document.querySelectorAll('[data-rightbtn-list]');
 
 
 /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
-let observer = new MutationObserver((mutations) => {
+let mutationObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if(mutation.type === 'attributes'){
       switch(mutation.attributeName){
@@ -15,13 +15,25 @@ let observer = new MutationObserver((mutations) => {
         case 'data-number-value':getUserNumber(mutation.target); break;
         case 'data-text-value':getUserText(mutation.target); break;
         case 'data-select-value':getUserSelect(mutation.target); break;
+        case 'data-flow-viewwidth':
+          FLOW_RENDER.reViewBoxSize(mutation.target.getAttribute('data-flow-viewwidth')); 
+        break;
         case 'data-flow-viewzoom':
-          FLOW_RENDER.reViewBoxSize(mutation.target.getAttribute('data-flow-viewzoom')); 
+          FLOW_RENDER.reViewBoxZoom(mutation.target.getAttribute('data-flow-viewzoom')); 
         break;
       }
     }
   })
 });
+
+let resizeObserver = new ResizeObserver(debounce((entries) => {
+  entries.forEach((entry) => {
+    const type = entry.target.getAttribute('data-resize-type')
+    switch(type){
+      case 'node':FLOW_RENDER.reNodeSize(entry.target); break;
+    }
+  }) 
+},500));
 
 //节点生成与更新
 class ZY_NODE {
@@ -69,7 +81,7 @@ class ZY_NODE {
           {
             type:["定制主标题","main title pro"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -85,7 +97,7 @@ class ZY_NODE {
           {
             type:["副标题","sub title"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -101,7 +113,7 @@ class ZY_NODE {
           {
             type:["定制副标题","sub title pro"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -117,7 +129,7 @@ class ZY_NODE {
           {
             type:["主背景图","background"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -133,7 +145,7 @@ class ZY_NODE {
           {
             type:["主体元素","individual"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -149,7 +161,7 @@ class ZY_NODE {
           {
             type:["图层集","tags"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -165,7 +177,7 @@ class ZY_NODE {
           {
             type:["延展","extend"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -186,7 +198,7 @@ class ZY_NODE {
           {
             type:["图片","image"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -202,7 +214,7 @@ class ZY_NODE {
           {
             type:["单LOGO","logo"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -218,7 +230,7 @@ class ZY_NODE {
           {
             type:["组合LOGO","logo mix"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -234,7 +246,7 @@ class ZY_NODE {
           {
             type:["普通文本","text"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -250,7 +262,7 @@ class ZY_NODE {
           {
             type:["富文本","text rich"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -266,7 +278,7 @@ class ZY_NODE {
           {
             type:["图标组合","icon mix"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -282,7 +294,7 @@ class ZY_NODE {
           {
             type:["定制图标组合","icon mix pro"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -303,7 +315,7 @@ class ZY_NODE {
           {
             type:["角标","tags"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -319,7 +331,7 @@ class ZY_NODE {
           {
             type:["定制角标","tags pro"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -335,7 +347,7 @@ class ZY_NODE {
           {
             type:["浮动元素","floats"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -351,7 +363,7 @@ class ZY_NODE {
           {
             type:["循环纹理","ST-texture"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -367,7 +379,7 @@ class ZY_NODE {
           {
             type:["矢量元素","vector"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -383,7 +395,7 @@ class ZY_NODE {
           {
             type:["地点","location"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -404,7 +416,7 @@ class ZY_NODE {
           {
             type:["变体集","variant set"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -420,7 +432,7 @@ class ZY_NODE {
           {
             type:["变量","variable"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -436,7 +448,7 @@ class ZY_NODE {
           {
             type:["数值","number"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -452,7 +464,7 @@ class ZY_NODE {
           {
             type:["分流","switch"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -473,7 +485,7 @@ class ZY_NODE {
           {
             type:["变换","transform"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -489,7 +501,7 @@ class ZY_NODE {
           {
             type:["滤镜","filter"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -505,7 +517,7 @@ class ZY_NODE {
           {
             type:["效果","effect"],
             layout:[
-              {className: 'df-rc',items:['IN:01','OUT:01']},
+              {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
             create:0,
             reduce:0,
@@ -520,7 +532,7 @@ class ZY_NODE {
           },
         ],
       },
-    ]
+    ];
     this.allNodeDatas = allNodeDatas ? this.addNode(allNodeDatas) : [];
     this.allNodes = [];
     this.pickNodes = [];
@@ -559,11 +571,16 @@ class ZY_NODE {
     };
 
     //监听自定义属性值，修改画布大小
-    let config_flowBox = {attributes:true,attributeFilter:['data-flow-viewzoom']};
-    observer.observe(this.flowBox,config_flowBox);
+    let config_flowBox = {attributes:true,attributeFilter:['data-flow-viewwidth','data-flow-viewzoom']};
+    mutationObserver.observe(this.flowBox,config_flowBox);
     //最小4096，默认为窗口最大边的3倍
-    let maxWH = Math.max(this.flowBox.offsetWidth * 3,this.flowBox.offsetHeight * 3,4096);
-    this.flowBox.setAttribute('data-flow-viewzoom',maxWH);
+    let maxWH = Math.max(Math.ceil(this.flowBox.offsetWidth/1024)*2048,Math.ceil(this.flowBox.offsetHeight/1024)*1024,4096);
+    this.flowBox.setAttribute('data-flow-viewwidth',maxWH);
+    //移动视图到中心点
+    requestAnimationFrame(()=>{
+      this.flowBox.scrollTop = (maxWH - this.flowBox.offsetHeight)/2;
+      this.flowBox.scrollLeft = (maxWH - this.flowBox.offsetWidth)/2; 
+    });
 
     //生成节点栏,带拖拽事件
     this.flowNodes.forEach((list,index) => {
@@ -607,7 +624,7 @@ class ZY_NODE {
     let isMoving = false;
 
     flowBox.addEventListener('mousedown', (e) => {
-      if (e.button === 0 && (e.target === this.flowBox || e.target === editorBox || e.target === lineBox)) {
+      if (e.button === 0 && (e.target === this.flowBox || e.target === this.editorBox || e.target === this.lineBox)) {
         [selectStartX, selectStartY] = [e.clientX, e.clientY];
         isSelecting = true;
         e.preventDefault();
@@ -627,30 +644,28 @@ class ZY_NODE {
 
     flowBox.addEventListener('mousemove',(e)=>{
       if(isSelecting){
-        debounce(()=>{
-          let areaW = e.clientX - selectStartX;
-          let areaH = e.clientY - selectStartY;
-          if(areaW == 0 || areaH == 0 || (Math.abs(areaW) < 10 && Math.abs(areaH) < 10)) return;
+        let areaW = e.clientX - selectStartX;
+        let areaH = e.clientY - selectStartY;
+        if(areaW == 0 || areaH == 0 || (Math.abs(areaW) < 10 && Math.abs(areaH) < 10)) return;
 
-          let x,y,w,h;
-          if(areaW > 0){
-            x = 'left: ' + selectStartX + 'px; ';
-            w = 'width: ' + areaW  + 'px; ';
-          } else {
-            x = 'right: ' + (this.flowBox.offsetWidth - selectStartX) + 'px; ';
-            w = 'width: ' + areaW * -1 + 'px; ';
-          };
-  
-          if(areaH > 0){
-            y = 'top: ' + selectStartY + 'px; ';
-            h = 'height: ' + areaH  + 'px; ';
-          } else {
-            y = 'bottom: ' + (this.flowBox.offsetHeight + 100 - selectStartY) + 'px; ';
-            h = 'height: ' + areaH * -1 + 'px; ';
-          };
-  
-          this.selectArea.setAttribute('style', 'display: block; ' + x + y + w + h);
-        },500,true)
+        let x,y,w,h;
+        if(areaW > 0){
+          x = 'left: ' + selectStartX + 'px; ';
+          w = 'width: ' + areaW  + 'px; ';
+        } else {
+          x = 'right: ' + (this.flowBox.offsetWidth - selectStartX) + 'px; ';
+          w = 'width: ' + areaW * -1 + 'px; ';
+        };
+
+        if(areaH > 0){
+          y = 'top: ' + selectStartY + 'px; ';
+          h = 'height: ' + areaH  + 'px; ';
+        } else {
+          y = 'bottom: ' + (this.flowBox.offsetHeight + 100 - selectStartY) + 'px; ';
+          h = 'height: ' + areaH * -1 + 'px; ';
+        };
+
+        this.selectArea.setAttribute('style', 'display: block; ' + x + y + w + h);
       };
       if(isMoving){
         let moveW = e.clientX - moveStartX;
@@ -661,12 +676,24 @@ class ZY_NODE {
       };
     });
 
-    this.flowBox.addEventListener('mouseup',(e)=>{
+    flowBox.addEventListener('mouseup',()=>{
       this.selectArea.setAttribute('style','display: none;');
       [selectStartX,selectStartY] = [0,0];
       [moveStartX,moveStartY] = [0,0];
       isSelecting = false;
       isMoving = false;
+    });
+
+    //控制画布缩放级别
+    flowBox.addEventListener('wheel',(e)=>{
+      e.preventDefault();
+      let oldZoom = flowBox.getAttribute('data-flow-viewzoom');
+      let step = e.deltaY > 0 ? -0.1 : 0.1
+      let zoom = oldZoom*1 + (Math.round(Math.abs(e.deltaY)/100) * step);
+      zoom = zoom > 2 ? 2 : zoom;
+      zoom = zoom < 0.5 ? 0.5 : zoom;
+      zoom = Math.round(zoom * 10)/10;
+      flowBox.setAttribute('data-flow-viewzoom',zoom)
     });
     
     //拖拽生成节点元素
@@ -695,6 +722,7 @@ class ZY_NODE {
         delete data.create;
         delete data.reduce;
         this.addNode([data]);
+        this.toRenderXY(e)
       };
       isDraging = false;
     });
@@ -707,6 +735,7 @@ class ZY_NODE {
       let nodeBox = document.createElement('div');
       nodeBox.setAttribute('data-node-modsec',data.modsec[1]);
       nodeBox.setAttribute('data-node-type',data.type[1]);
+      nodeBox.setAttribute('data-resize-type','node');
       nodeBox.setAttribute('data-node-pick','false');
       nodeBox.className = 'df-ffc pos-a';
       nodeBox.id = data.id;
@@ -801,17 +830,11 @@ class ZY_NODE {
       });
       nodeBox.appendChild(nodeMix);
 
-      requestAnimationFrame(()=>{
-        data.width = nodeBox.offsetWidth;
-        data.height = nodeBox.offsetHeight;
-        //log(data)
-        this.allNodeDatas.push(data);
-      });
+      this.allNodeDatas.push(data);
       this.allNodes.push(nodeBox);
       this.editorBox.appendChild(nodeBox);
       //监听样式（大小）变化，以便修改参数；
-      let config_nodeBox = {attributes:true,attributeFilter:['style']};
-      observer.observe(this.flowBox,config_nodeBox);
+      resizeObserver.observe(nodeBox);
       let isDuplicate = false;
       nodeBox.addEventListener('mousedown',(e)=>{
         if(e.button === 1) return;
@@ -851,10 +874,20 @@ class ZY_NODE {
   };
 
   toRenderXY(e){
-    let [clientX,clientY] = [e.clientX,e.clientY];
     //计算视口的top/left
+    let rect = this.editorBox.getBoundingClientRect();
     //计算鼠标相对视口的top/left
+    let mouseX = e.clientX;
+    let mouseY = e.clientY;
     //计算以左上角为原点的
+    let x = (mouseX - rect.left) + this.editorBox.scrollLeft;
+    let y = (mouseY - rect.top) + this.editorBox.scrollTop;
+    //以画布中心为原点记录
+    let zoom = this.flowBox.getAttribute('data-flow-viewzoom')//window.getComputedStyle(this.editorBox).zoom
+    let x4 = x - this.editorBox.offsetWidth*zoom/2;
+    let y4 = (y - this.editorBox.offsetWidth*zoom/2)*-1;
+    //console.log([x,y,x4,y4,this.editorBox.offsetWidth])
+    return {top:y, left:y, x:x4, y:y4};
   }
 
   pickByArea([x,y,w,h]){
@@ -866,9 +899,23 @@ class ZY_NODE {
     this.editorBox.style.height = wh;
     this.lineBox.style.width = wh;
     this.lineBox.style.height = wh;
-    this.flowBox.scrollTop = (wh - this.flowBox.offsetHeight)/2;
-    this.flowBox.scrollLeft= (wh - this.flowBox.offsetWidth)/2;
-    let xywh = this.allNodeDatas.map(item => [item.x,item.y,item.width,item.width]);
+  }
+
+  reViewBoxZoom(zoom){
+    this.editorBox.style.zoom = zoom;
+    this.lineBox.style.zoom = zoom;
+    //移动视图到中心点
+    requestAnimationFrame(()=>{
+      this.flowBox.scrollTop = (this.editorBox.offsetWidth * zoom - this.flowBox.offsetHeight)/2;
+      this.flowBox.scrollLeft = (this.editorBox.offsetWidth * zoom - this.flowBox.offsetWidth)/2; 
+    });
+  }
+
+  reNodeSize(node){
+    let data = this.allNodeDatas.find(item => item.id == node.id);
+    data.width = node.offsetWidth;
+    data.height = node.offsetHeight;
+    //console.log(this.allNodeDatas)
   }
 
   //====工具函数===//
@@ -926,12 +973,9 @@ window.addEventListener('load',()=>{
 
 });
 
-window.addEventListener('resize',()=>{
-  /*防抖*/
-  debounce(()=>{
+window.addEventListener('resize',/*防抖*/debounce(()=>{
 
-  },500,true);
-});
+},500));
 
 
 window.addEventListener('blur',()=>{
@@ -1090,22 +1134,22 @@ function reSafeTopLeft(event,area,node){
 let userEvent_color = document.querySelectorAll('[data-color]');
 userEvent_color.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-color-hex']};
-  observer.observe(item,config);
+  mutationObserver.observe(item,config);
 });
 let userEvent_number = document.querySelectorAll('[data-number]');
 userEvent_number.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-number-value']};
-  observer.observe(item,config);
+  mutationObserver.observe(item,config);
 });
 let userEvent_text = document.querySelectorAll('[data-text]');
 userEvent_text.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-text-value']};
-  observer.observe(item,config);
+  mutationObserver.observe(item,config);
 });
 let userEvent_select = document.querySelectorAll('[data-select]');
 userEvent_select.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-select-value']};
-  observer.observe(item,config);
+  mutationObserver.observe(item,config);
 });
 
 

@@ -812,12 +812,9 @@ window.addEventListener('load',()=>{
   };
 });
 
-window.addEventListener('resize',()=>{
-  /*防抖*/
-  debounce(()=>{
-    afterAllMust();
-  },500,true);
-});
+window.addEventListener('resize',/*防抖*/debounce(()=>{
+  afterAllMust();
+},500));
 
 function afterAllMust(){
   reTV();
@@ -1657,5 +1654,5 @@ function debounce(fn, delay, immediate = false) {
       if (!immediate) fn.apply(this, args);
       timer = null;
     }, delay);
-  })();
-} 
+  });
+};

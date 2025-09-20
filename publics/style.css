@@ -29,7 +29,7 @@ html{
 }
 
 *:disabled {
-  opacity: 0.5;
+  opacity: 0.8;
   pointer-events: none;
 }
 
@@ -2016,8 +2016,13 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   box-sizing: border-box;
   border-radius: 8px;
   border: 1px var(--resize-cl) dotted;
+  background: rgba(0, 0, 0, 0.1);
   pointer-events: none;
   z-index: -1;
+}
+
+[data-theme="dark"] [data-node-pick="true"] [data-node-mix]::before{
+  background: rgba(255, 255, 255, 0.1);
 }
 
 [data-node-pick="true"] [data-node-mix]::after{

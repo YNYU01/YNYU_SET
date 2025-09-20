@@ -327,16 +327,13 @@ window.addEventListener('load',()=>{
   addSearchs();
 });
 
-window.addEventListener('resize',()=>{
-/*防抖*/
-debounce(()=>{
+window.addEventListener('resize',/*防抖*/debounce(()=>{
   if(window.innerWidth < 300){
     TV_MOVE = true;
   } else {
     TV_MOVE = false;
   };
-},500,true);
-});
+},500,true));
 
 
 /* ---界面初始化--- */

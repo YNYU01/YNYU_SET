@@ -8,12 +8,9 @@ window.addEventListener('load',()=>{
 
 });
 
-window.addEventListener('resize',()=>{
-  /*防抖*/
-  debounce(()=>{
+window.addEventListener('resize',/*防抖*/debounce(()=>{
 
-  },500,true)
-});
+},500));
 
 
 
