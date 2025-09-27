@@ -1778,7 +1778,7 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   left: 20px;
   width: 160px;
   max-height: calc(100% - 80px);
-  background: var(--boxBak);
+  /*background: var(--boxBak);*/
   gap: 4px;
   z-index: 10;
 }
@@ -1802,6 +1802,7 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   border: 1px var(--boxBod) solid ;
   border-radius: 8px;
   text-transform: capitalize;
+  background: var(--boxBak);
 }
 
 [data-flow-modsec-all] label{
@@ -1912,6 +1913,29 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
 
 [data-theme="light"] [data-model-pick] img{
   filter: brightness(80%) contrast(180%);
+}
+
+[data-zoom-box]{
+  width: 40px;
+  height: 20px;
+  right: 20px;
+  top: 20px;
+  border-radius: 10px;
+}
+
+[data-zoom-box],
+[data-zoom-box] input{
+  font-size: 10px;
+  color: var(--mainColor3);
+  background: var(--mainColor);
+}
+
+[data-zoom-box] input{
+  background: transparent;
+  width: 18px;
+  flex: none;
+  padding: 0;
+  text-align: right;
 }
 
 [data-selectarea]{

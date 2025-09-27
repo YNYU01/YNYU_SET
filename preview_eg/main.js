@@ -22,8 +22,10 @@ let observer = new MutationObserver((mutations) => {
         case 'data-color-hex':getUserColor(mutation.target); break;
         case 'data-number-value':getUserNumber(mutation.target); break;
         case 'data-text-value':getUserText(mutation.target); break;
+        case 'data-int-value':getUserInt(mutation.target); break;
+        case 'data-float-value':getUserFloat(mutation.target); break;
         case 'data-select-value':getUserSelect(mutation.target); break;
-      }
+        case 'data-radio-value':getUserRadio(mutation.target); break;      }
     }
   })
 });
@@ -42,9 +44,24 @@ userEvent_text.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-text-value']};
   observer.observe(item,config);
 });
+let userEvent_int = document.querySelectorAll('[data-int-value]');
+userEvent_int.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-int-value']};
+  observer.observe(item,config);
+});
+let userEvent_float = document.querySelectorAll('[data-float-value]');
+userEvent_float.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-float-value']};
+  observer.observe(item,config);
+});
 let userEvent_select = document.querySelectorAll('[data-select]');
 userEvent_select.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-select-value']};
+  observer.observe(item,config);
+});
+let userEvent_radio = document.querySelectorAll('[data-radio-value]');
+userEvent_radio.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-radio-value']};
   observer.observe(item,config);
 });
 
@@ -61,27 +78,29 @@ function getUserColor(node){
 
 function getUserNumber(node){
   let number = node.getAttribute('data-number-value');
-  if(node.getAttribute('data-egfont-size') !== null){
-    ROOT.style.setProperty('--egfont-size',number + 'px');
-    //console.log(number + 'px')
-  }
   //console.log(number)
 }
 
 function getUserText(node){
   let text = node.getAttribute('data-text-value');
-  if(node.getAttribute('data-egfont-text') !== null){
-    let egfont = document.querySelectorAll('[data-egfont]');
-    egfont.forEach(item => {
-      item.textContent = text;
-    })
-  }
+
   //console.log(text)
 }
+
+
+function getUserFloat(node){
+  let float = node.getAttribute('data-float-value');
+  //console.log(float)
+};
 
 function getUserSelect(node){
-  let select = node.getAttribute('data-select-value');
-  //console.log(text)
-}
+  let userSelect = node.getAttribute('data-select-value');
+};
 
+function getUserRadio(node){
+  let userRadio= node.getAttribute('data-radio-value');
+  if(userRadio){
+    
+  }
+};
 

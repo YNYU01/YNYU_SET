@@ -144,6 +144,11 @@ li a,li i,li [data-highlight]{
   color: var(--themeColor2);
 }
 
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 [data-li-style="title"]{
   width: fit-content;
   display: inline-block;

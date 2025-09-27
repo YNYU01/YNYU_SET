@@ -14,8 +14,10 @@ let mutationObserver = new MutationObserver((mutations) => {
         case 'data-color-hex':getUserColor(mutation.target); break;
         case 'data-number-value':getUserNumber(mutation.target); break;
         case 'data-text-value':getUserText(mutation.target); break;
+        case 'data-int-value':getUserInt(mutation.target); break;
+        case 'data-float-value':getUserFloat(mutation.target); break;
         case 'data-select-value':getUserSelect(mutation.target); break;
-        case 'data-flow-viewwidth':
+        case 'data-radio-value':getUserRadio(mutation.target); break;        case 'data-flow-viewwidth':
           FLOW_RENDER.reViewBoxSize(mutation.target.getAttribute('data-flow-viewwidth')); 
         break;
         case 'data-flow-viewzoom':
@@ -592,6 +594,7 @@ class ZY_NODE {
     this.allNodeDatas = allNodeDatas ? this.addNode(allNodeDatas) : [];
     this.allNodes = [];
     this.pickNodes = [];
+    this.zoom = 1;
     /*初始化控制*/
     this.selectArea = document.querySelector('[data-selectarea]') || this.creSelectarea();
     this.isInit = isInit ? this.init() : null;
@@ -649,14 +652,14 @@ class ZY_NODE {
       let label = document.createElement('label');
       label.setAttribute('for',input.id);
       label.className = 'show-next';
-      this.addDiffLanguage(label,list.modsec,true);
+      this.addDiffLanguage(label,list.modsec,null,true);
       this.flowNodesBox.appendChild(label);
 
       let modsec = document.createElement('div');
       modsec.className = 'df-ffc';
       modsec.setAttribute('data-flow-modsec',index);
       list.nodes.forEach(item => {
-        let nodetag = this.addDiffLanguage(modsec,item.type,true);
+        let nodetag = this.addDiffLanguage(modsec,item.type,null,true);
         nodetag.className = 'df-lc'
         nodetag.setAttribute('data-flow-node','');
         nodetag.setAttribute('draggable','true');
@@ -664,10 +667,17 @@ class ZY_NODE {
           e.dataTransfer.setData('text/plain',JSON.stringify({modsec:list.modsec,...item}))
         })
       });
+      input.addEventListener('change',()=>{
+          if(input.checked){
+              modsec.style.display = 'flex';
+          }else{
+              modsec.style.display = 'none';
+          }
+      })
       this.flowNodesBox.appendChild(modsec);
     });
 
-    const {flowBox,editorBox,lineBox} = this
+    const {flowBox,editorBox,lineBox} = this;
 
     //移动视图、通过选区选中节点
     let selectStartX = 0;
@@ -678,10 +688,14 @@ class ZY_NODE {
     let scrollTop = 0;
     let isSelecting = false;
     let isMoving = false;
+    let renderXY;
 
     flowBox.addEventListener('mousedown', (e) => {
-      if (e.button === 0 && (e.target === this.flowBox || e.target === this.editorBox || e.target === this.lineBox)) {
+      let isFocus = (document.hasFocus() && document.activeElement !== document.body);
+      let isButtonLeft = (e.button === 0 && !isFocus && (e.target === this.flowBox || e.target === this.editorBox || e.target === this.lineBox));
+      if (isButtonLeft){
         [selectStartX, selectStartY] = [e.clientX, e.clientY];
+        renderXY = this.toRenderXY(e);
         isSelecting = true;
         e.preventDefault();
       };
@@ -693,8 +707,9 @@ class ZY_NODE {
       };
       if((e.button === 0 || e.button === 2) && e.target == this.editorBox){
         this.pickNodes.forEach(pick => {
-          pick.setAttribute('data-node-pick','false')
+          pick.setAttribute('data-node-pick','false');
         });
+        this.pickNodes = [];
       };
     });
 
@@ -721,7 +736,9 @@ class ZY_NODE {
           h = 'height: ' + areaH * -1 + 'px; ';
         };
 
+        let [areaX,areaY] = [renderXY.x,renderXY.y];
         this.selectArea.setAttribute('style', 'display: block; ' + x + y + w + h);
+        this.pickByArea([areaX/this.zoom,areaY/this.zoom,areaW/this.zoom,areaH/this.zoom]);
       };
       if(isMoving){
         let moveW = e.clientX - moveStartX;
@@ -743,14 +760,42 @@ class ZY_NODE {
     //控制画布缩放级别
     flowBox.addEventListener('wheel',(e)=>{
       e.preventDefault();
-      let oldZoom = flowBox.getAttribute('data-flow-viewzoom');
+      let oldZoom = this.zoom;
       let step = e.deltaY > 0 ? -0.1 : 0.1
       let zoom = oldZoom*1 + (Math.round(Math.abs(e.deltaY)/100) * step);
-      zoom = zoom > 2 ? 2 : zoom;
-      zoom = zoom < 0.5 ? 0.5 : zoom;
-      zoom = Math.round(zoom * 10)/10;
-      flowBox.setAttribute('data-flow-viewzoom',zoom)
+      this.setZoom(zoom);
     });
+    
+    let isTouchScale = false;
+    let touchStartZoom = 1;
+    let touchScaleStart;
+    flowBox.addEventListener('touchstart',(e)=>{
+        if(e.touches.length === 2){
+            e.preventDefault();
+            let t = e.touches;
+            let dx = t[0].clientX - t[1].clientX;
+            let dy = t[0].clientY - t[1].clientY;
+            isTouchScale = true;
+            touchScaleStart = Math.hypot(dx,dy);       
+            touchStartZoom = this.zoom;    
+        };
+    });
+    flowBox.addEventListener('touchmove',(e)=>{
+      if(isTouchScale){
+          let t = e.touches
+          let dx = t[0].clientX - t[1].clientX;
+          let dy = t[0].clientY - t[1].clientY;
+          let newMove = Math.hypot(dx,dy);
+          let moves = touchScaleStart - newMove;     
+          let zoom = touchStartZoom*1 + moves/-100;
+          this.setZoom(zoom);
+      };
+    });
+    
+    flowBox.addEventListener('touchend',(e)=>{
+        isTouchScale = false;
+    });
+
     
     //拖拽生成节点元素
     let isDraging = false;
@@ -760,7 +805,7 @@ class ZY_NODE {
     });
     editorBox.addEventListener('dragleave',(e)=>{
       e.preventDefault();
-      isDraging = false;
+      //isDraging = false;
     });
     editorBox.addEventListener('dragover',(e)=>{
       e.preventDefault();
@@ -768,25 +813,30 @@ class ZY_NODE {
     editorBox.addEventListener('drop',(e)=>{
       e.preventDefault();
       if(isDraging){
-        let data = JSON.parse(e.dataTransfer.getData('text/plain'));
-        let mod = this.flowNodes.find(m => m.modsec[1] == data.modsec[1]);
-        let nod = mod.nodes.find(n => n.type[1] == data.type[1]);
-        data.id = data.type[1].replace(/\s+/g,'') + (nod.create + 1).toString().padStart(3, '0');;
-        //记录当前类型节点的创建操作次数
-        nod.create++;
-        //隐去实际节点数据中的记录值
-        delete data.create;
-        delete data.reduce;
-        //更新坐标值
-        [data.top,data.left,data.x,data.y] = Object.values(this.toRenderXY(e));
-        this.addNode([data]);
+        try{
+          //log(e.dataTransfer.types)
+          let data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          let mod = this.flowNodes.find(m => m.modsec[1] == data.modsec[1]);
+          let nod = mod.nodes.find(n => n.type[1] == data.type[1]);
+          data.id = data.type[1].replace(/\s+/g,'') + (nod.create + 1).toString().padStart(3, '0');;
+          //记录当前类型节点的创建操作次数
+          nod.create++;
+          //隐去实际节点数据中的记录值
+          delete data.create;
+          delete data.reduce;
+          //更新坐标值
+          [data.top,data.left,data.x,data.y] = Object.values(this.toRenderXY(e)).map(item => item/this.zoom);
+          this.addNode([data]);
+        isDraging = false;
+        }catch(e){console.log(e)};
       };
-      isDraging = false;
+
     });
 
     return [editorBox,lineBox]
   };
 
+  //生成节点并绑定事件
   addNode(nodeDatas){
     nodeDatas.forEach((data,index) => {
       let nodeBox = document.createElement('div');
@@ -896,30 +946,54 @@ class ZY_NODE {
       let isDuplicate = false;
       let isMove = false;
       let isMoveGroup = false;
-      let moveStartX,moveStartY,moveStartTop,moveStartLeft;
-      nodeBox.addEventListener('mousedown',(e)=>{
+      let startInfo = [];
+      nodeMix.addEventListener('mousedown',(e)=>{
         if(e.button === 1) return;
         if(this.pickNodes.length > 1){
-          this.addMoveGroup();
           isMoveGroup = true;
+          startInfo = [];
+          this.pickNodes.forEach(pick => {
+            let pickdata = this.allNodeDatas.find(item => item.id == pick.id)
+            startInfo.push(
+              {
+                id:pick.id,
+                x:e.clientX,
+                y:e.clientY,
+                top:pick.offsetTop,
+                left:pick.offsetLeft,
+                nodeX:pickdata.x,
+                nodeY:pickdata.y
+              })
+          });
           return;
-        }
+        };
         if(!e.ctrlKey){
           this.pickNodes.forEach(pick => {
             pick.setAttribute('data-node-pick','false')
           });
           this.pickNodes = [];
+          startInfo = [];
+          startInfo.push(
+            {
+              id:nodeBox.id,
+              x:e.clientX,
+              y:e.clientY,
+              top:nodeBox.offsetTop,
+              left:nodeBox.offsetLeft,
+              nodeX:data.x,
+              nodeY:data.y
+            })
         };
         this.pickNodes.push(nodeBox);
         nodeBox.setAttribute('data-node-pick','true');
+        this.editorBox.appendChild(nodeBox);
         if(e.altKey){
           isDuplicate = true;
         }else{
-          [moveStartX,moveStartY,moveStartTop,moveStartLeft] = [e.clientX,e.clientY,nodeBox.offsetTop,nodeBox.offsetLeft]
           isMove = true;
         };
       });
-      nodeBox.addEventListener('mousemove',(e)=>{
+      nodeMix.addEventListener('mousemove',(e)=>{
         if(isDuplicate){
           debounce(()=>{
             nodeBox.setAttribute('draggable','true');
@@ -927,28 +1001,24 @@ class ZY_NODE {
           return;
         };
         if(isMoveGroup){
-          return
+          this.pickNodes.forEach((node,index)=> {
+            let nodedata = this.allNodeDatas.find(item => item.id == node.id);
+            let startinfo = startInfo.find(item => item.id == node.id);
+            this.moveNode(e,node,nodedata,startinfo);
+          });
+          return;
         }
         if(isMove){
-          let moveX = moveStartX - e.clientX;
-          let moveY = moveStartY - e.clientY;
-          
-          let newTop = moveStartTop - moveY;
-          let newLeft = moveStartLeft - moveX;
-          data.top = newTop;
-          data.left = newLeft;
-          nodeBox.style.top = newTop + 'px';
-          nodeBox.style.left = newLeft + 'px';
-          
+          this.moveNode(e,nodeBox,data,startInfo[0]);
         }
       });
-      nodeBox.addEventListener('mouseup',(e)=>{
+      nodeMix.addEventListener('mouseup',(e)=>{
         nodeBox.setAttribute('draggable','false');
         isDuplicate = false;
         isMove = false;
         isMoveGroup = false;
       });
-      nodeBox.addEventListener('mouseleave',(e)=>{
+      nodeMix.addEventListener('mouseleave',(e)=>{
         nodeBox.setAttribute('draggable','false');
         isDuplicate = false;
         isMove = false;
@@ -957,17 +1027,11 @@ class ZY_NODE {
       nodeBox.addEventListener('contextmenu',(e)=>{
         e.preventDefault();
       });
+      
     });
     //重置绑定
     COMP_MAIN();
   };
-
-  addMoveGroup(){
-    let minX
-    let maxX
-    let minY
-    let maxY
-  }
 
   toRenderXY(e){
     //计算视口的top/left
@@ -979,19 +1043,27 @@ class ZY_NODE {
     let x = (mouseX - rect.left) + this.editorBox.scrollLeft;
     let y = (mouseY - rect.top) + this.editorBox.scrollTop;
     //以画布中心为原点记录
-    let zoom = this.flowBox.getAttribute('data-flow-viewzoom')//window.getComputedStyle(this.editorBox).zoom
+    let zoom = this.zoom;
     let x4 = x - this.editorBox.offsetWidth*zoom/2;
     let y4 = (y - this.editorBox.offsetWidth*zoom/2)*-1;
-    //console.log([x,y,x4,y4,this.editorBox.offsetWidth])
     return {top:y, left:x, x:x4, y:y4};
   }
 
   pickByArea([x,y,w,h]){
-
-  }
-
-  moveByArea([x,y,w,h]){
-
+    x = w > 0 ? x : x + w;
+    y = h > 0 ? y : y - h;
+    w = w > 0 ? w : -w;
+    h = h > 0 ? h : -h;
+    this.pickNodes = [];
+    this.allNodes.forEach(node => {
+      if(this.isInArea([x,y,w,h],node)){
+        node.setAttribute('data-node-pick','true');
+        this.pickNodes.push(node);
+      }else{
+        node.setAttribute('data-node-pick','false');
+        this.pickNodes = this.pickNodes.filter(item => item !== node);
+      };
+    });
   }
 
   reViewBoxSize(wh){
@@ -1002,12 +1074,18 @@ class ZY_NODE {
   }
 
   reViewBoxZoom(zoom){
+    let oldZoom = this.zoom;
     this.editorBox.style.zoom = zoom;
     this.lineBox.style.zoom = zoom;
+    getElementMix('setzoom').value = Math.floor(zoom * 100);
+    let [oldTop,oldLeft] = [this.flowBox.scrollTop,this.flowBox.scrollLeft]
     //移动视图到中心点
     requestAnimationFrame(()=>{
+      /**/
       this.flowBox.scrollTop = (this.editorBox.offsetWidth * zoom - this.flowBox.offsetHeight)/2;
       this.flowBox.scrollLeft = (this.editorBox.offsetWidth * zoom - this.flowBox.offsetWidth)/2; 
+      log([this.flowBox.scrollTop/this.flowBox.scrollHeight,this.flowBox.scrollLeft/this.flowBox.scrollWidth])
+      /**/
     });
   }
 
@@ -1015,10 +1093,47 @@ class ZY_NODE {
     let data = this.allNodeDatas.find(item => item.id == node.id);
     data.width = node.offsetWidth;
     data.height = node.offsetHeight;
-    //console.log(this.allNodeDatas)
+  }
+
+  removeNode(node){
+    let index = this.allNodeDatas.findIndex(item => item.id == node.id);
+    this.allNodeDatas.splice(index,1);
+    this.allNodes = this.allNodes.filter(item => item !== node)
+    node.remove();
+    resizeObserver.unobserve(node);
   }
 
   //====工具函数===//
+  setZoom(zoom){
+    zoom = zoom > 2 ? 2 : zoom;
+    zoom = zoom < 0.5 ? 0.5 : zoom;
+    zoom = Math.round(zoom * 10)/10;
+    this.flowBox.setAttribute('data-flow-viewzoom',zoom);
+    this.zoom = zoom;
+  }
+
+  isInArea([x,y,w,h],node){
+    let data = this.allNodeDatas.find(item => item.id == node.id);
+    let [nodeX,nodeY,nodeW,nodeH] = [data.x,data.y,node.offsetWidth,node.offsetHeight];
+    return (nodeX >= x && nodeX + nodeW <= x + w && nodeY <= y && nodeY - nodeH >= y - h);
+  }
+
+  moveNode(e,node,nodedata,startinfo){
+    let moveX = (startinfo.x - e.clientX)/this.zoom;
+    let moveY = (startinfo.y - e.clientY)/this.zoom;
+    
+    let newTop = startinfo.top - moveY;
+    let newLeft = startinfo.left - moveX;
+    let newX= startinfo.nodeX - moveX;
+    let newY = startinfo.nodeY + moveY;
+
+    nodedata.x = newX;
+    nodedata.y = newY;
+    nodedata.top = newTop;
+    nodedata.left = newLeft;
+    node.style.top = newTop + 'px';
+    node.style.left = newLeft + 'px';
+  }
 
   addDiffLanguage(parent,texts,tagname,isRun){
     let language = ROOT.getAttribute('data-language');
@@ -1171,34 +1286,45 @@ document.addEventListener('mouseleave',(e)=>{
 
 //快捷键
 document.addEventListener('keydown',(e) => {
-  if(e.ctrlKey && (e.key === 'o' || e.key === 'O')){
-    e.preventDefault();
-    //导入本地文件
-  };
-  if(e.ctrlKey && (e.key === 's' || e.key === 'S')){
-    e.preventDefault();
-    //导出为本地文件
-  };
-  if(e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S')){
-    e.preventDefault();
-    //仅导出数据
-  };
-  if(e.ctrlKey && e.key === '\\'){
-    e.preventDefault();
-    //隐藏/显示所有菜单
-  };
-  if(e.ctrlKey && (e.key === 'a' || e.key === 'A')){
-    e.preventDefault();
-    //全选
-  };
-  if(e.ctrlKey && e.shiftKey && (e.key === 'a' || e.key === 'A')){
-    e.preventDefault();
-    //反选
-  };
-  if(e.ctrlKey && (e.key === 'r' || e.key === 'R')){
-    e.preventDefault();
-    //刷新数据
-  };
+  if(document.hasFocus() && document.activeElement !== document.body){
+    if(e.ctrlKey && (e.key === 'o' || e.key === 'O')){
+      e.preventDefault();
+      //导入本地文件
+    };
+    if(e.ctrlKey && (e.key === 's' || e.key === 'S')){
+      e.preventDefault();
+      //导出为本地文件
+    };
+    if(e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S')){
+      e.preventDefault();
+      //仅导出数据
+    };
+    if(e.ctrlKey && e.key === '\\'){
+      e.preventDefault();
+      //隐藏/显示所有菜单
+    };
+    if(e.ctrlKey && (e.key === 'a' || e.key === 'A')){
+      e.preventDefault();
+      //全选
+    };
+    if(e.ctrlKey && e.shiftKey && (e.key === 'a' || e.key === 'A')){
+      e.preventDefault();
+      //反选
+    };
+    if(e.ctrlKey && (e.key === 'r' || e.key === 'R')){
+      e.preventDefault();
+      //刷新数据
+    };
+  }else{
+    if(e.key === 'Delete' || e.key === 'Backspace'){
+      e.preventDefault();
+      FLOW_RENDER.pickNodes.forEach((node,index) => {
+        FLOW_RENDER.removeNode(node);
+        delete FLOW_RENDER.pickNodes[index];
+      });
+    };
+  }
+  
 });
 
 //生成安全的坐标
@@ -1246,9 +1372,24 @@ userEvent_text.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-text-value']};
   mutationObserver.observe(item,config);
 });
+let userEvent_int = document.querySelectorAll('[data-int-value]');
+userEvent_int.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-int-value']};
+  mutationObserver.observe(item,config);
+});
+let userEvent_float = document.querySelectorAll('[data-float-value]');
+userEvent_float.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-float-value']};
+  mutationObserver.observe(item,config);
+});
 let userEvent_select = document.querySelectorAll('[data-select]');
 userEvent_select.forEach(item => {
   let config = {attributes:true,attributeFilter:['data-select-value']};
+  mutationObserver.observe(item,config);
+});
+let userEvent_radio = document.querySelectorAll('[data-radio-value]');
+userEvent_radio.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-radio-value']};
   mutationObserver.observe(item,config);
 });
 
@@ -1265,27 +1406,36 @@ function getUserColor(node){
 
 function getUserNumber(node){
   let number = node.getAttribute('data-number-value');
-  if(node.getAttribute('data-egfont-size') !== null){
-    ROOT.style.setProperty('--egfont-size',number + 'px');
-    //console.log(number + 'px')
-  }
   //console.log(number)
 }
 
 function getUserText(node){
   let text = node.getAttribute('data-text-value');
-  if(node.getAttribute('data-egfont-text') !== null){
-    let egfont = document.querySelectorAll('[data-egfont]');
-    egfont.forEach(item => {
-      item.textContent = text;
-    })
-  }
   //console.log(text)
 }
+
+function getUserInt(node){
+  let int = node.getAttribute('data-int-value');
+  if(node.getAttribute('data-zoom-box') !== null){
+    FLOW_RENDER.reViewBoxZoom(int/100);
+    FLOW_RENDER.zoom = int/100;
+  };
+  //console.log(int)
+};
+
+function getUserFloat(node){
+  let float = node.getAttribute('data-float-value');
+  //console.log(float)
+};
 
 function getUserSelect(node){
-  let select = node.getAttribute('data-select-value');
-  //console.log(text)
-}
+  let userSelect = node.getAttribute('data-select-value');
+};
 
+function getUserRadio(node){
+  let userRadio= node.getAttribute('data-radio-value');
+  if(userRadio){
+    
+  }
+};
 
