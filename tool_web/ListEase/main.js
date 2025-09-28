@@ -49,6 +49,47 @@ class ZY_NODE {
         modsec: ['基础','base'],
         nodes:[
           {
+            type:["合成预览","compositing"],
+            layout:[
+              {className: 'df-cc wh100 tex-pixelbg',items:['VIEW']},
+              {className: 'df-rc',items:['OUT:01']},
+              {className: 'df-sc',items:['IN:01']},
+              {className: 'df-sc',items:['IN:02']},
+              {className: 'df-sc',items:['IN:03']},
+            ],
+            create:0,
+            reduce:0,
+            id:'',
+            x:0,
+            y:0,
+            top: 0,
+            left: 0,
+            width:140,
+            height:140,
+            ins:[
+              {id:'01',name:['标题组','titles'],inType:['STRING','CODE']},
+              {id:'02',name:['元素组','elements'],inType:['STRING','CODE']},
+              {id:'03',name:['背景组','backgrounds'],inType:['STRING','CODE']},
+            ],
+            outs:[{id:'01',to:'',outType:'NODE'}],
+            inputs:[
+              {
+                id:'01',
+                value:'',
+                max:20,
+                must:['标题标题标题','Title Title Title'],
+                disabled: false,
+              },
+              {
+                id:'02',
+                value:'',
+                max:20,
+                must:['标题标题标题','Title Title Title'],
+                disabled: false,
+              }
+            ],
+          },
+          {
             type:["主标题","main title"],
             layout:[
               {className: 'df-sc',items:['IN:01','OUT:01']},
@@ -596,19 +637,20 @@ class ZY_NODE {
     this.pickNodes = [];
     this.zoom = 1;
     /*初始化控制*/
-    this.selectArea = document.querySelector('[data-selectarea]') || this.creSelectarea();
+    this.selectArea = document.querySelector('[data-selectarea]') || this.creArea('selectarea');
+    this.connectArea = document.querySelector('[data-connectarea]') || this.creArea('connectarea');
     this.isInit = isInit ? this.init() : null;
     this.editorBox = document.querySelector('[data-flow-editorbox]') || this.isInit[0];
     this.lineBox = document.querySelector('[data-flow-linebox]') || this.isInit[1];
   }
 
-  creSelectarea(){
-    let selectArea = document.createElement('div');
-    selectArea.setAttribute('data-selectArea');
-    selectArea.className = 'pos-a';
-    selectArea.setAttribute('style','display: none;');
-    document.querySelector('body').appendChild(selectArea);
-    return selectArea;
+  creArea(name){
+    let area = document.createElement('div');
+    area.setAttribute('data-' + name);
+    area.className = 'pos-a';
+    area.setAttribute('style','display: none;');
+    document.querySelector('body').appendChild(area);
+    return area;
   }
 
   init(){
@@ -628,6 +670,11 @@ class ZY_NODE {
       this.flowBox.appendChild(lineBox);
       this.lineBox = lineBox;
     };
+    //生成合成预览节点
+    let newView = JSON.parse(JSON.stringify({modsec:this.flowNodes[0].modsec,...this.flowNodes[0].nodes[0]}));
+    this.reCreateData(newView);
+    [newView.top,newView.left,newView.x,newView.y] = [2048 - 356/2,2048 - 346/2,356/-2,346/2];
+    this.addNode([newView],true);
 
     //监听自定义属性值，修改画布大小
     let config_flowBox = {attributes:true,attributeFilter:['data-flow-viewwidth','data-flow-viewzoom']};
@@ -687,18 +734,26 @@ class ZY_NODE {
     let scrollLeft = 0;
     let scrollTop = 0;
     let isSelecting = false;
+    let isConnecting = false;
     let isMoving = false;
     let renderXY;
 
     flowBox.addEventListener('mousedown', (e) => {
       let isFocus = (document.hasFocus() && document.activeElement !== document.body);
-      let isButtonLeft = (e.button === 0 && !isFocus && (e.target === this.flowBox || e.target === this.editorBox || e.target === this.lineBox));
+      let isSafeNode = (e.target === this.flowBox || e.target === this.editorBox || e.target === this.lineBox);
+      let isButtonLeft = (e.button === 0 && !isFocus && isSafeNode);
       if (isButtonLeft){
         [selectStartX, selectStartY] = [e.clientX, e.clientY];
         renderXY = this.toRenderXY(e);
         isSelecting = true;
         e.preventDefault();
       };
+      if(e.button === 0 && e.target.tagName.toLowerCase() == 'circle'){
+        [selectStartX, selectStartY] = [e.clientX, e.clientY];
+        renderXY = this.toRenderXY(e);
+        isConnecting = true;
+        e.preventDefault();
+      }
       if (e.button === 1) {
         [moveStartX, moveStartY] = [e.clientX, e.clientY];
         [scrollLeft,scrollTop] = [this.flowBox.scrollLeft, this.flowBox.scrollTop];
@@ -715,30 +770,62 @@ class ZY_NODE {
 
     flowBox.addEventListener('mousemove',(e)=>{
       if(isSelecting){
-        let areaW = e.clientX - selectStartX;
-        let areaH = e.clientY - selectStartY;
-        if(areaW == 0 || areaH == 0 || (Math.abs(areaW) < 10 && Math.abs(areaH) < 10)) return;
-
-        let x,y,w,h;
-        if(areaW > 0){
-          x = 'left: ' + selectStartX + 'px; ';
-          w = 'width: ' + areaW  + 'px; ';
-        } else {
-          x = 'right: ' + (this.flowBox.offsetWidth - selectStartX) + 'px; ';
-          w = 'width: ' + areaW * -1 + 'px; ';
-        };
-
-        if(areaH > 0){
-          y = 'top: ' + selectStartY + 'px; ';
-          h = 'height: ' + areaH  + 'px; ';
-        } else {
-          y = 'bottom: ' + (this.flowBox.offsetHeight + 100 - selectStartY) + 'px; ';
-          h = 'height: ' + areaH * -1 + 'px; ';
-        };
-
+        let areaWH = this.reAreaSize(e,this.selectArea,selectStartX,selectStartY);
+        if(!areaWH) return;
         let [areaX,areaY] = [renderXY.x,renderXY.y];
-        this.selectArea.setAttribute('style', 'display: block; ' + x + y + w + h);
-        this.pickByArea([areaX/this.zoom,areaY/this.zoom,areaW/this.zoom,areaH/this.zoom]);
+        this.pickByArea([areaX/this.zoom,areaY/this.zoom,areaWH[0]/this.zoom,areaWH[1]/this.zoom]);
+      };
+      if(isConnecting){
+        let areaWH = this.reAreaSize(e,this.connectArea,selectStartX,selectStartY);
+        if(!areaWH) return;
+        // 创建SVG容器
+        let start = {x:0,y:0};
+        let end = {x:0,y:0};
+        let bodW = 2;
+        let dotR = bodW*2;
+        let [w,h] = areaWH;
+        let [svgX,svgY] = [0,0];
+        let [svgW,svgH] = [Math.abs(areaWH[0] + bodW*2),Math.abs(areaWH[1]) + bodW*4]
+        this.connectArea.innerHTML = '';
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("width", svgW);
+        svg.setAttribute("height", svgH);
+        svg.setAttribute('viewBox',`0 0 ${svgW} ${svgH}`);
+        this.connectArea.appendChild(svg);
+        
+        if(w > 0){
+          start.x = dotR;
+          end.x = w;
+          svgX = dotR*-1;
+        }else{
+          start.x = w*-1 - dotR*2;
+          end.x = dotR;
+          svgX = dotR*2;
+        }
+        if(h > 0){
+          start.y = dotR;
+          end.y = h + dotR;
+          svgY = dotR/-2;
+        }else{
+          start.y = h*-1 + dotR;
+          end.y = dotR;
+          svgY = -dotR/2;
+        }
+        let path = this.createSmoothPath(start,end,bodW);
+        svg.setAttribute('style',`transform: translate(${svgX}px,${svgY}px)`);
+        svg.appendChild(path);
+        let circle1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle1.setAttribute('cx',start.x);
+        circle1.setAttribute('cy',start.y);
+        circle1.setAttribute('r',dotR);
+        circle1.setAttribute("fill", "var(--line-col)");
+        let circle2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle2.setAttribute('cx',end.x);
+        circle2.setAttribute('cy',end.y);
+        circle2.setAttribute('r',dotR);
+        circle2.setAttribute("fill", "var(--line-col)");
+        svg.appendChild(circle1);
+        svg.appendChild(circle2);
       };
       if(isMoving){
         let moveW = e.clientX - moveStartX;
@@ -751,9 +838,11 @@ class ZY_NODE {
 
     flowBox.addEventListener('mouseup',()=>{
       this.selectArea.setAttribute('style','display: none;');
+      this.connectArea.setAttribute('style','display: none;');
       [selectStartX,selectStartY] = [0,0];
       [moveStartX,moveStartY] = [0,0];
       isSelecting = false;
+      isConnecting = false;
       isMoving = false;
     });
 
@@ -816,16 +905,10 @@ class ZY_NODE {
         try{
           //log(e.dataTransfer.types)
           let data = JSON.parse(e.dataTransfer.getData('text/plain'));
-          let mod = this.flowNodes.find(m => m.modsec[1] == data.modsec[1]);
-          let nod = mod.nodes.find(n => n.type[1] == data.type[1]);
-          data.id = data.type[1].replace(/\s+/g,'') + (nod.create + 1).toString().padStart(3, '0');;
-          //记录当前类型节点的创建操作次数
-          nod.create++;
-          //隐去实际节点数据中的记录值
-          delete data.create;
-          delete data.reduce;
+          this.reCreateData(data)
           //更新坐标值
-          [data.top,data.left,data.x,data.y] = Object.values(this.toRenderXY(e)).map(item => item/this.zoom);
+          let newXY = Object.values(this.toRenderXY(e)).map(item => item/this.zoom);
+          [data.top,data.left,data.x,data.y] = newXY;
           this.addNode([data]);
         isDraging = false;
         }catch(e){console.log(e)};
@@ -836,8 +919,19 @@ class ZY_NODE {
     return [editorBox,lineBox]
   };
 
+  reCreateData(data){
+    let mod = this.flowNodes.find(m => m.modsec[1] == data.modsec[1]);
+    let nod = mod.nodes.find(n => n.type[1] == data.type[1]);
+    data.id = data.type[1].replace(/\s+/g,'') + (nod.create + 1).toString().padStart(3, '0');;
+    //记录当前类型节点的创建操作次数
+    nod.create++;
+    //隐去实际节点数据中的记录值
+    delete data.create;
+    delete data.reduce;
+  }
+
   //生成节点并绑定事件
-  addNode(nodeDatas){
+  addNode(nodeDatas,isRun){
     nodeDatas.forEach((data,index) => {
       let nodeBox = document.createElement('div');
       nodeBox.setAttribute('data-node-modsec',data.modsec[1]);
@@ -852,7 +946,7 @@ class ZY_NODE {
       nodeMix.setAttribute('data-node-mix','');
       nodeMix.className = 'pos-r h100 df-ffc';
 
-      let nodeTop = this.addDiffLanguage(nodeMix,data.type);
+      let nodeTop = this.addDiffLanguage(nodeMix,data.type,null,isRun);
       nodeTop.setAttribute('data-node-top','');
       nodeTop.className = 'pos-r';
 
@@ -871,7 +965,8 @@ class ZY_NODE {
               let indot = inInfo.link ? addCheck('in',inInfo.link) : addCheck('in');
               nodein.appendChild(indot[0]);
               nodein.appendChild(indot[1]);
-              this.addDiffLanguage(nodein,['输入','in']);
+              let name = inInfo.name ? inInfo.name : ['输入','in'];
+              this.addDiffLanguage(nodein,name,null,isRun);
               line.appendChild(nodein);
             break
             case 'OUT':
@@ -879,7 +974,7 @@ class ZY_NODE {
               nodeout.className = 'df-lc';
               nodeout.setAttribute('data-node-out',data.id + '_out_' + id);
               let outdot = addCheck('out');
-              this.addDiffLanguage(nodeout,['输出','out']);
+              this.addDiffLanguage(nodeout,['输出','out'],null,isRun);
               nodeout.appendChild(outdot[0]);
               nodeout.appendChild(outdot[1]);
               line.appendChild(nodeout);
@@ -888,7 +983,7 @@ class ZY_NODE {
               let inputInfo = data.inputs.find(input => input.id == id);
               let nodeInput;
               if(inputInfo.must){
-                nodeInput = this.addDiffLanguage(line,inputInfo.must,'input');
+                nodeInput = this.addDiffLanguage(line,inputInfo.must,'input',null,isRun);
               }else{
                 nodeInput = document.createElement('input');
                 line.appendChild(nodeInput);
@@ -900,7 +995,12 @@ class ZY_NODE {
               nodeInput.setAttribute('data-node-input',data.id + '_input_' + id);
             break
             case 'TEXT':
-              this.addDiffLanguage(line,data.texts.find(text => text.id == id).value);
+              this.addDiffLanguage(line,data.texts.find(text => text.id == id).value,null,isRun);
+            break
+            case 'VIEW':
+              let view = document.createElement('div');
+              view.setAttribute('data-node-view','');
+              line.appendChild(view);
             break
           };
 
@@ -948,7 +1048,10 @@ class ZY_NODE {
       let isMoveGroup = false;
       let startInfo = [];
       nodeMix.addEventListener('mousedown',(e)=>{
-        if(e.button === 1) return;
+        //log(e.target)
+        let isSafeArea =  (e.target !== nodeMix && e.target !== nodeTop);
+        let isSafeTagname = e.target.tagName.toLowerCase() == 'input' || e.target.tagName.toLowerCase() == 'circle';
+        if(e.button === 1 || isSafeTagname) return;
         if(this.pickNodes.length > 1){
           isMoveGroup = true;
           startInfo = [];
@@ -1033,6 +1136,21 @@ class ZY_NODE {
     COMP_MAIN();
   };
 
+  createSmoothPath(start, end, bodW) {
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const deltaX = end.x - start.x;
+    const deltaY = end.y - start.y;
+    const control1 = { x: start.x + deltaX * 0.5, y: start.y };
+    const control2 = { x: end.x - deltaX * 0.5, y: end.y };
+    
+    path.setAttribute("d", `M${start.x},${start.y} C${control1.x},${control1.y} ${control2.x},${control2.y} ${end.x},${end.y}`);
+    path.setAttribute("stroke", "var(--line-col)");
+    path.setAttribute("stroke-dasharray","4 4");
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke-width", bodW);
+    return path;
+  }
+
   toRenderXY(e){
     //计算视口的top/left
     let rect = this.editorBox.getBoundingClientRect();
@@ -1077,6 +1195,7 @@ class ZY_NODE {
     let oldZoom = this.zoom;
     this.editorBox.style.zoom = zoom;
     this.lineBox.style.zoom = zoom;
+    this.zoom = zoom;
     getElementMix('setzoom').value = Math.floor(zoom * 100);
     let [oldTop,oldLeft] = [this.flowBox.scrollTop,this.flowBox.scrollLeft]
     //移动视图到中心点
@@ -1084,7 +1203,6 @@ class ZY_NODE {
       /**/
       this.flowBox.scrollTop = (this.editorBox.offsetWidth * zoom - this.flowBox.offsetHeight)/2;
       this.flowBox.scrollLeft = (this.editorBox.offsetWidth * zoom - this.flowBox.offsetWidth)/2; 
-      log([this.flowBox.scrollTop/this.flowBox.scrollHeight,this.flowBox.scrollLeft/this.flowBox.scrollWidth])
       /**/
     });
   }
@@ -1105,11 +1223,37 @@ class ZY_NODE {
 
   //====工具函数===//
   setZoom(zoom){
-    zoom = zoom > 2 ? 2 : zoom;
+    zoom = zoom > 1.5 ? 1.5 : zoom;
     zoom = zoom < 0.5 ? 0.5 : zoom;
     zoom = Math.round(zoom * 10)/10;
     this.flowBox.setAttribute('data-flow-viewzoom',zoom);
     this.zoom = zoom;
+  }
+
+  reAreaSize(e,area,selectStartX,selectStartY){
+    let areaW = e.clientX - selectStartX;
+    let areaH = e.clientY - selectStartY;
+    if(areaW == 0 || areaH == 0 || (Math.abs(areaW) < 10 && Math.abs(areaH) < 10)) return;
+
+    let x,y,w,h;
+    if(areaW > 0){
+      x = 'left: ' + selectStartX + 'px; ';
+      w = 'width: ' + areaW  + 'px; ';
+    } else {
+      x = 'right: ' + (this.flowBox.offsetWidth - selectStartX) + 'px; ';
+      w = 'width: ' + areaW * -1 + 'px; ';
+    };
+
+    if(areaH > 0){
+      y = 'top: ' + selectStartY + 'px; ';
+      h = 'height: ' + areaH  + 'px; ';
+    } else {
+      y = 'bottom: ' + (this.flowBox.offsetHeight + 100 - selectStartY) + 'px; ';
+      h = 'height: ' + areaH * -1 + 'px; ';
+    };
+
+    area.setAttribute('style', 'display: block; ' + x + y + w + h);
+    return [areaW,areaH];
   }
 
   isInArea([x,y,w,h],node){
@@ -1201,6 +1345,10 @@ window.addEventListener('blur',()=>{
 
 
 let FLOW_RENDER = new ZY_NODE(null,null,true);
+
+getElementMix('data-zoom-auto').addEventListener('click',()=>{
+  FLOW_RENDER.reViewBoxZoom(1)
+});
 
 //全局监听，修改右键事件
 document.addEventListener('contextmenu',(e)=>{
@@ -1418,7 +1566,6 @@ function getUserInt(node){
   let int = node.getAttribute('data-int-value');
   if(node.getAttribute('data-zoom-box') !== null){
     FLOW_RENDER.reViewBoxZoom(int/100);
-    FLOW_RENDER.zoom = int/100;
   };
   //console.log(int)
 };
