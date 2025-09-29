@@ -632,9 +632,10 @@ class ZY_NODE {
         ],
       },
     ];
-    this.allNodeDatas = allNodeDatas ? this.addNode(allNodeDatas) : [];
+    this.allNodeDatas = allNodeDatas ? this.addNodes(allNodeDatas) : [];
     this.allNodes = [];
     this.pickNodes = [];
+    this.copyNodes = [];
     this.zoom = 1;
     /*初始化控制*/
     this.selectArea = document.querySelector('[data-selectarea]') || this.creArea('selectarea');
@@ -674,7 +675,7 @@ class ZY_NODE {
     let newView = JSON.parse(JSON.stringify({modsec:this.flowNodes[0].modsec,...this.flowNodes[0].nodes[0]}));
     this.reCreateData(newView);
     [newView.top,newView.left,newView.x,newView.y] = [2048 - 356/2,2048 - 346/2,356/-2,346/2];
-    this.addNode([newView],true);
+    this.addNodes([newView],true);
 
     //监听自定义属性值，修改画布大小
     let config_flowBox = {attributes:true,attributeFilter:['data-flow-viewwidth','data-flow-viewzoom']};
@@ -904,12 +905,17 @@ class ZY_NODE {
       if(isDraging){
         try{
           //log(e.dataTransfer.types)
+          if(this.copyNodes.length > 0){
+            this.duplicateNodes(this.copyNodes,e);
+            this.copyNodes = [];
+            return;
+          }
           let data = JSON.parse(e.dataTransfer.getData('text/plain'));
           this.reCreateData(data)
           //更新坐标值
           let newXY = Object.values(this.toRenderXY(e)).map(item => item/this.zoom);
           [data.top,data.left,data.x,data.y] = newXY;
-          this.addNode([data]);
+          this.addNodes([data]);
         isDraging = false;
         }catch(e){console.log(e)};
       };
@@ -926,12 +932,12 @@ class ZY_NODE {
     //记录当前类型节点的创建操作次数
     nod.create++;
     //隐去实际节点数据中的记录值
-    delete data.create;
-    delete data.reduce;
+    if(data.hasOwnProperty('create')) delete data.create;
+    if(data.hasOwnProperty('reduce')) delete data.reduce;
   }
 
   //生成节点并绑定事件
-  addNode(nodeDatas,isRun){
+  addNodes(nodeDatas,isRun){
     nodeDatas.forEach((data,index) => {
       let nodeBox = document.createElement('div');
       nodeBox.setAttribute('data-node-modsec',data.modsec[1]);
@@ -1098,9 +1104,8 @@ class ZY_NODE {
       });
       nodeMix.addEventListener('mousemove',(e)=>{
         if(isDuplicate){
-          debounce(()=>{
-            nodeBox.setAttribute('draggable','true');
-          },500,true);
+          nodeBox.setAttribute('draggable','true');
+          this.copyNodes.push(nodeBox);
           return;
         };
         if(isMoveGroup){
@@ -1115,6 +1120,7 @@ class ZY_NODE {
           this.moveNode(e,nodeBox,data,startInfo[0]);
         }
       });
+      
       nodeMix.addEventListener('mouseup',(e)=>{
         nodeBox.setAttribute('draggable','false');
         isDuplicate = false;
@@ -1136,6 +1142,25 @@ class ZY_NODE {
     COMP_MAIN();
   };
 
+  duplicateNodes(nodes,e){
+    nodes.forEach(node=>{
+      let oldData = this.allNodeDatas.find(item => item.id == node.id);
+      let data = JSON.parse(JSON.stringify(oldData));
+      this.reCreateData(data);
+      if(e){
+        //更新坐标值
+        let newXY = Object.values(this.toRenderXY(e)).map(item => item/this.zoom);
+        [data.top,data.left,data.x,data.y] = newXY;
+      } else {
+        [data.left,data.x] = [data.left  + data.w + 20,data.x + data.w + 20];
+      };
+      this.addNodes([data]);
+    });
+  }
+
+  addConnect(outDot,inDot){
+
+  }
   createSmoothPath(start, end, bodW) {
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     const deltaX = end.x - start.x;
