@@ -1608,13 +1608,27 @@ function scrollX(node){
  * 兼容传入的是 对象本身 | ID | 自定义属性
  * @param {Element | id | Attribute} node 
  */
-function getElementMix(mix){
-  if(!mix) return null;
-  let node = mix;
-  node = node instanceof HTMLElement ? node : document.getElementById(mix);
-  node = node instanceof HTMLElement ? node : document.querySelector(`[${mix}]`);
-  node = node instanceof HTMLElement ? node : null;
-  return node;
+function getElementMix(mix, { 
+  isCreate = false, 
+  tagName = 'div', 
+  parent = document.body 
+} = {}) {
+  if (!mix) return null;
+  
+  // 查找现有元素
+  let node = mix instanceof HTMLElement ? mix : 
+             document.getElementById(mix) || 
+             document.querySelector(`[${mix}]`);
+  
+  // 创建新元素
+  if (!node && isCreate) {
+    node = document.createElement(tagName);
+    mix.startsWith('data-') ? node.setAttribute(mix, '') : 
+    node.setAttribute('id', mix);
+    parent.appendChild(node);
+  }
+  
+  return node || null;
 }
 
 //模拟change事件来关闭展开的内容
