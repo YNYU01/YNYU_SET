@@ -167,7 +167,7 @@
   <div class="df-ffc w100 df-cc">
     <div data-page-id="page" class="df-ffc w100" data-tab-pick="create">
       <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: flex;">
-        <div class="wh100 df-ffc ovy noscrollbar" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovy noscrollbar" style="height: calc(100% - 50px); max-width: 560px; align-items: center; padding:0 10px; box-sizing: border-box;">
           <div class="wh100 df-ffc" style="align-items: center;">
             <!--步骤1-->
             <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
@@ -372,6 +372,7 @@
             </div>
           </div>
         </div>
+        <div style="height: 10px;"></div>
         <div data-create-any data-btn="main" class="df-cc" data-en-text="CREATER">创建</div>
       </div>
       <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
@@ -419,8 +420,8 @@
             </div>
           </div>
           <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px;">
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (插件设置)</div>    
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (figma设置)</div>
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (默认)</div>    
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
           </div>
           <!--步骤2-->
           <div class="w100 df-lc"  style="padding:10px 0 4px 0; opacity: 0.6; vertical-align: baseline;"> 
@@ -500,7 +501,7 @@
         
       </div>
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc ovy noscrollbar" style="height: 100%; max-width: 560px; align-items: center; padding: 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovy noscrollbar" style="max-width: 560px; align-items: center; padding: 10px 10px 0 10px; box-sizing: border-box;">
           <div class="wh100 df-ffc" style="box-sizing: border-box;">
             <!--步骤1-->
             <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
@@ -811,7 +812,7 @@
               </div>
 
             </div>
-            <!--div style="min-height: 20px;"></div-->
+            <div style="min-height: 10px;"></div>
           </div>
         </div>
       </div>
@@ -1127,7 +1128,7 @@
                       <div class="df-cc" data-btn="skill-main" data-en-text="Raw Size">还原尺寸</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="​High Pass">高反差保留</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Hight Pass">高反差保留</div>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Invert Alpha">反转通道</div>
                     </div>
                     <div class="df-lc w100" data-skill-more>
@@ -1227,10 +1228,10 @@
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Symbol">分割符</div>
                     <input id="split-word" data-input type="text">
-                    <div data-splitword-set class="df-lc fl1" data-radio-value="1" style="gap: 4px; min-width: 110px;">
-                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="1" data-en-text="Suf">接后</div>
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2" data-en-text="Pre">接前</div>
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="3" data-en-text="Null">剔除</div>
+                    <div data-splitword-set class="df-lc fl1" data-radio-value="Suf" style="gap: 4px; min-width: 110px;">
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="Suf" data-en-text="Suf">接后</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="Pre" data-en-text="Pre">接前</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="Null" data-en-text="Null">剔除</div>
                     </div>
                   </div>
                   <div class="df-sc" data-skill-line="">
@@ -1254,6 +1255,10 @@
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Reversing Index">反转顺序</div>
                       <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Exchange Position">调换位置</div>  
+                    </div>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Divide To Frame">拆分到容器</div>
+                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Put In Frame">包裹到容器</div>
                     </div>
                     <div data-skill-gap>
                       <span>----</span>

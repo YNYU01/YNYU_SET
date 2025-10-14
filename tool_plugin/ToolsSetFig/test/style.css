@@ -1032,6 +1032,7 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 
 [data-create-mix]{
   max-height: calc(100% - 405px);
+  min-height: 20vh;
 }
 
 [data-create-tags-box],[data-export-tags-box]{
@@ -1142,6 +1143,10 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 
 [data-tableset-thtd] label{
   cursor: var(--pointer,pointer);
+}
+
+[data-tableset-thtd] [data-radio]{
+  height: 14px;
 }
 
 [data-tablestyle-set],[data-exporttype-set]{

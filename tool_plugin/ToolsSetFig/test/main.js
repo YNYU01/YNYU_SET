@@ -899,7 +899,7 @@ userText_BtnDown.addEventListener('mouseleave',()=>{
 
 //创建内容
 createAnyBtn.addEventListener('click',() => {
-  let type = createTagsBox.parentNode.getAttribute('data-create-tags-box');
+  let type = createTagsBox.parentNode.parentNode.getAttribute('data-create-tags-box');
   switch (type){
     case 'image':
       let images = getFinalInfo(CreateImageInfo);
@@ -1201,9 +1201,9 @@ function addTag(type,info){
           end = end.replace(/type/g,'')
         }
         if(list.note && list.note !== ''){
-          end = end.replace(/add/g,list.add)
+          end = end.replace(/note/g,list.note)
         }else{
-          end = end.replace(/add/g,'')
+          end = end.replace(/note/g,'')
         }
         if(list.s && list.s !== ''){
           end = end.replace(/s/g,list.s + 'k');
@@ -1992,8 +1992,8 @@ skillBtnMain.forEach(btn => {
     };
     if(type == 'inputs'){
       let inputs = document.getElementById('split-word').value;
-      let typeNum = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
-      toolMessage([[[inputs,typeNum * 1],'inputs'],'splitText'],PLUGINAPP);
+      let type = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
+      toolMessage([[[inputs,type],'inputs'],'splitText'],PLUGINAPP);
     };
   };
 

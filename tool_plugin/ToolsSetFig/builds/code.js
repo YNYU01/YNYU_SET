@@ -179,7 +179,7 @@ figma.ui.onmessage = async (message) => {
         };
         figma.currentPage.selection = selects;
         //console.log(selects)
-        layoutByRatio(selects);
+        layoutByRatio(selects,false,true);
     };
     //反传画板数据
     if ( type == "getTableBySelects"){
@@ -253,6 +253,8 @@ figma.ui.onmessage = async (message) => {
                 });
             };
             a.selection = all;
+            figma.viewport.scrollAndZoomIntoView(all);
+            figma.viewport.zoom = figma.viewport.zoom * 0.6;
         })
         .catch (error => {
         })
@@ -659,7 +661,7 @@ figma.ui.onmessage = async (message) => {
             let final = b[0];
             let main = getSafeMain(b[0]);
             let oldRC = getClipGrids(b[0],true);
-            let safeGridsNum = oldRC[0].length + oldRC[1].length;
+            let safeGridsNum = oldRC ? oldRC[0].length + oldRC[1].length : 0;
             //console.log(oldRC)
             if(!oldRC || (oldRC && safeGridsNum !== b[0].layoutGrids.length)){
                 b[0].name = b[0].name.replace(' @clip','').replace('@clip','').trim();
@@ -798,6 +800,51 @@ figma.ui.onmessage = async (message) => {
             clipsframe.name = clipsframe.name.replace('@clip','@clip-final');
         };
     };
+    //清除调整
+    if( type == 'Clear Filter'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let keyValue = ['blendMode','filters','opacity'];
+        let final = b.filter(item => item.type == 'RECTANGLE');
+    }
+    //还原尺寸
+    if( type == 'Raw Size'){
+        
+    }
+    //高反差保留
+    if( type == 'Hight Pass'){
+        
+    }
+    //反转通道
+    if( type == 'Invert Alpha'){
+        
+    }
+    //多余空白裁剪
+    if( type == 'Crop Blank'){
+        
+    }
+    //当前比例裁剪
+    if( type == 'Crop Current Scale'){
+        
+    }
+    //统一调整参数
+    if( type == 'Same Filter'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let keyValue = ['blendMode','filters','opacity'];
+        let final = b.filter(item => item.type == 'RECTANGLE');
+    }
+    //统一填充模式
+    if( type == 'Same Full'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let keyValue = ['scalingFactor','scaleMode','rotation'];
+        let final = b.filter(item => item.type == 'RECTANGLE');
+    }
+    //统一裁剪位置
+    if( type == 'Same Clip Position'){
+        
+    }
     //拆分文案
     if ( type == "splitText"){
         let a = figma.currentPage;
@@ -850,11 +897,6 @@ figma.ui.onmessage = async (message) => {
             }; 
         }
     };
-    if( type == 'Split By Symbol'){
-        let a = figma.currentPage;
-        let b = a.selection;
-        let texts = b.filter(item => item.type == 'TEXT');
-    };
     //自动排列
     if ( type == 'Arrange By Ratio'){
         if(info){
@@ -874,7 +916,7 @@ figma.ui.onmessage = async (message) => {
             final.forEach(item => {
                 let c = item.children
                 for ( let e = 0; e < c.length; e++){
-                    autoConstraints(c,c[e])
+                    autoConstraints(item,c[e])
                 };
             });
         };
@@ -907,7 +949,7 @@ figma.ui.onmessage = async (message) => {
         let final = b.filter(item => !getParentAll(item,'INSTANCE'));
         final = final.filter(item => !(item.parent.type == 'GROUP' && item.parent.children.length == 1))
         if(final.length == 2){
-            console.log(666)
+            //console.log(666)
             let [x1,y1,w1,h1,p1,i1] = [
                 final[0].x,
                 final[0].y,
@@ -939,6 +981,68 @@ figma.ui.onmessage = async (message) => {
             };
         };
     };
+    //拆分到容器
+    if( type == 'Divide To Frame'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let final = b.filter(item => item.children && item.children.length > 0 );
+        let selects = [];
+        final.forEach(node => {
+            let layerIndex = node.parent.children.findIndex(item => item.id == node.id)
+            let safenode;
+            switch (node.type){
+                case 'FRAME':
+                    safenode = node.clone();
+                break
+                case 'GROUP':
+                    let comp = figma.createComponentFromNode(node.clone());
+                    safenode = comp.createInstance().detachInstance();
+                    comp.remove();
+                break
+                case 'COMPONENT':
+                    safenode = node.createInstance().detachInstance();
+                break
+                case 'INSTANCE':
+                    safenode = node.clone().detachInstance();
+                break
+                default: return
+            };
+            setMain([...getSafeMain(node), null,'old'],safenode);
+            let groupnode = []
+            for(let i = 0; i < node.children.length; i++){
+                let newnode = safenode.clone();
+                newnode.children.forEach((child,index) => {
+                    if(index !== i){
+                        child.remove();
+                    };
+                });
+                if(i !== 0 && !info){
+                    newnode.fills = [];
+                };
+                groupnode.push(newnode);
+            };
+            safenode.remove();
+            let group = figma.group(groupnode,node.parent,(layerIndex + 1))
+            group.name = node.name + ' @divide';
+            selects.push(group);
+            node.visible = false;
+        });
+        a.selection = selects;
+    };
+    //包裹到容器
+    if( type == 'Put In Frame'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        let selects = [];
+        b.forEach(node => {
+            if((!info && !FRAME_TYPE.includes(node.type)) || info){
+                let frame = addFrame([],node);
+                fullInFrameSafa(node,frame);
+                selects.push(frame);
+            };
+        });
+        a.selection = selects;
+    };
     //填充组件到容器
     if( type == 'Clone to Fill'){
         let a = figma.currentPage;
@@ -961,13 +1065,15 @@ figma.ui.onmessage = async (message) => {
     if( type == 'Absolute & Fill'){
         let a = figma.currentPage;
         let b = a.selection;
-        if(b.length == 1){
-            if(b[0].type == 'INSTANCE' && b[0].parent.layoutMode !== 'NONE'){
-                
+        b.forEach(node => {
+            if(node.type == 'INSTANCE' && node.parent.layoutMode !== 'NONE'){
+                addAsAbsolute(null,node,[0,0]);
+                asFillChild(node,true);
+                if(!node.name.includes('@autoBod')){
+                    node.name += ' @autoBod'
+                };
             };
-        } else {
-
-        }
+        });
     };
     //母组件复制
     if ( type == 'Clone Comp.'){
@@ -1001,18 +1107,17 @@ figma.ui.onmessage = async (message) => {
                 setMain([],newNode,item);
                 item.parent.insertChild((layerIndex + 1),newNode);
                 if(info){
-                    item.remove();
+                    //item.remove();
                 } else {
                     if(item.height >= item.width){
-                        newNode.x += item.width + 30;
+                        newNode.x += item.width + 20;
                     } else {
-                        newNode.y -= item.height + 30;
+                        newNode.y -= item.height + 20;
                     };
                     newNode.name = item.name + ' copy';
                 };
                 
                 selects.push(newNode);
-                newComp.remove();
             };
         });
         a.selection = selects;
@@ -1229,7 +1334,7 @@ function sendSendComp(){
  * @param {node} node - 需要设置的对象
  * @param {node?} cloneNode - 直接参考的对象
  */
-function setMain(info,node,cloneNode,isBound){
+function setMain(info,node,cloneNode){
     let viewX = Math.floor( figma.viewport.center.x - ((figma.viewport.bounds.width/2  - 300)* figma.viewport.zoom));
     let viewY = Math.floor( figma.viewport.center.y - ((figma.viewport.bounds.height/2  - 300)* figma.viewport.zoom));
     let w = info[0],h = info[1],x = info[2],y = info[3],n = info[4],fills = info[5];
@@ -1252,19 +1357,11 @@ function setMain(info,node,cloneNode,isBound){
     y = y ? y : viewY;
     fills = fills ? fills : [];
     node.resize(w,h);
-    /*
-    if(isBound){
-        node.absoluteBoundingBox.x = x;
-        node.absoluteBoundingBox.y = y;
-    } else {
-        node.x = x;
-        node.y = y;
-    }
-    */
+
     node.x = x;
     node.y = y;
-    node.name = n;
-    node.fills = fills;
+    if(n) node.name = n;
+    if(fills !== 'old') node.fills = fills;
 
     if(info[6]){
         setStroke(node,info[6][0],info[6][1],info[6][2])
@@ -1494,7 +1591,7 @@ function TextMaxLength(text,max,add){
 };
 
 //按长、宽、方排列所选
-function layoutByRatio(nodes,isMinToMax){
+function layoutByRatio(nodes,isMinToMax,isAutoZoom){
     let b = nodes;
     let x = Math.min(...b.map(item => item.x)),XX = Math.min(...b.map(item => item.x));
     let y = Math.min(...b.map(item => item.y)),YY = Math.min(...b.map(item => item.y));
@@ -1573,6 +1670,10 @@ function layoutByRatio(nodes,isMinToMax){
             x = x + FF[e].w + gap; 
         };
     };
+    if(isAutoZoom){
+        figma.viewport.scrollAndZoomIntoView(nodes);
+        figma.viewport.zoom = figma.viewport.zoom * 0.6;
+    }
 };
 
 //获取画板可用于创建画板的信息
@@ -1761,7 +1862,7 @@ function addBodFill(node,Array,type){
     setMain([176,52,null,null,Array[0],Array[1],Array[2]],bodfill);
     let bodfills = addFrame([176,52,null,null,Array[3],[]]);
     bodfills.appendChild(bodfill);
-    addAbsolute(node,bodfills);
+    addAsAbsolute(node,bodfills);
     asFillChild(bodfills,true);
     asFillChild(bodfill,true);
     addCompPro(node,bodfills,Array[3],'BOOLEAN',true);
@@ -2353,10 +2454,9 @@ function addAutoLayout(node,layout,isFixed){
 /**
  * @param {node} parent - 自动布局对象
  * @param {node} absoluteNode - 绝对定位对象
- * @param {boolean} fill - 是否撑满自动布局对象（会同时修改约束
  * @param {Array | string} position - [x,y] | TBLR , 如果不撑满，则指定坐标或相对位置（会同时修改约束
  */
-function addAbsolute(parent,absoluteNode,position){
+function addAsAbsolute(parent,absoluteNode,position){
     let a = parent,b = absoluteNode;
     if(a){
         a.appendChild(b);
@@ -2543,35 +2643,39 @@ function toRGB(color,isPaint){
 };
 //拆分文案
 function splitText(safenode,oldnode,splitTag,splitKeys){
-    if(splitTag){
-        let node = safenode;
-        let layerIndex = oldnode.parent.children.findIndex(items => items.id == oldnode.id);
-        let lineslength = node.characters.split('\n').map(item => item.length);
-        let lines = [];
-        let start = 0;
-        // 如有分段
-        for (let length of lineslength) {
-            let end = start + length + 1;
-            lines.push([start, end]);
-            start = end;
+    let node = safenode;
+    let layerIndex = oldnode.parent.children.findIndex(items => items.id == oldnode.id);
+    let lineslength = node.characters.split('\n').map(item => item.length);
+    let lines = [];
+    let start = 0;
+    // 如有分段
+    for (let length of lineslength) {
+        let end = start + length + 1;
+        lines.push([start, end]);
+        start = end;
+    };
+    //console.log(lines,splitTag,splitKeys)
+    let splitnodes = [node];
+    //如勾选了按分段拆分,或按关键词拆分（默认分行,不然内容会乱）
+    if((splitKeys.includes('Wrap')||!splitTag) && lineslength.length > 1){
+        splitnodes = [];
+        let group = addFrame([],oldnode);
+        oldnode.parent.insertChild((layerIndex + 1),group);
+        group.name = '@split-p';
+        addAutoLayout(group,['V','TL',0,[0,0]],[true,false]);
+        for(let i = 0; i < lines.length; i++){
+            let splitnode = node.clone();
+            removeText(splitnode,lines[i][0],lines[i][1],true);
+            group.appendChild(splitnode);
+            splitnodes.push(splitnode);
+            //if(splitnode.getStyledTextSegments(['listOptions'])[0].listOptions.type == 'ORDERED'){
+                //splitnode.insertCharacters(0,(i + 1) + '. ');
+            //}
         };
-        //console.log(lines,splitTag,splitKeys)
-        let splitnodes = [node];
-        //如勾选了按分段拆分
-        if(splitKeys.includes('Wrap')){
-            splitnodes = [];
-            let group = addFrame([],oldnode);
-            oldnode.parent.insertChild((layerIndex + 1),group);
-            group.name = '@split-p';
-            addAutoLayout(group,['V','TL',0,[0,0]],[true,false]);
-            for(let i = 0; i < lines.length; i++){
-                let splitnode = node.clone();
-                removeText(splitnode,lines[i][0],lines[i][1],true);
-                group.appendChild(splitnode);
-                splitnodes.push(splitnode);
-            };
-            figma.currentPage.selection = [group];
-        };
+        figma.currentPage.selection = [group];
+    };
+    
+    if(splitTag){   
         if(splitKeys == ['Wrap'] ){
             figma.clientStorage.getAsync('userLanguage')
             .then (async (language) => {
@@ -2583,7 +2687,7 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
         } else {
             for(let i = 0; i < splitnodes.length; i++){
                 let group2 = addFrame([],splitnodes[i]);
-                if(!splitKeys.includes('Wrap')){
+                if(!splitKeys.includes('Wrap') || splitnodes.length == 1){
                     oldnode.parent.insertChild((layerIndex + 1),group2);
                 }else{
                     let layerIndex2 = splitnodes[i].parent.children.findIndex(items => items.id == splitnodes[i].id);
@@ -2610,15 +2714,69 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
                 };
                 splitnodes[i].remove();
                 
-                figma.currentPage.selection = [group2];
+                //figma.currentPage.selection = [group2];
             };
         };
     }else{
-        console.log(splitKeys);
+        //console.log(splitKeys);
+        for(let i = 0; i < splitnodes.length; i++){
+            let group2 = addFrame([],splitnodes[i]);
+            if(splitnodes.length == 1){
+                oldnode.parent.insertChild((layerIndex + 1),group2);
+            }else{
+                let layerIndex2 = splitnodes[i].parent.children.findIndex(items => items.id == splitnodes[i].id);
+                splitnodes[i].parent.insertChild((layerIndex2 + 1),group2);
+            }
+            group2.name = '@split-l';
+            addAutoLayout(group2,['H','BB',0,[0,0]],[false,true]);
+            let lines2length = splitnodes[i].characters.split(splitKeys[0]).map(item => item.length);
+            let lines2 = []
+            let start2 = 0;
+            for (let ii = 0; ii < lines2length.length; ii++) {
+                let length = lines2length[ii];
+                let end2;
+                let keyMove = 0;
+                switch(splitKeys[1]){
+                    case 'Suf':
+                        end2 = start2 + length + 1;
+                        if(ii == lines2length.length - 1){
+                            end2 = start2 + length;
+                        };
+                    break
+                    case 'Pre':
+                        end2 = start2 + length + 1;
+                        if(ii == 0){
+                            end2 = start2 + length;
+                        };
+                    break
+                    case 'Null':
+                        end2 = start2 + length;
+                        keyMove = 1;
+                    break
+                }
+                lines2.push([start2, end2]);
+                start2 = end2 + keyMove;
+            };
+
+            //console.log(lines2length,lines2)
+            try {
+                for(let ii = 0; ii < lines2.length; ii++){
+                    let splitnode2 = splitnodes[i].clone();
+                    removeText(splitnode2,lines2[ii][0],lines2[ii][1],true,true);
+                    group2.appendChild(splitnode2);
+                    if(splitnode2.characters == ''){
+                        splitnode2.remove();
+                    };
+                };
+            } catch(error) {
+                console.log(error)
+            }
+            splitnodes[i].remove();
+        };
     };
     if(!safenode.removed){
         safenode.remove();
-    }
+    };
     oldnode.visible = false;
 };
 function removeText(node,start,end,isReverse,isInine){

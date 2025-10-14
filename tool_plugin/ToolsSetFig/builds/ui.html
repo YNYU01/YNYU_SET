@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bdc4f924cf1dbbb4812f097ba41830e0bc93dac0/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bdc4f924cf1dbbb4812f097ba41830e0bc93dac0/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1093,6 +1093,7 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 
 [data-create-mix]{
   max-height: calc(100% - 405px);
+  min-height: 20vh;
 }
 
 [data-create-tags-box],[data-export-tags-box]{
@@ -1203,6 +1204,10 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 
 [data-tableset-thtd] label{
   cursor: var(--pointer,pointer);
+}
+
+[data-tableset-thtd] [data-radio]{
+  height: 14px;
 }
 
 [data-tablestyle-set],[data-exporttype-set]{
@@ -1484,6 +1489,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   padding:0 4px;
   margin-bottom: 6px;
   gap: 4px;
+}
+
+[data-skill-line="false"]{
+  display: none;
 }
 
 [data-skill-more]{
@@ -2086,7 +2095,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <div class="df-ffc w100 df-cc">
     <div data-page-id="page" class="df-ffc w100" data-tab-pick="create">
       <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: flex;">
-        <div class="wh100 df-ffc ovy noscrollbar" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovy noscrollbar" style="height: calc(100% - 50px); max-width: 560px; align-items: center; padding:0 10px; box-sizing: border-box;">
           <div class="wh100 df-ffc" style="align-items: center;">
             <!--步骤1-->
             <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
@@ -2291,6 +2300,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div>
           </div>
         </div>
+        <div style="height: 10px;"></div>
         <div data-create-any data-btn="main" class="df-cc" data-en-text="CREATER">创建</div>
       </div>
       <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
@@ -2338,8 +2348,8 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div>
           </div>
           <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px;">
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (插件设置)</div>    
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (figma设置)</div>
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (默认)</div>    
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
           </div>
           <!--步骤2-->
           <div class="w100 df-lc"  style="padding:10px 0 4px 0; opacity: 0.6; vertical-align: baseline;"> 
@@ -2419,7 +2429,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         
       </div>
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc ovy noscrollbar" style="height: 100%; max-width: 560px; align-items: center; padding: 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovy noscrollbar" style="max-width: 560px; align-items: center; padding: 10px 10px 0 10px; box-sizing: border-box;">
           <div class="wh100 df-ffc" style="box-sizing: border-box;">
             <!--步骤1-->
             <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
@@ -2730,7 +2740,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               </div>
 
             </div>
-            <!--div style="min-height: 20px;"></div-->
+            <div style="min-height: 10px;"></div>
           </div>
         </div>
       </div>
@@ -2965,7 +2975,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       </div>
                     </div>
                   </div>
-                  <!--div class="df-lc" data-skill-line>
+                  <div class="df-lc" data-skill-line="false">
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右变形</div>
                     <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
@@ -2977,7 +2987,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       </div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line>
+                  <div class="df-lc" data-skill-line="false">
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale Y">上下变形</div>
                     <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
@@ -2991,7 +3001,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="Reset All Transform">重置全部</div>
-                  </div-->
+                  </div>
                 </div>
                 <div class="fl1"  data-skill-sec="ClipByGrid">
                   <div data-skill-star="false">
@@ -3046,7 +3056,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       <div class="df-cc" data-btn="skill-main" data-en-text="Raw Size">还原尺寸</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="​High Pass">高反差保留</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Hight Pass">高反差保留</div>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Invert Alpha">反转通道</div>
                     </div>
                     <div class="df-lc w100" data-skill-more>
@@ -3146,10 +3156,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Symbol">分割符</div>
                     <input id="split-word" data-input type="text">
-                    <div data-splitword-set class="df-lc fl1" data-radio-value="1" style="gap: 4px; min-width: 110px;">
-                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="1" data-en-text="Suf">接后</div>
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2" data-en-text="Pre">接前</div>
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="3" data-en-text="Null">剔除</div>
+                    <div data-splitword-set class="df-lc fl1" data-radio-value="Suf" style="gap: 4px; min-width: 110px;">
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="Suf" data-en-text="Suf">接后</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="Pre" data-en-text="Pre">接前</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="Null" data-en-text="Null">剔除</div>
                     </div>
                   </div>
                   <div class="df-sc" data-skill-line="">
@@ -3173,6 +3183,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Reversing Index">反转顺序</div>
                       <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Exchange Position">调换位置</div>  
+                    </div>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Divide To Frame">拆分到容器</div>
+                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Put In Frame">包裹到容器</div>
                     </div>
                     <div data-skill-gap>
                       <span>----</span>
@@ -3288,14 +3302,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bdc4f924cf1dbbb4812f097ba41830e0bc93dac0/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bdc4f924cf1dbbb4812f097ba41830e0bc93dac0/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bdc4f924cf1dbbb4812f097ba41830e0bc93dac0/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bdc4f924cf1dbbb4812f097ba41830e0bc93dac0/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bdc4f924cf1dbbb4812f097ba41830e0bc93dac0/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bdc4f924cf1dbbb4812f097ba41830e0bc93dac0/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bdc4f924cf1dbbb4812f097ba41830e0bc93dac0/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bdc4f924cf1dbbb4812f097ba41830e0bc93dac0/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4199,7 +4213,7 @@ userText_BtnDown.addEventListener('mouseleave',()=>{
 
 //创建内容
 createAnyBtn.addEventListener('click',() => {
-  let type = createTagsBox.parentNode.getAttribute('data-create-tags-box');
+  let type = createTagsBox.parentNode.parentNode.getAttribute('data-create-tags-box');
   switch (type){
     case 'image':
       let images = getFinalInfo(CreateImageInfo);
@@ -4501,9 +4515,9 @@ function addTag(type,info){
           end = end.replace(/type/g,'')
         }
         if(list.note && list.note !== ''){
-          end = end.replace(/add/g,list.add)
+          end = end.replace(/note/g,list.note)
         }else{
-          end = end.replace(/add/g,'')
+          end = end.replace(/note/g,'')
         }
         if(list.s && list.s !== ''){
           end = end.replace(/s/g,list.s + 'k');
@@ -5292,8 +5306,8 @@ skillBtnMain.forEach(btn => {
     };
     if(type == 'inputs'){
       let inputs = document.getElementById('split-word').value;
-      let typeNum = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
-      toolMessage([[[inputs,typeNum * 1],'inputs'],'splitText'],PLUGINAPP);
+      let type = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
+      toolMessage([[[inputs,type],'inputs'],'splitText'],PLUGINAPP);
     };
   };
 
