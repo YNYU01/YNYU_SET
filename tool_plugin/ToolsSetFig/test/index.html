@@ -77,6 +77,15 @@
           <path fill="var(--mainColor)" d="M8.162 9.13587L2.76928 3.74315L2.76992 7.31788C2.76992 7.70152 2.45836 8.01308 2.07473 8.01308C1.69109 8.01308 1.37953 7.70152 1.37953 7.31788L1.38017 2.06624C1.38017 1.68261 1.69109 1.37169 2.07473 1.37169L7.32636 1.37105C7.71 1.37105 8.02156 1.68261 8.02156 2.06625C8.02156 2.44988 7.71 2.76144 7.32636 2.76144L3.75164 2.7608L9.14435 8.15352C9.41562 8.42479 9.41562 8.8646 9.14435 9.13587C8.87308 9.40714 8.43327 9.40714 8.162 9.13587Z"/>
         </svg>          
       </label>
+      <div data-imgnum="1" class="df-cc">
+        <div data-imgnum-down data-btn class="df-cc">◀</div>
+        <div data-imgnum-input data-int-value="1" class="df-cc">
+          <input id="imgnum-set" value="1" type="text" class="nobod" data-input data-input-type="int" data-input-must="1,1000">
+          <span>/</span>
+          <span data-imgnum-max>1000</span>
+        </div>
+        <div data-imgnum-up data-btn class="df-cc">▶</div>
+      </div>
       <div data-close="close" data-close-for="dailogimg">
         <btn-close></btn-close>
       </div>
@@ -103,7 +112,7 @@
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
       <div class="h100 df-ffc" style="justify-content: space-between;">
         <div ></div>
-        <a href="https://www.ynyuset.cn/preview_tools/hlep_toolsset" target="_blank" class="df-cc" data-btn="help">
+        <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" target="_blank" class="df-cc" data-btn="help">
           <div data-en-text="HELP DOC">帮助文档</div>
           <div style="width:20px; height:20px; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
             <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -514,7 +523,7 @@
             <!--预设表格样式-->
             <div data-tableset-thtd class="df-lc w100">
               <div class="df-lc" style="max-width: 100%; margin:0 auto; gap: 4px;">
-                <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px);">
+                <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px); height: 40px;">
                   <input id="chk-tablestyle" checked type="checkbox" >
                   <label for="chk-tablestyle" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;  width: 22px; height: 22px;
                   --tips-text:'按预设样式生成组件/修改表格';  --tips-text-en:'Create/change from the preset style';">
@@ -821,18 +830,20 @@
           <!--功能tags-->
           <div class="w100 fl0 noscrollbar df" data-scroll>
             <div data-skilltype-box class="df-lc fl0" data-radio-value="1" >
-              <div data-radio data-radio-data="1" data-radio-main="true" class="df-ffc df-cc" style="gap: 4px;">
+              <div data-radio data-radio-data="1" data-radio-main="true" class="df-cc">
                 <div data-skilltype-icon>
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="var(--mainColor)" d="M9.10133 5.24013C9.4668 4.4921 10.5329 4.4921 10.8983 5.24013L11.9152 7.32142L14.2089 7.64537C15.0332 7.76179 15.3626 8.77567 14.7642 9.3544L13.099 10.9647L13.4996 13.2462C13.6437 14.0661 12.7812 14.6928 12.0458 14.3024L9.99983 13.2163L7.95381 14.3024C7.21847 14.6928 6.35601 14.0661 6.50002 13.2462L6.9007 10.9647L5.23551 9.3544C4.63703 8.77567 4.96646 7.76179 5.79081 7.64537L8.08446 7.32142L9.10133 5.24013Z"/>
                     <rect stroke="var(--mainColor)" x="2.5" y="2.5" width="15" height="15" rx="2"/>
                   </svg>           
                 </div>
-                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Useful & Starts" >
-                  常用功能
+                <div data-skilltype-name data-btn-name data-any="vw300"
+                data-skillmodule-for="Useful & Starts" data-en-text="Start">
+                  收藏
                 </div>
+                <div data-skilltype-pick></div>
               </div>
-              <div data-radio data-radio-data="2" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+              <div data-radio data-radio-data="2" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="var(--mainColor)" d="M7 7H2V2H7V7ZM3 3V6H6V3H3Z"/>
@@ -846,11 +857,13 @@
                     <path fill="var(--mainColor)" d="M14 4C14 3.44772 14.4477 3 15 3H17C17.5523 3 18 3.44772 18 4V6C18 6.55228 17.5523 7 17 7H15C14.4477 7 14 6.55228 14 6V4Z"/>
                   </svg>              
                 </div>
-                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Pixel & Transform" >
-                  像素&变换
+                <div data-skilltype-name data-btn-name data-any="vw300"
+                data-skillmodule-for="Pixel & Transform" data-en-text="Pixel">
+                  像素
                 </div>
+                <div data-skilltype-pick></div>
               </div>
-              <div data-radio data-radio-data="3" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+              <div data-radio data-radio-data="3" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="var(--mainColor)" d="M9 2L8.99992 4.81319H8.02803L7.94126 3.8956H6.19353L6.19361 8.41026L7.13657 8.5641V10H3.66841V8.5641L4.73222 8.41026L4.73214 3.8956H3.05867L2.97767 4.81319H2L2.00008 2H9Z"/>
@@ -862,11 +875,13 @@
                     <path stroke="var(--mainColor)"  stroke-linecap="round" stroke-dasharray="2 2" d="M11.5 13.5C11.5 12.3954 12.3954 11.5 13.5 11.5H16.5C17.6046 11.5 18.5 12.3954 18.5 13.5V16.5C18.5 17.6046 17.6046 18.5 16.5 18.5H13.5C12.3954 18.5 11.5 17.6046 11.5 16.5V13.5Z"/>
                   </svg>                                   
                 </div>
-                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Text & Layer" >
-                  文本&图层
+                <div data-skilltype-name data-btn-name data-any="vw300"
+                data-skillmodule-for="Text & Layer" data-en-text="Layer">
+                  图层
                 </div>
+                <div data-skilltype-pick></div>
               </div>
-              <div data-radio data-radio-data="4" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+              <div data-radio data-radio-data="4" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="var(--mainColor)" d="M12.5 7H7.5V2H12.5V7ZM8.5 3V6H11.5V3H8.5Z"/>
@@ -879,11 +894,13 @@
                     <path fill="var(--mainColor)" d="M4.63324 12.8363L4.94986 12.4494L4.94986 12.4494L4.63324 12.8363ZM11.1597 13.6771L11.4886 14.0537L11.5013 14.0426L11.5132 14.0307L11.1597 13.6771ZM12.5 13.6103L12.8271 13.2319L12.8166 13.2233L12.5 13.6103ZM17.5 13.5731C17.5 13.2969 17.2761 13.0731 17 13.0731C16.7239 13.0731 16.5 13.2969 16.5 13.5731H17.5ZM16.5 12C16.5 12.2761 16.7239 12.5 17 12.5C17.2761 12.5 17.5 12.2761 17.5 12H16.5ZM17.5 11.5C17.5 11.2239 17.2761 11 17 11C16.7239 11 16.5 11.2239 16.5 11.5H17.5ZM7.19138 14.9294L6.87476 15.3163L7.19138 14.9294ZM4.63324 12.8363L4.31662 13.2233L6.87476 15.3163L7.19138 14.9294L7.508 14.5424L4.94986 12.4494L4.63324 12.8363ZM9.77349 14.8878L10.1024 15.2644L11.4886 14.0537L11.1597 13.6771L10.8307 13.3006L9.44458 14.5112L9.77349 14.8878ZM12.5 13.6103L12.173 13.9886L16.673 17.8783L17 17.5001L17.327 17.1218L12.827 13.232L12.5 13.6103ZM11.1597 13.6771L11.5132 14.0307C11.6948 13.8491 11.9846 13.8346 12.1834 13.9973L12.5 13.6103L12.8166 13.2233C12.2202 12.7353 11.351 12.7787 10.8061 13.3236L11.1597 13.6771ZM3 13.6103H3.5C3.5 13.1885 3.99015 12.9562 4.31662 13.2233L4.63324 12.8363L4.94986 12.4494C3.97046 11.648 2.5 12.3449 2.5 13.6103H3ZM4 18.0001V18.5001H16V18.0001V17.5001H4V18.0001ZM17 17.0001H17.5V13.5731H17H16.5V17.0001H17ZM16 18.0001V18.5001C16.8284 18.5001 17.5 17.8285 17.5 17.0001H17H16.5C16.5 17.2762 16.2761 17.5001 16 17.5001V18.0001ZM3 17.0001H2.5C2.5 17.8285 3.17157 18.5001 4 18.5001V18.0001V17.5001C3.72386 17.5001 3.5 17.2762 3.5 17.0001H3ZM3 17.0001H3.5V13.6103H3H2.5V17.0001H3ZM17 12H17.5V11.5H17H16.5V12H17ZM7.19138 14.9294L6.87476 15.3163C7.81915 16.089 9.18336 16.0671 10.1024 15.2644L9.77349 14.8878L9.44458 14.5112C8.89316 14.9928 8.07463 15.006 7.508 14.5424L7.19138 14.9294Z"/>
                   </svg>                  
                 </div>
-                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Vector & Generate" >
-                  矢量&生成
+                <div data-skilltype-name data-btn-name data-any="vw300"
+                data-skillmodule-for="Vector & Generate" data-en-text="Vector">
+                  矢量
                 </div>
+                <div data-skilltype-pick></div>
               </div>
-              <div data-radio data-radio-data="5" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+              <div data-radio data-radio-data="5" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="var(--mainColor)" d="M7.53784 8.53784C7.53784 7.98556 7.98556 7.53784 8.53784 7.53784H11.4618C12.0141 7.53784 12.4618 7.98556 12.4618 8.53784V11.4618C12.4618 12.0141 12.0141 12.4618 11.4618 12.4618H8.53784C7.98556 12.4618 7.53784 12.0141 7.53784 11.4618V8.53784Z"/>
@@ -895,16 +912,19 @@
                     <circle stroke="var(--mainColor)" cx="17.5" cy="10" r="1.5"/>
                   </svg>                  
                 </div>
-                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Style & Prototype" >
-                  样式&原型
+                <div data-skilltype-name data-btn-name data-any="vw300"
+                data-skillmodule-for="Style & Prototype" data-en-text="Style">
+                  样式
                 </div>
+                <div data-skilltype-pick></div>
               </div>
             </div>
           </div>
+          <div style="height: 10px;"></div>
           <!--功能列表-->
           <div  data-skills-scroll class="wh100 df-ffc ovy noscrollbar">
             <div data-skills-box class="w100 df-ffc">
-              <div class="w100 df" data-skillmodule-zh="常用功能" data-skillmodule="Useful & Starts">
+              <div class="w100 df" data-skill-col="1" data-skillmodule-zh="常用功能" data-skillmodule="Useful & Starts">
                 <!--自动添加-->
                 <div class="fl1 df-cc" data-skill-sec data-skill-cover="end" style="display: flex;">
                   <span data-any="vw240" data-skill-cover="tips">
@@ -920,7 +940,7 @@
                   </span>
                 </div>
               </div>
-              <div class="w100 df" data-skillmodule-zh="像素&变换" data-skillmodule="Pixel & Transform">
+              <div class="w100 df" data-skill-col="2" data-skillmodule-zh="像素&变换" data-skillmodule="Pixel & Transform">
                 <div class="fl1" data-skill-sec="InSituRasterize">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -1153,7 +1173,7 @@
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodule-zh="文本&图层" data-skillmodule="Text & Layer">
+              <div class="w100 df" data-skill-col="3" data-skillmodule-zh="文本&图层" data-skillmodule="Text & Layer">
                 <div class="fl1"  data-skill-sec="SplitText">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -1282,7 +1302,7 @@
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodule-zh="矢量&生成" data-skillmodule="Vector & Generate">
+              <div class="w100 df" data-skill-col="4" data-skillmodule-zh="矢量&生成" data-skillmodule="Vector & Generate">
                 <div class="fl1"  data-skill-sec="GetPath">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -1316,7 +1336,7 @@
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodule-zh="样式&原型" data-skillmodule="Style & Prototype">
+              <div class="w100 df" data-skill-col="5" data-skillmodule-zh="样式&原型" data-skillmodule="Style & Prototype">
                 <div class="fl1"  data-skill-sec="">
                   <div data-skill-star="false">
                     <btn-star></btn-star>

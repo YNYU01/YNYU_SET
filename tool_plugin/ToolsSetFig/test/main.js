@@ -47,13 +47,13 @@ let toUserTips = {
   worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
   random: [
     ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
-    ["身心要紧, 不舒服及时休息~","Put down your work and rest in time~"],
-    ["工具提效, 是为了多陪家人~","Spend more time with your family~"],
-    ["支持开源, 要价值而非价格~","Support open source and design~"],
+    ["工作是做不完的, 及时休息~","Put down your work and rest in time~"],
+    ["请支持开源+设计~","Support open source + design~"],
+    ["提效不是义务, 理应多劳多得~","Refuse malicious overtime work~"],
     ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
-    ["身心要紧, 不舒服及时休息~","Put down your work and rest in time~"],
-    ["工具提效, 是为了多陪家人~","Spend more time with your family~"],
-    ["支持开源, 要价值而非价格~","Support open source and design~"],
+    ["工作是做不完的, 及时休息~","Put down your work and rest in time~"],
+    ["请支持开源+设计~","Support open source + design~"],
+    ["提效不是义务, 理应多劳多得~","Refuse malicious overtime work~"],
   ],
 };
 
@@ -178,14 +178,14 @@ let helpData = {
     "【连续选中】功能可类似文本段落的连选, 会从第一个xxx@td开始逐行选中, 到第二个xxx@td结束",
     ""],
     ["li",
-    "选中后插件还是聚焦状态，此时无法对画布内容进行操作，可以用鼠标中建点击画布区域以重新聚焦到画布",
+    "选中后插件还是聚焦状态, 此时无法对画布内容进行操作, 可以用鼠标中建点击画布区域以重新聚焦到画布",
     ""],
     ["br","",""],
     ["p",
     "为弥补组件属性的局限性问题, 可使用【标签属性映射】来完成 /++ #xxx.fill(填充色值) | #xxx.stroke(描边色值) | #xxx.fillStyle(填充样式名) | #xxx.strokeStyle(描边样式名)| #xxx.visible(可见性true/false) | #xxx.opacity(透明度0~1) | #xxx.fontSize(字号) ++/ 的参数化控制",
     ""],
     ["li",
-    "选中的对象将按图层顺序对应每一行的数值,修改时会先判断对象是否带标签, 然后再遍历子对象, 对象/子对象本身可以包含多个标签, 可以存在不同的标签组合，/++ 注意标签与命名或其他标签之间要用空格隔开 ++/, 这对实现更复杂的样式变化很有用 ",
+    "选中的对象将按图层顺序对应每一行的数值,修改时会先判断对象是否带标签, 然后再遍历子对象, 对象/子对象本身可以包含多个标签, 可以存在不同的标签组合, /++ 注意标签与命名或其他标签之间要用空格隔开 ++/, 这对实现更复杂的样式变化很有用 ",
     ""],
     ["li",
     "",
@@ -222,6 +222,7 @@ const dailogBox = document.querySelector('[data-dailog-box]');
 const dailogImg = document.querySelector('[data-dailogimg]');
 const dailogImgBox = document.querySelector('[data-dailogimg-box]');
 const dailogSearchBox = document.querySelector('[data-dailogsearch-box]');
+const imgnumSet = document.getElementById('imgnum-set');
 const skillSearchInput = document.getElementById('skillsearch');
 const skillTypeBox = document.querySelector('[data-skilltype-box]');
 const skillAllBox = document.querySelector('[data-skills-box]');
@@ -245,11 +246,11 @@ const createTableBtn = document.querySelector('[data-create-table]');
 const tableStyleSet = document.querySelector('[data-tablestyle-set]');
 
 let skillModel = [];
-let skilltypeNameNode = skillTypeBox.querySelectorAll('[data-skilltype-name]');
+let skilltypeNameNode = document.querySelectorAll('[data-skillmodule]');
 skilltypeNameNode.forEach(item => {
-  let name1 = item.getAttribute('data-zh-text');
+  let name1 = item.getAttribute('data-skillmodule-zh');
   name1 = name1 ? name1 : item.textContent.trim();
-  let name2 = item.getAttribute('data-en-text');
+  let name2 = item.getAttribute('data-skillmodule');
   skillModel.push([name1,name2]);
 });
 let isSkillScroll = true;
@@ -895,6 +896,20 @@ userText_BtnDown.addEventListener('mouseleave',()=>{
   clearInterval(userText_ScrollDown);
 });
 
+//切换预览图
+getElementMix('data-imgnum-up').addEventListener('click',()=>{
+  let oldvalue = imgnumSet.value * 1;
+  let maxnum = ExportImageInfo.length;
+  imgnumSet.value = (oldvalue + 1) <= maxnum ? (oldvalue + 1) : maxnum;
+  if(imgnumSet.value == oldvalue) return;
+  imgnumSet.parentNode.setAttribute('data-int-value',imgnumSet.value);
+});
+getElementMix('data-imgnum-down').addEventListener('click',()=>{
+  let oldvalue = imgnumSet.value * 1;
+  imgnumSet.value = (oldvalue - 1) >= 1 ? (oldvalue - 1) : 1;
+  if(imgnumSet.value == oldvalue) return;
+  imgnumSet.parentNode.setAttribute('data-int-value',imgnumSet.value);
+});
 
 
 //创建内容
@@ -939,6 +954,11 @@ createAnyBtn.addEventListener('click',() => {
 });
 //功能列表滚动绑定tab
 skillAllModel.forEach(item =>{
+  /**/
+  let icon = document.querySelector(`[data-skillmodule-for="${item.getAttribute('data-skillmodule')}"]`).previousElementSibling.cloneNode(true);
+  icon.setAttribute('data-skilltype-icon','mini');
+  item.appendChild(icon);
+  /**/
   item.addEventListener('mouseenter',() => {
     isSkillScroll = false;
     let modelid = item.getAttribute('data-skillmodule');
@@ -1253,6 +1273,7 @@ function addTag(type,info){
     break
     case 'export-img':
       ExportImageInfo.push(...info);
+      getElementMix('data-imgnum-max').textContent = ExportImageInfo.length;
       exportTagsBox.innerHTML = '<!--动态填充-->';
       ExportImageInfo.forEach((layer,index) => {
         let tag = document.createElement('div');
@@ -1350,6 +1371,7 @@ function addTag(type,info){
         view.setAttribute('style','width:14px; height: 14px;');
         view.className = 'btn-op';
         view.addEventListener('click',()=>{
+          imgnumSet.value = index + 1;
           let img = layer.compressed ? layer.compressed : layer.u8a;
           dailogImgBox.innerHTML = '';
           dailogImg.style.display = 'flex';
@@ -1358,6 +1380,7 @@ function addTag(type,info){
           viewimg.setAttribute('data-ismaxW',ismaxW);
           viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
           dailogImgBox.appendChild(viewimg);
+          viewimg.setAttribute('data-imgnum-pick',index + 1);
         });
         sizebox.appendChild(view);
         sizeinfo.appendChild(sizebox);
@@ -1814,6 +1837,7 @@ skillStar.forEach(item =>{
         userSkillStar = userSkillStar.filter(id => id !== skillId);
         storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
         cover.remove();
+        reSkillNum();
       } else {
         let numModel = skillNode.parentNode.getAttribute('data-skillnum');
         if(numModel == 2){
@@ -2217,6 +2241,21 @@ function getUserInt(node){
     realSize.setAttribute('data-export-realsize','');
     realSize.nextElementSibling.textContent = '10';
   };
+  if(node.getAttribute('data-imgnum-input') !== null){
+    let viewimg = dailogImgBox.querySelector('img');
+    if(int > ExportImageInfo.length){
+      imgnumSet.value = viewimg.getAttribute('data-imgnum-pick');
+      return
+    }
+    let layer = ExportImageInfo[int - 1];
+    if(!layer) return;
+    let img = layer.compressed ? layer.compressed : layer.u8a;
+    let ismaxW = layer.width >= layer.height ? 'true' : 'false';
+    viewimg.setAttribute('data-ismaxW',ismaxW);
+    viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
+    dailogImgBox.appendChild(viewimg);
+    viewimg.setAttribute('data-imgnum-pick',int);
+  }
   //console.log(int)
 };
 

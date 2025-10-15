@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -527,8 +527,14 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
 #upload-textarea{
   border: none;
   max-width: none;
+  --lineH: 16px;
+  --lineC: rgba(122, 122, 122, 0.164);
   padding: 4px 10px 4px 16px;
-  line-height: 16px;
+  line-height: var(--lineH);
+}
+
+*::selection{
+  background: rgba(49, 207, 154, 0.24);
 }
 
 #upload-set-box{
@@ -566,6 +572,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   text-align: right;
   line-height: 16px;
   gap: 0;
+  position: relative;
 }
 
 [data-scroll-left]{
@@ -764,9 +771,9 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-skilltype-icon]{
-  width: 40px;
-  height: 40px;
-  padding: 4px;
+  width: 28px;
+  height: 28px;
+  padding: 2px;
   box-sizing: border-box;
   flex: 0 0 auto;
 }
@@ -847,11 +854,16 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [data-theme="light"] [data-dailog],
-[data-theme="light"] [data-dailogimg],
 [data-theme="light"] [data-dailogsearch]{
   background: rgba(226, 226, 226, 0.8);
   --boxGry: #ffffff;
   --boxBak: #ffffff;
+}
+
+[data-theme="light"] [data-dailogimg]{
+  background: rgba(226, 226, 226, 0.8);
+  --boxGry: #ffffff;
+  --boxBak: #e1e1e1;
 }
 
 [data-dailog-box] p{
@@ -1024,7 +1036,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   height: 20px;
 }
 
-[for="fullimg"]{
+[for="fullimg"],[data-imgnum-up],[data-imgnum-down]{
   width: 18px;
   height: 18px;
   border-radius: 4px;
@@ -1032,7 +1044,9 @@ input[type="checkbox"]:checked + .btn-moreset{
 }
 
 [for="fullimg"]:hover,
+[data-imgnum-up]:hover,[data-imgnum-down]:hover,
 input[type="checkbox"]:checked + [for="fullimg"]{
+  cursor: var(--pointer,pointer);
   background: var(--boxGry);
 }
 
@@ -1049,6 +1063,24 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 }
 [data-isfull="false"] [data-ismaxW="false"]{
   height: 100%;
+}
+
+[data-imgnum-input]{
+  border-radius: 6px;
+  width: fit-content;
+  background: var(--boxGry);
+  padding: 2px;
+}
+
+[data-imgnum],[data-imgnum-input]{
+  font-size: 10px;
+  gap:4px;
+}
+
+[data-imgnum-input] input{
+  font-size: 10px;
+  width: 6ch;
+  text-align: center;
 }
 
 .bod-d{
@@ -1206,10 +1238,6 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   cursor: var(--pointer,pointer);
 }
 
-[data-tableset-thtd] [data-radio]{
-  height: 14px;
-}
-
 [data-tablestyle-set],[data-exporttype-set]{
   gap: 4px;
 }
@@ -1302,85 +1330,78 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 
 [data-skilltype-box]{
   max-width: 560px;
-  height: 60px;
-  gap: 6px;
+  height: 40px;
+  gap: 2px;
   margin: 0 auto;
 }
-[data-language="En"] [data-skilltype-box]{
-  gap: 4px;
+
+[data-skilltype-box] [data-radio]{
+  padding: 0.5ch;
+  border: 1px var(--boxBod) solid;
+  min-width: 35px;
 }
 
 [data-skilltype-name]{
   font-size: 10px;
-  line-height: 1.25em;
+  padding-right: 0.5ch;
+  display: none;
+}
+
+[data-radio-main="true"] [data-skilltype-name]{
+  display: flex;
 }
 
 [data-skills-scroll]{
   max-width: 560px;
-  border-top: 1px solid var(--boxBod);
   padding-bottom: 80px;
 }
 
 [data-skills-box]{
-  padding-top: 10px;
-  gap: 12px;
+  gap: 10px;
 }
 
 [data-skillmodule]{
   border-radius: 4px;
   padding: 6px;
   box-sizing: border-box;
-  min-height: 180px;
   flex-wrap: wrap;
   gap: 6px;
   position: relative;
 }
 
-[data-skillmodule]::after{
+[data-skilltype-icon="mini"]{
+  --wh: 20px;
+  width: var(--wh);
+  height: var(--wh);
+  position: absolute;
+  /**
+  top: calc(var(--wh)*-1 + 6px);
+  left: calc(50% - var(--wh)/2);
+  /**/
+  top: calc(var(--wh)*-0.5 + 12px);
+  --mainColor: var(--boxBod);
+}
+
+[data-skillmodule]::before{
   content: attr(data-skillmodule);
   color: var(--boxBod);
   display: flex;
   align-items: center;
+  /**
   justify-content: center;
+  /**/
   font-size: 10px;
-  position: absolute;
-  filter: 
-  drop-shadow(0 1px 0 var(--boxBak))
-  drop-shadow(1px 0 0 var(--boxBak))
-  drop-shadow(0 -1px 0 var(--boxBak))
-  drop-shadow(-1px 0 0 var(--boxBak))
-  drop-shadow(0 2px 0 var(--boxBak))
-  drop-shadow(2px 0 0 var(--boxBak))
-  drop-shadow(0 -2px 0 var(--boxBak))
-  drop-shadow(-2px 0 0 var(--boxBak));
-  width: calc(100% - 10px);  
-  height: 1;
-  top :-4px;
-  left: 5px;
+  width: 100%;  
+  height: 14px;
+  padding-left: 24px;
 }
 
-[data-language="Zh"] [data-skillmodule]::after{
+[data-language="Zh"] [data-skillmodule]::before{
   content: attr(data-skillmodule-zh);
 }
 
-[data-skillmodule]::before{
-  content: '';
-  position: absolute;
-  background: var(--boxBod);
-  width: calc(100% - 10px);  
-  height: 1;
-  top :-4px;
-  left: 5px;
-  opacity: 0.3;
-}
-
-[data-skillmodule="Useful & Starts"]{
-  min-height: 80px;
-}
-
-[data-skillmodule="Useful & Starts"]::after,
 [data-skillmodule="Useful & Starts"]::before{
-  display: none;
+  /*display: none;*/
 }
 
 [data-skillmodule="Useful & Starts"] [data-skill-index]{
@@ -1404,11 +1425,57 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 [data-skill-sec]:hover{
   /**/
   filter: 
-  drop-shadow(0 1px 0 var(--boxBod))
-  drop-shadow(1px 0 0 var(--boxBod))
-  drop-shadow(0 -1px 0 var(--boxBod))
-  drop-shadow(-1px 0 0 var(--boxBod));
+  drop-shadow(0 1px 0 var(--skill-col,var(--boxBod)))
+  drop-shadow(1px 0 0 var(--skill-col,var(--boxBod)))
+  drop-shadow(0 -3px 0 var(--skill-col,var(--boxBod)))
+  drop-shadow(-1px 0 0 var(--skill-col,var(--boxBod)));
   /**/
+}
+
+[data-skilltype-box] [data-radio-main="true"]{
+  background: transparent;
+}
+
+[data-theme="dark"] [data-skilltype-box] [data-radio-main="true"] {
+  --mainColor: var(--skill-col);
+  border-color: var(--skill-col);
+}
+
+[data-theme="light"] [data-skilltype-box] [data-radio-main="true"] {
+  background: var(--skill-col);
+  border-color: #656565;
+}
+
+
+[data-skill-col="1"],[data-skilltype-box] [data-radio-data="1"]{
+  --skill-col: rgb(58, 122, 114);
+}
+[data-skill-col="2"],[data-skilltype-box] [data-radio-data="2"]{
+  --skill-col: rgb(77, 124, 146);
+}
+[data-skill-col="3"],[data-skilltype-box] [data-radio-data="3"]{
+  --skill-col: rgb(119, 111, 163);
+}
+[data-skill-col="4"],[data-skilltype-box] [data-radio-data="4"]{
+  --skill-col: rgb(59, 134, 72);
+}
+[data-skill-col="5"],[data-skilltype-box] [data-radio-data="5"]{
+  --skill-col: rgb(165, 78, 52);
+}
+[data-theme="light"] [data-skill-col="1"],[data-theme="light"] [data-skilltype-box] [data-radio-data="1"]{
+  --skill-col: rgb(132, 240, 225);
+}
+[data-theme="light"] [data-skill-col="2"],[data-theme="light"] [data-skilltype-box] [data-radio-data="2"]{
+  --skill-col: rgb(132, 216, 255);
+}
+[data-theme="light"] [data-skill-col="3"],[data-theme="light"] [data-skilltype-box] [data-radio-data="3"]{
+  --skill-col: rgb(188, 195, 255);
+}
+[data-theme="light"] [data-skill-col="4"],[data-theme="light"] [data-skilltype-box] [data-radio-data="4"]{
+  --skill-col: rgb(132, 219, 147);
+}
+[data-theme="light"] [data-skill-col="5"],[data-theme="light"] [data-skilltype-box] [data-radio-data="5"]{
+  --skill-col: rgb(255, 166, 124);
 }
 
 [data-theme="dark"] [data-skill-sec]{
@@ -1833,9 +1900,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 }
 
 @media (max-width:460px) {
-  [data-language="En"] [data-skillType-name]{
-    max-width: 50px;
-  }
+  
 }
 
 @media (min-width:420px) {
@@ -1845,6 +1910,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 
   [data-mainset-side]{
     display: none;
+  }
+
+  [data-skilltype-name]{
+    display: flex;
   }
 
 }
@@ -1907,11 +1976,9 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 }
 
 @media (min-width:300px) {
-  [data-skillType-box]{
-    height: 80px;
-  }
   [data-radio-main="true"] [data-tablestyle-name],
-  [data-radio-main="true"] [data-exporttype-name]{
+  [data-radio-main="true"] [data-exporttype-name],
+  [data-exporttype-set] [data-radio]:hover [data-exporttype-name]{
     display: block;
   }
 }
@@ -2005,6 +2072,15 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           <path fill="var(--mainColor)" d="M8.162 9.13587L2.76928 3.74315L2.76992 7.31788C2.76992 7.70152 2.45836 8.01308 2.07473 8.01308C1.69109 8.01308 1.37953 7.70152 1.37953 7.31788L1.38017 2.06624C1.38017 1.68261 1.69109 1.37169 2.07473 1.37169L7.32636 1.37105C7.71 1.37105 8.02156 1.68261 8.02156 2.06625C8.02156 2.44988 7.71 2.76144 7.32636 2.76144L3.75164 2.7608L9.14435 8.15352C9.41562 8.42479 9.41562 8.8646 9.14435 9.13587C8.87308 9.40714 8.43327 9.40714 8.162 9.13587Z"/>
         </svg>          
       </label>
+      <div data-imgnum="1" class="df-cc">
+        <div data-imgnum-down data-btn class="df-cc">◀</div>
+        <div data-imgnum-input data-int-value="1" class="df-cc">
+          <input id="imgnum-set" value="1" type="text" class="nobod" data-input data-input-type="int" data-input-must="1,1000">
+          <span>/</span>
+          <span data-imgnum-max>1000</span>
+        </div>
+        <div data-imgnum-up data-btn class="df-cc">▶</div>
+      </div>
       <div data-close="close" data-close-for="dailogimg">
         <btn-close></btn-close>
       </div>
@@ -2442,7 +2518,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             <!--预设表格样式-->
             <div data-tableset-thtd class="df-lc w100">
               <div class="df-lc" style="max-width: 100%; margin:0 auto; gap: 4px;">
-                <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px);">
+                <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px); height: 40px;">
                   <input id="chk-tablestyle" checked type="checkbox" >
                   <label for="chk-tablestyle" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;  width: 22px; height: 22px;
                   --tips-text:'按预设样式生成组件/修改表格';  --tips-text-en:'Create/change from the preset style';">
@@ -2749,18 +2825,20 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           <!--功能tags-->
           <div class="w100 fl0 noscrollbar df" data-scroll>
             <div data-skilltype-box class="df-lc fl0" data-radio-value="1" >
-              <div data-radio data-radio-data="1" data-radio-main="true" class="df-ffc df-cc" style="gap: 4px;">
+              <div data-radio data-radio-data="1" data-radio-main="true" class="df-cc">
                 <div data-skilltype-icon>
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="var(--mainColor)" d="M9.10133 5.24013C9.4668 4.4921 10.5329 4.4921 10.8983 5.24013L11.9152 7.32142L14.2089 7.64537C15.0332 7.76179 15.3626 8.77567 14.7642 9.3544L13.099 10.9647L13.4996 13.2462C13.6437 14.0661 12.7812 14.6928 12.0458 14.3024L9.99983 13.2163L7.95381 14.3024C7.21847 14.6928 6.35601 14.0661 6.50002 13.2462L6.9007 10.9647L5.23551 9.3544C4.63703 8.77567 4.96646 7.76179 5.79081 7.64537L8.08446 7.32142L9.10133 5.24013Z"/>
                     <rect stroke="var(--mainColor)" x="2.5" y="2.5" width="15" height="15" rx="2"/>
                   </svg>           
                 </div>
-                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Useful & Starts" >
-                  常用功能
+                <div data-skilltype-name data-btn-name data-any="vw300"
+                data-skillmodule-for="Useful & Starts" data-en-text="Start">
+                  收藏
                 </div>
+                <div data-skilltype-pick></div>
               </div>
-              <div data-radio data-radio-data="2" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+              <div data-radio data-radio-data="2" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="var(--mainColor)" d="M7 7H2V2H7V7ZM3 3V6H6V3H3Z"/>
@@ -2774,11 +2852,13 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <path fill="var(--mainColor)" d="M14 4C14 3.44772 14.4477 3 15 3H17C17.5523 3 18 3.44772 18 4V6C18 6.55228 17.5523 7 17 7H15C14.4477 7 14 6.55228 14 6V4Z"/>
                   </svg>              
                 </div>
-                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Pixel & Transform" >
-                  像素&变换
+                <div data-skilltype-name data-btn-name data-any="vw300"
+                data-skillmodule-for="Pixel & Transform" data-en-text="Pixel">
+                  像素
                 </div>
+                <div data-skilltype-pick></div>
               </div>
-              <div data-radio data-radio-data="3" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+              <div data-radio data-radio-data="3" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="var(--mainColor)" d="M9 2L8.99992 4.81319H8.02803L7.94126 3.8956H6.19353L6.19361 8.41026L7.13657 8.5641V10H3.66841V8.5641L4.73222 8.41026L4.73214 3.8956H3.05867L2.97767 4.81319H2L2.00008 2H9Z"/>
@@ -2790,11 +2870,13 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <path stroke="var(--mainColor)"  stroke-linecap="round" stroke-dasharray="2 2" d="M11.5 13.5C11.5 12.3954 12.3954 11.5 13.5 11.5H16.5C17.6046 11.5 18.5 12.3954 18.5 13.5V16.5C18.5 17.6046 17.6046 18.5 16.5 18.5H13.5C12.3954 18.5 11.5 17.6046 11.5 16.5V13.5Z"/>
                   </svg>                                   
                 </div>
-                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Text & Layer" >
-                  文本&图层
+                <div data-skilltype-name data-btn-name data-any="vw300"
+                data-skillmodule-for="Text & Layer" data-en-text="Layer">
+                  图层
                 </div>
+                <div data-skilltype-pick></div>
               </div>
-              <div data-radio data-radio-data="4" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+              <div data-radio data-radio-data="4" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="var(--mainColor)" d="M12.5 7H7.5V2H12.5V7ZM8.5 3V6H11.5V3H8.5Z"/>
@@ -2807,11 +2889,13 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <path fill="var(--mainColor)" d="M4.63324 12.8363L4.94986 12.4494L4.94986 12.4494L4.63324 12.8363ZM11.1597 13.6771L11.4886 14.0537L11.5013 14.0426L11.5132 14.0307L11.1597 13.6771ZM12.5 13.6103L12.8271 13.2319L12.8166 13.2233L12.5 13.6103ZM17.5 13.5731C17.5 13.2969 17.2761 13.0731 17 13.0731C16.7239 13.0731 16.5 13.2969 16.5 13.5731H17.5ZM16.5 12C16.5 12.2761 16.7239 12.5 17 12.5C17.2761 12.5 17.5 12.2761 17.5 12H16.5ZM17.5 11.5C17.5 11.2239 17.2761 11 17 11C16.7239 11 16.5 11.2239 16.5 11.5H17.5ZM7.19138 14.9294L6.87476 15.3163L7.19138 14.9294ZM4.63324 12.8363L4.31662 13.2233L6.87476 15.3163L7.19138 14.9294L7.508 14.5424L4.94986 12.4494L4.63324 12.8363ZM9.77349 14.8878L10.1024 15.2644L11.4886 14.0537L11.1597 13.6771L10.8307 13.3006L9.44458 14.5112L9.77349 14.8878ZM12.5 13.6103L12.173 13.9886L16.673 17.8783L17 17.5001L17.327 17.1218L12.827 13.232L12.5 13.6103ZM11.1597 13.6771L11.5132 14.0307C11.6948 13.8491 11.9846 13.8346 12.1834 13.9973L12.5 13.6103L12.8166 13.2233C12.2202 12.7353 11.351 12.7787 10.8061 13.3236L11.1597 13.6771ZM3 13.6103H3.5C3.5 13.1885 3.99015 12.9562 4.31662 13.2233L4.63324 12.8363L4.94986 12.4494C3.97046 11.648 2.5 12.3449 2.5 13.6103H3ZM4 18.0001V18.5001H16V18.0001V17.5001H4V18.0001ZM17 17.0001H17.5V13.5731H17H16.5V17.0001H17ZM16 18.0001V18.5001C16.8284 18.5001 17.5 17.8285 17.5 17.0001H17H16.5C16.5 17.2762 16.2761 17.5001 16 17.5001V18.0001ZM3 17.0001H2.5C2.5 17.8285 3.17157 18.5001 4 18.5001V18.0001V17.5001C3.72386 17.5001 3.5 17.2762 3.5 17.0001H3ZM3 17.0001H3.5V13.6103H3H2.5V17.0001H3ZM17 12H17.5V11.5H17H16.5V12H17ZM7.19138 14.9294L6.87476 15.3163C7.81915 16.089 9.18336 16.0671 10.1024 15.2644L9.77349 14.8878L9.44458 14.5112C8.89316 14.9928 8.07463 15.006 7.508 14.5424L7.19138 14.9294Z"/>
                   </svg>                  
                 </div>
-                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Vector & Generate" >
-                  矢量&生成
+                <div data-skilltype-name data-btn-name data-any="vw300"
+                data-skillmodule-for="Vector & Generate" data-en-text="Vector">
+                  矢量
                 </div>
+                <div data-skilltype-pick></div>
               </div>
-              <div data-radio data-radio-data="5" data-radio-main="false" class="df-ffc df-cc" style="gap: 4px;">
+              <div data-radio data-radio-data="5" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="var(--mainColor)" d="M7.53784 8.53784C7.53784 7.98556 7.98556 7.53784 8.53784 7.53784H11.4618C12.0141 7.53784 12.4618 7.98556 12.4618 8.53784V11.4618C12.4618 12.0141 12.0141 12.4618 11.4618 12.4618H8.53784C7.98556 12.4618 7.53784 12.0141 7.53784 11.4618V8.53784Z"/>
@@ -2823,16 +2907,19 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <circle stroke="var(--mainColor)" cx="17.5" cy="10" r="1.5"/>
                   </svg>                  
                 </div>
-                <div data-skilltype-name data-btn-name data-any="vw300" data-en-text="Style & Prototype" >
-                  样式&原型
+                <div data-skilltype-name data-btn-name data-any="vw300"
+                data-skillmodule-for="Style & Prototype" data-en-text="Style">
+                  样式
                 </div>
+                <div data-skilltype-pick></div>
               </div>
             </div>
           </div>
+          <div style="height: 10px;"></div>
           <!--功能列表-->
           <div  data-skills-scroll class="wh100 df-ffc ovy noscrollbar">
             <div data-skills-box class="w100 df-ffc">
-              <div class="w100 df" data-skillmodule-zh="常用功能" data-skillmodule="Useful & Starts">
+              <div class="w100 df" data-skill-col="1" data-skillmodule-zh="常用功能" data-skillmodule="Useful & Starts">
                 <!--自动添加-->
                 <div class="fl1 df-cc" data-skill-sec data-skill-cover="end" style="display: flex;">
                   <span data-any="vw240" data-skill-cover="tips">
@@ -2848,7 +2935,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </span>
                 </div>
               </div>
-              <div class="w100 df" data-skillmodule-zh="像素&变换" data-skillmodule="Pixel & Transform">
+              <div class="w100 df" data-skill-col="2" data-skillmodule-zh="像素&变换" data-skillmodule="Pixel & Transform">
                 <div class="fl1" data-skill-sec="InSituRasterize">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -3081,7 +3168,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodule-zh="文本&图层" data-skillmodule="Text & Layer">
+              <div class="w100 df" data-skill-col="3" data-skillmodule-zh="文本&图层" data-skillmodule="Text & Layer">
                 <div class="fl1"  data-skill-sec="SplitText">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -3210,7 +3297,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodule-zh="矢量&生成" data-skillmodule="Vector & Generate">
+              <div class="w100 df" data-skill-col="4" data-skillmodule-zh="矢量&生成" data-skillmodule="Vector & Generate">
                 <div class="fl1"  data-skill-sec="GetPath">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -3244,7 +3331,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
-              <div class="w100 df" data-skillmodule-zh="样式&原型" data-skillmodule="Style & Prototype">
+              <div class="w100 df" data-skill-col="5" data-skillmodule-zh="样式&原型" data-skillmodule="Style & Prototype">
                 <div class="fl1"  data-skill-sec="">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -3302,14 +3389,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b71679e92c6edcc714787b8442b5cdb907d11975/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3361,13 +3448,13 @@ let toUserTips = {
   worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
   random: [
     ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
-    ["身心要紧, 不舒服及时休息~","Put down your work and rest in time~"],
-    ["工具提效, 是为了多陪家人~","Spend more time with your family~"],
-    ["支持开源, 要价值而非价格~","Support open source and design~"],
+    ["工作是做不完的, 及时休息~","Put down your work and rest in time~"],
+    ["请支持开源+设计~","Support open source + design~"],
+    ["提效不是义务, 理应多劳多得~","Refuse malicious overtime work~"],
     ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
-    ["身心要紧, 不舒服及时休息~","Put down your work and rest in time~"],
-    ["工具提效, 是为了多陪家人~","Spend more time with your family~"],
-    ["支持开源, 要价值而非价格~","Support open source and design~"],
+    ["工作是做不完的, 及时休息~","Put down your work and rest in time~"],
+    ["请支持开源+设计~","Support open source + design~"],
+    ["提效不是义务, 理应多劳多得~","Refuse malicious overtime work~"],
   ],
 };
 
@@ -3492,14 +3579,14 @@ let helpData = {
     "【连续选中】功能可类似文本段落的连选, 会从第一个xxx@td开始逐行选中, 到第二个xxx@td结束",
     ""],
     ["li",
-    "选中后插件还是聚焦状态，此时无法对画布内容进行操作，可以用鼠标中建点击画布区域以重新聚焦到画布",
+    "选中后插件还是聚焦状态, 此时无法对画布内容进行操作, 可以用鼠标中建点击画布区域以重新聚焦到画布",
     ""],
     ["br","",""],
     ["p",
     "为弥补组件属性的局限性问题, 可使用【标签属性映射】来完成 /++ #xxx.fill(填充色值) | #xxx.stroke(描边色值) | #xxx.fillStyle(填充样式名) | #xxx.strokeStyle(描边样式名)| #xxx.visible(可见性true/false) | #xxx.opacity(透明度0~1) | #xxx.fontSize(字号) ++/ 的参数化控制",
     ""],
     ["li",
-    "选中的对象将按图层顺序对应每一行的数值,修改时会先判断对象是否带标签, 然后再遍历子对象, 对象/子对象本身可以包含多个标签, 可以存在不同的标签组合，/++ 注意标签与命名或其他标签之间要用空格隔开 ++/, 这对实现更复杂的样式变化很有用 ",
+    "选中的对象将按图层顺序对应每一行的数值,修改时会先判断对象是否带标签, 然后再遍历子对象, 对象/子对象本身可以包含多个标签, 可以存在不同的标签组合, /++ 注意标签与命名或其他标签之间要用空格隔开 ++/, 这对实现更复杂的样式变化很有用 ",
     ""],
     ["li",
     "",
@@ -3536,6 +3623,7 @@ const dailogBox = document.querySelector('[data-dailog-box]');
 const dailogImg = document.querySelector('[data-dailogimg]');
 const dailogImgBox = document.querySelector('[data-dailogimg-box]');
 const dailogSearchBox = document.querySelector('[data-dailogsearch-box]');
+const imgnumSet = document.getElementById('imgnum-set');
 const skillSearchInput = document.getElementById('skillsearch');
 const skillTypeBox = document.querySelector('[data-skilltype-box]');
 const skillAllBox = document.querySelector('[data-skills-box]');
@@ -3559,11 +3647,11 @@ const createTableBtn = document.querySelector('[data-create-table]');
 const tableStyleSet = document.querySelector('[data-tablestyle-set]');
 
 let skillModel = [];
-let skilltypeNameNode = skillTypeBox.querySelectorAll('[data-skilltype-name]');
+let skilltypeNameNode = document.querySelectorAll('[data-skillmodule]');
 skilltypeNameNode.forEach(item => {
-  let name1 = item.getAttribute('data-zh-text');
+  let name1 = item.getAttribute('data-skillmodule-zh');
   name1 = name1 ? name1 : item.textContent.trim();
-  let name2 = item.getAttribute('data-en-text');
+  let name2 = item.getAttribute('data-skillmodule');
   skillModel.push([name1,name2]);
 });
 let isSkillScroll = true;
@@ -4209,6 +4297,20 @@ userText_BtnDown.addEventListener('mouseleave',()=>{
   clearInterval(userText_ScrollDown);
 });
 
+//切换预览图
+getElementMix('data-imgnum-up').addEventListener('click',()=>{
+  let oldvalue = imgnumSet.value * 1;
+  let maxnum = ExportImageInfo.length;
+  imgnumSet.value = (oldvalue + 1) <= maxnum ? (oldvalue + 1) : maxnum;
+  if(imgnumSet.value == oldvalue) return;
+  imgnumSet.parentNode.setAttribute('data-int-value',imgnumSet.value);
+});
+getElementMix('data-imgnum-down').addEventListener('click',()=>{
+  let oldvalue = imgnumSet.value * 1;
+  imgnumSet.value = (oldvalue - 1) >= 1 ? (oldvalue - 1) : 1;
+  if(imgnumSet.value == oldvalue) return;
+  imgnumSet.parentNode.setAttribute('data-int-value',imgnumSet.value);
+});
 
 
 //创建内容
@@ -4253,6 +4355,11 @@ createAnyBtn.addEventListener('click',() => {
 });
 //功能列表滚动绑定tab
 skillAllModel.forEach(item =>{
+  /**/
+  let icon = document.querySelector(`[data-skillmodule-for="${item.getAttribute('data-skillmodule')}"]`).previousElementSibling.cloneNode(true);
+  icon.setAttribute('data-skilltype-icon','mini');
+  item.appendChild(icon);
+  /**/
   item.addEventListener('mouseenter',() => {
     isSkillScroll = false;
     let modelid = item.getAttribute('data-skillmodule');
@@ -4567,6 +4674,7 @@ function addTag(type,info){
     break
     case 'export-img':
       ExportImageInfo.push(...info);
+      getElementMix('data-imgnum-max').textContent = ExportImageInfo.length;
       exportTagsBox.innerHTML = '<!--动态填充-->';
       ExportImageInfo.forEach((layer,index) => {
         let tag = document.createElement('div');
@@ -4664,6 +4772,7 @@ function addTag(type,info){
         view.setAttribute('style','width:14px; height: 14px;');
         view.className = 'btn-op';
         view.addEventListener('click',()=>{
+          imgnumSet.value = index + 1;
           let img = layer.compressed ? layer.compressed : layer.u8a;
           dailogImgBox.innerHTML = '';
           dailogImg.style.display = 'flex';
@@ -4672,6 +4781,7 @@ function addTag(type,info){
           viewimg.setAttribute('data-ismaxW',ismaxW);
           viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
           dailogImgBox.appendChild(viewimg);
+          viewimg.setAttribute('data-imgnum-pick',index + 1);
         });
         sizebox.appendChild(view);
         sizeinfo.appendChild(sizebox);
@@ -5128,6 +5238,7 @@ skillStar.forEach(item =>{
         userSkillStar = userSkillStar.filter(id => id !== skillId);
         storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
         cover.remove();
+        reSkillNum();
       } else {
         let numModel = skillNode.parentNode.getAttribute('data-skillnum');
         if(numModel == 2){
@@ -5531,6 +5642,21 @@ function getUserInt(node){
     realSize.setAttribute('data-export-realsize','');
     realSize.nextElementSibling.textContent = '10';
   };
+  if(node.getAttribute('data-imgnum-input') !== null){
+    let viewimg = dailogImgBox.querySelector('img');
+    if(int > ExportImageInfo.length){
+      imgnumSet.value = viewimg.getAttribute('data-imgnum-pick');
+      return
+    }
+    let layer = ExportImageInfo[int - 1];
+    if(!layer) return;
+    let img = layer.compressed ? layer.compressed : layer.u8a;
+    let ismaxW = layer.width >= layer.height ? 'true' : 'false';
+    viewimg.setAttribute('data-ismaxW',ismaxW);
+    viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
+    dailogImgBox.appendChild(viewimg);
+    viewimg.setAttribute('data-imgnum-pick',int);
+  }
   //console.log(int)
 };
 
