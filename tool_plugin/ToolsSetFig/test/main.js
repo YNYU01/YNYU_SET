@@ -233,6 +233,7 @@ const skillStarModel = document.querySelector('[data-skillmodule="Useful & Start
 const selectInfoBox = document.querySelectorAll('[data-selects-node]');
 const createTagsBox = document.querySelector('[data-create-tags]');
 const cataloguesBox = document.querySelector('[data-create-catalogues]');
+const editorViewbox = document.querySelector('[data-editor-viewbox]');
 const exportTagsBox = document.querySelector('[data-export-tags]');
 const skillBtnMain = document.querySelectorAll('[data-btn="skill-main"]');
 const clearCreateTags = document.querySelector('[data-create-tags-box]').querySelector('btn-close').parentNode;
@@ -310,7 +311,7 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 window.addEventListener('load',()=>{
   /*clear*/
   let tabs = ['create','export','editor','variable','sheet','more tools']
-  //viewPage(tabs[1])
+  viewPage(tabs[2])
   /**/;
   if(window.innerWidth < 300){
     TV_MOVE = true;
@@ -1496,6 +1497,22 @@ getElementMix('fullimg').addEventListener('change',(e)=>{
     dailogImgBox.setAttribute('data-isfull','false');
   };
 });
+getElementMix('fulleditor').addEventListener('change',(e)=>{
+  if(e.target.checked){
+    editorViewbox.setAttribute('data-isfull','true');
+  }else{
+    editorViewbox.setAttribute('data-isfull','false');
+  };
+});
+//编辑预览图
+function addEditorView(info){
+  let viewimg = getElementMix('data-editor-viewbox').querySelector('img');
+  viewimg = viewimg ? viewimg : document.createElement('img');
+  let ismaxW = layer.width >= layer.height ? 'true' : 'false';
+  viewimg.setAttribute('data-ismaxW',ismaxW);
+  viewimg.src = URL.createObjectURL(new Blob([info.u8a],{type:'image/png'}));
+  editorViewbox.appendChild(viewimg);
+}
 //选中导出标签进行管理
 document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
   let picks = exportTagsBox.querySelectorAll('[data-export-pick]');

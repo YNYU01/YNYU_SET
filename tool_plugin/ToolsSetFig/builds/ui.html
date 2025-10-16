@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -56,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1378,7 +1378,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   top: calc(var(--wh)*-1 + 6px);
   left: calc(50% - var(--wh)/2);
   /**/
-  top: calc(var(--wh)*-0.5 + 12px);
+  top: calc(var(--wh)*-0.5 + 14px);
   --mainColor: var(--boxBod);
 }
 
@@ -1386,22 +1386,21 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   content: attr(data-skillmodule);
   color: var(--boxBod);
   display: flex;
-  align-items: center;
   /**
   justify-content: center;
   /**/
   font-size: 10px;
   width: 100%;  
-  height: 14px;
-  padding-left: 24px;
+  height: 16px;
+  padding-left: 22px;
+}
+
+[data-language="En"] [data-skillmodule]::before{
+  align-items: center;
 }
 
 [data-language="Zh"] [data-skillmodule]::before{
   content: attr(data-skillmodule-zh);
-}
-
-[data-skillmodule="Useful & Starts"]::before{
-  /*display: none;*/
 }
 
 [data-skillmodule="Useful & Starts"] [data-skill-index]{
@@ -2107,7 +2106,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
       <div class="h100 df-ffc" style="justify-content: space-between;">
         <div ></div>
-        <a href="https://www.ynyuset.cn/preview_tools/hlep_toolsset" target="_blank" class="df-cc" data-btn="help">
+        <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" target="_blank" class="df-cc" data-btn="help">
           <div data-en-text="HELP DOC">帮助文档</div>
           <div style="width:20px; height:20px; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
             <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3389,14 +3388,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6fdd5406a0e7d610fc7ee1b36f5a317d816bb74b/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/

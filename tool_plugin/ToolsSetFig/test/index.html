@@ -502,7 +502,55 @@
         <div data-export-any data-btn="main" class="df-cc" data-en-text="EXPORT">导出</div>
       </div>
       <div data-page-name="编辑" data-page-name-en="editor" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovh" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+          <!--步骤1-->
+          <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <span>▼&nbsp;</span>
+            <span data-en-text="Upload a node" >选中内容并上传</span>
+            &nbsp;&nbsp;
+            <span data-any="vw300" data-en-text="and don't alter it before apply" style="opacity: 0.6;"> 应用前请勿修改原图层</span>
+            <div data-any="vw300" data-help="editor" class="fl0 df-cc">?</div>
+          </div>
+          <div class="w100 df-cc" style="gap: 2px;">
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Editable">上传(可编辑)</div>    
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
+          </div>
+          <div data-editor-mix class="df-ffc wh100 pos-r">
+            <div data-editor-viewbox data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc wh100 tex-pixelbg"></div>
+            <div data-editor-setbox class="w100 df-lc"></div>
+            <div data-editor-side class="pos-a df-ffc">
+              <input type="checkbox" id="fulleditor">
+              <label for="fulleditor" data-btn  class="df-cc">
+                <svg width="80%" height="80%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="var(--mainColor)" d="M10.8219 8.1537L16.2146 2.76098L12.6399 2.76162C12.2562 2.76162 11.9447 2.45006 11.9447 2.06643C11.9447 1.68279 12.2562 1.37123 12.6399 1.37123L17.8915 1.37187C18.2752 1.37187 18.5861 1.68279 18.5861 2.06643L18.5867 7.31806C18.5867 7.7017 18.2752 8.01326 17.8915 8.01326C17.5079 8.01326 17.1963 7.7017 17.1963 7.31806L17.197 3.74334L11.8042 9.13605C11.533 9.40732 11.0932 9.40732 10.8219 9.13605C10.5506 8.86478 10.5506 8.42497 10.8219 8.1537Z"></path>
+                  <path fill="var(--mainColor)" d="M11.796 10.8138L17.1887 16.2066L17.1881 12.6318C17.1881 12.2482 17.4996 11.9366 17.8833 11.9366C18.2669 11.9366 18.5785 12.2482 18.5785 12.6318L18.5778 17.8835C18.5778 18.2671 18.2669 18.578 17.8833 18.578L12.6316 18.5787C12.248 18.5787 11.9364 18.2671 11.9364 17.8835C11.9364 17.4998 12.248 17.1883 12.6316 17.1883L16.2064 17.1889L10.8137 11.7962C10.5424 11.5249 10.5424 11.0851 10.8137 10.8138C11.0849 10.5426 11.5247 10.5426 11.796 10.8138Z"></path>
+                  <path fill="var(--mainColor)" d="M9.13636 11.796L3.74364 17.1887L7.31837 17.1881C7.702 17.1881 8.01356 17.4996 8.01356 17.8833C8.01356 18.2669 7.702 18.5785 7.31837 18.5785L2.06673 18.5778C1.6831 18.5778 1.37218 18.2669 1.37218 17.8833L1.37154 12.6316C1.37154 12.248 1.6831 11.9364 2.06673 11.9364C2.45037 11.9364 2.76193 12.248 2.76193 12.6316L2.76129 16.2064L8.15401 10.8137C8.42527 10.5424 8.86509 10.5424 9.13636 10.8137C9.40763 11.0849 9.40763 11.5247 9.13636 11.796Z"></path>
+                  <path fill="var(--mainColor)" d="M8.162 9.13587L2.76928 3.74315L2.76992 7.31788C2.76992 7.70152 2.45836 8.01308 2.07473 8.01308C1.69109 8.01308 1.37953 7.70152 1.37953 7.31788L1.38017 2.06624C1.38017 1.68261 1.69109 1.37169 2.07473 1.37169L7.32636 1.37105C7.71 1.37105 8.02156 1.68261 8.02156 2.06625C8.02156 2.44988 7.71 2.76144 7.32636 2.76144L3.75164 2.7608L9.14435 8.15352C9.41562 8.42479 9.41562 8.8646 9.14435 9.13587C8.87308 9.40714 8.43327 9.40714 8.162 9.13587Z"></path>
+                </svg>          
+              </label>
+              <div data-editor-clear data-btn class="df-cc">
+                <svg width="90%" height="90%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke="var(--mainColor)" d="M2 4.27539H12" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path stroke="var(--mainColor)" d="M10 2.5V1.5H4V2.5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path stroke="var(--mainColor)" d="M11 4.27539L9.85714 12.2754H4.14286L3 4.27539" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path stroke="var(--mainColor)" d="M6 6.27539V10.2754" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path stroke="var(--mainColor)" d="M8 6.27539V10.2754" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+              <div data-color 
+              data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
+              data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
+              style="--colorcard-top: calc(100% + 4px); --colorcard-left:calc(var(--colorpick-w)*-1 - 4px);"
+               class="pos-a">
+                <div data-editor-bg data-input="colorpick" data-btn class="df-cc">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 20 20">
+                    <rect x="3" y="3" width="14" height="14" rx="2" fill="var(--input-color,#888)"></rect>
+                  </svg>
+                </div>
+                <card-colorpick></card-colorpick>
+              </div>
+            </div>
+          </div>
         </div>
         <div data-btn="main" class="df-cc" data-en-text="APPLY">应用</div>
       </div>
