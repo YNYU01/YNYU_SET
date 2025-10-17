@@ -5,7 +5,15 @@ let LINK_ALL = document.querySelectorAll('[data-link-to]');
 let ISBACK = document.referrer && document.referrer !== window.location.href;
 
 window.addEventListener('load',()=>{
-  document.getElementById('noise').className = 'tex-noise';
+  let noisebg = new Image();
+  noisebg.src = '../VI/noise.png';
+  noisebg.onload = ()=>{
+    document.getElementById('noise').className = 'tex-noise';
+  };
+  if(ISLOCAL){
+    document.getElementById('noise').className = 'tex-noise';
+  }
+
   if(ISLOCAL){
     HREF_ALL.forEach(item => {
       let href = item.getAttribute('href');
