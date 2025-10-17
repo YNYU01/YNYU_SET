@@ -37,6 +37,28 @@ let resizeObserver = new ResizeObserver(debounce((entries) => {
   }) 
 },500));
 
+let allImgUrl = [
+  ["img/icon_mod_gufeng_en.png","img/icon_mod_gufeng.png"],
+  ["img/icon_mod_jianghu_en.png","img/icon_mod_jianghu.png"],
+  ["img/icon_mod_shufa_en.png","img/icon_mod_shufa.png"],
+  ["img/icon_mod_jingdian_en.png","img/icon_mod_jingdian.png"],
+  ["img/icon_mod_anhei_en.png","img/icon_mod_anhei.png"],
+  ["img/icon_mod_yinghe_en.png","img/icon_mod_yinghe.png"],
+  ["img/icon_mod_youqu_en.png","img/icon_mod_youqu.png"],
+  ["img/icon_mod_weimei_en.png","img/icon_mod_weimei.png"],
+  ["img/icon_mod_huali_en.png","img/icon_mod_huali.png"]
+];
+getElementMix('data-model-pick').querySelectorAll('[data-radio]').forEach(radio => {
+  if(radio.getAttribute('data-radio-data')*1 > 1){
+    let num = radio.getAttribute('data-radio-data') * 1 - 2;
+    log(num)
+    let imgs = radio.querySelectorAll('img');
+    imgs.forEach((item,index) => {
+      item.setAttribute('src',allImgUrl[num][index]);
+    });
+  };
+});
+
 //节点生成与更新
 class ZY_NODE {
   constructor(flowBox,flowNodesBox,isInit,allNodeDatas) {
@@ -690,18 +712,21 @@ class ZY_NODE {
     });
 
     //生成节点栏,带拖拽事件
+    let listfrag = document.createDocumentFragment();
     this.flowNodes.forEach((list,index) => {
       let input = document.createElement('input');
       input.type = 'checkbox';
       input.checked = true;
       input.id = 'show_modsec_' + index;
-      this.flowNodesBox.appendChild(input);
+      //this.flowNodesBox.appendChild(input);
+      listfrag.appendChild(input);
 
       let label = document.createElement('label');
       label.setAttribute('for',input.id);
       label.className = 'show-next';
       this.addDiffLanguage(label,list.modsec,null,true);
-      this.flowNodesBox.appendChild(label);
+      //this.flowNodesBox.appendChild(label);
+      listfrag.appendChild(label);
 
       let modsec = document.createElement('div');
       modsec.className = 'df-ffc';
@@ -722,8 +747,10 @@ class ZY_NODE {
               modsec.style.display = 'none';
           }
       })
-      this.flowNodesBox.appendChild(modsec);
+      //this.flowNodesBox.appendChild(modsec);
+      listfrag.appendChild(modsec);
     });
+    this.flowNodesBox.appendChild(listfrag);
 
     const {flowBox,editorBox,lineBox} = this;
 
@@ -1345,6 +1372,7 @@ class ZY_NODE {
     }
   };
 };
+
 
 
 window.addEventListener('load',()=>{

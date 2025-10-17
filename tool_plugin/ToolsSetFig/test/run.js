@@ -1,4 +1,5 @@
 PULGIN_LOCAL = true;
+let ISWORK_TIME = true;
 let userSkillStar = [];
 if (ISPLUGIN){
   ROOT.setAttribute('data-mobile','false');
@@ -23,15 +24,19 @@ window.addEventListener('message',(message)=>{
       case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
       case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
       case 'userResize': reRootSize(info);break
-      case 'tabPick': viewPage(info);break
-      case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
-      case 'selectInfo': reSelectInfo(info);break
-      case 'selectInfoMain': addTableText(tableObjToText(info));break
-      case 'selectComp': reSelectComp(info);break
-      case 'selectDatas': reSelectDatas(info);break
-      case 'exportImgInfo': addTag('export-img',info);break
-      case 'editorView': addEditorView(info);break
     };
+    if(ISWORK_TIME){
+      switch (type){
+        case 'tabPick': viewPage(info);break
+        case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
+        case 'selectInfo': reSelectInfo(info);break
+        case 'selectInfoMain': addTableText(tableObjToText(info));break
+        case 'selectComp': reSelectComp(info);break
+        case 'selectDatas': reSelectDatas(info);break
+        case 'exportImgInfo': addTag('export-img',info);break
+        case 'editorView': addEditorView(info);break
+      };
+    }
   };
 });
 
@@ -45,6 +50,4 @@ function toolMessage(data,app){
     case 'mg' : parent.postMessage(data,"*");break
   }
 }
-
-
 

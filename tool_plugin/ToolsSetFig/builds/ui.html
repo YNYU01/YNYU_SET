@@ -1,10 +1,11 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
+let ISWORK_TIME = true;
 let userSkillStar = [];
 if (ISPLUGIN){
   ROOT.setAttribute('data-mobile','false');
@@ -29,14 +30,19 @@ window.addEventListener('message',(message)=>{
       case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
       case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
       case 'userResize': reRootSize(info);break
-      case 'tabPick': viewPage(info);break
-      case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
-      case 'selectInfo': reSelectInfo(info);break
-      case 'selectInfoMain': addTableText(tableObjToText(info));break
-      case 'selectComp': reSelectComp(info);break
-      case 'selectDatas': reSelectDatas(info);break
-      case 'exportImgInfo': addTag('export-img',info);break
     };
+    if(ISWORK_TIME){
+      switch (type){
+        case 'tabPick': viewPage(info);break
+        case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
+        case 'selectInfo': reSelectInfo(info);break
+        case 'selectInfoMain': addTableText(tableObjToText(info));break
+        case 'selectComp': reSelectComp(info);break
+        case 'selectDatas': reSelectDatas(info);break
+        case 'exportImgInfo': addTag('export-img',info);break
+        case 'editorView': addEditorView(info);break
+      };
+    }
   };
 });
 
@@ -52,11 +58,9 @@ function toolMessage(data,app){
 }
 
 
-
-
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -91,6 +95,7 @@ function toolMessage(data,app){
 html[data-theme="light"] {
   --boxGry: #d9d9d9;
   --themeColor: #1cc992;
+  --code1: #32a074;
 }
 
 html{
@@ -696,6 +701,7 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   opacity: 0.5;
 }
 
+
 [data-btn="op"]:hover{
   opacity: 0.5;
 }
@@ -1290,6 +1296,72 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   display: none;
 }
 
+[data-editor-viewbox]{
+  margin: 4px 0;
+  min-height: 280px;
+  box-sizing: border-box;
+  border: 1px var(--boxBod) solid;
+}
+
+[data-editor-setbox]{
+  height: 220px;
+}
+
+[data-editor-viewbox] img{
+  margin: auto;
+  pointer-events: none;
+}
+
+[data-editor-side]{
+  top: 10px;
+  right: 10px;
+  gap: 4px;
+}
+
+[for="fulleditor"],[data-editor-clear],[data-editor-bg]{
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px var(--boxBod) solid;
+  box-sizing: border-box;
+  cursor: var(--pointer,pointer);
+  opacity: 0.5;
+  background: var(--boxBak);
+}
+
+[for="fulleditor"],[data-editor-clear]{
+  padding: 0 0 1px 1px;
+}
+
+[for="fulleditor"]:hover,[data-editor-clear]:hover,[data-editor-bg]:hover{
+  opacity: 1;
+}
+
+input[type="checkbox"]:checked + [for="fulleditor"]{
+  background: var(--themeColor);
+  --mainColor: #242424;
+}
+
+[data-editor-side] [data-color]::after {
+  content: attr(data-color-hex);
+  top: 2px;
+  right: calc(100% + 4px);
+  border-radius:0 0 0.5ch 0.5ch;
+}
+
+[data-color]::before {
+  content: attr(data-color-hsl);
+  position: absolute;
+  top: -12px;
+  right: calc(100% + 4px);
+  display: var(--hsl-df);
+  background: var(--mainColor);
+  color: var(--boxBak);
+  font-size: 11px;
+  padding: 2px 4px;
+  border-radius:0.5ch 0.5ch 0 0.5ch;
+}
+
 [data-text-mini]{
   font-size: 8px;
   transform: skewX(-8deg);
@@ -1431,10 +1503,18 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   /**/
 }
 
-[data-skilltype-box] [data-radio-main="true"]{
+[data-theme="dark"] [data-skilltype-box] [data-radio-main="true"]{
   background: transparent;
+  --mainColor: var(--code1);
+  border-color: var(--code1);
 }
 
+[data-theme="light"] [data-skilltype-box] [data-radio-main="true"] {
+  background: #18e7a6;
+  border-color: #656565;
+}
+
+/**
 [data-theme="dark"] [data-skilltype-box] [data-radio-main="true"] {
   --mainColor: var(--skill-col);
   border-color: var(--skill-col);
@@ -1444,7 +1524,6 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   background: var(--skill-col);
   border-color: #656565;
 }
-
 
 [data-skill-col="1"],[data-skilltype-box] [data-radio-data="1"]{
   --skill-col: rgb(58, 122, 114);
@@ -1476,6 +1555,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 [data-theme="light"] [data-skill-col="5"],[data-theme="light"] [data-skilltype-box] [data-radio-data="5"]{
   --skill-col: rgb(255, 166, 124);
 }
+/**/
 
 [data-theme="dark"] [data-skill-sec]{
   background: rgba(40, 40, 40, 1);
@@ -1871,6 +1951,23 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
     background-position: var(--pos-x) var(--pos-y);
   }
 }
+
+.tex-pixelbg {
+  --pixel-w: #f7f7f7;
+  --pixel-b: #dddddd;
+  --pixel-wh: 20px;
+  background: conic-gradient(
+  var(--pixel-b) 25%,
+  var(--pixel-w) 0deg 50%,
+  var(--pixel-b) 0deg 75%,
+  var(--pixel-w) 0deg) 0/var(--pixel-wh) var(--pixel-wh);
+}
+
+[data-theme="dark"] .tex-pixelbg {
+  --pixel-w: #333333;
+  --pixel-b: #222222;
+}
+
 /*纹理类--*/
 
 @keyframes loadRo2 {/*旋转*/
@@ -2496,7 +2593,55 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         <div data-export-any data-btn="main" class="df-cc" data-en-text="EXPORT">导出</div>
       </div>
       <div data-page-name="编辑" data-page-name-en="editor" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovh" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+          <!--步骤1-->
+          <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <span>▼&nbsp;</span>
+            <span data-en-text="Upload a node" >选中内容并上传</span>
+            &nbsp;&nbsp;
+            <span data-any="vw300" data-en-text="and don't alter it before apply" style="opacity: 0.6;"> 应用前请勿修改原图层</span>
+            <div data-any="vw300" data-help="editor" class="fl0 df-cc">?</div>
+          </div>
+          <div class="w100 df-cc" style="gap: 2px;">
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Editable">上传(可编辑)</div>    
+            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
+          </div>
+          <div data-editor-mix class="df-ffc wh100 pos-r">
+            <div data-editor-viewbox data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc wh100 tex-pixelbg"></div>
+            <div data-editor-setbox class="w100 df-lc"></div>
+            <div data-editor-side class="pos-a df-ffc">
+              <input type="checkbox" id="fulleditor">
+              <label for="fulleditor" data-btn  class="df-cc">
+                <svg width="80%" height="80%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="var(--mainColor)" d="M10.8219 8.1537L16.2146 2.76098L12.6399 2.76162C12.2562 2.76162 11.9447 2.45006 11.9447 2.06643C11.9447 1.68279 12.2562 1.37123 12.6399 1.37123L17.8915 1.37187C18.2752 1.37187 18.5861 1.68279 18.5861 2.06643L18.5867 7.31806C18.5867 7.7017 18.2752 8.01326 17.8915 8.01326C17.5079 8.01326 17.1963 7.7017 17.1963 7.31806L17.197 3.74334L11.8042 9.13605C11.533 9.40732 11.0932 9.40732 10.8219 9.13605C10.5506 8.86478 10.5506 8.42497 10.8219 8.1537Z"></path>
+                  <path fill="var(--mainColor)" d="M11.796 10.8138L17.1887 16.2066L17.1881 12.6318C17.1881 12.2482 17.4996 11.9366 17.8833 11.9366C18.2669 11.9366 18.5785 12.2482 18.5785 12.6318L18.5778 17.8835C18.5778 18.2671 18.2669 18.578 17.8833 18.578L12.6316 18.5787C12.248 18.5787 11.9364 18.2671 11.9364 17.8835C11.9364 17.4998 12.248 17.1883 12.6316 17.1883L16.2064 17.1889L10.8137 11.7962C10.5424 11.5249 10.5424 11.0851 10.8137 10.8138C11.0849 10.5426 11.5247 10.5426 11.796 10.8138Z"></path>
+                  <path fill="var(--mainColor)" d="M9.13636 11.796L3.74364 17.1887L7.31837 17.1881C7.702 17.1881 8.01356 17.4996 8.01356 17.8833C8.01356 18.2669 7.702 18.5785 7.31837 18.5785L2.06673 18.5778C1.6831 18.5778 1.37218 18.2669 1.37218 17.8833L1.37154 12.6316C1.37154 12.248 1.6831 11.9364 2.06673 11.9364C2.45037 11.9364 2.76193 12.248 2.76193 12.6316L2.76129 16.2064L8.15401 10.8137C8.42527 10.5424 8.86509 10.5424 9.13636 10.8137C9.40763 11.0849 9.40763 11.5247 9.13636 11.796Z"></path>
+                  <path fill="var(--mainColor)" d="M8.162 9.13587L2.76928 3.74315L2.76992 7.31788C2.76992 7.70152 2.45836 8.01308 2.07473 8.01308C1.69109 8.01308 1.37953 7.70152 1.37953 7.31788L1.38017 2.06624C1.38017 1.68261 1.69109 1.37169 2.07473 1.37169L7.32636 1.37105C7.71 1.37105 8.02156 1.68261 8.02156 2.06625C8.02156 2.44988 7.71 2.76144 7.32636 2.76144L3.75164 2.7608L9.14435 8.15352C9.41562 8.42479 9.41562 8.8646 9.14435 9.13587C8.87308 9.40714 8.43327 9.40714 8.162 9.13587Z"></path>
+                </svg>          
+              </label>
+              <div data-editor-clear data-btn class="df-cc">
+                <svg width="90%" height="90%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke="var(--mainColor)" d="M2 4.27539H12" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path stroke="var(--mainColor)" d="M10 2.5V1.5H4V2.5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path stroke="var(--mainColor)" d="M11 4.27539L9.85714 12.2754H4.14286L3 4.27539" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path stroke="var(--mainColor)" d="M6 6.27539V10.2754" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path stroke="var(--mainColor)" d="M8 6.27539V10.2754" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+              <div data-color 
+              data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
+              data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
+              style="--colorcard-top: calc(100% + 4px); --colorcard-left:calc(var(--colorpick-w)*-1 - 4px);"
+               class="pos-a">
+                <div data-editor-bg data-input="colorpick" data-btn class="df-cc">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 20 20">
+                    <rect x="3" y="3" width="14" height="14" rx="2" fill="var(--input-color,#888)"></rect>
+                  </svg>
+                </div>
+                <card-colorpick></card-colorpick>
+              </div>
+            </div>
+          </div>
         </div>
         <div data-btn="main" class="df-cc" data-en-text="APPLY">应用</div>
       </div>
@@ -3388,14 +3533,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@856cf631b2f7508b5955465eaf56ccea30c763ef/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3444,7 +3589,7 @@ let skillSecInfo = [
 ]
 
 let toUserTips = {
-  worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
+  worktime: ["🔒下班时间不建议工作~","🔒You shouldn't work after work!"],
   random: [
     ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
     ["工作是做不完的, 及时休息~","Put down your work and rest in time~"],
@@ -3633,6 +3778,7 @@ const skillStarModel = document.querySelector('[data-skillmodule="Useful & Start
 const selectInfoBox = document.querySelectorAll('[data-selects-node]');
 const createTagsBox = document.querySelector('[data-create-tags]');
 const cataloguesBox = document.querySelector('[data-create-catalogues]');
+const editorViewbox = document.querySelector('[data-editor-viewbox]');
 const exportTagsBox = document.querySelector('[data-export-tags]');
 const skillBtnMain = document.querySelectorAll('[data-btn="skill-main"]');
 const clearCreateTags = document.querySelector('[data-create-tags-box]').querySelector('btn-close').parentNode;
@@ -3708,24 +3854,34 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 });
 
 window.addEventListener('load',()=>{
-  /*
-  let tabs = ['create','export','editor','variable','sheet','more tools']
-  //viewPage(tabs[1])
-  /**/;
-  if(window.innerWidth < 300){
-    TV_MOVE = true;
-  } else {
-    TV_MOVE = false;
+  let time = getTime('HH')[0];
+  if(time*1 > 20 && !PULGIN_LOCAL){
+    nullPage();
+    ISWORK_TIME = false;
+    addToUserTips('worktime');
+    return;
   };
-  reTV();
-  loadFont();
-  reSkillNum();
-  addSkillTitle();
-  addToUserTips();
-  setInterval(() => {
+  setTimeout(() => {
+    /*
+    let tabs = ['create','export','editor','variable','sheet','more tools']
+    viewPage(tabs[2])
+    /**/;
+    if(window.innerWidth < 300){
+      TV_MOVE = true;
+    } else {
+      TV_MOVE = false;
+    };
+    reTV();
+    loadFont();
+    reSkillNum();
+    addSkillTitle();
     addToUserTips();
-  }, 12000);
-  addSearchs();
+    setInterval(() => {
+      addToUserTips();
+    }, 12000);
+    addSearchs();
+  }, 100);
+  
 });
 
 window.addEventListener('resize',/*防抖*/debounce(()=>{
@@ -3767,15 +3923,16 @@ function loadFont(area){
   },100);
 };
 //动态变化公屏文案
-function addToUserTips(){
+function addToUserTips(kind){
   let languge = ROOT.getAttribute('data-language');
   let num = languge == 'Zh' ? 0 : 1;
   let languge2 = languge == 'Zh' ? 'en' : 'zh';
   let random = toUserTips.random[Math.floor(Math.random()*toUserTips.random.length)]
-  TV_text.textContent = random[num]
+  if(kind && kind == 'worktime') random = toUserTips.worktime;
+  TV_text.textContent = random[num];
   TV_text.setAttribute('data-'+ languge2 +'-text',random[1 - num]);
   TV_text.setAttribute('data-'+ languge.toLowerCase() +'-text',random[num]);
-  let textW
+  let textW;
   if(num){
     textW = random[num].length * -1 - 4 + 'ch';//英文1ch
   }else{
@@ -4015,6 +4172,11 @@ btnResize.addEventListener('mousedown',(event)=>{
 document.getElementById('bottom').addEventListener('dblclick',()=>{
   toolMessage(['','getnode'],PLUGINAPP)
 });
+//空内容提醒
+function nullPage(){
+  getElementMix('data-page-id').innerHTML = '';
+  getElementMix('data-tab').style.pointerEvents = 'none'
+};
 //搜索功能
 skillSearchInput.addEventListener('input',()=>{
   /*防抖*/
@@ -4896,6 +5058,22 @@ getElementMix('fullimg').addEventListener('change',(e)=>{
     dailogImgBox.setAttribute('data-isfull','false');
   };
 });
+getElementMix('fulleditor').addEventListener('change',(e)=>{
+  if(e.target.checked){
+    editorViewbox.setAttribute('data-isfull','true');
+  }else{
+    editorViewbox.setAttribute('data-isfull','false');
+  };
+});
+//编辑预览图
+function addEditorView(info){
+  let viewimg = getElementMix('data-editor-viewbox').querySelector('img');
+  viewimg = viewimg ? viewimg : document.createElement('img');
+  let ismaxW = layer.width >= layer.height ? 'true' : 'false';
+  viewimg.setAttribute('data-ismaxW',ismaxW);
+  viewimg.src = URL.createObjectURL(new Blob([info.u8a],{type:'image/png'}));
+  editorViewbox.appendChild(viewimg);
+}
 //选中导出标签进行管理
 document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
   let picks = exportTagsBox.querySelectorAll('[data-export-pick]');

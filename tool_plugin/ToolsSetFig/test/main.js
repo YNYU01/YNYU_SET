@@ -44,7 +44,7 @@ let skillSecInfo = [
 ]
 
 let toUserTips = {
-  worktime: ["🔒下班时间不建议工作~ (付费解锁)","🔒You shouldn't work after work!(pay to unlock)"],
+  worktime: ["🔒下班时间不建议工作~","🔒You shouldn't work after work!"],
   random: [
     ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
     ["工作是做不完的, 及时休息~","Put down your work and rest in time~"],
@@ -309,24 +309,34 @@ frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 });
 
 window.addEventListener('load',()=>{
-  /*clear*/
-  let tabs = ['create','export','editor','variable','sheet','more tools']
-  viewPage(tabs[2])
-  /**/;
-  if(window.innerWidth < 300){
-    TV_MOVE = true;
-  } else {
-    TV_MOVE = false;
+  let time = getTime('HH')[0];
+  if(time*1 > 20 && !PULGIN_LOCAL){
+    nullPage();
+    ISWORK_TIME = false;
+    addToUserTips('worktime');
+    return;
   };
-  reTV();
-  loadFont();
-  reSkillNum();
-  addSkillTitle();
-  addToUserTips();
-  setInterval(() => {
+  setTimeout(() => {
+    /*clear*/
+    let tabs = ['create','export','editor','variable','sheet','more tools']
+    viewPage(tabs[2])
+    /**/;
+    if(window.innerWidth < 300){
+      TV_MOVE = true;
+    } else {
+      TV_MOVE = false;
+    };
+    reTV();
+    loadFont();
+    reSkillNum();
+    addSkillTitle();
     addToUserTips();
-  }, 12000);
-  addSearchs();
+    setInterval(() => {
+      addToUserTips();
+    }, 12000);
+    addSearchs();
+  }, 100);
+  
 });
 
 window.addEventListener('resize',/*防抖*/debounce(()=>{
@@ -368,15 +378,16 @@ function loadFont(area){
   },100);
 };
 //动态变化公屏文案
-function addToUserTips(){
+function addToUserTips(kind){
   let languge = ROOT.getAttribute('data-language');
   let num = languge == 'Zh' ? 0 : 1;
   let languge2 = languge == 'Zh' ? 'en' : 'zh';
   let random = toUserTips.random[Math.floor(Math.random()*toUserTips.random.length)]
-  TV_text.textContent = random[num]
+  if(kind && kind == 'worktime') random = toUserTips.worktime;
+  TV_text.textContent = random[num];
   TV_text.setAttribute('data-'+ languge2 +'-text',random[1 - num]);
   TV_text.setAttribute('data-'+ languge.toLowerCase() +'-text',random[num]);
-  let textW
+  let textW;
   if(num){
     textW = random[num].length * -1 - 4 + 'ch';//英文1ch
   }else{
@@ -616,6 +627,11 @@ btnResize.addEventListener('mousedown',(event)=>{
 document.getElementById('bottom').addEventListener('dblclick',()=>{
   toolMessage(['','getnode'],PLUGINAPP)
 });
+//空内容提醒
+function nullPage(){
+  getElementMix('data-page-id').innerHTML = '';
+  getElementMix('data-tab').style.pointerEvents = 'none'
+};
 //搜索功能
 skillSearchInput.addEventListener('input',()=>{
   /*防抖*/
