@@ -37,28 +37,6 @@ let resizeObserver = new ResizeObserver(debounce((entries) => {
   }) 
 },500));
 
-let allImgUrl = [
-  ["img/icon_mod_gufeng_en.png","img/icon_mod_gufeng.png"],
-  ["img/icon_mod_jianghu_en.png","img/icon_mod_jianghu.png"],
-  ["img/icon_mod_shufa_en.png","img/icon_mod_shufa.png"],
-  ["img/icon_mod_jingdian_en.png","img/icon_mod_jingdian.png"],
-  ["img/icon_mod_anhei_en.png","img/icon_mod_anhei.png"],
-  ["img/icon_mod_yinghe_en.png","img/icon_mod_yinghe.png"],
-  ["img/icon_mod_youqu_en.png","img/icon_mod_youqu.png"],
-  ["img/icon_mod_weimei_en.png","img/icon_mod_weimei.png"],
-  ["img/icon_mod_huali_en.png","img/icon_mod_huali.png"]
-];
-getElementMix('data-model-pick').querySelectorAll('[data-radio]').forEach(radio => {
-  if(radio.getAttribute('data-radio-data')*1 > 1){
-    let num = radio.getAttribute('data-radio-data') * 1 - 2;
-    log(num)
-    let imgs = radio.querySelectorAll('img');
-    imgs.forEach((item,index) => {
-      item.setAttribute('src',allImgUrl[num][index]);
-    });
-  };
-});
-
 //节点生成与更新
 class ZY_NODE {
   constructor(flowBox,flowNodesBox,isInit,allNodeDatas) {
@@ -1402,6 +1380,30 @@ let FLOW_RENDER = new ZY_NODE(null,null,true);
 getElementMix('data-zoom-auto').addEventListener('click',()=>{
   FLOW_RENDER.reViewBoxZoom(1)
 });
+
+let allImgUrl = [
+  ["img/icon_mod_gufeng_en.png","img/icon_mod_gufeng.png"],
+  ["img/icon_mod_jianghu_en.png","img/icon_mod_jianghu.png"],
+  ["img/icon_mod_shufa_en.png","img/icon_mod_shufa.png"],
+  ["img/icon_mod_jingdian_en.png","img/icon_mod_jingdian.png"],
+  ["img/icon_mod_anhei_en.png","img/icon_mod_anhei.png"],
+  ["img/icon_mod_yinghe_en.png","img/icon_mod_yinghe.png"],
+  ["img/icon_mod_youqu_en.png","img/icon_mod_youqu.png"],
+  ["img/icon_mod_weimei_en.png","img/icon_mod_weimei.png"],
+  ["img/icon_mod_huali_en.png","img/icon_mod_huali.png"]
+];
+setTimeout(()=>{
+  getElementMix('data-model-pick').querySelectorAll('[data-radio]').forEach(radio => {
+    if(radio.getAttribute('data-radio-data')*1 > 1){
+      let num = radio.getAttribute('data-radio-data') * 1 - 2;
+      let imgs = radio.querySelectorAll('img');
+      imgs.forEach((item,index) => {
+        item.setAttribute('src',allImgUrl[num][index]);
+      });
+    };
+  });
+},500)
+
 
 //全局监听，修改右键事件
 document.addEventListener('contextmenu',(e)=>{
