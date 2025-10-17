@@ -46,7 +46,7 @@ html{
   position: fixed;
   top: 0;
   left: 0;
-  background: url("../VI/noise.jpg") 0 0/200px 200px,url("../VI/noise.jpg") 0 0/300px 300px;
+  background: url("../VI/noise.png") 0 0/200px 200px,url("../VI/noise.png") 0 0/300px 300px;
   opacity: 0.2;
   filter: brightness(110%);
   mix-blend-mode: hard-light;
