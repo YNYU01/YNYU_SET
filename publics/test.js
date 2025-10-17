@@ -6,7 +6,7 @@ let ISBACK = document.referrer && document.referrer !== window.location.href;
 
 window.addEventListener('load',()=>{
   let noisebg = new Image();
-  noisebg.src = '../VI/noise.png';
+  noisebg.src = '../../VI/noise.png';
   noisebg.onload = ()=>{
     document.getElementById('noise').className = 'tex-noise';
   };
