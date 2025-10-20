@@ -295,6 +295,11 @@ let CreateTableInfo = [];
 let SelectNodeInfo = [];
 let ExportImageInfo = [];
 let CataloguesInfo = [];
+let EditorInfo = {
+  preview:'',//u8a
+  set:[],//{type:HSL | HUE | }
+  new:[],//{type:image | fills | node,content:[u8a | array]}
+}
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -553,6 +558,99 @@ function addSearchs(){
   //重置文字样式
   loadFont(dailogSearchBox);
 };
+
+class EDITOR_TAB {
+  constructor() {
+    this.addset = getElementMix('data-editor-addset');//添加按钮
+    this.setlist = getElementMix('data-editor-setlist');//调整列表
+    this.setvalue = getElementMix('data-editor-setvalue');//属性窗口
+    this.setcode = getElementMix('data-editor-setcode').querySelector('textarea');//代码编辑文本框
+    //调整项
+    this.editors = [
+      {
+        name:['HSL','HSL'],
+        type:['色彩','Color'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['反转','Invert'],
+        type:['色彩','Color'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['色彩平衡','Balance'],
+        type:['色彩','Color'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['颗粒','Graininess'],
+        type:['质感','Texture'],
+        editable:false,
+        pixel:true,
+      },
+      {
+        name:['降噪','Denoise'],
+        type:['质感','Texture'],
+        editable:false,
+        pixel:true,
+      },
+      {
+        name:['清晰度','noise'],
+        type:['质感','Texture'],
+        editable:false,
+        pixel:true,
+      },
+      {
+        name:['色散','Dispersion'],
+        type:['通道','Texture'],
+        editable:false,
+        pixel:true,
+      },
+      {
+        name:['渐变映射','noise'],
+        type:['通道','Channel'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['LUT','LUT'],
+        type:['通道','Channel'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['通道提取','RGBA'],
+        type:['通道','Channel'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['贝塞尔曲线','Bessel'],
+        type:['变形','Transform'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['透视','Perspective'],
+        type:['变形','Transform'],
+        editable:true,
+        pixel:true,
+      },
+    ]
+  }
+
+  init(){
+    //绑定添加按钮和可选项
+    let addlistbox = document.createElement('div');
+    addlistbox.setAttribute('data-editor-addlist','');
+
+    let page = getElementMix('data-page-name-en="editor"')
+    page.appendChild(addlistbox);
+  }
+}
 
 
 /* ---界面交互--- */
@@ -1522,9 +1620,9 @@ getElementMix('fulleditor').addEventListener('change',(e)=>{
 });
 //编辑预览图
 function addEditorView(info){
-  let viewimg = getElementMix('data-editor-viewbox').querySelector('img');
+  let viewimg = editorViewbox.querySelector('img');
   viewimg = viewimg ? viewimg : document.createElement('img');
-  let ismaxW = layer.width >= layer.height ? 'true' : 'false';
+  let ismaxW = info.width >= info.height ? 'true' : 'false';
   viewimg.setAttribute('data-ismaxW',ismaxW);
   viewimg.src = URL.createObjectURL(new Blob([info.u8a],{type:'image/png'}));
   editorViewbox.appendChild(viewimg);
@@ -1597,6 +1695,16 @@ exportAnyBtn.addEventListener('click',()=>{
     qualityspan.textContent = quality;
   };
 });
+
+getElementMix('data-editor-setbg').addEventListener('change',(e)=>{
+  showNext(e.target,'data-color-mix','flex');
+  if(e.target.checked){
+    let color = getElementMix('data-color-mix').querySelector('[data-color]').getAttribute('data-color-hex')
+    editorViewbox.style.setProperty('--bg',color)
+  }else{
+    editorViewbox.style.setProperty('--bg','none')
+  }
+})
 
 
 //制表文案转数组, 兼容反转行列
@@ -2232,6 +2340,9 @@ function getUserColor(node){
     RGB:node.getAttribute('data-color-rgb'),
     HSL:node.getAttribute('data-color-hsl'),
     HSV:node.getAttribute('data-color-hsv'),
+  }
+  if(node.parentNode.getAttribute('data-color-mix') !== null){
+    editorViewbox.style.setProperty('--bg',color.HEX);
   }
   //console.log(color)
 };

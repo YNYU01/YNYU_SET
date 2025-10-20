@@ -1231,15 +1231,28 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   display: none;
 }
 
+[data-editor-mix]{
+  height: calc(100% - 50px);
+}
+
 [data-editor-viewbox]{
   margin: 4px 0;
   min-height: 280px;
   box-sizing: border-box;
   border: 1px var(--boxBod) solid;
+  position: relative;
+}
+
+[data-editor-viewbox]::after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--bg,transparent);
 }
 
 [data-editor-setbox]{
-  height: 220px;
+  min-height: 168px;
 }
 
 [data-editor-viewbox] img{
@@ -1253,7 +1266,8 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   gap: 4px;
 }
 
-[for="fulleditor"],[data-editor-clear],[data-editor-bg]{
+[for="fulleditor"],[data-editor-clear],[data-editor-bg],
+[data-color-mix] [data-getcolor]{
   width: 20px;
   height: 20px;
   border-radius: 4px;
@@ -1264,37 +1278,145 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   background: var(--boxBak);
 }
 
-[for="fulleditor"],[data-editor-clear]{
-  padding: 0 0 1px 1px;
-}
-
 [for="fulleditor"]:hover,[data-editor-clear]:hover,[data-editor-bg]:hover{
   opacity: 1;
 }
 
-input[type="checkbox"]:checked + [for="fulleditor"]{
+[data-color-mix]  [data-getcolor]:hover {
+  --mainColor: var(--mainColor2);
+}
+
+input[type="checkbox"]:checked + [for="fulleditor"],
+input[type="checkbox"]:checked + [data-editor-bg]{
   background: var(--themeColor);
   --mainColor: #242424;
 }
 
-[data-editor-side] [data-color]::after {
-  content: attr(data-color-hex);
-  top: 2px;
-  right: calc(100% + 4px);
-  border-radius:0 0 0.5ch 0.5ch;
+[data-editor-side] [data-color]{
+  gap: 4px;
 }
 
-[data-color]::before {
+[data-editor-side] [data-color]::after {
+  content: attr(data-color-rgb);
+  top: calc(-150% + 12px);
+  right: 20px;
+  border-radius:0.5ch 0 0.5ch 0.5ch;
+}
+
+[data-editor-side] [data-color]::before {
   content: attr(data-color-hsl);
   position: absolute;
-  top: -12px;
-  right: calc(100% + 4px);
+  top: -150%;
+  right: 20px;
   display: var(--hsl-df);
   background: var(--mainColor);
   color: var(--boxBak);
   font-size: 11px;
   padding: 2px 4px;
   border-radius:0.5ch 0.5ch 0 0.5ch;
+}
+
+[data-color-mix] [data-getcolor],
+[data-color-mix] [data-input="hex"],
+[data-color-mix] card-colorpick{
+  display: none;
+}
+
+[data-color-mix]:hover [data-getcolor],
+[data-color-mix]:hover [data-input="hex"],
+[data-color-mix]:hover card-colorpick{
+  display: flex;
+}
+
+[data-editor-setlist-title],[data-editor-setlist]{
+  min-width: 98px;
+  padding-right: 6px;
+  border-right: 1px var(--boxBod) dashed;
+}
+
+[data-editor-addset]{
+  width: 14px;
+  height: 14px;
+}
+[data-editor-upset],
+[data-editor-inputset],
+[data-editor-downset]{
+  width: 16px;
+  height: 16px;
+}
+[data-editor-setcode]{
+  display: none;
+  padding: 4px 0 0 6px;
+}
+
+[data-editor-setcode] textarea{
+  resize: none;
+}
+
+input[type="checkbox"]:checked + [for="editor-inputset"]{
+  --mainColor: var(--themeColor)
+}
+
+[data-variable-info-box]{
+  gap: 4px;
+  padding: 4px;
+  box-sizing: border-box;
+  margin-bottom: 4px;
+}
+
+[data-variable-info]{
+  padding-left: 10px;
+  gap: 6px;
+}
+
+[data-variable-info]::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 1ch;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--boxBod);
+}
+
+[data-variable-info-box] [data-btn]{
+  padding:0 1ch;
+}
+
+[data-variable-info-box="false"] + div{
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+[data-variable-hassheet="false"] [data-variable-has],
+[data-variable-hasstyle="false"] [data-variable-has],
+[data-variable-hassheet="true"] [data-variable-hasnot],
+[data-variable-hasstyle="true"] [data-variable-hasnot]
+{
+ display: none;
+}
+
+[data-variable-has],[data-variable-hasnot]{
+  gap: 4px;
+}
+
+[data-variable-has-icon]{
+  pointer-events: none;
+  width: 26px;
+  height: 18px;
+  border: 1px solid var(--boxBod);
+  box-sizing: border-box;
+  border-radius: 20px;
+  background: var(--boxGry);
+}
+
+[data-variable-refresh]{
+  width: 14px;
+  height: 14px;
+  padding: 1px;
+  top: 2px;
+  right: 2px;
 }
 
 [data-text-mini]{
@@ -1448,49 +1570,6 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   background: #18e7a6;
   border-color: #656565;
 }
-
-/**
-[data-theme="dark"] [data-skilltype-box] [data-radio-main="true"] {
-  --mainColor: var(--skill-col);
-  border-color: var(--skill-col);
-}
-
-[data-theme="light"] [data-skilltype-box] [data-radio-main="true"] {
-  background: var(--skill-col);
-  border-color: #656565;
-}
-
-[data-skill-col="1"],[data-skilltype-box] [data-radio-data="1"]{
-  --skill-col: rgb(58, 122, 114);
-}
-[data-skill-col="2"],[data-skilltype-box] [data-radio-data="2"]{
-  --skill-col: rgb(77, 124, 146);
-}
-[data-skill-col="3"],[data-skilltype-box] [data-radio-data="3"]{
-  --skill-col: rgb(119, 111, 163);
-}
-[data-skill-col="4"],[data-skilltype-box] [data-radio-data="4"]{
-  --skill-col: rgb(59, 134, 72);
-}
-[data-skill-col="5"],[data-skilltype-box] [data-radio-data="5"]{
-  --skill-col: rgb(165, 78, 52);
-}
-[data-theme="light"] [data-skill-col="1"],[data-theme="light"] [data-skilltype-box] [data-radio-data="1"]{
-  --skill-col: rgb(132, 240, 225);
-}
-[data-theme="light"] [data-skill-col="2"],[data-theme="light"] [data-skilltype-box] [data-radio-data="2"]{
-  --skill-col: rgb(132, 216, 255);
-}
-[data-theme="light"] [data-skill-col="3"],[data-theme="light"] [data-skilltype-box] [data-radio-data="3"]{
-  --skill-col: rgb(188, 195, 255);
-}
-[data-theme="light"] [data-skill-col="4"],[data-theme="light"] [data-skilltype-box] [data-radio-data="4"]{
-  --skill-col: rgb(132, 219, 147);
-}
-[data-theme="light"] [data-skill-col="5"],[data-theme="light"] [data-skilltype-box] [data-radio-data="5"]{
-  --skill-col: rgb(255, 166, 124);
-}
-/**/
 
 [data-theme="dark"] [data-skill-sec]{
   background: rgba(40, 40, 40, 1);
@@ -1986,6 +2065,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   [data-create-mix]{
     max-height: calc(100% - 356px);
   }
+
+  [data-editor-setlist-title],[data-editor-setlist]{
+    min-width: 148px;
+  }
 }
 @media (max-width:299px) {
   [data-any="vw300"]{
@@ -2029,6 +2112,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 
   [data-skill-more]{
     flex-wrap: wrap;
+  }
+
+  [data-editor-setlist-title],[data-editor-setlist]{
+    min-width: 68px;
   }
 
 }

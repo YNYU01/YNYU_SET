@@ -433,7 +433,7 @@ function COMP_MAIN(){
     })
   });
 
-  INPUT_HEX.forEach(item => {
+  [...INPUT_RGB,...INPUT_HEX].forEach(item => {
     item.addEventListener('change',() => {
       let colortype = item.getAttribute('data-input');
       let info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
@@ -460,34 +460,7 @@ function COMP_MAIN(){
     })
   });
 
-  INPUT_RGB.forEach(item => {
-    item.addEventListener('change',() => {
-      let colortype = item.getAttribute('data-input');
-      let info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
-      inputMust(item,[colortype,info])
-      item.parentNode.style.setProperty("--input-color",item.value);
-      let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
-      let colorrange = item.parentNode.querySelector('[data-input="hsl-h"]');
-      let colorvalue = item.parentNode.querySelector('[data-input-color="hsl-h"]');
-      let RGB = item.value.split('#').length > 1 ? hexTorgb(item.value) : item.value.toLowerCase().replace('rgb(','').replace(')','').split(',');
-      let HEX = item.value.split('#').length > 1 ? item.value : rgbTohex(RGB[0],RGB[1],RGB[2]);
-      let HSL = rgbTohsl(RGB[0],RGB[1],RGB[2]);
-      let HSV = hslTohsv(HSL[0],HSL[1],HSL[2]);
-      colorrange.value = HSL[0];
-      colorvalue.value = HSL[0];
-      colorbox.style.setProperty("--hsl-h",HSL[0]);
-      colorbox.style.setProperty("--hsl-s",HSL[1]);
-      colorbox.style.setProperty("--hsl-l",HSL[2]);
-      colorbox.style.setProperty("--hsv-s",HSV[1]);
-      colorbox.style.setProperty("--hsv-v",HSV[2]);
-      item.parentNode.setAttribute('data-color-hex',HEX);
-      item.parentNode.setAttribute('data-color-rgb',`rgb(${RGB[0]},${RGB[1]},${RGB[2]})`);
-      item.parentNode.setAttribute('data-color-hsl',`hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
-      item.parentNode.setAttribute('data-color-hsv',`hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
-    })
-  });
-
-  INPUT_HSL_H.forEach(item => {
+  [...INPUT_COLORPICK_HSL_H,...INPUT_HSL_H].forEach(item => {
     item.addEventListener('input',() => {
       item.parentNode.parentNode.style.setProperty("--hsl-h",item.value);
       let colorcomp = item.parentNode.parentNode.parentNode.parentNode;
@@ -512,109 +485,90 @@ function COMP_MAIN(){
     });
   });
 
-  INPUT_COLORPICK_HSL_H.forEach(item => {
-    item.addEventListener('input',() => {
-      item.parentNode.parentNode.style.setProperty("--hsl-h",item.value);
-      let colorcomp = item.parentNode.parentNode.parentNode.parentNode;
-      let oldHSL = colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
-      let newRGB = hslTorgb(item.value,oldHSL[1],oldHSL[2],255);
-      let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
-      let newHSV = hslTohsv(item.value,oldHSL[1],oldHSL[2])
-      let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-      let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-      if(colorinput1){
-        colorinput1.value = newHEX;
-      }
-      if(colorinput2){
-        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
-      }
-      colorcomp.style.setProperty("--input-color",newHEX);
-      colorcomp.setAttribute('data-color-hex',newHEX);
-      colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-      colorcomp.setAttribute('data-color-hsl',`hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
-      colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+  [...INPUT_COLORPICK_HSV,...INPUT_COLORPICK_HSL].forEach(item => {
+    let colortype = item.getAttribute('data-input-color');
+    let isMoving = false;
+    item.addEventListener('mousedown',(event) => {
+      isMoving = true;
+      colorPickMix(event,colortype);
+    });
+    item.addEventListener('mousemove',(event) => {
+      if(isMoving) colorPickMix(event,colortype);
+    });
+    item.addEventListener('click',(event) => {
+      if(isMoving) return;
+      colorPickMix(event,colortype);
+    });
+    item.addEventListener('mouseup',() => {
+      isMoving = false;
     });
   });
 
-  INPUT_COLORPICK_HSV.forEach(item => {
-    item.addEventListener('click',(event) => {
-      let x = event.clientX;
-      let y = event.clientY;
-      let w = item.offsetWidth;
-      let h = item.offsetHeight;
-      let startX = item.getBoundingClientRect().left;
-      let startY = item.getBoundingClientRect().top;
-      //console.log(x,y,w,h,startX,startY)
-      let hsvS = Math.floor((x - startX)/w * 100);
-      let hsvV = 100 - Math.floor((y - startY)/h * 100);
-      hsvS = hsvS <= 100 ? hsvS : 100;
-      hsvV = hsvV <= 100 ? hsvV : 100;
-      hsvS = hsvS >= 0 ? hsvS : 0;
-      hsvV = hsvV >= 0 ? hsvV : 0;
-      let colorcomp = item.parentNode.parentNode.parentNode;
-      let oldHSV = colorcomp.getAttribute('data-color-hsv').replace('hsv(','').replace(')','').split(',').map(item => item.replace('%',''));
-      let newHSL = hsvTohsl(oldHSV[0],hsvS,hsvV);
-      let newRGB = hslTorgb(newHSL[0],newHSL[1],newHSL[2],255);
+  function colorPickMix(e,type){
+    e.preventDefault();
+    e.stopPropagation();
+  
+    let item = e.target;
+    let x = e.clientX;
+    let y = e.clientY;
+    let w = item.offsetWidth;
+    let h = item.offsetHeight;
+    let startX = item.getBoundingClientRect().left;
+    let startY = item.getBoundingClientRect().top;
+    //console.log(x,y,w,h,startX,startY)
+    let SS = Math.floor((x - startX)/w * 100);
+    let VL = 100 - Math.floor((y - startY)/h * 100);
+    SS = SS <= 100 ? SS : 100;
+    VL = VL <= 100 ? VL : 100;
+    SS = SS >= 0 ? SS : 0;
+    VL = VL >= 0 ? VL : 0;
+    let colorcomp = item.parentNode.parentNode.parentNode;
+    let oldColor = colorcomp.getAttribute('data-color-' + type).replace(type + '(','').replace(')','').split(',').map(item => item.replace('%',''));
+    
+    if(type == 'hsl'){
+      let newHSV = hslTohsv(oldColor[0],SS,VL);
+      let newRGB = hslTorgb(oldColor[0],SS,VL,255);
       let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
       let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
       let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
       if(colorinput1){
         colorinput1.value = newHEX;
-      }
+      };
       if(colorinput2){
         colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
-      }
-      item.parentNode.style.setProperty("--hsv-s",hsvS);
-      item.parentNode.style.setProperty("--hsv-v",hsvV);
-      item.parentNode.style.setProperty("--hsl-s",newHSL[1]);
-      item.parentNode.style.setProperty("--hsl-l",newHSL[2]);
-      colorcomp.style.setProperty("--input-color",newHEX);
-      colorcomp.setAttribute('data-color-hex',newHEX);
-      colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-      colorcomp.setAttribute('data-color-hsl',`hsl(${newHSL[0]},${newHSL[1]}%,${newHSL[2]}%)`);
-      colorcomp.setAttribute('data-color-hsv',`hsv(${oldHSV[0]},${hsvS}%,${hsvV}%)`);
-    });
-  });
-
-  INPUT_COLORPICK_HSL.forEach(item => {
-    item.addEventListener('click',(event) => {
-      let x = event.clientX;
-      let y = event.clientY;
-      let w = item.offsetWidth;
-      let h = item.offsetHeight;
-      let startX = item.getBoundingClientRect().left;
-      let startY = item.getBoundingClientRect().top;
-      //console.log(x,y,w,h,startX,startY)
-      let hslS = Math.floor((x - startX)/w * 100);
-      let hslL = 100 - Math.floor((y - startY)/h * 100);
-      hslS = hslS <= 100 ? hslS : 100;
-      hslL = hslL <= 100 ? hslL : 100;
-      hslS = hslS >= 0 ? hslS : 0;
-      hslL = hslL >= 0 ? hslL : 0;
-      let colorcomp = item.parentNode.parentNode.parentNode;
-      let oldHSL= colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
-      let newHSV = hslTohsv(oldHSL[0],hslS,hslL)
-      let newRGB = hslTorgb(oldHSL[0],hslS,hslL,255);
-      let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
-      let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-      let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-      if(colorinput1){
-        colorinput1.value = newHEX;
-      }
-      if(colorinput2){
-        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
-      }
-      item.parentNode.style.setProperty("--hsl-s",hslS);
-      item.parentNode.style.setProperty("--hsl-l",hslL);
+      };
+      item.parentNode.style.setProperty("--hsl-s",SS);
+      item.parentNode.style.setProperty("--hsl-l",VL);
       item.parentNode.style.setProperty("--hsv-s",newHSV[1]);
       item.parentNode.style.setProperty("--hsv-v",newHSV[2]);
       colorcomp.style.setProperty("--input-color",newHEX);
       colorcomp.setAttribute('data-color-hex',newHEX);
       colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
       colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
-      colorcomp.setAttribute('data-color-hsl',`hsl(${oldHSL[0]},${hslS}%,${hslL}%)`);
-    });
-  });
+      colorcomp.setAttribute('data-color-hsl',`hsl(${oldColor[0]},${SS}%,${VL}%)`);
+    } else {
+      let newHSL = hsvTohsl(oldColor[0],SS,VL);
+      let newRGB = hslTorgb(newHSL[0],newHSL[1],newHSL[2],255);
+      let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+      let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+      let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+      if(colorinput1){
+        colorinput1.value = newHEX;
+      };
+      if(colorinput2){
+        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+      };
+      item.parentNode.style.setProperty("--hsv-s",SS);
+      item.parentNode.style.setProperty("--hsv-v",VL);
+      item.parentNode.style.setProperty("--hsl-s",newHSL[1]);
+      item.parentNode.style.setProperty("--hsl-l",newHSL[2]);
+      colorcomp.style.setProperty("--input-color",newHEX);
+      colorcomp.setAttribute('data-color-hex',newHEX);
+      colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+      colorcomp.setAttribute('data-color-hsl',`hsl(${newHSL[0]},${newHSL[1]}%,${newHSL[2]}%)`);
+      colorcomp.setAttribute('data-color-hsv',`hsv(${oldColor[0]},${SS}%,${VL}%)`);
+    }
+  };
 
   INPUT_GETCOLOR.forEach(item => {
     item.addEventListener('click', () => {

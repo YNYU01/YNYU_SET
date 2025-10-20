@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -60,7 +60,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1296,15 +1296,28 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   display: none;
 }
 
+[data-editor-mix]{
+  height: calc(100% - 50px);
+}
+
 [data-editor-viewbox]{
   margin: 4px 0;
   min-height: 280px;
   box-sizing: border-box;
   border: 1px var(--boxBod) solid;
+  position: relative;
+}
+
+[data-editor-viewbox]::after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--bg,transparent);
 }
 
 [data-editor-setbox]{
-  height: 220px;
+  min-height: 168px;
 }
 
 [data-editor-viewbox] img{
@@ -1318,7 +1331,8 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   gap: 4px;
 }
 
-[for="fulleditor"],[data-editor-clear],[data-editor-bg]{
+[for="fulleditor"],[data-editor-clear],[data-editor-bg],
+[data-color-mix] [data-getcolor]{
   width: 20px;
   height: 20px;
   border-radius: 4px;
@@ -1329,37 +1343,83 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   background: var(--boxBak);
 }
 
-[for="fulleditor"],[data-editor-clear]{
-  padding: 0 0 1px 1px;
-}
-
 [for="fulleditor"]:hover,[data-editor-clear]:hover,[data-editor-bg]:hover{
   opacity: 1;
 }
 
-input[type="checkbox"]:checked + [for="fulleditor"]{
+[data-color-mix]  [data-getcolor]:hover {
+  --mainColor: var(--mainColor2);
+}
+
+input[type="checkbox"]:checked + [for="fulleditor"],
+input[type="checkbox"]:checked + [data-editor-bg]{
   background: var(--themeColor);
   --mainColor: #242424;
 }
 
-[data-editor-side] [data-color]::after {
-  content: attr(data-color-hex);
-  top: 2px;
-  right: calc(100% + 4px);
-  border-radius:0 0 0.5ch 0.5ch;
+[data-editor-side] [data-color]{
+  gap: 4px;
 }
 
-[data-color]::before {
+[data-editor-side] [data-color]::after {
+  content: attr(data-color-rgb);
+  top: calc(-150% + 12px);
+  right: 20px;
+  border-radius:0.5ch 0 0.5ch 0.5ch;
+}
+
+[data-editor-side] [data-color]::before {
   content: attr(data-color-hsl);
   position: absolute;
-  top: -12px;
-  right: calc(100% + 4px);
+  top: -150%;
+  right: 20px;
   display: var(--hsl-df);
   background: var(--mainColor);
   color: var(--boxBak);
   font-size: 11px;
   padding: 2px 4px;
   border-radius:0.5ch 0.5ch 0 0.5ch;
+}
+
+[data-color-mix] [data-getcolor],
+[data-color-mix] [data-input="hex"],
+[data-color-mix] card-colorpick{
+  display: none;
+}
+
+[data-color-mix]:hover [data-getcolor],
+[data-color-mix]:hover [data-input="hex"],
+[data-color-mix]:hover card-colorpick{
+  display: flex;
+}
+
+[data-editor-setlist-title],[data-editor-setlist]{
+  min-width: 98px;
+  padding-right: 6px;
+  border-right: 1px var(--boxBod) dashed;
+}
+
+[data-editor-addset]{
+  width: 14px;
+  height: 14px;
+}
+[data-editor-upset],
+[data-editor-inputset],
+[data-editor-downset]{
+  width: 16px;
+  height: 16px;
+}
+[data-editor-setcode]{
+  display: none;
+  padding: 4px 0 0 6px;
+}
+
+[data-editor-setcode] textarea{
+  resize: none;
+}
+
+input[type="checkbox"]:checked + [for="editor-inputset"]{
+  --mainColor: var(--themeColor)
 }
 
 [data-text-mini]{
@@ -1513,49 +1573,6 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   background: #18e7a6;
   border-color: #656565;
 }
-
-/**
-[data-theme="dark"] [data-skilltype-box] [data-radio-main="true"] {
-  --mainColor: var(--skill-col);
-  border-color: var(--skill-col);
-}
-
-[data-theme="light"] [data-skilltype-box] [data-radio-main="true"] {
-  background: var(--skill-col);
-  border-color: #656565;
-}
-
-[data-skill-col="1"],[data-skilltype-box] [data-radio-data="1"]{
-  --skill-col: rgb(58, 122, 114);
-}
-[data-skill-col="2"],[data-skilltype-box] [data-radio-data="2"]{
-  --skill-col: rgb(77, 124, 146);
-}
-[data-skill-col="3"],[data-skilltype-box] [data-radio-data="3"]{
-  --skill-col: rgb(119, 111, 163);
-}
-[data-skill-col="4"],[data-skilltype-box] [data-radio-data="4"]{
-  --skill-col: rgb(59, 134, 72);
-}
-[data-skill-col="5"],[data-skilltype-box] [data-radio-data="5"]{
-  --skill-col: rgb(165, 78, 52);
-}
-[data-theme="light"] [data-skill-col="1"],[data-theme="light"] [data-skilltype-box] [data-radio-data="1"]{
-  --skill-col: rgb(132, 240, 225);
-}
-[data-theme="light"] [data-skill-col="2"],[data-theme="light"] [data-skilltype-box] [data-radio-data="2"]{
-  --skill-col: rgb(132, 216, 255);
-}
-[data-theme="light"] [data-skill-col="3"],[data-theme="light"] [data-skilltype-box] [data-radio-data="3"]{
-  --skill-col: rgb(188, 195, 255);
-}
-[data-theme="light"] [data-skill-col="4"],[data-theme="light"] [data-skilltype-box] [data-radio-data="4"]{
-  --skill-col: rgb(132, 219, 147);
-}
-[data-theme="light"] [data-skill-col="5"],[data-theme="light"] [data-skilltype-box] [data-radio-data="5"]{
-  --skill-col: rgb(255, 166, 124);
-}
-/**/
 
 [data-theme="dark"] [data-skill-sec]{
   background: rgba(40, 40, 40, 1);
@@ -2051,6 +2068,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   [data-create-mix]{
     max-height: calc(100% - 356px);
   }
+
+  [data-editor-setlist-title],[data-editor-setlist]{
+    min-width: 148px;
+  }
 }
 @media (max-width:299px) {
   [data-any="vw300"]{
@@ -2094,6 +2115,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 
   [data-skill-more]{
     flex-wrap: wrap;
+  }
+
+  [data-editor-setlist-title],[data-editor-setlist]{
+    min-width: 68px;
   }
 
 }
@@ -2358,8 +2383,6 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div class="h100" data-btn="up">▲</div>
                   <div class="h100" data-btn="down">▼</div>
                 </div>
-                
-                
               </div>
               <div id="upload-set-box" class="df" style="flex-wrap: wrap; margin:0 0 4px 0; gap: 4px;">
                 <div id="upload-set-main" class="df">
@@ -2608,7 +2631,61 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           </div>
           <div data-editor-mix class="df-ffc wh100 pos-r">
             <div data-editor-viewbox data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc wh100 tex-pixelbg"></div>
-            <div data-editor-setbox class="w100 df-lc"></div>
+            <div data-editor-setbox class="w100 df-ffc">
+              <div class="w100 df-lc">
+                <div data-editor-setlist-title class="df-sc">
+                  <div data-en-text="Filter" style="opacity: 0.6;">调整</div>
+                  <div data-btn="icon" data-editor-addset>
+                    <svg width="100%" height="100%" viewbox="0 0 20 20">
+                      <rect fill="var(--mainColor)" x="0" y="9" width="20" height="2"></rect>
+                      <rect fill="var(--mainColor)" x="9" y="0" width="2" height="20"></rect>
+                    </svg>
+                  </div>
+                </div>
+                <div class="w100 df-sc">
+                  <div class="df-lc" style="gap: 4px; padding-left: 4px;">
+                    <input type="file" id="edito-upset" accept=".json" style="display: none;">
+                    <label for="edito-upset" data-tips="auto" data-tips-x="center" data-tips-y="top"
+                    style="--tips-text:'导入'; --tips-text-en:'Import';">
+                     <div data-btn="icon" data-editor-upset>
+                      <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-opacity="0.6" fill="var(--mainColor)" d="M4 15H16V13H19V19H1V13H4V15ZM8 3.04688C12.1429 3.43349 14 6.24465 14 9.43945V13L13.8936 12.792C12.5735 10.2138 11.4251 8.2507 8 7.93945V12L2 6L8 0V3.04688Z"/>
+                      </svg> 
+                     </div>
+                    </label>
+                    <input type="checkbox" id="editor-inputset" onchange="showNext(this,'data-editor-setcode','flex');showNext(this,'data-editor-setvalue','flex',true)">
+                    <label for="editor-inputset" data-tips="auto" data-tips-x="center" data-tips-y="top"
+                    style="--tips-text:'代码'; --tips-text-en:'Code';">
+                      <div data-btn="icon" data-editor-inputset>
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-opacity="0.6" fill="var(--mainColor)" d="M19 19H1V15H19V19ZM9.78516 13.6963H6.78027L10.2148 0.759766H13.2197L9.78516 13.6963ZM3.47754 7.64453L6.3252 12.2285H2.78027L0 7.64453L2.78027 2.22852H6L3.47754 7.64453ZM20 7.64453L17.2197 12.2285H13.6748L16.5225 7.64453L14 2.22852H17.2197L20 7.64453Z"/>
+                        </svg>
+                      </div>
+                    </label>
+                    <div data-tips="auto" data-tips-x="center" data-tips-y="top"
+                    style="--tips-text:'导出'; --tips-text-en:'Export';">
+                      <div data-btn="icon" data-editor-downset>
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-opacity="0.6" fill="var(--mainColor)" d="M4 15H16V13H19V19H1V13H4V15ZM12 8H16L10 14L4 8H8V1H12V8Z"/>
+                        </svg>  
+                      </div>
+                    </div>
+                  </div>
+                  <div data-en-text="Value" style="opacity: 0.6;">属性</div>
+                </div>
+              </div>
+              <div class="wh100 df-lc">
+                <div data-editor-setlist class="h100 df-ffc"></div>
+                <div data-editor-setvalue class="wh100 df-ffc"></div>
+                <div data-editor-setcode class="wh100 ovx scrollbar pos-r">
+                  <textarea class="wh100" data-textarea-wrap="false" spellcheck="false" id="inputset-textarea" data-textarea="eg" ></textarea>
+                    <!--清空-->
+                    <div class="pos-a" data-close="clear" style="right: 4px; top:8px; width: 12px; height: 12px;">
+                      <btn-close></btn-close>
+                    </div>
+                </div>
+              </div>
+            </div>
             <div data-editor-side class="pos-a df-ffc">
               <input type="checkbox" id="fulleditor">
               <label for="fulleditor" data-btn  class="df-cc">
@@ -2620,7 +2697,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </svg>          
               </label>
               <div data-editor-clear data-btn class="df-cc">
-                <svg width="90%" height="90%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="80%" height="80%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path stroke="var(--mainColor)" d="M2 4.27539H12" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
                   <path stroke="var(--mainColor)" d="M10 2.5V1.5H4V2.5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
                   <path stroke="var(--mainColor)" d="M11 4.27539L9.85714 12.2754H4.14286L3 4.27539" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -2628,18 +2705,32 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <path stroke="var(--mainColor)" d="M8 6.27539V10.2754" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
               </div>
-              <div data-color 
-              data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
-              data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
-              style="--colorcard-top: calc(100% + 4px); --colorcard-left:calc(var(--colorpick-w)*-1 - 4px);"
-               class="pos-a">
-                <div data-editor-bg data-input="colorpick" data-btn class="df-cc">
-                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 20 20">
-                    <rect x="3" y="3" width="14" height="14" rx="2" fill="var(--input-color,#888)"></rect>
-                  </svg>
+              <input id="data-editor-setbg" type="checkbox" onchange="showNext(this,'data-color-mix','flex')">
+              <label for="data-editor-setbg" data-editor-bg class="df-cc">
+                <svg  width="80%" height="80%" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="var(--mainColor)" d="M810.666667 85.333333H213.333333C140.8 85.333333 85.333333 140.8 85.333333 213.333333v597.333334c0 72.533333 55.466667 128 128 128h597.333334c72.533333 0 128-55.466667 128-128V213.333333c0-72.533333-55.466667-128-128-128z m-281.6 85.333334L170.666667 499.2V401.066667L401.066667 170.666667h128zM170.666667 755.2v-136.533333L657.066667 170.666667h136.533333L170.666667 755.2zM213.333333 170.666667h68.266667L170.666667 281.6V213.333333c0-25.6 17.066667-42.666667 42.666666-42.666666z m-17.066666 678.4L853.333333 230.4v136.533333L366.933333 853.333333H213.333333c-8.533333 0-12.8 0-17.066666-4.266666zM810.666667 853.333333h-324.266667l366.933333-366.933333V810.666667c0 25.6-17.066667 42.666667-42.666666 42.666666z">
+                  </path>
+                </svg>
+              </label>
+              <div data-color-mix class="df-rc" style="display: none; width: 20px; height: 20px;">
+                <div data-color 
+                data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
+                data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
+                style="--colorcard-top: calc(100% - 1px); --colorcard-left:calc(var(--colorpick-w)*-1 + 76px);"
+                class="df-rc">
+                  <div data-getcolor data-btn class="df-cc">
+                    <btn-getcolor></btn-getcolor>
+                  </div>
+                  <input id="colorvalue-1" class="fl1" type="text" data-input="hex" value="#888888" style="width: 8.5ch;">
+                  <div data-editor-bg data-input="colorpick" data-btn class="df-cc">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 20 20">
+                      <rect x="3" y="3" width="14" height="14" rx="2" fill="var(--input-color,#888)"></rect>
+                    </svg>
+                  </div>
+                  <card-colorpick></card-colorpick>
                 </div>
-                <card-colorpick></card-colorpick>
               </div>
+              
             </div>
           </div>
         </div>
@@ -3533,14 +3624,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d9fe114b58c5fa26b1d49de452d11f46623ef69/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3840,6 +3931,11 @@ let CreateTableInfo = [];
 let SelectNodeInfo = [];
 let ExportImageInfo = [];
 let CataloguesInfo = [];
+let EditorInfo = {
+  preview:'',//u8a
+  set:[],//{type:HSL | HUE | }
+  new:[],//{type:image | fills | node,content:[u8a | array]}
+}
 
 let isResize = false;
 let reStartW,reStartH,reStartX,reStartY;
@@ -4098,6 +4194,99 @@ function addSearchs(){
   //重置文字样式
   loadFont(dailogSearchBox);
 };
+
+class EDITOR_TAB {
+  constructor() {
+    this.addset = getElementMix('data-editor-addset');//添加按钮
+    this.setlist = getElementMix('data-editor-setlist');//调整列表
+    this.setvalue = getElementMix('data-editor-setvalue');//属性窗口
+    this.setcode = getElementMix('data-editor-setcode').querySelector('textarea');//代码编辑文本框
+    //调整项
+    this.editors = [
+      {
+        name:['HSL','HSL'],
+        type:['色彩','Color'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['反转','Invert'],
+        type:['色彩','Color'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['色彩平衡','Balance'],
+        type:['色彩','Color'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['颗粒','Graininess'],
+        type:['质感','Texture'],
+        editable:false,
+        pixel:true,
+      },
+      {
+        name:['降噪','Denoise'],
+        type:['质感','Texture'],
+        editable:false,
+        pixel:true,
+      },
+      {
+        name:['清晰度','noise'],
+        type:['质感','Texture'],
+        editable:false,
+        pixel:true,
+      },
+      {
+        name:['色散','Dispersion'],
+        type:['通道','Texture'],
+        editable:false,
+        pixel:true,
+      },
+      {
+        name:['渐变映射','noise'],
+        type:['通道','Channel'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['LUT','LUT'],
+        type:['通道','Channel'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['通道提取','RGBA'],
+        type:['通道','Channel'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['贝塞尔曲线','Bessel'],
+        type:['变形','Transform'],
+        editable:true,
+        pixel:true,
+      },
+      {
+        name:['透视','Perspective'],
+        type:['变形','Transform'],
+        editable:true,
+        pixel:true,
+      },
+    ]
+  }
+
+  init(){
+    //绑定添加按钮和可选项
+    let addlistbox = document.createElement('div');
+    addlistbox.setAttribute('data-editor-addlist','');
+
+    let page = getElementMix('data-page-name-en="editor"')
+    page.appendChild(addlistbox);
+  }
+}
 
 
 /* ---界面交互--- */
@@ -5067,9 +5256,9 @@ getElementMix('fulleditor').addEventListener('change',(e)=>{
 });
 //编辑预览图
 function addEditorView(info){
-  let viewimg = getElementMix('data-editor-viewbox').querySelector('img');
+  let viewimg = editorViewbox.querySelector('img');
   viewimg = viewimg ? viewimg : document.createElement('img');
-  let ismaxW = layer.width >= layer.height ? 'true' : 'false';
+  let ismaxW = info.width >= info.height ? 'true' : 'false';
   viewimg.setAttribute('data-ismaxW',ismaxW);
   viewimg.src = URL.createObjectURL(new Blob([info.u8a],{type:'image/png'}));
   editorViewbox.appendChild(viewimg);
@@ -5142,6 +5331,16 @@ exportAnyBtn.addEventListener('click',()=>{
     qualityspan.textContent = quality;
   };
 });
+
+getElementMix('data-editor-setbg').addEventListener('change',(e)=>{
+  showNext(e.target,'data-color-mix','flex');
+  if(e.target.checked){
+    let color = getElementMix('data-color-mix').querySelector('[data-color]').getAttribute('data-color-hex')
+    editorViewbox.style.setProperty('--bg',color)
+  }else{
+    editorViewbox.style.setProperty('--bg','none')
+  }
+})
 
 
 //制表文案转数组, 兼容反转行列
@@ -5777,6 +5976,9 @@ function getUserColor(node){
     RGB:node.getAttribute('data-color-rgb'),
     HSL:node.getAttribute('data-color-hsl'),
     HSV:node.getAttribute('data-color-hsv'),
+  }
+  if(node.parentNode.getAttribute('data-color-mix') !== null){
+    editorViewbox.style.setProperty('--bg',color.HEX);
   }
   //console.log(color)
 };

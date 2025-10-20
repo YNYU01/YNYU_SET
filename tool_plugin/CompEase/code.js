@@ -232,17 +232,17 @@ figma.ui.onmessage = (message) => {
         let a = figma.currentPage;
         let b = a.selection;
         if (b.length == 1 && hasKeyName(b[0],"table")){
-            
+            let data;
             if (hasKeyName(b[0],"横")){
                 let datas = tableToData(info.trim(),true);
-                let data = datas[0].map((col, i) => datas.map(row => row[i]))
+                data = datas[0].map((col, i) => datas.map(row => row[i]))
             } else {
-                let data = tableToData(info.trim(),true) 
+                data = tableToData(info.trim(),true) 
             }
             let H = data[0].length - b[0].children[0].children.length;
             let L = data.length - b[0].children.length;
 
-            addTable(b,H,L)
+            addTable(b,H,L);
             for(let i = 0; i < b[0].children.length; i++){             
                 if (hasKeyName(b[0].children[i],"列")){
                     let c = b[0].children[i].children;
@@ -1261,10 +1261,11 @@ function addTable(b,H,L){
                 if ( L > 0){
                     for( let e = 0; e < L; e++){
                         //console.log()
+                        let lists;
                         if (b[i].name.split('数据流').length !== 1){
-                            let lists = b[i].children[0] 
+                            lists = b[i].children[0] 
                         } else {
-                            let lists = b[i].children[Math.floor(b[i].children.length/2)]
+                            lists = b[i].children[Math.floor(b[i].children.length/2)]
                         }
                         
                         b[i].appendChild(lists.clone());

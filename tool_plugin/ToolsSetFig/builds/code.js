@@ -217,6 +217,34 @@ figma.ui.onmessage = async (message) => {
             console.log(e);
         })
     };
+    //上传可编辑内容
+    if( type == 'Up Editable'){
+
+    }
+    //上传栅格化内容
+    if( type == 'Up Pixel'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        if(b.length == 1){
+            let c = b[0];
+            let [w,h,x,y] = getSafeMain(c);
+            let maxWH = Math.max(w,h);
+            let scale = maxWH >= 1024 ? 1024/maxWH : 1;
+            let info = {
+                id: c.id,
+                name: c.name,
+                x:x,
+                y:y,
+                width:w,
+                height:h,
+                u8a: await c.exportAsync({
+                    format: 'PNG',
+                    constraint: { type: 'SCALE', value: scale },
+                    }),
+            };
+            postmessage([info,'editorView'])
+        }
+    }
     //从预设或组件创建表格
     if ( type == "creTable"){
         //console.log(info)
