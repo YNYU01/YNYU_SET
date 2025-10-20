@@ -499,11 +499,17 @@ function COMP_MAIN(){
     item.addEventListener('mousemove',(event) => {
       if(isMoving) colorPickMix(event,colortype);
     });
+    item.addEventListener('touchmove',(event) => {
+      if(isMoving) colorPickMix(event,colortype);
+    });
     item.addEventListener('click',(event) => {
       if(isMoving) return;
       colorPickMix(event,colortype);
     });
     item.addEventListener('mouseup',() => {
+      isMoving = false;
+    });
+    item.addEventListener('touchend',() => {
       isMoving = false;
     });
   });
