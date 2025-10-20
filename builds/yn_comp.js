@@ -492,6 +492,10 @@ function COMP_MAIN(){
       isMoving = true;
       colorPickMix(event,colortype);
     });
+    item.addEventListener('touchstart',(event) => {
+      isMoving = true;
+      colorPickMix(event,colortype);
+    });
     item.addEventListener('mousemove',(event) => {
       if(isMoving) colorPickMix(event,colortype);
     });
@@ -509,8 +513,8 @@ function COMP_MAIN(){
     e.stopPropagation();
   
     let item = e.target;
-    let x = e.clientX;
-    let y = e.clientY;
+    let x = ISMOBILE ? e.touches[0].clientX : e.clientX;
+    let y = ISMOBILE ? e.touches[0].clientY : e.clientY;
     let w = item.offsetWidth;
     let h = item.offsetHeight;
     let startX = item.getBoundingClientRect().left;
