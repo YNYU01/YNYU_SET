@@ -324,7 +324,7 @@ window.addEventListener('load',()=>{
   setTimeout(() => {
     /*clear*/
     let tabs = ['create','export','editor','variable','sheet','more tools']
-    viewPage(tabs[2])
+    viewPage(tabs[3])
     /**/;
     if(window.innerWidth < 300){
       TV_MOVE = true;

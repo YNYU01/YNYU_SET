@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -60,7 +60,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1422,6 +1422,73 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   --mainColor: var(--themeColor)
 }
 
+[data-variable-info-box]{
+  gap: 4px;
+  padding: 4px;
+  box-sizing: border-box;
+  margin-bottom: 4px;
+}
+
+[data-variable-info]{
+  padding-left: 10px;
+  gap: 6px;
+}
+
+[data-variable-info]::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 1ch;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--boxBod);
+}
+
+[data-variable-info] [data-btn]{
+  padding:0 1ch;
+}
+
+[data-variable-info-box="false"] + div{
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+[data-variable-hassheet="false"] [data-variable-has],
+[data-variable-hasstyle="false"] [data-variable-has],
+[data-variable-hassheet="true"] [data-variable-hasnot],
+[data-variable-hasstyle="true"] [data-variable-hasnot]
+{
+ display: none;
+}
+
+[data-variable-has],[data-variable-hasnot]{
+  gap: 4px;
+}
+
+[data-variable-has-icon]{
+  pointer-events: none;
+  width: 26px;
+  height: 18px;
+  border: 1px solid var(--boxBod);
+  box-sizing: border-box;
+  border-radius: 20px;
+  background: var(--boxGry);
+}
+
+[data-variable-refresh]{
+  padding: 1px;
+  top: 2px;
+  right: 2px;
+}
+
+[data-variable-refresh] [data-btn]{
+  width: 14px;
+  height: 14px;
+  padding: 1px;
+  border-radius: 4px;
+}
+
 [data-text-mini]{
   font-size: 8px;
   transform: skewX(-8deg);
@@ -2737,7 +2804,59 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         <div data-btn="main" class="df-cc" data-en-text="APPLY">应用</div>
       </div>
       <div data-page-name="变量" data-page-name-en="variable" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        
+        <div class="wh100 df-ffc ovh" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+          <!--步骤1-->
+          <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <span>▼&nbsp;</span>
+            <span data-en-text="Build a local-style sheet" >建立本地样式管理表</span>
+            &nbsp;&nbsp;
+            <span data-any="vw300" data-en-text="two-way sync data by hand" style="opacity: 0.6;"> 手动双向同步数据</span>
+            <div data-any="vw300" data-help="editor" class="fl0 df-cc">?</div>
+          </div>
+          <div data-variable-info-box="false" data-variable-hasstyle="false" data-variable-hassheet="false" class="w100 bod-d df-ffc pos-r">
+            <div data-variable-info class="df-lc pos-r">
+              <div data-variable-hasnot class="df-lc">
+                <div data-en-text="Find not styles">未读取到样式</div>
+                <div data-variable-addstyle data-btn="main2" data-en-text="Sample">示例</div>
+              </div>
+              <div data-variable-has class="df-lc">
+                <div data-variable-style data-en-text="Had styles" >已检测到样式</div>
+                <div data-variable-has-icon>
+                  <svg width="100%" height="100%" viewBox="0 0 14 14">
+                    <path stroke="var(--mainColor)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div data-variable-info class="df-lc pos-r">
+              <div data-variable-hasnot class="df-lc">
+                <div data-en-text="Find not local-style sheet">未读取到管理表</div>
+                <div data-variable-addsheet data-btn="main2" data-en-text="New">新建</div>
+              </div>
+              <div data-variable-has class="df-lc">
+                <div data-variable-sheet  data-en-text="Had local-style sheet">已检测到管理表</div>
+                <div data-variable-has-icon>
+                  <svg width="100%" height="100%" viewBox="0 0 14 14">
+                    <path stroke="var(--mainColor)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div data-variable-refresh class="df-cc fl0"
+            data-tips="auto" data-tips-x="right" data-tips-y="top" style="position: absolute; --tips-text: '刷新'; --tips-text-en: 'Refresh';">
+              <div data-btn>
+                <svg width="100%" height="100%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke="var(--mainColor)" d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path stroke="var(--mainColor)" d="M2.99911 2.18428L3.20218 4.65075L5.66323 4.49707" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="w100 df-cc" style="gap: 2px;">
+            <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Style To Sheet">从样式更新表</div>    
+            <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Sheet To Style">从表更新样式</div>
+          </div>
+        </div>
       </div>
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
         <div class="wh100 df-ffc ovy noscrollbar" style="max-width: 560px; align-items: center; padding: 10px 10px 0 10px; box-sizing: border-box;">
@@ -3624,14 +3743,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@060a8ecd5deca15bc42d8d1cef6f5bc564876e81/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -3960,7 +4079,7 @@ window.addEventListener('load',()=>{
   setTimeout(() => {
     /*
     let tabs = ['create','export','editor','variable','sheet','more tools']
-    viewPage(tabs[2])
+    viewPage(tabs[3])
     /**/;
     if(window.innerWidth < 300){
       TV_MOVE = true;

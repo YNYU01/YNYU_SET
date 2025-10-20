@@ -1380,7 +1380,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   background: var(--boxBod);
 }
 
-[data-variable-info-box] [data-btn]{
+[data-variable-info] [data-btn]{
   padding:0 1ch;
 }
 
@@ -1412,11 +1412,16 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 }
 
 [data-variable-refresh]{
-  width: 14px;
-  height: 14px;
   padding: 1px;
   top: 2px;
   right: 2px;
+}
+
+[data-variable-refresh] [data-btn]{
+  width: 14px;
+  height: 14px;
+  padding: 1px;
+  border-radius: 4px;
 }
 
 [data-text-mini]{
