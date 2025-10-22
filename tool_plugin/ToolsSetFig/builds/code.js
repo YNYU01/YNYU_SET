@@ -60,6 +60,7 @@ let CLIP_NAME = [
         '@BL',  '@BC-L','@BC',  '@BC-R','@BR',
     ]
 ];
+let localStyles = {paint:null,text:null,effect:null,grid:null};
 //核心功能
 figma.ui.onmessage = async (message) => { 
     const info = message[0]
@@ -1295,9 +1296,10 @@ figma.on('selectionchange',()=>{
 });
 
 setTimeout(()=>{
-    console.clear()
+    console.clear();
     console.log(`- [YNYU_SET] OPEN DESIGN & SOURCE
-- © 2024-2025 YNYU lvynyu2@gmail.com;`)
+- © 2024-2025 YNYU lvynyu2@gmail.com;`);
+    //console.log(localStyles)
 },100)
 
 sendInfo();
@@ -1356,6 +1358,92 @@ function sendSendComp(){
     }
     postmessage([info,'selectComp']);
 }
+
+getStyle('paint',true);
+async function getStyle(type,isSend){
+    let info = {list:[],nodes:[]}
+    switch (type){
+        case "paint":
+            figma.getLocalPaintStylesAsync()
+            .then((styles)=>{
+                //有哪些样式
+                //console.log(styles)
+                info.list = styles.map(item =>{
+                    return {
+                        id: item.id,
+                        name: item.name,
+                        paints: item.paints,
+                    }
+                });
+                let promises = styles.map(item => item.getStyleConsumersAsync());
+                Promise.all(promises)
+                .then((consumers)=>{
+                    //应用在什么节点
+                    //console.log(consumers)
+                    info.nodes = consumers.flat();
+                    localStyles.paint = info;
+                    if(isSend){
+                        let hasStyle = info.list.length > 0 ? true : false;
+                        postmessage([hasStyle,'styleInfo']);
+                    };
+                });
+            });
+        break
+        case "text":
+
+        break
+        case "effect":
+
+        break
+        case "grid":
+
+        break
+    }
+}
+
+getVariable();
+function getVariable(){
+    let pages = figma.root.children.map(item => [item.name,item.id]);
+    pages = pages.filter(item => item[0].includes('@locals'));
+    let hasVariable = pages.length > 0 ? true : false;
+    postmessage([hasVariable,'variableInfo']);
+}
+
+/**
+ * @param {[object] | null} info -新建页面的设置项，命名、背景色、页码
+ */
+function addPageMix(info = [{name: null,fill: null,index: null}]){
+    let safaPage = figma.currentPage.clone();
+    safaPage.children.forEach(item => {
+        item.remove();
+    });
+    let finals = [];
+    info.forEach(item => {
+        let newpage;
+        try{
+            newpage = figma.createPage();
+        } catch(e){
+            newpage = safaPage.clone();
+        }
+        newpage.name = item.name ? item.name : 'New Page';
+        if(item.fill) newpage.fills = [toRGB(item.fill,true)];
+        if(item.index) {
+            let num = item.index;
+            num >= 0 ? num : 0;
+            let max = figma.root.children.length - 1;
+            num >= max ? max : num;
+            figma.root.insertChild(num,newpage);
+        }else{
+            let num = figma.root.children.findIndex(item => item == figma.currentPage);
+            figma.root.insertChild(num + 1,newpage);
+            figma.setCurrentPageAsync(newpage);
+            finals.push(newpage)
+        };
+    });
+    safaPage.remove();
+    return finals;
+}
+
 
 /**
  * @param {Array} info - [w,h,x,y,name,[fills],[align,trbl,strokes]] 宽高、坐标、命名、填充、描边

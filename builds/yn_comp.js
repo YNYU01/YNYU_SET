@@ -494,13 +494,13 @@ function COMP_MAIN(){
     });
     item.addEventListener('touchstart',(event) => {
       isMoving = true;
-      colorPickMix(event,colortype);
+      colorPickMix(event,colortype,true);
     });
     item.addEventListener('mousemove',(event) => {
       if(isMoving) colorPickMix(event,colortype);
     });
     item.addEventListener('touchmove',(event) => {
-      if(isMoving) colorPickMix(event,colortype);
+      if(isMoving) colorPickMix(event,colortype,true);
     });
     item.addEventListener('click',(event) => {
       if(isMoving) return;
@@ -514,7 +514,7 @@ function COMP_MAIN(){
     });
   });
 
-  function colorPickMix(e,type){
+  function colorPickMix(e,type,ISMOBILE){
     e.preventDefault();
     e.stopPropagation();
   

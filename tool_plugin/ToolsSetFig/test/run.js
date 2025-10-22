@@ -35,6 +35,8 @@ window.addEventListener('message',(message)=>{
         case 'selectDatas': reSelectDatas(info);break
         case 'exportImgInfo': addTag('export-img',info);break
         case 'editorView': addEditorView(info);break
+        case 'styleInfo': reStyleInfo(info);break
+        case 'variableInfo': reVariableInfo(info);break
       };
     }
   };

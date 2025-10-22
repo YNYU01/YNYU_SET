@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -41,6 +41,8 @@ window.addEventListener('message',(message)=>{
         case 'selectDatas': reSelectDatas(info);break
         case 'exportImgInfo': addTag('export-img',info);break
         case 'editorView': addEditorView(info);break
+        case 'styleInfo': reStyleInfo(info);break
+        case 'variableInfo': reVariableInfo(info);break
       };
     }
   };
@@ -60,7 +62,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -85,6 +87,9 @@ function toolMessage(data,app){
   --code9:#e09524;
   --code10:#ec657c;
   --impColor1:var(--boxBak);
+  --linstyle-1:#2f8065;
+  --linstyle-2:#6d6d6d;
+  --linstyle-3:#a8652e;
   /*初始化*/
   --select-w: 100;
   --select-h: 100;
@@ -96,6 +101,9 @@ html[data-theme="light"] {
   --boxGry: #d9d9d9;
   --themeColor: #1cc992;
   --code1: #32a074;
+  --linstyle-1:#60cfb7;
+  --linstyle-2:#aaaaaa;
+  --linstyle-3:#e07c4d;
 }
 
 html{
@@ -122,6 +130,16 @@ body{
 
 p [data-highlight]{
   color: var(--themeColor)
+}
+
+.switch{
+  --swi-af: var(--mainColor);
+  opacity: 0.5;
+}
+
+input[type="checkbox"]:checked +.switch{
+  --swi-af: var(--themeColor);
+  opacity: 1;
 }
 
 [data-radio]{
@@ -458,6 +476,11 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
 }
 
 [data-language="En"] [data-any="zh"]{
+  display: none;
+}
+
+[data-mobile="true"] [data-any="pc"],
+[data-mobile="false"] [data-any="pe"]{
   display: none;
 }
 
@@ -1393,6 +1416,19 @@ input[type="checkbox"]:checked + [data-editor-bg]{
   display: flex;
 }
 
+[data-mobile="true"] [data-getcolor]{
+  pointer-events: none;
+}
+[data-mobile="true"] [data-getcolor]::after{
+  content: '';
+  position: absolute;
+  width: 120%;
+  height: 2px;
+  top: calc(50% - 1px);
+  transform: rotate(45deg);
+  background: var(--liColor);
+}
+
 [data-editor-setlist-title],[data-editor-setlist]{
   min-width: 98px;
   padding-right: 6px;
@@ -1419,22 +1455,58 @@ input[type="checkbox"]:checked + [data-editor-bg]{
 }
 
 input[type="checkbox"]:checked + [for="editor-inputset"]{
-  --mainColor: var(--themeColor)
+  --mainColor: var(--themeColor);
 }
 
-[data-variable-info-box]{
-  gap: 4px;
-  padding: 4px;
-  box-sizing: border-box;
+[data-variable-type]{
+  gap: 6px;
+  height: 40px;
+  flex: 0 0 auto;
   margin-bottom: 4px;
 }
 
-[data-variable-info]{
+[data-variable-chk]{
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+}
+
+[data-variable-type] [data-radio]{
+  padding: 0.5ch 0.8ch 0.5ch 0.5ch;
+}
+
+[data-radio-value="variable"] ~ [data-variable-varmix],
+[data-radio-value="style"] ~ [data-variable-stylemix]{
+  display: flex;
+}
+
+[data-radio-value="variable"] ~ [data-variable-stylemix],
+[data-radio-value="style"] ~ [data-variable-varmix]{
+  display: none;
+}
+
+[data-variable-styleinfo-box],[data-variable-varinfo-box]{
+  gap: 4px;
+  padding: 4px;
+  box-sizing: border-box;
+  margin: 0 0 6px 0;
+}
+
+[data-variable-varinfo-box]{
+  min-height: 40px;
+}
+
+[data-variable-styleinfo]{
   padding-left: 10px;
   gap: 6px;
 }
 
-[data-variable-info]::before {
+[data-variable-varinfo]{
+  margin: auto;
+  gap: 6px;
+}
+
+[data-variable-styleinfo]::before{
   content: '';
   position: absolute;
   left: 2px;
@@ -1445,11 +1517,11 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   background: var(--boxBod);
 }
 
-[data-variable-info] [data-btn]{
+[data-variable-styleinfo] [data-btn],[data-variable-varinfo] [data-btn]{
   padding:0 1ch;
 }
 
-[data-variable-info-box="false"] + div{
+[data-variable-styleinfo-box="false"] + div{
   pointer-events: none;
   opacity: 0.6;
 }
@@ -1487,6 +1559,32 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   height: 14px;
   padding: 1px;
   border-radius: 4px;
+}
+
+[data-variable-manage]{
+  border: 1px solid var(--boxBod);
+  box-sizing: border-box;
+  border-radius: 4px;
+  min-height: 50px;
+  margin: -4px 0 10px 0;
+}
+
+[data-manage-linkstyle],[data-manage-selectstyle],[data-manage-variables]{
+  padding: 4px;
+  box-sizing: border-box;
+  background: var(--boxGry);
+}
+
+[data-manage-linkstyle] [data-btn="icon"],[data-linkstyle-all],
+[data-manage-selectstyle] [data-btn="icon"],
+[data-manage-variables] [data-btn="icon"]{
+  width: 16px;
+  height: 16px;
+}
+
+[data-manage-linkstyle-list]{
+  gap: 4px;
+  max-height: 50vh;
 }
 
 [data-text-mini]{
@@ -2112,6 +2210,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   [data-any="vw360"]{
     display: none;
   }
+  
 }
 
 @media (min-width:360px) {
@@ -2138,6 +2237,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 
   [data-editor-setlist-title],[data-editor-setlist]{
     min-width: 148px;
+  }
+
+  [data-skill-sec] {
+    padding: 14px;
   }
 }
 @media (max-width:299px) {
@@ -2785,7 +2888,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
                 style="--colorcard-top: calc(100% - 1px); --colorcard-left:calc(var(--colorpick-w)*-1 + 76px);"
                 class="df-rc">
-                  <div data-getcolor data-btn class="df-cc">
+                  <div data-any="pc" data-getcolor data-btn class="df-cc">
                     <btn-getcolor></btn-getcolor>
                   </div>
                   <input id="colorvalue-1" class="fl1" type="text" data-input="hex" value="#888888" style="width: 8.5ch;">
@@ -2804,58 +2907,235 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         <div data-btn="main" class="df-cc" data-en-text="APPLY">应用</div>
       </div>
       <div data-page-name="变量" data-page-name-en="variable" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc ovh" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovy noscrollbar" style="height: calc(100% - 20px); max-width: 560px; align-items: center; padding:0 10px; box-sizing: border-box;">
           <!--步骤1-->
           <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
-            <span data-en-text="Build a local-style sheet" >建立本地样式管理表</span>
+            <span data-en-text="Build local sheet" >建立本地变量表</span>
             &nbsp;&nbsp;
-            <span data-any="vw300" data-en-text="two-way sync data by hand" style="opacity: 0.6;"> 手动双向同步数据</span>
-            <div data-any="vw300" data-help="editor" class="fl0 df-cc">?</div>
+            <span data-any="vw300" data-en-text="editor and apply manually" style="opacity: 0.6;"> 手动编辑和更新</span>
+            <div data-any="vw300" data-help="variable" class="fl0 df-cc">?</div>
           </div>
-          <div data-variable-info-box="false" data-variable-hasstyle="false" data-variable-hassheet="false" class="w100 bod-d df-ffc pos-r">
-            <div data-variable-info class="df-lc pos-r">
-              <div data-variable-hasnot class="df-lc">
-                <div data-en-text="Find not styles">未读取到样式</div>
-                <div data-variable-addstyle data-btn="main2" data-en-text="Sample">示例</div>
+          <div data-variable-type class="w100 df-lc upload-set" data-radio-value="style">
+            <div class="df-lc" style="gap: 4px;">
+              <svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill="var(--mainColor)" fill-rule="evenodd" clip-rule="evenodd" d="M7.89746 2.57129C7.3268 3.58479 7 4.75402 7 6C7 6.54045 7.06376 7.06601 7.17969 7.57129H3V12.0713H9.5V11.3604C9.81125 11.6219 10.146 11.8557 10.5 12.0605V12.0713H10.5176C11.5434 12.661 12.7318 13 14 13C15.4877 13 16.866 12.5345 18 11.7432V16.5713L17.9893 16.7754C17.887 17.7841 17.0357 18.5713 16 18.5713H4C2.96435 18.5713 2.113 17.7841 2.01074 16.7754L2 16.5713V4.57129C2.00016 3.46686 2.89553 2.57129 4 2.57129H7.89746ZM3 16.5713C3 17.1236 3.44772 17.5713 4 17.5713H9.5V13.0713H3V16.5713ZM10.5 17.5713H16C16.5523 17.5713 17 17.1236 17 16.5713V13.0713H10.5V17.5713Z"/>
+                <path fill="var(--mainColor)" fill-rule="evenodd" clip-rule="evenodd" d="M14 0C17.3137 0 20 2.68629 20 6C20 9.31371 17.3137 12 14 12C10.6863 12 8 9.31371 8 6C8 2.68629 10.6863 0 14 0ZM13.2246 8.71582V10.3145H14.8828V8.71582H13.2246ZM13.9941 1.68555C12.6002 1.68555 11.4709 2.59895 11.4707 4.08887H13.0322C13.0324 3.53626 13.3574 3.0918 13.9941 3.0918C14.5948 3.09191 14.9677 3.51247 14.9678 4.07715C14.9678 4.34154 14.8114 4.63044 14.6191 4.88281L13.7295 6.02441C13.4171 6.43292 13.2725 6.75774 13.2725 7.27441V7.63477H14.835V7.38184C14.8351 7.17761 14.9317 6.92569 15.0518 6.76953L15.9404 5.5918C16.2769 5.14715 16.5293 4.68975 16.5293 4.08887C16.5291 2.56299 15.3519 1.68565 13.9941 1.68555Z"/>
+              </svg>
+              ▶                
+            </div>
+            <div class="fl0 df-lc" data-radio data-radio-data="style" data-radio-main="true">
+              <div data-variable-chk>
+                 <btn-style></btn-style>
               </div>
-              <div data-variable-has class="df-lc">
-                <div data-variable-style data-en-text="Had styles" >已检测到样式</div>
-                <div data-variable-has-icon>
-                  <svg width="100%" height="100%" viewBox="0 0 14 14">
-                    <path stroke="var(--mainColor)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+              <div data-variable-chk-name data-en-text="Style">样式</div>   
+              <div data-any="vw300" data-en-text="&nbsp;Sheet">表管理</div>        
+            </div>
+            <div class="fl0 df-lc" data-radio data-radio-data="variable" data-radio-main="false">
+              <div data-variable-chk>
+                <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="var(--mainColor)" d="M18.6963 14.9325L18.9217 15.4821C18.7361 15.7539 18.464 16.0317 18.1055 16.3154C17.7531 16.599 17.3748 16.8384 16.9705 17.0334C16.5722 17.2284 16.2061 17.3259 15.8721 17.3259C15.7203 17.3259 15.5913 17.2934 15.4853 17.2284C15.3778 17.1693 15.2906 17.0629 15.2236 16.9093L13.6839 13.4787C13.4954 13.6856 13.2576 13.9338 12.9706 14.2233C12.6836 14.5129 12.4167 14.8202 12.1699 15.1452C11.9306 15.4644 11.774 15.7805 11.7 16.0938C11.6539 16.2888 11.6515 16.4661 11.6928 16.6256C11.3365 16.797 11.0013 16.9566 10.6871 17.1043C10.3729 17.2521 10.0731 17.3259 9.78766 17.3259C9.41725 17.3259 9.27601 17.1398 9.36395 16.7675C9.43932 16.4483 9.67742 16.0701 10.0783 15.6328C10.4852 15.1955 10.9787 14.7257 11.5588 14.2233C12.145 13.721 12.7373 13.2187 13.3357 12.7164L11.9546 9.57831L10.4188 10.4116L10.1955 9.85311C10.2692 9.74673 10.4283 9.58717 10.6729 9.37442C10.9235 9.16167 11.212 8.94301 11.5383 8.71845C11.872 8.48797 12.2035 8.29295 12.5327 8.13339C12.8679 7.97382 13.157 7.89404 13.3998 7.89404C13.6002 7.89404 13.7416 7.97678 13.824 8.14225C14.1141 8.73913 14.3779 9.30646 14.6152 9.84424C14.8539 10.3761 15.0823 10.8873 15.3004 11.3778C15.8049 10.8873 16.1696 10.5002 16.3945 10.2166C16.6268 9.92698 16.7787 9.70832 16.85 9.56058C16.9227 9.40693 16.9682 9.29169 16.9863 9.21486C17.0212 9.06712 17.03 8.94006 17.0126 8.83369C16.9952 8.72731 16.9804 8.63571 16.9682 8.55888C17.451 8.34023 17.8182 8.18657 18.0699 8.09793C18.329 8.00337 18.5153 7.94723 18.6288 7.9295C18.7498 7.90586 18.8406 7.89404 18.9014 7.89404C19.2475 7.89404 19.3738 8.09202 19.2803 8.48797C19.2035 8.813 18.9735 9.18236 18.5904 9.59604C18.2073 10.0097 17.7509 10.4382 17.2212 10.8814C16.6928 11.3187 16.1642 11.7442 15.6354 12.1579L17.1613 15.8012L18.6963 14.9325Z"/>
+                  <path fill="var(--mainColor)" d="M9.21571 6.44182L7.11722 15.3266C6.86854 16.3795 6.4285 17.245 5.79708 17.9233C5.17077 18.608 4.45035 19.115 3.63583 19.4444C2.83972 19.7664 2.1347 19.7328 1.37649 19.6673C1.07065 19.6415 0.804865 19.5865 0.579128 19.5026C0.346753 19.4186 0.250398 19.2926 0.290065 19.1247C0.299218 19.086 0.326223 19.0278 0.371078 18.9503L1.37599 17.4776C1.82495 17.6843 2.26956 17.8813 2.70982 18.0686C3.73148 18.5033 4.04851 18.19 4.44744 16.809C4.59146 16.3117 4.71992 15.824 4.83282 15.346L6.91597 6.44182H4.54654L4.64952 6.00581C4.71818 5.71514 4.82776 5.51813 4.97827 5.41478C5.13695 5.30497 5.35898 5.25007 5.64438 5.25007H7.19745L7.34848 4.6106C7.59258 3.5771 8.00177 2.74385 8.57605 2.11084C9.15034 1.47782 9.81361 1.01598 10.5659 0.725311C11.3248 0.434641 12.0925 0.289307 12.869 0.289307C12.9951 0.289307 13.1728 0.295766 13.4021 0.308685C13.638 0.321603 13.8726 0.3539 14.1059 0.405575C14.3475 0.45079 14.5423 0.525072 14.6905 0.628421C14.8401 0.725311 14.8952 0.857727 14.8555 1.02567C14.8387 1.09672 14.7842 1.18715 14.6919 1.29696L13.6485 2.59529C13.2133 2.33045 12.8066 2.085 12.4286 1.85892C12.0506 1.63285 11.6924 1.51981 11.3539 1.51981C10.9092 1.51981 10.5834 1.73297 10.3765 2.15928C10.1778 2.57914 9.98767 3.1734 9.80612 3.94206L9.49719 5.25007H12.3544L12.256 5.6667C12.1889 5.95091 12.0752 6.15115 11.915 6.26741C11.7615 6.38368 11.542 6.44182 11.2566 6.44182H9.21571Z"/>
+                </svg>                  
+              </div>
+              <div data-variable-chk-name data-en-text="Variable">变量</div>
+              <div data-any="vw300" data-en-text="&nbsp;Sheet">表管理</div>          
+            </div>
+          </div>
+          <!--变量组管理-->
+          <div data-variable-varmix class="wh100 df-ffc">
+            <div data-variable-varinfo-box="false" class="w100 bod-d df-ffc pos-r">
+              <div data-variable-varinfo data-variable-hasvar="false" class="df-lc pos-r">
+                <div data-variable-hasnot class="df-lc">
+                  <div data-en-text="Find not local sheet">未读取到变量表</div>
+                  <div data-variable-addvar data-btn="main2" data-en-text="Sample">示例</div>
+                </div>
+                <div data-variable-has data-variable-varlist class="df-lc" style="flex-wrap: wrap;">
+
+                </div>
+              </div>
+
+              <div data-variable-refresh="variable" class="df-cc fl0"
+              data-tips="auto" data-tips-x="right" data-tips-y="top" style="position: absolute; --tips-text: '刷新'; --tips-text-en: 'Refresh';">
+                <div data-btn>
+                  <svg width="100%" height="100%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke="var(--mainColor)" d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path stroke="var(--mainColor)" d="M2.99911 2.18428L3.20218 4.65075L5.66323 4.49707" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
                   </svg>
                 </div>
               </div>
             </div>
-            <div data-variable-info class="df-lc pos-r">
-              <div data-variable-hasnot class="df-lc">
-                <div data-en-text="Find not local-style sheet">未读取到管理表</div>
-                <div data-variable-addsheet data-btn="main2" data-en-text="New">新建</div>
+            <div class="wh100">
+              <div data-resize class="wh100 pos-r" style="min-height: 80px;">
+                <textarea class="wh100" spellcheck="false" id="upload-variable" data-textarea="eg"  style="min-height: 100%; max-height: 80vh;" 
+                data-eg="--\tGroup1\tGroup2\nxxx_num\t123\t456\nxxx_col\t#ffffff\trgb(255,255,255)\nxxx_str\tabc\tdef\nxxx_bol\ttrue\tfalse"
+                data-eg-en="--\tGroup1\tGroup2\nxxx_num\t123\t456\nxxx_col\t#ffffff\trgb(255,255,255)\nxxx_str\tabc\tdef\nxxx_bol\ttrue\tfalse"
+                ></textarea>
+                <!--清空-->
+                <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
+                  <btn-close></btn-close>
+                </div>
+                <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: wrap; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
+                  <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
+                  <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
+                </div>
               </div>
-              <div data-variable-has class="df-lc">
-                <div data-variable-sheet  data-en-text="Had local-style sheet">已检测到管理表</div>
-                <div data-variable-has-icon>
-                  <svg width="100%" height="100%" viewBox="0 0 14 14">
-                    <path stroke="var(--mainColor)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            </div>
+            <!--步骤2-->
+            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+              <span>▼&nbsp;</span>
+              <span data-en-text="Manage variable group" >管理变量组</span>
+              &nbsp;&nbsp;
+              <span data-any="vw300" data-en-text="based on properties/tags map" style="opacity: 0.6;"> 基于标签/组件属性</span>
+            </div>
+            <div data-variable-manage class="w100 df-ffc ovh pos-r">
+              <div data-manage-variables class="w100 df-sc">
+                <div class="df-lc" style="gap: 8px;">
+                  <div data-variables-add data-btn="icon" data-selects-must>
+                    <btn-getbyselect></btn-getbyselect> 
+                    <div class="pos-a" style="top: 0; left: 18px;"
+                    data-en-text="Upload selection" >扫描所选</div>                                  
+                  </div>
+                </div>
+                <div class="df-lc" style="gap: 4px;">
+
+                </div>
+              </div>
+              <div data-manage-variables-list class="w100 df-fc ovy">
+
+              </div>
+              <!--清空-->
+              <div data-variables-clear class="pos-a" style="right: 4px; top:28px; width: 12px; height: 12px;">
+                <btn-close></btn-close>
+              </div>
+            </div>
+          </div>
+          <!--样式组管理-->
+          <div data-variable-stylemix class="wh100 df-ffc">
+            <div data-variable-styleinfo-box="false" class="w100 bod-d df-ffc pos-r">
+              <div data-variable-styleinfo data-variable-hasstyle="false" class="df-lc pos-r">
+                <div data-variable-hasnot class="df-lc">
+                  <div data-en-text="Find not styles">未读取到样式</div>
+                  <div data-variable-addstyle data-btn="main2" data-en-text="Sample">示例</div>
+                </div>
+                <div data-variable-has class="df-lc">
+                  <div data-variable-style data-en-text="Had styles" >已检测到样式</div>
+                  <div data-variable-has-icon>
+                    <svg width="100%" height="100%" viewBox="0 0 14 14">
+                      <path stroke="var(--mainColor)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div data-variable-styleinfo data-variable-hassheet="false" class="df-lc pos-r">
+                <div data-variable-hasnot class="df-lc">
+                  <div data-en-text="Find not local sheet">未读取到样式表</div>
+                  <div data-variable-addsheet data-btn="main2" data-en-text="New">新建</div>
+                </div>
+                <div data-variable-has class="df-lc">
+                  <div data-variable-sheet  data-en-text="Had local-style sheet">已检测到管理表</div>
+                  <div data-variable-has-icon>
+                    <svg width="100%" height="100%" viewBox="0 0 14 14">
+                      <path stroke="var(--mainColor)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div data-variable-refresh="style" class="df-cc fl0"
+              data-tips="auto" data-tips-x="right" data-tips-y="top" style="position: absolute; --tips-text: '刷新'; --tips-text-en: 'Refresh';">
+                <div data-btn>
+                  <svg width="100%" height="100%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke="var(--mainColor)" d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path stroke="var(--mainColor)" d="M2.99911 2.18428L3.20218 4.65075L5.66323 4.49707" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
                   </svg>
                 </div>
               </div>
             </div>
-            <div data-variable-refresh class="df-cc fl0"
-            data-tips="auto" data-tips-x="right" data-tips-y="top" style="position: absolute; --tips-text: '刷新'; --tips-text-en: 'Refresh';">
-              <div data-btn>
-                <svg width="100%" height="100%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke="var(--mainColor)" d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path stroke="var(--mainColor)" d="M2.99911 2.18428L3.20218 4.65075L5.66323 4.49707" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
+            <div class="w100 df-cc" style="gap: 2px; margin-bottom: 10px;">
+              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Style To Sheet">从样式更新表</div>    
+              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Sheet To Style">从表更新样式</div>
+            </div>
+            <!--步骤2-->
+            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+              <span>▼&nbsp;</span>
+              <span data-en-text="Manage broken-link style" >管理断链样式</span>
+              &nbsp;&nbsp;
+              <span data-any="vw300" data-en-text="Reapply | Create | Override..." style="opacity: 0.6;"> 重链 | 新建 | 覆盖</span>
+            </div>
+            <div data-variable-manage class="w100 df-ffc ovh pos-r">
+              <div data-manage-linkstyle class="w100 df-sc">
+                <div class="df-lc" style="gap: 8px;">
+                  <div data-linkstyle-add data-btn="icon" data-selects-must>
+                    <btn-getbyselect></btn-getbyselect> 
+                    <div class="pos-a" style="top: 0; left: 18px;"
+                    data-en-text="Upload selection" >扫描所选</div>                                  
+                  </div>
+                </div>
+                <div class="df-lc" style="gap: 4px;">
+                  <div data-linkstyle-all="reapply" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
+                  style="--tips-text: '执行全部重链'; --tips-text-en: 'All Reapply Existing';">
+                    <div data-btn="icon">
+                      <svg width="100%" height="100%" viewbox="0 0 20 20">
+                        <circle cx="10" cy="10" r="10" fill="var(--linstyle-1)"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div data-linkstyle-all="create" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
+                  style="--tips-text: '执行全部创建'; --tips-text-en: 'All Create New';">
+                    <div data-btn="icon">
+                      <svg width="100%" height="100%" viewbox="0 0 20 20">
+                        <circle cx="10" cy="10" r="10" fill="var(--linstyle-2)"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div data-linkstyle-all="override" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
+                  style="--tips-text: '执行全部覆盖'; --tips-text-en: 'All Override Current';">
+                    <div data-btn="icon">
+                      <svg width="100%" height="100%" viewbox="0 0 20 20">
+                        <circle cx="10" cy="10" r="10" fill="var(--linstyle-3)"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div data-manage-linkstyle-list class="w100 df-fc ovy">
+
+              </div>
+              <!--清空-->
+              <div data-linkstyle-clear class="pos-a" style="right: 4px; top:28px; width: 12px; height: 12px;">
+                <btn-close></btn-close>
+              </div>
+            </div>
+            <!--步骤3-->
+            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+              <span>▼&nbsp;</span>
+              <span data-en-text="Manage thematic style" >管理主题性样式组</span>
+              &nbsp;&nbsp;
+              <span data-any="vw300" data-en-text="like variable group" style="opacity: 0.6;"> 类似切换变量组</span>
+            </div>
+            <div data-variable-manage class="w100 df-ffc ovh pos-r">
+              <div data-manage-selectstyle class="w100 df-sc">
+                <div class="df-lc" style="gap: 8px;">
+                  <div data-selectstyle-add data-btn="icon" data-selects-must>
+                    <btn-getbyselect></btn-getbyselect> 
+                    <div class="pos-a" style="top: 0; left: 18px;"
+                    data-en-text="Upload selection" >扫描所选</div>                                  
+                  </div>
+                </div>
+                <div class="df-lc" style="gap: 4px;">
+
+                </div>
+              </div>
+              <div data-manage-selectstyle-list class="w100 df-fc ovy">
+
+              </div>
+              <!--清空-->
+              <div data-selectstyle-clear class="pos-a" style="right: 4px; top:28px; width: 12px; height: 12px;">
+                <btn-close></btn-close>
               </div>
             </div>
           </div>
-          <div class="w100 df-cc" style="gap: 2px;">
-            <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Style To Sheet">从样式更新表</div>    
-            <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Sheet To Style">从表更新样式</div>
-          </div>
+          
         </div>
       </div>
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
@@ -3068,13 +3348,13 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div>
             <div style="min-height: 4px;"></div>
             <!--步骤2-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc"  style="padding:4px 0 6px 0; opacity: 0.6; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Control component properties by sheet" >用表格数据批量+参数化控制组件</span>
             </div>
             <div class="wh100 df">
               <div id="upload-tablearea-box" data-resize class="pos-r fl1">
-                <textarea class="wh100" spellcheck="false" id="upload-tablearea" data-textarea="eg"  style=" min-height: 160px;" 
+                <textarea class="wh100" spellcheck="false" id="upload-tablearea" data-textarea="eg"  style=" min-height: 100%;" 
                 data-eg="A1\tB1\tC1\na2\tb2\tc2\na3\tb3\tc3\na4\tb4\tc4"
                 data-eg-en="A1\tB1\tC1\na2\tb2\tc2\na3\tb3\tc3\na4\tb4\tc4"
                 ></textarea>
@@ -3743,14 +4023,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ff88c5e684768cf230bb7106b1cc10782e595787/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -5654,6 +5934,22 @@ function reTableTitle(text){
     }
   }; 
 };
+//修改样式信息读取状态
+function reStyleInfo(info){
+  if(info){
+    getElementMix('data-variable-hasstyle').setAttribute('data-variable-hasstyle','true')
+  }else{
+    getElementMix('data-variable-hasstyle').setAttribute('data-variable-hasstyle','false')
+  }
+}
+//修改变量信息读取状态
+function reVariableInfo(info){
+  if(info){
+    getElementMix('data-variable-hassheet').setAttribute('data-variable-hassheet','true')
+  }else{
+    getElementMix('data-variable-hassheet').setAttribute('data-variable-hassheet','false')
+  }
+}
 //设置表格初始样式
 chkTablestyle.addEventListener('change',()=>{
   chkTablestyle.checked = true;

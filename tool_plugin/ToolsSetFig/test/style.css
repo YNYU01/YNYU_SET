@@ -20,6 +20,9 @@
   --code9:#e09524;
   --code10:#ec657c;
   --impColor1:var(--boxBak);
+  --linstyle-1:#2f8065;
+  --linstyle-2:#6d6d6d;
+  --linstyle-3:#a8652e;
   /*初始化*/
   --select-w: 100;
   --select-h: 100;
@@ -31,6 +34,9 @@ html[data-theme="light"] {
   --boxGry: #d9d9d9;
   --themeColor: #1cc992;
   --code1: #32a074;
+  --linstyle-1:#60cfb7;
+  --linstyle-2:#aaaaaa;
+  --linstyle-3:#e07c4d;
 }
 
 html{
@@ -57,6 +63,16 @@ body{
 
 p [data-highlight]{
   color: var(--themeColor)
+}
+
+.switch{
+  --swi-af: var(--mainColor);
+  opacity: 0.5;
+}
+
+input[type="checkbox"]:checked +.switch{
+  --swi-af: var(--themeColor);
+  opacity: 1;
 }
 
 [data-radio]{
@@ -393,6 +409,11 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
 }
 
 [data-language="En"] [data-any="zh"]{
+  display: none;
+}
+
+[data-mobile="true"] [data-any="pc"],
+[data-mobile="false"] [data-any="pe"]{
   display: none;
 }
 
@@ -1328,6 +1349,19 @@ input[type="checkbox"]:checked + [data-editor-bg]{
   display: flex;
 }
 
+[data-mobile="true"] [data-getcolor]{
+  pointer-events: none;
+}
+[data-mobile="true"] [data-getcolor]::after{
+  content: '';
+  position: absolute;
+  width: 120%;
+  height: 2px;
+  top: calc(50% - 1px);
+  transform: rotate(45deg);
+  background: var(--liColor);
+}
+
 [data-editor-setlist-title],[data-editor-setlist]{
   min-width: 98px;
   padding-right: 6px;
@@ -1354,22 +1388,58 @@ input[type="checkbox"]:checked + [data-editor-bg]{
 }
 
 input[type="checkbox"]:checked + [for="editor-inputset"]{
-  --mainColor: var(--themeColor)
+  --mainColor: var(--themeColor);
 }
 
-[data-variable-info-box]{
-  gap: 4px;
-  padding: 4px;
-  box-sizing: border-box;
+[data-variable-type]{
+  gap: 6px;
+  height: 40px;
+  flex: 0 0 auto;
   margin-bottom: 4px;
 }
 
-[data-variable-info]{
+[data-variable-chk]{
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+}
+
+[data-variable-type] [data-radio]{
+  padding: 0.5ch 0.8ch 0.5ch 0.5ch;
+}
+
+[data-radio-value="variable"] ~ [data-variable-varmix],
+[data-radio-value="style"] ~ [data-variable-stylemix]{
+  display: flex;
+}
+
+[data-radio-value="variable"] ~ [data-variable-stylemix],
+[data-radio-value="style"] ~ [data-variable-varmix]{
+  display: none;
+}
+
+[data-variable-styleinfo-box],[data-variable-varinfo-box]{
+  gap: 4px;
+  padding: 4px;
+  box-sizing: border-box;
+  margin: 0 0 6px 0;
+}
+
+[data-variable-varinfo-box]{
+  min-height: 40px;
+}
+
+[data-variable-styleinfo]{
   padding-left: 10px;
   gap: 6px;
 }
 
-[data-variable-info]::before {
+[data-variable-varinfo]{
+  margin: auto;
+  gap: 6px;
+}
+
+[data-variable-styleinfo]::before{
   content: '';
   position: absolute;
   left: 2px;
@@ -1380,11 +1450,11 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   background: var(--boxBod);
 }
 
-[data-variable-info] [data-btn]{
+[data-variable-styleinfo] [data-btn],[data-variable-varinfo] [data-btn]{
   padding:0 1ch;
 }
 
-[data-variable-info-box="false"] + div{
+[data-variable-styleinfo-box="false"] + div{
   pointer-events: none;
   opacity: 0.6;
 }
@@ -1422,6 +1492,32 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   height: 14px;
   padding: 1px;
   border-radius: 4px;
+}
+
+[data-variable-manage]{
+  border: 1px solid var(--boxBod);
+  box-sizing: border-box;
+  border-radius: 4px;
+  min-height: 50px;
+  margin: -4px 0 10px 0;
+}
+
+[data-manage-linkstyle],[data-manage-selectstyle],[data-manage-variables]{
+  padding: 4px;
+  box-sizing: border-box;
+  background: var(--boxGry);
+}
+
+[data-manage-linkstyle] [data-btn="icon"],[data-linkstyle-all],
+[data-manage-selectstyle] [data-btn="icon"],
+[data-manage-variables] [data-btn="icon"]{
+  width: 16px;
+  height: 16px;
+}
+
+[data-manage-linkstyle-list]{
+  gap: 4px;
+  max-height: 50vh;
 }
 
 [data-text-mini]{
@@ -2047,6 +2143,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   [data-any="vw360"]{
     display: none;
   }
+  
 }
 
 @media (min-width:360px) {
@@ -2073,6 +2170,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 
   [data-editor-setlist-title],[data-editor-setlist]{
     min-width: 148px;
+  }
+
+  [data-skill-sec] {
+    padding: 14px;
   }
 }
 @media (max-width:299px) {

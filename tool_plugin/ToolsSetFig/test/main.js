@@ -1899,6 +1899,22 @@ function reTableTitle(text){
     }
   }; 
 };
+//修改样式信息读取状态
+function reStyleInfo(info){
+  if(info){
+    getElementMix('data-variable-hasstyle').setAttribute('data-variable-hasstyle','true')
+  }else{
+    getElementMix('data-variable-hasstyle').setAttribute('data-variable-hasstyle','false')
+  }
+}
+//修改变量信息读取状态
+function reVariableInfo(info){
+  if(info){
+    getElementMix('data-variable-hassheet').setAttribute('data-variable-hassheet','true')
+  }else{
+    getElementMix('data-variable-hassheet').setAttribute('data-variable-hassheet','false')
+  }
+}
 //设置表格初始样式
 chkTablestyle.addEventListener('change',()=>{
   chkTablestyle.checked = true;
