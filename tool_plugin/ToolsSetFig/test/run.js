@@ -36,6 +36,7 @@ window.addEventListener('message',(message)=>{
         case 'exportImgInfo': addTag('export-img',info);break
         case 'editorView': addEditorView(info);break
         case 'styleInfo': reStyleInfo(info);break
+        case 'styleSheetInfo': reStyleSheetInfo(info);break
         case 'variableInfo': reVariableInfo(info);break
       };
     }

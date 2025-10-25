@@ -65,12 +65,12 @@ p [data-highlight]{
   color: var(--themeColor)
 }
 
-.switch{
+[data-page-name-en="sheet"] .switch{
   --swi-af: var(--mainColor);
   opacity: 0.5;
 }
 
-input[type="checkbox"]:checked +.switch{
+[data-page-name-en="sheet"] input[type="checkbox"]:checked +.switch{
   --swi-af: var(--themeColor);
   opacity: 1;
 }
@@ -1454,17 +1454,18 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   padding:0 1ch;
 }
 
-[data-variable-styleinfo-box="false"] + div{
-  pointer-events: none;
-  opacity: 0.6;
-}
-
 [data-variable-hassheet="false"] [data-variable-has],
 [data-variable-hasstyle="false"] [data-variable-has],
 [data-variable-hassheet="true"] [data-variable-hasnot],
 [data-variable-hasstyle="true"] [data-variable-hasnot]
 {
  display: none;
+}
+
+[data-any="unclick"],
+[data-variable-hasstyle="false"] + [data-variable-styleinfo]{
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 [data-variable-has],[data-variable-hasnot]{

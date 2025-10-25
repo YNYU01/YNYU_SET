@@ -245,6 +245,9 @@ const createAnyBtn = document.querySelector('[data-create-any]');
 const exportAnyBtn = document.querySelector('[data-export-any]');
 const createTableBtn = document.querySelector('[data-create-table]');
 const tableStyleSet = document.querySelector('[data-tablestyle-set]');
+const styleTosheet = document.querySelector('[data-en-text="Style To Sheet"]');
+const sheetTostyle = document.querySelector('[data-en-text="Sheet To Style"]');
+
 
 let skillModel = [];
 let skilltypeNameNode = document.querySelectorAll('[data-skillmodule]');
@@ -1899,22 +1902,56 @@ function reTableTitle(text){
     }
   }; 
 };
+//刷新样式信息
+getElementMix('data-variable-refresh="style"').addEventListener('click',()=>{
+  toolMessage(['','getStyleInfo'],PLUGINAPP);
+});
+//刷新变量信息
+getElementMix('data-variable-refresh="variable"').addEventListener('click',()=>{
+  toolMessage(['','getVariableInfo'],PLUGINAPP);
+});
 //修改样式信息读取状态
 function reStyleInfo(info){
+  let hasstyle = getElementMix('data-variable-hasstyle');
   if(info){
-    getElementMix('data-variable-hasstyle').setAttribute('data-variable-hasstyle','true')
+    hasstyle.setAttribute('data-variable-hasstyle','true');
+    styleTosheet.setAttribute('data-any','');
   }else{
-    getElementMix('data-variable-hasstyle').setAttribute('data-variable-hasstyle','false')
-  }
-}
+    hasstyle.setAttribute('data-variable-hasstyle','false');
+    styleTosheet.setAttribute('data-any','unclick');
+  };
+};
+//修改样式表信息读取状态
+function reStyleSheetInfo(info){
+  let hassheet = getElementMix('data-variable-hassheet');
+  if(info){
+    hassheet.setAttribute('data-variable-hassheet','true');
+    sheetTostyle.setAttribute('data-any','');
+  }else{
+    hassheet.setAttribute('data-variable-hassheet','false');
+    sheetTostyle.setAttribute('data-any','unclick');
+  };
+};
 //修改变量信息读取状态
 function reVariableInfo(info){
   if(info){
-    getElementMix('data-variable-hassheet').setAttribute('data-variable-hassheet','true')
+    getElementMix('data-variable-hasvar').setAttribute('data-variable-hasvar','true');
   }else{
-    getElementMix('data-variable-hassheet').setAttribute('data-variable-hassheet','false')
-  }
-}
+    getElementMix('data-variable-hasvar').setAttribute('data-variable-hasvar','false');
+  };
+};
+//新建示例样式
+getElementMix('data-variable-addstyle').addEventListener('click',()=>{
+  toolMessage(['','addStyle'],PLUGINAPP);
+});
+//新建样式表
+getElementMix('data-variable-addsheet').addEventListener('click',()=>{
+  toolMessage(['','addStyleSheet'],PLUGINAPP);
+});
+//新建示例变量表
+getElementMix('data-variable-addvar').addEventListener('click',()=>{
+  toolMessage(['','addVariable'],PLUGINAPP);
+});
 //设置表格初始样式
 chkTablestyle.addEventListener('change',()=>{
   chkTablestyle.checked = true;
@@ -2237,16 +2274,30 @@ skillBtnMain.forEach(btn => {
 //处理回传的选中对象的数据
 function reSelectComp(info){//判断是否选中表格组件
   //console.log(info)
-  if(info[0] || info[1]){
-   getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','true')
-   let comp1 = getElementMix('data-selectcomp-1');
-   let comp2 = getElementMix('data-selectcomp-2');
-   comp1.textContent = info[0] ? info[0] : 'none';
-   comp1.style.opacity = info[0] ? '1' : '0.5';
-   comp2.textContent = info[1] ? info[1] : 'none';
-   comp2.style.opacity = info[1] ? '1' : '0.5';
+  if(info[0] || info[1] || info[2]){
+    chkSelectcomp.checked = true;
+    getElementMix('chk-tablestyle').checked = false;
+    getElementMix('for="chk-selectcomp"').setAttribute('data-tips-x','left');
+    getElementMix('chk-tablestyle').parentNode.style.pointerEvents = 'none';
+    getElementMix('chk-tablestyle').parentNode.style.opacity = '0.5';
+    getElementMix('data-tablestyle-box').style.display = 'none';
+    getElementMix('data-selectcomp-box').style.display = 'flex';
+    getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','true')
+    let comp1 = getElementMix('data-selectcomp-1');
+    let comp2 = getElementMix('data-selectcomp-2');
+    comp1.textContent = info[0] ? info[0] : 'none';
+    comp1.style.opacity = info[0] ? '1' : '0.5';
+    comp2.textContent = info[1] ? info[1] : 'none';
+    comp2.style.opacity = info[1] ? '1' : '0.5';
+    if(!info[1] && info[2]){
+      comp2.textContent = info[2] ? info[2] : 'none';
+      comp2.style.opacity = info[2] ? '1' : '0.5';
+    };
   } else {
-   getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','false')
+    getElementMix('for="chk-selectcomp"').setAttribute('data-tips-x','right');
+    getElementMix('chk-tablestyle').parentNode.style.pointerEvents = 'auto';
+    getElementMix('chk-tablestyle').parentNode.style.opacity = '1';
+    getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','false')
   };
  
 };

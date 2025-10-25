@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@90ee3fcb3eb19e4ef8ccf0ca5dc27ab3e849a639/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -42,6 +42,7 @@ window.addEventListener('message',(message)=>{
         case 'exportImgInfo': addTag('export-img',info);break
         case 'editorView': addEditorView(info);break
         case 'styleInfo': reStyleInfo(info);break
+        case 'styleSheetInfo': reStyleSheetInfo(info);break
         case 'variableInfo': reVariableInfo(info);break
       };
     }
@@ -62,7 +63,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@90ee3fcb3eb19e4ef8ccf0ca5dc27ab3e849a639/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -132,12 +133,12 @@ p [data-highlight]{
   color: var(--themeColor)
 }
 
-.switch{
+[data-page-name-en="sheet"] .switch{
   --swi-af: var(--mainColor);
   opacity: 0.5;
 }
 
-input[type="checkbox"]:checked +.switch{
+[data-page-name-en="sheet"] input[type="checkbox"]:checked +.switch{
   --swi-af: var(--themeColor);
   opacity: 1;
 }
@@ -1521,17 +1522,18 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   padding:0 1ch;
 }
 
-[data-variable-styleinfo-box="false"] + div{
-  pointer-events: none;
-  opacity: 0.6;
-}
-
 [data-variable-hassheet="false"] [data-variable-has],
 [data-variable-hasstyle="false"] [data-variable-has],
 [data-variable-hassheet="true"] [data-variable-hasnot],
 [data-variable-hasstyle="true"] [data-variable-hasnot]
 {
  display: none;
+}
+
+[data-any="unclick"],
+[data-variable-hasstyle="false"] + [data-variable-styleinfo]{
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 [data-variable-has],[data-variable-hasnot]{
@@ -3012,14 +3014,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           </div>
           <!--样式组管理-->
           <div data-variable-stylemix class="wh100 df-ffc">
-            <div data-variable-styleinfo-box="false" class="w100 bod-d df-ffc pos-r">
+            <div data-variable-styleinfo-box class="w100 bod-d df-ffc pos-r">
               <div data-variable-styleinfo data-variable-hasstyle="false" class="df-lc pos-r">
                 <div data-variable-hasnot class="df-lc">
-                  <div data-en-text="Find not styles">未读取到样式</div>
+                  <div data-en-text="Find not style-set">未读取到样式集</div>
                   <div data-variable-addstyle data-btn="main2" data-en-text="Sample">示例</div>
                 </div>
                 <div data-variable-has class="df-lc">
-                  <div data-variable-style data-en-text="Had styles" >已检测到样式</div>
+                  <div data-variable-style data-en-text="Had style-set" >已检测到样式集</div>
                   <div data-variable-has-icon>
                     <svg width="100%" height="100%" viewBox="0 0 14 14">
                       <path stroke="var(--mainColor)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
@@ -3052,8 +3054,8 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               </div>
             </div>
             <div class="w100 df-cc" style="gap: 2px; margin-bottom: 10px;">
-              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Style To Sheet">从样式更新表</div>    
-              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Sheet To Style">从表更新样式</div>
+              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Style To Sheet">从样式更新表</div>    
+              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
             </div>
             <!--步骤2-->
             <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
@@ -3353,7 +3355,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               <span data-en-text="Control component properties by sheet" >用表格数据批量+参数化控制组件</span>
             </div>
             <div class="wh100 df">
-              <div id="upload-tablearea-box" data-resize class="pos-r fl1">
+              <div id="upload-tablearea-box" data-resize class="pos-r fl1" style="min-height: 120px;">
                 <textarea class="wh100" spellcheck="false" id="upload-tablearea" data-textarea="eg"  style=" min-height: 100%;" 
                 data-eg="A1\tB1\tC1\na2\tb2\tc2\na3\tb3\tc3\na4\tb4\tc4"
                 data-eg-en="A1\tB1\tC1\na2\tb2\tc2\na3\tb3\tc3\na4\tb4\tc4"
@@ -4023,14 +4025,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f550ee0dbc92e2df91f3c6c9f0969083c52cf3da/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@90ee3fcb3eb19e4ef8ccf0ca5dc27ab3e849a639/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@90ee3fcb3eb19e4ef8ccf0ca5dc27ab3e849a639/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@90ee3fcb3eb19e4ef8ccf0ca5dc27ab3e849a639/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@90ee3fcb3eb19e4ef8ccf0ca5dc27ab3e849a639/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@90ee3fcb3eb19e4ef8ccf0ca5dc27ab3e849a639/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@90ee3fcb3eb19e4ef8ccf0ca5dc27ab3e849a639/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@90ee3fcb3eb19e4ef8ccf0ca5dc27ab3e849a639/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@90ee3fcb3eb19e4ef8ccf0ca5dc27ab3e849a639/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4280,6 +4282,9 @@ const createAnyBtn = document.querySelector('[data-create-any]');
 const exportAnyBtn = document.querySelector('[data-export-any]');
 const createTableBtn = document.querySelector('[data-create-table]');
 const tableStyleSet = document.querySelector('[data-tablestyle-set]');
+const styleTosheet = document.querySelector('[data-en-text="Style To Sheet"]');
+const sheetTostyle = document.querySelector('[data-en-text="Sheet To Style"]');
+
 
 let skillModel = [];
 let skilltypeNameNode = document.querySelectorAll('[data-skillmodule]');
@@ -5934,22 +5939,57 @@ function reTableTitle(text){
     }
   }; 
 };
+//刷新样式信息
+getElementMix('data-variable-refresh="style"').addEventListener('click',()=>{
+  toolMessage(['','getStyleInfo'],PLUGINAPP);
+});
+//刷新变量信息
+getElementMix('data-variable-refresh="variable"').addEventListener('click',()=>{
+  toolMessage(['','getVariableInfo'],PLUGINAPP);
+});
 //修改样式信息读取状态
 function reStyleInfo(info){
+  let hasstyle = getElementMix('data-variable-hasstyle');
   if(info){
-    getElementMix('data-variable-hasstyle').setAttribute('data-variable-hasstyle','true')
+    hasstyle.setAttribute('data-variable-hasstyle','true');
+    styleTosheet.setAttribute('data-any','');
   }else{
-    getElementMix('data-variable-hasstyle').setAttribute('data-variable-hasstyle','false')
-  }
-}
+    hasstyle.setAttribute('data-variable-hasstyle','false');
+    styleTosheet.setAttribute('data-any','unclick');
+  };
+};
+//修改样式表信息读取状态
+function reStyleSheetInfo(info){
+  log(666)
+  let hassheet = getElementMix('data-variable-hassheet');
+  if(info){
+    hassheet.setAttribute('data-variable-hassheet','true');
+    sheetTostyle.setAttribute('data-any','');
+  }else{
+    hassheet.setAttribute('data-variable-hassheet','false');
+    sheetTostyle.setAttribute('data-any','unclick');
+  };
+};
 //修改变量信息读取状态
 function reVariableInfo(info){
   if(info){
-    getElementMix('data-variable-hassheet').setAttribute('data-variable-hassheet','true')
+    getElementMix('data-variable-hasvar').setAttribute('data-variable-hasvar','true');
   }else{
-    getElementMix('data-variable-hassheet').setAttribute('data-variable-hassheet','false')
-  }
-}
+    getElementMix('data-variable-hasvar').setAttribute('data-variable-hasvar','false');
+  };
+};
+//新建示例样式
+getElementMix('data-variable-addstyle').addEventListener('click',()=>{
+  toolMessage(['','addStyle'],PLUGINAPP);
+});
+//新建样式表
+getElementMix('data-variable-addsheet').addEventListener('click',()=>{
+  toolMessage(['','addStyleSheet'],PLUGINAPP);
+});
+//新建示例变量表
+getElementMix('data-variable-addvar').addEventListener('click',()=>{
+  toolMessage(['','addVariable'],PLUGINAPP);
+});
 //设置表格初始样式
 chkTablestyle.addEventListener('change',()=>{
   chkTablestyle.checked = true;
@@ -6272,16 +6312,30 @@ skillBtnMain.forEach(btn => {
 //处理回传的选中对象的数据
 function reSelectComp(info){//判断是否选中表格组件
   //console.log(info)
-  if(info[0] || info[1]){
-   getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','true')
-   let comp1 = getElementMix('data-selectcomp-1');
-   let comp2 = getElementMix('data-selectcomp-2');
-   comp1.textContent = info[0] ? info[0] : 'none';
-   comp1.style.opacity = info[0] ? '1' : '0.5';
-   comp2.textContent = info[1] ? info[1] : 'none';
-   comp2.style.opacity = info[1] ? '1' : '0.5';
+  if(info[0] || info[1] || info[2]){
+    chkSelectcomp.checked = true;
+    getElementMix('chk-tablestyle').checked = false;
+    getElementMix('for="chk-selectcomp"').setAttribute('data-tips-x','left');
+    getElementMix('chk-tablestyle').parentNode.style.pointerEvents = 'none';
+    getElementMix('chk-tablestyle').parentNode.style.opacity = '0.5';
+    getElementMix('data-tablestyle-box').style.display = 'none';
+    getElementMix('data-selectcomp-box').style.display = 'flex';
+    getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','true')
+    let comp1 = getElementMix('data-selectcomp-1');
+    let comp2 = getElementMix('data-selectcomp-2');
+    comp1.textContent = info[0] ? info[0] : 'none';
+    comp1.style.opacity = info[0] ? '1' : '0.5';
+    comp2.textContent = info[1] ? info[1] : 'none';
+    comp2.style.opacity = info[1] ? '1' : '0.5';
+    if(!info[1] && info[2]){
+      comp2.textContent = info[2] ? info[2] : 'none';
+      comp2.style.opacity = info[2] ? '1' : '0.5';
+    };
   } else {
-   getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','false')
+    getElementMix('for="chk-selectcomp"').setAttribute('data-tips-x','right');
+    getElementMix('chk-tablestyle').parentNode.style.pointerEvents = 'auto';
+    getElementMix('chk-tablestyle').parentNode.style.opacity = '1';
+    getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','false')
   };
  
 };

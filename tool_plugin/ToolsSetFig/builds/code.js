@@ -25,7 +25,7 @@ figma.clientStorage.getAsync('userResize')
 });
 
 
-let isSendComp = false;
+//let isSendComp = true;
 let TRUES = ['true',true,'1',1,'show','是','有'];
 let FALSES = ['false',false,'0',0,'hide','否','无'];
 let TAGS_KEY = ['.fill','.stroke','.fillStyle','.strokeStyle','.visible','.opacity','.fontSize','.xywh'];
@@ -189,7 +189,7 @@ figma.ui.onmessage = async (message) => {
     };
     //反传组件信息
     if ( type == "selectComp"){
-        isSendComp = info;
+        //isSendComp = info;
         sendSendComp();
     };
     //上传所选对象以导出为图片/兼容格式/富文本
@@ -221,7 +221,7 @@ figma.ui.onmessage = async (message) => {
     //上传可编辑内容
     if( type == 'Up Editable'){
 
-    }
+    };
     //上传栅格化内容
     if( type == 'Up Pixel'){
         let a = figma.currentPage;
@@ -245,10 +245,102 @@ figma.ui.onmessage = async (message) => {
             };
             postmessage([info,'editorView'])
         }
-    }
+    };
+    //上传样式信息
+    if( type == "getStyleInfo"){
+        getStyle('paint',true);
+        getStyleSheet();
+    };
+    //上传变量信息
+    if( type == "getVariableInfo"){
+        getVariable();
+    };
+    //创建示例样式
+    if( type == "addStyle"){
+        let styles = [
+            {name:'eg/xxx@set:theme1/color1',paint:[toRGB('#D54040',true)]},
+            {name:'eg/xxx@set:theme1/color2',paint:[toRGB('#37B537',true)]},
+            {name:'eg/xxx@set:theme1/color3',paint:[toRGB('#1B36A3',true)]},
+            {name:'eg/xxx@set:theme2/color1',paint:[toRGB('#FFFF93',true)]},
+            {name:'eg/xxx@set:theme2/color2',paint:[toRGB('#A9FFFF',true)]},
+            {name:'eg/xxx@set:theme2/color3',paint:[toRGB('#CA9EE6',true)]},
+            {name:'eg/color4',paint:[toRGB('#aaaaaa',true)]},
+            {name:'eg/color5',paint:[toRGB('#444444',true)]},
+        ];
+        styles.forEach(item => {
+           let style = figma.createPaintStyle();
+           style.name = item.name;
+           style.paints = item.paint;
+        });
+        postmessage([true,'styleInfo']);
+        getStyle('paint');
+    };
+    //创建样式表
+    if( type == "addStyleSheet"){
+        postmessage([true,'styleSheetInfo']);
+        let variablePages = figma.root.findChildren(item => item.name.includes('@localsheet'));
+        let page;
+        if(variablePages.length == 0){
+            page = addPageMix()[0];
+            page.name = 'xxx@localsheet';
+        }else{
+            page = variablePages[0];
+        };
+        await figma.setCurrentPageAsync(page);
+        let datas = localStyleToArray();
+        let oldth = page.findOne(item => item.name.includes('@th:style'));
+        let oldtd = page.findOne(item => item.name.includes('@td:style'));
+        let oldtn = page.findOne(item => item.name.includes('@tn:style'));
+        let [th,td,tn,table] = await createLocalSheet('style',[oldth,oldtd,oldtn]);
+        table.name = datas[0][0][0] + '@table:style';
+        reLocalSheet(table,datas[0]);
+
+        if(datas.length == 1) return;
+        datas.forEach((data,index)=> {
+            if(index > 0){
+                let table2 = table.clone();
+                table2.x += table.width + 60;
+                table2.name = data[0][0] + '@table:style';
+                reLocalSheet(table2,data);
+            };
+        });
+    };
+    //从样式更新样式表
+    if( type == 'Style To Sheet'){
+        let variablePages = figma.root.findChildren(item => item.name.includes('@localsheet'));
+        let datas = localStyleToArray();
+
+        datas.forEach(async(data) => {
+            let finaltable,finalpage;
+            for(let page of variablePages){
+                let table = page.findOne(item => item.name == data[0][0] + '@table:style');
+                if(table){
+                    finaltable = table;
+                    finalpage = page;
+                    break
+                };
+            };
+            if(!finalpage) finalpage = variablePages[0];
+            await figma.setCurrentPageAsync(finalpage);
+            if(!finaltable) {
+                let oldth = finalpage.findOne(item => item.name.includes('@th:style'));
+                let oldtd = finalpage.findOne(item => item.name.includes('@td:style'));
+                let oldtn = finalpage.findOne(item => item.name.includes('@tn:style'));
+                let [th,td,tn,newtable] = await createLocalSheet('style',[oldth,oldtd,oldtn]);
+                newtable.name = data[0][0] + '@table:style';
+                reLocalSheet(newtable,data);
+            }else{
+                reLocalSheet(finaltable,data);
+            };
+        });  
+    };
+    //创建示例变量表
+    if( type == "addVariable"){
+        let all = await createLocalSheet('variable');
+    };
     //从预设或组件创建表格
     if ( type == "creTable"){
-        //console.log(info)
+        console.log(info)
         let a = figma.currentPage;
         let b = a.selection;
         let th,td;
@@ -257,6 +349,14 @@ figma.ui.onmessage = async (message) => {
         };
         if(info[2]){
             td = b.find(item => item.name == info[2]);
+        };
+        if(b.length == 3 && th && td && b.some(item => item.name.includes('@tn'))){
+            let tn = b.find(item => item.name.includes('@tn'));
+            let all = createLocalSheet('style',[th,td,tn]);
+            a.selection = all;
+            figma.viewport.scrollAndZoomIntoView(all);
+            figma.viewport.zoom = figma.viewport.zoom * 0.6;
+            return;
         };
         figma.clientStorage.getAsync('userLanguage')
         .then (async (language) => {
@@ -303,16 +403,21 @@ figma.ui.onmessage = async (message) => {
     if ( type == 'Make Compliant'){
         let a = figma.currentPage;
         let b = a.selection;
-        let final = b.filter(item => item.type == 'COMPONENT' && item.children.map(item => item.type).includes("TEXT") && item.name.includes('@t'));
+        let final = b.filter(item => item.type == 'COMPONENT' && item.name.includes('@t'));
         final.forEach(comp => {
             let type = comp.name.split('@')[1];
             //没命名则默认为表格，而不是表头
-            if(!['th','td'].includes(type)){
-                type = 'td';
-                comp.name += ' @td';
+            if(!['th','td','tn'].includes(type)){
+                if(comp.findOne(item => item.type == 'TEXT')){
+                    type = 'td';
+                    comp.name += ' @td';
+                }else{
+                    type = 'tn';
+                    comp.name += ' @tn';
+                };
             };
             comp.children.forEach(item => {
-                if(item.type !== 'TEXT'){
+                if( !item.name.includes('#') && item.name.includes('--')){
                     item.remove();
                 };
             });
@@ -320,11 +425,6 @@ figma.ui.onmessage = async (message) => {
                 comp.deleteComponentProperty(item);
             });
             
-            let texts = comp.children.filter(item => item.type == 'TEXT');
-            let proid = addCompPro(comp,texts[0],'--data','TEXT',texts[0].characters);
-            for(let i = 1; i < texts.length; i++){
-                texts[i].componentPropertyReferences = {[characters]:proid};
-            };
             let [w,h] = [comp.width,comp.height]
             if(comp.layoutMode == 'NONE'){
                 addAutoLayout(comp,['H','CC',0,[0,0]],true)
@@ -332,6 +432,14 @@ figma.ui.onmessage = async (message) => {
             comp.resize(w,h);
             comp.itemReverseZIndex = true;//前面堆叠在上
             makeCompliant(type,comp);
+            
+            let texts = comp.findAll(item => item.type == 'TEXT');
+            if(texts.length > 0){
+                let proid = addCompPro(comp,texts[0],'--data','TEXT',texts[0].characters);
+                for(let i = 1; i < texts.length; i++){
+                    texts[i].componentPropertyReferences = {[characters]:proid};
+                };
+            };
         });
     };
     //便捷选中表格
@@ -582,12 +690,12 @@ figma.ui.onmessage = async (message) => {
         tables.forEach(table => {
             let HH = table.children.length;
             let VV = table.children[0].children.length;
-            let H = 0,V = 0;
+            let _H = 0,V = 0;
             if(typeof setdata == 'object'){
-                H = setdata[0];
+                _H = setdata[0];
                 V = setdata[1];
                 //行数不能少于2，列数不能少于1
-                H = H + HH < 1 ? 1 - HH : H;
+                _H = _H + HH < 1 ? 1 - HH : _H;
                 V = V + VV < 2 ? 2 - VV : V;
             };
             switch (retype){
@@ -595,10 +703,10 @@ figma.ui.onmessage = async (message) => {
                     reTableStyle(table,setdata);
                 ;break
                 case 'add':
-                    reCompNum(table,H,V);
+                    reCompNum(table,_H,V);
                 ;break
                 case 'reduce':
-                    reCompNum(table,H,V);
+                    reCompNum(table,_H,V);
                 ;break
                 case 'theme':
                     //reTableStyle(table,setdata);
@@ -1290,9 +1398,11 @@ function postmessage(data){
 
 figma.on('selectionchange',()=>{
     sendInfo();
-    if(isSendComp){
-        sendSendComp();
-    };
+    sendSendComp();
+});
+
+figma.on('stylechange',()=>{
+    getStyle('paint');
 });
 
 setTimeout(()=>{
@@ -1336,15 +1446,21 @@ function sendInfo(){
     };
 };
 
+sendSendComp();
 function sendSendComp(){
     let a = figma.currentPage;
     let b = a.selection;
+    if(b.length == 0){
+        postmessage([[null,null,null],'selectComp']);
+        return;
+    } ;
     let info = [];
-    let th,td;
+    let th,td,tn;
     let comps = b.filter(item => item.type == 'COMPONENT' || item.type == 'INSTANCE');
     if(comps.length > 0){
         th = comps.find(item => item.name.split('@th').length > 1);
-        td = comps.find(item => item.name.split('@td').length > 1);    
+        td = comps.find(item => item.name.split('@td').length > 1);  
+        tn = comps.find(item => item.name.split('@tn').length > 1);   
     }
     if(th){
         info.push(th.name);
@@ -1353,6 +1469,11 @@ function sendSendComp(){
     };
     if(td){
         info.push(td.name);
+    } else {
+        info.push(null);
+    };
+    if(tn){
+        info.push(tn.name);
     } else {
         info.push(null);
     }
@@ -1375,6 +1496,10 @@ async function getStyle(type,isSend){
                         paints: item.paints,
                     }
                 });
+                if(isSend){
+                    let hasStyle = info.list.some(item => item.name.includes('@set:')) ? true : false;
+                    postmessage([hasStyle,'styleInfo']);
+                };
                 let promises = styles.map(item => item.getStyleConsumersAsync());
                 Promise.all(promises)
                 .then((consumers)=>{
@@ -1382,10 +1507,6 @@ async function getStyle(type,isSend){
                     //console.log(consumers)
                     info.nodes = consumers.flat();
                     localStyles.paint = info;
-                    if(isSend){
-                        let hasStyle = info.list.length > 0 ? true : false;
-                        postmessage([hasStyle,'styleInfo']);
-                    };
                 });
             });
         break
@@ -1400,14 +1521,24 @@ async function getStyle(type,isSend){
         break
     }
 }
-
+getStyleSheet();
+function getStyleSheet(){
+    let pages = figma.root.findChildren(item => item.name.includes('@localsheet'));
+    for(let page of pages){
+        let sheet = page.findOne(item => item.name.includes('@table:style'));
+        if(sheet) {
+            postmessage([true,'styleSheetInfo']);
+            return;
+        };
+    };
+    postmessage([false,'styleSheetInfo']);
+};
 getVariable();
 function getVariable(){
-    let pages = figma.root.children.map(item => [item.name,item.id]);
-    pages = pages.filter(item => item[0].includes('@locals'));
+    let pages = figma.root.findChildren(item => item.name.includes('@localsheet'))
     let hasVariable = pages.length > 0 ? true : false;
     postmessage([hasVariable,'variableInfo']);
-}
+};
 
 /**
  * @param {[object] | null} info -新建页面的设置项，命名、背景色、页码
@@ -1418,7 +1549,7 @@ function addPageMix(info = [{name: null,fill: null,index: null}]){
         item.remove();
     });
     let finals = [];
-    info.forEach(item => {
+    info.forEach( (item)=> {
         let newpage;
         try{
             newpage = figma.createPage();
@@ -1436,7 +1567,7 @@ function addPageMix(info = [{name: null,fill: null,index: null}]){
         }else{
             let num = figma.root.children.findIndex(item => item == figma.currentPage);
             figma.root.insertChild(num + 1,newpage);
-            figma.setCurrentPageAsync(newpage);
+            //figma.setCurrentPageAsync(newpage);
             finals.push(newpage)
         };
     });
@@ -1934,9 +2065,9 @@ async function createTable(thComp,tdComp,language){
     return [th,td,table];
 };
 //创建表格组件
-async function addTableCompMust(type,language){
+async function addTableCompMust(type,language,nodes){
     let comp = addFrame([176,52,null,null,'xxx@' + type,[]]);
-    if(type == 'td'){
+    if(type == 'td' || type == 'tn'){
         comp.y += 72;
     };
     addAutoLayout(comp,['H','CC'],[1,1]);
@@ -1944,15 +2075,33 @@ async function addTableCompMust(type,language){
     comp.itemReverseZIndex = true;//前面堆叠在上
     comp = figma.createComponentFromNode(comp);
 
-    let egtext = {th:['Bold','Header'],td:['Regular','Data']};
-    if(language == 'Zh'){
-        egtext = {th:['Bold','表头文案'],td:['Regular','数据文案']};
+    if(!nodes || typeof nodes == 'string'){
+        let egtext = {th:['Bold','Header'],td:['Regular','Data']};
+        if(language == 'Zh'){
+            egtext = {th:['Bold','表头文案'],td:['Regular','数据文案']};
+        };
+        if(nodes && nodes == 'style'){
+            egtext = {th:['Bold','Group'],td:['Regular','Style']};
+        };
+        if(nodes && nodes == 'variable'){
+            egtext = {th:['Bold','Group'],td:['Regular','Variable']};
+        };
+        let text = await addText([{family:'Inter',style:egtext[type][0]},egtext[type][1],16]);
+        comp.appendChild(text);
+        makeCompliant(type,comp);
+        //绑定数据的组件属性
+        addCompPro(comp,text,'--data','TEXT',egtext[type][1]);
+    }else{
+        try{
+            nodes.forEach(item =>{
+                comp.appendChild(item);
+            });
+        } catch (e){
+            console.log(e);
+        };
+        makeCompliant(type,comp);
     };
-    let text = await addText([{family:'Inter',style:egtext[type][0]},egtext[type][1],16]);
-    comp.appendChild(text);
-    makeCompliant(type,comp)
-    //绑定数据的组件属性
-    addCompPro(comp,text,'--data','TEXT',egtext[type][1]);
+    
     return comp;
 };
 //表格初始化
@@ -1972,7 +2121,7 @@ function makeCompliant(type,comp){
 //添加描边/区分色
 function addBodFill(node,Array,type){
     let bodfill = figma.createRectangle();
-    if(type == 'td'){
+    if(type == 'td' | type == 'tn'){
         bodfill.opacity = 0.66
     }
     setMain([176,52,null,null,Array[0],Array[1],Array[2]],bodfill);
@@ -1983,6 +2132,133 @@ function addBodFill(node,Array,type){
     asFillChild(bodfill,true);
     addCompPro(node,bodfills,Array[3],'BOOLEAN',true);
 };
+
+//创建本地表格
+async function createLocalSheet(type,comps){
+    let [th,td,tn] = await addLocalSheetMust(type,comps);
+    let column1 = addFrame([176,52,null,null,'@column',[]]);
+    addAutoLayout(column1,['V','TC']);
+    column1.appendChild(th.createInstance());
+    column1.appendChild(td.createInstance());
+    column1.children.forEach(item => {
+        item.layoutSizingHorizontal = 'FILL';
+    });
+    let column2;
+    switch (type){
+        case 'style':
+            column2 = addFrame([176,52,null,null,'@column',[]]);
+            addAutoLayout(column2,['V','TC']);
+            column2.appendChild(th.createInstance());
+            column2.appendChild(tn.createInstance());
+            column2.children.forEach(item => {
+                item.layoutSizingHorizontal = 'FILL';
+            });
+        break
+        case 'variable':
+            column2 = column1.clone();
+        break
+    };
+    let table = addFrame([528,208,null,null,'xxx@table',[toRGB('2D2D2D',true)],[null,null,[toRGB('#666666',true)]]]);
+    table.appendChild(column1);
+    addAutoLayout(table,['H','TL'],[0,0]);
+    table.appendChild(column2);
+    table.x += 200;
+    return [th,td,tn,table]; 
+};
+//创建本地表格组件
+async function addLocalSheetMust(type,comps){
+    let th,td
+    if(!comps[0]){
+        th = await addTableCompMust('th','En',type);
+        th.name += ':' + type;
+    }else{
+        th = comps[0];
+    };
+    if(!comps[1]){
+        td = await addTableCompMust('td','En',type);
+        td.name += ':' + type;
+    }else{
+        td = comps[1];
+    };
+    
+    if(type == 'variable') return [th,td,null];
+    if(comps[2]) return [th,td,comps[2]];
+
+    let box1 = figma.createRectangle();
+    box1.resize(30,30);
+    box1.name = '#sheet.fillStyle';
+    box1.fills = [toRGB('#ffffff',true)];
+    let box2 = figma.createRectangle();
+    box2.resize(30,30);
+    box2.name = '#sheet.strokeStyle';
+    box2.fills = [];
+    box2.strokes = [toRGB('#ffffff',true)];
+    box2.strokeWeight = 7;
+    box2.strokeAlign = "INSIDE";
+    let tn = await addTableCompMust('tn','En',[box1,box2]);
+    tn.name += ':' + type;
+    tn.itemSpacing = 8;
+    tn.y += 72;
+    return [th,td,tn];
+};
+//更新本地表格数据
+function reLocalSheet(table,datas){
+    //console.log(datas)
+    let HH = table.children.length;
+    let VV = table.children[0].children.length;
+    //console.log(datas.length - HH,datas[0].length - VV)
+    reCompNum(table,datas.length - HH,datas[0].length - VV);
+    datas.forEach((data,num) => {
+        try{
+            table.children[num].children.forEach((comp,index) => {
+                if(comp.type == 'INSTANCE'){
+                    let value = data[index];
+                    if(typeof value == 'string'){
+                        let key = Object.keys(comp.componentProperties).filter(item => item.split('#')[0] == '--data')[0];
+                        if(!key) return;
+                        comp.setProperties({[key]:value});
+                    }else{
+                        let boxFill = comp.findChild(item => item.name == '#sheet.fillStyle');
+                        let boxBod = comp.findChild(item => item.name == '#sheet.strokeStyle');
+                        try{
+                            boxFill.fillStyleId = value.id;
+                            boxBod.strokeStyleId = value.id;
+                        }catch(e){
+                            boxFill.setFillStyleIdAsync(value.id);
+                            boxBod.setStrokeStyleIdAsync(value.id);
+                        };
+                    };
+                };
+            });
+        } catch (e) {
+            console.log(e)
+        };
+    });
+};
+//样式数据转列数据
+function localStyleToArray(){
+    let list = localStyles.paint.list.filter(item => item.name.includes('@set:'));
+    let styleObj = {};
+    list.forEach(item => {
+        let { id, name, paints } = item;
+        let keys = name.split('/').filter(str => str.includes('@set:'))[0];
+        let [setname, themename] = keys.split('@set:');
+        let colorname = name.split(keys + '/')[1];
+        
+        if (!styleObj[setname]) styleObj[setname] = {};
+        if(!styleObj[setname][themename]) styleObj[setname][themename] = [];
+        styleObj[setname][themename].push({ id, name: colorname, paints });
+    });
+
+    let styleSheets = Object.entries(styleObj).map(([key, themes]) => {
+        let themeEntries = Object.entries(themes);
+        let column1 = [key, ...themeEntries[0][1].map(item => item.name)];
+        let column2 = themeEntries.map(item => item.flat());
+        return [column1, ...column2];
+    });
+    //console.log(styleSheets)
+    return styleSheets
+}
 
 //绑定图层和组件属性
 /**
@@ -2003,7 +2279,7 @@ function reTableStyle(table,style){
     let columns = table.findChildren(item => item.name.includes('@column'));
     for(let i = 0; i < columns.length; i++){
         let headers = columns[i].findChildren(item => item.name.includes('@th'));
-        let datas  = columns[i].findChildren(item => item.name.includes('@td'));
+        let datas  = columns[i].findChildren(item => item.name.includes('@td') || item.name.includes('@tn'));
         //console.log(headers,datas)
         headers.forEach((item,index) => {
             //console.log(style.th)
@@ -2070,9 +2346,7 @@ function reTableTheme(table,hsl,textcolor){
 //调整实例数量以匹配数据长度
 function reCompNum(nodes,H,V){
     //console.log(nodes.name,H,V)
-    //console.log(111)
     if(H > 0){
-        //console.log(222)
         let end = nodes.children[nodes.children.length - 1]
         for(let i = 0; i < H; i++){
             nodes.appendChild(end.clone());
@@ -2085,7 +2359,6 @@ function reCompNum(nodes,H,V){
         };
     };
     if(nodes.name.includes('@table') && V && V !== 0){
-        //console.log(444)
         let columns = nodes.findChildren(item => item.name.includes('@column'));
         //console.log(columns.length)
         for(let i = 0; i < columns.length; i++){
@@ -2384,10 +2657,10 @@ function swapTable(table){
     let columns = table.findChildren(item => item.name.includes('@column'));
     let datas = []
     for(let i = 0; i < columns.length; i++){
-        datas.push(columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td')));    
+        datas.push(columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')));    
     };
     let H = datas[0].length - columns.length;
-    console.log(H)
+    //console.log(H)
     let newTable = table.clone();
     setMain([],newTable,table);
     if(newTable.name.includes('-swap')){
