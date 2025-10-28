@@ -276,6 +276,7 @@ function COMP_MAIN(){
     item.addEventListener('click',() => {
       let select = item.parentNode.parentNode;
       let oldOption = select.querySelector('[data-option-main="true"]');
+      if(!oldOption) return;
       let optionValue = item.textContent;
       oldOption.setAttribute('data-option-main','false');
       item.setAttribute('data-option-main','true');

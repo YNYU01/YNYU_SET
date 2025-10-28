@@ -38,6 +38,7 @@ window.addEventListener('message',(message)=>{
         case 'styleInfo': reStyleInfo(info);break
         case 'styleSheetInfo': reStyleSheetInfo(info);break
         case 'variableInfo': reVariableInfo(info);break
+        case 'variableSheetInfo': reVariableSheetInfo(info);break
       };
     }
   };

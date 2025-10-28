@@ -327,7 +327,7 @@ window.addEventListener('load',()=>{
   setTimeout(() => {
     /*clear*/
     let tabs = ['create','export','editor','variable','sheet','more tools']
-    viewPage(tabs[3])
+    viewPage(tabs[2])
     /**/;
     if(window.innerWidth < 300){
       TV_MOVE = true;
@@ -571,77 +571,86 @@ class EDITOR_TAB {
     //调整项
     this.editors = [
       {
-        name:['HSL','HSL'],
         type:['色彩','Color'],
-        editable:true,
-        pixel:true,
+        options:[
+          {
+            name:['HSL','HSL'],
+            editable:true,
+            pixel:true,
+          },
+          {
+            name:['反转','Invert'],
+            editable:true,
+            pixel:true,
+          },
+          {
+            name:['色彩平衡','Balance'],
+            editable:true,
+            pixel:true,
+          },
+        ]
       },
       {
-        name:['反转','Invert'],
-        type:['色彩','Color'],
-        editable:true,
-        pixel:true,
-      },
-      {
-        name:['色彩平衡','Balance'],
-        type:['色彩','Color'],
-        editable:true,
-        pixel:true,
-      },
-      {
-        name:['颗粒','Graininess'],
         type:['质感','Texture'],
-        editable:false,
-        pixel:true,
+        options:[
+          {
+            name:['颗粒','Graininess'],
+            editable:false,
+            pixel:true,
+          },
+          {
+            name:['降噪','Denoise'],
+            editable:false,
+            pixel:true,
+          },
+          {
+            name:['清晰度','noise'],
+            editable:false,
+            pixel:true,
+          },
+        ]
       },
       {
-        name:['降噪','Denoise'],
-        type:['质感','Texture'],
-        editable:false,
-        pixel:true,
-      },
-      {
-        name:['清晰度','noise'],
-        type:['质感','Texture'],
-        editable:false,
-        pixel:true,
-      },
-      {
-        name:['色散','Dispersion'],
         type:['通道','Texture'],
-        editable:false,
-        pixel:true,
+        options:[
+          {
+            name:['色散','Dispersion'],
+            editable:false,
+            pixel:true,
+          },
+          {
+            name:['渐变映射','noise'],
+            editable:true,
+            pixel:true,
+          },
+          {
+            name:['LUT','LUT'],
+            editable:true,
+            pixel:true,
+          },
+          {
+            name:['通道提取','RGBA'],
+            editable:true,
+            pixel:true,
+          },
+        ]
       },
       {
-        name:['渐变映射','noise'],
-        type:['通道','Channel'],
-        editable:true,
-        pixel:true,
-      },
-      {
-        name:['LUT','LUT'],
-        type:['通道','Channel'],
-        editable:true,
-        pixel:true,
-      },
-      {
-        name:['通道提取','RGBA'],
-        type:['通道','Channel'],
-        editable:true,
-        pixel:true,
-      },
-      {
-        name:['贝塞尔曲线','Bessel'],
         type:['变形','Transform'],
-        editable:true,
-        pixel:true,
+        options:[
+          {
+            name:['贝塞尔曲线','Bessel'],
+            editable:true,
+            pixel:true,
+          },
+          {
+            name:['透视','Perspective'],
+            editable:true,
+            pixel:true,
+          },
+        ]
       },
-      {
-        name:['透视','Perspective'],
-        type:['变形','Transform'],
-        editable:true,
-        pixel:true,
-      },
+      
     ]
   }
 
@@ -649,12 +658,64 @@ class EDITOR_TAB {
     //绑定添加按钮和可选项
     let addlistbox = document.createElement('div');
     addlistbox.setAttribute('data-editor-addlist','');
+    addlistbox.setAttribute('data-select-options','');
+    addlistbox.className = 'df-ffc pos-a noscrollbar';
 
-    let page = getElementMix('data-page-name-en="editor"')
-    page.appendChild(addlistbox);
+    this.editors.forEach(editor => {
+      let type = this.addDiffLanguage(addlistbox,editor.type,'div',true);
+      type.setAttribute('data-option','type');
+      editor.options.forEach(item => {
+        let option = this.addDiffLanguage(addlistbox,item.name,'div',true);
+        option.setAttribute('data-option','option');
+        option.setAttribute('data-editor-editable',item.pixel);
+        option.setAttribute('data-editor-pixel',item.editable);
+      });
+
+    });
+
+    let editorSetBox = getElementMix('data-editor-setlist-title');
+    editorSetBox.appendChild(addlistbox);
+
+    this.addset.addEventListener('click',()=>{
+      addlistbox.style.display = 'flex';
+    });
+    document.addEventListener('mousedown',(e)=>{
+      if(!editorSetBox.contains(e.target)){
+        addlistbox.style.display = 'none';
+      };
+    });
   }
+
+  addDiffLanguage(parent,texts,tagname,isRun){
+    let language = ROOT.getAttribute('data-language');
+    tagname = tagname ? tagname : 'div';
+    let diff = document.createElement(tagname);
+    let type = 'text';
+    //初始化时不需要考虑语言
+    let text = isRun ? texts[0] : language == 'Zh' ? texts[0] : texts[1] ;
+    switch (tagname){
+      case 'div': 
+      diff.textContent = text;
+      diff.setAttribute('data-zh-' + type,texts[0]);
+      diff.setAttribute('data-en-' + type,texts[1]);
+      break
+      case 'input': 
+      diff.value = text;
+      diff.setAttribute('data-input-must',texts[0]);
+      diff.setAttribute('data-input-must-en',texts[1]);
+      break
+      default :
+      diff.textContent = text;
+      diff.setAttribute('data-zh-' + type,texts[0]);
+      diff.setAttribute('data-en-' + type,texts[1]);
+    };
+    parent.appendChild(diff);
+    return diff;
+  };
 }
 
+let Editor = new EDITOR_TAB();
+Editor.init();
 
 /* ---界面交互--- */
 
@@ -676,7 +737,7 @@ btnMore.addEventListener('change',(event)=>{
   }
 });
 //侧边栏关闭
-document.addEventListener('click',(event)=>{
+document.addEventListener('mousedown',(event)=>{
   if(!sideMix.contains(event.target) && sideMask.style.display !== 'none' && sideMix.style.display !== 'none' && btnMore.checked == true ){
     btnMore.checked = false;
     let inputEvent = new Event('change',{bubbles:true});
@@ -1923,21 +1984,31 @@ function reStyleInfo(info){
 };
 //修改样式表信息读取状态
 function reStyleSheetInfo(info){
-  let hassheet = getElementMix('data-variable-hassheet');
+  let hasstylesheet = getElementMix('data-variable-hasstylesheet');
   if(info){
-    hassheet.setAttribute('data-variable-hassheet','true');
+    hasstylesheet.setAttribute('data-variable-hasstylesheet','true');
     sheetTostyle.setAttribute('data-any','');
   }else{
-    hassheet.setAttribute('data-variable-hassheet','false');
+    hasstylesheet.setAttribute('data-variable-hasstylesheet','false');
     sheetTostyle.setAttribute('data-any','unclick');
   };
 };
 //修改变量信息读取状态
 function reVariableInfo(info){
+  let hasvar = getElementMix('data-variable-hasvar');
   if(info){
-    getElementMix('data-variable-hasvar').setAttribute('data-variable-hasvar','true');
+    hasvar.setAttribute('data-variable-hasvar','true');
   }else{
-    getElementMix('data-variable-hasvar').setAttribute('data-variable-hasvar','false');
+    hasvar.setAttribute('data-variable-hasvar','false');
+  };
+};
+//修改变量表信息读取状态
+function reVariableSheetInfo(info){
+  let hasvarsheet = getElementMix('data-variable-hasvarsheet');
+  if(info){
+    hasvarsheet.setAttribute('data-variable-hasvarsheet','true');
+  }else{
+    hasvarsheet.setAttribute('data-variable-hasvarsheet','false');
   };
 };
 //新建示例样式
@@ -1945,12 +2016,20 @@ getElementMix('data-variable-addstyle').addEventListener('click',()=>{
   toolMessage(['','addStyle'],PLUGINAPP);
 });
 //新建样式表
-getElementMix('data-variable-addsheet').addEventListener('click',()=>{
+getElementMix('data-variable-addstylesheet').addEventListener('click',()=>{
   toolMessage(['','addStyleSheet'],PLUGINAPP);
 });
-//新建示例变量表
+//新建示例变量
 getElementMix('data-variable-addvar').addEventListener('click',()=>{
   toolMessage(['','addVariable'],PLUGINAPP);
+});
+//新建示例变量表
+getElementMix('data-variable-addvarsheet').addEventListener('click',()=>{
+  toolMessage(['','addVariableSheet'],PLUGINAPP);
+});
+//整理样式/变量相关组件和表格
+getElementMix('data-variable-relayout').addEventListener('click',()=>{
+  toolMessage(['','reVariableLayout'],PLUGINAPP);
 });
 //设置表格初始样式
 chkTablestyle.addEventListener('change',()=>{
@@ -2544,5 +2623,17 @@ function getUserRadio(node){
       let type = ['image','zy','rich'];
       getElementMix('data-export-tags-box').setAttribute('data-export-tags-box',type[(userRadio - 1)]);
     };
-  }
+
+    if(node.parentNode.getAttribute('data-variable-type') !== null){
+      let vars = getElementMix('data-variable-varmix');
+      let styles = getElementMix('data-variable-stylemix');
+      if( userRadio == 'variable'){
+        vars.style.display = 'flex';
+        styles.style.display = 'none';
+      }else{
+        vars.style.display = 'none';
+        styles.style.display = 'flex';
+      };
+    };
+  };
 };

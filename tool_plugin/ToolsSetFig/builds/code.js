@@ -61,6 +61,7 @@ let CLIP_NAME = [
     ]
 ];
 let localStyles = {paint:null,text:null,effect:null,grid:null};
+let localVariable;
 //核心功能
 figma.ui.onmessage = async (message) => { 
     const info = message[0]
@@ -254,6 +255,7 @@ figma.ui.onmessage = async (message) => {
     //上传变量信息
     if( type == "getVariableInfo"){
         getVariable();
+        getVariableSheet();
     };
     //创建示例样式
     if( type == "addStyle"){
@@ -277,66 +279,56 @@ figma.ui.onmessage = async (message) => {
     };
     //创建样式表
     if( type == "addStyleSheet"){
-        postmessage([true,'styleSheetInfo']);
-        let variablePages = figma.root.findChildren(item => item.name.includes('@localsheet'));
-        let page;
-        if(variablePages.length == 0){
-            page = addPageMix()[0];
-            page.name = 'xxx@localsheet';
-        }else{
-            page = variablePages[0];
-        };
-        await figma.setCurrentPageAsync(page);
-        let datas = localStyleToArray();
-        let oldth = page.findOne(item => item.name.includes('@th:style'));
-        let oldtd = page.findOne(item => item.name.includes('@td:style'));
-        let oldtn = page.findOne(item => item.name.includes('@tn:style'));
-        let [th,td,tn,table] = await createLocalSheet('style',[oldth,oldtd,oldtn]);
-        table.name = datas[0][0][0] + '@table:style';
-        reLocalSheet(table,datas[0]);
-
-        if(datas.length == 1) return;
-        datas.forEach((data,index)=> {
-            if(index > 0){
-                let table2 = table.clone();
-                table2.x += table.width + 60;
-                table2.name = data[0][0] + '@table:style';
-                reLocalSheet(table2,data);
-            };
-        });
+        reLocalSheet('style',true);
     };
     //从样式更新样式表
     if( type == 'Style To Sheet'){
-        let variablePages = figma.root.findChildren(item => item.name.includes('@localsheet'));
-        let datas = localStyleToArray();
-
-        datas.forEach(async(data) => {
-            let finaltable,finalpage;
-            for(let page of variablePages){
-                let table = page.findOne(item => item.name == data[0][0] + '@table:style');
-                if(table){
-                    finaltable = table;
-                    finalpage = page;
-                    break
-                };
-            };
-            if(!finalpage) finalpage = variablePages[0];
-            await figma.setCurrentPageAsync(finalpage);
-            if(!finaltable) {
-                let oldth = finalpage.findOne(item => item.name.includes('@th:style'));
-                let oldtd = finalpage.findOne(item => item.name.includes('@td:style'));
-                let oldtn = finalpage.findOne(item => item.name.includes('@tn:style'));
-                let [th,td,tn,newtable] = await createLocalSheet('style',[oldth,oldtd,oldtn]);
-                newtable.name = data[0][0] + '@table:style';
-                reLocalSheet(newtable,data);
-            }else{
-                reLocalSheet(finaltable,data);
-            };
-        });  
+        reLocalSheet('style');
     };
-    //创建示例变量表
+    //创建示例变量
     if( type == "addVariable"){
-        let all = await createLocalSheet('variable');
+        let variables = [
+            {
+                name:'xxx@set:mode1',
+                items:[//"BOOLEAN" | "COLOR" | "FLOAT" | "STRING"}
+                    {name:'color1',value: toRGB('#ffffff'),type:"COLOR"},
+                    {name:'number1',value: 123,type:"FLOAT",},
+                ],
+            },
+            {
+                name:'xxx@set:mode2',
+                items:[
+                    {name:'color1',value: toRGB('#000000'),type:"COLOR",},
+                    {name:'number1',value: 456,type:"FLOAT",},
+                ],
+            },
+        ];
+        variables.forEach(mode => {
+            let collection = figma.variables.createVariableCollection(mode.name);
+            let modeid = collection.defaultModeId;
+            collection.renameMode(modeid,mode.name.split('@set:')[1])
+            mode.items.forEach(data => {
+                let variable = figma.variables.createVariable(data.name,collection,data.type);
+                variable.setValueForMode(modeid,data.value);
+            });
+        });
+        postmessage([true,'variableInfo']);
+        getVariable();
+    };
+    //创建变量表
+    if( type == "addVariableSheet"){
+        reLocalSheet('variable',true);      
+    };
+    //从变量更新变量表
+    if( type == 'Variable To Sheet'){
+        reLocalSheet('variable');  
+    };
+    //整理样式/变量相关组件和表格
+    if( type == "reVariableLayout"){
+        const variablePages = figma.root.findChildren(item => item.name.includes('@localsheet'));
+        variablePages.forEach(page => {
+
+        })
     };
     //从预设或组件创建表格
     if ( type == "creTable"){
@@ -1386,6 +1378,8 @@ figma.ui.onmessage = async (message) => {
     
 };
 
+//let vars = figma.variables.createVariableCollection('test');
+//figma.variables.createVariable('color1',vars,"COLOR");
 
 //封装postMessage
 function postmessage(data){
@@ -1410,7 +1404,7 @@ setTimeout(()=>{
     console.log(`- [YNYU_SET] OPEN DESIGN & SOURCE
 - © 2024-2025 YNYU lvynyu2@gmail.com;`);
     //console.log(localStyles)
-},100)
+},50)
 
 sendInfo();
 function sendInfo(){
@@ -1478,66 +1472,6 @@ function sendSendComp(){
         info.push(null);
     }
     postmessage([info,'selectComp']);
-}
-
-getStyle('paint',true);
-async function getStyle(type,isSend){
-    let info = {list:[],nodes:[]}
-    switch (type){
-        case "paint":
-            figma.getLocalPaintStylesAsync()
-            .then((styles)=>{
-                //有哪些样式
-                //console.log(styles)
-                info.list = styles.map(item =>{
-                    return {
-                        id: item.id,
-                        name: item.name,
-                        paints: item.paints,
-                    }
-                });
-                if(isSend){
-                    let hasStyle = info.list.some(item => item.name.includes('@set:')) ? true : false;
-                    postmessage([hasStyle,'styleInfo']);
-                };
-                let promises = styles.map(item => item.getStyleConsumersAsync());
-                Promise.all(promises)
-                .then((consumers)=>{
-                    //应用在什么节点
-                    //console.log(consumers)
-                    info.nodes = consumers.flat();
-                    localStyles.paint = info;
-                });
-            });
-        break
-        case "text":
-
-        break
-        case "effect":
-
-        break
-        case "grid":
-
-        break
-    }
-}
-getStyleSheet();
-function getStyleSheet(){
-    let pages = figma.root.findChildren(item => item.name.includes('@localsheet'));
-    for(let page of pages){
-        let sheet = page.findOne(item => item.name.includes('@table:style'));
-        if(sheet) {
-            postmessage([true,'styleSheetInfo']);
-            return;
-        };
-    };
-    postmessage([false,'styleSheetInfo']);
-};
-getVariable();
-function getVariable(){
-    let pages = figma.root.findChildren(item => item.name.includes('@localsheet'))
-    let hasVariable = pages.length > 0 ? true : false;
-    postmessage([hasVariable,'variableInfo']);
 };
 
 /**
@@ -1573,8 +1507,7 @@ function addPageMix(info = [{name: null,fill: null,index: null}]){
     });
     safaPage.remove();
     return finals;
-}
-
+};
 
 /**
  * @param {Array} info - [w,h,x,y,name,[fills],[align,trbl,strokes]] 宽高、坐标、命名、填充、描边
@@ -2084,7 +2017,7 @@ async function addTableCompMust(type,language,nodes){
             egtext = {th:['Bold','Group'],td:['Regular','Style']};
         };
         if(nodes && nodes == 'variable'){
-            egtext = {th:['Bold','Group'],td:['Regular','Variable']};
+            egtext = {th:['Bold','Mode'],td:['Regular','Variable']};
         };
         let text = await addText([{family:'Inter',style:egtext[type][0]},egtext[type][1],16]);
         comp.appendChild(text);
@@ -2163,10 +2096,22 @@ async function createLocalSheet(type,comps){
     addAutoLayout(table,['H','TL'],[0,0]);
     table.appendChild(column2);
     table.x += 200;
+    let all = [];
+    if(comps){
+        if(!comps[0]) all.push(th);
+        if(!comps[1]) all.push(td);
+        if(!comps[2] && tn) all.push(tn);
+    }else{
+        all = [th,td];
+        if(tn) all.push(tn);
+    };
+    all.push(table);
+    figma.currentPage.selection = all;
+    console.log(comps,all)
     return [th,td,tn,table]; 
 };
 //创建本地表格组件
-async function addLocalSheetMust(type,comps){
+async function addLocalSheetMust(type,comps = [null,null,null]){
     let th,td
     if(!comps[0]){
         th = await addTableCompMust('th','En',type);
@@ -2202,7 +2147,57 @@ async function addLocalSheetMust(type,comps){
     return [th,td,tn];
 };
 //更新本地表格数据
-function reLocalSheet(table,datas){
+async function reLocalSheet(type, isNew) {
+    if (isNew) postmessage([true, type + 'SheetInfo']);
+    
+    const variablePages = figma.root.findChildren(item => item.name.includes('@localsheet'));
+    const datas = type === 'style' ? localStyleToArray() : localVariableToArray();
+
+    for (let [index, data] of datas.entries()) {
+        let finaltable, finalpage;
+        if (isNew) {
+            finalpage = variablePages.length === 0 
+                ? (() => { 
+                    const page = addPageMix()[0];
+                    page.name = 'xxx@localsheet';
+                    return page;
+                })()
+                : variablePages[0];
+        } else {
+            for (const page of variablePages) {
+                const table = page.findOne(item => item.name === data[0][0] + '@table:' + type);
+                if (table) {
+                    finaltable = table;
+                    finalpage = page;
+                    break;
+                };
+            };
+            if (!finalpage) finalpage = variablePages[0];
+        };
+        
+        await figma.setCurrentPageAsync(finalpage);
+        
+        if (!finaltable) {
+            const oldth = finalpage.findOne(item => item.name.includes('@th:' + type));
+            const oldtd = finalpage.findOne(item => item.name.includes('@td:' + type));
+            const oldtn = finalpage.findOne(item => item.name.includes('@tn:' + type));
+            const [th, td, tn, newtable] = await createLocalSheet(type, [oldth, oldtd, oldtn]);
+            newtable.name = data[0][0] + '@table:' + type;
+            reSheetByArray(newtable, data);
+            finaltable = newtable;
+        } else {
+            reSheetByArray(finaltable, data);
+        };
+        
+        if (isNew && index > 0) {
+            const table2 = finaltable.clone();
+            table2.x += finaltable.width + 60;
+            table2.name = data[0][0] + '@table:' + type;
+            reSheetByArray(table2, data);
+        };
+    };
+};
+function reSheetByArray(table,datas){
     //console.log(datas)
     let HH = table.children.length;
     let VV = table.children[0].children.length;
@@ -2213,7 +2208,8 @@ function reLocalSheet(table,datas){
             table.children[num].children.forEach((comp,index) => {
                 if(comp.type == 'INSTANCE'){
                     let value = data[index];
-                    if(typeof value == 'string'){
+                    //console.log(value)
+                    if(typeof value == 'string' || table.name.includes('variable')){
                         let key = Object.keys(comp.componentProperties).filter(item => item.split('#')[0] == '--data')[0];
                         if(!key) return;
                         comp.setProperties({[key]:value});
@@ -2235,6 +2231,153 @@ function reLocalSheet(table,datas){
         };
     });
 };
+
+getStyle('paint',true);
+async function getStyle(type,isSend){
+    let info = {list:[],nodes:[]}
+    switch (type){
+        case "paint":
+            figma.getLocalPaintStylesAsync()
+            .then((styles)=>{
+                //有哪些样式
+                //console.log(styles)
+                info.list = styles.map(item =>{
+                    return {
+                        id: item.id,
+                        name: item.name,
+                        paints: item.paints,
+                    }
+                });
+                if(isSend){
+                    let hasStyle = info.list.some(item => item.name.includes('@set:')) ? true : false;
+                    postmessage([hasStyle,'styleInfo']);
+                };
+                let promises = styles.map(item => item.getStyleConsumersAsync());
+                Promise.all(promises)
+                .then((consumers)=>{
+                    //应用在什么节点
+                    //console.log(consumers)
+                    info.nodes = consumers.flat();
+                    localStyles.paint = info;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            });
+        break
+        case "text":
+
+        break
+        case "effect":
+
+        break
+        case "grid":
+
+        break
+    }
+}
+getStyleSheet();
+async function getStyleSheet(){
+    let pages = figma.root.findChildren(item => item.name.includes('@localsheet'));
+    for(let page of pages){
+        await page.loadAsync();
+        let sheet = page.findOne(item => item.name.includes('@table:style'));
+        if(sheet) {
+            postmessage([true,'styleSheetInfo']);
+            getSheetData(sheet)
+            return;
+        };
+    };
+    postmessage([false,'styleSheetInfo']);
+};
+getVariableSheet();
+async function getVariableSheet(){
+    let pages = figma.root.findChildren(item => item.name.includes('@localsheet'));
+    for(let page of pages){
+        await page.loadAsync();
+        let sheet = page.findOne(item => item.name.includes('@table:variable'));
+        if(sheet) {
+            postmessage([true,'variableSheetInfo']);
+            return;
+        };
+    };
+    postmessage([false,'variableSheetInfo']);
+};
+getVariable();
+async function getVariable(){
+    let collections = await figma.variables.getLocalVariableCollectionsAsync()
+    //console.log(collections);
+    localVariable = collections.map(item =>{
+        let name = item.name;
+        if(item.modes[0].name !== 'Mode 1'){
+            //默认名忽略
+            name += '/' + item.modes[0].name;
+        };
+        return {
+            name:name,
+            id:item.id,
+            variableIds:item.variableIds,
+        }
+    });
+    let hasvar = localVariable.some(item => item.name.includes('@set:')) ? true : false;
+    postmessage([hasvar,'variableInfo']);
+    //console.log(localVariable);
+    localVariable.forEach(async item => {
+        let promises = item.variableIds.map(id => figma.variables.getVariableByIdAsync(id))
+        await Promise.all(promises)
+        .then((result)=>{
+            let variables = result.map(vars =>{
+                let value = Object.entries(vars.valuesByMode)[0][1];
+                if(typeof value == "object"){
+                    //value = `rgba(${value.r*255},${value.g*255},${value.b*255},${Math.floor(value.a * 100)/100 || 1})`
+                    let color = "#" + ((1 << 24) + (value.r*255 << 16) + (value.g*255 << 8) + value.b*255).toString(16).slice(1);
+                    if(value.a && value.a !== 1)color += ` ${Math.floor(value.a * 100)}%`;
+                    value = color;
+                };
+
+                return {
+                    name: vars.name,
+                    type: vars.resolvedType,
+                    id:vars.id,
+                    value: value.toString(),
+                }
+            });
+            item['variables'] = variables
+            //console.log(variables)
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    });
+};
+
+function getSheetData(table){
+    if(table.children.length < 2) return null;
+    let data = [];
+    let colors = [];
+    table.children.forEach((column,num)=> {
+        let row = column.children;
+        let columnData = [];
+        let themeName;
+        row.forEach((node,index) => {
+            let comps = Object.entries(node.componentProperties);
+            if(num == 0 || index == 0 || table.name.includes('variable')){
+                themeName = comps.filter(item => item[0].includes('--data'))[0][1].value;
+                columnData.push(themeName);
+            }else{
+                let fills = node.findOne(item => item.name.includes('#sheet.fillStyle')).fills;
+                columnData.push(fills);
+                colors.push({
+                    name: `${data[0][0]}@set:${themeName}/${data[0][index]}` ,
+                    paints: fills,
+                });
+            };
+        });
+        data.push(columnData);
+    });
+    //console.log(data,colors)
+};
+
 //样式数据转列数据
 function localStyleToArray(){
     let list = localStyles.paint.list.filter(item => item.name.includes('@set:'));
@@ -2249,16 +2392,45 @@ function localStyleToArray(){
         if(!styleObj[setname][themename]) styleObj[setname][themename] = [];
         styleObj[setname][themename].push({ id, name: colorname, paints });
     });
-
     let styleSheets = Object.entries(styleObj).map(([key, themes]) => {
         let themeEntries = Object.entries(themes);
         let column1 = [key, ...themeEntries[0][1].map(item => item.name)];
         let column2 = themeEntries.map(item => item.flat());
         return [column1, ...column2];
     });
-    //console.log(styleSheets)
-    return styleSheets
-}
+    console.log(styleSheets)
+    return styleSheets;
+};
+//变量数据转列数据
+function localVariableToArray(){
+    let list = localVariable.filter(item => item.name.includes('@set:'))
+    let varObj = {};
+    list.forEach(item => {
+        let {name,variables } = item;
+        let [setname, modename] = name.split('@set:');
+        
+        if (!varObj[setname]) varObj[setname] = {};
+        if(!varObj[setname][modename]) varObj[setname][modename] = [];
+        varObj[setname][modename].push(...variables);
+    });
+    //console.log(varObj)
+    let varSheets = Object.entries(varObj).map(([key, modes]) => {
+        let modeEntries = Object.entries(modes);
+        let column1 = [key, ...modeEntries[0][1].map(item => item.name)];
+        let column2 = modeEntries.map(item => item.flat());
+        column2.forEach((column,index) => {
+            column2[index] = column.map(item => {
+                if(typeof item == 'object'){
+                    return item.value || '';
+                }
+                return item.split('/')[1];
+            });
+        });
+        return [column1, ...column2];
+    });
+    //console.log(varSheets)
+    return varSheets;
+};
 
 //绑定图层和组件属性
 /**
