@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b9a96e49affc79452fc871db0ec9184be7027cd/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -64,7 +64,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b9a96e49affc79452fc871db0ec9184be7027cd/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -722,22 +722,17 @@ input[type="checkbox"]:checked + label [data-icon-more-path="3"] path{
   border: none;
 }
 
-[data-btn="text"]:hover{
-  opacity: 0.5;
-}
-
-
-[data-btn="op"]:hover{
+[data-btn="text"]:hover,[data-btn="op"]:hover{
   opacity: 0.5;
 }
 
 [data-btn="icon"]{
   display: block;
-  width: 40px;
-  height: 40px;
+  padding: 0;
   background: none;
   border: none;
 }
+
 
 [data-btn="icon"]:hover{
   background: none;
@@ -1128,6 +1123,12 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   padding: 10px;
   font-size: 10px;
 }
+
+[data-mode-id] [data-btn="icon"]{
+  width: 40px;
+  height: 40px;
+}
+
 .file-tag{
   visibility: var(--drop-df,visible)/*collapse*/;
   border-radius: 0 0 10px 10px;
@@ -1445,6 +1446,7 @@ input[type="checkbox"]:checked + [data-editor-bg]{
 [data-editor-upset],
 [data-editor-inputset],
 [data-editor-downset]{
+  padding: 2px 0;
   width: 16px;
   height: 16px;
 }
@@ -1459,6 +1461,15 @@ input[type="checkbox"]:checked + [data-editor-bg]{
 
 input[type="checkbox"]:checked + [for="editor-inputset"]{
   --mainColor: var(--themeColor);
+}
+
+[data-editor-addlist]{
+  z-index: 20;
+  display: none;
+  width: 100px;
+  max-height: 50vh;
+  bottom: -140px;
+  left: calc(100% - 4px);
 }
 
 [data-variable-type]{
@@ -1476,6 +1487,10 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   width: 16px;
   height: 16px;
   margin-right: 4px;
+}
+
+[data-radio-main="true"] [data-variable-chk-name]{
+  display: flex;
 }
 
 [data-variable-type] [data-radio]{
@@ -1579,6 +1594,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 [data-manage-linkstyle] [data-btn="icon"],[data-linkstyle-all],
 [data-manage-selectstyle] [data-btn="icon"],
 [data-manage-variables] [data-btn="icon"]{
+  padding: 2px 0;
   width: 16px;
   height: 16px;
 }
@@ -2276,6 +2292,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
     display: none;
   }
 
+  [data-radio-main="false"] [data-variable-chk]{
+    margin-right: 0;
+  }
+
   [data-mainset-top]{
     display: flex;
   }
@@ -2800,11 +2820,11 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Editable">上传(可编辑)</div>    
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
           </div>
-          <div data-editor-mix class="df-ffc wh100 pos-r">
+          <div data-editor-mix class="df-ffc wh100 pos-r ovy noscrollbar">
             <div data-editor-viewbox data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc wh100 tex-pixelbg"></div>
             <div data-editor-setbox class="w100 df-ffc">
               <div class="w100 df-lc">
-                <div data-editor-setlist-title class="df-sc">
+                <div data-editor-setlist-title class="df-sc pos-r">
                   <div data-en-text="Filter" style="opacity: 0.6;">调整</div>
                   <div data-btn="icon" data-editor-addset>
                     <svg width="100%" height="100%" viewbox="0 0 20 20">
@@ -2918,8 +2938,8 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             <div data-any="vw300" data-help="variable" class="fl0 df-cc">?</div>
           </div>
           <div data-variable-type class="w100 df-lc">
-            <div class="df-lc fl1 upload-set" data-radio-value="style" style="gap: 6px;">
-              <div class="df-lc ovx noscrollbar" data-scroll
+            <div class="fl1 df-lc upload-set" style="gap: 6px;">
+              <div class="df-lc"
               data-tips="auto" data-tips-x="left" data-tips-y="top"
               style="gap: 4px; --tips-text:'数据类型'; --tips-text-en:'Sheet type';">
                 <svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2928,26 +2948,28 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </svg>
                 ▶                
               </div>
-              <div class="fl0 df-lc" data-radio data-radio-data="style" data-radio-main="true">
-                <div data-variable-chk>
-                  <btn-style></btn-style>
+              <div class="df-lc data-scroll ovx noscrollbar" data-scroll data-radio-value="style" style="gap: 6px;">
+                <div class="fl0 df-lc" data-radio data-radio-data="style" data-radio-main="true">
+                  <div data-variable-chk>
+                    <btn-style></btn-style>
+                  </div>
+                  <div data-any="vw240" data-variable-chk-name data-en-text="Style">样式</div>   
+                  <div data-any="vw300" data-en-text="&nbsp;Sheet">表管理</div>        
                 </div>
-                <div data-variable-chk-name data-en-text="Style">样式</div>   
-                <div data-any="vw300" data-en-text="&nbsp;Sheet">表管理</div>        
-              </div>
-              <div class="fl0 df-lc" data-radio data-radio-data="variable" data-radio-main="false">
-                <div data-variable-chk>
-                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="var(--mainColor)" d="M18.6963 14.9325L18.9217 15.4821C18.7361 15.7539 18.464 16.0317 18.1055 16.3154C17.7531 16.599 17.3748 16.8384 16.9705 17.0334C16.5722 17.2284 16.2061 17.3259 15.8721 17.3259C15.7203 17.3259 15.5913 17.2934 15.4853 17.2284C15.3778 17.1693 15.2906 17.0629 15.2236 16.9093L13.6839 13.4787C13.4954 13.6856 13.2576 13.9338 12.9706 14.2233C12.6836 14.5129 12.4167 14.8202 12.1699 15.1452C11.9306 15.4644 11.774 15.7805 11.7 16.0938C11.6539 16.2888 11.6515 16.4661 11.6928 16.6256C11.3365 16.797 11.0013 16.9566 10.6871 17.1043C10.3729 17.2521 10.0731 17.3259 9.78766 17.3259C9.41725 17.3259 9.27601 17.1398 9.36395 16.7675C9.43932 16.4483 9.67742 16.0701 10.0783 15.6328C10.4852 15.1955 10.9787 14.7257 11.5588 14.2233C12.145 13.721 12.7373 13.2187 13.3357 12.7164L11.9546 9.57831L10.4188 10.4116L10.1955 9.85311C10.2692 9.74673 10.4283 9.58717 10.6729 9.37442C10.9235 9.16167 11.212 8.94301 11.5383 8.71845C11.872 8.48797 12.2035 8.29295 12.5327 8.13339C12.8679 7.97382 13.157 7.89404 13.3998 7.89404C13.6002 7.89404 13.7416 7.97678 13.824 8.14225C14.1141 8.73913 14.3779 9.30646 14.6152 9.84424C14.8539 10.3761 15.0823 10.8873 15.3004 11.3778C15.8049 10.8873 16.1696 10.5002 16.3945 10.2166C16.6268 9.92698 16.7787 9.70832 16.85 9.56058C16.9227 9.40693 16.9682 9.29169 16.9863 9.21486C17.0212 9.06712 17.03 8.94006 17.0126 8.83369C16.9952 8.72731 16.9804 8.63571 16.9682 8.55888C17.451 8.34023 17.8182 8.18657 18.0699 8.09793C18.329 8.00337 18.5153 7.94723 18.6288 7.9295C18.7498 7.90586 18.8406 7.89404 18.9014 7.89404C19.2475 7.89404 19.3738 8.09202 19.2803 8.48797C19.2035 8.813 18.9735 9.18236 18.5904 9.59604C18.2073 10.0097 17.7509 10.4382 17.2212 10.8814C16.6928 11.3187 16.1642 11.7442 15.6354 12.1579L17.1613 15.8012L18.6963 14.9325Z"/>
-                    <path fill="var(--mainColor)" d="M9.21571 6.44182L7.11722 15.3266C6.86854 16.3795 6.4285 17.245 5.79708 17.9233C5.17077 18.608 4.45035 19.115 3.63583 19.4444C2.83972 19.7664 2.1347 19.7328 1.37649 19.6673C1.07065 19.6415 0.804865 19.5865 0.579128 19.5026C0.346753 19.4186 0.250398 19.2926 0.290065 19.1247C0.299218 19.086 0.326223 19.0278 0.371078 18.9503L1.37599 17.4776C1.82495 17.6843 2.26956 17.8813 2.70982 18.0686C3.73148 18.5033 4.04851 18.19 4.44744 16.809C4.59146 16.3117 4.71992 15.824 4.83282 15.346L6.91597 6.44182H4.54654L4.64952 6.00581C4.71818 5.71514 4.82776 5.51813 4.97827 5.41478C5.13695 5.30497 5.35898 5.25007 5.64438 5.25007H7.19745L7.34848 4.6106C7.59258 3.5771 8.00177 2.74385 8.57605 2.11084C9.15034 1.47782 9.81361 1.01598 10.5659 0.725311C11.3248 0.434641 12.0925 0.289307 12.869 0.289307C12.9951 0.289307 13.1728 0.295766 13.4021 0.308685C13.638 0.321603 13.8726 0.3539 14.1059 0.405575C14.3475 0.45079 14.5423 0.525072 14.6905 0.628421C14.8401 0.725311 14.8952 0.857727 14.8555 1.02567C14.8387 1.09672 14.7842 1.18715 14.6919 1.29696L13.6485 2.59529C13.2133 2.33045 12.8066 2.085 12.4286 1.85892C12.0506 1.63285 11.6924 1.51981 11.3539 1.51981C10.9092 1.51981 10.5834 1.73297 10.3765 2.15928C10.1778 2.57914 9.98767 3.1734 9.80612 3.94206L9.49719 5.25007H12.3544L12.256 5.6667C12.1889 5.95091 12.0752 6.15115 11.915 6.26741C11.7615 6.38368 11.542 6.44182 11.2566 6.44182H9.21571Z"/>
-                  </svg>                  
+                <div class="fl0 df-lc" data-radio data-radio-data="variable" data-radio-main="false">
+                  <div data-variable-chk>
+                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill="var(--mainColor)" d="M18.6963 14.9325L18.9217 15.4821C18.7361 15.7539 18.464 16.0317 18.1055 16.3154C17.7531 16.599 17.3748 16.8384 16.9705 17.0334C16.5722 17.2284 16.2061 17.3259 15.8721 17.3259C15.7203 17.3259 15.5913 17.2934 15.4853 17.2284C15.3778 17.1693 15.2906 17.0629 15.2236 16.9093L13.6839 13.4787C13.4954 13.6856 13.2576 13.9338 12.9706 14.2233C12.6836 14.5129 12.4167 14.8202 12.1699 15.1452C11.9306 15.4644 11.774 15.7805 11.7 16.0938C11.6539 16.2888 11.6515 16.4661 11.6928 16.6256C11.3365 16.797 11.0013 16.9566 10.6871 17.1043C10.3729 17.2521 10.0731 17.3259 9.78766 17.3259C9.41725 17.3259 9.27601 17.1398 9.36395 16.7675C9.43932 16.4483 9.67742 16.0701 10.0783 15.6328C10.4852 15.1955 10.9787 14.7257 11.5588 14.2233C12.145 13.721 12.7373 13.2187 13.3357 12.7164L11.9546 9.57831L10.4188 10.4116L10.1955 9.85311C10.2692 9.74673 10.4283 9.58717 10.6729 9.37442C10.9235 9.16167 11.212 8.94301 11.5383 8.71845C11.872 8.48797 12.2035 8.29295 12.5327 8.13339C12.8679 7.97382 13.157 7.89404 13.3998 7.89404C13.6002 7.89404 13.7416 7.97678 13.824 8.14225C14.1141 8.73913 14.3779 9.30646 14.6152 9.84424C14.8539 10.3761 15.0823 10.8873 15.3004 11.3778C15.8049 10.8873 16.1696 10.5002 16.3945 10.2166C16.6268 9.92698 16.7787 9.70832 16.85 9.56058C16.9227 9.40693 16.9682 9.29169 16.9863 9.21486C17.0212 9.06712 17.03 8.94006 17.0126 8.83369C16.9952 8.72731 16.9804 8.63571 16.9682 8.55888C17.451 8.34023 17.8182 8.18657 18.0699 8.09793C18.329 8.00337 18.5153 7.94723 18.6288 7.9295C18.7498 7.90586 18.8406 7.89404 18.9014 7.89404C19.2475 7.89404 19.3738 8.09202 19.2803 8.48797C19.2035 8.813 18.9735 9.18236 18.5904 9.59604C18.2073 10.0097 17.7509 10.4382 17.2212 10.8814C16.6928 11.3187 16.1642 11.7442 15.6354 12.1579L17.1613 15.8012L18.6963 14.9325Z"/>
+                      <path fill="var(--mainColor)" d="M9.21571 6.44182L7.11722 15.3266C6.86854 16.3795 6.4285 17.245 5.79708 17.9233C5.17077 18.608 4.45035 19.115 3.63583 19.4444C2.83972 19.7664 2.1347 19.7328 1.37649 19.6673C1.07065 19.6415 0.804865 19.5865 0.579128 19.5026C0.346753 19.4186 0.250398 19.2926 0.290065 19.1247C0.299218 19.086 0.326223 19.0278 0.371078 18.9503L1.37599 17.4776C1.82495 17.6843 2.26956 17.8813 2.70982 18.0686C3.73148 18.5033 4.04851 18.19 4.44744 16.809C4.59146 16.3117 4.71992 15.824 4.83282 15.346L6.91597 6.44182H4.54654L4.64952 6.00581C4.71818 5.71514 4.82776 5.51813 4.97827 5.41478C5.13695 5.30497 5.35898 5.25007 5.64438 5.25007H7.19745L7.34848 4.6106C7.59258 3.5771 8.00177 2.74385 8.57605 2.11084C9.15034 1.47782 9.81361 1.01598 10.5659 0.725311C11.3248 0.434641 12.0925 0.289307 12.869 0.289307C12.9951 0.289307 13.1728 0.295766 13.4021 0.308685C13.638 0.321603 13.8726 0.3539 14.1059 0.405575C14.3475 0.45079 14.5423 0.525072 14.6905 0.628421C14.8401 0.725311 14.8952 0.857727 14.8555 1.02567C14.8387 1.09672 14.7842 1.18715 14.6919 1.29696L13.6485 2.59529C13.2133 2.33045 12.8066 2.085 12.4286 1.85892C12.0506 1.63285 11.6924 1.51981 11.3539 1.51981C10.9092 1.51981 10.5834 1.73297 10.3765 2.15928C10.1778 2.57914 9.98767 3.1734 9.80612 3.94206L9.49719 5.25007H12.3544L12.256 5.6667C12.1889 5.95091 12.0752 6.15115 11.915 6.26741C11.7615 6.38368 11.542 6.44182 11.2566 6.44182H9.21571Z"/>
+                    </svg>                  
+                  </div>
+                  <div data-any="vw240" data-variable-chk-name data-en-text="Variable">变量</div>
+                  <div data-any="vw300" data-en-text="&nbsp;Sheet">表管理</div>          
                 </div>
-                <div data-variable-chk-name data-en-text="Variable">变量</div>
-                <div data-any="vw300" data-en-text="&nbsp;Sheet">表管理</div>          
               </div>
             </div>
             <div class="upload-set">
-              <div data-variable-relayout
+              <div data-variable-relayout data-btn="icon"
               data-tips="auto" data-tips-x="right" data-tips-y="top"
               style="--tips-text:'整理相关组件和表格'; --tips-text-en:'Organize related elements';">
                 <svg width="22" height="22" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -4067,14 +4089,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b9a96e49affc79452fc871db0ec9184be7027cd/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b9a96e49affc79452fc871db0ec9184be7027cd/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b9a96e49affc79452fc871db0ec9184be7027cd/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b9a96e49affc79452fc871db0ec9184be7027cd/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b9a96e49affc79452fc871db0ec9184be7027cd/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b9a96e49affc79452fc871db0ec9184be7027cd/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b9a96e49affc79452fc871db0ec9184be7027cd/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b9a96e49affc79452fc871db0ec9184be7027cd/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4406,7 +4428,7 @@ window.addEventListener('load',()=>{
   setTimeout(() => {
     /*
     let tabs = ['create','export','editor','variable','sheet','more tools']
-    viewPage(tabs[3])
+    viewPage(tabs[2])
     /**/;
     if(window.innerWidth < 300){
       TV_MOVE = true;
@@ -4650,77 +4672,86 @@ class EDITOR_TAB {
     //调整项
     this.editors = [
       {
-        name:['HSL','HSL'],
         type:['色彩','Color'],
-        editable:true,
-        pixel:true,
+        options:[
+          {
+            name:['HSL','HSL'],
+            editable:true,
+            pixel:true,
+          },
+          {
+            name:['反转','Invert'],
+            editable:true,
+            pixel:true,
+          },
+          {
+            name:['色彩平衡','Balance'],
+            editable:true,
+            pixel:true,
+          },
+        ]
       },
       {
-        name:['反转','Invert'],
-        type:['色彩','Color'],
-        editable:true,
-        pixel:true,
-      },
-      {
-        name:['色彩平衡','Balance'],
-        type:['色彩','Color'],
-        editable:true,
-        pixel:true,
-      },
-      {
-        name:['颗粒','Graininess'],
         type:['质感','Texture'],
-        editable:false,
-        pixel:true,
+        options:[
+          {
+            name:['颗粒','Graininess'],
+            editable:false,
+            pixel:true,
+          },
+          {
+            name:['降噪','Denoise'],
+            editable:false,
+            pixel:true,
+          },
+          {
+            name:['清晰度','noise'],
+            editable:false,
+            pixel:true,
+          },
+        ]
       },
       {
-        name:['降噪','Denoise'],
-        type:['质感','Texture'],
-        editable:false,
-        pixel:true,
-      },
-      {
-        name:['清晰度','noise'],
-        type:['质感','Texture'],
-        editable:false,
-        pixel:true,
-      },
-      {
-        name:['色散','Dispersion'],
         type:['通道','Texture'],
-        editable:false,
-        pixel:true,
+        options:[
+          {
+            name:['色散','Dispersion'],
+            editable:false,
+            pixel:true,
+          },
+          {
+            name:['渐变映射','noise'],
+            editable:true,
+            pixel:true,
+          },
+          {
+            name:['LUT','LUT'],
+            editable:true,
+            pixel:true,
+          },
+          {
+            name:['通道提取','RGBA'],
+            editable:true,
+            pixel:true,
+          },
+        ]
       },
       {
-        name:['渐变映射','noise'],
-        type:['通道','Channel'],
-        editable:true,
-        pixel:true,
-      },
-      {
-        name:['LUT','LUT'],
-        type:['通道','Channel'],
-        editable:true,
-        pixel:true,
-      },
-      {
-        name:['通道提取','RGBA'],
-        type:['通道','Channel'],
-        editable:true,
-        pixel:true,
-      },
-      {
-        name:['贝塞尔曲线','Bessel'],
         type:['变形','Transform'],
-        editable:true,
-        pixel:true,
+        options:[
+          {
+            name:['贝塞尔曲线','Bessel'],
+            editable:true,
+            pixel:true,
+          },
+          {
+            name:['透视','Perspective'],
+            editable:true,
+            pixel:true,
+          },
+        ]
       },
-      {
-        name:['透视','Perspective'],
-        type:['变形','Transform'],
-        editable:true,
-        pixel:true,
-      },
+      
     ]
   }
 
@@ -4728,12 +4759,64 @@ class EDITOR_TAB {
     //绑定添加按钮和可选项
     let addlistbox = document.createElement('div');
     addlistbox.setAttribute('data-editor-addlist','');
+    addlistbox.setAttribute('data-select-options','');
+    addlistbox.className = 'df-ffc pos-a noscrollbar';
 
-    let page = getElementMix('data-page-name-en="editor"')
-    page.appendChild(addlistbox);
+    this.editors.forEach(editor => {
+      let type = this.addDiffLanguage(addlistbox,editor.type,'div',true);
+      type.setAttribute('data-option','type');
+      editor.options.forEach(item => {
+        let option = this.addDiffLanguage(addlistbox,item.name,'div',true);
+        option.setAttribute('data-option','option');
+        option.setAttribute('data-editor-editable',item.pixel);
+        option.setAttribute('data-editor-pixel',item.editable);
+      });
+
+    });
+
+    let editorSetBox = getElementMix('data-editor-setlist-title');
+    editorSetBox.appendChild(addlistbox);
+
+    this.addset.addEventListener('click',()=>{
+      addlistbox.style.display = 'flex';
+    });
+    document.addEventListener('mousedown',(e)=>{
+      if(!editorSetBox.contains(e.target)){
+        addlistbox.style.display = 'none';
+      };
+    });
   }
+
+  addDiffLanguage(parent,texts,tagname,isRun){
+    let language = ROOT.getAttribute('data-language');
+    tagname = tagname ? tagname : 'div';
+    let diff = document.createElement(tagname);
+    let type = 'text';
+    //初始化时不需要考虑语言
+    let text = isRun ? texts[0] : language == 'Zh' ? texts[0] : texts[1] ;
+    switch (tagname){
+      case 'div': 
+      diff.textContent = text;
+      diff.setAttribute('data-zh-' + type,texts[0]);
+      diff.setAttribute('data-en-' + type,texts[1]);
+      break
+      case 'input': 
+      diff.value = text;
+      diff.setAttribute('data-input-must',texts[0]);
+      diff.setAttribute('data-input-must-en',texts[1]);
+      break
+      default :
+      diff.textContent = text;
+      diff.setAttribute('data-zh-' + type,texts[0]);
+      diff.setAttribute('data-en-' + type,texts[1]);
+    };
+    parent.appendChild(diff);
+    return diff;
+  };
 }
 
+let Editor = new EDITOR_TAB();
+Editor.init();
 
 /* ---界面交互--- */
 
@@ -4755,7 +4838,7 @@ btnMore.addEventListener('change',(event)=>{
   }
 });
 //侧边栏关闭
-document.addEventListener('click',(event)=>{
+document.addEventListener('mousedown',(event)=>{
   if(!sideMix.contains(event.target) && sideMask.style.display !== 'none' && sideMix.style.display !== 'none' && btnMore.checked == true ){
     btnMore.checked = false;
     let inputEvent = new Event('change',{bubbles:true});
