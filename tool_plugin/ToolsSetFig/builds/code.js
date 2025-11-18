@@ -62,6 +62,31 @@ let CLIP_NAME = [
 ];
 let localStyles = {paint:null,text:null,effect:null,grid:null};
 let localVariable;
+function getTablesByNodes(nodes = [], deep = true){
+    let tables = [];
+    if(!Array.isArray(nodes)){
+        return tables;
+    };
+    tables = nodes.filter(node => node && node.name.includes('@table'));
+    if(deep){
+        const nested = nodes
+        .filter(node => node && typeof node.findAll === 'function')
+        .map(node => node.findAll(item => item.name.includes('@table')))
+        .flat();
+        tables = tables.concat(nested);
+    };
+    const ids = new Set();
+    return tables.filter(table => {
+        if(!table || !table.id){
+            return false;
+        };
+        if(ids.has(table.id)){
+            return false;
+        };
+        ids.add(table.id);
+        return true;
+    });
+};
 //核心功能
 figma.ui.onmessage = async (message) => { 
     const info = message[0]
@@ -225,8 +250,7 @@ figma.ui.onmessage = async (message) => {
     };
     //上传栅格化内容
     if( type == 'Up Pixel'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         if(b.length == 1){
             let c = b[0];
             let [w,h,x,y] = getSafeMain(c);
@@ -245,7 +269,7 @@ figma.ui.onmessage = async (message) => {
                     }),
             };
             postmessage([info,'editorView'])
-        }
+        };
     };
     //上传样式信息
     if( type == "getStyleInfo"){
@@ -332,9 +356,9 @@ figma.ui.onmessage = async (message) => {
     };
     //从预设或组件创建表格
     if ( type == "creTable"){
-        console.log(info)
+        //console.log(info)
         let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let th,td;
         if(info[1]){
             th = b.find(item => item.name == info[1]);
@@ -378,9 +402,7 @@ figma.ui.onmessage = async (message) => {
             figma.viewport.zoom = figma.viewport.zoom * 0.6;
         })
         .catch (error => {
-        })
-        
-
+        }); 
     };
     //仅创建表头、表格组件
     if ( type == 'Only Create @th/td'){
@@ -393,8 +415,7 @@ figma.ui.onmessage = async (message) => {
     };
     //使所选元素符合表格组件
     if ( type == 'Make Compliant'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let final = b.filter(item => item.type == 'COMPONENT' && item.name.includes('@t'));
         final.forEach(comp => {
             let type = comp.name.split('@')[1];
@@ -436,8 +457,7 @@ figma.ui.onmessage = async (message) => {
     };
     //便捷选中表格
     if ( type == 'pickTable'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         if(b.every(item => item.type == 'INSTANCE') && [...new Set(b.map(item => item.parent.parent))].length == 1){
             switch (info){
                 case 'row':
@@ -460,18 +480,14 @@ figma.ui.onmessage = async (message) => {
                         easePickTable(info,b);
                     };
                 ;break
-            }
+            };
         };
     };
     //批量填充文本数据
     if( type == 'mapText'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         /**/
-        let tables = b.filter(item => item.name.includes('@table'));
-        if(!tables || tables.length == 0){
-            tables = b.map(node => node.findAll(item => item.name.includes('@table'))).flat();
-        };
+        let tables = getTablesByNodes(b);
         //没有table就说明是普通的文本数据填充
         if(!tables  || tables.length == 0){
             let Array = info.data[0];
@@ -540,8 +556,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量设置命名
     if( type == 'mapName'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let nodes = b;
         if(info.data[0] && info.data[0].length > 0){
             if(b.length == 1){
@@ -554,8 +569,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量设置组件属性
     if( type == 'mapPro'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let nodes = b;
         if(info.data[0]){
             if(b.length == 1){
@@ -574,8 +588,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量设置标签属性
     if( type == 'mapTag'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let nodes = b;
         if(info.data[0] && info.data[0].length > 0){
             if(b.length == 1){
@@ -593,13 +606,8 @@ figma.ui.onmessage = async (message) => {
     };
     //批量获取文本数据
     if( type == 'getText'){
-        let a = figma.currentPage;
-        let b = a.selection;
-        //console.log(666);
-        let tables = b.filter(item => item.name.includes('@table'));
-        if(!tables || tables.length == 0){
-            tables = b.filter(item => item.children).map(node => node.findAll(item => item.name.includes('@table'))).flat();
-        };
+        let b = getSelectionMix();
+        let tables = getTablesByNodes(b);
         //没有table就说明是普通的文本数据填充
         if(!tables  || tables.length == 0){
             
@@ -627,8 +635,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量获取命名
     if( type == 'getName'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let names = [];
         if(b.length == 1){
             b[0].children.forEach((node) => {
@@ -643,8 +650,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量获取组件属性
     if( type == 'getPro'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let comps = b.filter(node => node.type == 'INSTANCE');
         if(!comps  || comps.length == 0){
             if(b.length == 1){
@@ -670,13 +676,8 @@ figma.ui.onmessage = async (message) => {
     };
     //更新表格样式、行列
     if( type == 'reTable'){
-        let a = figma.currentPage;
-        let b = a.selection;
-
-        let tables = b.filter(item => item.name.includes('@table'));
-        if(!tables || tables.length == 0){
-            tables = b.filter(item => item.children).map(node => node.findAll(item => item.name.includes('@table'))).flat();
-        };
+        let b = getSelectionMix();
+        let tables = getTablesByNodes(b);
         let setdata = info[0],retype = info[1]
         //console.log(setdata)
         tables.forEach(table => {
@@ -721,18 +722,12 @@ figma.ui.onmessage = async (message) => {
     };
     //反转行列
     if( type == 'Row Column Swap'){
-        let a = figma.currentPage;
-            let b = a.selection;
-    
-            let tables = b.filter(item => item.name.includes('@table'));
-            if(!tables || tables.length == 0){
-                tables = b.map(node => node.findAll(item => item.name.includes('@table'))).flat();
-            };
-            
-            tables.forEach(table => {
-                //console.log(666)
-                swapTable(table);
-            });
+        let b = getSelectionMix();
+        let tables = getTablesByNodes(b);
+        tables.forEach(table => {
+            //console.log(666)
+            swapTable(table);
+        });
     };
     //栅格化-副本
     if ( type == 'Pixel As Copy'){
@@ -744,8 +739,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量等比缩放
     if ( type == 'rescaleMix'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         b.forEach(item => {
             switch (info[0]){
                 case 'S' :
@@ -756,7 +750,7 @@ figma.ui.onmessage = async (message) => {
                     rescaleMix(item,numW,info[2]);
                 ;break
                 case 'H':
-                    let numH = info[1]/item.width;
+                    let numH = info[1]/item.height;
                     rescaleMix(item,numH,info[2]);
                 ;break
             };
@@ -764,8 +758,7 @@ figma.ui.onmessage = async (message) => {
     };
     //斜切拉伸
     if( type == 'transformMix'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         //console.log(info)
         b.forEach(item => {
             let skewX = Math.tan(info.x*(Math.PI/180));
@@ -784,7 +777,7 @@ figma.ui.onmessage = async (message) => {
     //网格裁切
     if( type == 'addClipGrid'){
         let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         if(b.length == 1){
             //console.log(info)
             let final = b[0];
@@ -860,8 +853,7 @@ figma.ui.onmessage = async (message) => {
         };
     };
     if( type == 'Image@2x Clip'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         if(b.length == 1 && b[0].layoutGrids && b[0].layoutGrids.length > 0 && b[0].name.split(' ').includes('@clip')){
             let RC = getClipGrids(b[0]);
             let safaMain = getSafeMain(b[0]);
@@ -870,8 +862,7 @@ figma.ui.onmessage = async (message) => {
         };
     };
     if( type == 'Component Clip'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         if(b.length == 1 && b[0].layoutGrids && b[0].layoutGrids.length > 0 && b[0].name.split(' ').includes('@clip')){
             let RC = getClipGrids(b[0]);
             let safaMain = getSafeMain(b[0]);
@@ -931,53 +922,242 @@ figma.ui.onmessage = async (message) => {
     };
     //清除调整
     if( type == 'Clear Filter'){
-        let a = figma.currentPage;
-        let b = a.selection;
-        let keyValue = ['blendMode','filters','opacity'];
+        let b = getSelectionMix();
         let final = b.filter(item => item.type == 'RECTANGLE');
-    }
+        final.forEach(item => {
+            findImage(item,(image,fills) => {
+                image.blendMode = 'NORMAL';
+                image.opacity = 1;
+                Object.keys(image.filters).forEach(key => {
+                    image.filters[key] = 0;
+                });
+                item.fills = fills;
+            });
+        });
+    };
     //还原尺寸
     if( type == 'Raw Size'){
-        
-    }
+        let b = getSelectionMix();
+        let final = b.filter(item => item.type == 'RECTANGLE');
+        final.forEach(item => {
+            findImage(item,(image,fills) => {
+                let imageData = figma.getImageByHash(image.imageHash);
+                imageData.getSizeAsync().then(data => {
+                    item.resize(data.width,data.height);
+                });
+                image.imageTransform = [[1,0,0],[0,1,0]];
+                image.scaleMode = 'FILL';
+                item.fills = fills;
+            });
+        });
+    };
     //高反差保留
-    if( type == 'Hight Pass'){
-        
-    }
+    if( type == 'High Pass'){
+        let b = getSelectionMix();
+        let final = b.filter(item =>item.type == 'RECTANGLE');
+        if(info){ 
+            //console.log(info)
+        }else{
+            final.forEach(item=> {
+                findImage(item,(image,fills) => {
+                    let imageData = figma.getImageByHash(image.imageHash);
+                    imageData.getBytesAsync().then(data => {
+                        postmessage([[type,item.id,data],'editImage']);
+                    });
+                });
+            });
+        };
+    };
     //反转通道
     if( type == 'Invert Alpha'){
-        
-    }
+        let b = getSelectionMix();
+        let final = b.filter(item =>item.type == 'RECTANGLE');
+        if(info){ 
+            //console.log(info)
+        }else{
+            final.forEach(item=> {
+                findImage(item,(image,fills) => {
+                    let imageData = figma.getImageByHash(image.imageHash);
+                    imageData.getBytesAsync().then(data => {
+                        postmessage([[type,item.id,data],'editImage']);
+                    });
+                });
+            });
+        };
+    };
     //多余空白裁剪
     if( type == 'Crop Blank'){
-        
-    }
+        let b = getSelectionMix();
+        let final = b.filter(item =>item.type == 'RECTANGLE');
+        if(info){ 
+            //console.log(info)
+        }else{
+            final.forEach(item=> {
+                findImage(item,(image,fills) => {
+                    let imageData = figma.getImageByHash(image.imageHash);
+                    imageData.getBytesAsync().then(data => {
+                        postmessage([[type,item.id,data],'editImage']);
+                    });
+                });
+            });
+        };
+    };
     //当前比例裁剪
     if( type == 'Crop Current Scale'){
-        
-    }
+        let b = getSelectionMix();
+        let final = b.filter(item =>item.type == 'RECTANGLE');
+        final.forEach(item => {
+            findImage(item,(image,fills) => {
+
+            });
+        });
+    };
     //统一调整参数
     if( type == 'Same Filter'){
-        let a = figma.currentPage;
-        let b = a.selection;
-        let keyValue = ['blendMode','filters','opacity'];
+        let b = getSelectionMix();
         let final = b.filter(item => item.type == 'RECTANGLE');
-    }
+        if(final.length < 2) return;
+        //console.log(final.map(item => item.name)); //return;
+        let oneNode,oneImage;
+        for(let i = 0; i < final.length; i++){
+            let image = findImage(final[i]);
+            if(image){
+                oneNode = final[i];
+                oneImage = image;
+                break
+            };
+        };
+        if(!oneNode || !oneImage) return;
+        final.forEach(item => {
+            if(item == oneNode) return;
+            //console.log(oneNode,oneImage.filters);
+            findImage(item,(image,fills) => {
+                image.filters = oneImage.filters;
+                item.fills = fills;
+            });
+        });
+    };
     //统一填充模式
     if( type == 'Same Full'){
-        let a = figma.currentPage;
-        let b = a.selection;
-        let keyValue = ['scalingFactor','scaleMode','rotation'];
+        let b = getSelectionMix();
         let final = b.filter(item => item.type == 'RECTANGLE');
-    }
+        if(final.length < 2) return;
+        let oneNode,oneImage;
+        for(let i = 0; i < final.length; i++){
+            let image = findImage(final[i]);
+            if(image){
+                oneNode = final[i];
+                oneImage = image;
+                break
+            };
+        };
+        if(!oneNode || !oneImage) return;
+        final.forEach(item => {
+            if(item == oneNode) return;
+            findImage(item,(image,fills) => {
+                image.scaleMode = oneImage.scaleMode;
+                item.fills = fills;
+            });
+        });
+    };
     //统一裁剪位置
     if( type == 'Same Clip Position'){
-        
-    }
+        let b = getSelectionMix();
+        let final = b.filter(item => item.type == 'RECTANGLE');
+        if(final.length < 2) return;
+        let oneNode, oneImage;
+        for (let i = 0; i < final.length; i++) {
+            let image = findImage(final[i]);
+            if (image) {
+                oneNode = final[i];
+                oneImage = image;
+                break;
+            };
+        };
+        if (!oneNode || !oneImage) return;
+        figma.getImageByHash(oneImage.imageHash).getSizeAsync().then(srcSize => {
+            let srcW = srcSize.width, srcH = srcSize.height;
+            let [skewX,skewY] = [oneImage.imageTransform[0][1],oneImage.imageTransform[1][0]];
+            let [transX,transY] = [oneImage.imageTransform[0][2],oneImage.imageTransform[1][2]];
+            final.forEach(item => {
+                if (item == oneNode) return;
+                let [w,h] = [oneNode.width, oneNode.height];
+                //imageTransform直接赋值会和scaleMode冲突，只能在同大小情况下直接赋值
+                findImage(item, (image, fills) => {
+                    figma.getImageByHash(image.imageHash).getSizeAsync()
+                    .then(async (dstSize) => {
+                        let dstW = dstSize.width, dstH = dstSize.height;
+                        if(JSON.stringify([srcW,srcH]) == JSON.stringify([dstW,dstH])){
+                            item.resize(w, h);
+                            image.scaleMode = oneImage.scaleMode;
+                            image.imageTransform = oneImage.imageTransform;
+                            item.fills = fills;
+                        } else {
+                            /*
+                            let originSize = await figma.getImageByHash(image.imageHash).getSizeAsync();
+                            item.resize(originSize.width, originSize.height);
+                            findImage(item, (img, fills) => {
+                                img.imageTransform = [[1,0,0],[0,1,0]];
+                                img.scaleMode = 'FILL';
+                                item.fills = fills;
+                            });
+                            item.resize(w, h);
+                            findImage(item, (img, fills) => {
+                                img.scaleMode = oneImage.scaleMode;
+                                // 用于同一张图片的rect，在宽高各异的情况下同步裁剪区域
+                                // 我们需要根据目标 rect 和源 rect 的比例调整 transform 偏移量
+                                let scaleTransform = [
+                                    [oneImage.imageTransform[0][0]*(w/srcW), oneImage.imageTransform[0][1]*(w/srcW), oneImage.imageTransform[0][2]*(w/srcW)],
+                                    [oneImage.imageTransform[1][0]*(h/srcH), oneImage.imageTransform[1][1]*(h/srcH), oneImage.imageTransform[1][2]*(h/srcH)]
+                                ];
+                                img.imageTransform = scaleTransform;
+                                item.fills = fills;
+                            });
+                            return;
+                            */
+                            //先还原尺寸
+                            findImage(item,async(image,fills) => {
+                                let imageData = figma.getImageByHash(image.imageHash);
+                                let originSize = await imageData.getSizeAsync();
+                                item.resize(originSize.width, originSize.height);
+                                image.imageTransform = [[1,0,0],[0,1,0]];
+                                image.scaleMode = 'FILL';
+                                item.fills = fills;
+
+                                item.resize(w, h);
+                                //确保重置了transform再进行统一裁剪位置
+                                let scaleX = w / dstW;
+                                let scaleY = h / dstH;
+                                image.scaleMode = oneImage.scaleMode;
+                                // 在赋值fills之前，先调整transform使之等效于源图层的缩放和偏移
+                                let srcTransform = image.imageTransform;
+                                let newTransform = [
+                                    [srcTransform[0][0] * scaleX, srcTransform[0][1] * scaleX, 0],
+                                    [srcTransform[1][0] * scaleY, srcTransform[1][1] * scaleY, 0]
+                                ];
+                                image.imageTransform = newTransform;
+                                item.fills = fills;
+                                //return;
+                                findImage(item, (image, fills) => {
+                                    let newTransX = transX * srcW / dstW;
+                                    let newTransY = transY * srcH / dstH;
+                                    // 只调整锚点，“微调”transform
+                                    image.imageTransform =  [
+                                        [srcTransform[0][0] * scaleX, skewX * scaleX , newTransX],
+                                        [skewY * scaleY, srcTransform[1][1] * scaleY, newTransY]
+                                    ];
+                                    item.fills = fills;
+                                });
+                            });  
+                        };
+                    });
+                });
+            });
+        });
+    };
     //拆分文案
     if ( type == "splitText"){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let texts = b.filter(item => item.type == 'TEXT');
         let safeTexts = texts.filter(item => item.hasMissingFont == false)
         let splitTags = {
@@ -1036,8 +1216,7 @@ figma.ui.onmessage = async (message) => {
     };
     //简单约束
     if ( type == 'Auto Constraints'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let final = b.filter(item => item.type !== 'INSTANCE' && item.children)
         //console.log(final)
         
@@ -1052,8 +1231,7 @@ figma.ui.onmessage = async (message) => {
     };
     //反转顺序
     if( type == 'Reversing Index'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         if(b.length == 1 && b[0].children && b[0].type !== 'INSTANCE'){
             let olds = b[0].children;
             for(let i = 0; i < olds.length; i++){
@@ -1073,8 +1251,7 @@ figma.ui.onmessage = async (message) => {
     };
     //调换位置
     if( type == 'Exchange Position'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let final = b.filter(item => !getParentAll(item,'INSTANCE'));
         final = final.filter(item => !(item.parent.type == 'GROUP' && item.parent.children.length == 1))
         if(final.length == 2){
@@ -1113,7 +1290,7 @@ figma.ui.onmessage = async (message) => {
     //拆分到容器
     if( type == 'Divide To Frame'){
         let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let final = b.filter(item => item.children && item.children.length > 0 );
         let selects = [];
         final.forEach(node => {
@@ -1161,7 +1338,7 @@ figma.ui.onmessage = async (message) => {
     //包裹到容器
     if( type == 'Put In Frame'){
         let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let selects = [];
         b.forEach(node => {
             if((!info && !FRAME_TYPE.includes(node.type)) || info){
@@ -1175,7 +1352,7 @@ figma.ui.onmessage = async (message) => {
     //填充组件到容器
     if( type == 'Clone to Fill'){
         let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let comp = b.find(item => item.type == 'COMPONENT' || item.type == 'INSTANCE');
         let frames = b.filter(item => item.type == 'FRAME' && item.layoutMode == 'NONE');
         let selects = []
@@ -1192,8 +1369,7 @@ figma.ui.onmessage = async (message) => {
     };
     //作为自适应底框
     if( type == 'Absolute & Fill'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         b.forEach(node => {
             if(node.type == 'INSTANCE' && node.parent.layoutMode !== 'NONE'){
                 addAsAbsolute(null,node,[0,0]);
@@ -1206,8 +1382,7 @@ figma.ui.onmessage = async (message) => {
     };
     //母组件复制
     if ( type == 'Clone Comp.'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         b.forEach(item => {
             if(item.type == 'COMPONENT'){
                 let layerIndex = item.parent.children.findIndex(items => items.id == item.id);
@@ -1226,7 +1401,7 @@ figma.ui.onmessage = async (message) => {
     //母组件解除
     if ( type == 'Release Comp.'){
         let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let selects = [];
         b.forEach(item => {
             if(item.type == 'COMPONENT'){
@@ -1254,7 +1429,7 @@ figma.ui.onmessage = async (message) => {
     //拆分路径
     if ( type == 'Split Path'){
         let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let vectors = b.filter(item => item.type == 'VECTOR');
         let selects = [];
         vectors.forEach(vector => {
@@ -1332,8 +1507,7 @@ figma.ui.onmessage = async (message) => {
     };
     //获取为svg代码
     if ( type == 'Get SVG'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         let final = b[0];
         let groups = null;
         if(b.length > 1){
@@ -1356,8 +1530,7 @@ figma.ui.onmessage = async (message) => {
     };
     //转为svg代码再导入
     if ( type == 'Clone As SVG'){
-        let a = figma.currentPage;
-        let b = a.selection;
+        let b = getSelectionMix();
         for(let i = 0; i < b.length; i++){
             let svgcode = await b[i].exportAsync({
                 format: 'SVG_STRING',
@@ -1474,6 +1647,7 @@ function sendSendComp(){
     postmessage([info,'selectComp']);
 };
 
+
 /**
  * @param {[object] | null} info -新建页面的设置项，命名、背景色、页码
  */
@@ -1561,6 +1735,30 @@ function setStroke(node,align,trbl,strokes){
     node.strokeAlign = align;
 };
 
+//找到实际生效的图片填充
+/**
+ * @param {node} node - 需要查找的节点
+ * @param {function} callback - 回调函数
+ * @returns {object} - 图片填充对象
+ */
+function findImage(node,callback){
+    let fills = JSON.parse(JSON.stringify(node.fills));
+    //找到实际生效的图片填充
+    let image;
+    for(let i = fills.length - 1; i >= 0; i--){
+        let fill = fills[i];
+        if(fill.type == 'IMAGE' && fill.visible == true && fill.blendMode == "NORMAL"){
+            image = fill;
+            break;
+        };
+    };
+    if(image){
+        if(callback) callback(image,fills);
+        return image;
+    } else {
+        return null;
+    };
+};
 //添加图片
 function addImg(node,info){
     node = node ? node : figma.currentPage;
@@ -1678,8 +1876,7 @@ let pixelSelects = []
 function toPixel(info,isOverWrite,isClip){
     //console.log(info)
     pixelSelects = [];
-    let a = figma.currentPage;
-    let b = a.selection;
+    let b = getSelectionMix();
     let final = b.filter(item => item.type !== 'SECTION')
     for(let i = 0; i < final.length; i++){
         let safeMain = getSafeMain(final[i]);
@@ -1873,7 +2070,7 @@ function getMain(nodes){
 //上传导出为图片所需的信息
 function exportImgInfo(set){
     let a = figma.currentPage;
-    let b = a.selection;
+    let b = getSelectionMix();
     let load = figma.notify('Uploading ( ' + b.length + ' layer)',{
         timeout: 6000,
     });
@@ -3188,7 +3385,7 @@ async function addText(info){
     text.fills = fills;
     return text;
 };
-
+//颜色转fill对象
 /**
  * @param {Array} color - css颜色 [#ffffff | rgb(255,255,255) | hsl(0% 0% 100%)]
  * @param {boolean} isPaint - 带透明度或需要作为fills对象传入时用
@@ -3357,6 +3554,9 @@ function removeText(node,start,end,isReverse,isInine){
     };
 };
 //将节点数组重新排序，按坐标从左到右从上到下Z字型
+/**
+ * @param {Array} nodes - 节点数组
+ */
 function sortLRTB(nodes){
     nodes.sort((a,b) => {
         let x1 = a.absoluteBoundingBox.x;
@@ -3374,6 +3574,7 @@ function sortLRTB(nodes){
 //添加网格参考线用于设置裁切拉伸范围
 /**
  * @param {Array} info -[type,xy,wh]
+ * @param {Object} node - 当前节点
  */
 function addClipGrids(info,node){
     let grids = [];
@@ -3393,7 +3594,9 @@ function addClipGrids(info,node){
 };
 //获取网格参考线数据并简化
 /**
- * @returns {Array} - [R,C] R:[[top,h]] C:[[left,w]]
+ * @param {Object} node - 当前节点
+ * @param {Boolean} isNoSort - 是否不排序
+ * @returns {Array | null} - [R,C] R:[[top,h]] C:[[left,w]]，没有网格数据则返回null
  */
 function getClipGrids(node,isNoSort){
     if(node.layoutGrids){
@@ -3449,6 +3652,13 @@ function clipGridsToCut(RC,WH){
     return regions;
 };
 //从网格数据创建拉伸区域
+/**
+ * 从网格数据创建拉伸区域
+ * @param {Array} clips - 网格数据
+ * @param {Object} clipsbox - 拉伸区域容器
+ * @param {Object} image - 图片数据
+ * @param {Object} comp - 组件数据
+ */
 function creAutoClip(clips,clipsbox,image,comp){
     let clipsnode = [];
     let w = clipsbox.width;
@@ -3599,6 +3809,12 @@ function creAutoClip(clips,clipsbox,image,comp){
     });
 };
 //模拟缩放中心
+/**
+ * 模拟缩放中心
+ * @param {Object} node - 当前节点
+ * @param {Number} num - 缩放比例
+ * @param {Array} center - 缩放中心
+ */
 function rescaleMix(node,num,center){
     let oldW = node.width,oldH = node.height;
     node.rescale(num);
@@ -3626,13 +3842,21 @@ function rescaleMix(node,num,center){
     };
 };
 //向上递归检查父级
-function getParentAll(node,keytype){
+/**
+ * @param {Object} node - 当前节点
+ * @param {String | null} keytype - 指定截至的父级类型，为空则返回所有父级或图层顺序
+ * @param {Boolean} isLayer - 是否返回图层顺序
+ * @returns {Array | Boolean} 父级节点或图层顺序，是否在指定父级类型内
+ */
+function getParentAll(node,keytype,isLayer){
     let parents = [];
+    let layers = [];
     let key = keytype ? keytype : 'PAGE';
     getParentOne(node);
     function getParentOne(node){
         if(node.parent && node.parent.type !== key && node.parent !== figma.currentPage){
             parents.push(node.parent);
+            layers.push(node.parent.children.indexOf(node).toString().padStart(3,'0'));
             return getParentOne(node.parent);
         } else {
             //console.log(parents)
@@ -3642,9 +3866,25 @@ function getParentAll(node,keytype){
                 } else {
                     parents = false;
                 }
-            }
-            return parents
+            };
+            layers.push(node.parent.children.indexOf(node).toString().padStart(3,'0'));
+            if(isLayer) return layers;
+            return parents;
         };
     };
-    return parents
+    //console.log(layers.reverse().join('/'))
+    if(isLayer) return layers.reverse().join('/');
+    return parents;
+};
+//按图层顺序整理selection
+/**
+ * @returns {Array} 整理后的selection
+ */
+function getSelectionMix(){
+    let page = figma.currentPage;
+    let selects = page.selection;
+    selects = selects.map(item => [item,getParentAll(item,null,true)]);
+    selects.sort((a,b) => a[1].localeCompare(b[1]));
+    //console.log(selects.map(item=> item[0].name))
+    return selects.map(item=> item[0]);
 };

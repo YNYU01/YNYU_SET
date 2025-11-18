@@ -2,7 +2,10 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const InlineJsCssPlugin = require('./inline-jscss-plugin.js');
 const {execSync} = require('child_process');
-const GIT_HASH = execSync('git rev-parse HEAD').toString().trim()
+
+// 获取项目根目录（向上两级到项目根目录）
+const projectRoot = path.resolve(__dirname, '../../');
+const GIT_HASH = execSync('git rev-parse HEAD', { cwd: projectRoot }).toString().trim()
 
 module.exports = async()=> {
   return{
@@ -13,11 +16,11 @@ module.exports = async()=> {
     },
     // 入口文件
     entry: {
-      main: './tool_plugin/ToolsSetFig/test/main.js', // 修改为main.js的实际路径
+      main: './test/main.js', // 相对于当前目录（tool_plugin/ToolsSetFig）
     },
     // 输出配置
     output: {
-      path: path.resolve(__dirname, './tool_plugin/ToolsSetFig/builds'), // 输出目录，修改为希望输出的文件夹路径
+      path: path.resolve(__dirname, './builds'), // 输出目录，相对于当前目录
       filename: 'bundle.js', // 打包后的JavaScript文件名
     },
     optimization:{
@@ -40,9 +43,10 @@ module.exports = async()=> {
     // 插件配置
     plugins: [
       new InlineJsCssPlugin({
-        template: './tool_plugin/ToolsSetFig/test/index.html',
+        template: './test/index.html', // 相对于当前目录
         hash:GIT_HASH,
       }),
     ],
   }
 };
+

@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -45,6 +45,7 @@ window.addEventListener('message',(message)=>{
         case 'styleSheetInfo': reStyleSheetInfo(info);break
         case 'variableInfo': reVariableInfo(info);break
         case 'variableSheetInfo': reVariableSheetInfo(info);break
+        case 'editImage': editImage(info);break
       };
     }
   };
@@ -64,7 +65,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -2331,12 +2332,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
     </div>
     <div data-mainset-top class="df-lc" style="gap: 4px; margin-left: 2px;">
       <div id="btn-theme-3">
-        <input id="theme-3" data-theme-check type="checkbox" checked="true">
+        <input id="theme-3" data-theme-check type="checkbox" checked>
         <label for="theme-3" class="btn-theme" style="position: relative;">
           <btn-theme></btn-theme>
         </label>
       </div>
-      <input id="language-3" data-language-check type="checkbox" checked="true"/>
+      <input id="language-3" data-language-check type="checkbox" checked/>
       <label for="language-3" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
         <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
           <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
@@ -2419,7 +2420,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
       <div class="h100 df-ffc" style="justify-content: space-between;">
         <div ></div>
-        <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" target="_blank" class="df-cc" data-btn="help">
+        <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" rel="noopener noreferrer" target="_blank" class="df-cc" data-btn="help">
           <div data-en-text="HELP DOC">帮助文档</div>
           <div style="width:20px; height:20px; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
             <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2430,7 +2431,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         </a>
       </div>
       <div data-mainset-side-box class="df-sc">
-        <a href="https://www.ynyuset.cn" target="_blank" class="df-lc"
+        <a href="https://www.ynyuset.cn" rel="noopener noreferrer" target="_blank" class="df-lc"
         data-tips="set" data-tips-y="top" data-tips-x="left" 
         style="--tips-gap: -16px; --tips-text: '🔗https://www.ynyuset.cn'; --tips-text-en: '🔗https://www.ynyuset.cn';
         gap: 2px; color: var(--mainColor); font-size: 10px; flex: 1;">
@@ -2440,12 +2441,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         </a>
         <div data-mainset-side class="df-lc" style="gap: 4px;">
           <div id="btn-theme-1">
-            <input id="theme-1" data-theme-check type="checkbox" checked="true">
+            <input id="theme-1" data-theme-check type="checkbox" checked>
             <label for="theme-1" class="btn-theme" style="position: relative;">
               <btn-theme></btn-theme>
             </label>
           </div>
-          <input id="language-1" data-language-check type="checkbox" checked="true"/>
+          <input id="language-1" data-language-check type="checkbox" checked/>
           <label for="language-1" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
             <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
               <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
@@ -2563,11 +2564,11 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <btn-close></btn-close>
                   </div>
                   
-                  <div data-textarea="tips" class="pos-a w100 df-ffc">
+                  <ul data-textarea="tips" class="pos-a w100 df-ffc">
                     <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
                     <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
                     <li data-li-style="2" data-en-text="Table header must with: name | w | h (optional: s | type | note | node)" >表头固定用：name,w,h,(可选：s,type,note,node), 无顺序要求</li>
-                  </div>
+                  </ul>
                 </div>
                 <!--左滚动器-->
                 <div data-scroll-left class="df-ffc pos-a">
@@ -2646,7 +2647,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <input id="select-value-1" type="text" data-select-input readonly value=" w×h">
                   <input id="select-show-1" data-select-pick=" w×h" type="checkbox">
                   <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
-                  <div data-select-options="" class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
+                  <div data-select-options="" class="df-ffc pos-a w100 noscrollbar" style="white-space: normal; display: none; top:24px;">
                     <div data-option="type" data-en-text="Basic">基础</div>
                     <div data-option="option" data-option-main="false" data-option-value="none">none</div>
                     <div data-option="option" data-option-main="true" data-option-value=" w×h">&nbsp;w×h</div>
@@ -2687,7 +2688,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           </div>
         </div>
         <div style="height: 10px;"></div>
-        <div data-create-any data-btn="main" class="df-cc" data-en-text="CREATER">创建</div>
+        <div data-create-any data-btn="main" class="df-cc" data-en-text="CREATE">创建</div>
       </div>
       <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
         <div class="wh100 df-ffc ovh" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
@@ -2718,7 +2719,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       <path fill="var(--mainColor)" d="M17 1.5C18.1046 1.5 19 2.39543 19 3.5V16.5C19 17.5357 18.2128 18.387 17.2041 18.4893L17 18.5H3L2.7959 18.4893C1.85435 18.3938 1.1062 17.6457 1.01074 16.7041L1 16.5V3.5C1 2.39543 1.89543 1.5 3 1.5H17ZM3 3C2.72386 3 2.5 3.22386 2.5 3.5V16.5C2.5 16.7761 2.72386 17 3 17H17C17.2761 17 17.5 16.7761 17.5 16.5V3.5C17.5 3.22386 17.2761 3 17 3H3ZM13.0537 10.7266L14.3027 6.85742H15.9492L13.2695 14.1279C13.1374 14.4763 12.993 14.7404 12.8008 14.9326C12.4403 15.2931 11.9718 15.4131 11.4551 15.4131H10.8418V14.0078H11.2031C11.6474 14.0077 11.8272 13.8989 11.9834 13.4424L12.248 12.6738L10.1094 6.85742H11.7559L13.0537 10.7266ZM10.0186 8.04688L7.20605 11.7119H10.0186V13.1182H5.24707V11.9287L8.02344 8.2627H5.40332V6.85742H10.0186V8.04688Z"/>
                     </svg>  
                   </div>
-                  <div data-any="vw360" data-exporttype-name data-en-text=".zy(Pulgin)">系列兼容格式</div>         
+                  <div data-any="vw360" data-exporttype-name data-en-text=".zy(Plugin)">系列兼容格式</div>         
                 </div>
                 <div class="fl0 df-lc" data-radio data-radio-data="3" data-radio-main="false">
                   <div data-exporttype-chk>
@@ -2821,13 +2822,13 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
           </div>
           <div data-editor-mix class="df-ffc wh100 pos-r ovy noscrollbar">
-            <div data-editor-viewbox data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc wh100 tex-pixelbg"></div>
+            <div data-editor-viewBox data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc wh100 tex-pixelbg"></div>
             <div data-editor-setbox class="w100 df-ffc">
               <div class="w100 df-lc">
                 <div data-editor-setlist-title class="df-sc pos-r">
                   <div data-en-text="Filter" style="opacity: 0.6;">调整</div>
                   <div data-btn="icon" data-editor-addset>
-                    <svg width="100%" height="100%" viewbox="0 0 20 20">
+                    <svg width="100%" height="100%" viewBox="0 0 20 20">
                       <rect fill="var(--mainColor)" x="0" y="9" width="20" height="2"></rect>
                       <rect fill="var(--mainColor)" x="9" y="0" width="2" height="20"></rect>
                     </svg>
@@ -3032,21 +3033,6 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Variable To Sheet">从变量更新表</div>    
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Variable">从表更新变量</div>
             </div>
-            <!---div class="wh100">
-              <div data-resize class="wh100 pos-r" style="min-height: 80px;">
-                <textarea class="wh100" spellcheck="false" id="upload-variable" data-textarea="eg"  style="min-height: 100%; max-height: 80vh;" 
-                data-eg="--\tGroup1\tGroup2\nxxx_num\t123\t456\nxxx_col\t#ffffff\trgb(255,255,255)\nxxx_str\tabc\tdef\nxxx_bol\ttrue\tfalse"
-                data-eg-en="--\tGroup1\tGroup2\nxxx_num\t123\t456\nxxx_col\t#ffffff\trgb(255,255,255)\nxxx_str\tabc\tdef\nxxx_bol\ttrue\tfalse"
-                ></textarea>
-                <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
-                  <btn-close></btn-close>
-                </div>
-                <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: wrap; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
-                  <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
-                  <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
-                </div>
-              </div>
-            </div-->
             <!--步骤2-->
             <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
@@ -3141,7 +3127,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-linkstyle-all="reapply" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
                   style="--tips-text: '执行全部重链'; --tips-text-en: 'All Reapply Existing';">
                     <div data-btn="icon">
-                      <svg width="100%" height="100%" viewbox="0 0 20 20">
+                      <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-1)"/>
                       </svg>
                     </div>
@@ -3149,7 +3135,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-linkstyle-all="create" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
                   style="--tips-text: '执行全部创建'; --tips-text-en: 'All Create New';">
                     <div data-btn="icon">
-                      <svg width="100%" height="100%" viewbox="0 0 20 20">
+                      <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-2)"/>
                       </svg>
                     </div>
@@ -3157,7 +3143,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-linkstyle-all="override" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
                   style="--tips-text: '执行全部覆盖'; --tips-text-en: 'All Override Current';">
                     <div data-btn="icon">
-                      <svg width="100%" height="100%" viewbox="0 0 20 20">
+                      <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-3)"/>
                       </svg>
                     </div>
@@ -3428,7 +3414,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
                   <btn-close></btn-close>
                 </div>
-                <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: wrap; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
+                <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: normal; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
                   <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
                   <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
                 </div>
@@ -3476,7 +3462,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div class="df ovh noscrollbar" data-scroll data-en-text="· Clone instance by data quantity">· 数据数量&gt;实例数量时, 复制最末实列</div>
                   <div style="width: 1%;"></div>
                   <div class="df-rc" style="min-width: 36px;">
-                    <input id="switch-autoclone" type="checkbox" checked="true">
+                    <input id="switch-autoclone" type="checkbox" checked>
                     <label for="switch-autoclone" class="switch" style="--swi-h: 16px"></label>
                   </div>
                 </div>
@@ -3484,7 +3470,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div class="df ovh noscrollbar" data-scroll data-en-text="· Reduce instance by data quantity">· 数据数量&lt;实例数量时, 从最末实列开始删减</div>
                   <div style="width: 1%;"></div>
                   <div class="df-rc" style="min-width: 36px;">
-                    <input id="switch-autoreduce" type="checkbox" checked="true">
+                    <input id="switch-autoreduce" type="checkbox" checked>
                     <label for="switch-autoreduce" class="switch" style="--swi-h: 16px"></label>
                   </div>
                 </div>
@@ -3635,7 +3621,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </span>
                 </div>
               </div>
-              <div class="w100 df" data-skill-col="2" data-skillmodule-zh="像素&变换" data-skillmodule="Pixel & Transform">
+              <div class="w100 df" data-skill-col="2" data-skillmodule-zh="像素&变换" data-skillmodule="Pixel &amp; Transform">
                 <div class="fl1" data-skill-sec="InSituRasterize">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
@@ -3843,7 +3829,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       <div class="df-cc" data-btn="skill-main" data-en-text="Raw Size">还原尺寸</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Hight Pass">高反差保留</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="High Pass">高反差保留</div>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Invert Alpha">反转通道</div>
                     </div>
                     <div class="df-lc w100" data-skill-more>
@@ -3875,9 +3861,9 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </div>
                   <div class="df-ffc bod-d" data-skill-line style="padding: 4px; gap: 4px;">
                     <div data-split-tags class="w100 df-lc">
-                      <div data-split-tag data-check-checked="true" class="df-lc">
+                      <div data-split-tag data-check-checked class="df-lc">
                         <div style="width: 14px; height: 14px;">
-                          <input id="split_chk_0" type="checkbox" checked="true">
+                          <input id="split_chk_0" type="checkbox" checked>
                           <label for="split_chk_0" class="check">
                             <btn-check>
                             </btn-check>
@@ -3885,9 +3871,9 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         </div>
                         <div data-split-info="name" data-en-text="Wrap">换行</div>
                       </div>
-                      <div data-split-tag data-check-checked="true" class="df-lc">
+                      <div data-split-tag data-check-checked class="df-lc">
                         <div style="width: 14px; height: 14px;">
-                          <input id="split_chk_1" type="checkbox" checked="true">
+                          <input id="split_chk_1" type="checkbox" checked>
                           <label for="split_chk_1" class="check">
                             <btn-check>
                             </btn-check>
@@ -3895,9 +3881,9 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         </div>
                         <div data-split-info="name" data-en-text="FontSize">字号</div>
                       </div>
-                      <div data-split-tag data-check-checked="true" class="df-lc">
+                      <div data-split-tag data-check-checked class="df-lc">
                         <div style="width: 14px; height: 14px;">
-                          <input id="split_chk_2" type="checkbox" checked="true">
+                          <input id="split_chk_2" type="checkbox" checked>
                           <label for="split_chk_2" class="check">
                             <btn-check>
                             </btn-check>
@@ -3905,9 +3891,9 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         </div>
                         <div data-split-info="name" data-en-text="Fills">填充</div>
                       </div>
-                      <div data-split-tag data-check-checked="true" class="df-lc">
+                      <div data-split-tag data-check-checked class="df-lc">
                         <div style="width: 14px; height: 14px;">
-                          <input id="split_chk_3" type="checkbox" checked="true">
+                          <input id="split_chk_3" type="checkbox" checked>
                           <label for="split_chk_3" class="check">
                             <btn-check>
                             </btn-check>
@@ -4070,12 +4056,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
     </div>
     <div data-mainset-bottom class="df-lc" style="gap: 4px; margin-left: 2px;">
       <div id="btn-theme-2">
-        <input id="theme-2" data-theme-check type="checkbox" checked="true">
+        <input id="theme-2" data-theme-check type="checkbox" checked>
         <label for="theme-2" class="btn-theme" style="position: relative;">
           <btn-theme></btn-theme>
         </label>
       </div>
-      <input id="language-2" data-language-check type="checkbox" checked="true"/>
+      <input id="language-2" data-language-check type="checkbox" checked/>
       <label for="language-2" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
         <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
           <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
@@ -4089,14 +4075,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@056450c497527aaf7e9ae96d5f80c15feb2432f2/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4304,7 +4290,8 @@ let helpData = {
     ["br","",""],
   ]
 };
-
+</script>
+  <script>
 /*静态数据或对象*/
 const UI_MINI = [208,460];
 const UI = [300,660];
@@ -6492,6 +6479,12 @@ function reSelectDatas(info){//显示收集的表格/组件属性数据
   textarea.focus();
   textarea.value = text;
 };
+function editImage(info){
+  let [type,id,u8a] = info;
+  //log(type);
+  let newInfo = [id,u8a]
+  toolMessage([newInfo,type],PLUGINAPP);
+}
 
 /**
  * 模拟点击tab切换页面, 测试时更方便, 能直接显示目标页面
