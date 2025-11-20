@@ -477,7 +477,7 @@ function MdToObj(mdText,createname) {
     }
     
     if (remainingText) {
-      segments.push({ style: 'normal', content: remainingText });
+      segments.push(remainingText);//{ style: 'normal', content: remainingText });
     }
     
     return segments;

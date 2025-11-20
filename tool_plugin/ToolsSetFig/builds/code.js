@@ -230,7 +230,8 @@ figma.ui.onmessage = async (message) => {
                 let colors = [toRGB('#808080',true)];
                 let CreateZyNode = {
                     h: async function(cre,level = 0){
-                        let text = await addText([{family:'Inter',style:'Bold'},cre.content,(26 - level * 2),colors]);
+                        let characters = cre.content.map(item => item.content).join('');
+                        let text = await addText([{family:'Inter',style:'Bold'},characters,(26 - level * 2),colors]);
                         box.appendChild(text);
                     },
                     h1: function(cre){
