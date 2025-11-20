@@ -427,7 +427,7 @@ function MdToObj(mdText,createname) {
   function parseInline(text) {
     if (!text) return '';
     if (text.match(/`(.*?)`/) && !text.match(/```(.*?)```/)) {
-      return [{style: 'normal', content: text.replace('`','').substring(0,text.length - 2)}]
+      return [{style: 'normal', content: text.replace('`','\'').substring(0,text.length - 2)}]
     };
     
 
