@@ -904,7 +904,13 @@ createAnyBtn.addEventListener('click',() => {
         toolMessage([tables,'createFrame'],PLUGINAPP);
       },100);
     ;break
-    case 'zy': ;break
+    case 'zy':
+      let zys = getFinalInfo(CataloguesInfo,true);
+      tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],CataloguesInfo.length * 100);
+      setTimeout(()=>{
+        toolMessage([zys,'createZy'],PLUGINAPP);
+      },100);
+    ;break
   };
   //移除未勾选的数据
   function getFinalInfo(info,isname){
@@ -1213,7 +1219,8 @@ function addTag(type,info){
     break
     case 'zy':
       if(info.zyType){
-        CataloguesInfo.push(info)
+        CataloguesInfo.push(info);
+        log(info)
         let index = Array.from(cataloguesBox.children).length;
         let tag = document.createElement('div');
         cataloguesBox.parentNode.parentNode.setAttribute('data-create-tags-box','zy');

@@ -1,7 +1,8 @@
 <html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/run.js"></script>
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7db510f09c019d216b47f450db5f41e621a05d08/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -65,7 +66,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7db510f09c019d216b47f450db5f41e621a05d08/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -4075,14 +4076,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b046e590964d958db028f140fd1e0d08721ad41e/publics/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7db510f09c019d216b47f450db5f41e621a05d08/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7db510f09c019d216b47f450db5f41e621a05d08/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7db510f09c019d216b47f450db5f41e621a05d08/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7db510f09c019d216b47f450db5f41e621a05d08/publics/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7db510f09c019d216b47f450db5f41e621a05d08/publics/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7db510f09c019d216b47f450db5f41e621a05d08/publics/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7db510f09c019d216b47f450db5f41e621a05d08/publics/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7db510f09c019d216b47f450db5f41e621a05d08/publics/jszip.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4151,13 +4152,13 @@ let helpData = {
     "This page is used for batch creation of /++ frames, layers, etc ++/"],
     ["li",
     "传入大图（长图）可创建大小均匀的切片组, 以避免压缩",
-    "Upload large images (long images) will create slice groups to avoid compression"],
+    "Upload large/long images to create evenly-sized slice groups, avoiding compression"],
     ["li",
     "传入带命名、宽高等信息的表格数据则创建画板",
-    "Upload table data with name, width, height, and other information, will will create frames"],
+    "Upload table data with name, width, height, etc. to create frames"],
     ["li",
     "传入由本系列插件生成的兼容文件则创建图层",
-    "Upload files by YN+ or other compatible file will create layers"],
+    "Upload YN+ or other compatible files to create layers"],
     ["li",
     "图片支持格式: <br> /++ .jpg | .jpeg | .jfif | .webp | .png | .apng | .gif ++/",
     "Image file type:<br> /++ .jpg | .jpeg | .jfif | .webp | .png | .apng | .gif ++/"],
@@ -4170,7 +4171,7 @@ let helpData = {
     ["br","",""],
     ["p",
     "拖拽和上传文件会立即生成用以确认最终生成内容的/++ 标签/大纲 ++/",
-    "Dragging or uploading files will immediately convert to /++ tags/catalogue ++/"],
+    "Dragging or uploading files immediately converts to /++ tags/catalogue ++/"],
     ["li",
     "拖拽的文件需全部是为图片类、全部是表格类或全部是兼容文件, /++ 不能混杂类型 ++/",
     "Drag and drop files must be all images, tables, or compatible files. /++ Mixed file types are not allowed ++/"],
@@ -4180,114 +4181,100 @@ let helpData = {
     ["br","",""],
     ["p",
     "通过文本框输入数据, 需要点击第一个按钮来生成标签/大纲",
-    "If input data through the textarea, click the first button to convert the data to tags/catalogue"],
+    "For textarea input, click the first button to convert data to tags/catalogue"],
     ["li",
     "输入表格数据无需包含表头、单位, /++ 可双击文本框查看示例 ++/",
-    "Does not need to include a table header or unit./++ May double-click the textarea to fill an example <span>"],
+    "No table header or unit needed. /++ Double-click textarea to view example ++/"],
     ["li",
     "可以选中文件里的画板或图层, 然后点击第二个按钮获取命名和宽高数据",
-    "Select frames or layers in the file, and then click the second button to obtain theirs name, width and height data"],
+    "Select frames or layers, then click the second button to get name, width and height data"],
     ["li",
     "如果需要制作更复杂的模板, 点击第三个按钮前往资源助手",
-    "If you need to create more complex templates, click the third button to go to the /++ YN+ ListEase ++/ online"],
+    "For complex templates, click the third button to go to /++ YN+ ListEase ++/"],
     ["br","",""],
     ["p",
     "表格数据默认按/++ 命名、宽高、目标文件大小、目标文件格式、补充信息 ++/的顺序读取列, 如需修改规则可点击第四个按钮展开高级设置",
-    "Table data is read in the order of /++ name, width, height, target file size, target file format, and supplementary information ++/ by default. To modify the rules, click the fourth button to expand advanced settings"],
+    "Table data reads columns in order: /++ name, width, height, target file size, format, supplementary info ++/. Click the fourth button to modify rules"],
     ["li",
-    "修改列顺序规则时需注意,必须包含命名和宽高"
-    ,"When modifying column order rules, it is important to include /++ name, width and height ++/"],
+    "修改列顺序规则时需注意,必须包含命名和宽高",
+    "Column order rules must include /++ name, width and height ++/"],
     ["li",
     "画板名默认带w×h后缀, 如/++ kv 1920×1080 ++/, 可选择其他预设或自行定义",
-    "The frame defaults to a suffix with width and height,such as /++ kv 1920 × 1080 ++/, you can selected a presets or input oneself"],
+    "Frame name defaults to width×height suffix, e.g. /++ kv 1920×1080 ++/. Can select presets or customize"],
   ],
   sheet: [
     ["p",
     "使用本功能需要掌握【组件】和【组件属性】等基本知识",
-    ""],
+    "Requires basic knowledge of Components and Component Properties"],
     ["li",
     "组件使元素能保持一致的样式, 并通过实例的/++ 继承性 ++/实现批量控制样式",
-    ""],
+    "Components maintain consistent styles and enable batch control via instance /++ inheritance ++/"],
     ["li",
     "组件属性是将需要修改的样式以表单的形式放在属性栏最上方, 方便/++ 参数化管理组件 ++/",
-    ""],
+    "Component Properties display editable styles as forms at the top for /++ parameterized component management ++/"],
     ["p",
     "表格由至少两个组件: /++ xxx@th(表头) | xxx@td(表数据) ++/, 嵌套自动布局而成, 请注意, 这里采用先按列再按行的布局, 与常见表格逻辑相反, 但更适合设计领域",
-    "The table should build with auto-layout from least 2 components: /++ xxx@th(table-header) | xxx@td(table-data) ++/. Please note that the layout here is based on columns first and then rows, which is opposite to the common table logic but more suitable for the design field"],
+    "Table built with auto-layout from at least 2 components: /++ xxx@th(header) | xxx@td(data) ++/. Layout is column-first then row, opposite to common table logic but better for design"],
     ["li",
     "首次使用该功能, 建议直接点击按钮生成一个表格示例, 以便理解其中的规范要求",
-    ""],
+    "First-time users: click button to generate a table example to understand requirements"],
     ["li",
     "默认生成3*3的表格, 也可以输入具体行列来生成, 但随后填充数据时会自动调节行列",
-    ""],
+    "Defaults to 3×3 table. Can input specific rows/columns, auto-adjusts when filling data"],
     ["li",
     "默认先生成表头和表格组件, 如选中了命名为xxx@th和xxx@td的组件, 则会直接生成表格",
-    ""],
+    "By default, generates header and cell components first. If xxx@th and xxx@td are selected, generates table directly"],
     ["li",
     "组件必须包含用多个图层实现的描边和填充, 并绑定/++ 布尔类型组件属性: --bod-l(左描边) | --bod-r(右描边) | --bod-t(上描边) | --bod-b(下描边) | --fills(填充) ++/",
-    ""],
+    "Components must include strokes and fills (multiple layers) bound to /++ boolean properties: --bod-l(left) | --bod-r(right) | --bod-t(top) | --bod-b(bottom) | --fills(fill) ++/"],
     ["li",
     "组件会先包裹在一个列中xxx@column, xxx@th会始终在第一个, 然后多个列会包裹在一个表中xxx@table",
-    ""],
+    "Components wrap in xxx@column first, xxx@th always first, then multiple columns wrap in xxx@table"],
     ["li",
     "组件必须包含一个文字图层, 并绑定/++ 字符类型组件属性: --data(数值/文本) ++/",
-    ""],
+    "Components must include a text layer bound to /++ text property: --data(value/text) ++/"],
     ["br","",""],
     ["p",
     "因为【组件属性】功能的强大, 我们会有很多办法实现批量替换数据, 不仅限于表格, 因此【表格】可视为【批量替换数据】的一种特殊情况",
-    ""],
+    "Component Properties enable various batch data replacement methods beyond tables. Tables are a special case of batch data replacement"],
     ["li",
     "使用【文本数据映射】时, 仅检索xxx@table下,每列xxx@column的xxx@th和xxx@td的--data属性进行修改",
-    ""],
+    "Text Data Mapping only modifies --data property of xxx@th and xxx@td in each xxx@column under xxx@table"],
     ["li",
     "如需要更复杂的组件属性组合, 需使用【组件属性映射】功能来完成数据映射",
-    ""],
+    "For complex component property combinations, use Component Property Mapping"],
     ["li",
     "【文本数据映射】不需要表头作为查找组件属性的依据, 直接按行列对应关系填充数据, 【组件属性映射】则需要将对应组件属性名作为表头, 按图层顺序修改对应的值",
-    ""],
+    "Text Data Mapping fills data by row/column without headers. Component Property Mapping uses property names as headers, modifies values by layer order"],
     ["li",
     "【组件属性映射】对变体的选项值也同样生效,需设置唯一的变体属性名(默认是Property) 需避免存在同名的情况, 变体集内的组件命名无影响",
-    ""],
+    "Component Property Mapping also works for variant options. Set unique variant property name (default: Property), avoid duplicates. Component names in variant sets don't matter"],
     ["br","",""],
     ["p",
     "通过将xxx@th和xxx@td组件宽度设置为充满, 我们可以轻松地用xxx@column控制列宽,也可以直接在图层里连选列内的xxx@td, 而选中行的方式可能比较复杂",
-    ""],
+    "Set xxx@th and xxx@td width to fill to control column width via xxx@column, or select xxx@td in layers. Row selection is more complex"],
     ["li",
     "【选中单行】功能可以查找相邻父级同位置的图层, 请确保图层结构的一致性",
-    ""],
+    "Select Single Row finds adjacent parent layers at same position. Ensure consistent layer structure"],
     ["li",
     "【选中多行】功能可以选中多个单行",
-    ""],
+    "Select Multiple Rows selects multiple single rows"],
     ["li",
     "【区域选中】功能类似框选, 会在选中两个xxx@td形成的框内所有的xxx@td ",
-    ""],
+    "Area Select works like marquee, selects all xxx@td within box formed by two selected xxx@td"],
     ["li",
     "【连续选中】功能可类似文本段落的连选, 会从第一个xxx@td开始逐行选中, 到第二个xxx@td结束",
-    ""],
+    "Continuous Select works like text selection, selects from first xxx@td row by row to second xxx@td"],
     ["li",
     "选中后插件还是聚焦状态, 此时无法对画布内容进行操作, 可以用鼠标中建点击画布区域以重新聚焦到画布",
-    ""],
+    "After selection, plugin remains focused. Middle-click canvas to refocus"],
     ["br","",""],
     ["p",
     "为弥补组件属性的局限性问题, 可使用【标签属性映射】来完成 /++ #xxx.fill(填充色值) | #xxx.stroke(描边色值) | #xxx.fillStyle(填充样式名) | #xxx.strokeStyle(描边样式名)| #xxx.visible(可见性true/false) | #xxx.opacity(透明度0~1) | #xxx.fontSize(字号) ++/ 的参数化控制",
-    ""],
+    "Use Tag Property Mapping to overcome component property limitations: /++ #xxx.fill | #xxx.stroke | #xxx.fillStyle | #xxx.strokeStyle | #xxx.visible(true/false) | #xxx.opacity(0~1) | #xxx.fontSize ++/"],
     ["li",
     "选中的对象将按图层顺序对应每一行的数值,修改时会先判断对象是否带标签, 然后再遍历子对象, 对象/子对象本身可以包含多个标签, 可以存在不同的标签组合, /++ 注意标签与命名或其他标签之间要用空格隔开 ++/, 这对实现更复杂的样式变化很有用 ",
-    ""],
-    ["li",
-    "",
-    ""],
-    ["li",
-    "",
-    ""],
-    ["br","",""],
-    ["p",
-    "",
-    ""],
-    ["li",
-    "",
-    ""],
-    ["br","",""],
+    "Selected objects correspond to each row by layer order. Checks for tags first, then traverses children. Objects/children can have multiple tags with different combinations. /++ Separate tags/names with spaces ++/. Useful for complex style variations"],
   ]
 };
 </script>
@@ -5198,7 +5185,13 @@ createAnyBtn.addEventListener('click',() => {
         toolMessage([tables,'createFrame'],PLUGINAPP);
       },100);
     ;break
-    case 'zy': ;break
+    case 'zy':
+      let zys = getFinalInfo(CataloguesInfo,true);
+      tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],CataloguesInfo.length * 100);
+      setTimeout(()=>{
+        toolMessage([zys,'createZy'],PLUGINAPP);
+      },100);
+    ;break
   };
   //移除未勾选的数据
   function getFinalInfo(info,isname){
@@ -5507,7 +5500,8 @@ function addTag(type,info){
     break
     case 'zy':
       if(info.zyType){
-        CataloguesInfo.push(info)
+        CataloguesInfo.push(info);
+        log(info)
         let index = Array.from(cataloguesBox.children).length;
         let tag = document.createElement('div');
         cataloguesBox.parentNode.parentNode.setAttribute('data-create-tags-box','zy');

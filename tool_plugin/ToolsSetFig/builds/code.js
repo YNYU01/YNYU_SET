@@ -127,7 +127,11 @@ figma.ui.onmessage = async (message) => {
     if ( type == "getnode"){
         if (figma.currentPage.selection.length > 0){
             console.log("当前节点信息：");
-            console.log(figma.currentPage.selection[0]);
+            let b = figma.currentPage.selection[0];
+            console.log(b);
+            if(b.type == 'TEXT'){
+                //console.log(b.getRangeListOptions(0,b.characters.length));
+            };
         } else {
             //console.log(figma.currentPage.parent)
             console.log("未选中对象");
@@ -207,6 +211,87 @@ figma.ui.onmessage = async (message) => {
         figma.currentPage.selection = selects;
         //console.log(selects)
         layoutByRatio(selects,false,true);
+    };
+    //批量创建目录
+    if ( type == "createZy"){
+        //console.log(info)
+        info.forEach(zy => {
+            let box = addFrame([100,100,null,null,zy.zyName,[]]);
+            switch (zy.zyType){
+                case 'md':
+                    addAutoLayout(box,['V','TL',0,[0,0]]);
+                    box.layoutSizingHorizontal = 'HUG';
+                    box.layoutSizingVertical = 'HUG';
+                break
+                case 'svg':
+                break
+            };
+            zy.nodes.forEach( cres => {
+                let colors = [toRGB('#808080',true)];
+                let CreateZyNode = {
+                    h: async function(cre,level = 0){
+                        let text = await addText([{family:'Inter',style:'Bold'},cre.content,(26 - level * 2),colors]);
+                        box.appendChild(text);
+                    },
+                    h1: function(cre){
+                        return CreateZyNode.h(cre,1);
+                    },
+                    h2: function(cre){
+                        return CreateZyNode.h(cre,2);
+                    },
+                    h3: function(cre){
+                        return CreateZyNode.h(cre,3);
+                    },
+                    h4: function(cre){
+                        return CreateZyNode.h(cre,4);
+                    },
+                    h5: function(cre){
+                        return CreateZyNode.h(cre,5);
+                    },
+                    h6: function(cre){
+                        return CreateZyNode.h(cre,6);
+                    },
+                    p: async function(cre){
+                        let characters = cre.content.map(item => item.content).join('');
+                        let text = await addText([{family:'Inter',style:'Regular'},characters,14,colors]);
+                        box.appendChild(text);
+                    },
+                    code: async function(cre){
+                        let characters = cre.content.join('\n');
+                        let text = await addText([{family:'Roboto Slab',style:'Regular'},characters,12,colors]);
+                        text.textAutoResize = 'HEIGHT';
+                        text.layoutSizingVertical = 'HUG';
+                        box.appendChild(text);
+                    },
+                    ul: async function(cre){
+                        let characters = cre.items.map(item => item.content.map(item => item.content).join('')).join('\n');
+                        let text = await addText([{family:'Inter',style:'Regular'},characters,12,colors]);
+                        text.setRangeListOptions(0,characters.length,{type: 'UNORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
+                        box.appendChild(text);
+                    },
+                    ol: async function(cre){
+                        let characters = cre.items.map(item => item.content.map(item => item.content).join('')).join('\n');
+                        let text = await addText([{family:'Inter',style:'Regular'},characters,12,colors]);
+                        text.setRangeListOptions(0,characters.length,{type: 'ORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
+                        box.appendChild(text);
+                    },
+                    blockquote: async function(cre){
+                        let characters = cre.content.join('');
+                        let text = await addText([{family:'Inter',style:'Regular'},characters,12,colors]);
+                        text.relativeTransform = [[1,-0.2126,0],[0,0.9771,0]];
+                        box.appendChild(text);
+                    },
+                    table:'',
+                    img:'',
+                };
+                try {
+                    CreateZyNode[cres.type](cres);
+                } catch (error) {
+                    console.log(error);
+                }
+            });
+            figma.currentPage.appendChild(box);
+        });
     };
     //反传画板数据
     if ( type == "getTableBySelects"){
@@ -1093,28 +1178,6 @@ figma.ui.onmessage = async (message) => {
                             image.imageTransform = oneImage.imageTransform;
                             item.fills = fills;
                         } else {
-                            /*
-                            let originSize = await figma.getImageByHash(image.imageHash).getSizeAsync();
-                            item.resize(originSize.width, originSize.height);
-                            findImage(item, (img, fills) => {
-                                img.imageTransform = [[1,0,0],[0,1,0]];
-                                img.scaleMode = 'FILL';
-                                item.fills = fills;
-                            });
-                            item.resize(w, h);
-                            findImage(item, (img, fills) => {
-                                img.scaleMode = oneImage.scaleMode;
-                                // 用于同一张图片的rect，在宽高各异的情况下同步裁剪区域
-                                // 我们需要根据目标 rect 和源 rect 的比例调整 transform 偏移量
-                                let scaleTransform = [
-                                    [oneImage.imageTransform[0][0]*(w/srcW), oneImage.imageTransform[0][1]*(w/srcW), oneImage.imageTransform[0][2]*(w/srcW)],
-                                    [oneImage.imageTransform[1][0]*(h/srcH), oneImage.imageTransform[1][1]*(h/srcH), oneImage.imageTransform[1][2]*(h/srcH)]
-                                ];
-                                img.imageTransform = scaleTransform;
-                                item.fills = fills;
-                            });
-                            return;
-                            */
                             //先还原尺寸
                             findImage(item,async(image,fills) => {
                                 let imageData = figma.getImageByHash(image.imageHash);
@@ -3377,8 +3440,15 @@ function autoConstraints(parent,child){
  */
 async function addText(info){
     let text = figma.createText();
-    await figma.loadFontAsync(info[0]);
-    text.fontName = info[0];
+    let fontName = info[0];
+    try {
+        await figma.loadFontAsync(fontName);
+    } catch (error) {
+        fontName = {family:'Inter',style:'Regular'};
+        await figma.loadFontAsync(fontName);
+    }
+    text.fontName = fontName;
+    //console.log(info);
     text.characters = info[1];
     text.fontSize = info[2];
     let fills = info[3] ? info[3] : [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];

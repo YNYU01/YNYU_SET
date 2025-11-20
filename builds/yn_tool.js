@@ -478,9 +478,7 @@ function MdToObj(mdText,createname) {
       segments.push({ style: 'normal', content: remainingText });
     }
     
-    return segments.length === 1 && segments[0].style === 'normal' 
-      ? segments[0].content 
-      : segments;
+    return segments;
   };
 
   return {zyType:'md', zyName: createname, nodes:ast};
