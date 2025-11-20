@@ -426,9 +426,7 @@ function MdToObj(mdText,createname) {
   // 解析内联元素（递归处理嵌套）
   function parseInline(text) {
     if (!text) return '';
-    if (text.match(/`(.*?)`/) && !text.match(/```(.*?)```/)) {
-      return [{style: 'normal', content: text.replace('`','\'').substring(0,text.length - 2)}]
-    };
+    if (text.match(/`(.*?)`/) && !text.match(/```(.*?)```/))  return text.replace('`','').substring(0,text.length - 2);
     
 
     let segments = [];
@@ -477,10 +475,12 @@ function MdToObj(mdText,createname) {
     }
     
     if (remainingText) {
-      segments.push(remainingText);//{ style: 'normal', content: remainingText });
+      segments.push({ style: 'normal', content: remainingText });
     }
     
-    return segments;
+    return segments.length === 1 && segments[0].style === 'normal' 
+      ? segments[0].content 
+      : segments;
   };
 
   return {zyType:'md', zyName: createname, nodes:ast};
