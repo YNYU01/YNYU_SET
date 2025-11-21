@@ -214,7 +214,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量创建节点
     if ( type == "createZy"){
-        //console.log(info)
+        console.log(info)
         for (const zy of info) {
             let bg1 = [toRGB('#EEEEEE',true)];
             let color1 = [toRGB('#272727',true)];  
@@ -281,10 +281,15 @@ figma.ui.onmessage = async (message) => {
                         let text = await addText([{family:'Roboto Slab',style:'Regular'},characters,20,color3]);
                         //text.textAutoResize = 'HEIGHT';
                         //text.layoutSizingVertical = 'HUG';
-                        let line = addFrame([100,100,null,null,'@code',[]]);
-                        addAutoLayout(line,['V','TL',0,[40,40,40,40]]);
-                        line.appendChild(text);
+                        let line = addFrame([100,100,null,null,'@code:' + cre.language,[]]);
+                        addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
+                        let pre = addFrame([100,100,null,null,'@pre',[]]);
+                        addAutoLayout(pre,['V','TL',0,[20,20,20,20]]);
+                        pre.fills = [toRGB('#272727',true)];
+                        pre.appendChild(text);
                         text.layoutSizingHorizontal = 'FILL';
+                        line.appendChild(pre);
+                        pre.layoutSizingHorizontal = 'FILL';
                         box.appendChild(line);
                         line.layoutSizingHorizontal = 'FILL';
                     },

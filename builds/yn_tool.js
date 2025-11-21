@@ -269,7 +269,9 @@ function MdToObj(mdText,createname) {
       }
       return;
     } else if(currentCodeBlock){
-      currentCodeBlock.content.push(line.trim());
+      // 保留每行的缩进，去掉末尾空格
+      let codeLine = line.replace(/\s+$/,"");
+      currentCodeBlock.content.push(codeLine);
       if(line.trim() == '```'){
         currentCodeBlock = null;
         inCodeBlock = false;

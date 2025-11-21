@@ -28,3 +28,13 @@
 - 模板文件：`./test/index.html`
 - Git hash 会从项目根目录获取（用于 CDN 路径替换）
 
+## 代码预览 Widget
+
+为了在 Figma 画布里直接插入“代码窗口”小部件，新增了 `widget-src/CodePreviewWidget.tsx`。构建方式：
+
+```bash
+npm run build:toolssetfig:widget
+```
+
+该命令会使用 esbuild 将 TSX 编译到 `tool_plugin/ToolsSetFig/builds/code-preview.widget.js`，并由 `manifest.json` 的 `widgets` 字段引用。修改小部件样式/交互后记得重新执行构建。
+
