@@ -38,7 +38,3 @@ npm run build:toolssetfig:widget
 
 该命令会使用 esbuild 将 TSX 编译到 `tool_plugin/ToolsSetFig/builds/code-preview.widget.js`，并由 `manifest.json` 的 `widgets` 字段引用。修改小部件样式/交互后记得重新执行构建。
 
-## Git 自动构建
-
-从根目录运行 `npm install` 后，会自动安装 Husky Git Hooks。当提交中包含 `tool_plugin/ToolsSetFig` 目录的改动时，`pre-commit` 钩子会触发 `npm run build:toolssetfig:all`，确保 Figma 插件的 UI 与 Widget 代码始终保持最新构建结果。
-
