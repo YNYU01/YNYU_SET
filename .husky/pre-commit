@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+set -e
+
+CHANGED_FILES=$(git diff --cached --name-only --relative)
+
+if echo "$CHANGED_FILES" | grep -q '^tool_plugin/ToolsSetFig/'; then
+  echo "ToolsSetFig files changed; building plugin assets..."
+  npm run build:toolssetfig:all
+else
+  echo "No ToolsSetFig changes detected; skipping plugin build."
+fi
+
