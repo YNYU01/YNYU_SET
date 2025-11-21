@@ -430,7 +430,7 @@ function MdToObj(mdText,createname) {
   // 解析内联元素（递归处理嵌套）
   function parseInline(text) {
     if (!text) return '';
-    if (text.match(/`(.*?)`/) && !text.match(/```(.*?)```/))  return text.replace('`','').substring(0,text.length - 2);
+    if (text.match(/`(.*?)`/) && !text.match(/```(.*?)```/))  return text.replace(/\`/g,'\'').substring(0,text.length - 2);
     
     let segments = [];
     let remainingText = text;

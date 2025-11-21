@@ -263,7 +263,7 @@ figma.ui.onmessage = async (message) => {
                     },
                     p: async function(cre){
                         let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
-                        let text = await addText([{family:'Inter',style:'Regular'},characters,14,color2]);
+                        let text = await addText([{family:'Inter',style:'Regular'},characters,28,color2]);
                         let line = addFrame([100,100,null,null,'@p',[]]);
                         addAutoLayout(line,['V','TL',0,[6,0,6,28]]);
                         line.appendChild(text);
@@ -278,7 +278,7 @@ figma.ui.onmessage = async (message) => {
                     },
                     code: async function(cre){
                         let characters = cre.content.join('\n');
-                        let text = await addText([{family:'Roboto Slab',style:'Regular'},characters,12,color3]);
+                        let text = await addText([{family:'Roboto Slab',style:'Regular'},characters,20,color3]);
                         //text.textAutoResize = 'HEIGHT';
                         //text.layoutSizingVertical = 'HUG';
                         let line = addFrame([100,100,null,null,'@code',[]]);
@@ -290,8 +290,9 @@ figma.ui.onmessage = async (message) => {
                     },
                     ul: async function(cre){
                         let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
-                        let text = await addText([{family:'Inter',style:'Regular'},characters,12,color3]);
+                        let text = await addText([{family:'Inter',style:'Regular'},characters,24,color3]);
                         text.setRangeListOptions(0,characters.length,{type: 'UNORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
+                        text.listSpacing = 6;
                         let line = addFrame([100,100,null,null,'@ul',[]]);
                         addAutoLayout(line,['V','TL',0,[0,0,6,0]]);
                         line.appendChild(text);
@@ -301,8 +302,9 @@ figma.ui.onmessage = async (message) => {
                     },
                     ol: async function(cre){
                         let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
-                        let text = await addText([{family:'Inter',style:'Regular'},characters,12,color3]);
+                        let text = await addText([{family:'Inter',style:'Regular'},characters,24,color3]);
                         text.setRangeListOptions(0,characters.length,{type: 'ORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
+                        text.listSpacing = 6;
                         let line = addFrame([100,100,null,null,'@ol',[]]);
                         addAutoLayout(line,['V','TL',0,[0,0,6,28]]);
                         line.appendChild(text);
@@ -312,7 +314,7 @@ figma.ui.onmessage = async (message) => {
                     },
                     blockquote: async function(cre){
                         let characters = cre.content.join('');
-                        let text = await addText([{family:'Inter',style:'Light'},characters,12,color3]);
+                        let text = await addText([{family:'Inter',style:'Light'},characters,22 ,color3]);
                         //text.relativeTransform = [[1,-0.2126,0],[0,0.9771,0]];
                         let line = addFrame([100,100,null,null,'@link',[]]);
                         addAutoLayout(line,['V','TL',0,[12,0,12,36]]);
@@ -321,8 +323,8 @@ figma.ui.onmessage = async (message) => {
                         box.appendChild(line);
                         line.layoutSizingHorizontal = 'FILL';
                     },
-                    table:function(cre){
-                        figma.clientStorage.getAsync('userLanguage')
+                    table:async function(cre){
+                        await figma.clientStorage.getAsync('userLanguage')
                         .then (async (language) => {
                             let all = await createTable(null,null,language,true);  
                             let newth = all[0];
