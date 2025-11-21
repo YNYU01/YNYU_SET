@@ -244,11 +244,16 @@ function MdToObj(mdText,createname) {
   createname = createname ? createname : '@MD_NODE';
 
   lines.forEach((line,index) => {
-    // 保留空行。若完全空，记录为 type: 'br'，跳过其它处理
+
     if (line.trim() === "") {
-      ast.push({type: "br"});
-      return;
-    }
+      if (currentCodeBlock) {
+        currentCodeBlock.content.push(""); // 空行也保留在代码块内容中
+        return;
+      } else {
+        ast.push({type: "br"});
+        return;
+      };
+    };
 
     //缩进量
     let indent = line.match(/^(\s*)/)[0].length / 2;

@@ -214,7 +214,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量创建节点
     if ( type == "createZy"){
-        //console.log(info)
+        console.log(info)
         for (const zy of info) {
             let bg1 = [toRGB('#EEEEEE',true)];
             let color1 = [toRGB('#272727',true)];  
