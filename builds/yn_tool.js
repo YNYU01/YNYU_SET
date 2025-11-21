@@ -244,6 +244,12 @@ function MdToObj(mdText,createname) {
   createname = createname ? createname : '@MD_NODE';
 
   lines.forEach((line,index) => {
+    // 保留空行。若完全空，记录为 type: 'br'，跳过其它处理
+    if (line.trim() === "") {
+      ast.push({type: "br"});
+      return;
+    }
+
     //缩进量
     let indent = line.match(/^(\s*)/)[0].length / 2;
 
@@ -267,13 +273,11 @@ function MdToObj(mdText,createname) {
       if(line.trim() == '```'){
         currentCodeBlock = null;
         inCodeBlock = false;
-      }
-    }
+      };
+    };
 
-    
     // 表格处理
     if (line.includes('|') && line.split('|').length > 2) {
-      
       if (!currentTable) {
         currentTable = {
           type: 'table',
@@ -282,7 +286,7 @@ function MdToObj(mdText,createname) {
           rows: [],
         };
         ast.push(currentTable);
-      }
+      };
       let cells = line.split('|').map(cell => {
         if(cell.includes('<br>')){
           //let ul = cell.trim().match(/^[-*]\s+(.*)/);
@@ -428,7 +432,6 @@ function MdToObj(mdText,createname) {
     if (!text) return '';
     if (text.match(/`(.*?)`/) && !text.match(/```(.*?)```/))  return text.replace('`','').substring(0,text.length - 2);
     
-
     let segments = [];
     let remainingText = text;
     

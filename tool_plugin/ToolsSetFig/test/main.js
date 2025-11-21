@@ -1220,7 +1220,7 @@ function addTag(type,info){
     case 'zy':
       if(info.zyType){
         CataloguesInfo.push(info);
-        log(info)
+        //log(info)
         let index = Array.from(cataloguesBox.children).length;
         let tag = document.createElement('div');
         cataloguesBox.parentNode.parentNode.setAttribute('data-create-tags-box','zy');

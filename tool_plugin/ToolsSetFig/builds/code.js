@@ -212,27 +212,36 @@ figma.ui.onmessage = async (message) => {
         //console.log(selects)
         layoutByRatio(selects,false,true);
     };
-    //批量创建目录
+    //批量创建节点
     if ( type == "createZy"){
         //console.log(info)
-        info.forEach(zy => {
-            let box = addFrame([100,100,null,null,zy.zyName,[]]);
+        for (const zy of info) {
+            let bg1 = [toRGB('#EEEEEE',true)];
+            let color1 = [toRGB('#272727',true)];  
+            let color2 = [toRGB('#333333',true)];
+            let color3 = [toRGB('#808080',true)];
+            let box = addFrame([900,100,null,null,zy.zyName,[]]);
+            figma.currentPage.appendChild(box);
             switch (zy.zyType){
                 case 'md':
-                    addAutoLayout(box,['V','TL',0,[0,0]]);
-                    box.layoutSizingHorizontal = 'HUG';
-                    box.layoutSizingVertical = 'HUG';
+                    addAutoLayout(box,['V','TL',0,[40,48,40,28]]);
+                    box.fills = bg1;
+                    //box.layoutSizingHorizontal = 'HUG';
+                    //box.layoutSizingVertical = 'HUG';
                 break
                 case 'svg':
                 break
             };
-            zy.nodes.forEach( cres => {
-                let colors = [toRGB('#808080',true)];
+            for (const cres of zy.nodes) {
                 let CreateZyNode = {
-                    h: async function(cre,level = 0){
-                        let characters = cre.content.map(item => item.content).join('');
-                        let text = await addText([{family:'Inter',style:'Bold'},characters,(26 - level * 2),colors]);
-                        box.appendChild(text);
+                    h: async function(cre,level){
+                        let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
+                        let text = await addText([{family:'Inter',style:'Bold'},characters,(48 - level * 4),color1]);
+                        let line = addFrame([100,100,null,null,'@h' + level,[]]);
+                        addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
+                        line.appendChild(text);
+                        box.appendChild(line);
+                        line.layoutSizingHorizontal = 'FILL';
                     },
                     h1: function(cre){
                         return CreateZyNode.h(cre,1);
@@ -253,46 +262,134 @@ figma.ui.onmessage = async (message) => {
                         return CreateZyNode.h(cre,6);
                     },
                     p: async function(cre){
-                        let characters = cre.content.map(item => item.content).join('');
-                        let text = await addText([{family:'Inter',style:'Regular'},characters,14,colors]);
-                        box.appendChild(text);
+                        let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
+                        let text = await addText([{family:'Inter',style:'Regular'},characters,14,color2]);
+                        let line = addFrame([100,100,null,null,'@p',[]]);
+                        addAutoLayout(line,['V','TL',0,[6,0,6,28]]);
+                        line.appendChild(text);
+                        text.layoutSizingHorizontal = 'FILL';
+                        box.appendChild(line);
+                        line.layoutSizingHorizontal = 'FILL';
+                    },
+                    br: function(cre){
+                        let line = addFrame([100,24,null,null,'@br',[]]);
+                        box.appendChild(line);
+                        line.layoutSizingHorizontal = 'FILL';
                     },
                     code: async function(cre){
                         let characters = cre.content.join('\n');
-                        let text = await addText([{family:'Roboto Slab',style:'Regular'},characters,12,colors]);
-                        text.textAutoResize = 'HEIGHT';
-                        text.layoutSizingVertical = 'HUG';
-                        box.appendChild(text);
+                        let text = await addText([{family:'Roboto Slab',style:'Regular'},characters,12,color3]);
+                        //text.textAutoResize = 'HEIGHT';
+                        //text.layoutSizingVertical = 'HUG';
+                        let line = addFrame([100,100,null,null,'@code',[]]);
+                        addAutoLayout(line,['V','TL',0,[40,40,40,40]]);
+                        line.appendChild(text);
+                        text.layoutSizingHorizontal = 'FILL';
+                        box.appendChild(line);
+                        line.layoutSizingHorizontal = 'FILL';
                     },
                     ul: async function(cre){
-                        let characters = cre.items.map(item => item.content.map(item => item.content).join('')).join('\n');
-                        let text = await addText([{family:'Inter',style:'Regular'},characters,12,colors]);
+                        let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
+                        let text = await addText([{family:'Inter',style:'Regular'},characters,12,color3]);
                         text.setRangeListOptions(0,characters.length,{type: 'UNORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
-                        box.appendChild(text);
+                        let line = addFrame([100,100,null,null,'@ul',[]]);
+                        addAutoLayout(line,['V','TL',0,[0,0,6,0]]);
+                        line.appendChild(text);
+                        text.layoutSizingHorizontal = 'FILL';
+                        box.appendChild(line);
+                        line.layoutSizingHorizontal = 'FILL';
                     },
                     ol: async function(cre){
-                        let characters = cre.items.map(item => item.content.map(item => item.content).join('')).join('\n');
-                        let text = await addText([{family:'Inter',style:'Regular'},characters,12,colors]);
+                        let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
+                        let text = await addText([{family:'Inter',style:'Regular'},characters,12,color3]);
                         text.setRangeListOptions(0,characters.length,{type: 'ORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
-                        box.appendChild(text);
+                        let line = addFrame([100,100,null,null,'@ol',[]]);
+                        addAutoLayout(line,['V','TL',0,[0,0,6,28]]);
+                        line.appendChild(text);
+                        text.layoutSizingHorizontal = 'FILL';
+                        box.appendChild(line);
+                        line.layoutSizingHorizontal = 'FILL';
                     },
                     blockquote: async function(cre){
                         let characters = cre.content.join('');
-                        let text = await addText([{family:'Inter',style:'Regular'},characters,12,colors]);
-                        text.relativeTransform = [[1,-0.2126,0],[0,0.9771,0]];
-                        box.appendChild(text);
+                        let text = await addText([{family:'Inter',style:'Light'},characters,12,color3]);
+                        //text.relativeTransform = [[1,-0.2126,0],[0,0.9771,0]];
+                        let line = addFrame([100,100,null,null,'@link',[]]);
+                        addAutoLayout(line,['V','TL',0,[12,0,12,36]]);
+                        line.appendChild(text);
+                        text.layoutSizingHorizontal = 'FILL';
+                        box.appendChild(line);
+                        line.layoutSizingHorizontal = 'FILL';
                     },
-                    table:'',
-                    img:'',
+                    table:function(cre){
+                        figma.clientStorage.getAsync('userLanguage')
+                        .then (async (language) => {
+                            let all = await createTable(null,null,language,true);  
+                            let newth = all[0];
+                            let newtd = all[1];
+                            let table = all[2];
+                            reCompNum(table,2,1)
+                            reTableByArray(table,cre.rows,'[enter]','--');
+                            reTableStyle(table,{th:[1,1,1,1,1],td:[1,1,1,1,'rowSpace']});
+                            reAnyByTags([newth],[{'#table.fill':'#B8B8B8','#table.stroke':'#272727'}]);
+                            reAnyByTags([newtd],[{'#table.fill':'#DADADA','#table.stroke':'#272727'}]);
+                            let line = addFrame([100,100,null,null,'@sheet',[]]);
+                            addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
+                            line.appendChild(table);
+                            table.layoutSizingHorizontal = 'FILL';
+                            table.clipsContent = true;
+                            table.fills = [];
+                            table.strokes = [toRGB('#272727',true)];
+                            [table.bottomLeftRadius,table.bottomRightRadius,table.topLeftRadius,table.topRightRadius] = [20,20,20,20];
+                            box.appendChild(line);
+                            newth.x = box.x - 200;
+                            newtd.x = box.x - 200;
+                            newth.y = box.y;
+                            newtd.y = box.y + 60;
+                            
+                            line.layoutSizingHorizontal = 'FILL';
+                        })
+                        .catch (error => {
+                            console.log(error);
+                        })
+                    },
+                    image:async function(cre){
+                        let line = addFrame([100,100,null,null,'@image',[]]);
+                        addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
+                        let img = figma.createRectangle();
+                        line.appendChild(img);
+                        box.appendChild(line);
+                        let image = await figma.createImageAsync(cre.src);
+                        let { width, height } = await image.getSizeAsync();
+                        img.resize(width, height);
+                        img.fills = [
+                            {
+                                type: 'IMAGE',
+                                imageHash: image.hash,
+                                scaleMode: 'FILL'
+                            }
+                        ]
+                        img.name = cre.alt || 'image';
+                        img.lockAspectRatio();
+                        img.layoutSizingHorizontal = 'FILL';
+                        line.layoutSizingHorizontal = 'FILL';
+                    },
                 };
                 try {
-                    CreateZyNode[cres.type](cres);
+                    await CreateZyNode[cres.type](cres);
                 } catch (error) {
                     console.log(error);
-                }
-            });
-            figma.currentPage.appendChild(box);
-        });
+                };
+                if(zy.nodes.findIndex(item => item == cres) == zy.nodes.length - 1){
+                    setTimeout(() => {
+                        figma.currentPage.selection = [box];
+                        //console.log(figma.currentPage.selection)
+                        figma.viewport.scrollAndZoomIntoView([box]);
+                        figma.viewport.zoom = figma.viewport.zoom * 0.6;
+                    }, 100);
+                };
+            };
+        };
     };
     //反传画板数据
     if ( type == "getTableBySelects"){
@@ -875,9 +972,9 @@ figma.ui.onmessage = async (message) => {
                 b[0].name = b[0].name.replace(' @clip','').replace('@clip','').trim();
                 if(b[0].layoutGrids){
                     let newgrids = JSON.parse(JSON.stringify(b[0].layoutGrids));
-                    console.log(newgrids)
+                    //console.log(newgrids)
                     newgrids.forEach(item => item.visible = false);
-                    console.log(newgrids)
+                    //console.log(newgrids)
                     b[0].layoutGrids = newgrids;
                 };
                 let gridset = addFrame([...main,b[0].name + ' @clip',[]])
@@ -2221,7 +2318,13 @@ function exportImgInfo(set){
 };
 
 //创建表格
-async function createTable(thComp,tdComp,language){
+/**
+ * @param {Object | null} thComp - 表头组件
+ * @param {Object | null} tdComp - 数据组件
+ * @param {string} language - 语言，可选值：'Zh'、'En'
+ * @returns {Array} - [表头组件,数据组件,表格组件]
+ */
+async function createTable(thComp,tdComp,language,isFill = false){
     let th,td;
     if(thComp){
         th = thComp;
@@ -2253,9 +2356,14 @@ async function createTable(thComp,tdComp,language){
     
     let table = addFrame([528,208,null,null,'xxx@table',[toRGB('2D2D2D',true)],[null,null,[toRGB('#666666',true)]]]);
     table.appendChild(column);
-    addAutoLayout(table,['H','TL'],[0,0]);
-    table.x += 200;
 
+    if(isFill){
+        addAutoLayout(table,['H','TL'],[true,false]);
+        column.layoutSizingHorizontal = 'FILL';
+    }else{
+        addAutoLayout(table,['H','TL']);
+    };
+    table.x += 200;
     return [th,td,table];
 };
 //创建表格组件
@@ -2315,7 +2423,7 @@ function makeCompliant(type,comp){
 //添加描边/区分色
 function addBodFill(node,Array,type){
     let bodfill = figma.createRectangle();
-    if(type == 'td' | type == 'tn'){
+    if((type == 'td' || type == 'tn') && node.name.includes('fill')){
         bodfill.opacity = 0.66
     }
     setMain([176,52,null,null,Array[0],Array[1],Array[2]],bodfill);
@@ -2659,7 +2767,7 @@ function localStyleToArray(){
         let column2 = themeEntries.map(item => item.flat());
         return [column1, ...column2];
     });
-    console.log(styleSheets)
+    //console.log(styleSheets)
     return styleSheets;
 };
 //变量数据转列数据
@@ -2741,6 +2849,7 @@ function reTableStyle(table,style){
                 case '--fills':
                     //是否为间格区分色
                     if(Array[4] == 'rowSpace' && row){
+                        //console.log('rowSpace')
                         if(row%2 == 0){
                             comp.setProperties({[key]: true});
                         } else {
@@ -2762,6 +2871,11 @@ function reTableStyle(table,style){
     };
 };
 //修改表格主题色
+/**
+ * @param {Object} table - 表格
+ * @param {[string,string]} hsl - 主题色
+ * @param {string} textcolor - 文本颜色
+ */
 function reTableTheme(table,hsl,textcolor){
     table.fills = [toRGB(hsl[0],true)];
     table.strokes = [toRGB(hsl[2],true)];
@@ -3156,13 +3270,13 @@ function easePickTable(type,nodes){
             a.selection = picks;
         ;break
         case 'allrow':
-            console.log(Hs,LL)
+            //console.log(Hs,LL)
             for ( let i = 0; i < LL ; i++ ){
                 for ( let ii = 0; ii < Hs.length; ii++){
                     picks.push(table.children[i].children[Hs[ii]]);
                 };
             };
-            console.log(picks)
+            //console.log(picks)
             a.selection = picks;
         ;break
         case 'block':
@@ -3200,7 +3314,8 @@ function easePickTable(type,nodes){
 //添加自动布局
 /**
  * @param {node} node - 需自动布局的对象
- * @param {[HV,TBLR,gap,padding:[H,V]]} layout  - 横竖、定位，间距，边距
+ * @param {[HV,TBLR,gap,padding:[H,V] | [T,R,B,L]]} layout  - 横竖、定位，间距，边距
+ * @param {[boolean,boolean]} isFixed - 是否固定尺寸
  */
 function addAutoLayout(node,layout,isFixed){
     node.layoutPositioning = 'AUTO';
@@ -3212,34 +3327,6 @@ function addAutoLayout(node,layout,isFixed){
     switch (layout[0]){
         case 'H':
             node.layoutMode = 'HORIZONTAL';
-            switch (layout[1][0]){
-                case 'T':
-                    node.primaryAxisAlignItems = 'MAX'
-                ;break
-                case 'C':
-                    node.primaryAxisAlignItems = 'CENTER'
-                ;break
-                case 'B':
-                    node.primaryAxisAlignItems = 'MIN'
-                ;break
-            };
-            switch (layout[1][1]){
-                case 'L':
-                    node.counterAxisAlignItems = 'MAX'
-                ;break
-                case 'C':
-                    node.counterAxisAlignItems = 'CENTER'
-                ;break
-                case 'R':
-                    node.counterAxisAlignItems = 'MIN';
-                ;break
-                case 'B':
-                    node.counterAxisAlignItems = 'BASELINE'
-                ;break
-            };
-        ;break
-        case 'V':
-            node.layoutMode = 'VERTICAL';
             switch (layout[1][0]){
                 case 'T':
                     node.primaryAxisAlignItems = 'MIN'
@@ -3261,15 +3348,57 @@ function addAutoLayout(node,layout,isFixed){
                 case 'R':
                     node.counterAxisAlignItems = 'MAX';
                 ;break
+                case 'B':
+                    node.counterAxisAlignItems = 'BASELINE';
+                ;break
+            };
+        ;break
+        case 'V':
+            node.layoutMode = 'VERTICAL';
+            switch (layout[1][0]){
+                case 'T':
+                    node.primaryAxisAlignItems = 'MIN';
+                ;break
+                case 'C':
+                    node.primaryAxisAlignItems = 'CENTER';
+                ;break
+                case 'B':
+                    node.primaryAxisAlignItems = 'MAX';
+                ;break
+            };
+            switch (layout[1][1]){
+                case 'L':
+                    node.counterAxisAlignItems = 'MIN';
+                ;break
+                case 'C':
+                    node.counterAxisAlignItems = 'CENTER';
+                ;break
+                case 'R':
+                    node.counterAxisAlignItems = 'MAX';
+                ;break
             };
         ;break
     };
     
     
     node.itemSpacing = layout[2] ? layout[2]  : 0;
-    node.horizontalPadding = layout[3]  ? layout[3] [0] : 0;
-    node.verticalPadding = layout[3]  ? layout[3] [1] : 0;
-    
+    if(layout[3] && layout[3].length > 0){
+        if(layout[3].length == 2){
+            node.horizontalPadding = layout[3][0];
+            node.verticalPadding = layout[3][1];
+        } else if(layout[3].length == 4) {
+            node.paddingTop = layout[3][0];
+            node.paddingRight = layout[3][1];
+            node.paddingBottom = layout[3][2];
+            node.paddingLeft = layout[3][3];
+        } else {
+            node.horizontalPadding = 0;
+            node.verticalPadding = 0;
+        };
+    } else {
+        node.horizontalPadding = 0;
+        node.verticalPadding = 0;
+    };
 };
 
 //添加绝对定位元素并放置合适位置
