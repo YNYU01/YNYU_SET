@@ -276,6 +276,7 @@ function MdToObj(mdText,createname) {
         currentCodeBlock = null;
         inCodeBlock = false;
       };
+      return;
     };
 
     // 表格处理

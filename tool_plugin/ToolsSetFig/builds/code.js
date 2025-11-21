@@ -214,12 +214,13 @@ figma.ui.onmessage = async (message) => {
     };
     //批量创建节点
     if ( type == "createZy"){
-        console.log(info)
+        //console.log(info)
         for (const zy of info) {
             let bg1 = [toRGB('#EEEEEE',true)];
             let color1 = [toRGB('#272727',true)];  
             let color2 = [toRGB('#333333',true)];
             let color3 = [toRGB('#808080',true)];
+            let thComp,tdComp,preComp,allComp = [];
             let box = addFrame([900,100,null,null,zy.zyName,[]]);
             figma.currentPage.appendChild(box);
             switch (zy.zyType){
@@ -278,18 +279,51 @@ figma.ui.onmessage = async (message) => {
                     },
                     code: async function(cre){
                         let characters = cre.content.join('\n');
-                        let text = await addText([{family:'Roboto Slab',style:'Regular'},characters,20,color3]);
                         //text.textAutoResize = 'HEIGHT';
                         //text.layoutSizingVertical = 'HUG';
                         let line = addFrame([100,100,null,null,'@code:' + cre.language,[]]);
                         addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
-                        let pre = addFrame([100,100,null,null,'@pre',[]]);
-                        addAutoLayout(pre,['V','TL',0,[20,20,20,20]]);
-                        pre.fills = [toRGB('#272727',true)];
-                        pre.appendChild(text);
-                        text.layoutSizingHorizontal = 'FILL';
-                        line.appendChild(pre);
-                        pre.layoutSizingHorizontal = 'FILL';
+                        if(!preComp){
+                            let pre = addFrame([626,100,null,null,'@pre',[]]);
+                            addAutoLayout(pre,['H','TL',0,[10,20,10,0]]);
+                            pre.itemReverseZIndex = true;//前面堆叠在上
+                            pre.fills = [toRGB('#272727',true)];
+                            [pre.bottomLeftRadius,pre.bottomRightRadius,pre.topLeftRadius,pre.topRightRadius] = [10,10,10,10];
+
+                            let mask = addFrame([100,100,null,null,'mask',[]]);
+                            addAutoLayout(mask,['V','TL',0,[0,10,0,20]]);
+                            mask.strokes = [toRGB('#272727',true)];
+                            [mask.strokeTopWeight,mask.strokeRightWeight,mask.strokeBottomWeight,mask.strokeLeftWeight] = [0,14,0,0];
+                            let num = await addText([{family:'Roboto Mono',style:'Regular'},'3',20,color3]);
+                            num.autoRename = false;
+                            num.name = '#last-line-num.text';
+                            num.fills = [];
+                            mask.appendChild(num);
+                            pre.appendChild(mask);
+
+                            let eg = `function any(){\n\t/*somthing there*/\n}`;
+                            let code = await addText([{family:'Roboto Mono',style:'Regular'},eg,20,color3]);    
+                            code.setRangeListOptions(0,eg.length,{type: 'ORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
+                            code.hangingList = true;
+                            pre.appendChild(code);
+                            code.layoutSizingHorizontal = 'FILL';
+
+                            mask.layoutSizingHorizontal = 'HUG';
+                            mask.layoutSizingVertical = 'FILL';
+                            preComp = figma.createComponentFromNode(pre);
+                            addCompPro(preComp,num,'--last-line-num','TEXT','3');
+
+                            preComp.x = box.x - 316;
+                            preComp.y = box.y + 120;
+                            allComp.push(preComp);
+                        };
+                        let newPre = preComp.createInstance();
+                        line.appendChild(newPre);
+                        newPre.layoutSizingHorizontal = 'FILL';
+                        newPre.layoutSizingVertical = 'HUG';
+                        newPre.children[1].characters = characters;
+                        let proId = Object.keys(newPre.componentProperties).filter(item => item.split('#')[0] == '--last-line-num')[0];
+                        newPre.setProperties({[proId]: (cre.content.length).toString()});
                         box.appendChild(line);
                         line.layoutSizingHorizontal = 'FILL';
                     },
@@ -321,17 +355,32 @@ figma.ui.onmessage = async (message) => {
                         let characters = cre.content.join('');
                         let text = await addText([{family:'Inter',style:'Light'},characters,22 ,color3]);
                         //text.relativeTransform = [[1,-0.2126,0],[0,0.9771,0]];
-                        let line = addFrame([100,100,null,null,'@link',[]]);
-                        addAutoLayout(line,['V','TL',0,[12,0,12,36]]);
-                        line.appendChild(text);
+                        let line = addFrame([100,100,null,null,'@blockquote',[]]);
+                        addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
+                        let pre = addFrame([100,100,null,null,'@pre',[]]);
+                        addAutoLayout(pre,['V','TL',0,[10,10,10,10]]);
+                        pre.strokes = [toRGB('#272727',true)];
+                        [pre.strokeTopWeight,pre.strokeRightWeight,pre.strokeBottomWeight,pre.strokeLeftWeight] = [1,1,4,1];
+                        [pre.bottomLeftRadius,pre.bottomRightRadius,pre.topLeftRadius,pre.topRightRadius] = [10,10,10,10];
+                        pre.appendChild(text);
                         text.layoutSizingHorizontal = 'FILL';
+                        line.appendChild(pre);
+                        pre.layoutSizingHorizontal = 'FILL';
                         box.appendChild(line);
                         line.layoutSizingHorizontal = 'FILL';
                     },
                     table:async function(cre){
                         await figma.clientStorage.getAsync('userLanguage')
                         .then (async (language) => {
-                            let all = await createTable(null,null,language,true);  
+                            if(!thComp){
+                                thComp = await addTableCompMust('th',language);
+                                allComp.push(thComp);
+                            };
+                            if(!tdComp){
+                                tdComp = await addTableCompMust('td',language);
+                                allComp.push(tdComp);
+                            };
+                            let all = await createTable(thComp,tdComp,language,true);  
                             let newth = all[0];
                             let newtd = all[1];
                             let table = all[2];
@@ -375,7 +424,7 @@ figma.ui.onmessage = async (message) => {
                                 imageHash: image.hash,
                                 scaleMode: 'FILL'
                             }
-                        ]
+                        ];
                         img.name = cre.alt || 'image';
                         img.lockAspectRatio();
                         img.layoutSizingHorizontal = 'FILL';
@@ -390,7 +439,11 @@ figma.ui.onmessage = async (message) => {
                 if(zy.nodes.findIndex(item => item == cres) == zy.nodes.length - 1){
                     setTimeout(() => {
                         figma.currentPage.selection = [box];
-                        //console.log(figma.currentPage.selection)
+                        if(!thComp && !tdComp){
+                            preComp.y = box.y;
+                        }else{
+                            layoutByRatio(allComp,true);
+                        };
                         figma.viewport.scrollAndZoomIntoView([box]);
                         figma.viewport.zoom = figma.viewport.zoom * 0.6;
                     }, 100);
@@ -2810,7 +2863,12 @@ function localVariableToArray(){
 
 //绑定图层和组件属性
 /**
- * @param {*} type - 'BOOLEAN''TEXT''VARIANT'
+ * @param {node} node - 组件节点
+ * @param {node} layer - 要绑定属性的图层
+ * @param {string} name - 属性名
+ * @param {string} type - 属性类型 'BOOLEAN''TEXT''VARIANT'
+ * @param {string} value - 属性值
+ * @returns {string} - 属性ID
  */
 function addCompPro(node,layer,name,type,value){
     let typekey = {
