@@ -339,102 +339,13 @@ copyObserver.observe(document.body, {
 });
 
 /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
-// 使用事件委托和 MutationObserver 结合，自动处理动态添加的元素
-let observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    if(mutation.type === 'attributes'){
-      switch(mutation.attributeName){
-        case 'data-color-hex':getUserColor(mutation.target); break;
-        case 'data-number-value':getUserNumber(mutation.target); break;
-        case 'data-text-value':getUserText(mutation.target); break;
-        case 'data-select-value':getUserSelect(mutation.target); break;
-      }
-    }
-  })
-});
-
-// 初始观察已存在的元素
-function observeElements() {
-  let userEvent_color = document.querySelectorAll('[data-color]');
-  userEvent_color.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-color-hex']};
-    observer.observe(item,config);
-  });
-  let userEvent_number = document.querySelectorAll('[data-number]');
-  userEvent_number.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-number-value']};
-    observer.observe(item,config);
-  });
-  let userEvent_text = document.querySelectorAll('[data-text]');
-  userEvent_text.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-text-value']};
-    observer.observe(item,config);
-  });
-  let userEvent_select = document.querySelectorAll('[data-select]');
-  userEvent_select.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-select-value']};
-    observer.observe(item,config);
-  });
-}
-
-// 监听动态添加的元素
-const dynamicObserver = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    mutation.addedNodes.forEach((node) => {
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        // 检查新添加的元素是否需要观察
-        if (node.hasAttribute && node.hasAttribute('data-color')) {
-          let config = {attributes:true,attributeFilter:['data-color-hex']};
-          observer.observe(node,config);
-        }
-        if (node.hasAttribute && node.hasAttribute('data-number')) {
-          let config = {attributes:true,attributeFilter:['data-number-value']};
-          observer.observe(node,config);
-        }
-        if (node.hasAttribute && node.hasAttribute('data-text')) {
-          let config = {attributes:true,attributeFilter:['data-text-value']};
-          observer.observe(node,config);
-        }
-        if (node.hasAttribute && node.hasAttribute('data-select')) {
-          let config = {attributes:true,attributeFilter:['data-select-value']};
-          observer.observe(node,config);
-        }
-        
-        // 检查子元素
-        const colorElements = node.querySelectorAll ? node.querySelectorAll('[data-color]') : [];
-        const numberElements = node.querySelectorAll ? node.querySelectorAll('[data-number]') : [];
-        const textElements = node.querySelectorAll ? node.querySelectorAll('[data-text]') : [];
-        const selectElements = node.querySelectorAll ? node.querySelectorAll('[data-select]') : [];
-        
-        colorElements.forEach(item => {
-          let config = {attributes:true,attributeFilter:['data-color-hex']};
-          observer.observe(item,config);
-        });
-        numberElements.forEach(item => {
-          let config = {attributes:true,attributeFilter:['data-number-value']};
-          observer.observe(item,config);
-        });
-        textElements.forEach(item => {
-          let config = {attributes:true,attributeFilter:['data-text-value']};
-          observer.observe(item,config);
-        });
-        selectElements.forEach(item => {
-          let config = {attributes:true,attributeFilter:['data-select-value']};
-          observer.observe(item,config);
-        });
-      }
-    });
-  });
-});
-
-// 初始观察
-observeElements();
-
-// 开始观察文档变化，自动处理动态添加的元素
-dynamicObserver.observe(document.body, {
-  childList: true,
-  subtree: true
-});
+// 使用 yn_comp.js 提供的统一 getUserMix API
+// 注册各种类型的回调函数
+getUserMix.register('color', getUserColor);
+getUserMix.register('number', getUserNumber);
+getUserMix.register('text', getUserText);
+getUserMix.register('select', getUserSelect);
+getUserMix.register('radio', getUserRadio);
 
 function getUserColor(node){
   let color = {
@@ -458,6 +369,10 @@ function getUserText(node){
 
 function getUserSelect(node){
   let select = node.getAttribute('data-select-value');
-  //console.log(text);
+  //console.log(select);
 }
 
+function getUserRadio(node){
+  let userRadio= node.getAttribute('data-radio-value');
+  //console.log(userRadio);
+};

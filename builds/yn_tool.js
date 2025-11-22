@@ -324,13 +324,14 @@ Object.assign(TOOL_JS.prototype, {
   /**
    * 将md格式文案转为节点式对象，以便转为图层
    * @param {string} mdText - md格式文案
-   * @returns {Array} {zytype:'md',nodes:[
+   * @param {string} createname - 创建名称
+   * @returns {Array}[{zytype:'md',nodes:[
    * {
    * type: h | p | code | ul | ol | table ...,
    * content: string | [{style:'normal' | 'bold' | 'italic' | 'strike', content: ...}]
    * items?:[{content:...}]
    * }
-   * ]}
+   * ]}]
    */
   MdToObj(mdText, createname) {
   let ast = [];
@@ -607,23 +608,35 @@ Object.assign(TOOL_JS.prototype, {
   return { zyType: 'md', zyName: createname, nodes: ast };
   },
 
+  /**
+   * 将svg文本转为节点式对象，以便转为图层
+   * @param {string} svgText - svg文本
+   * @param {string} createname - 创建名称
+   * @returns {Object} {zytype:'svg',nodes:[
+   * {
+   * type: 'image',
+   * alt: string,
+   * src: string,
+   * }
+   * ]}
+   */
   async SvgToObj(svgText, createname) {
-  const parser = new DOMParser();
-  const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
-  const svgRoot = svgDoc.documentElement;
-  const allUses = Array.from(svgRoot.querySelectorAll('use'));
-  const allRects = Array.from(svgRoot.querySelectorAll('rect'));
-  const allClips = Array.from(svgRoot.querySelectorAll('clipPath'));
-  const allMasks = Array.from(svgRoot.querySelectorAll('mask'));
-  createname = createname ? createname : '@SVG_NODE'
-  try {
-    const images = await traverse(svgRoot);
-    //console.log('Found images:', images);
-    return {zyType: 'svg', zyName: createname, nodes: images};
-  } catch (error) {
-    console.error('Error processing SVG:', error);
-    return { zyType: null, zyName: null, nodes: null };
-  }
+    const parser = new DOMParser();
+    const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+    const svgRoot = svgDoc.documentElement;
+    const allUses = Array.from(svgRoot.querySelectorAll('use'));
+    const allRects = Array.from(svgRoot.querySelectorAll('rect'));
+    const allClips = Array.from(svgRoot.querySelectorAll('clipPath'));
+    const allMasks = Array.from(svgRoot.querySelectorAll('mask'));
+    createname = createname ? createname : '@SVG_NODE'
+    try {
+      const images = await traverse(svgRoot);
+      //console.log('Found images:', images);
+      return {zyType: 'svg', zyName: createname, nodes: images};
+    } catch (error) {
+      console.error('Error processing SVG:', error);
+      return { zyType: null, zyName: null, nodes: null };
+    };
 
     function GetAttributes(node) {
     if(!node.attributes) return null;
@@ -631,7 +644,7 @@ Object.assign(TOOL_JS.prototype, {
       obj[attr.name] = attr.value;
       return obj;
     }, {})
-  }
+  };
 
   async function traverse(node) {
     return new Promise(async (resolve) => {
@@ -730,7 +743,10 @@ Object.assign(TOOL_JS.prototype, {
 
 /**
  * 批量压缩图片并导出为zip
- * @param {[object]} imgExportData
+ * @param {function} callback - 压缩回调
+ * @param {boolean} isFinal - 是否最后一条数据，方便判断压缩并导出的时机
+ * @param {string} zipName - 压缩包名称
+ * @param {[object]} imgExportData - 图片导出数据
  * [{
  *    fileName:string,
  *    id:string,

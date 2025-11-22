@@ -7,17 +7,22 @@ const rightBtnList = document.querySelectorAll('[data-rightbtn-list]');
 
 
 /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
-let mutationObserver = new MutationObserver((mutations) => {
+// 使用 yn_comp.js 提供的统一 getUserMix API
+// 注册各种类型的回调函数（支持7种标准类型）
+getUserMix.register('color', getUserColor);
+getUserMix.register('number', getUserNumber);
+getUserMix.register('text', getUserText);
+getUserMix.register('int', getUserInt);
+getUserMix.register('float', getUserFloat);
+getUserMix.register('select', getUserSelect);
+getUserMix.register('radio', getUserRadio);
+
+// 自定义监听：监听 flow 相关的属性
+let flowObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if(mutation.type === 'attributes'){
       switch(mutation.attributeName){
-        case 'data-color-hex':getUserColor(mutation.target); break;
-        case 'data-number-value':getUserNumber(mutation.target); break;
-        case 'data-text-value':getUserText(mutation.target); break;
-        case 'data-int-value':getUserInt(mutation.target); break;
-        case 'data-float-value':getUserFloat(mutation.target); break;
-        case 'data-select-value':getUserSelect(mutation.target); break;
-        case 'data-radio-value':getUserRadio(mutation.target); break;        case 'data-flow-viewwidth':
+        case 'data-flow-viewwidth':
           FLOW_RENDER.reViewBoxSize(mutation.target.getAttribute('data-flow-viewwidth')); 
         break;
         case 'data-flow-viewzoom':
@@ -679,7 +684,7 @@ class ZY_NODE {
 
     //监听自定义属性值，修改画布大小
     let config_flowBox = {attributes:true,attributeFilter:['data-flow-viewwidth','data-flow-viewzoom']};
-    mutationObserver.observe(this.flowBox,config_flowBox);
+    flowObserver.observe(this.flowBox,config_flowBox);
     //最小4096，默认为窗口最大边的3倍
     let maxWH = Math.max(Math.ceil(this.flowBox.offsetWidth/1024)*2048,Math.ceil(this.flowBox.offsetHeight/1024)*1024,4096);
     this.flowBox.setAttribute('data-flow-viewwidth',maxWH);
@@ -1144,7 +1149,7 @@ class ZY_NODE {
       
     });
     //重置绑定
-    COMP_MAIN();
+    // 注意：yn_comp.js 已优化为事件委托，动态生成的组件会自动响应，无需再调用 COMP_MAIN()
   };
 
   duplicateNodes(nodes,e){
@@ -1559,41 +1564,8 @@ function reSafeTopLeft(event,area,node){
 };
 
 
-let userEvent_color = document.querySelectorAll('[data-color]');
-userEvent_color.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-color-hex']};
-  mutationObserver.observe(item,config);
-});
-let userEvent_number = document.querySelectorAll('[data-number]');
-userEvent_number.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-number-value']};
-  mutationObserver.observe(item,config);
-});
-let userEvent_text = document.querySelectorAll('[data-text]');
-userEvent_text.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-text-value']};
-  mutationObserver.observe(item,config);
-});
-let userEvent_int = document.querySelectorAll('[data-int-value]');
-userEvent_int.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-int-value']};
-  mutationObserver.observe(item,config);
-});
-let userEvent_float = document.querySelectorAll('[data-float-value]');
-userEvent_float.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-float-value']};
-  mutationObserver.observe(item,config);
-});
-let userEvent_select = document.querySelectorAll('[data-select]');
-userEvent_select.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-select-value']};
-  mutationObserver.observe(item,config);
-});
-let userEvent_radio = document.querySelectorAll('[data-radio-value]');
-userEvent_radio.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-radio-value']};
-  mutationObserver.observe(item,config);
-});
+// 标准类型已由 getUserMix 自动处理，无需手动观察
+// 只需要观察自定义的 flow 相关属性
 
 
 function getUserColor(node){

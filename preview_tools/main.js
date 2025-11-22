@@ -124,38 +124,12 @@ window.addEventListener('resize',()=>{
 
 
 /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
-let observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    if(mutation.type === 'attributes'){
-      switch(mutation.attributeName){
-        case 'data-color-hex':getUserColor(mutation.target); break;
-        case 'data-number-value':getUserNumber(mutation.target); break;
-        case 'data-text-value':getUserText(mutation.target); break;
-        case 'data-select-value':getUserSelect(mutation.target); break;
-      }
-    }
-  })
-});
-let userEvent_color = document.querySelectorAll('[data-color]');
-userEvent_color.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-color-hex']};
-  observer.observe(item,config);
-});
-let userEvent_number = document.querySelectorAll('[data-number]');
-userEvent_number.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-number-value']};
-  observer.observe(item,config);
-});
-let userEvent_text = document.querySelectorAll('[data-text]');
-userEvent_text.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-text-value']};
-  observer.observe(item,config);
-});
-let userEvent_select = document.querySelectorAll('[data-select]');
-userEvent_select.forEach(item => {
-  let config = {attributes:true,attributeFilter:['data-select-value']};
-  observer.observe(item,config);
-});
+// 使用 yn_comp.js 提供的统一 getUserMix API
+// 注册各种类型的回调函数
+getUserMix.register('color', getUserColor);
+getUserMix.register('number', getUserNumber);
+getUserMix.register('text', getUserText);
+getUserMix.register('select', getUserSelect);
 
 
 function getUserColor(node){

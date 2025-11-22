@@ -455,27 +455,130 @@ function COMP_MAIN(){
     const item = e.target.closest('[data-input="colorpick"]');
     if (!item) return;
     
+    const colorcomp = item.closest('[data-color]');
+    if (!colorcomp) return;
+    
     const colorbox = item.parentNode.querySelector('[data-input-color="box"]');
     if (colorbox) {
+      // 根据当前模式确保取色盘类型正确
+      const colortypeBtn = colorcomp.querySelector('[data-input="colortype"]');
+      if (colortypeBtn) {
+        const currentMode = colortypeBtn.getAttribute('data-colortype-mode') || 'hex';
+        const colorPicker = colorbox.querySelector('[data-input-color="hsv"], [data-input-color="hsl"]');
+        if (colorPicker) {
+          const currentPickerType = colorPicker.getAttribute('data-input-color');
+          // 如果当前模式是hsl但取色盘是hsv，需要切换
+          if (currentMode === 'hsl' && currentPickerType === 'hsv') {
+            const hslPicker = document.createElement('div');
+            hslPicker.setAttribute('data-input-color', 'hsl');
+            colorPicker.replaceWith(hslPicker);
+          } else if (currentMode !== 'hsl' && currentPickerType === 'hsl') {
+            // 如果当前模式不是hsl但取色盘是hsl，需要切换回hsv
+            const hsvPicker = document.createElement('div');
+            hsvPicker.setAttribute('data-input-color', 'hsv');
+            colorPicker.replaceWith(hsvPicker);
+          }
+        }
+      }
       colorbox.style.display = 'flex';
     }
   });
 
-  document.addEventListener('change', (e) => {
+  // 颜色类型切换（循环切换：hex -> rgb -> hsl -> hex）
+  document.addEventListener('click', (e) => {
     const item = e.target.closest('[data-input="colortype"]');
     if (!item) return;
+    
+    const colorcomp = item.closest('[data-color]');
+    if (!colorcomp) return;
     
     const prevInput = item.previousElementSibling;
     if (!prevInput) return;
     
-    if (item.checked) {
-      prevInput.setAttribute('data-input', 'rgb');
-      const HEX = hexTorgb(prevInput.value);
-      prevInput.value = `rgb(${HEX[0]},${HEX[1]},${HEX[2]})`;
+    const currentMode = item.getAttribute('data-colortype-mode') || 'hex';
+    let nextMode, nextValue, nextDataInput;
+    
+    // 获取当前颜色值
+    const hexValue = colorcomp.getAttribute('data-color-hex');
+    const rgbValue = colorcomp.getAttribute('data-color-rgb');
+    const hslValue = colorcomp.getAttribute('data-color-hsl');
+    
+    // 循环切换：hex -> rgb -> hsl -> hex
+    if (currentMode === 'hex') {
+      nextMode = 'rgb';
+      nextValue = rgbValue;
+      nextDataInput = 'rgb';
+    } else if (currentMode === 'rgb') {
+      nextMode = 'hsl';
+      nextValue = hslValue;
+      nextDataInput = 'hsl';
     } else {
-      prevInput.setAttribute('data-input', 'hex');
-      const RGB = prevInput.value.toLowerCase().replace('rgb(', '').replace(')', '').split(',');
-      prevInput.value = rgbTohex(RGB[0] * 1, RGB[1] * 1, RGB[2] * 1);
+      nextMode = 'hex';
+      nextValue = hexValue;
+      nextDataInput = 'hex';
+    }
+    
+    // 更新模式
+    item.setAttribute('data-colortype-mode', nextMode);
+    prevInput.setAttribute('data-input', nextDataInput);
+    prevInput.value = nextValue;
+    
+    // 更新伪元素显示的色值
+    updateColortypeTooltip(item, colorcomp, nextMode);
+    
+    // 切换取色盘模式
+    const colorbox = colorcomp.querySelector('[data-input-color="box"]');
+    if (colorbox) {
+      const colorPicker = colorbox.querySelector('[data-input-color="hsv"], [data-input-color="hsl"]');
+      if (colorPicker) {
+        // hex和rgb使用hsv，hsl使用hsl
+        if (nextMode === 'hsl') {
+          // 如果当前是hsv，需要创建hsl取色盘
+          if (colorPicker.getAttribute('data-input-color') === 'hsv') {
+            const hslPicker = document.createElement('div');
+            hslPicker.setAttribute('data-input-color', 'hsl');
+            colorPicker.replaceWith(hslPicker);
+          }
+        } else {
+          // hex和rgb使用hsv
+          if (colorPicker.getAttribute('data-input-color') === 'hsl') {
+            const hsvPicker = document.createElement('div');
+            hsvPicker.setAttribute('data-input-color', 'hsv');
+            colorPicker.replaceWith(hsvPicker);
+          }
+        }
+      }
+    }
+  });
+  
+  // 更新颜色类型按钮的提示文本
+  function updateColortypeTooltip(button, colorcomp, currentMode) {
+    const hexValue = colorcomp.getAttribute('data-color-hex');
+    const rgbValue = colorcomp.getAttribute('data-color-rgb');
+    const hslValue = colorcomp.getAttribute('data-color-hsl');
+    
+    let other1, other2;
+    if (currentMode === 'hex') {
+      other1 = rgbValue;
+      other2 = hslValue;
+    } else if (currentMode === 'rgb') {
+      other1 = hexValue;
+      other2 = hslValue;
+    } else {
+      other1 = hexValue;
+      other2 = rgbValue;
+    }
+    
+    button.style.setProperty('--other1', `'${other1}'`);
+    button.style.setProperty('--other2', `'${other2}'`);
+  }
+  
+  // 初始化所有颜色类型按钮的提示文本
+  document.querySelectorAll('[data-input="colortype"]').forEach(button => {
+    const colorcomp = button.closest('[data-color]');
+    if (colorcomp) {
+      const currentMode = button.getAttribute('data-colortype-mode') || 'hex';
+      updateColortypeTooltip(button, colorcomp, currentMode);
     }
   });
 
@@ -662,13 +765,13 @@ function COMP_MAIN(){
   // ========== 其他需要直接绑定的逻辑（颜色选择器等复杂交互）==========
   // 这些需要在元素存在时初始化，但也可以通过 MutationObserver 处理动态添加
   
-  // RGB/HEX 颜色输入变化
+  // HEX/RGB/HSL 颜色输入变化
   document.addEventListener('change', (e) => {
-    const item = e.target.closest('[data-input="hex"], [data-input="rgb"]');
+    const item = e.target.closest('[data-input="hex"], [data-input="rgb"], [data-input="hsl"]');
     if (!item) return;
     
     const colortype = item.getAttribute('data-input');
-    const info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
+    const info = colortype == 'hex' ? '#888888' : colortype == 'rgb' ? 'rgb(136,136,136)' : 'hsl(0,0%,53%)';
     inputMust(item, [colortype, info]);
     item.parentNode.style.setProperty('--input-color', item.value);
     
@@ -676,10 +779,19 @@ function COMP_MAIN(){
     const colorrange = item.parentNode.querySelector('[data-input="hsl-h"]');
     const colorvalue = item.parentNode.querySelector('[data-input-color="hsl-h"]');
     
-    let RGB = item.value.split('#').length > 1 ? hexTorgb(item.value) : item.value.toLowerCase().replace('rgb(', '').replace(')', '').split(',');
-    let HEX = item.value.split('#').length > 1 ? item.value : rgbTohex(RGB[0], RGB[1], RGB[2]);
-    let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
-    let HSV = hslTohsv(HSL[0], HSL[1], HSL[2]);
+    let RGB, HEX, HSL, HSV;
+    if (colortype === 'hsl') {
+      const hslMatch = item.value.toLowerCase().replace('hsl(', '').replace(')', '').split(',');
+      HSL = hslMatch.map(item => parseFloat(item.replace('%', '').trim()));
+      RGB = hslTorgb(HSL[0], HSL[1], HSL[2], 255);
+      HEX = rgbTohex(RGB[0], RGB[1], RGB[2]);
+      HSV = hslTohsv(HSL[0], HSL[1], HSL[2]);
+    } else {
+      RGB = item.value.split('#').length > 1 ? hexTorgb(item.value) : item.value.toLowerCase().replace('rgb(', '').replace(')', '').split(',').map(v => parseFloat(v.trim()));
+      HEX = item.value.split('#').length > 1 ? item.value : rgbTohex(RGB[0], RGB[1], RGB[2]);
+      HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+      HSV = hslTohsv(HSL[0], HSL[1], HSL[2]);
+    }
     
     if (colorrange) colorrange.value = HSL[0];
     if (colorvalue) colorvalue.value = HSL[0];
@@ -696,10 +808,21 @@ function COMP_MAIN(){
       colorbox.style.setProperty('--hsv-v', HSV[2]);
     }
     
-    item.parentNode.setAttribute('data-color-hex', HEX);
-    item.parentNode.setAttribute('data-color-rgb', `rgb(${RGB[0]},${RGB[1]},${RGB[2]})`);
-    item.parentNode.setAttribute('data-color-hsl', `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
-    item.parentNode.setAttribute('data-color-hsv', `hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
+    // 只在值真正改变时才设置属性，避免重复触发 MutationObserver
+    const colorParent = item.parentNode;
+    const currentHex = colorParent.getAttribute('data-color-hex');
+    if (currentHex !== HEX) {
+      colorParent.setAttribute('data-color-hex', HEX);
+      colorParent.setAttribute('data-color-rgb', `rgb(${RGB[0]},${RGB[1]},${RGB[2]})`);
+      colorParent.setAttribute('data-color-hsl', `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
+      colorParent.setAttribute('data-color-hsv', `hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
+      // 更新颜色类型按钮的提示文本
+      const colortypeBtn = colorParent.querySelector('[data-input="colortype"]');
+      if (colortypeBtn) {
+        const currentMode = colortypeBtn.getAttribute('data-colortype-mode') || 'hex';
+        updateColortypeTooltip(colortypeBtn, colorParent, currentMode);
+      }
+    }
   });
 
   // 17. HSL H 值变化（range 和 text input）
@@ -732,11 +855,21 @@ function COMP_MAIN(){
       colorbox.style.setProperty('--hsl-h', item.value);
     }
     
-    colorcomp.style.setProperty('--input-color', newHEX);
-    colorcomp.setAttribute('data-color-hex', newHEX);
-    colorcomp.setAttribute('data-color-rgb', `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-    colorcomp.setAttribute('data-color-hsl', `hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
-    colorcomp.setAttribute('data-color-hsv', `hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+    // 只在值真正改变时才设置属性，避免重复触发 MutationObserver
+    const currentHex = colorcomp.getAttribute('data-color-hex');
+    if (currentHex !== newHEX) {
+      colorcomp.style.setProperty('--input-color', newHEX);
+      colorcomp.setAttribute('data-color-hex', newHEX);
+      colorcomp.setAttribute('data-color-rgb', `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+      colorcomp.setAttribute('data-color-hsl', `hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
+      colorcomp.setAttribute('data-color-hsv', `hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+      // 更新颜色类型按钮的提示文本
+      const colortypeBtn = colorcomp.querySelector('[data-input="colortype"]');
+      if (colortypeBtn) {
+        const currentMode = colortypeBtn.getAttribute('data-colortype-mode') || 'hex';
+        updateColortypeTooltip(colortypeBtn, colorcomp, currentMode);
+      }
+    }
     
     // 同步另一个 HSL H 输入框
     const otherHSLH = colorcomp.querySelector(item.getAttribute('data-input') === 'hsl-h' 
@@ -801,11 +934,21 @@ function COMP_MAIN(){
         colorbox.style.setProperty('--hsv-s', newHSV[1]);
         colorbox.style.setProperty('--hsv-v', newHSV[2]);
       }
-      colorcomp.style.setProperty('--input-color', newHEX);
-      colorcomp.setAttribute('data-color-hex', newHEX);
-      colorcomp.setAttribute('data-color-rgb', `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-      colorcomp.setAttribute('data-color-hsv', `hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
-      colorcomp.setAttribute('data-color-hsl', `hsl(${oldColor[0]},${SS}%,${VL}%)`);
+      // 只在值真正改变时才设置属性，避免重复触发 MutationObserver
+      const currentHex = colorcomp.getAttribute('data-color-hex');
+      if (currentHex !== newHEX) {
+        colorcomp.style.setProperty('--input-color', newHEX);
+        colorcomp.setAttribute('data-color-hex', newHEX);
+        colorcomp.setAttribute('data-color-rgb', `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+        colorcomp.setAttribute('data-color-hsv', `hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+        colorcomp.setAttribute('data-color-hsl', `hsl(${oldColor[0]},${SS}%,${VL}%)`);
+        // 更新颜色类型按钮的提示文本
+        const colortypeBtn = colorcomp.querySelector('[data-input="colortype"]');
+        if (colortypeBtn) {
+          const currentMode = colortypeBtn.getAttribute('data-colortype-mode') || 'hex';
+          updateColortypeTooltip(colortypeBtn, colorcomp, currentMode);
+        }
+      }
     } else {
       const newHSL = hsvTohsl(oldColor[0], SS, VL);
       const newRGB = hslTorgb(newHSL[0], newHSL[1], newHSL[2], 255);
@@ -827,11 +970,21 @@ function COMP_MAIN(){
         colorbox.style.setProperty('--hsl-s', (newHSL[1] / 100 * w) + 'px');
         colorbox.style.setProperty('--hsl-l', (newHSL[2] / 100 * h) + 'px');
       }
-      colorcomp.style.setProperty('--input-color', newHEX);
-      colorcomp.setAttribute('data-color-hex', newHEX);
-      colorcomp.setAttribute('data-color-rgb', `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-      colorcomp.setAttribute('data-color-hsl', `hsl(${newHSL[0]},${newHSL[1]}%,${newHSL[2]}%)`);
-      colorcomp.setAttribute('data-color-hsv', `hsv(${oldColor[0]},${SS}%,${VL}%)`);
+      // 只在值真正改变时才设置属性，避免重复触发 MutationObserver
+      const currentHex = colorcomp.getAttribute('data-color-hex');
+      if (currentHex !== newHEX) {
+        colorcomp.style.setProperty('--input-color', newHEX);
+        colorcomp.setAttribute('data-color-hex', newHEX);
+        colorcomp.setAttribute('data-color-rgb', `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+        colorcomp.setAttribute('data-color-hsl', `hsl(${newHSL[0]},${newHSL[1]}%,${newHSL[2]}%)`);
+        colorcomp.setAttribute('data-color-hsv', `hsv(${oldColor[0]},${SS}%,${VL}%)`);
+        // 更新颜色类型按钮的提示文本
+        const colortypeBtn = colorcomp.querySelector('[data-input="colortype"]');
+        if (colortypeBtn) {
+          const currentMode = colortypeBtn.getAttribute('data-colortype-mode') || 'hex';
+          updateColortypeTooltip(colortypeBtn, colorcomp, currentMode);
+        }
+      }
     }
   }
   
@@ -858,36 +1011,57 @@ function COMP_MAIN(){
     colorPickMix(e, item, colortype, true);
   }, { passive: false });
   
+  // 标记是否发生了拖拽操作（用于区分点击和拖拽）
+  let hasMoved = false;
+  
   document.addEventListener('mousemove', (e) => {
-    if (!activeColorPickItem || !colorPickMoving.get(activeColorPickItem)) return;
-    
-    const colortype = activeColorPickItem.getAttribute('data-input-color');
-    colorPickMix(e, activeColorPickItem, colortype, false);
+    if (activeColorPickItem && colorPickMoving.get(activeColorPickItem)) {
+      hasMoved = true; // 标记发生了拖拽
+      const colortype = activeColorPickItem.getAttribute('data-input-color');
+      colorPickMix(e, activeColorPickItem, colortype, false);
+    }
   });
   
   document.addEventListener('touchmove', (e) => {
-    if (!activeColorPickItem || !colorPickMoving.get(activeColorPickItem)) return;
-    
-    const colortype = activeColorPickItem.getAttribute('data-input-color');
-    colorPickMix(e, activeColorPickItem, colortype, true);
+    if (activeColorPickItem && colorPickMoving.get(activeColorPickItem)) {
+      hasMoved = true; // 标记发生了拖拽
+      const colortype = activeColorPickItem.getAttribute('data-input-color');
+      colorPickMix(e, activeColorPickItem, colortype, true);
+    }
   }, { passive: false });
   
   document.addEventListener('click', (e) => {
     const item = e.target.closest('[data-input-color="hsv"], [data-input-color="hsl"]');
-    if (!item || colorPickMoving.get(item)) return;
+    // 如果发生了拖拽或者是正在拖拽中，则忽略 click 事件（避免重复触发）
+    if (!item || colorPickMoving.get(item) || hasMoved) {
+      hasMoved = false; // 重置拖拽标记
+      return;
+    }
     
     const colortype = item.getAttribute('data-input-color');
     colorPickMix(e, item, colortype, false);
   });
   
   document.addEventListener('mouseup', () => {
-    activeColorPickItem = null;
-    colorPickMoving.clear();
+    // 延迟清除标志，避免 click 事件误触发（click 会在 mouseup 之后触发）
+    setTimeout(() => {
+      if (hasMoved) {
+        hasMoved = false; // 重置拖拽标记
+      }
+      activeColorPickItem = null;
+      colorPickMoving.clear();
+    }, 0);
   });
   
   document.addEventListener('touchend', () => {
-    activeColorPickItem = null;
-    colorPickMoving.clear();
+    // 延迟清除标志，避免 click 事件误触发
+    setTimeout(() => {
+      if (hasMoved) {
+        hasMoved = false; // 重置拖拽标记
+      }
+      activeColorPickItem = null;
+      colorPickMoving.clear();
+    }, 0);
   });
 
   // 19. 吸色管功能
@@ -900,18 +1074,58 @@ function COMP_MAIN(){
         const newHEX = USER_COLOR.sRGBHex;
         const newRGB = hexTorgb(newHEX);
         const colorcomp = item.closest('[data-color-hex]') || item.parentNode;
+        if (!colorcomp) return;
+        
         const colorinput1 = colorcomp.querySelector('[data-input="hex"]');
         const colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+        const colorbox = colorcomp.querySelector('[data-input-color="box"]');
+        const colorrange = colorcomp.querySelector('[data-input="hsl-h"]');
+        const colorvalue = colorcomp.querySelector('[data-input-color="hsl-h"]');
         
-        if (colorinput1) {
+        let HSL = rgbTohsl(newRGB[0], newRGB[1], newRGB[2]);
+        let HSV = hslTohsv(HSL[0], HSL[1], HSL[2]);
+        
+        // 更新输入框值（仅在值真正改变时更新，避免触发不必要的 change 事件）
+        if (colorinput1 && colorinput1.value !== newHEX) {
           colorinput1.value = newHEX;
-          const inputEvent = new Event('change', { bubbles: true });
-          colorinput1.dispatchEvent(inputEvent);
         }
-        if (colorinput2) {
-          colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
-          const inputEvent = new Event('change', { bubbles: true });
-          colorinput2.dispatchEvent(inputEvent);
+        const rgbValue = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
+        if (colorinput2 && colorinput2.value !== rgbValue) {
+          colorinput2.value = rgbValue;
+        }
+        
+        // 更新 HSL H 值
+        if (colorrange && colorrange.value != HSL[0]) {
+          colorrange.value = HSL[0];
+        }
+        if (colorvalue && colorvalue.value != HSL[0]) {
+          colorvalue.value = HSL[0];
+        }
+        
+        // 更新颜色选择器样式
+        if (colorbox) {
+          const hslPicker = colorbox.querySelector('[data-input-color="hsl"]');
+          const colorpickW = hslPicker ? hslPicker.offsetWidth : 110;
+          const colorpickH = hslPicker ? hslPicker.offsetHeight : 110;
+          
+          colorbox.style.setProperty('--hsl-h', HSL[0]);
+          colorbox.style.setProperty('--hsl-s', (HSL[1] / 100 * colorpickW) + 'px');
+          colorbox.style.setProperty('--hsl-l', (HSL[2] / 100 * colorpickH) + 'px');
+          colorbox.style.setProperty('--hsv-s', HSV[1]);
+          colorbox.style.setProperty('--hsv-v', HSV[2]);
+        }
+        
+        // 直接设置属性，而不是通过触发 change 事件（避免重复触发）
+        colorcomp.style.setProperty('--input-color', newHEX);
+        colorcomp.setAttribute('data-color-hex', newHEX);
+        colorcomp.setAttribute('data-color-rgb', rgbValue);
+        colorcomp.setAttribute('data-color-hsl', `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
+        colorcomp.setAttribute('data-color-hsv', `hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
+        // 更新颜色类型按钮的提示文本
+        const colortypeBtn = colorcomp.querySelector('[data-input="colortype"]');
+        if (colortypeBtn) {
+          const currentMode = colortypeBtn.getAttribute('data-colortype-mode') || 'hex';
+          updateColortypeTooltip(colortypeBtn, colorcomp, currentMode);
         }
       })
       .catch(error => {
@@ -920,9 +1134,285 @@ function COMP_MAIN(){
   });
 };
 
+/**
+ * getUserMix - 统一的组件属性监听系统
+ * 支持监听自定义属性变化并触发回调，自动处理动态生成的元素
+ * 
+ * 使用方法：
+ * 1. 注册全局回调：getUserMix.register('select', (node) => { ... })
+ * 2. 直接调用：getUserMix.select(node, (node) => { ... })
+ * 3. 扩展新类型：getUserMix.addType('custom', 'data-custom-value', '[data-custom]')
+ */
+const getUserMix = (function() {
+  // 存储各种类型的回调函数
+  const callbacks = {};
+  
+  // 类型配置：{ type: { selector, attribute, attributeFilter } }
+  const typeConfigs = {
+    'color': {
+      selector: '[data-color]',
+      attribute: 'data-color-hex',
+      attributeFilter: ['data-color-hex']
+    },
+    'number': {
+      selector: '[data-number]',
+      attribute: 'data-number-value',
+      attributeFilter: ['data-number-value']
+    },
+    'text': {
+      selector: '[data-text]',
+      attribute: 'data-text-value',
+      attributeFilter: ['data-text-value']
+    },
+    'int': {
+      selector: '[data-int-value]',
+      attribute: 'data-int-value',
+      attributeFilter: ['data-int-value']
+    },
+    'float': {
+      selector: '[data-float-value]',
+      attribute: 'data-float-value',
+      attributeFilter: ['data-float-value']
+    },
+    'select': {
+      selector: '[data-select]',
+      attribute: 'data-select-value',
+      attributeFilter: ['data-select-value']
+    },
+    'radio': {
+      selector: '[data-radio-value]',
+      attribute: 'data-radio-value',
+      attributeFilter: ['data-radio-value']
+    },
+    'tab': {
+      selector: '[data-tab-pick]',
+      attribute: 'data-tab-pick',
+      attributeFilter: ['data-tab-pick']
+    }
+  };
+  
+  // 全局 MutationObserver（单例）
+  let observer = null;
+  let observedElements = new WeakSet();
+  
+  // 初始化 observer
+  function initObserver() {
+    if (observer) return;
+    
+    observer = new MutationObserver((mutations) => {
+      // 使用 Map 来去重，避免同一元素在同一批次中触发多次回调
+      const processed = new Map();
+      
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes') {
+          const attributeName = mutation.attributeName;
+          const target = mutation.target;
+          
+          // 查找对应的类型
+          for (const [type, config] of Object.entries(typeConfigs)) {
+            if (config.attributeFilter.includes(attributeName)) {
+              // 使用元素+类型的组合作为 key，避免同一元素同一类型重复触发
+              const key = `${target}-${type}`;
+              if (!processed.has(key)) {
+                processed.set(key, { target, type });
+              }
+              break;
+            }
+          }
+        }
+      });
+      
+      // 批量执行回调，每个元素每种类型只执行一次
+      processed.forEach(({ target, type }) => {
+        if (callbacks[type]) {
+          callbacks[type].forEach(callback => {
+            try {
+              callback(target);
+            } catch (e) {
+              console.error(`Error in getUserMix callback for type "${type}":`, e);
+            }
+          });
+        }
+      });
+    });
+    
+    // 监听动态添加的元素
+    const dynamicObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            // 检查新添加的元素及其子元素
+            for (const [type, config] of Object.entries(typeConfigs)) {
+              const elements = [];
+              
+              // 检查元素本身
+              if (node.matches && node.matches(config.selector)) {
+                elements.push(node);
+              }
+              
+              // 检查子元素
+              if (node.querySelectorAll) {
+                const children = node.querySelectorAll(config.selector);
+                elements.push(...Array.from(children));
+              }
+              
+              // 观察新元素
+              elements.forEach(item => {
+                if (!observedElements.has(item)) {
+                  const config_obs = {attributes: true, attributeFilter: config.attributeFilter};
+                  observer.observe(item, config_obs);
+                  observedElements.add(item);
+                }
+              });
+            }
+          }
+        });
+      });
+    });
+    
+    // 开始观察文档变化
+    dynamicObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+  
+  // 是否已初始化观察
+  let isObserved = false;
+  
+  // 观察元素
+  function observeElements(container) {
+    if (!observer) initObserver();
+    
+    // 如果已经观察过整个文档，且没有传入容器，则跳过
+    if (isObserved && !container) {
+      return;
+    }
+    
+    const root = container || document;
+    
+    for (const [type, config] of Object.entries(typeConfigs)) {
+      const elements = root.querySelectorAll(config.selector);
+      elements.forEach(item => {
+        if (!observedElements.has(item)) {
+          const config_obs = {attributes: true, attributeFilter: config.attributeFilter};
+          observer.observe(item, config_obs);
+          observedElements.add(item);
+        }
+      });
+    }
+    
+    // 标记已观察整个文档
+    if (!container) {
+      isObserved = true;
+    }
+  }
+  
+  // 返回公共API
+  return {
+    /**
+     * 注册全局回调
+     * @param {string} type - 类型：'color', 'number', 'text', 'int', 'float', 'select', 'radio', 'tab'
+     * @param {function} callback - 回调函数，接收 node 参数
+     */
+    register(type, callback) {
+      if (!typeConfigs[type]) {
+        console.warn(`getUserMix.register: Unknown type "${type}"`);
+        return;
+      }
+      if (typeof callback !== 'function') {
+        console.warn(`getUserMix.register: callback must be a function`);
+        return;
+      }
+      
+      if (!callbacks[type]) {
+        callbacks[type] = [];
+      }
+      callbacks[type].push(callback);
+      
+      // 初始化并观察已存在的元素
+      observeElements();
+    },
+    
+    /**
+     * 添加新的类型
+     * @param {string} type - 类型名称
+     * @param {string} attribute - 监听的属性名，如 'data-custom-value'
+     * @param {string} selector - 选择器，如 '[data-custom]'
+     */
+    addType(type, attribute, selector) {
+      if (typeConfigs[type]) {
+        console.warn(`getUserMix.addType: Type "${type}" already exists`);
+        return;
+      }
+      
+      typeConfigs[type] = {
+        selector: selector,
+        attribute: attribute,
+        attributeFilter: [attribute]
+      };
+      
+      // 重新观察已存在的元素
+      observeElements();
+    },
+    
+    /**
+     * 直接调用回调（用于手动触发）
+     * @param {string} type - 类型
+     * @param {Element} node - 节点
+     * @param {function} callback - 可选的回调函数（临时回调，不会注册为全局回调）
+     */
+    call(type, node, callback) {
+      if (!typeConfigs[type]) {
+        console.warn(`getUserMix.call: Unknown type "${type}"`);
+        return;
+      }
+      
+      // 执行临时回调
+      if (callback && typeof callback === 'function') {
+        try {
+          callback(node);
+        } catch (e) {
+          console.error(`Error in getUserMix temporary callback for type "${type}":`, e);
+        }
+      }
+      
+      // 执行全局回调
+      if (callbacks[type]) {
+        callbacks[type].forEach(cb => {
+          try {
+            cb(node);
+          } catch (e) {
+            console.error(`Error in getUserMix callback for type "${type}":`, e);
+          }
+        });
+      }
+    },
+    
+    /**
+     * 初始化观察（通常在页面加载后调用）
+     * @param {Element} container - 可选，指定容器
+     */
+    init(container) {
+      observeElements(container);
+    },
+    
+    // 便捷方法：直接调用各种类型
+    color(node, callback) { this.call('color', node, callback); },
+    number(node, callback) { this.call('number', node, callback); },
+    text(node, callback) { this.call('text', node, callback); },
+    int(node, callback) { this.call('int', node, callback); },
+    float(node, callback) { this.call('float', node, callback); },
+    select(node, callback) { this.call('select', node, callback); },
+    radio(node, callback) { this.call('radio', node, callback); },
+    tab(node, callback) { this.call('tab', node, callback); }
+  };
+})();
+
 window.addEventListener('load', () => {
   afterAllMust();
   COMP_MAIN(); // 只需运行一次，动态元素会自动响应
+  getUserMix.init(); // 初始化组件属性监听系统
   
   if (window.EyeDropper == undefined || ISMOBILE) {
     //console.error('EyeDropper API is not supported on this platform');
@@ -1259,6 +1749,136 @@ function inputMust(node,info){
           }
         });
         node.value = `rgb(${RGB[0]},${RGB[1]},${RGB[2]})`
+      } else {
+        tipsAll(['请输入正确的色值','Should be color'],1000);
+      }
+    }
+  }
+  if(type === "hsl"){
+    if(node.value.toLowerCase().split('#').length > 1){//兼容HEX
+      let values = '#' +  node.value.replace(/[#]/g,'');
+      if (values == '#' || values.replace(/[0-9a-fA-F]/g,'').trim().length > 1) {
+      node.value = info[1];
+      tipsAll(['请输入正确的色值','Should be color'],1000);
+      } else {
+          if (node.value.length < 7) {
+          if (node.value[0] == '#') {
+              var a = node.value.replace(/[#]/g,'');
+              if (a.length == 3) {
+              let hex = "#" + a + a;
+              let RGB = hexTorgb(hex);
+              let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+              node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              }
+              if (a.length == 2) {
+              let hex = "#" + a + a + a;
+              let RGB = hexTorgb(hex);
+              let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+              node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              }
+              if (a.length == 1) {
+              let hex = "#" + a + a + a + a + a + a;
+              let RGB = hexTorgb(hex);
+              let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+              node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              }
+              if (a.length == 4) {
+              let hex = "#" + a + "00";
+              let RGB = hexTorgb(hex);
+              let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+              node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              }
+              if (a.length == 5) {
+              let hex = "#" + a + "0";
+              let RGB = hexTorgb(hex);
+              let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+              node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              }
+          } else {
+              var c = node.value.replace(/[#]/g,'')
+              if (c.length == 3) {
+              let hex = "#" + c + c;
+              let RGB = hexTorgb(hex);
+              let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+              node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              }
+              if (c.length == 2) {
+              let hex = "#" + c + c + c;
+              let RGB = hexTorgb(hex);
+              let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+              node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              }
+              if (c.length == 1) {
+              let hex = "#" + c + c + c + c + c + c;
+              let RGB = hexTorgb(hex);
+              let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+              node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              }
+              if (c.length == 4) {
+              let hex = "#" + c + "00";
+              let RGB = hexTorgb(hex);
+              let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+              node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              }
+              if (c.length == 5) {
+              let hex = "#" + c + "0";
+              let RGB = hexTorgb(hex);
+              let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+              node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              }
+              if (c.length == 6) {
+              let hex = "#" + c;
+              let RGB = hexTorgb(hex);
+              let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+              node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              }
+          }
+          } else {
+              if (node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().length >= 6) {
+                  let hex = '#' + node.value.replace(/[#]/g,'').replace(/[^0-9a-fA-F]/g,'').trim().substring(0, 6);
+                  let RGB = hexTorgb(hex);
+                  let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+                  node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`;
+              } else {
+                  node.value = info[1]
+                  tipsAll(['请输入正确的色值','Should be color'],1000);
+              }
+          }
+      }
+    } else if (node.value.toLowerCase().split('rgb(').length > 1){//兼容RGB
+      let RGB = node.value.toLowerCase().replace('rgb(','').replace(')','').split(',')
+      RGB = RGB.map(item => item.replace(/[^0-9]/g,'').trim());
+      if(RGB.length == 3){
+        RGB.forEach((item,index) => {
+          if(item * 1 >= 255){
+            RGB[index] = 255
+          }
+        });
+        let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
+        node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`
+      } else {
+        tipsAll(['请输入正确的色值','Should be color'],1000);
+      }
+    } else if (node.value.toLowerCase().split('hsl(').length > 1){
+      let HSL = node.value.toLowerCase().replace('hsl(','').replace(')','').split(',')
+      HSL = HSL.map(item => item.replace(/[^0-9.]/g,'').trim());
+      if(HSL.length == 3){
+        HSL.forEach((item,index) => {
+          if(index === 0){
+            if(item * 1 >= 360){
+              HSL[index] = 360
+            } else if(item * 1 < 0){
+              HSL[index] = 0
+            }
+          } else {
+            if(item * 1 >= 100){
+              HSL[index] = 100
+            } else if(item * 1 < 0){
+              HSL[index] = 0
+            }
+          }
+        });
+        node.value = `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`
       } else {
         tipsAll(['请输入正确的色值','Should be color'],1000);
       }

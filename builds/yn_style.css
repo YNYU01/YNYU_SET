@@ -998,19 +998,10 @@ input[type="checkbox"]:checked+.btn-theme {
   position: relative;
 }
 [data-color]:hover{
-  --hsl-df: flex;
+  --hsl-df: none; /* 已改为在按钮伪元素中显示 */
 }
 [data-color]::after{
-  content: attr(data-color-hsl);
-  position: absolute;
-  top: -2.5ch;
-  right: 36px;
-  display: var(--hsl-df);
-  background: var(--mainColor);
-  color: var(--boxBak);
-  font-size: 11px;
-  padding: 2px 4px;
-  border-radius: 0.5ch;
+  display: none; /* 已改为在按钮伪元素中显示其他两种模式的色值 */
 }
 
 [data-getcolor]{
@@ -1028,6 +1019,8 @@ input[type="checkbox"]:checked+.btn-theme {
   border: 1px solid var(--boxBod);
   border-radius: 6px;
   --type:'HEX';
+  --other1:'';
+  --other2:'';
   position: relative;
   cursor: var(--pointer,pointer);
   display: flex;
@@ -1038,9 +1031,30 @@ input[type="checkbox"]:checked+.btn-theme {
 .colortype::after{
   content: var(--type);
 }
-
-input[type="checkbox"]:checked + .colortype{
+.colortype::before{
+  content: var(--other1) ' / ' var(--other2);
+  position: absolute;
+  top: -2.5ch;
+  right: 0;
+  display: var(--other-df, none);
+  background: var(--mainColor);
+  color: var(--boxBak);
+  font-size: 11px;
+  padding: 2px 4px;
+  border-radius: 0.5ch;
+  white-space: nowrap;
+}
+.colortype:hover{
+  --other-df: flex;
+}
+[data-colortype-mode="hex"]{
+  --type:'HEX';
+}
+[data-colortype-mode="rgb"]{
   --type:'RGB';
+}
+[data-colortype-mode="hsl"]{
+  --type:'HSL';
 }
 
 /*常用动画*/

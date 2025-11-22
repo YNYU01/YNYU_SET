@@ -1463,8 +1463,22 @@ function addTag(type,info){
     return select;
   };
   //更新绑定和钩子
-  COMP_MAIN();
-  getCompChange();
+  // 注意：yn_comp.js 已优化为事件委托，动态生成的组件会自动响应，无需再调用 COMP_MAIN()
+  // getCompChange 已优化为全局单例，传入容器可提高效率
+  let container = null;
+  switch(type) {
+    case 'image':
+    case 'table':
+      container = createTagsBox;
+      break;
+    case 'zy':
+      container = cataloguesBox;
+      break;
+    case 'export-img':
+      container = exportTagsBox;
+      break;
+  }
+  getCompChange(container);
   //重置文字样式
   loadFont(createTagsBox.parentNode);
 };
@@ -2213,66 +2227,21 @@ function viewPage(name){
 
 
 /* ---钩子--- */
-getCompChange()
 /*监听组件的自定义属性值, 变化时触发函数, 用于已经绑定事件用于自身的组件, 如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
-function getCompChange(){
-  let observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if(mutation.type === 'attributes'){
-        switch(mutation.attributeName){
-          case 'data-tab-pick':getUserTab(mutation.target); break;
-          case 'data-color-hex':getUserColor(mutation.target); break;
-          case 'data-number-value':getUserNumber(mutation.target); break;
-          case 'data-text-value':getUserText(mutation.target); break;
-          case 'data-int-value':getUserInt(mutation.target); break;
-          case 'data-float-value':getUserFloat(mutation.target); break;
-          case 'data-select-value':getUserSelect(mutation.target); break;
-          case 'data-radio-value':getUserRadio(mutation.target); break;
-        }
-      }
-    })
-  });
-  let userEvent_tab = document.querySelectorAll('[data-tab-pick]');
-  userEvent_tab.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-tab-pick']};
-    observer.observe(item,config);
-  });
-  let userEvent_color = document.querySelectorAll('[data-color]');
-  userEvent_color.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-color-hex']};
-    observer.observe(item,config);
-  });
-  let userEvent_number = document.querySelectorAll('[data-number]');
-  userEvent_number.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-number-value']};
-    observer.observe(item,config);
-  });
-  let userEvent_text = document.querySelectorAll('[data-text]');
-  userEvent_text.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-text-value']};
-    observer.observe(item,config);
-  });
-  let userEvent_int = document.querySelectorAll('[data-int-value]');
-  userEvent_int.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-int-value']};
-    observer.observe(item,config);
-  });
-  let userEvent_float = document.querySelectorAll('[data-float-value]');
-  userEvent_float.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-float-value']};
-    observer.observe(item,config);
-  });
-  let userEvent_select = document.querySelectorAll('[data-select]');
-  userEvent_select.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-select-value']};
-    observer.observe(item,config);
-  });
-  let userEvent_radio = document.querySelectorAll('[data-radio-value]');
-  userEvent_radio.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-radio-value']};
-    observer.observe(item,config);
-  });
-  
+// 使用 yn_comp.js 提供的统一 getUserMix API
+// 注册各种类型的回调函数（支持8种类型）
+getUserMix.register('tab', getUserTab);
+getUserMix.register('color', getUserColor);
+getUserMix.register('number', getUserNumber);
+getUserMix.register('text', getUserText);
+getUserMix.register('int', getUserInt);
+getUserMix.register('float', getUserFloat);
+getUserMix.register('select', getUserSelect);
+getUserMix.register('radio', getUserRadio);
+
+// 动态生成组件后，可以传入容器来初始化观察
+function getCompChange(container){
+  getUserMix.init(container);
 }
 
 /**
