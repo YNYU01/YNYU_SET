@@ -95,15 +95,19 @@ if(!(window.location.protocol === 'file:' || window.location.hostname === 'local
   
         links.forEach(item => {
           let oldHref = item.getAttribute('href');
-          item.setAttribute('href',oldHref.replace('.cn',''));
+          if(oldHref && !oldHref.includes('ynyuset.cn')){
+            // 只替换域名中的 .cn，但排除 ynyuset.cn
+            item.setAttribute('href',oldHref.replace(/(https?:\/\/[^\/]+)\.cn(\/|$)/g, '$1$2'));
+          }
         });
         scripts.forEach(item => {
           let oldSrc = item.getAttribute('src');
-          if(oldSrc){
-            item.setAttribute('src',oldSrc.replace('.cn',''));
+          if(oldSrc && !oldSrc.includes('ynyuset.cn')){
+            // 只替换域名中的 .cn，但排除 ynyuset.cn
+            item.setAttribute('src',oldSrc.replace(/(https?:\/\/[^\/]+)\.cn(\/|$)/g, '$1$2'));
           };
         });
-  
+
         console.log(`访问者国家/地区：${country} (${countryCode}),已切换对应资源链接`)
       }
   })
