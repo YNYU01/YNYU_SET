@@ -1287,6 +1287,7 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   top: 10px;
   right: 10px;
   gap: 4px;
+  z-index: 1;
 }
 
 [for="fulleditor"],[data-editor-clear],[data-editor-bg],

@@ -16,7 +16,6 @@
   * When using the code of this project, it is prohibited to delete this statement;
 */
 
-// 自定义元素定义（图标类等）
 class btntheme extends HTMLElement {
   constructor() {
     super();
@@ -197,7 +196,6 @@ class cardcolorpick extends HTMLElement {
 };
 customElements.define('card-colorpick', cardcolorpick);
 
-//初始化
 let ISLOCAL = false;
 if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || PULGIN_LOCAL){
   ISLOCAL = true;
@@ -208,721 +206,541 @@ let TIPS_TIMES = [];
 let USER_KEYING = false;
 let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check','btn-color','btn-getcolor','card-colorpick'];
 
-let TV = document.querySelectorAll('[data-TV]');
-let TV_MOVE = false;
+let TV = document.querySelectorAll('[data-TV]');//轮播公告
+let TV_MOVE = false;//用于结合一定条件触发轮播
 let TAB_AUTO = document.querySelectorAll('[data-tab="auto"]');
 let TIPS = document.getElementById('tips-all');
 let TIPS_TEXT = document.getElementById('tips-all-text');
 let THEME_SWITCH = document.querySelectorAll("[data-theme-check]");
 let LANGUAGE_SWITCH = document.querySelectorAll("[data-language-check]");
 
-/**
- * COMP_MAIN_2.0 - 使用事件委托，自动处理动态生成的元素
- * 无需每次动态添加后重新运行绑定函数
- */
 function COMP_MAIN(){
-  
-  // ========== 使用事件委托处理所有动态元素 ==========
-  
-  // 1. 下拉选择 - 使用事件委托
-  document.addEventListener('change', (e) => {
-    const item = e.target.closest('[data-select-pick]');
-    if (!item) return;
-    
-    const options = item.parentNode.querySelector('[data-select-options]');
-    const otherscroll = document.querySelectorAll('[data-scroll]');
-    
-    if (item.checked) {
-      if (options) options.style.display = 'flex';
-      otherscroll.forEach(items => {
-        items.style.overflowY = 'hidden';
-      });
-    } else {
-      if (options) options.style.display = 'none';
-      otherscroll.forEach(items => {
-        items.style.overflowY = 'scroll';
-      });
-    }
-  });
-  
-  // 点击外部关闭下拉框 - 使用事件委托
-  document.addEventListener('mousedown', (e) => {
-    const selectPick = e.target.closest('[data-select-pick]');
-    const selectContainer = e.target.closest('[data-select]');
-    
-    // 查找所有打开的下拉框
-    document.querySelectorAll('[data-select-pick]:checked').forEach(item => {
-      const inputs = item.parentNode;
-      if (!item.contains(e.target) && !inputs.contains(e.target) && document.activeElement) {
-        item.checked = false;
-        const options = item.parentNode.querySelector('[data-select-options]');
-        if (options) options.style.display = 'none';
-        const otherscroll = document.querySelectorAll('[data-scroll]');
+  /*可动态添加的元素*/
+  let SELECT_PICK = document.querySelectorAll('[data-select-pick]');
+  let SELECT_OPTION = document.querySelectorAll('[data-option="option"]');
+  let INPUT = document.querySelectorAll('[data-input]');//所有input类型组件
+  let INPUT_CHECK = document.querySelectorAll('[data-check]');
+  let INPUT_MUST_TEXT = document.querySelectorAll('[data-input-type="text"]');//所有必填且为空时返回一个默认值的组件
+  let INPUT_MUST_INT = document.querySelectorAll('[data-input-type="int"]');//所有必填且为空时返回一个默认值的组件
+  let INPUT_MUST_FLOAT = document.querySelectorAll('[data-input-type="float"]');//所有必填且为空时返回一个默认值的组件
+  let INPUT_MAX = document.querySelectorAll('[data-input-max]');//所有设置最大输入字数的组件
+  let INPUT_RANGE = document.querySelectorAll('[data-input="range"]');//所有滑块类型,注意要进一步判断自定义属性的值
+  let INPUT_VALUE = document.querySelectorAll('[data-input="value"]');
+  let INPUT_GETCOLOR = document.querySelectorAll('[data-getcolor]')
+  let INPUT_COLOR = document.querySelectorAll('[data-input="colorpick"]');
+  let INPUT_COLOR_TYPE = document.querySelectorAll('[data-input="colortype"]');
+  let INPUT_HEX = document.querySelectorAll('[data-input="hex"]');
+  let INPUT_RGB = document.querySelectorAll('[data-input="rgb"]');
+  let INPUT_HSL_H = document.querySelectorAll('[data-input="hsl-h"]');
+  let INPUT_COLORPICK_BOX = document.querySelectorAll('[data-input-color="box"]');
+  let INPUT_COLORPICK_HSL = document.querySelectorAll('[data-input-color="hsl"]');
+  let INPUT_COLORPICK_HSL_H = document.querySelectorAll('[data-input-color="hsl-h"]');
+  let INPUT_COLORPICK_HSV = document.querySelectorAll('[data-input-color="hsv"]');
+  let TEXTAREA = document.querySelectorAll('[data-textarea]');
+  let TEXTAREA_EG = document.querySelectorAll('[data-textarea="eg"]');
+  let CLOSE_CLEAR = document.querySelectorAll('[data-close="clear"]');
+  let CLOSE_CLOSE = document.querySelectorAll('[data-close="close"]');
+  let RADIO = document.querySelectorAll('[data-radio]');
+  let RESET = document.querySelectorAll('[data-input-reset]');
+
+
+  SELECT_PICK.forEach(item => {
+    let options = item.parentNode.querySelector('[data-select-options]');
+    let otherscroll = document.querySelectorAll('[data-scroll]')
+    item.addEventListener('change', () => {
+      if(item.checked){
+        options.style.display = 'flex';
+        otherscroll.forEach(items => {
+          items.style.overflowY = 'hidden';
+        })
+      } else {
+        options.style.display = 'none';
         otherscroll.forEach(items => {
           items.style.overflowY = 'scroll';
-        });
+        })
       }
     });
-  });
-
-  // 2. 下拉选项点击 - 使用事件委托
-  document.addEventListener('click', (e) => {
-    const option = e.target.closest('[data-option="option"]');
-    if (!option) return;
-    
-    const select = option.closest('[data-select]');
-    if (!select) return;
-    
-    const oldOption = select.querySelector('[data-option-main="true"]');
-    if (!oldOption) return;
-    
-    const optionValue = option.getAttribute('data-option-value') || option.textContent;
-    oldOption.setAttribute('data-option-main', 'false');
-    option.setAttribute('data-option-main', 'true');
-    select.setAttribute('data-select-value', optionValue);
-    
-    const input = select.querySelector('[data-select-input]');
-    if (input) input.value = optionValue;
-    
-    const pickCheckbox = select.querySelector('[data-select-pick]');
-    if (pickCheckbox) {
-      pickCheckbox.checked = false;
-    }
-    const optionsContainer = select.querySelector('[data-select-options]');
-    if (optionsContainer) {
-      optionsContainer.style.display = 'none';
-    }
-  });
-
-  // 3. 输入框通用处理 - 使用事件委托
-  document.addEventListener('keydown', (e) => {
-    const item = e.target.closest('[data-input]');
-    if (!item) return;
-    if (e.key === 'Enter') {
-      item.blur();
-    }
-  });
-
-  // 初始化设置默认值
-  document.querySelectorAll('[data-input]').forEach(item => {
-    if (!item.hasAttribute('data-input-default')) {
-      item.setAttribute('data-input-default', item.value);
-    }
-  });
-
-  // 4. 复选框 - 使用事件委托
-  document.addEventListener('change', (e) => {
-    const item = e.target.closest('[data-check]');
-    if (!item) return;
-    
-    const checkName = item.getAttribute('data-check-for');
-    if (!checkName) return;
-    
-    const check = document.querySelector(`[data-check-name="${checkName}"]`);
-    if (check) {
-      if (item.checked) {
-        check.setAttribute('data-check-checked', 'true');
-      } else {
-        check.setAttribute('data-check-checked', 'false');
+    document.addEventListener('mousedown', function (event) {
+      let inputs = item.parentNode;
+      if(!item.contains(event.target) && !inputs.contains(event.target) && document.activeElement){
+        item.checked = false
+        options.style.display = 'none';
+        otherscroll.forEach(items => {
+          items.style.overflowY = 'scroll';
+        })
       }
-    }
+    })
   });
 
-  // 5. 必填文本输入 - 使用事件委托
-  document.addEventListener('change', (e) => {
-    const item = e.target.closest('[data-input-type="text"]');
-    if (!item) return;
-    
-    const info = item.getAttribute('data-input-must');
-    const infoEn = item.getAttribute('data-input-must-en');
-    
-    if (info) {
-      if (infoEn) {
-        inputMust(item, ['text', [info, infoEn]]);
-      } else {
-        inputMust(item, ['text', info]);
-      }
-      item.parentNode.setAttribute('data-text-value', item.value);
-    }
+  SELECT_OPTION.forEach(item => {
+    item.addEventListener('click',() => {
+      let select = item.parentNode.parentNode;
+      let oldOption = select.querySelector('[data-option-main="true"]');
+      if(!oldOption) return;
+      let optionValue = item.textContent;
+      oldOption.setAttribute('data-option-main','false');
+      item.setAttribute('data-option-main','true');
+      select.setAttribute('data-select-value',optionValue);
+      select.querySelector('[data-select-input]').value = optionValue;
+    })
   });
 
-  // 6. 必填整数输入 - 使用事件委托
-  document.addEventListener('change', (e) => {
-    const item = e.target.closest('[data-input-type="int"]');
-    if (!item) return;
-    if (item.getAttribute('data-value')) return; // 类型冲突
-    
-    const info = item.getAttribute('data-input-must');
-    if (!info) return;
-    
-    const max = info.split(',')[1] * 1;
-    const min = info.split(',')[0] * 1;
-    const maxVal = max ? max : 0;
-    const minVal = min ? min : 0;
-    
-    if (item.value < minVal || item.value > maxVal || (item.value.replace(/[0-9]/g, '').trim().length > 0 && item.value.replace(/[0-9]/g, '').trim() !== '-')) {
-      tipsAll(['数值错误，已修正', 'Wrong type, fixed'], 1000, 3);
-      inputMust(item, ['int', minVal, maxVal]);
-    }
-    item.parentNode.setAttribute('data-int-value', item.value);
-  });
-
-  // 7. 必填浮点数输入 - 使用事件委托
-  document.addEventListener('change', (e) => {
-    const item = e.target.closest('[data-input-type="float"]');
-    if (!item) return;
-    if (item.getAttribute('data-value')) return; // 类型冲突
-    
-    const info = item.getAttribute('data-input-must');
-    if (!info) return;
-    
-    const max = info.split(',')[1] * 1;
-    const min = info.split(',')[0] * 1;
-    const maxVal = max ? max : 0;
-    const minVal = min ? min : 0;
-    
-    if (item.value < minVal || item.value > maxVal || item.value.replace(/[^0-9\.]/g, '').trim().length == 0 || item.value.replace(/[0-9]/g, '').trim().length > 1) {
-      inputMust(item, ['float', minVal, maxVal]);
-    }
-    item.parentNode.setAttribute('data-float-value', item.value);
-  });
-
-  // 8. 最大字数限制 - 使用事件委托
-  document.addEventListener('input', (e) => {
-    const item = e.target.closest('[data-input-max]');
-    if (!item || USER_KEYING) return;
-    
-    if (item.nextElementSibling) {
-      const span = item.nextElementSibling.querySelector('span');
-      if (span) span.innerHTML = item.value.length;
-    } else {
-      const node = document.createElement('div');
-      node.className = 'pos-a';
-      node.style.right = '2px';
-      node.style.fontSize = '9px';
-      node.style.opacity = '0.6';
-      node.innerHTML = `<span>${item.value.length}</span>/${item.getAttribute('maxlength')}`;
-      item.parentNode.appendChild(node);
-    }
-  });
-
-  // 9. 滑块输入 - 使用事件委托
-  document.addEventListener('input', (e) => {
-    const item = e.target.closest('[data-input="range"]');
-    if (!item) return;
-    
-    if (item.nextElementSibling) {
-      item.nextElementSibling.value = item.value;
-    }
-    item.parentNode.setAttribute('data-number-value', item.value);
-  });
-
-  // 10. 数值输入框 - 使用事件委托
-  document.addEventListener('input', (e) => {
-    const item = e.target.closest('[data-input="value"]');
-    if (!item) return;
-    
-    if (item.previousElementSibling) {
-      item.previousElementSibling.value = item.value;
-    }
-    item.parentNode.setAttribute('data-number-value', item.value);
-  });
-
-  document.addEventListener('change', (e) => {
-    const item = e.target.closest('[data-input="value"]');
-    if (!item) return;
-    
-    const info = item.getAttribute('data-input-must');
-    if (!info) return;
-    
-    const max = info.split(',')[1] * 1;
-    const min = info.split(',')[0] * 1;
-    const maxVal = max !== null ? max : 0;
-    const minVal = min !== null ? min : 0;
-    
-    if (item.value < minVal || item.value > maxVal || (item.value.replace(/[0-9]/g, '').trim().length > 0 && item.value.replace(/[0-9]/g, '').trim() !== '-')) {
-      tipsAll(['数值错误，已修正', 'Wrong type, fixed'], 1000, 3);
-      inputMust(item, ['int', minVal, maxVal]);
-    }
-    if (item.previousElementSibling) {
-      item.previousElementSibling.value = item.value;
-    }
-    item.parentNode.setAttribute('data-number-value', item.value);
-  });
-
-  // 11. 颜色选择器相关 - 使用事件委托
-  document.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-input="colorpick"]');
-    if (!item) return;
-    
-    const colorbox = item.parentNode.querySelector('[data-input-color="box"]');
-    if (colorbox) {
-      colorbox.style.display = 'flex';
-    }
-  });
-
-  document.addEventListener('change', (e) => {
-    const item = e.target.closest('[data-input="colortype"]');
-    if (!item) return;
-    
-    const prevInput = item.previousElementSibling;
-    if (!prevInput) return;
-    
-    if (item.checked) {
-      prevInput.setAttribute('data-input', 'rgb');
-      const HEX = hexTorgb(prevInput.value);
-      prevInput.value = `rgb(${HEX[0]},${HEX[1]},${HEX[2]})`;
-    } else {
-      prevInput.setAttribute('data-input', 'hex');
-      const RGB = prevInput.value.toLowerCase().replace('rgb(', '').replace(')', '').split(',');
-      prevInput.value = rgbTohex(RGB[0] * 1, RGB[1] * 1, RGB[2] * 1);
-    }
-  });
-
-  // 颜色选择框关闭
-  document.addEventListener('mousedown', (e) => {
-    document.querySelectorAll('[data-input-color="box"]').forEach(item => {
-      const inputs = item.parentNode.parentNode;
-      if (!item.contains(e.target) && !inputs.contains(e.target) && document.activeElement) {
-        item.style.display = 'none';
+  INPUT.forEach(item => {
+    item.addEventListener('keydown',(event) => {
+      if (event.key === 'Enter') {
+        item.blur()
       }
     });
+    item.setAttribute('data-input-default',item.value);
   });
 
-  // 12. 单选按钮 - 使用事件委托（关键改进）
-  document.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-radio]');
-    if (!item) return;
-    
-    const radio = item.parentNode;
-    const oldpick = radio.querySelector('[data-radio-main="true"]');
-    const data = item.getAttribute('data-radio-data');
-    
-    if (oldpick && oldpick !== item) {
-      oldpick.setAttribute('data-radio-main', 'false');
-    }
-    item.setAttribute('data-radio-main', 'true');
-    radio.setAttribute('data-radio-value', data);
-    
-    // 处理滚动定位
-    if (item.parentNode.parentNode && item.parentNode.parentNode.getAttribute('data-scroll') !== null) {
-      const allradio = Array.from(item.parentNode.querySelectorAll('[data-radio-data]'));
-      const index = allradio.indexOf(item);
-      const inline = index > allradio.length / 2 ? 'nearest' : 'center';
-      item.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: inline,
-      });
-      if (index > allradio.length / 2 && item.nextElementSibling) {
-        item.nextElementSibling.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'nearest',
-        });
-      }
-    }
-  });
-
-  // 13. 重置按钮 - 使用事件委托
-  document.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-input-reset]');
-    if (!item) return;
-    
-    const input = item.parentNode.querySelectorAll('input');
-    input.forEach(node => {
-      let defaultValue = node.getAttribute('data-input-default');
-      if (!defaultValue) {
-        switch (node.type) {
-          case 'text':
-            if (node.value * 1 !== NaN) {
-              defaultValue = 0;
-            } else {
-              node.value = '';
-            }
-            break;
-          case 'range':
-            defaultValue = node.getAttribute('min') || 0;
-            break;
+  INPUT_CHECK.forEach(item => {
+    item.addEventListener('change',(event) => {
+      let check = document.querySelector(`[data-check-name="${item.getAttribute('data-check-for')}"]`)
+      if(check){
+        if(item.checked){
+          check.setAttribute('data-check-checked','true');
+        } else {
+          check.setAttribute('data-check-checked','false');
         }
       }
-      node.parentNode.setAttribute('data-number-value', defaultValue);
-      node.value = defaultValue;
     });
   });
 
-  // 14. 文本域处理 - 使用事件委托
-  document.addEventListener('keydown', (e) => {
-    const item = e.target.closest('textarea[data-textarea]');
-    if (!item) return;
-    
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      const start = item.selectionStart;
-      const end = item.selectionEnd;
-      const selectedText = item.value.substring(start, end);
-      const before = item.value.substring(0, start);
-      const after = item.value.substring(end, item.value.length);
-      item.value = before + '\t' + selectedText + after;
-      item.selectionStart = item.selectionEnd = start + 1;
-    }
-  });
-
-  document.addEventListener('focus', (e) => {
-    const item = e.target.closest('textarea[data-textarea]');
-    if (!item) return;
-    
-    const otherscroll = document.querySelectorAll('[data-scroll]');
-    otherscroll.forEach(items => {
-      items.style.overflowY = 'hidden';
-    });
-  }, true);
-
-  document.addEventListener('blur', (e) => {
-    const item = e.target.closest('textarea[data-textarea]');
-    if (!item) return;
-    
-    const otherscroll = document.querySelectorAll('[data-scroll]');
-    otherscroll.forEach(items => {
-      items.style.overflowY = 'scroll';
-    });
-  }, true);
-
-  // 文本域示例填充
-  document.addEventListener('focus', (e) => {
-    const item = e.target.closest('textarea[data-textarea="eg"]');
-    if (!item) return;
-    
-    const tips = item.parentNode.querySelector('[data-textarea="tips"]');
-    if (tips) tips.style.display = 'none';
-  }, true);
-
-  document.addEventListener('blur', (e) => {
-    const item = e.target.closest('textarea[data-textarea="eg"]');
-    if (!item) return;
-    
-    const tips = item.parentNode.querySelector('[data-textarea="tips"]');
-    if (tips) {
-      if (item.value == '') {
-        tips.style.display = 'flex';
+  INPUT_MUST_TEXT.forEach(item => {
+    item.addEventListener('change',() => {
+      let info = item.getAttribute('data-input-must');
+      let infoEn = item.getAttribute('data-input-must-en');
+      if(infoEn){
+        inputMust(item,['text',[info,infoEn]]);
       } else {
-        tips.style.display = 'none';
+        inputMust(item,['text',info]);
       }
-    }
-  }, true);
-
-  document.addEventListener('dblclick', (e) => {
-    const item = e.target.closest('textarea[data-textarea="eg"]');
-    if (!item || item.value != '') return;
-    
-    let egtext = item.getAttribute('data-eg');
-    const ROOT = document.documentElement;
-    if (ROOT.getAttribute('data-language') == 'En') {
-      egtext = item.getAttribute('data-eg-en');
-    }
-    egtext = egtext.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
-    if (egtext) {
-      item.value = egtext;
-    }
-  });
-
-  // 15. 清空按钮 - 使用事件委托
-  document.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-close="clear"]');
-    if (!item) return;
-    
-    const hasvalue = [...item.parentNode.querySelectorAll('textarea'), ...item.parentNode.querySelectorAll('input[type="text"]')];
-    hasvalue.forEach(items => {
-      items.value = '';
-      if (items.getAttribute('data-textarea') == 'eg') {
-        const tips = items.parentNode.querySelector('[data-textarea="tips"]');
-        if (tips) tips.style.display = 'flex';
-      }
-      const inputEvent = new Event('input', { bubbles: true });
-      items.dispatchEvent(inputEvent);
-      const inputEvent2 = new Event('change', { bubbles: true });
-      items.dispatchEvent(inputEvent2);
+      
+      item.parentNode.setAttribute('data-text-value',item.value);
     });
   });
 
-  // 16. 关闭按钮 - 使用事件委托
-  document.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-close="close"]');
-    if (!item) return;
-    
-    const closeFor = item.getAttribute('data-close-for');
-    if (!closeFor) return;
-    
-    const closeNode = document.querySelector(`[data-close-id="${closeFor}"]`);
-    if (closeNode) {
-      closeNode.style.display = 'none';
-    }
+  INPUT_MUST_INT.forEach(item => {
+    if(!item.getAttribute('data-value')){//类型冲突
+      let info = item.getAttribute('data-input-must');
+      let max = info.split(',')[1] * 1;
+      let min = info.split(',')[0] * 1;
+      max = max ? max : 0;
+      min = min ? min : 0;
+      info = [min,max];
+      item.addEventListener('change',() => {
+      if(item.value < min || item.value > max || (item.value.replace(/[0-9]/g,'').trim().length > 0 && item.value.replace(/[0-9]/g,'').trim() !== '-')){
+        tipsAll(['数值错误，已修正','Wrong type, fixed'],1000,3);
+        inputMust(item,['int',...info]);
+      }
+        item.parentNode.setAttribute('data-int-value',item.value);
+      });
+    };
   });
-
-  // ========== 其他需要直接绑定的逻辑（颜色选择器等复杂交互）==========
-  // 这些需要在元素存在时初始化，但也可以通过 MutationObserver 处理动态添加
-  
-  // RGB/HEX 颜色输入变化
-  document.addEventListener('change', (e) => {
-    const item = e.target.closest('[data-input="hex"], [data-input="rgb"]');
-    if (!item) return;
-    
-    const colortype = item.getAttribute('data-input');
-    const info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
-    inputMust(item, [colortype, info]);
-    item.parentNode.style.setProperty('--input-color', item.value);
-    
-    const colorbox = item.parentNode.querySelector('[data-input-color="box"]');
-    const colorrange = item.parentNode.querySelector('[data-input="hsl-h"]');
-    const colorvalue = item.parentNode.querySelector('[data-input-color="hsl-h"]');
-    
-    let RGB = item.value.split('#').length > 1 ? hexTorgb(item.value) : item.value.toLowerCase().replace('rgb(', '').replace(')', '').split(',');
-    let HEX = item.value.split('#').length > 1 ? item.value : rgbTohex(RGB[0], RGB[1], RGB[2]);
-    let HSL = rgbTohsl(RGB[0], RGB[1], RGB[2]);
-    let HSV = hslTohsv(HSL[0], HSL[1], HSL[2]);
-    
-    if (colorrange) colorrange.value = HSL[0];
-    if (colorvalue) colorvalue.value = HSL[0];
-    if (colorbox) {
-      const hslPicker = colorbox.querySelector('[data-input-color="hsl"]');
-      const colorpickW = hslPicker ? hslPicker.offsetWidth : 110; // 默认值，可从 CSS 变量获取
-      const colorpickH = hslPicker ? hslPicker.offsetHeight : 110;
+  INPUT_MUST_FLOAT.forEach(item => {
+    if(!item.getAttribute('data-value')){//类型冲突
+      let info = item.getAttribute('data-input-must');
+      let max = info.split(',')[1] * 1;
+      let min = info.split(',')[0] * 1;
+      max = max ? max : 0;
+      min = min ? min : 0;
+      info = [min,max];
+      item.addEventListener('change',() => {
+        if(item.value < min || item.value > max || item.value.replace(/[^0-9]/g,'').trim().length == 0 || item.value.replace(/[0-9]/g,'').trim().length > 1){
+          inputMust(item,['float',...info]);
+        };
+        item.parentNode.setAttribute('data-float-value',item.value);
+      });
       
-      colorbox.style.setProperty('--hsl-h', HSL[0]);
-      // HSL 使用像素值，需要将百分比转换为像素
-      colorbox.style.setProperty('--hsl-s', (HSL[1] / 100 * colorpickW) + 'px');
-      colorbox.style.setProperty('--hsl-l', (HSL[2] / 100 * colorpickH) + 'px');
-      colorbox.style.setProperty('--hsv-s', HSV[1]);
-      colorbox.style.setProperty('--hsv-v', HSV[2]);
-    }
-    
-    item.parentNode.setAttribute('data-color-hex', HEX);
-    item.parentNode.setAttribute('data-color-rgb', `rgb(${RGB[0]},${RGB[1]},${RGB[2]})`);
-    item.parentNode.setAttribute('data-color-hsl', `hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
-    item.parentNode.setAttribute('data-color-hsv', `hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
+    };
   });
 
-  // 17. HSL H 值变化（range 和 text input）
-  document.addEventListener('input', (e) => {
-    const item = e.target.closest('[data-input="hsl-h"], [data-input-color="hsl-h"]');
-    if (!item) return;
-    
-    const colorcomp = item.closest('[data-color-hex]') || item.parentNode.parentNode.parentNode.parentNode;
-    if (!colorcomp) return;
-    
-    const oldHSLAttr = colorcomp.getAttribute('data-color-hsl');
-    if (!oldHSLAttr) return;
-    
-    const oldHSL = oldHSLAttr.replace('hsl(', '').replace(')', '').split(',').map(item => item.replace('%', '').trim());
-    const newRGB = hslTorgb(item.value, oldHSL[1], oldHSL[2], 255);
-    const newHEX = rgbTohex(newRGB[0], newRGB[1], newRGB[2]);
-    const newHSV = hslTohsv(item.value, oldHSL[1], oldHSL[2]);
-    
-    const colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-    const colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-    if (colorinput1) {
-      colorinput1.value = newHEX;
-    }
-    if (colorinput2) {
-      colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
-    }
-    
-    const colorbox = colorcomp.querySelector('[data-input-color="box"]');
-    if (colorbox) {
-      colorbox.style.setProperty('--hsl-h', item.value);
-    }
-    
-    colorcomp.style.setProperty('--input-color', newHEX);
-    colorcomp.setAttribute('data-color-hex', newHEX);
-    colorcomp.setAttribute('data-color-rgb', `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-    colorcomp.setAttribute('data-color-hsl', `hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
-    colorcomp.setAttribute('data-color-hsv', `hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
-    
-    // 同步另一个 HSL H 输入框
-    const otherHSLH = colorcomp.querySelector(item.getAttribute('data-input') === 'hsl-h' 
-      ? '[data-input-color="hsl-h"]' 
-      : '[data-input="hsl-h"]');
-    if (otherHSLH) {
-      otherHSLH.value = item.value;
-    }
+  INPUT_MAX.forEach(item => {
+    item.addEventListener('input',() => {
+      if(!USER_KEYING){
+        if(item.nextElementSibling){
+          item.nextElementSibling.querySelector('span').innerHTML = item.value.length;
+        } else {
+          let node = document.createElement('div')
+          node.className = 'pos-a';
+          node.style.right = '2px';
+          node.style.fontSize = '9px';
+          node.style.opacity = '0.6';
+          node.innerHTML = `<span>${item.value.length}</span>/${item.getAttribute('maxlength')}`
+          item.parentNode.appendChild(node)
+        }
+      };
+    })
   });
 
-  // 18. 颜色选择器拖拽（HSV/HSL 颜色面板）
-  // 使用 Map 来跟踪每个元素的拖拽状态
-  const colorPickMoving = new Map();
-  
-  function colorPickMix(e, item, type, isMobile) {
+  INPUT_RANGE.forEach(item => {
+    item.addEventListener('input',() => {
+      item.nextElementSibling.value = item.value;
+      item.parentNode.setAttribute('data-number-value',item.value);
+    })
+  });
+
+  INPUT_VALUE.forEach(item => {
+    let info = item.getAttribute('data-input-must');
+    let max = info.split(',')[1] * 1;
+    let min = info.split(',')[0] * 1;
+    max = max !== null ? max : 0;
+    min = min !== null ? min : 0;
+    info = [min,max];
+    item.addEventListener('input',() => {
+      item.previousElementSibling.value = item.value;
+      item.parentNode.setAttribute('data-number-value',item.value);
+    });
+    item.addEventListener('change',() => {
+      if(item.value < min || item.value > max || (item.value.replace(/[0-9]/g,'').trim().length > 0 && item.value.replace(/[0-9]/g,'').trim() !== '-')){
+        tipsAll(['数值错误，已修正','Wrong type, fixed'],1000,3);
+        inputMust(item,['int',...info]);
+      }
+      item.previousElementSibling.value = item.value;
+      item.parentNode.setAttribute('data-number-value',item.value);
+    })
+  });
+
+  INPUT_COLOR.forEach(item => {
+    item.addEventListener('click',() => {
+      let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
+      if(colorbox){
+        colorbox.style.display = 'flex';
+      }
+    })
+  });
+
+  INPUT_COLOR_TYPE.forEach(item => {
+    item.addEventListener('change',() => {
+      if(item.checked){
+        item.previousElementSibling.setAttribute('data-input','rgb');
+        let HEX = hexTorgb(item.previousElementSibling.value);
+        item.previousElementSibling.value =  `rgb(${HEX[0]},${HEX[1]},${HEX[2]})`
+      } else {
+        item.previousElementSibling.setAttribute('data-input','hex');
+        let RGB = item.previousElementSibling.value.toLowerCase().replace('rgb(','').replace(')','').split(',')
+        item.previousElementSibling.value = rgbTohex(RGB[0] * 1,RGB[1] * 1,RGB[2] * 1);
+      }
+    })
+  });
+
+  INPUT_COLORPICK_BOX.forEach(item => {
+    document.addEventListener('mousedown', function (event) {
+      let inputs = item.parentNode.parentNode;
+      if(!item.contains(event.target) && !inputs.contains(event.target) && document.activeElement){
+        item.style.display = 'none';
+      }
+    })
+  });
+
+  [...INPUT_RGB,...INPUT_HEX].forEach(item => {
+    item.addEventListener('change',() => {
+      let colortype = item.getAttribute('data-input');
+      let info = colortype == 'hex' ? '#888888' : 'rgb(136,136,136)';
+      inputMust(item,[colortype,info])
+      item.parentNode.style.setProperty("--input-color",item.value);
+      let colorbox = item.parentNode.querySelector('[data-input-color="box"]');
+      let colorrange = item.parentNode.querySelector('[data-input="hsl-h"]');
+      let colorvalue = item.parentNode.querySelector('[data-input-color="hsl-h"]');
+      let RGB = item.value.split('#').length > 1 ? hexTorgb(item.value) : item.value.toLowerCase().replace('rgb(','').replace(')','').split(',');
+      let HEX = item.value.split('#').length > 1 ? item.value : rgbTohex(RGB[0],RGB[1],RGB[2]);
+      let HSL = rgbTohsl(RGB[0],RGB[1],RGB[2]);
+      let HSV = hslTohsv(HSL[0],HSL[1],HSL[2]);
+      colorrange.value = HSL[0];
+      colorvalue.value = HSL[0];
+      colorbox.style.setProperty("--hsl-h",HSL[0]);
+      colorbox.style.setProperty("--hsl-s",HSL[1]);
+      colorbox.style.setProperty("--hsl-l",HSL[2]);
+      colorbox.style.setProperty("--hsv-s",HSV[1]);
+      colorbox.style.setProperty("--hsv-v",HSV[2]);
+      item.parentNode.setAttribute('data-color-hex',HEX);
+      item.parentNode.setAttribute('data-color-rgb',`rgb(${RGB[0]},${RGB[1]},${RGB[2]})`);
+      item.parentNode.setAttribute('data-color-hsl',`hsl(${HSL[0]},${HSL[1]}%,${HSL[2]}%)`);
+      item.parentNode.setAttribute('data-color-hsv',`hsv(${HSV[0]},${HSV[1]}%,${HSV[2]}%)`);
+    })
+  });
+
+  [...INPUT_COLORPICK_HSL_H,...INPUT_HSL_H].forEach(item => {
+    item.addEventListener('input',() => {
+      item.parentNode.parentNode.style.setProperty("--hsl-h",item.value);
+      let colorcomp = item.parentNode.parentNode.parentNode.parentNode;
+      let oldHSL = colorcomp.getAttribute('data-color-hsl').replace('hsl(','').replace(')','').split(',').map(item => item.replace('%',''));
+      let newRGB = hslTorgb(item.value,oldHSL[1],oldHSL[2],255);
+      let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+      let newHSV = hslTohsv(item.value,oldHSL[1],oldHSL[2])
+      let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+      let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+      if(colorinput1){
+        colorinput1.value = newHEX;
+      }
+      if(colorinput2){
+        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+      }
+      colorcomp.style.setProperty("--input-color",newHEX);
+      colorcomp.setAttribute('data-color-hex',newHEX);
+      colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+      colorcomp.setAttribute('data-color-hsl',`hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
+      colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+      item.nextElementSibling.value = item.value;
+    });
+  });
+
+  [...INPUT_COLORPICK_HSV,...INPUT_COLORPICK_HSL].forEach(item => {
+    let colortype = item.getAttribute('data-input-color');
+    let isMoving = false;
+    item.addEventListener('mousedown',(event) => {
+      isMoving = true;
+      colorPickMix(event,colortype);
+    });
+    item.addEventListener('touchstart',(event) => {
+      isMoving = true;
+      colorPickMix(event,colortype,true);
+    });
+    item.addEventListener('mousemove',(event) => {
+      if(isMoving) colorPickMix(event,colortype);
+    });
+    item.addEventListener('touchmove',(event) => {
+      if(isMoving) colorPickMix(event,colortype,true);
+    });
+    item.addEventListener('click',(event) => {
+      if(isMoving) return;
+      colorPickMix(event,colortype);
+    });
+    item.addEventListener('mouseup',() => {
+      isMoving = false;
+    });
+    item.addEventListener('touchend',() => {
+      isMoving = false;
+    });
+  });
+
+  function colorPickMix(e,type,ISMOBILE){
     e.preventDefault();
     e.stopPropagation();
-    
-    if (!item) return;
-    
-    const x = isMobile ? e.touches[0].clientX : e.clientX;
-    const y = isMobile ? e.touches[0].clientY : e.clientY;
-    const w = item.offsetWidth;
-    const h = item.offsetHeight;
-    const startX = item.getBoundingClientRect().left;
-    const startY = item.getBoundingClientRect().top;
-    
-    let SS = Math.floor((x - startX) / w * 100);
-    let VL = 100 - Math.floor((y - startY) / h * 100);
+  
+    let item = e.target;
+    let x = ISMOBILE ? e.touches[0].clientX : e.clientX;
+    let y = ISMOBILE ? e.touches[0].clientY : e.clientY;
+    let w = item.offsetWidth;
+    let h = item.offsetHeight;
+    let startX = item.getBoundingClientRect().left;
+    let startY = item.getBoundingClientRect().top;
+    //console.log(x,y,w,h,startX,startY)
+    let SS = Math.floor((x - startX)/w * 100);
+    let VL = 100 - Math.floor((y - startY)/h * 100);
     SS = SS <= 100 ? SS : 100;
     VL = VL <= 100 ? VL : 100;
     SS = SS >= 0 ? SS : 0;
     VL = VL >= 0 ? VL : 0;
+    let colorcomp = item.parentNode.parentNode.parentNode;
+    let oldColor = colorcomp.getAttribute('data-color-' + type).replace(type + '(','').replace(')','').split(',').map(item => item.replace('%',''));
     
-    const colorcomp = item.closest('[data-color-hex]') || item.parentNode.parentNode.parentNode;
-    if (!colorcomp) return;
-    
-    const colortype = item.getAttribute('data-input-color');
-    const oldColorAttr = colorcomp.getAttribute('data-color-' + colortype);
-    if (!oldColorAttr) return;
-    
-    const oldColor = oldColorAttr.replace(colortype + '(', '').replace(')', '').split(',').map(item => item.replace('%', '').trim());
-    
-    if (colortype == 'hsl') {
-      const newHSV = hslTohsv(oldColor[0], SS, VL);
-      const newRGB = hslTorgb(oldColor[0], SS, VL, 255);
-      const newHEX = rgbTohex(newRGB[0], newRGB[1], newRGB[2]);
-      const colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-      const colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-      if (colorinput1) {
+    if(type == 'hsl'){
+      let newHSV = hslTohsv(oldColor[0],SS,VL);
+      let newRGB = hslTorgb(oldColor[0],SS,VL,255);
+      let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+      let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+      let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+      if(colorinput1){
         colorinput1.value = newHEX;
-      }
-      if (colorinput2) {
-        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
-      }
-      const colorbox = item.parentNode;
-      if (colorbox) {
-        // HSL 使用像素值，需要将百分比转换为像素
-        // ::after 使用 transform: translate(-50%, 50%)，所以需要直接设置为像素位置
-        colorbox.style.setProperty('--hsl-s', (SS / 100 * w) + 'px');
-        colorbox.style.setProperty('--hsl-l', (VL / 100 * h) + 'px');
-        colorbox.style.setProperty('--hsv-s', newHSV[1]);
-        colorbox.style.setProperty('--hsv-v', newHSV[2]);
-      }
-      colorcomp.style.setProperty('--input-color', newHEX);
-      colorcomp.setAttribute('data-color-hex', newHEX);
-      colorcomp.setAttribute('data-color-rgb', `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-      colorcomp.setAttribute('data-color-hsv', `hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
-      colorcomp.setAttribute('data-color-hsl', `hsl(${oldColor[0]},${SS}%,${VL}%)`);
+      };
+      if(colorinput2){
+        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+      };
+      item.parentNode.style.setProperty("--hsl-s",SS);
+      item.parentNode.style.setProperty("--hsl-l",VL);
+      item.parentNode.style.setProperty("--hsv-s",newHSV[1]);
+      item.parentNode.style.setProperty("--hsv-v",newHSV[2]);
+      colorcomp.style.setProperty("--input-color",newHEX);
+      colorcomp.setAttribute('data-color-hex',newHEX);
+      colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+      colorcomp.setAttribute('data-color-hsv',`hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
+      colorcomp.setAttribute('data-color-hsl',`hsl(${oldColor[0]},${SS}%,${VL}%)`);
     } else {
-      const newHSL = hsvTohsl(oldColor[0], SS, VL);
-      const newRGB = hslTorgb(newHSL[0], newHSL[1], newHSL[2], 255);
-      const newHEX = rgbTohex(newRGB[0], newRGB[1], newRGB[2]);
-      const colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-      const colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-      if (colorinput1) {
+      let newHSL = hsvTohsl(oldColor[0],SS,VL);
+      let newRGB = hslTorgb(newHSL[0],newHSL[1],newHSL[2],255);
+      let newHEX = rgbTohex(newRGB[0],newRGB[1],newRGB[2]);
+      let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+      let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+      if(colorinput1){
         colorinput1.value = newHEX;
-      }
-      if (colorinput2) {
-        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
-      }
-      const colorbox = item.parentNode;
-      if (colorbox) {
-        colorbox.style.setProperty('--hsv-s', SS);
-        colorbox.style.setProperty('--hsv-v', VL);
-        // HSL 使用像素值，需要将百分比转换为像素
-        // ::after 使用 transform: translate(-50%, 50%)，所以需要直接设置为像素位置
-        colorbox.style.setProperty('--hsl-s', (newHSL[1] / 100 * w) + 'px');
-        colorbox.style.setProperty('--hsl-l', (newHSL[2] / 100 * h) + 'px');
-      }
-      colorcomp.style.setProperty('--input-color', newHEX);
-      colorcomp.setAttribute('data-color-hex', newHEX);
-      colorcomp.setAttribute('data-color-rgb', `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-      colorcomp.setAttribute('data-color-hsl', `hsl(${newHSL[0]},${newHSL[1]}%,${newHSL[2]}%)`);
-      colorcomp.setAttribute('data-color-hsv', `hsv(${oldColor[0]},${SS}%,${VL}%)`);
+      };
+      if(colorinput2){
+        colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`
+      };
+      item.parentNode.style.setProperty("--hsv-s",SS);
+      item.parentNode.style.setProperty("--hsv-v",VL);
+      item.parentNode.style.setProperty("--hsl-s",newHSL[1]);
+      item.parentNode.style.setProperty("--hsl-l",newHSL[2]);
+      colorcomp.style.setProperty("--input-color",newHEX);
+      colorcomp.setAttribute('data-color-hex',newHEX);
+      colorcomp.setAttribute('data-color-rgb',`rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
+      colorcomp.setAttribute('data-color-hsl',`hsl(${newHSL[0]},${newHSL[1]}%,${newHSL[2]}%)`);
+      colorcomp.setAttribute('data-color-hsv',`hsv(${oldColor[0]},${SS}%,${VL}%)`);
     }
-  }
-  
-  // 鼠标和触摸事件处理
-  let activeColorPickItem = null;
-  
-  document.addEventListener('mousedown', (e) => {
-    const item = e.target.closest('[data-input-color="hsv"], [data-input-color="hsl"]');
-    if (!item) return;
-    
-    activeColorPickItem = item;
-    colorPickMoving.set(item, true);
-    const colortype = item.getAttribute('data-input-color');
-    colorPickMix(e, item, colortype, false);
-  });
-  
-  document.addEventListener('touchstart', (e) => {
-    const item = e.target.closest('[data-input-color="hsv"], [data-input-color="hsl"]');
-    if (!item) return;
-    
-    activeColorPickItem = item;
-    colorPickMoving.set(item, true);
-    const colortype = item.getAttribute('data-input-color');
-    colorPickMix(e, item, colortype, true);
-  }, { passive: false });
-  
-  document.addEventListener('mousemove', (e) => {
-    if (!activeColorPickItem || !colorPickMoving.get(activeColorPickItem)) return;
-    
-    const colortype = activeColorPickItem.getAttribute('data-input-color');
-    colorPickMix(e, activeColorPickItem, colortype, false);
-  });
-  
-  document.addEventListener('touchmove', (e) => {
-    if (!activeColorPickItem || !colorPickMoving.get(activeColorPickItem)) return;
-    
-    const colortype = activeColorPickItem.getAttribute('data-input-color');
-    colorPickMix(e, activeColorPickItem, colortype, true);
-  }, { passive: false });
-  
-  document.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-input-color="hsv"], [data-input-color="hsl"]');
-    if (!item || colorPickMoving.get(item)) return;
-    
-    const colortype = item.getAttribute('data-input-color');
-    colorPickMix(e, item, colortype, false);
-  });
-  
-  document.addEventListener('mouseup', () => {
-    activeColorPickItem = null;
-    colorPickMoving.clear();
-  });
-  
-  document.addEventListener('touchend', () => {
-    activeColorPickItem = null;
-    colorPickMoving.clear();
+  };
+
+  INPUT_GETCOLOR.forEach(item => {
+    item.addEventListener('click', () => {
+      if(GETCOLOR){
+        GETCOLOR.open()
+        .then(USER_COLOR => {
+            // returns hex color value (#RRGGBB) of the selected pixel
+            let newHEX = USER_COLOR.sRGBHex;
+            let newRGB = hexTorgb(newHEX);
+            let colorcomp = item.parentNode;
+            let colorinput1 = colorcomp.querySelector('[data-input="hex"]');
+            let colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+            if(colorinput1){
+              colorinput1.value = newHEX;
+              let inputEvent = new Event('change',{bubbles:true});
+              colorinput1.dispatchEvent(inputEvent);
+            }
+            if(colorinput2){
+              colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
+              let inputEvent = new Event('change',{bubbles:true});
+              colorinput2.dispatchEvent(inputEvent);
+            }
+            
+        })
+        .catch(error => {
+            // handle the user choosing to exit eyedropper mode without a selection
+        });
+      }
+    })
   });
 
-  // 19. 吸色管功能
-  document.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-getcolor]');
-    if (!item || !GETCOLOR) return;
-    
-    GETCOLOR.open()
-      .then(USER_COLOR => {
-        const newHEX = USER_COLOR.sRGBHex;
-        const newRGB = hexTorgb(newHEX);
-        const colorcomp = item.closest('[data-color-hex]') || item.parentNode;
-        const colorinput1 = colorcomp.querySelector('[data-input="hex"]');
-        const colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
-        
-        if (colorinput1) {
-          colorinput1.value = newHEX;
-          const inputEvent = new Event('change', { bubbles: true });
-          colorinput1.dispatchEvent(inputEvent);
-        }
-        if (colorinput2) {
-          colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
-          const inputEvent = new Event('change', { bubbles: true });
-          colorinput2.dispatchEvent(inputEvent);
-        }
+  TEXTAREA.forEach(item => {//调整输入逻辑
+    let otherscroll = document.querySelectorAll('[data-scroll]')
+    item.addEventListener('keydown',(event) => {
+      if (event.key === 'Tab') {
+        event.preventDefault(); // 阻止默认Tab行为
+        const start = item.selectionStart;
+        const end = item.selectionEnd;
+        const selectedText = item.value.substring(start, end);
+        const before = item.value.substring(0, start);
+        const after = item.value.substring(end, item.value.length);
+        item.value = before + '\t' + selectedText + after; // 用4个空格替换Tab
+        item.selectionStart = item.selectionEnd = start + 4; // 设置光标位置
+      }
+    });
+    item.addEventListener('focus',() => { 
+      otherscroll.forEach(items => {
+        items.style.overflowY = 'hidden';
       })
-      .catch(error => {
-        // 用户取消选择，不做处理
-      });
+    })
+    item.addEventListener('blur',() => {
+      otherscroll.forEach(items => {
+        items.style.overflowY = 'scroll';
+      })
+    })
   });
-};
 
-window.addEventListener('load', () => {
+  TEXTAREA_EG.forEach(item => {//调整输入逻辑
+    let tips = item.parentNode.querySelector('[data-textarea="tips"]');
+    item.addEventListener('focus',() => { 
+      tips.style.display = "none";
+    })
+    item.addEventListener('blur',() => {
+      if(item.value == ''){
+        tips.style.display = "flex";
+      }else{
+        tips.style.display = "none";
+      }
+    })
+    item.addEventListener('dblclick',() => {
+      if (item.value == '' ) {
+        let egtext = item.getAttribute('data-eg');
+        if(ROOT.getAttribute('data-language') == 'En'){
+          egtext = item.getAttribute('data-eg-en');
+        }
+        egtext = egtext.replace(/\\n/g,'\n').replace(/\\t/g,'\t');//.replace(/\&nbsp;/g,'&nbsp;')
+        if(egtext){
+          item.value = egtext;
+        }
+      }
+    })
+  });
+
+  CLOSE_CLEAR.forEach(item => {//清空输入内容
+    item.addEventListener('click',() => {
+      let hasvalue = [...item.parentNode.querySelectorAll('textarea'),...item.parentNode.querySelectorAll('input[type="text"]')];
+      hasvalue.forEach(items => {
+        items.value = '';
+        if(items.getAttribute('data-textarea') == 'eg'){
+          items.parentNode.querySelector('[data-textarea="tips"]').style.display = "flex";
+        };
+        let inputEvent = new Event('input',{bubbles:true});
+        items.dispatchEvent(inputEvent);
+        let inputEvent2 = new Event('change',{bubbles:true});
+        items.dispatchEvent(inputEvent2);
+      });
+      
+    })
+  });
+
+  CLOSE_CLOSE.forEach(item =>{//关闭对象
+    item.addEventListener('click',() => {
+      let closeNode = document.querySelector(`[data-close-id="${item.getAttribute('data-close-for')}"]`);
+      if(closeNode) {
+        closeNode.style.display = 'none'
+      };
+    });
+  });
+
+  RADIO.forEach(item => {
+    item.addEventListener('click',()=>{
+      let radio = item.parentNode;
+      let oldpick = radio.querySelector('[data-radio-main="true"]');
+      let data = item.getAttribute('data-radio-data');
+      if(oldpick){
+        oldpick.setAttribute('data-radio-main','false');
+      }
+      item.setAttribute('data-radio-main','true');
+      radio.setAttribute('data-radio-value',data);
+      if(item.parentNode.parentNode.getAttribute('data-scroll') !== null){
+        let allradio = Array.from(item.parentNode.querySelectorAll('[data-radio-data]'));
+        let index = allradio.indexOf(item);
+        let inline = index > allradio.length/2 ? 'nearest' : 'center';
+        item.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: inline,
+        });
+        if( index > allradio.length/2  && item.nextElementSibling){
+          item.nextElementSibling.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest',
+          });
+        };
+      };
+    });
+  });
+
+  RESET.forEach(item => {
+    item.addEventListener('click',()=>{
+      
+      let input = item.parentNode.querySelectorAll('input');
+      input.forEach(node =>{
+        let defaultValue = node.getAttribute('data-input-default');
+        if(!defaultValue){
+          switch (node.type){
+            case 'text': if( node.value * 1 !== NaN){defaultValue = 0}else{node.value = ''} ;break
+            case 'range': defaultValue = node.getAttribute('min') || 0;break
+          }
+        };
+        node.parentNode.setAttribute('data-number-value',defaultValue)
+        node.value = defaultValue;
+      });
+    });
+  });
+}
+
+window.addEventListener('load',()=>{
   afterAllMust();
-  COMP_MAIN(); // 只需运行一次，动态元素会自动响应
+  COMP_MAIN();
   
   if (window.EyeDropper == undefined || ISMOBILE) {
     //console.error('EyeDropper API is not supported on this platform');
@@ -958,7 +776,6 @@ window.addEventListener('load', () => {
     setLanguage(false);
   };
 });
-
 
 window.addEventListener('resize',/*防抖*/debounce(()=>{
   afterAllMust();

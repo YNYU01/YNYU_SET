@@ -214,12 +214,13 @@ figma.ui.onmessage = async (message) => {
     };
     //批量创建节点
     if ( type == "createZy"){
-        console.log(info)
+        //console.log(info)
         for (const zy of info) {
             let bg1 = [toRGB('#EEEEEE',true)];
             let color1 = [toRGB('#272727',true)];  
             let color2 = [toRGB('#333333',true)];
             let color3 = [toRGB('#808080',true)];
+            let color4 = [toRGB('#AEAEAE',true)];
             let thComp,tdComp,preComp,allComp = [];
             let box = addFrame([900,100,null,null,zy.zyName,[]]);
             figma.currentPage.appendChild(box);
@@ -293,16 +294,17 @@ figma.ui.onmessage = async (message) => {
                             let mask = addFrame([100,100,null,null,'mask',[]]);
                             addAutoLayout(mask,['V','TL',0,[0,10,0,20]]);
                             mask.strokes = [toRGB('#272727',true)];
+                            mask.fills = [toRGB('#27272799',true)];
                             [mask.strokeTopWeight,mask.strokeRightWeight,mask.strokeBottomWeight,mask.strokeLeftWeight] = [0,14,0,0];
-                            let num = await addText([{family:'Roboto Mono',style:'Regular'},'3',20,color3]);
+                            let num = await addText([{family:'Roboto Mono',style:'Regular'},'4',20,color4]);
                             num.autoRename = false;
                             num.name = '#last-line-num.text';
                             num.fills = [];
                             mask.appendChild(num);
                             pre.appendChild(mask);
 
-                            let eg = `function any(){\n\t/*somthing there*/\n}`;
-                            let code = await addText([{family:'Roboto Mono',style:'Regular'},eg,20,color3]);    
+                            let eg = `function any(){\n\t/*somthing there*/\n}\n//Remember to change the value of 'last-line-num', it must be 4 here`;
+                            let code = await addText([{family:'Roboto Mono',style:'Regular'},eg,20,color4]);    
                             code.setRangeListOptions(0,eg.length,{type: 'ORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
                             code.hangingList = true;
                             pre.appendChild(code);
@@ -311,10 +313,12 @@ figma.ui.onmessage = async (message) => {
                             mask.layoutSizingHorizontal = 'HUG';
                             mask.layoutSizingVertical = 'FILL';
                             preComp = figma.createComponentFromNode(pre);
-                            addCompPro(preComp,num,'--last-line-num','TEXT','3');
+                            addCompPro(preComp,num,'--last-line-num','TEXT','4');
 
-                            preComp.x = box.x - 316;
+                            preComp.x = box.x - 450;
                             preComp.y = box.y + 120;
+                            preComp.resize(426,100);
+                            preComp.layoutSizingVertical = 'HUG';
                             allComp.push(preComp);
                         };
                         let newPre = preComp.createInstance();
@@ -326,6 +330,7 @@ figma.ui.onmessage = async (message) => {
                         newPre.setProperties({[proId]: (cre.content.length).toString()});
                         box.appendChild(line);
                         line.layoutSizingHorizontal = 'FILL';
+                        let codeView = figma.widget.register()
                     },
                     ul: async function(cre){
                         let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
@@ -592,10 +597,45 @@ figma.ui.onmessage = async (message) => {
     };
     //整理样式/变量相关组件和表格
     if( type == "reVariableLayout"){
+        let a = figma.currentPage;
         const variablePages = figma.root.findChildren(item => item.name.includes('@localsheet'));
         variablePages.forEach(page => {
-
-        })
+            figma.setCurrentPageAsync(page)
+            .then(()=>{
+                let variableNode = page.findChildren(item => item.name.includes(':variable'));
+                let styleNode = page.findChildren(item => item.name.includes(':style'));
+                let variableNodeGroup = {};
+                let styleNodeGroup = {};
+                let allGroup = [];
+                //console.log(variableNode,styleNode)
+                for(let node of variableNode){
+                    let key = node.name.split('@')[0];
+                    if(!variableNodeGroup[key]) variableNodeGroup[key] = [];
+                    variableNodeGroup[key].push(node);
+                };
+                for(let node of styleNode){
+                    let key = node.name.split('@')[0];
+                    if(!styleNodeGroup[key]) styleNodeGroup[key] = [];
+                    styleNodeGroup[key].push(node);
+                };
+                [...Object.values(variableNodeGroup),...Object.values(styleNodeGroup)].forEach(item => {
+                    layoutByRatio(item,true);
+                    let group = figma.group(item,a);
+                    allGroup.push(group);
+                });
+                layoutByRatio(allGroup,true);
+                figma.currentPage.selection = allGroup;
+                figma.viewport.scrollAndZoomIntoView(allGroup);
+                figma.viewport.zoom = figma.viewport.zoom * 0.6;
+                allGroup.forEach(item => {
+                    figma.ungroup(item);
+                });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+                
+        });
     };
     //从预设或组件创建表格
     if ( type == "creTable"){

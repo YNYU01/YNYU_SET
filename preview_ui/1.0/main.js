@@ -147,51 +147,7 @@ const COMPS_TIPS = {
   ],
 }
 
-// 存储每个组件的原始 HTML 代码（用于复制功能）
-const ORIGINAL_CODES = {};
-
-/**
- * 保存所有示例组件的原始 HTML 代码
- * 在页面加载时调用，确保复制时使用原始代码而不是修改后的代码
- * 关键改进：复制时会使用保存的原始代码，而不是当前修改后的 innerHTML
- */
-function saveOriginalCodes() {
-  const copyElements = document.querySelectorAll('[data-copy]');
-  copyElements.forEach(node => {
-    const key = node.getAttribute('data-copy');
-    if (!key) return;
-    
-    // 跳过 HTML_main 和 JS_main，它们使用常量，不需要保存
-    if (key === 'HTML_main' || key === 'JS_main') {
-      return;
-    }
-    
-    // 保存原始 HTML 代码
-    // 找到包含 key: 的父容器，提取 key: 之后的内容
-    const fullHTML = node.innerHTML;
-    const keyIndex = fullHTML.indexOf(key + ':');
-    if (keyIndex !== -1) {
-      // 找到 "key:" 之后的内容（这是原始的示例代码部分）
-      let afterKey = fullHTML.substring(keyIndex + key.length + 1);
-      // 移除开头的空白字符（包括换行、空格等），但保留后续的结构
-      afterKey = afterKey.trim();
-      // 保存原始代码（此时还没有被用户修改）
-      ORIGINAL_CODES[key] = afterKey;
-    }
-  });
-}
-
-// 在 DOM 加载完成后立即保存原始代码（确保在组件被修改之前保存）
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    saveOriginalCodes();
-    initTips();
-  });
-} else {
-  // DOM 已经加载完成
-  saveOriginalCodes();
-  initTips();
-}
+const copyElements = document.querySelectorAll('[data-copy]');
 
 window.addEventListener('load',()=>{
   if(window.innerWidth <= 750){
@@ -238,108 +194,40 @@ document.getElementById('switch-1').addEventListener('change',(event) => {
   }
 });
 
-// 初始化提示文本（在 saveOriginalCodes 之后调用）
-function initTips() {
-  document.querySelectorAll('[data-copy]').forEach(node => {
-    const infoTips = node.querySelector('[data-tips]');
-    const key = node.getAttribute('data-copy');
-    
-    if(COMPS_TIPS[key] && infoTips){
-      infoTips.style.setProperty('--tips-text',COMPS_TIPS[key][0]);
-      infoTips.style.setProperty('--tips-text-en',COMPS_TIPS[key][1]);
-    }
-  });
-}
+copyElements.forEach(node => {
+  let copyBtn = node.querySelector('[data-copy-btn]');
+  let infoTips = node.querySelector('[data-tips]');
+  let key = node.getAttribute('data-copy');
 
-// 使用事件委托处理复制按钮点击（支持动态添加的元素）
-document.addEventListener('click', (e) => {
-  const copyBtn = e.target.closest('[data-copy-btn]');
-  if (!copyBtn) return;
-  
-  const node = copyBtn.closest('[data-copy]');
-  if (!node) return;
-  
-  const key = node.getAttribute('data-copy');
-  if (!key) return;
-  
-  let language = ROOT.getAttribute('data-language');
-  let htmlcode = '';
-  
-  if(key === "HTML_main"){
-    htmlcode = language == 'Zh' ? '<!--' + COPYRIGHT_ZH + '-->' + HTML_MAIN : '<!--' + COPYRIGHT_EN + '-->' + HTML_MAIN;
-  } else if ( key === "JS_main"){
-    htmlcode = language == 'Zh' ? '/**\n' + COPYRIGHT_ZH + '\n*/' + JS_MAIN : '/**\n' + COPYRIGHT_EN + '\n*/' + JS_MAIN;
-  } else {
-    // 使用保存的原始代码，而不是当前的 innerHTML（关键改进）
-    htmlcode = ORIGINAL_CODES[key];
-    
-    // 如果没有保存的原始代码，尝试从当前节点获取（兼容处理）
-    if (!htmlcode) {
-      const parts = node.innerHTML.split(key + ':');
-      if (parts.length > 1) {
-        htmlcode = parts[1].trim();
-        // 保存起来，避免下次还是使用修改后的代码
-        ORIGINAL_CODES[key] = htmlcode;
-      } else {
-        htmlcode = '';
-      }
-    }
-    
-    let tips = language == 'Zh' ? '<!--自定义标签，需引入css和js库才能生效-->' : '<!--Importing css and js libraries to make it effective-->'
-    COMPS.forEach(item => {
-      if(htmlcode.split('<'+ item ).length > 1){
-        let keys = new RegExp('<'+ item + '[\\s\\S]*?<\/'+ item + '>','g');
-        htmlcode = htmlcode.replace(keys,'<' + item + '>' + tips + '</'+ item + '>')
-      };
-    });
+
+  if(COMPS_TIPS[key]){
+    infoTips.style.setProperty('--tips-text',COMPS_TIPS[key][0]);
+    infoTips.style.setProperty('--tips-text-en',COMPS_TIPS[key][1]);
   }
-  let copyrights = language == 'Zh' ? "\n<!-- © 2024-2025 『云即』系列开源计划 @云雨 lvynyu@163.com https://www.ynyuset.cn -->" : "\n<!-- © 2024-2025 [YNYU_SET] OPEN DESIGN & SOURCE @YNYU lvynyu2@gmail.com https://www.ynyuset.cn -->";
-  copy(node,'text',htmlcode.trim() + copyrights);
-});
 
-// 初始化提示文本的功能已合并到 initTips() 函数中
-
-// 使用 MutationObserver 监听动态添加的 [data-copy] 元素
-const copyObserver = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    mutation.addedNodes.forEach((node) => {
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        // 检查新添加的节点或其子节点是否有 [data-copy] 属性
-        const copyNodes = node.matches && node.matches('[data-copy]') 
-          ? [node] 
-          : node.querySelectorAll ? node.querySelectorAll('[data-copy]') : [];
-        
-        copyNodes.forEach(copyNode => {
-          const key = copyNode.getAttribute('data-copy');
-          if (!key || key === 'HTML_main' || key === 'JS_main') return;
-          
-          // 保存新添加元素的原始代码
-          const fullHTML = copyNode.innerHTML;
-          const parts = fullHTML.split(key + ':');
-          if (parts.length > 1) {
-            ORIGINAL_CODES[key] = parts[1].trim();
-          }
-          
-          // 初始化提示文本
-          const infoTips = copyNode.querySelector('[data-tips]');
-          if(COMPS_TIPS[key] && infoTips){
-            infoTips.style.setProperty('--tips-text',COMPS_TIPS[key][0]);
-            infoTips.style.setProperty('--tips-text-en',COMPS_TIPS[key][1]);
-          }
-        });
-      }
-    });
+  copyBtn.addEventListener('click',()=>{
+    let language = ROOT.getAttribute('data-language');
+    let htmlcode = node.innerHTML.split(key + ':')[1];
+    if(key === "HTML_main"){
+      htmlcode = language == 'Zh' ? '<!--' + COPYRIGHT_ZH + '-->' + HTML_MAIN : '<!--' + COPYRIGHT_EN + '-->' + HTML_MAIN;
+    } else if ( key === "JS_main"){
+      htmlcode = language == 'Zh' ? '/**\n' + COPYRIGHT_ZH + '\n*/' + JS_MAIN : '/**\n' + COPYRIGHT_EN + '\n*/' + JS_MAIN;
+    } else {
+      let tips = language == 'Zh' ? '<!--自定义标签，需引入css和js库才能生效-->' : '<!--Importing css and js libraries to make it effective-->'
+      COMPS.forEach(item => {
+        if(htmlcode.split('<'+ item ).length > 1){
+          let keys = new RegExp('<'+ item + '[\\s\\S]*?<\/'+ item + '>','g');
+          htmlcode = htmlcode.replace(keys,'<' + item + '>' + tips + '</'+ item + '>')
+        };
+      });
+    }
+    let copyrights = language == 'Zh' ? "\n<!-- © 2024-2025 『云即』系列开源计划 @云雨 lvynyu@163.com https://www.ynyuset.cn -->" : "\n<!-- © 2024-2025 [YNYU_SET] OPEN DESIGN & SOURCE @YNYU lvynyu2@gmail.com https://www.ynyuset.cn -->";
+    copy(node,'text',htmlcode.trim() + copyrights);
   });
 });
 
-// 开始观察文档变化，监听动态添加的元素
-copyObserver.observe(document.body, {
-  childList: true,
-  subtree: true
-});
 
 /*监听组件的自定义属性值，变化时触发函数，用于已经绑定事件用于自身的组件，如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
-// 使用事件委托和 MutationObserver 结合，自动处理动态添加的元素
 let observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if(mutation.type === 'attributes'){
@@ -352,88 +240,25 @@ let observer = new MutationObserver((mutations) => {
     }
   })
 });
-
-// 初始观察已存在的元素
-function observeElements() {
-  let userEvent_color = document.querySelectorAll('[data-color]');
-  userEvent_color.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-color-hex']};
-    observer.observe(item,config);
-  });
-  let userEvent_number = document.querySelectorAll('[data-number]');
-  userEvent_number.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-number-value']};
-    observer.observe(item,config);
-  });
-  let userEvent_text = document.querySelectorAll('[data-text]');
-  userEvent_text.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-text-value']};
-    observer.observe(item,config);
-  });
-  let userEvent_select = document.querySelectorAll('[data-select]');
-  userEvent_select.forEach(item => {
-    let config = {attributes:true,attributeFilter:['data-select-value']};
-    observer.observe(item,config);
-  });
-}
-
-// 监听动态添加的元素
-const dynamicObserver = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    mutation.addedNodes.forEach((node) => {
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        // 检查新添加的元素是否需要观察
-        if (node.hasAttribute && node.hasAttribute('data-color')) {
-          let config = {attributes:true,attributeFilter:['data-color-hex']};
-          observer.observe(node,config);
-        }
-        if (node.hasAttribute && node.hasAttribute('data-number')) {
-          let config = {attributes:true,attributeFilter:['data-number-value']};
-          observer.observe(node,config);
-        }
-        if (node.hasAttribute && node.hasAttribute('data-text')) {
-          let config = {attributes:true,attributeFilter:['data-text-value']};
-          observer.observe(node,config);
-        }
-        if (node.hasAttribute && node.hasAttribute('data-select')) {
-          let config = {attributes:true,attributeFilter:['data-select-value']};
-          observer.observe(node,config);
-        }
-        
-        // 检查子元素
-        const colorElements = node.querySelectorAll ? node.querySelectorAll('[data-color]') : [];
-        const numberElements = node.querySelectorAll ? node.querySelectorAll('[data-number]') : [];
-        const textElements = node.querySelectorAll ? node.querySelectorAll('[data-text]') : [];
-        const selectElements = node.querySelectorAll ? node.querySelectorAll('[data-select]') : [];
-        
-        colorElements.forEach(item => {
-          let config = {attributes:true,attributeFilter:['data-color-hex']};
-          observer.observe(item,config);
-        });
-        numberElements.forEach(item => {
-          let config = {attributes:true,attributeFilter:['data-number-value']};
-          observer.observe(item,config);
-        });
-        textElements.forEach(item => {
-          let config = {attributes:true,attributeFilter:['data-text-value']};
-          observer.observe(item,config);
-        });
-        selectElements.forEach(item => {
-          let config = {attributes:true,attributeFilter:['data-select-value']};
-          observer.observe(item,config);
-        });
-      }
-    });
-  });
+let userEvent_color = document.querySelectorAll('[data-color]');
+userEvent_color.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-color-hex']};
+  observer.observe(item,config);
 });
-
-// 初始观察
-observeElements();
-
-// 开始观察文档变化，自动处理动态添加的元素
-dynamicObserver.observe(document.body, {
-  childList: true,
-  subtree: true
+let userEvent_number = document.querySelectorAll('[data-number]');
+userEvent_number.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-number-value']};
+  observer.observe(item,config);
+});
+let userEvent_text = document.querySelectorAll('[data-text]');
+userEvent_text.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-text-value']};
+  observer.observe(item,config);
+});
+let userEvent_select = document.querySelectorAll('[data-select]');
+userEvent_select.forEach(item => {
+  let config = {attributes:true,attributeFilter:['data-select-value']};
+  observer.observe(item,config);
 });
 
 function getUserColor(node){
@@ -460,4 +285,3 @@ function getUserSelect(node){
   let select = node.getAttribute('data-select-value');
   //console.log(text);
 }
-

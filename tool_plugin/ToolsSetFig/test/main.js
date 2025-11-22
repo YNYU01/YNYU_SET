@@ -761,12 +761,12 @@ dropUp.addEventListener('drop',(e)=>{
 });
 
 userText.onfocus = ()=>{
-  let btn = getElementMix('upload-set-1').querySelector('btn-re');
+  let btn = convertTags.querySelector('btn-re');
   btn.style.animation = 'loadRo2 2s linear infinite';
   btn.parentNode.style.borderColor = 'var(--mainColor)';
 }
 userText.onblur = ()=>{
-  let btn = getElementMix('upload-set-1').querySelector('btn-re');
+  let btn = convertTags.querySelector('btn-re');
   btn.style.animation = '';
   btn.parentNode.style.borderColor = 'var(--boxBod)';
   if(userText.value == ''){
@@ -1089,7 +1089,7 @@ async function addTableText(files,isTags){
   CreateTableInfo = tableObj;
   //console.log(tableArray,tableTextToArray(tableText,true),tableObj)
   if(isTags){
-    document.getElementById('upload-set-1').click()
+    convertTags.click()
   }
 }
 function addTableTags(){
@@ -1642,6 +1642,7 @@ function tableObjToText(obj){
 clearCreateTags.addEventListener('click',()=>{
   CreateImageInfo = [];
   CreateTableInfo = [];
+  CataloguesInfo = [];
   createTagsBox.innerHTML = '';
   cataloguesBox.innerHTML = '';
 });
@@ -2431,7 +2432,7 @@ function getUserRadio(node){
       getElementMix('data-export-tags-box').setAttribute('data-export-tags-box',type[(userRadio - 1)]);
     };
 
-    if(node.parentNode.getAttribute('data-variable-type') !== null){
+    if(node.parentNode.parentNode.getAttribute('data-variable-type') !== null){
       let vars = getElementMix('data-variable-varmix');
       let styles = getElementMix('data-variable-stylemix');
       if( userRadio == 'variable'){

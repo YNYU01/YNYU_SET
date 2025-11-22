@@ -5,15 +5,16 @@
   <meta name="description" content="网页内容简介，转发时显示">
   <title data-en-text="『YNYU_SET』 Component Library">『云即·组件库』</title>
   <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
-  <link rel="stylesheet" href="../builds/yn_style.css" rel="stylesheet">
-  <link rel="stylesheet" href="../publics/fonts.css" rel="stylesheet">
-  <link rel="stylesheet" href="../publics/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../builds/yn_style.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../publics/fonts.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../publics/style.css" rel="stylesheet">
+  <!--script src="../../publics/prism.js"></script-->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
-  <script src="../publics/run.js"></script>
+  <script src="../../publics/run.js"></script>
 </head>
 <body class="noselect df-ffc df-cc">
   <div data-banner-top target="_blank" class="df-sc pos-r">
-    <a href="../" class="fl1 h100"></a>
+    <a href="../../" class="fl1 h100"></a>
     <div class="df-cc pos-a" style="gap:4px; right: 2%;">
       <div id="btn-theme" style="width: 22px; height: 22px; padding: 3px; box-sizing: border-box; background: var(--swi-bak); border-radius: 4px;">
         <input id="theme-1" data-theme-check type="checkbox" checked="true">
@@ -32,7 +33,7 @@
     </div>
   </div>
   <div class="df-lc w100" style="padding: 10px; box-sizing: border-box;">
-    <a data-back="home" data-link-to="../home" href class="df">
+    <a data-back="home" data-link-to="../../home" href class="df">
       <div class="pos-r" style="width: 77%; height: 77%; transform: rotate(180deg);">
         <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
@@ -57,9 +58,9 @@
         
         <li data-li-style="1">
           <span data-en-text="Import these files">需同时引入</span>
-          <i><a href="../builds/yn_style.css" download>yn_style.css</a></i>
+          <i><a href="../../builds/yn_style.css" download>yn_style.css</a></i>
           <span data-en-text="&">和</span>
-          <i><a href="../builds/yn_comp.js" download>yn_comp.js</a></i>
+          <i><a href="../../builds/yn_comp.js" download>yn_comp.js</a></i>
           <span data-en-text=",and check whether there is a variable name conflict">
             ，并核查是否存在变量名冲突
           </span>
@@ -73,16 +74,6 @@
           </span>
           <span data-en-text="before copying other sample codes. Also, check whether the ID or custom attribute conflicts">
             部分的代码再复制其他示例代码，同样也需检查ID或自定义属性是否冲突
-          </span>
-        </li>
-        <li data-li-style="1">
-          <span data-en-text="Version 2.0 uses event delegation, dynamically added elements will automatically respond to events without rebinding">
-            2.0版本使用事件委托，动态添加的元素会自动响应事件，无需重新绑定
-          </span>
-        </li>
-        <li data-li-style="1">
-          <span data-en-text="Version 2.0 saves original code when page loads, copying will use original code instead of modified content">
-            2.0版本在页面加载时保存原始代码，复制时会使用原始代码而不是修改后的内容
           </span>
         </li>
       </div>
@@ -444,12 +435,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/prism.min.js"></script>
-  <!-- 先加载组件库 -->
-  <script src="../builds/yn_comp.js"></script>
-  <script src="../publics/test.js"></script>
-  <script src="../publics/graph.js"></script>
-  <!-- 最后加载主逻辑，确保在保存原始代码时组件已渲染 -->
+  <script src="../../builds/yn_comp.js"></script>
+  <script src="../../publics/test.js"></script>
+  <script src="../../publics/graph.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
-

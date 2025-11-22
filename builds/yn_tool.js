@@ -15,214 +15,324 @@
   * For external libraries referenced in the project, it is necessary to comply with the corresponding open source protocols;
   * When using the code of this project, it is prohibited to delete this statement;
 */
-TOOL_JS()
-function TOOL_JS() {
-/**
- * Base64转Uint8Array
- */
-function B64ToU8A(b64) {
-  let padding = '='.repeat((4 - b64.length % 4) % 4);
-  let base64 = (b64 + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
+function TOOL_JS() {}
 
-  let rawData = atob(base64);
-  let rawDataLength = rawData.length;
-  let array = new Uint8Array(new ArrayBuffer(rawDataLength));
+Object.assign(TOOL_JS.prototype, {
+  /**
+   * Base64转Uint8Array
+   * @param {string} b64 - Base64字符串
+   * @returns {Uint8Array} Uint8Array
+   */
+  B64ToU8A(b64) {
+    let padding = '='.repeat((4 - b64.length % 4) % 4);
+    let base64 = (b64 + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
 
-  for (let i = 0; i < rawDataLength; i += 1) {
-    array[i] = rawData.charCodeAt(i);
-  }
+    let rawData = atob(base64);
+    let rawDataLength = rawData.length;
+    let array = new Uint8Array(new ArrayBuffer(rawDataLength));
 
-  return array;
-};
-TOOL_JS.prototype.B64ToU8A = B64ToU8A;
-
-/**
- * Uint8Array转Base64
- */
-function U8AToB64(u8,type) {
-  let filetype = {
-    doc: "data:application/msword;base64,",
-    docx: "data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,",
-    xls: "data:application/vnd.ms-excel;base64,",
-    xlsx: "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,",
-    pdf: "data:application/pdf;base64,",
-    ppt: "data:application/vnd.ms-powerpoint;base64,",
-    pptx: "data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,",
-    txt: "data:text/plain;base64,",
-    png: "data:image/png;base64,",
-    jpg: "data:image/jpeg;base64,",
-    jpeg: "data:image/jpeg;base64,",
-    gif: "data:image/gif;base64,",
-    svg: "data:image/svg+xml;base64,",
-    ico: "data:image/x-icon;base64,",
-    bmp: "data:image/bmp;base64,",
-  }
-  let binaryString = '';
-  for (let i = 0; i < u8.length; i++) {
-    binaryString += String.fromCharCode(u8[i]);
-  }
-  // 对二进制字符串进行base64编码
-  let base64 = btoa(binaryString);
-  base64 = type && filetype[type.toLowerCase()] ? filetype[type.toLowerCase()] + base64 : base64;
-  return base64;
-};
-TOOL_JS.prototype.U8AToB64 = U8AToB64;
-
-/**
- * Canvas转Uint8Array
- */
-function CanvasToU8A(canvas){
-  let dataUrl = canvas.toDataURL('image/png');
-  return new Uint8Array(B64ToU8A(dataUrl.split(',')[1]));
-};
-TOOL_JS.prototype.CanvasToU8A = CanvasToU8A;
-
-/**
- * 中英文字数限制兼容
- */
-function TextMaxLength(text,max,add){
-  let newtext = text.toString();
-  add = add ? add : '';
-  let lengthE = newtext.replace(/[\u4e00-\u9fa5]/g,'').length*1;
-  let lengthZ = newtext.replace(/[^\u4e00-\u9fa5]/g,'').length*2;
-  if(lengthZ > lengthE){
-      if((lengthE + lengthZ) > max){
-        newtext = newtext.substring(0,(max/2 + 1)) + add;
-      }
-  } else {
-      if((lengthE + lengthZ) > max){
-        newtext = newtext.substring(0,(max + 1)) + add;
-      }
-  }
-  return newtext;
-};
-TOOL_JS.prototype.TextMaxLength = TextMaxLength;
-
-function CUT_IMAGE(image,mix){
-  return new Promise((resolve,reject) => {
-    let canvas = document.createElement("canvas");
-    let ctx = canvas.getContext("2d");
-    canvas.width = image.width;
-    canvas.height = image.height;
-    requestAnimationFrame(function draw() {
-      // 绘制图片
-      ctx.drawImage(image, 0, 0);
-      let cutAreas = CUT_AREA({ w: canvas.width, h: canvas.height, x: 0, y: 0, s: 1 },mix | 4096);
-      // 检查图片是否完全绘制
-      if (image.complete) {
-        let cuts = [];
-        for (let i = 0; i < cutAreas.length; i++) {
-          let canvas2 = document.createElement("canvas");
-          let w = cutAreas[i].w;
-          let h = cutAreas[i].h;
-          let x = cutAreas[i].x;
-          let y = cutAreas[i].y;
-          canvas2.width = w;
-          canvas2.height = h;
-          let ctx2 = canvas2.getContext("2d");
-          ctx2.drawImage(canvas, x, y, w, h, 0, 0, w, h);
-          let imgData = CanvasToU8A(canvas2);//new Uint8Array(ctx2.getImageData(0, 0, w, h).data);
-          cuts.push({ img: imgData, w: w, h: h, x: x, y: y });
-          if (i == cutAreas.length - 1) {
-            resolve(cuts);
-          };
-        };
-      };
-    });
-  });
-};
-TOOL_JS.prototype.CUT_IMAGE = CUT_IMAGE;
-
-/**
- * 均匀裁切方案，可用于瓦片切图和长图分割
- * @param { object } info - {w:,h:,x:,y:,s:}原始宽高、坐标(如有)、栅格化倍率(如有)
- * @param { number } mix - 4096 | 2048 | 1024
- */
-function CUT_AREA(info,mix) {
-  let W = info.w, H = info.h;//图片宽高
-  let Ws = info.w, Hs = info.h;//非尾部的裁剪宽高
-  let lastWs = info.w, lastHs = info.h;//尾部的裁剪宽高
-  let X = info.x || 0, Y = info.y || 0;//裁切区坐标
-  let cutW = 1, cutH = 1;//纵横裁剪数量
-  let cutAreas = [];//从左到右，从上到下记录的裁切区域集
-  let s = info.s || 1;
-  mix = mix || 4096
-  let isCut = (W * info.s > mix || H * info.s > mix);//不超过最大尺寸的不裁切
-  if (!isCut) {
-    return [{w:W,h:H,x:X,y:Y,s:s}];
-  } else {
-    cutW = Math.ceil((W * info.s) / mix);
-    cutH = Math.ceil((H * info.s) / mix);
-    Ws = Math.ceil(W / cutW);
-    Hs = Math.ceil(H / cutH);
-    lastWs = W - (Ws * (cutW - 1));//有小数点则向上取整，最后一截短一些
-    lastHs = H - (Hs * (cutH - 1));
-
-    for (let i = 0; i < (cutW * cutH); i++) {
-      if ((i + 1) % cutW == 0 && i !== (cutW * cutH) - 1 && i !== 0) {
-        cutAreas.push({ w: lastWs, h: Hs, x: X, y: Y, s:s});
-        Y = Y + Hs;
-        X = info.x;
-      } else if (i == (cutW * cutH) - 1) {
-        cutAreas.push({ w: lastWs, h: lastHs, x: X, y: Y, s:s});
-      } else {
-        if (i > (cutW * (cutH - 1)) - 1) {
-          cutAreas.push({ w: Ws, h: lastHs, x: X, y: Y, s:s});
-        } else {
-          cutAreas.push({ w: Ws, h: Hs, x: X, y: Y, s:s});
-        }
-        if (cutW == 1) {
-          X = info.x;
-          Y = Y + Hs;
-        } else {
-          X = X + Ws;
-        }
-      }
+    for (let i = 0; i < rawDataLength; i += 1) {
+      array[i] = rawData.charCodeAt(i);
     }
 
-    return cutAreas;
-  };
-};
-TOOL_JS.prototype.CUT_AREA = CUT_AREA;
+    return array;
+  },
 
-function TrueImageFormat(file) {
-  return new Promise((resolve, reject) => {
-      let reader = new FileReader();
-      reader.onload = function(e) {
-          let arrayBuf = new Uint8Array(e.target.result);
-          // 检查JPEG、PNG、GIF、BMP的魔数
-          if (arrayBuf[0] === 0xFF && arrayBuf[1] === 0xD8 && arrayBuf[2] === 0xFF) {
-              resolve('jpeg');
-          } else if (arrayBuf[0] === 0x89 && arrayBuf[1] === 0x50 && arrayBuf[2] === 0x4E && arrayBuf[3] === 0x47) {
-              resolve('png');
-          } else if (arrayBuf[0] === 0x47 && arrayBuf[1] === 0x49 && arrayBuf[2] === 0x46 && arrayBuf[3] === 0x38) {
-              resolve('gif');
-          } else if (arrayBuf[0] === 0x42 && arrayBuf[1] === 0x4D) {
-              resolve('bmp');
-          } else {
-              reject(new Error('Invalid image format'));
+  /**
+   * Uint8Array转Base64
+   * @param {Uint8Array} u8 - Uint8Array
+   * @param {string} type - 文件类型
+   * @returns {string} Base64字符串
+   */
+  U8AToB64(u8, type) {
+    let filetype = {
+      doc: "data:application/msword;base64,",
+      docx: "data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,",
+      xls: "data:application/vnd.ms-excel;base64,",
+      xlsx: "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,",
+      pdf: "data:application/pdf;base64,",
+      ppt: "data:application/vnd.ms-powerpoint;base64,",
+      pptx: "data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,",
+      txt: "data:text/plain;base64,",
+      png: "data:image/png;base64,",
+      jpg: "data:image/jpeg;base64,",
+      jpeg: "data:image/jpeg;base64,",
+      gif: "data:image/gif;base64,",
+      svg: "data:image/svg+xml;base64,",
+      ico: "data:image/x-icon;base64,",
+      bmp: "data:image/bmp;base64,",
+    }
+    let binaryString = '';
+    for (let i = 0; i < u8.length; i++) {
+      binaryString += String.fromCharCode(u8[i]);
+    }
+    // 对二进制字符串进行base64编码
+    let base64 = btoa(binaryString);
+    base64 = type && filetype[type.toLowerCase()] ? filetype[type.toLowerCase()] + base64 : base64;
+    return base64;
+  },
+
+  /**
+   * Canvas转Uint8Array
+   * @param {HTMLCanvasElement} canvas - Canvas元素
+   * @returns {Uint8Array} Uint8Array
+   */
+  CanvasToU8A(canvas) {
+    let dataUrl = canvas.toDataURL('image/png');
+    return new Uint8Array(this.B64ToU8A(dataUrl.split(',')[1]));
+  },
+
+  /**
+   * 中英文字数限制兼容
+   * @param {string} text - 文本
+   * @param {number} max - 最大长度
+   * @param {string} add - 添加的字符
+   * @returns {string} 处理后的文本
+   */
+  TextMaxLength(text, max, add) {
+    let newtext = text.toString();
+    add = add ? add : '';
+    let lengthE = newtext.replace(/[\u4e00-\u9fa5]/g, '').length * 1;
+    let lengthZ = newtext.replace(/[^\u4e00-\u9fa5]/g, '').length * 2;
+    if (lengthZ > lengthE) {
+      if ((lengthE + lengthZ) > max) {
+        newtext = newtext.substring(0, (max / 2 + 1)) + add;
+      }
+    } else {
+      if ((lengthE + lengthZ) > max) {
+        newtext = newtext.substring(0, (max + 1)) + add;
+      }
+    }
+    return newtext;
+  },
+
+  /**
+   * 裁切图片
+   * @param {HTMLImageElement} image - 图片元素
+   * @param {number} mix - 裁切倍率
+   * @returns {Promise<Array>} 裁切后的图片信息
+   */
+  CUT_IMAGE(image, mix) {
+    return new Promise((resolve, reject) => {
+      let canvas = document.createElement("canvas");
+      let ctx = canvas.getContext("2d");
+      canvas.width = image.width;
+      canvas.height = image.height;
+      requestAnimationFrame(() => {
+        // 绘制图片
+        ctx.drawImage(image, 0, 0);
+        let cutAreas = this.CUT_AREA({ w: canvas.width, h: canvas.height, x: 0, y: 0, s: 1 }, mix | 4096);
+        // 检查图片是否完全绘制
+        if (image.complete) {
+          let cuts = [];
+          for (let i = 0; i < cutAreas.length; i++) {
+            let canvas2 = document.createElement("canvas");
+            let w = cutAreas[i].w;
+            let h = cutAreas[i].h;
+            let x = cutAreas[i].x;
+            let y = cutAreas[i].y;
+            canvas2.width = w;
+            canvas2.height = h;
+            let ctx2 = canvas2.getContext("2d");
+            ctx2.drawImage(canvas, x, y, w, h, 0, 0, w, h);
+            let imgData = this.CanvasToU8A(canvas2);
+            cuts.push({ img: imgData, w: w, h: h, x: x, y: y });
+            if (i == cutAreas.length - 1) {
+              resolve(cuts);
+            }
           }
+        }
+      });
+    });
+  },
+
+  /**
+   * 均匀裁切方案，可用于瓦片切图和长图分割
+   * @param { object } info - {w:,h:,x:,y:,s:}原始宽高、坐标(如有)、栅格化倍率(如有)
+   * @param { number } mix - 4096 | 2048 | 1024
+   * @returns {Array} 裁切区域
+   */
+  CUT_AREA(info, mix) {
+    let W = info.w, H = info.h;//图片宽高
+    let Ws = info.w, Hs = info.h;//非尾部的裁剪宽高
+    let lastWs = info.w, lastHs = info.h;//尾部的裁剪宽高
+    let X = info.x || 0, Y = info.y || 0;//裁切区坐标
+    let cutW = 1, cutH = 1;//纵横裁剪数量
+    let cutAreas = [];//从左到右，从上到下记录的裁切区域集
+    let s = info.s || 1;
+    mix = mix || 4096
+    let isCut = (W * info.s > mix || H * info.s > mix);//不超过最大尺寸的不裁切
+    if (!isCut) {
+      return [{ w: W, h: H, x: X, y: Y, s: s }];
+    } else {
+      cutW = Math.ceil((W * info.s) / mix);
+      cutH = Math.ceil((H * info.s) / mix);
+      Ws = Math.ceil(W / cutW);
+      Hs = Math.ceil(H / cutH);
+      lastWs = W - (Ws * (cutW - 1));//有小数点则向上取整，最后一截短一些
+      lastHs = H - (Hs * (cutH - 1));
+
+      for (let i = 0; i < (cutW * cutH); i++) {
+        if ((i + 1) % cutW == 0 && i !== (cutW * cutH) - 1 && i !== 0) {
+          cutAreas.push({ w: lastWs, h: Hs, x: X, y: Y, s: s });
+          Y = Y + Hs;
+          X = info.x;
+        } else if (i == (cutW * cutH) - 1) {
+          cutAreas.push({ w: lastWs, h: lastHs, x: X, y: Y, s: s });
+        } else {
+          if (i > (cutW * (cutH - 1)) - 1) {
+            cutAreas.push({ w: Ws, h: lastHs, x: X, y: Y, s: s });
+          } else {
+            cutAreas.push({ w: Ws, h: Hs, x: X, y: Y, s: s });
+          }
+          if (cutW == 1) {
+            X = info.x;
+            Y = Y + Hs;
+          } else {
+            X = X + Ws;
+          }
+        }
+      }
+
+      return cutAreas;
+    }
+  },
+
+  /**
+   * 检查图片格式（支持更多如webp, jfif等）
+   * @param {File} file - 文件
+   * @returns {Promise<string>} 图片格式
+   */
+  TrueImageFormat(file) {
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+      reader.onload = function (e) {
+        let arrayBuf = new Uint8Array(e.target.result);
+        // 检查各种常见图片格式魔数
+        // JPEG
+        if (arrayBuf[0] === 0xFF && arrayBuf[1] === 0xD8 && arrayBuf[2] === 0xFF) {
+          // 进一步判断JFIF或EXIF (JFIF标注在APP0段，EXIF标注在APP1)
+          if (arrayBuf[6] === 0x4A && arrayBuf[7] === 0x46 && arrayBuf[8] === 0x49 && arrayBuf[9] === 0x46) {
+            // 'JFIF'
+            resolve('jfif');
+          } else if (arrayBuf[6] === 0x45 && arrayBuf[7] === 0x78 && arrayBuf[8] === 0x69 && arrayBuf[9] === 0x66) {
+            // 'Exif'
+            resolve('jpeg');
+          } else {
+            resolve('jpeg');
+          }
+        }
+        // PNG
+        else if (arrayBuf[0] === 0x89 && arrayBuf[1] === 0x50 && arrayBuf[2] === 0x4E && arrayBuf[3] === 0x47) {
+          resolve('png');
+        }
+        // GIF
+        else if (arrayBuf[0] === 0x47 && arrayBuf[1] === 0x49 && arrayBuf[2] === 0x46 && arrayBuf[3] === 0x38) {
+          resolve('gif');
+        }
+        // BMP
+        else if (arrayBuf[0] === 0x42 && arrayBuf[1] === 0x4D) {
+          resolve('bmp');
+        }
+        // WEBP
+        else if (
+          arrayBuf[0] === 0x52 && arrayBuf[1] === 0x49 && arrayBuf[2] === 0x46 && arrayBuf[3] === 0x46 &&
+          arrayBuf[8] === 0x57 && arrayBuf[9] === 0x45 && arrayBuf[10] === 0x42 && arrayBuf[11] === 0x50
+        ) {
+          resolve('webp');
+        }
+        // TIFF
+        else if (
+          (arrayBuf[0] === 0x49 && arrayBuf[1] === 0x49 && arrayBuf[2] === 0x2A && arrayBuf[3] === 0x00) ||
+          (arrayBuf[0] === 0x4D && arrayBuf[1] === 0x4D && arrayBuf[2] === 0x00 && arrayBuf[3] === 0x2A)
+        ) {
+          resolve('tiff');
+        }
+        // ICO (icon)
+        else if (
+          arrayBuf[0] === 0x00 && arrayBuf[1] === 0x00 &&
+          arrayBuf[2] === 0x01 && arrayBuf[3] === 0x00
+        ) {
+          resolve('ico');
+        }
+        // SVG (前面部分是ASCII) 粗略判断
+        else if (
+          (String.fromCharCode(...arrayBuf.slice(0, 100)).toLowerCase().includes('<svg'))
+        ) {
+          resolve('svg');
+        }
+        // APNG (特殊PNG)
+        else if (
+          arrayBuf[0] === 0x89 && arrayBuf[1] === 0x50 &&
+          arrayBuf[2] === 0x4E && arrayBuf[3] === 0x47 &&
+          String.fromCharCode(...arrayBuf.slice(12, 16)) === 'acTL'
+        ) {
+          resolve('apng');
+        }
+        // HEIC/HEIF
+        else if (
+          arrayBuf[4] === 0x66 && arrayBuf[5] === 0x74 && arrayBuf[6] === 0x79 && arrayBuf[7] === 0x70 &&
+          // 支持ftyp: heic, heix, hevc, mif1, msf1, etc
+          (
+            String.fromCharCode(arrayBuf[8], arrayBuf[9], arrayBuf[10], arrayBuf[11]).includes("heic") ||
+            String.fromCharCode(arrayBuf[8], arrayBuf[9], arrayBuf[10], arrayBuf[11]).includes("heix") ||
+            String.fromCharCode(arrayBuf[8], arrayBuf[9], arrayBuf[10], arrayBuf[11]).includes("hevc") ||
+            String.fromCharCode(arrayBuf[8], arrayBuf[9], arrayBuf[10], arrayBuf[11]).includes("mif1") ||
+            String.fromCharCode(arrayBuf[8], arrayBuf[9], arrayBuf[10], arrayBuf[11]).includes("msf1")
+          )
+        ) {
+          resolve('heic');
+        }
+        // CUR (cursor)
+        else if (
+          arrayBuf[0] === 0x00 && arrayBuf[1] === 0x00 &&
+          arrayBuf[2] === 0x02 && arrayBuf[3] === 0x00
+        ) {
+          resolve('cur');
+        }
+        // PSD
+        else if (
+          arrayBuf[0] === 0x38 && arrayBuf[1] === 0x42 && arrayBuf[2] === 0x50 && arrayBuf[3] === 0x53
+        ) {
+          resolve('psd');
+        }
+        // EMF
+        else if (
+          arrayBuf[0] === 0x01 && arrayBuf[1] === 0x00 &&
+          arrayBuf[2] === 0x00 && arrayBuf[3] === 0x00 &&
+          arrayBuf[40] === 0x20 && arrayBuf[41] === 0x45 && arrayBuf[42] === 0x4D && arrayBuf[43] === 0x46
+        ) {
+          resolve('emf');
+        }
+        // TGA
+        else if (
+          arrayBuf.length > 18 && arrayBuf[1] <= 1 && [1, 2, 3, 9, 10, 11].includes(arrayBuf[2])
+        ) {
+          resolve('tga');
+        }
+        else {
+          reject(new Error('Unknown or unsupported image format'));
+        }
       };
       reader.onerror = reject;
       reader.readAsArrayBuffer(file);
-  });
-};
-TOOL_JS.prototype.TrueImageFormat = TrueImageFormat;
+    });
+  },
 
-/**
- * 将md格式文案转为节点式对象，以便转为图层
- * @param {string} mdText - md格式文案
- * @returns {Array} {zytype:'md',nodes:[
- * {
- * type: h | p | code | ul | ol | table ...,
- * content: string | [{style:'normal' | 'bold' | 'italic' | 'strike', content: ...}]
- * items?:[{content:...}]
- * }
- * ]}
- */
-function MdToObj(mdText,createname) {
+  /**
+   * 将md格式文案转为节点式对象，以便转为图层
+   * @param {string} mdText - md格式文案
+   * @returns {Array} {zytype:'md',nodes:[
+   * {
+   * type: h | p | code | ul | ol | table ...,
+   * content: string | [{style:'normal' | 'bold' | 'italic' | 'strike', content: ...}]
+   * items?:[{content:...}]
+   * }
+   * ]}
+   */
+  MdToObj(mdText, createname) {
   let ast = [];
   let listStack = [];
   let inlineElements = {
@@ -494,11 +604,10 @@ function MdToObj(mdText,createname) {
       : segments;
   };
 
-  return {zyType:'md', zyName: createname, nodes:ast};
-};
-TOOL_JS.prototype.MdToObj = MdToObj;
+  return { zyType: 'md', zyName: createname, nodes: ast };
+  },
 
-async function SvgToObj(svgText,createname)  {
+  async SvgToObj(svgText, createname) {
   const parser = new DOMParser();
   const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
   const svgRoot = svgDoc.documentElement;
@@ -513,10 +622,10 @@ async function SvgToObj(svgText,createname)  {
     return {zyType: 'svg', zyName: createname, nodes: images};
   } catch (error) {
     console.error('Error processing SVG:', error);
-    return {zyType: null, zyName: null, nodes: null};
+    return { zyType: null, zyName: null, nodes: null };
   }
 
-  function GetAttributes(node){
+    function GetAttributes(node) {
     if(!node.attributes) return null;
     return Array.from(node.attributes).reduce((obj, attr) => {
       obj[attr.name] = attr.value;
@@ -573,27 +682,27 @@ async function SvgToObj(svgText,createname)  {
               if(attributes['href']){
                 b64data = attributes['href'].split(',')[1]
               }
-              return { 
+              return {
                 attributes,
                 cuts: {
-                  img: B64ToU8A(b64data),
+                  img: this.B64ToU8A(b64data),
                   w: attributes.width,
                   h: attributes.height,
                   x: 0,
                   y: 0,
-                } 
+                }
               };
             }
             return new Promise((resolveImg) => {
               let img = new Image();
               img.src = attributes["xlink:href"] || attributes.href;;
-              img.onload = async ()=>{
+              img.onload = async () => {
                 try {
-                  let cuts = await CUT_IMAGE(img)
-                  resolveImg({attributes,cuts:cuts})
+                  let cuts = await this.CUT_IMAGE(img)
+                  resolveImg({ attributes, cuts: cuts })
                 } catch {
                   resolveImg({ attributes, cuts: null });
-                };
+                }
               };
               img.onerror = () => resolveImg(null);
             }
@@ -612,8 +721,7 @@ async function SvgToObj(svgText,createname)  {
       });
     });
   }
-};
-TOOL_JS.prototype.SvgToObj = SvgToObj;
+  },
 
 /**==========压缩图片模块==========
 !!! 需引入依赖：UPNG.js + jszip.js
@@ -637,25 +745,24 @@ TOOL_JS.prototype.SvgToObj = SvgToObj;
  *  }]
  * @param {[boolean]} isFinal - 补充信息，是否压缩并导出，需对齐imgExportData的下标
  */
-async function ExportImgByData(callback,imgExportData,isFinal,zipName){
-  if(imgExportData.length > 0){
-    try {
-      const compressedImages = await CompressImages(callback,imgExportData,isFinal);
-      CreateZipAndDownload(compressedImages,imgExportData,zipName);
-    } catch (error) {
-      console.error('处理过程中发生错误:', error);
-    };
-  };
-};
-TOOL_JS.prototype.ExportImgByData = ExportImgByData;
+  async ExportImgByData(callback, imgExportData, isFinal, zipName) {
+    if (imgExportData.length > 0) {
+      try {
+        const compressedImages = await this.CompressImages(callback, imgExportData, isFinal);
+        this.CreateZipAndDownload(compressedImages, imgExportData, zipName);
+      } catch (error) {
+        console.error('处理过程中发生错误:', error);
+      }
+    }
+  },
 
-/**
- * 单个图片的压缩
- * @param {Blob} blob - 传入一个png文件的blob，
- * @param {number} quality - 压缩质量 1~10
- * @param {string} type -输出的格式 png | jpg | jpeg | webp
- */
-function CompressImage(blob,quality,type) {
+  /**
+   * 单个图片的压缩
+   * @param {Blob} blob - 传入一个png文件的blob，
+   * @param {number} quality - 压缩质量 1~10
+   * @param {string} type -输出的格式 png | jpg | jpeg | webp
+   */
+  CompressImage(blob, quality, type) {
     if (type == 'jpg' || type == 'jpeg'){
       return new Promise((resolve, reject) => {
         let url = URL.createObjectURL(blob);
@@ -897,27 +1004,26 @@ function CompressImage(blob,quality,type) {
           },'image/webp',(quality/10))
         };
       });
-    };
-};
-TOOL_JS.prototype.CompressImage = CompressImage;
+    }
+  },
 
-/**
- * 批量压缩
- * @param {[object]} imgExportData
- * [{
-      fileName:string,
-      id:string,
-      format:string,
-      u8a: Uitt8Array,
-      finalSize:number,
-      width: number,
-      height: number,
-      compressed:null | string,
-      realSize: number,
-      quality: 0-10,
-    }]
- */
-async function CompressImages(callback,imgExportData,isFinal) {
+  /**
+   * 批量压缩
+   * @param {[object]} imgExportData
+   * [{
+        fileName:string,
+        id:string,
+        format:string,
+        u8a: Uitt8Array,
+        finalSize:number,
+        width: number,
+        height: number,
+        compressed:null | string,
+        realSize: number,
+        quality: 0-10,
+      }]
+   */
+  async CompressImages(callback, imgExportData, isFinal) {
   let imageDataArray = imgExportData.map(item => item.u8a);
   let targetSize = imgExportData.map(item =>item.finalSize ? item.finalSize*1000 : null);
   let type = imgExportData.map(item => item.format.toLowerCase());
@@ -931,55 +1037,53 @@ async function CompressImages(callback,imgExportData,isFinal) {
         let quality = 10; // 初始压缩质量
         let result = new Blob([imageDataArray[i]], {type: 'image/png'});//初始化
         let newBlob = new Blob([imageDataArray[i]], {type: 'image/png'});
-        if(!targetSize[i]){
-          result = await CompressImage(newBlob, 10,type[i]);
-          let finalSize = Math.floor(result.size/10.24)/100;
-          callback(i,finalSize,quality,true);
+        if (!targetSize[i]) {
+          result = await this.CompressImage(newBlob, 10, type[i]);
+          let finalSize = Math.floor(result.size / 10.24) / 100;
+          callback(i, finalSize, quality, true);
         } else {
           do {
             try {
-              result = await CompressImage(newBlob, quality,type[i]);
+              result = await this.CompressImage(newBlob, quality, type[i]);
               if (targetSize[i] && result.size > targetSize[i] && quality > 1) {
-                if ( quality - 1 >= 0){
-                  console.log("压缩质量:" + quality )
+                if (quality - 1 >= 0) {
+                  console.log("压缩质量:" + quality)
                   quality -= 1; // 如果超过目标大小，减少质量再次尝试
                 } else {
                   quality = 0;
-                };
-                
+                }
               } else {
-                let finalSize = Math.floor(result.size/10.24)/100;
-                if ( result.size <= targetSize[i] ){
-                  callback(i,finalSize,quality,true);
+                let finalSize = Math.floor(result.size / 10.24) / 100;
+                if (result.size <= targetSize[i]) {
+                  callback(i, finalSize, quality, true);
                 } else {
-                  callback(i,finalSize,quality,false);
+                  callback(i, finalSize, quality, false);
                 }
                 break;
-              };
+              }
             } catch (error) {
               console.error('压缩过程中发生错误:', error);
               break;
             }
           } while (result.size > targetSize[i]);
-        };
+        }
         compressedImages.push(result);
         imgExportData[i].compressed = result;
-      };
-    }else{
+      }
+    } else {
       compressedImages.push(null);
-    };
-  };
+    }
+  }
   return compressedImages;
-};
-TOOL_JS.prototype.CompressImages = CompressImages;
+  },
 
-/**
- * 创建ZIP文件并提供下载
- * @param {[blob]} fileBlobs 
- * @param {[object]} fileInfos [{fileName: ../xx/name,format: string}]
- * @param {string | null} zipName
- */
-function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
+  /**
+   * 创建ZIP文件并提供下载
+   * @param {[blob]} fileBlobs 
+   * @param {[object]} fileInfos [{fileName: ../xx/name,format: string}]
+   * @param {string | null} zipName
+   */
+  CreateZipAndDownload(fileBlobs, fileInfos, zipName) {
   let timeName = getDate('YYYYMMDD')[0].slice(2) + '_' + getTime('HHMMSS')[0]
   let zip = new JSZip();
 
@@ -1005,19 +1109,17 @@ function CreateZipAndDownload(fileBlobs,fileInfos,zipName) {
     };
   });
 
-  if(!fileBlobs.every(item => item == null)){
-    fileBlobs.forEach((blob, index) => {
-      if (blob) {
-        zip.file(finalfileNames[index], blob);
-      };
-    });
-  
-    zip.generateAsync({ type: "blob" }).then(function (content) {
-      zipName = zipName ? zipName : ''
-      saveAs(content,zipName + timeName + '.zip');
-    });
-  };
-};
-TOOL_JS.prototype.CreateZipAndDownload = CreateZipAndDownload;
+    if (!fileBlobs.every(item => item == null)) {
+      fileBlobs.forEach((blob, index) => {
+        if (blob) {
+          zip.file(finalfileNames[index], blob);
+        }
+      });
 
-}
+      zip.generateAsync({ type: "blob" }).then(function (content) {
+        zipName = zipName ? zipName : ''
+        saveAs(content, zipName + timeName + '.zip');
+      });
+    }
+  }
+});

@@ -6,13 +6,10 @@ let ISBACK = document.referrer && document.referrer !== window.location.href;
 
 window.addEventListener('load',()=>{
   let noisebg = new Image();
-  noisebg.src = '../../VI/noise.png';
+  noisebg.src = ISLOCAL ? 'https://www.ynyuset.cn/VI/noise.png' : '../../VI/noise.png';
   noisebg.onload = ()=>{
     document.getElementById('noise').className = 'tex-noise';
   };
-  if(ISLOCAL){
-    document.getElementById('noise').className = 'tex-noise';
-  }
 
   if(ISLOCAL){
     HREF_ALL.forEach(item => {
