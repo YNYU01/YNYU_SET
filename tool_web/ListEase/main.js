@@ -26,7 +26,9 @@ let flowObserver = new MutationObserver((mutations) => {
           FLOW_RENDER.reViewBoxSize(mutation.target.getAttribute('data-flow-viewwidth')); 
         break;
         case 'data-flow-viewzoom':
-          FLOW_RENDER.reViewBoxZoom(mutation.target.getAttribute('data-flow-viewzoom')); 
+          let zoom = mutation.target.getAttribute('data-flow-viewzoom');
+          let e = mutation.target.getAttribute('data-flow-viewMouse');
+          FLOW_RENDER.reViewBoxZoom(zoom,JSON.parse(e)); 
         break;
       }
     }
@@ -642,6 +644,7 @@ class ZY_NODE {
     this.pickNodes = [];
     this.copyNodes = [];
     this.zoom = 1;
+    this.oldZoom = 1;
     /*初始化控制*/
     this.selectArea = document.querySelector('[data-selectarea]') || this.creArea('selectarea');
     this.connectArea = document.querySelector('[data-connectarea]') || this.creArea('connectarea');
@@ -748,6 +751,7 @@ class ZY_NODE {
     let isConnecting = false;
     let isMoving = false;
     let renderXY;
+    let connectStartInfo = null; // 存储连接起始点信息 {type: 'in'|'out', x: number, y: number}
 
     flowBox.addEventListener('mousedown', (e) => {
       let isFocus = (document.hasFocus() && document.activeElement !== document.body);
@@ -762,6 +766,30 @@ class ZY_NODE {
       if(e.button === 0 && e.target.tagName.toLowerCase() == 'circle'){
         [selectStartX, selectStartY] = [e.clientX, e.clientY];
         renderXY = this.toRenderXY(e);
+        // 判断连接点是输入还是输出
+        let connectPoint = e.target;
+        let parentElement = connectPoint.parentElement;
+        let connectType = null;
+        
+        // 查找父元素中的 data-node-in 或 data-node-out 属性
+        while(parentElement && parentElement !== this.flowBox){
+          if(parentElement.hasAttribute('data-node-in')){
+            connectType = 'in';
+            break;
+          } else if(parentElement.hasAttribute('data-node-out')){
+            connectType = 'out';
+            break;
+          }
+          parentElement = parentElement.parentElement;
+        }
+        
+        // 存储连接点类型
+        if(connectType){
+          connectStartInfo = {
+            type: connectType
+          };
+        }
+        
         isConnecting = true;
         e.preventDefault();
       }
@@ -822,17 +850,57 @@ class ZY_NODE {
           end.y = dotR;
           svgY = -dotR/2;
         }
-        let path = this.createSmoothPath(start,end,bodW);
-        svg.setAttribute('style',`transform: translate(${svgX}px,${svgY}px)`);
+        // 先计算控制点，用于确定 viewBox 边界
+        let controlPoints = this.calculateControlPoints(start,end,connectStartInfo);
+        
+        // 计算所有关键点的边界（包括起点、终点、控制点和圆圈的边界）
+        let minX = Math.min(start.x - dotR, end.x - dotR, controlPoints.control1.x, controlPoints.control2.x);
+        let maxX = Math.max(start.x + dotR, end.x + dotR, controlPoints.control1.x, controlPoints.control2.x);
+        let minY = Math.min(start.y - dotR, end.y - dotR, controlPoints.control1.y, controlPoints.control2.y);
+        let maxY = Math.max(start.y + dotR, end.y + dotR, controlPoints.control1.y, controlPoints.control2.y);
+        
+        // 添加边距
+        const padding = dotR * 2;
+        minX -= padding;
+        maxX += padding;
+        minY -= padding;
+        maxY += padding;
+        
+        // 计算新的 viewBox 尺寸
+        let newSvgW = maxX - minX;
+        let newSvgH = maxY - minY;
+        
+        // 计算坐标偏移量，使所有点相对于新的 viewBox（从 0,0 开始）
+        let offsetX = -minX;
+        let offsetY = -minY;
+        
+        // 更新 viewBox 和 SVG 尺寸
+        svg.setAttribute("width", newSvgW);
+        svg.setAttribute("height", newSvgH);
+        svg.setAttribute('viewBox',`0 0 ${newSvgW} ${newSvgH}`);
+        
+        // 调整 transform：原来的 svgX/svgY 是为了让起点在正确位置
+        // 现在起点坐标从 start.x 变成了 start.x + offsetX
+        // 所以需要调整 transform 来补偿这个变化，使得端点实际位置不变
+        // 新的 transform = 原来的 svgX - offsetX（因为起点坐标增加了 offsetX，所以需要向左移动 offsetX 来补偿）
+        svg.setAttribute('style',`transform: translate(${svgX - offsetX}px,${svgY - offsetY}px)`);
+        
+        // 创建路径，使用调整后的坐标（相对于新的 viewBox）
+        let adjustedStart = {x: start.x + offsetX, y: start.y + offsetY};
+        let adjustedEnd = {x: end.x + offsetX, y: end.y + offsetY};
+        let adjustedControl1 = {x: controlPoints.control1.x + offsetX, y: controlPoints.control1.y + offsetY};
+        let adjustedControl2 = {x: controlPoints.control2.x + offsetX, y: controlPoints.control2.y + offsetY};
+        
+        let path = this.createSmoothPathFromControls(adjustedStart, adjustedEnd, adjustedControl1, adjustedControl2, bodW);
         svg.appendChild(path);
         let circle1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle1.setAttribute('cx',start.x);
-        circle1.setAttribute('cy',start.y);
+        circle1.setAttribute('cx',adjustedStart.x);
+        circle1.setAttribute('cy',adjustedStart.y);
         circle1.setAttribute('r',dotR);
         circle1.setAttribute("fill", "var(--line-col)");
         let circle2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle2.setAttribute('cx',end.x);
-        circle2.setAttribute('cy',end.y);
+        circle2.setAttribute('cx',adjustedEnd.x);
+        circle2.setAttribute('cy',adjustedEnd.y);
         circle2.setAttribute('r',dotR);
         circle2.setAttribute("fill", "var(--line-col)");
         svg.appendChild(circle1);
@@ -855,6 +923,7 @@ class ZY_NODE {
       isSelecting = false;
       isConnecting = false;
       isMoving = false;
+      connectStartInfo = null;
     });
 
     //控制画布缩放级别
@@ -863,7 +932,7 @@ class ZY_NODE {
       let oldZoom = this.zoom;
       let step = e.deltaY > 0 ? -0.1 : 0.1
       let zoom = oldZoom*1 + (Math.round(Math.abs(e.deltaY)/100) * step);
-      this.setZoom(zoom);
+      this.setZoom(zoom,e);
     });
     
     let isTouchScale = false;
@@ -888,7 +957,7 @@ class ZY_NODE {
           let newMove = Math.hypot(dx,dy);
           let moves = touchScaleStart - newMove;     
           let zoom = touchStartZoom*1 + moves/-100;
-          this.setZoom(zoom);
+          this.setZoom(zoom,e);
       };
     });
     
@@ -917,16 +986,18 @@ class ZY_NODE {
           //log(e.dataTransfer.types)
           if(this.copyNodes.length > 0){
             this.duplicateNodes(this.copyNodes,e);
+            isDraging = false;
             this.copyNodes = [];
             return;
           }
           let data = JSON.parse(e.dataTransfer.getData('text/plain'));
           this.reCreateData(data)
-          //更新坐标值
-          let newXY = Object.values(this.toRenderXY(e)).map(item => item/this.zoom);
+          //更新坐标值，应用像素吸附
+          let newXY = Object.values(this.toRenderXY(e)).map(item => this.snapToGrid(item/this.zoom));
           [data.top,data.left,data.x,data.y] = newXY;
           this.addNodes([data]);
         isDraging = false;
+        this.copyNodes = [];
         }catch(e){console.log(e)};
       };
 
@@ -1069,7 +1140,6 @@ class ZY_NODE {
         let isSafeTagname = e.target.tagName.toLowerCase() == 'input' || e.target.tagName.toLowerCase() == 'circle';
         if(e.button === 1 || isSafeTagname) return;
         if(this.pickNodes.length > 1){
-          isMoveGroup = true;
           startInfo = [];
           this.pickNodes.forEach(pick => {
             let pickdata = this.allNodeDatas.find(item => item.id == pick.id)
@@ -1084,6 +1154,17 @@ class ZY_NODE {
                 nodeY:pickdata.y
               })
           });
+          if(e.altKey){
+            isDuplicate = true;
+            // 多选复制：将所有选中的节点添加到 copyNodes
+            this.pickNodes.forEach(pickNode => {
+              if(!this.copyNodes.includes(pickNode)){
+                this.copyNodes.push(pickNode);
+              }
+            });
+          }else{
+            isMoveGroup = true;
+          }
           return;
         };
         if(!e.ctrlKey){
@@ -1108,14 +1189,27 @@ class ZY_NODE {
         this.editorBox.appendChild(nodeBox);
         if(e.altKey){
           isDuplicate = true;
+          // 在 mousedown 时设置 copyNodes，避免在 mousemove 中重复添加
+          // 支持多选复制：将所有选中的节点添加到 copyNodes
+          this.pickNodes.forEach(pickNode => {
+            if(!this.copyNodes.includes(pickNode)){
+              this.copyNodes.push(pickNode);
+            }
+          });
         }else{
           isMove = true;
         };
       });
       nodeMix.addEventListener('mousemove',(e)=>{
         if(isDuplicate){
-          nodeBox.setAttribute('draggable','true');
-          this.copyNodes.push(nodeBox);
+          // 如果是多选复制，设置所有选中节点的 draggable
+          if(this.pickNodes.length > 1){
+            this.pickNodes.forEach(node => {
+              node.setAttribute('draggable','true');
+            });
+          }else{
+            nodeBox.setAttribute('draggable','true');
+          }
           return;
         };
         if(isMoveGroup){
@@ -1132,13 +1226,45 @@ class ZY_NODE {
       });
       
       nodeMix.addEventListener('mouseup',(e)=>{
-        nodeBox.setAttribute('draggable','false');
+        // 拖拽结束时应用像素吸附
+        if(isMove || isMoveGroup){
+          this.pickNodes.forEach(node => {
+            let nodedata = this.allNodeDatas.find(item => item.id == node.id);
+            if(nodedata){
+              this.snapNodeToGrid(node, nodedata);
+            }
+          });
+        }
+        // 如果是多选，清理所有选中节点的 draggable
+        if(this.pickNodes.length > 1){
+          this.pickNodes.forEach(node => {
+            node.setAttribute('draggable','false');
+          });
+        }else{
+          nodeBox.setAttribute('draggable','false');
+        }
         isDuplicate = false;
         isMove = false;
         isMoveGroup = false;
       });
       nodeMix.addEventListener('mouseleave',(e)=>{
-        nodeBox.setAttribute('draggable','false');
+        // 拖拽结束时应用像素吸附
+        if(isMove || isMoveGroup){
+          this.pickNodes.forEach(node => {
+            let nodedata = this.allNodeDatas.find(item => item.id == node.id);
+            if(nodedata){
+              this.snapNodeToGrid(node, nodedata);
+            }
+          });
+        }
+        // 如果是多选，清理所有选中节点的 draggable
+        if(this.pickNodes.length > 1){
+          this.pickNodes.forEach(node => {
+            node.setAttribute('draggable','false');
+          });
+        }else{
+          nodeBox.setAttribute('draggable','false');
+        }
         isDuplicate = false;
         isMove = false;
         isMoveGroup = false;
@@ -1147,43 +1273,270 @@ class ZY_NODE {
         e.preventDefault();
       });
       
+      // 为多选复制添加 dragstart 事件，创建自定义预览图
+      nodeBox.addEventListener('dragstart',(e)=>{
+        // 如果是多选复制模式，创建包含所有选中节点的预览图
+        if(this.pickNodes.length > 1 && this.copyNodes.length > 0){
+          // 计算所有节点的边界框（使用逻辑坐标）
+          let minLeft = Infinity, minTop = Infinity;
+          this.pickNodes.forEach(node => {
+            let nodeData = this.allNodeDatas.find(item => item.id == node.id);
+            if(nodeData){
+              minLeft = Math.min(minLeft, nodeData.left);
+              minTop = Math.min(minTop, nodeData.top);
+            }
+          });
+          
+          // 计算鼠标相对于边界框左上角的位置（转换为逻辑坐标）
+          let editorRect = this.editorBox.getBoundingClientRect();
+          let currentZoom = this.zoom || 1;
+          // 将鼠标像素坐标转换为逻辑坐标
+          let mouseX = (e.clientX - editorRect.left + this.editorBox.scrollLeft) / currentZoom;
+          let mouseY = (e.clientY - editorRect.top + this.editorBox.scrollTop) / currentZoom;
+          // 计算偏移量并应用预览缩放因子
+          let offsetX = (mouseX - minLeft) * 0.6;
+          let offsetY = (mouseY - minTop) * 0.6;
+          
+          let preview = this.createMultiSelectDragPreview(this.pickNodes, e);
+          if(preview){
+            e.dataTransfer.setDragImage(preview, offsetX, offsetY);
+          }
+        }
+      });
+      
     });
     //重置绑定
     // 注意：yn_comp.js 已优化为事件委托，动态生成的组件会自动响应，无需再调用 COMP_MAIN()
   };
 
-  duplicateNodes(nodes,e){
-    nodes.forEach(node=>{
-      let oldData = this.allNodeDatas.find(item => item.id == node.id);
-      let data = JSON.parse(JSON.stringify(oldData));
-      this.reCreateData(data);
-      if(e){
-        //更新坐标值
-        let newXY = Object.values(this.toRenderXY(e)).map(item => item/this.zoom);
-        [data.top,data.left,data.x,data.y] = newXY;
-      } else {
-        [data.left,data.x] = [data.left  + data.w + 20,data.x + data.w + 20];
-      };
-      this.addNodes([data]);
+  // 创建多选拖拽预览图
+  createMultiSelectDragPreview(nodes, dragEvent){
+    if(!nodes || nodes.length === 0) return null;
+    
+    // 创建一个临时容器来显示所有选中的节点
+    let previewContainer = document.createElement('div');
+    previewContainer.style.position = 'absolute';
+    previewContainer.style.top = '-9999px';
+    previewContainer.style.left = '-9999px';
+    previewContainer.style.opacity = '0.8';
+    previewContainer.style.transform = 'scale(0.6)';
+    previewContainer.style.transformOrigin = 'top left';
+    previewContainer.style.pointerEvents = 'none';
+    previewContainer.style.zIndex = '10000';
+    previewContainer.style.background = 'transparent';
+    // 设置相同的 zoom，使预览图大小对应容器的 zoom
+    previewContainer.style.zoom = this.zoom || 1;
+    
+    // 计算所有节点的边界框（使用逻辑坐标，从数据中获取）
+    let minLeft = Infinity, minTop = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
+    let nodeRects = [];
+    
+    nodes.forEach(node => {
+      // 从节点数据中获取逻辑坐标（不受 zoom 影响）
+      let nodeData = this.allNodeDatas.find(item => item.id == node.id);
+      if(!nodeData) return;
+      
+      let left = nodeData.left;
+      let top = nodeData.top;
+      let width = nodeData.width || node.offsetWidth;
+      let height = nodeData.height || node.offsetHeight;
+      
+      nodeRects.push({
+        node: node,
+        left: left,
+        top: top,
+        width: width,
+        height: height
+      });
+      
+      minLeft = Math.min(minLeft, left);
+      minTop = Math.min(minTop, top);
+      maxRight = Math.max(maxRight, left + width);
+      maxBottom = Math.max(maxBottom, top + height);
     });
+    
+    // 设置容器大小（逻辑尺寸）
+    let containerWidth = maxRight - minLeft;
+    let containerHeight = maxBottom - minTop;
+    previewContainer.style.width = containerWidth + 'px';
+    previewContainer.style.height = containerHeight + 'px';
+    
+    // 克隆所有节点并添加到容器中（使用逻辑坐标）
+    nodeRects.forEach(({node, left, top}) => {
+      let clone = node.cloneNode(true);
+      clone.style.position = 'absolute';
+      clone.style.left = (left - minLeft) + 'px';
+      clone.style.top = (top - minTop) + 'px';
+      clone.style.margin = '0';
+      clone.style.transform = '';
+      clone.style.opacity = '0.9';
+      clone.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+      // 移除一些可能影响预览的属性
+      clone.removeAttribute('draggable');
+      // 清理可能的事件监听器
+      let allElements = clone.querySelectorAll('*');
+      allElements.forEach(el => {
+        // 移除可能影响拖拽的属性
+        el.removeAttribute('draggable');
+      });
+      previewContainer.appendChild(clone);
+    });
+    
+    // 将容器添加到文档中（临时，会在拖拽结束后清理）
+    document.body.appendChild(previewContainer);
+    
+    // 延迟清理临时元素
+    setTimeout(() => {
+      if(previewContainer.parentNode){
+        previewContainer.parentNode.removeChild(previewContainer);
+      }
+    }, 100);
+    
+    return previewContainer;
+  }
+
+  duplicateNodes(nodes,e){
+    if(nodes.length === 0) return;
+    
+    // 如果是多选复制，需要保持节点之间的相对位置
+    if(nodes.length > 1 && e){
+      // 记录所有节点的原始位置
+      let originalPositions = nodes.map(node => {
+        let oldData = this.allNodeDatas.find(item => item.id == node.id);
+        return {
+          node: node,
+          data: oldData,
+          left: oldData.left,
+          top: oldData.top,
+          x: oldData.x,
+          y: oldData.y
+        };
+      });
+      
+      // 计算第一个节点的新位置（基于 drop 事件），应用像素吸附
+      let firstNode = originalPositions[0];
+      let newXY = Object.values(this.toRenderXY(e)).map(item => this.snapToGrid(item/this.zoom));
+      let offsetX = newXY[1] - firstNode.left; // left 的偏移量
+      let offsetY = newXY[0] - firstNode.top;  // top 的偏移量
+      let offsetX4 = newXY[2] - firstNode.x;   // x 的偏移量
+      let offsetY4 = newXY[3] - firstNode.y;   // y 的偏移量
+      
+      // 为每个节点创建副本并应用偏移量，保持相对位置
+      originalPositions.forEach((item, index) => {
+        let data = JSON.parse(JSON.stringify(item.data));
+        this.reCreateData(data);
+        // 应用偏移量并吸附到网格
+        data.left = this.snapToGrid(item.left + offsetX);
+        data.top = this.snapToGrid(item.top + offsetY);
+        data.x = this.snapToGrid(item.x + offsetX4);
+        data.y = this.snapToGrid(item.y + offsetY4);
+        this.addNodes([data]);
+      });
+    } else {
+      // 单选复制，使用原有逻辑
+      nodes.forEach(node=>{
+        let oldData = this.allNodeDatas.find(item => item.id == node.id);
+        let data = JSON.parse(JSON.stringify(oldData));
+        this.reCreateData(data);
+        if(e){
+          //更新坐标值，应用像素吸附
+          let newXY = Object.values(this.toRenderXY(e)).map(item => this.snapToGrid(item/this.zoom));
+          [data.top,data.left,data.x,data.y] = newXY;
+        } else {
+          // 应用像素吸附
+          let newLeft = this.snapToGrid(data.left + (data.w || data.width || 0) + 20);
+          let newX = this.snapToGrid(data.x + (data.w || data.width || 0) + 20);
+          [data.left,data.x] = [newLeft, newX];
+        };
+        this.addNodes([data]);
+      });
+    }
   }
 
   addConnect(outDot,inDot){
 
   }
-  createSmoothPath(start, end, bodW) {
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  // 计算控制点（不创建路径）
+  calculateControlPoints(start, end, connectStartInfo = null) {
     const deltaX = end.x - start.x;
     const deltaY = end.y - start.y;
-    const control1 = { x: start.x + deltaX * 0.5, y: start.y };
-    const control2 = { x: end.x - deltaX * 0.5, y: end.y };
     
+    // 计算连线长度（使用对角线距离）
+    const lineLength = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    
+    // 根据连线长度计算系数（连线越长，系数越大）
+    // 短连线（0-100px）对应较小系数，长连线（400px+）对应较大系数
+    const minLength = 0;
+    const maxLength = 400; // 超过这个长度，系数达到最大值
+    const normalizedLength = Math.min(1, Math.max(0, lineLength / maxLength));
+    
+    // 系数从 0.375 到 2.5（对应 horizontalOffset 从 30 到 200，当 baseOffset = 80 时）
+    const coefficient = 0.375 + normalizedLength * 2.125;
+    
+    // 计算 horizontalOffset：基础值乘以系数，然后限制在 30-200 之间
+    const baseOffset = 80 ;// * this.zoom;
+    let horizontalOffset = baseOffset * coefficient;
+    horizontalOffset = Math.min(300, Math.max(10, horizontalOffset));
+    
+    let control1, control2;
+    
+    if(connectStartInfo){
+      // 根据连接点类型和位置关系调整控制点
+      const isStartOut = connectStartInfo.type === 'out';
+      const isEndLeftOfStart = end.x < start.x;
+      
+      if(isStartOut){
+        // 从输出点（右侧）开始
+        if(isEndLeftOfStart){
+          // 目标在左侧，先向右延伸，然后明显拐弯
+          control1 = { x: start.x + horizontalOffset, y: start.y };
+          control2 = { x: end.x - horizontalOffset, y: end.y };
+        } else {
+          // 目标在右侧，先向右延伸
+          control1 = { x: start.x + Math.max(horizontalOffset, deltaX * 0.3), y: start.y };
+          control2 = { x: end.x - Math.max(horizontalOffset, deltaX * 0.3), y: end.y };
+        }
+      } else {
+        // 从输入点（左侧）开始
+        if(isEndLeftOfStart){
+          // 目标在左侧，先向左延伸
+          control1 = { x: start.x - Math.max(horizontalOffset, Math.abs(deltaX) * 0.3), y: start.y };
+          control2 = { x: end.x + Math.max(horizontalOffset, Math.abs(deltaX) * 0.3), y: end.y };
+        } else {
+          // 目标在右侧，先向左延伸，然后明显拐弯
+          control1 = { x: start.x - horizontalOffset, y: start.y };
+          control2 = { x: end.x + horizontalOffset, y: end.y };
+        }
+      }
+    } else {
+      // 兼容旧代码，如果没有连接信息则使用原来的逻辑
+      control1 = { x: start.x + deltaX * 0.5, y: start.y };
+      control2 = { x: end.x - deltaX * 0.5, y: end.y };
+    }
+    
+    return { control1, control2 };
+  }
+
+  // 从控制点创建路径
+  createSmoothPathFromControls(start, end, control1, control2, bodW) {
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path.setAttribute("d", `M${start.x},${start.y} C${control1.x},${control1.y} ${control2.x},${control2.y} ${end.x},${end.y}`);
     path.setAttribute("stroke", "var(--line-col)");
     path.setAttribute("stroke-dasharray","4 4");
     path.setAttribute("fill", "none");
     path.setAttribute("stroke-width", bodW);
     return path;
+  }
+
+  // 保留旧方法以兼容（如果需要）
+  createSmoothPath(start, end, bodW, connectStartInfo = null) {
+    let controlPoints = this.calculateControlPoints(start, end, connectStartInfo);
+    return this.createSmoothPathFromControls(start, end, controlPoints.control1, controlPoints.control2, bodW);
+  }
+
+  // 像素吸附函数，以10px为步长
+  snapToGrid(value, step = 10){
+    return Math.round(value / step) * step;
   }
 
   toRenderXY(e){
@@ -1226,26 +1579,37 @@ class ZY_NODE {
     this.lineBox.style.height = wh;
   }
 
-  reViewBoxZoom(zoom){
-    let oldZoom = this.zoom;
+  reViewBoxZoom(zoom,e){
+    let oldZoom = this.oldZoom
+    let [flowOldTop,flowOldLeft] = [this.flowBox.scrollTop,this.flowBox.scrollLeft];
+    //鼠标相当于画布的坐标值
+    let [mouseOldTop,mouseOldLeft,mouseOldX,mouseOldY] = e ? Object.values(this.toRenderXY(e)) : [0,0,0,0];
     this.editorBox.style.zoom = zoom;
     this.lineBox.style.zoom = zoom;
     this.zoom = zoom;
     getElementMix('setzoom').value = Math.floor(zoom * 100);
-    let [oldTop,oldLeft] = [this.flowBox.scrollTop,this.flowBox.scrollLeft]
-    //移动视图到中心点
-    requestAnimationFrame(()=>{
-      /**/
+
+    if(!e){
       this.flowBox.scrollTop = (this.editorBox.offsetWidth * zoom - this.flowBox.offsetHeight)/2;
       this.flowBox.scrollLeft = (this.editorBox.offsetWidth * zoom - this.flowBox.offsetWidth)/2; 
-      /**/
+      return;
+    };
+
+    requestAnimationFrame(()=>{
+      // 计算缩放后的偏移量
+      let scaleRatio = zoom/ oldZoom;
+      let newLeft = flowOldLeft + mouseOldTop * (scaleRatio - 1);
+      let newTop = flowOldTop + mouseOldLeft * (scaleRatio - 1);
+      this.flowBox.scrollLeft = newLeft;
+      this.flowBox.scrollTop = newTop;
     });
   }
 
   reNodeSize(node){
     let data = this.allNodeDatas.find(item => item.id == node.id);
-    data.width = node.offsetWidth;
-    data.height = node.offsetHeight;
+    // 应用像素吸附到尺寸
+    data.width = this.snapToGrid(node.offsetWidth);
+    data.height = this.snapToGrid(node.offsetHeight);
   }
 
   removeNode(node){
@@ -1257,11 +1621,21 @@ class ZY_NODE {
   }
 
   //====工具函数===//
-  setZoom(zoom){
+  setZoom(zoom,e){
+    this.oldZoom = this.zoom;
     zoom = zoom > 1.5 ? 1.5 : zoom;
     zoom = zoom < 0.5 ? 0.5 : zoom;
     zoom = Math.round(zoom * 10)/10;
     this.flowBox.setAttribute('data-flow-viewzoom',zoom);
+ 
+    this.flowBox.setAttribute('data-flow-viewMouse', JSON.stringify({
+      clientX: e?.clientX,
+      clientY: e?.clientY,
+      pageX: e?.pageX,
+      pageY: e?.pageY,
+      screenX: e?.screenX,
+      screenY: e?.screenY
+    }));
     this.zoom = zoom;
   }
 
@@ -1301,10 +1675,26 @@ class ZY_NODE {
     let moveX = (startinfo.x - e.clientX)/this.zoom;
     let moveY = (startinfo.y - e.clientY)/this.zoom;
     
+    // 拖拽过程中不应用吸附，保持平滑移动
     let newTop = startinfo.top - moveY;
     let newLeft = startinfo.left - moveX;
-    let newX= startinfo.nodeX - moveX;
+    let newX = startinfo.nodeX - moveX;
     let newY = startinfo.nodeY + moveY;
+
+    nodedata.x = newX;
+    nodedata.y = newY;
+    nodedata.top = newTop;
+    nodedata.left = newLeft;
+    node.style.top = newTop + 'px';
+    node.style.left = newLeft + 'px';
+  }
+
+  // 在拖拽结束后应用像素吸附
+  snapNodeToGrid(node, nodedata){
+    let newTop = this.snapToGrid(nodedata.top);
+    let newLeft = this.snapToGrid(nodedata.left);
+    let newX = this.snapToGrid(nodedata.x);
+    let newY = this.snapToGrid(nodedata.y);
 
     nodedata.x = newX;
     nodedata.y = newY;
@@ -1562,10 +1952,6 @@ function reSafeTopLeft(event,area,node){
   };
   return {x: X, y: Y, w: popW, h: popH, xys: xys}
 };
-
-
-// 标准类型已由 getUserMix 自动处理，无需手动观察
-// 只需要观察自定义的 flow 相关属性
 
 
 function getUserColor(node){
