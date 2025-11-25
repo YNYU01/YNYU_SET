@@ -123,7 +123,7 @@ class btncheck extends HTMLElement {
     super();
     this.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 18 18">
-      <circle cx="9" cy="9" r="8" stroke="var(--mainColor)" stroke-width="1" fill="rgba(0,0,0,0)"></circle>
+      <circle cx="9" cy="9" r="8" stroke="var(--bod,var(--mainColor))" stroke-width="1" fill="var(--fill,rgba(0,0,0,0))"></circle>
       <circle cx="9" cy="9" r="5" fill="var(--check,transparent)"></circle>
     </svg>
     `;
@@ -1480,7 +1480,10 @@ THEME_SWITCH.forEach(item => {
 
 
 TAB_AUTO.forEach((item,index) => {
+
   let pagefor = document.querySelector(`[data-page-id="${item.getAttribute('data-tab-for')}"]`);
+  if(!pagefor) return;
+  
   let tabsfor = pagefor.querySelectorAll('[data-page-name]');
   
   tabsfor.forEach(items => {
@@ -1504,15 +1507,24 @@ TAB_AUTO.forEach((item,index) => {
         items.style.display = 'flex';
       }
       input.addEventListener('change',() => {
-        for(let i = 0; i < TAB_AUTO.length; i++){
-          document.getElementById(items.parentNode.getAttribute('data-tab-pick') + '_' + i).checked = false;
-          document.getElementById(keyid + '_' + i).checked = true;
+        let oldTabPick = items.parentNode.getAttribute('data-tab-pick');
+        if(oldTabPick){
+          let oldInput = document.getElementById(oldTabPick + '_' + index);
+          if(oldInput){
+            oldInput.checked = false;
+          }
         }
-        let oldpage = document.querySelector(`[data-page-name="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`);
-        if(!oldpage){
-          oldpage = document.querySelector(`[data-page-name-en="${items.parentNode.getAttribute('data-tab-pick').split('_')[1]}"]`);
+        input.checked = true;
+        if(oldTabPick){
+          let oldPageName = oldTabPick.split('_')[1];
+          let oldpage = document.querySelector(`[data-page-name="${oldPageName}"]`);
+          if(!oldpage){
+            oldpage = document.querySelector(`[data-page-name-en="${oldPageName}"]`);
+          }
+          if(oldpage){
+            oldpage.style.display = 'none';
+          }
         }
-        oldpage.style.display = 'none';
         items.style.display = 'flex';
         items.parentNode.setAttribute('data-tab-pick',keyid);
         if(input.parentNode.getAttribute('data-scroll') !== null){
@@ -1546,6 +1558,10 @@ TAB_AUTO.forEach((item,index) => {
       item.appendChild(label);
     };
   });
+
+  setTimeout(() => {
+    item.setAttribute('data-tab-pick', 'true');
+  }, 100);
   
 });
 

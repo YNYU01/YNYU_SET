@@ -50,385 +50,381 @@
           温馨提示
       </div>
   </div>
-  <div data-page-id="ui" class="df-ffc pos-r" style="gap: 20px;">
-    <div class="df-ffc ww" style="gap: 10px;">
-      <div data-li-style="title" data-en-text="IMPORTANT" class="df" style="font-size: 12px; gap: 4px;">使用说明</div>
-      <div class="df-ffc w100" style="white-space: wrap; gap: 4px; font-size: 12px; padding: 6px; box-sizing: border-box; opacity: 0.6; border: 1px var(--boxBod) dashed; border-radius: 10px;"> 
-        
-        <li data-li-style="1">
-          <span data-en-text="Import these files">需同时引入</span>
-          <i><a href="../builds/yn_style.css" download>yn_style.css</a></i>
-          <span data-en-text="&">和</span>
-          <i><a href="../builds/yn_comp.js" download>yn_comp.js</a></i>
-          <span data-en-text=",and check whether there is a variable name conflict">
-            ，并核查是否存在变量名冲突
-          </span>
-        </li>
-        <li data-li-style="1">
-          <span data-en-text="It is recommended to copy the code of">
-            建议先复制
-          </span>
-          <span data-highlight>
-            HTML_main
-          </span>
-          <span data-en-text="before copying other sample codes. Also, check whether the ID or custom attribute conflicts">
-            部分的代码再复制其他示例代码，同样也需检查ID或自定义属性是否冲突
-          </span>
-        </li>
-        <li data-li-style="1">
-          <span data-en-text="Version 2.0 uses event delegation, dynamically added elements will automatically respond to events without rebinding">
-            2.0版本使用事件委托，动态添加的元素会自动响应事件，无需重新绑定
-          </span>
-        </li>
-        <li data-li-style="1">
-          <span data-en-text="Version 2.0 saves original code when page loads, copying will use original code instead of modified content">
-            2.0版本在页面加载时保存原始代码，复制时会使用原始代码而不是修改后的内容
-          </span>
-        </li>
-      </div>
+  <div data-page-id="ui" class="df-ffc pos-r" style="gap: 10px; height: calc(100vh - 120px);">
+    <div data-li-style="title" data-en-text="IMPORTANT" class="df" style="font-size: 12px; gap: 4px; margin-top: 10px;">使用说明</div>
+    <div class="df-ffc ww" style="white-space: wrap; gap: 4px; font-size: 12px; padding: 6px; box-sizing: border-box; opacity: 0.6; border: 1px var(--boxBod) dashed; border-radius: 10px;"> 
+      
+      <li data-li-style="1">
+        <span data-en-text="Import these files">需同时引入</span>
+        <i><a href="../builds/yn_style.css" download>yn_style.css</a></i>
+        <span data-en-text="&">和</span>
+        <i><a href="../builds/yn_comp.js" download>yn_comp.js</a></i>
+        <span data-en-text=",and check whether there is a variable name conflict">
+          ，并核查是否存在变量名冲突
+        </span>
+      </li>
+      <li data-li-style="1">
+        <span data-en-text="It is recommended to copy the code of">
+          建议先复制
+        </span>
+        <span data-highlight>
+          HTML_main
+        </span>
+        <span data-en-text="before copying other sample codes. Also, check whether the ID or custom attribute conflicts">
+          部分的代码再复制其他示例代码，同样也需检查ID或自定义属性是否冲突
+        </span>
+      </li>
+      <li data-li-style="1">
+        <span data-en-text="Version 2.0 uses event delegation, dynamically added elements will automatically respond to events without rebinding">
+          2.0版本使用事件委托，动态添加的元素会自动响应事件，无需重新绑定
+        </span>
+      </li>
+      <li data-li-style="1">
+        <span data-en-text="Version 2.0 saves original code when page loads, copying will use original code instead of modified content">
+          2.0版本在页面加载时保存原始代码，复制时会使用原始代码而不是修改后的内容
+        </span>
+      </li>
     </div>
-    <div class="df-ffc ww" style="gap: 10px;">
-      <div data-li-style="title" data-en-text="EXAMPLE" class="df" style="font-size: 12px; gap: 4px;">代码示例</div>
-      <!--控件预览-->
-      <div class="noscrollbar df-ffc " data-scroll-round style="--scroll-cut: 280px; --scroll-cut-mb: 340px;">
-        <div class="df ww" style="flex-wrap: wrap; gap: 10px;">
-          <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
-            <div data-copy="HTML_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="bottom" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              HTML_main:
-              <div data-resize="pre">
-                <pre style="height: 120px; max-height: 50vh;"><code data-code="HTML_main" class="language-html"></code></pre>
+    <div data-li-style="title" data-en-text="EXAMPLE" class="df" style="font-size: 12px; gap: 4px; margin-top: 10px;">代码示例</div>
+    <!--控件预览-->
+    <div class="noscrollbar df-ffc h100" data-scroll-round >
+      <div class="df ww" style="flex-wrap: wrap; gap: 10px;">
+        <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
+          <div data-copy="HTML_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="bottom" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            HTML_main:
+            <div data-resize="pre">
+              <pre style="height: 120px; max-height: 50vh;"><code data-code="HTML_main" class="language-html"></code></pre>
+            </div>
+          </div>
+        </div>
+        <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
+          <div data-copy="JS_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="bottom" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            JS_main:
+            <div data-resize="pre">
+              <pre style="height: 120px; max-height: 50vh;"><code data-code="JS_main" class="language-javascript"></code></pre>
+            </div>
+          </div>
+        </div>
+        <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
+          <div data-copy="TV" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            TV:
+            <div class="TV df-lc">
+              <div data-TV="false" class="df-lc" style="--tv-w:-29ch;/*按文字总字节取负值（既偏移量）*/ --tv-s:15s;/*TV宽度加上父容器宽度除以30（既30px/s）*/">
+                <div style="min-width: 7ch;" data-en-text="💬NOTICE:" >💬公告:</div>
+                <div style="min-width: 22ch;" data-en-text="Please note the following">公告内容公告内容公告内容</div>  
+              </div>  
+            </div>
+          </div>
+        </div>
+        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+          <div data-copy="radio" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            radio:
+            <div class="df-ffc fl1" style="gap: 4px;">
+              <div class="df" data-radio-value="1" style="gap: 4px;">
+                <div data-radio data-radio-data="1" data-radio-main="true" class="df-cc fl0">1</div>
+                <div data-radio data-radio-data="2" data-radio-main="false" class="df-cc fl0">2</div>
+                <div data-radio data-radio-data="3" data-radio-main="false" class="df-cc fl0">3</div>
+                <div data-radio data-radio-data="4" data-radio-main="false" class="df-cc fl0">4</div>
               </div>
             </div>
           </div>
-          <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
-            <div data-copy="JS_main" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="bottom" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              JS_main:
-              <div data-resize="pre">
-                <pre style="height: 120px; max-height: 50vh;"><code data-code="JS_main" class="language-javascript"></code></pre>
+          <div data-copy="select" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            select:
+            <div class="df-lc pos-r" data-select data-select-value="选项1" style="gap: 4px; width: 120px;">
+              <input id="select-value-1" type="text" data-select-input readonly data-en-input="Option 1" value="选项1">
+              <input id="select-show-1" data-select-pick type="checkbox">
+              <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
+              <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
+                <div data-option="type" data-en-text="Type 1">分类1</div>
+                <div data-option="option" data-option-main="true" data-en-text="Option 1" data-option-value="选项1">选项1</div>
+                <div data-option="option" data-option-main="false" data-en-text="Option 2" data-option-value="选项2">选项2</div>
+                <div data-option="type" data-en-text="Type 2">分类2</div>
+                <div data-option="option" data-option-main="false" data-en-text="Option 3" data-option-value="选项3">选项3</div>
+                <div data-option="option" data-option-main="false" data-en-text="Option 4" data-option-value="选项4">选项4</div>
+                <div data-option="option" data-option-main="false" data-en-text="Option 5" data-option-value="选项5">选项5</div>
+                <div data-option="option" data-option-main="false" data-en-text="Option 6" data-option-value="选项6">选项6</div>
               </div>
             </div>
           </div>
-          <div class="df-ffc ww fl0" style="padding: 10px; gap: 10px; height: fit-content; background: var(--boxGry); border-radius: 10px; box-sizing: border-box; ">
-            <div data-copy="TV" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              TV:
-              <div class="TV df-lc">
-                <div data-TV="false" class="df-lc" style="--tv-w:-29ch;/*按文字总字节取负值（既偏移量）*/ --tv-s:15s;/*TV宽度加上父容器宽度除以30（既30px/s）*/">
-                  <div style="min-width: 7ch;" data-en-text="💬NOTICE:" >💬公告:</div>
-                  <div style="min-width: 22ch;" data-en-text="Please note the following">公告内容公告内容公告内容</div>  
-                </div>  
-              </div>
+        </div>
+        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+          <div data-copy="tabs" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
             </div>
-          </div>
-          <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
-            <div data-copy="radio" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            tabs:
+            <div class="df-ffc fl1" style="gap: 4px;">
+              <div class="df" data-tab="auto" data-tab-for="page" data-tab-pick="" style="gap: 4px;">
+                <!--自动填充tab-->
               </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              radio:
-              <div class="df-ffc fl1" style="gap: 4px;">
-                <div class="df" data-radio-value="1" style="gap: 4px;">
-                  <div data-radio data-radio-data="1" data-radio-main="true" class="df-cc fl0">1</div>
-                  <div data-radio data-radio-data="2" data-radio-main="false" class="df-cc fl0">2</div>
-                  <div data-radio data-radio-data="3" data-radio-main="false" class="df-cc fl0">3</div>
-                  <div data-radio data-radio-data="4" data-radio-main="false" class="df-cc fl0">4</div>
+              <!--可放任何位置，data-page-id能对应上data-tab-for即可-->
+              <div data-page-id="page" style="height: 80px; border: 1px solid var(--boxBod); border-radius: 4px; background: var(--boxBak);">
+                <div data-en-text="Sample page 1" data-page-name="tab1" data-page-main="true" data-page-tabclass="tab-eg btn-op" 
+                class="df-cc wh100" style="display: none;">
+                  示例页面1
                 </div>
-              </div>
-            </div>
-            <div data-copy="select" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              select:
-              <div class="df-lc pos-r" data-select data-select-value="选项1" style="gap: 4px; width: 120px;">
-                <input id="select-value-1" type="text" data-select-input readonly data-en-input="Option 1" value="选项1">
-                <input id="select-show-1" data-select-pick type="checkbox">
-                <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
-                <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
-                  <div data-option="type" data-en-text="Type 1">分类1</div>
-                  <div data-option="option" data-option-main="true" data-en-text="Option 1" data-option-value="选项1">选项1</div>
-                  <div data-option="option" data-option-main="false" data-en-text="Option 2" data-option-value="选项2">选项2</div>
-                  <div data-option="type" data-en-text="Type 2">分类2</div>
-                  <div data-option="option" data-option-main="false" data-en-text="Option 3" data-option-value="选项3">选项3</div>
-                  <div data-option="option" data-option-main="false" data-en-text="Option 4" data-option-value="选项4">选项4</div>
-                  <div data-option="option" data-option-main="false" data-en-text="Option 5" data-option-value="选项5">选项5</div>
-                  <div data-option="option" data-option-main="false" data-en-text="Option 6" data-option-value="选项6">选项6</div>
+                <div data-en-text="Sample page 2" data-page-name="tab2" data-page-main="false" data-page-tabclass="tab-eg btn-op" 
+                class="df-cc wh100" style="display: none;">
+                  示例页面2
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
-            <div data-copy="tabs" class="df-lc" style="gap: 4px; flex-wrap: wrap;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              tabs:
-              <div class="df-ffc fl1" style="gap: 4px;">
-                <div class="df" data-tab="auto" data-tab-for="page" data-tab-pick="" style="gap: 4px;">
-                  <!--自动填充tab-->
-                </div>
-                <!--可放任何位置，data-page-id能对应上data-tab-for即可-->
-                <div data-page-id="page" style="height: 80px; border: 1px solid var(--boxBod); border-radius: 4px; background: var(--boxBak);">
-                  <div data-en-text="Sample page 1" data-page-name="tab1" data-page-main="true" data-page-tabclass="tab-eg btn-op" 
-                  class="df-cc wh100" style="display: none;">
-                    示例页面1
-                  </div>
-                  <div data-en-text="Sample page 2" data-page-name="tab2" data-page-main="false" data-page-tabclass="tab-eg btn-op" 
-                  class="df-cc wh100" style="display: none;">
-                    示例页面2
-                  </div>
-                  <div data-en-text="Sample page 3" data-page-name="tab3" data-page-main="false" data-page-tabclass="tab-eg btn-op" 
-                  class="df-cc wh100" style="display: none;">
-                    示例页面3
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>        
-          <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px; z-index: 2;">
-            <div data-copy="theme" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              theme:
-              <div id="btn-theme" style="width: 14px; height: 14px;">
-                <input id="theme-2" data-theme-check type="checkbox" checked="true">
-                <label for="theme-2" class="btn-theme" style="position: relative;">
-                  <btn-theme></btn-theme>
-                </label>
-              </div>
-            </div>
-            <div data-copy="check" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              check:
-              <div class="df-ffc">
-                <div class="df-lc" style="gap: 4px;">
-                  <div style="width: 14px; height: 14px;">
-                    <input id="check-1" data-check data-check-for="check-1" type="checkbox" checked="true">
-                    <label for="check-1" class="check">
-                      <btn-check></btn-check>
-                    </label>
-                  </div>
-                  <!--可放任何位置，data-check-name能对应上data-check-for即可-->
-                  <div data-check-name="check-1" data-check-checked="true" data-en-text="Something there 1">选项内容1</div>
-                </div>
-                <div class="df-lc" style="gap: 4px;">
-                  <div style="width: 14px; height: 14px;">
-                    <input id="check-2" data-check data-check-for="check-2" type="checkbox" checked="true">
-                    <label for="check-2" class="check">
-                      <btn-check></btn-check>
-                    </label>
-                  </div>
-                  <!--可放任何位置，data-check-name能对应上data-check-for即可-->
-                  <div data-check-name="check-2" data-check-checked="true" data-en-text="Something there 2">选项内容2</div>
-                </div>
-                <div class="df-lc" style="gap: 4px;">
-                  <div style="width: 14px; height: 14px;">
-                    <input id="check-3" data-check data-check-for="check-3" type="checkbox" checked="true">
-                    <label for="check-3" class="check">
-                      <btn-check></btn-check>
-                    </label>
-                  </div>
-                  <!--可放任何位置，data-check-name能对应上data-check-for即可-->
-                  <div data-check-name="check-3" data-check-checked="true" data-en-text="Something there 3">选项内容3</div>
-                </div>
-              </div>
-            </div>
-            <div data-copy="switch" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              switch:
-              <input id="switch-1" type="checkbox" checked="true">
-              <label for="switch-1" class="switch"></label>
-            </div>
-            <div data-copy="input-range-int" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              input-range-int:
-              <div data-number data-number-value="50" class="df-lc fl1" style="flex: 1;">
-                <input id="input-range-1" data-input="range" type="range" min="0" max="100" value="50"/>
-                <input id="input-int-1" data-input="value" data-input-must="0,100" data-input-type="int" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" />
-              </div>
-            </div>
-            <div data-copy="input-color" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              input-color:
-              <div data-color data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
-              data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
-              class="df-lc fl1 pos-r" style="gap: 4px;">
-                <div data-getcolor class="btn-op" style="width: 14px; height: 14px;">
-                  <btn-getcolor></btn-getcolor>
-                </div>
-                <div data-input="colorpick" style="height:20px; cursor: pointer; border: 1px solid var(--boxBod); border-radius: 5px;" >
-                  <btn-color></btn-color>
-                </div>
-                <input id="colorvalue-1" class="fl1" type="text" data-input="hex" value="#888888" >
-                <div data-input="colortype" data-colortype-mode="hex" class="colortype"></div>
-                <card-colorpick></card-colorpick>
-              </div> 
-            </div>
-          </div>
-          <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
-            <div data-copy="input-text" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              input-text:
-              <input id="input-text-1" type="text" data-input>
-            </div>
-            <div data-copy="input-text-must" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              input-text-must:
-              <div data-text data-text-value="此处不能为空" class="fl0">
-                <input id="input-text-must-1" type="text" data-input data-input-type="text" data-input-must="此处不能为空" data-input-must-en="Must input something" data-en-input="Must input something"  value="此处不能为空"/>
-              </div>
-            </div>
-            <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              input-text-max:
-              <div class="pos-r df-lc fl1">
-                <input id="input-text-max-1" type="text" maxlength="10" data-input-max>
-                <div class="pos-a" style="right: 2px; font-size: 9px; opacity: 0.6;">
-                  <span>0</span>/10
-                </div>
-              </div>
-            </div>
-            <div data-copy="textarea" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              textarea:
-              <div data-resize class="pos-r fl1" >
-                <textarea spellcheck="false" data-textarea style="height:10ch;"></textarea>
-                <!--清空-->
-                <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
-                  <btn-close></btn-close>
-                </div>
-              </div>
-            </div>
-            <div data-copy="textarea-eg" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              textarea-eg:
-              <div data-resize class="pos-r fl1" >
-                <textarea spellcheck="false" data-textarea="eg" data-eg="示例文案\n示例文案" data-eg-en="Sample characters\nSample characters" style="height:14ch;"></textarea>
-                <!--清空-->
-                <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
-                  <btn-close></btn-close>
-                </div>
-                <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: wrap; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
-                  <li data-li-style="2" data-en-text="Double click fill sample">双击填充示例</li>
-                  <li data-li-style="2" data-en-text="Other input prompts, other input prompts">其他输入说明其他输入说明其他输入说明，其他输入说明其他输入说明</li>
+                <div data-en-text="Sample page 3" data-page-name="tab3" data-page-main="false" data-page-tabclass="tab-eg btn-op" 
+                class="df-cc wh100" style="display: none;">
+                  示例页面3
                 </div>
               </div>
             </div>
           </div>
-          <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
-            <div data-copy="turnto" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              turnto:
-              <a data-turnto href="" class="df" style="--turnto-w:26px; --arrow-w: 4; --turnto-text: '立即前往'; --turnto-text-en: 'Go';">
-                <div class="pos-r" style="width: 77%; height: 77%;">
-                  <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
-                    <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>                 
-                </div>
-              </a>
+        </div>        
+        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px; z-index: 2;">
+          <div data-copy="theme" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
             </div>
-            <div data-copy="back" class="df-lc" style="gap: 4px;">
-              <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
-                <btn-copy></btn-copy>
-              </div>
-              <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
-                <btn-info></btn-info>
-              </div>
-              back:
-              <a data-back href="" class="df" style="--back-w:26px; --back-text:'返回'; --back-text-en:'Back'; --arrow-w: 4;">
-                <div class="pos-r" style="width: 77%; height: 77%; transform: rotate(180deg);">
-                  <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
-                    <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>                 
-                </div>
-              </a>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            theme:
+            <div id="btn-theme" style="width: 14px; height: 14px;">
+              <input id="theme-2" data-theme-check type="checkbox" checked="true">
+              <label for="theme-2" class="btn-theme" style="position: relative;">
+                <btn-theme></btn-theme>
+              </label>
             </div>
           </div>
-          
-          <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+          <div data-copy="check" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            check:
+            <div class="df-ffc">
+              <div class="df-lc" style="gap: 4px;">
+                <div style="width: 14px; height: 14px;">
+                  <input id="check-1" data-check data-check-for="check-1" type="checkbox" checked="true">
+                  <label for="check-1" class="check">
+                    <btn-check></btn-check>
+                  </label>
+                </div>
+                <!--可放任何位置，data-check-name能对应上data-check-for即可-->
+                <div data-check-name="check-1" data-check-checked="true" data-en-text="Something there 1">选项内容1</div>
+              </div>
+              <div class="df-lc" style="gap: 4px;">
+                <div style="width: 14px; height: 14px;">
+                  <input id="check-2" data-check data-check-for="check-2" type="checkbox" checked="true">
+                  <label for="check-2" class="check">
+                    <btn-check></btn-check>
+                  </label>
+                </div>
+                <!--可放任何位置，data-check-name能对应上data-check-for即可-->
+                <div data-check-name="check-2" data-check-checked="true" data-en-text="Something there 2">选项内容2</div>
+              </div>
+              <div class="df-lc" style="gap: 4px;">
+                <div style="width: 14px; height: 14px;">
+                  <input id="check-3" data-check data-check-for="check-3" type="checkbox" checked="true">
+                  <label for="check-3" class="check">
+                    <btn-check></btn-check>
+                  </label>
+                </div>
+                <!--可放任何位置，data-check-name能对应上data-check-for即可-->
+                <div data-check-name="check-3" data-check-checked="true" data-en-text="Something there 3">选项内容3</div>
+              </div>
+            </div>
           </div>
+          <div data-copy="switch" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            switch:
+            <input id="switch-1" type="checkbox" checked="true">
+            <label for="switch-1" class="switch"></label>
+          </div>
+          <div data-copy="input-range-int" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            input-range-int:
+            <div data-number data-number-value="50" class="df-lc fl1" style="flex: 1;">
+              <input id="input-range-1" data-input="range" type="range" min="0" max="100" value="50"/>
+              <input id="input-int-1" data-input="value" data-input-must="0,100" data-input-type="int" type="text" class="txt-c" style="width: 30px; flex: 0 0 auto;" value="50" />
+            </div>
+          </div>
+          <div data-copy="input-color" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            input-color:
+            <div data-color data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
+            data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
+            class="df-lc fl1 pos-r" style="gap: 4px;">
+              <div data-getcolor class="btn-op" style="width: 14px; height: 14px;">
+                <btn-getcolor></btn-getcolor>
+              </div>
+              <div data-input="colorpick" style="height:20px; cursor: pointer; border: 1px solid var(--boxBod); border-radius: 5px;" >
+                <btn-color></btn-color>
+              </div>
+              <input id="colorvalue-1" class="fl1" type="text" data-input="hex" value="#888888" >
+              <div data-input="colortype" data-colortype-mode="hex" class="colortype"></div>
+              <card-colorpick></card-colorpick>
+            </div> 
+          </div>
+        </div>
+        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+          <div data-copy="input-text" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            input-text:
+            <input id="input-text-1" type="text" data-input>
+          </div>
+          <div data-copy="input-text-must" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            input-text-must:
+            <div data-text data-text-value="此处不能为空" class="fl0">
+              <input id="input-text-must-1" type="text" data-input data-input-type="text" data-input-must="此处不能为空" data-input-must-en="Must input something" data-en-input="Must input something"  value="此处不能为空"/>
+            </div>
+          </div>
+          <div data-copy="input-text-max" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            input-text-max:
+            <div class="pos-r df-lc fl1">
+              <input id="input-text-max-1" type="text" maxlength="10" data-input-max>
+              <div class="pos-a" style="right: 2px; font-size: 9px; opacity: 0.6;">
+                <span>0</span>/10
+              </div>
+            </div>
+          </div>
+          <div data-copy="textarea" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            textarea:
+            <div data-resize class="pos-r fl1" >
+              <textarea spellcheck="false" data-textarea style="height:10ch;"></textarea>
+              <!--清空-->
+              <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
+                <btn-close></btn-close>
+              </div>
+            </div>
+          </div>
+          <div data-copy="textarea-eg" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            textarea-eg:
+            <div data-resize class="pos-r fl1" >
+              <textarea spellcheck="false" data-textarea="eg" data-eg="示例文案\n示例文案" data-eg-en="Sample characters\nSample characters" style="height:14ch;"></textarea>
+              <!--清空-->
+              <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
+                <btn-close></btn-close>
+              </div>
+              <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: wrap; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
+                <li data-li-style="2" data-en-text="Double click fill sample">双击填充示例</li>
+                <li data-li-style="2" data-en-text="Other input prompts, other input prompts">其他输入说明其他输入说明其他输入说明，其他输入说明其他输入说明</li>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
+          <div data-copy="turnto" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            turnto:
+            <a data-turnto href="" class="df" style="--turnto-w:26px; --arrow-w: 4; --turnto-text: '立即前往'; --turnto-text-en: 'Go';">
+              <div class="pos-r" style="width: 77%; height: 77%;">
+                <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
+                  <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>                 
+              </div>
+            </a>
+          </div>
+          <div data-copy="back" class="df-lc" style="gap: 4px;">
+            <div data-copy-btn class="fl0" style="width: 14px; height: 14px;">
+              <btn-copy></btn-copy>
+            </div>
+            <div data-tips="set" data-tips-y="top" data-tips-x="left" style="--tips-w: 280px; width: 14px; height: 14px;">
+              <btn-info></btn-info>
+            </div>
+            back:
+            <a data-back href="" class="df" style="--back-w:26px; --back-text:'返回'; --back-text-en:'Back'; --arrow-w: 4;">
+              <div class="pos-r" style="width: 77%; height: 77%; transform: rotate(180deg);">
+                <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"/>
+                  <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>                 
+              </div>
+            </a>
+          </div>
+        </div>
+        
+        <div class="df-ffc fl0" style="padding: 10px; gap: 10px; width: 300px; background: var(--boxGry); border-radius: 10px;">
         </div>
       </div>
     </div>

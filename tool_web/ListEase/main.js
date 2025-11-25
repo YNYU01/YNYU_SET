@@ -28,7 +28,8 @@ let flowObserver = new MutationObserver((mutations) => {
         case 'data-flow-viewzoom':
           let zoom = mutation.target.getAttribute('data-flow-viewzoom');
           let e = mutation.target.getAttribute('data-flow-viewMouse');
-          FLOW_RENDER.reViewBoxZoom(zoom,JSON.parse(e)); 
+          // 从监听器调用时，跳过更新属性，防止循环触发
+          FLOW_RENDER.reViewBoxZoom(zoom, e ? JSON.parse(e) : null, true); 
         break;
       }
     }
@@ -46,11 +47,18 @@ let resizeObserver = new ResizeObserver(debounce((entries) => {
 
 //节点生成与更新
 class ZY_NODE {
-  constructor(flowBox,flowNodesBox,isInit,allNodeDatas) {
+  // ========== 初始化相关 ==========
+  
+  constructor(flowBox,flowNodesBox,isInit,allNodeDatas,zoomRange) {
     /*节点容器*/
     this.flowBox = flowBox && getElementMix(flowBox) ? getElementMix(flowBox) : document.querySelector('[data-flow-viewbox]') || this.Error('noFlowBox');
     this.flowNodesBox = flowNodesBox && getElementMix(flowNodesBox) ? getElementMix(flowNodesBox) : document.querySelector('[data-flow-allnodes]') || this.Error('noflowNodesBox');
     /*基础参数*/
+    // 缩放范围配置，默认 min: 0.5, max: 1.5
+    this.zoomRange = zoomRange && typeof zoomRange === 'object' ? {
+      min: zoomRange.min !== undefined ? zoomRange.min : 0.5,
+      max: zoomRange.max !== undefined ? zoomRange.max : 1.5
+    } : { min: 0.5, max: 1.5 };
     this.flowNodes = [
       {
         modsec: ['基础','base'],
@@ -99,8 +107,9 @@ class ZY_NODE {
           {
             type:["主标题","main title"],
             layout:[
-              {className: 'df-sc',items:['IN:01','OUT:01']},
-              {className: 'df-sc',items:['INPUT:01']},
+              {className: 'df-rc',items:['OUT:01']},
+              {className: 'df',items:['IN:01',{className: 'df-ffc gap4',items:['INPUT:01','INPUT:02']},]},
+              {className: 'df-lc',items:['IN:02']},
             ],
             create:0,
             reduce:0,
@@ -111,42 +120,27 @@ class ZY_NODE {
             left: 0,
             width:140,
             height:140,
-            ins:[{id:'01',link:['INPUT:01',false],inType:['STRING','CODE']}],
+            ins:[
+              {id:'01',name:['文案','text'],link:['INPUT:01',false],inType:['CODE']},
+              {id:'02',name:['样式','style'],inType:['CODE']},
+            ],
             outs:[{id:'01',to:'',outType:'NODE'}],
             inputs:[
               {
                 id:'01',
-                value:'',
+                value:['主标题第一行','Main Title First Line'],
                 max:20,
-                must:['标题标题标题','Title Title Title'],
+                must:true,
                 disabled: false,
               },
               {
                 id:'02',
-                value:'',
+                value:['主标题第二行（可选）','Main Title Second Line (Optional)'],
                 max:20,
-                must:['标题标题标题','Title Title Title'],
+                must:false,
                 disabled: false,
               }
             ],
-          },
-          {
-            type:["定制主标题","main title pro"],
-            layout:[
-              {className: 'df-sc',items:['IN:01','OUT:01']},
-            ],
-            create:0,
-            reduce:0,
-            id:'',
-            x:0,
-            y:0,
-            top: 0,
-            left: 0,
-            width:140,
-            height:140,
-            ins:[{id:'01',inType:['FILE','CODE']}],
-            outs:[{id:'01',to:'',outType:'NODE'}],
-            inputs:[],
           },
           {
             type:["副标题","sub title"],
@@ -167,25 +161,7 @@ class ZY_NODE {
             inputs:[],
           },
           {
-            type:["定制副标题","sub title pro"],
-            layout:[
-              {className: 'df-sc',items:['IN:01','OUT:01']},
-            ],
-            create:0,
-            reduce:0,
-            id:'',
-            x:0,
-            y:0,
-            top: 0,
-            left: 0,
-            width:140,
-            height:140,
-            ins:[{id:'01',inType:['FILE','CODE']}],
-            outs:[{id:'01',to:'',outType:'NODE'}],
-            inputs:[],
-          },
-          {
-            type:["主背景图","background"],
+            type:["背景图","background"],
             layout:[
               {className: 'df-sc',items:['IN:01','OUT:01']},
             ],
@@ -645,14 +621,23 @@ class ZY_NODE {
     this.copyNodes = [];
     this.zoom = 1;
     this.oldZoom = 1;
+    // 视窗大小配置：默认4096，最大8192（2倍）
+    this.viewBoxSize = {
+      default: 4090,
+      max: 25600,
+      current: 4090
+    };
     /*初始化控制*/
     this.selectArea = document.querySelector('[data-selectarea]') || this.creArea('selectarea');
     this.connectArea = document.querySelector('[data-connectarea]') || this.creArea('connectarea');
     this.isInit = isInit ? this.init() : null;
     this.editorBox = document.querySelector('[data-flow-editorbox]') || this.isInit[0];
     this.lineBox = document.querySelector('[data-flow-linebox]') || this.isInit[1];
-  }
+  };
 
+  //创建模拟框选区域的容器: 用于框选节点、模拟连接线
+  //name: 区域类型: selectarea, connectarea
+  //返回值: 区域元素
   creArea(name){
     let area = document.createElement('div');
     area.setAttribute('data-' + name);
@@ -660,8 +645,10 @@ class ZY_NODE {
     area.setAttribute('style','display: none;');
     document.querySelector('body').appendChild(area);
     return area;
-  }
+  };
 
+  //初始化
+  //返回值: 初始化好的编辑层、连线层
   init(){
     //生成编辑层
     if(!this.editorBox){
@@ -679,23 +666,40 @@ class ZY_NODE {
       this.flowBox.appendChild(lineBox);
       this.lineBox = lineBox;
     };
-    //生成合成预览节点
-    let newView = JSON.parse(JSON.stringify({modsec:this.flowNodes[0].modsec,...this.flowNodes[0].nodes[0]}));
-    this.reCreateData(newView);
-    [newView.top,newView.left,newView.x,newView.y] = [2048 - 356/2,2048 - 346/2,356/-2,346/2];
-    this.addNodes([newView],true);
-
     //监听自定义属性值，修改画布大小
     let config_flowBox = {attributes:true,attributeFilter:['data-flow-viewwidth','data-flow-viewzoom']};
     flowObserver.observe(this.flowBox,config_flowBox);
-    //最小4096，默认为窗口最大边的3倍
-    let maxWH = Math.max(Math.ceil(this.flowBox.offsetWidth/1024)*2048,Math.ceil(this.flowBox.offsetHeight/1024)*1024,4096);
-    this.flowBox.setAttribute('data-flow-viewwidth',maxWH);
+    //默认4096，保持正方形
+    this.viewBoxSize.current = this.viewBoxSize.default;
+    this.flowBox.setAttribute('data-flow-viewwidth',this.viewBoxSize.current);
+    
+    //生成合成预览节点（在设置视窗大小之后）
+    let newView = JSON.parse(JSON.stringify({modsec:this.flowNodes[0].modsec,...this.flowNodes[0].nodes[0]}));
+    this.reCreateData(newView, true);
+    // 使用动态计算的中心坐标，并应用像素吸附步长10px
+    let centerPos = this.viewBoxSize.current / 2;
+    // 先计算实际位置（浮点数），再应用像素吸附
+    const snap = v => Math.round(v / 10) * 10;
+    [newView.top, newView.left, newView.x, newView.y] = [
+      snap(centerPos - 356/2), 
+      snap(centerPos - 346/2), 
+      snap(356/-2), 
+      snap(346/2)
+    ];
+    this.addNodes([newView],true);
     //移动视图到中心点
     requestAnimationFrame(()=>{
-      this.flowBox.scrollTop = (maxWH - this.flowBox.offsetHeight)/2;
-      this.flowBox.scrollLeft = (maxWH - this.flowBox.offsetWidth)/2; 
+      this.flowBox.scrollTop = (this.viewBoxSize.current - this.flowBox.offsetHeight)/2;
+      this.flowBox.scrollLeft = (this.viewBoxSize.current - this.flowBox.offsetWidth)/2; 
     });
+    
+    // 监听窗口大小改变，自动检查是否需要扩大视窗
+    let windowResizeHandler = debounce(() => {
+      if(this.zoom){
+        this.checkAndExpandViewBox(this.zoom);
+      }
+    }, 200);
+    window.addEventListener('resize', windowResizeHandler);
 
     //生成节点栏,带拖拽事件
     let listfrag = document.createDocumentFragment();
@@ -1006,6 +1010,9 @@ class ZY_NODE {
     return [editorBox,lineBox]
   };
 
+  // ========== 创建相关 ==========
+
+  //按当前创建情况来更新模板数据里的关键值，如ID、创建次数，保证ID的唯一性
   reCreateData(data){
     let mod = this.flowNodes.find(m => m.modsec[1] == data.modsec[1]);
     let nod = mod.nodes.find(n => n.type[1] == data.type[1]);
@@ -1017,12 +1024,184 @@ class ZY_NODE {
     if(data.hasOwnProperty('reduce')) delete data.reduce;
   }
 
+  /**
+   * 通用元素创建工具函数
+   * @param {string} tagName - 标签名，如 'div', 'input' 等
+   * @param {HTMLElement} parent - 父容器元素（必须）
+   * @param {Object} options - 配置对象
+   * @param {Array<string>} options.texts - 双语文本数组 [中文, 英文]
+   * @param {Object} options.attrs - 自定义属性对象，如 { 'data-node-in': 'xxx', 'data-input': '' }
+   * @param {string} options.className - 类名
+   * @param {Array<HTMLElement>} options.children - 子元素数组，会自动添加到元素
+   * @param {boolean} options.textsBeforeChildren - 是否先添加文本再添加子元素（默认 false，即先添加子元素）
+   * @param {boolean} options.isDiffLanguage - 是否使用 addDiffLanguage 处理文本（默认 true，如果有 texts）
+   * @param {boolean} options.isRun - 传给 addDiffLanguage 的 isRun 参数（默认 false）
+   * @param {Object} options.props - 元素属性，如 { type: 'text', value: 'xxx' }
+   * @param {string} options.innerHTML - 元素 innerHTML（优先级低于 texts）
+   * @param {boolean} options.appendToParent - 是否自动添加到父容器（默认 true）
+   * @returns {HTMLElement} 创建的元素
+   */
+  createElement(tagName, parent, options = {}){
+    let {
+      texts,
+      attrs = {},
+      className,
+      children,
+      textsBeforeChildren = false,
+      isDiffLanguage = true,
+      isRun = false,
+      props = {},
+      innerHTML,
+      appendToParent = true
+    } = options;
+
+    let element;
+
+    // 如果有 children，需要先创建容器元素，然后根据顺序添加 children 和 texts
+    // 否则如果有双语文本且需要特殊处理，使用 addDiffLanguage 直接添加到 parent
+    if(children && Array.isArray(children) && children.length > 0){
+      // 先创建容器元素
+      element = document.createElement(tagName);
+      
+      // 设置类名
+      if(className){
+        element.className = className;
+      }
+
+      // 设置自定义属性
+      Object.keys(attrs).forEach(key => {
+        if(attrs[key] !== null && attrs[key] !== undefined){
+          if(attrs[key] === ''){
+            element.setAttribute(key, '');
+          } else {
+            element.setAttribute(key, attrs[key]);
+          }
+        }
+      });
+
+      // 设置元素属性
+      Object.keys(props).forEach(key => {
+        element[key] = props[key];
+      });
+
+      // 根据顺序添加文本和子元素
+      if(textsBeforeChildren){
+        // 先添加文本
+        if(texts && isDiffLanguage){
+          this.addDiffLanguage(element, texts, null, isRun);
+        } else if(texts && !isDiffLanguage){
+          let textEl = document.createElement('div');
+          textEl.textContent = texts[0] || texts;
+          element.appendChild(textEl);
+        } else if(innerHTML){
+          element.innerHTML = innerHTML;
+        }
+        
+        // 然后添加子元素
+        children.forEach(child => {
+          if(child){
+            element.appendChild(child);
+          }
+        });
+      } else {
+        // 先添加子元素
+        children.forEach(child => {
+          if(child){
+            element.appendChild(child);
+          }
+        });
+
+        // 然后添加文本
+        if(texts && isDiffLanguage){
+          this.addDiffLanguage(element, texts, null, isRun);
+        } else if(texts && !isDiffLanguage){
+          let textEl = document.createElement('div');
+          textEl.textContent = texts[0] || texts;
+          element.appendChild(textEl);
+        } else if(innerHTML){
+          element.innerHTML = innerHTML;
+        }
+      }
+
+      // 最后添加到父容器
+      if(appendToParent && parent){
+        parent.appendChild(element);
+      }
+    } else if(texts && isDiffLanguage){
+      // 没有 children 时，使用 addDiffLanguage 直接添加到 parent
+      // addDiffLanguage 会自动创建元素并添加到 parent，返回元素
+      // 签名: addDiffLanguage(parent, texts, tagname, isRun)
+      element = this.addDiffLanguage(parent, texts, tagName || 'div', isRun);
+      
+      // 设置类名
+      if(className){
+        element.className = className;
+      }
+
+      // 设置自定义属性
+      Object.keys(attrs).forEach(key => {
+        if(attrs[key] !== null && attrs[key] !== undefined){
+          if(attrs[key] === ''){
+            element.setAttribute(key, '');
+          } else {
+            element.setAttribute(key, attrs[key]);
+          }
+        }
+      });
+
+      // 设置元素属性
+      Object.keys(props).forEach(key => {
+        element[key] = props[key];
+      });
+    } else {
+      // 否则直接创建元素
+      element = document.createElement(tagName);
+      
+      // 设置文本内容
+      if(texts && !isDiffLanguage){
+        // 如果不需要双语处理，只使用第一个文本
+        element.textContent = texts[0] || texts;
+      } else if(innerHTML){
+        element.innerHTML = innerHTML;
+      }
+
+      // 设置类名
+      if(className){
+        element.className = className;
+      }
+
+      // 设置自定义属性
+      Object.keys(attrs).forEach(key => {
+        if(attrs[key] !== null && attrs[key] !== undefined){
+          if(attrs[key] === ''){
+            element.setAttribute(key, '');
+          } else {
+            element.setAttribute(key, attrs[key]);
+          }
+        }
+      });
+
+      // 设置元素属性
+      Object.keys(props).forEach(key => {
+        element[key] = props[key];
+      });
+
+      // 添加到父容器
+      if(appendToParent && parent){
+        parent.appendChild(element);
+      }
+    }
+
+    return element;
+  };
+
   //生成节点并绑定事件
   addNodes(nodeDatas,isRun){
     nodeDatas.forEach((data,index) => {
       let nodeBox = document.createElement('div');
       nodeBox.setAttribute('data-node-modsec',data.modsec[1]);
-      nodeBox.setAttribute('data-node-type',data.type[1]);
+      nodeBox.setAttribute('data-node-type',data.type[0]);
+      nodeBox.setAttribute('data-node-type-en',data.type[1]);
       nodeBox.setAttribute('data-resize-type','node');
       nodeBox.setAttribute('data-node-pick','false');
       nodeBox.className = 'df-ffc pos-a';
@@ -1037,90 +1216,207 @@ class ZY_NODE {
       nodeTop.setAttribute('data-node-top','');
       nodeTop.className = 'pos-r';
 
+      // 递归处理layout items的函数
+      const processLayoutItems = (items, parentElement) => {
+        items.forEach(item => {
+          // 如果item是对象（嵌套结构），递归处理
+          if(typeof item === 'object' && item !== null && item.className && Array.isArray(item.items)){
+            let container = document.createElement('div');
+            container.className = item.className;
+            // 递归处理嵌套的items
+            processLayoutItems(item.items, container);
+            parentElement.appendChild(container);
+            return;
+          }
+          
+          // 如果item是字符串，使用原有逻辑处理
+          if(typeof item === 'string'){
+            let [type,id] = item.split(':');
+            switch (type){
+              case 'IN': {
+                let inInfo = data.ins.find(ins => ins.id == id);
+                let indot = inInfo.link ? addCheck('in', id, inInfo.link) : addCheck('in', id);
+                let name = inInfo.name ? inInfo.name : ['输入','in'];
+                
+                let nodein = this.createElement('div', parentElement, {
+                  className: 'df-lc',
+                  attrs: {
+                    'data-node-in': data.id + '_in_' + id
+                  },
+                  children: indot,
+                  texts: name,
+                  isRun: isRun
+                });
+              }
+              break
+              case 'OUT': {
+                let outInfo = data.outs.find(outs => outs.id == id);
+                let outdot = addCheck('out', id);
+                let name = outInfo.name ? outInfo.name : ['输出','out'];
+                
+                let nodeout = this.createElement('div', parentElement, {
+                  className: 'df-lc',
+                  attrs: {
+                    'data-node-out': data.id + '_out_' + id
+                  },
+                  children: outdot,
+                  texts: name,
+                  textsBeforeChildren: true,
+                  isRun: isRun
+                });
+              }
+              break
+              case 'INPUT': {
+                let inputInfo = data.inputs.find(input => input.id == id);
+                let nodeInput;
+                let inputOptions = {
+                  props: {
+                    type: 'text'
+                  },
+                  className: 'nobod',
+                  attrs: {
+                    'data-input': '',
+                    'data-input-type': 'text',
+                    'data-node-input': data.id + '_input_' + id
+                  }
+                };
+                
+                // 创建 input 元素
+                nodeInput = this.createElement('input', parentElement, inputOptions);
+                
+                // 根据 must 的值设置 value 或 placeholder
+                if(Array.isArray(inputInfo.value)){
+                  let language = ROOT.getAttribute('data-language');
+                  let textValue = isRun ? inputInfo.value[0] : (language == 'Zh' ? inputInfo.value[0] : inputInfo.value[1]);
+                  
+                  if(inputInfo.must === true){
+                    // must 为 true 时，设置 value 和 data-input-must 属性
+                    nodeInput.value = textValue || '';
+                    nodeInput.setAttribute('data-input-must', inputInfo.value[0]);
+                    nodeInput.setAttribute('data-input-must-en', inputInfo.value[1]);
+                  } else {
+                    // must 为 false 时，设置为 placeholder（提示文本），不设置 value
+                    nodeInput.placeholder = textValue || '';
+                    // 设置双语 placeholder 属性（如果需要）
+                    nodeInput.setAttribute('data-placeholder-zh', inputInfo.value[0]);
+                    nodeInput.setAttribute('data-placeholder-en', inputInfo.value[1]);
+                  }
+                }
+                
+                // 实现字数统计和限制功能
+                if(inputInfo.max){
+                  // 计算字数的函数：中文=1，字母=0.5，符号忽略
+                  const calculateLength = (str) => {
+                    if(!str) return 0;
+                    let length = 0;
+                    for(let i = 0; i < str.length; i++){
+                      let char = str[i];
+                      // 判断是否为中文字符（包括中文标点）
+                      if(/[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]/.test(char)){
+                        length += 1;
+                      } 
+                      // 判断是否为字母（包括大小写）
+                      else if(/[a-zA-Z]/.test(char)){
+                        length += 0.5;
+                      }
+                      // 符号忽略，不计数
+                    }
+                    return length;
+                  };
+                  
+                  // 限制输入长度
+                  const limitInput = (e) => {
+                    let currentValue = e.target.value;
+                    let currentLength = calculateLength(currentValue);
+                    
+                    if(currentLength > inputInfo.max){
+                      // 如果超过最大长度，需要截断
+                      let truncated = '';
+                      let truncatedLength = 0;
+                      for(let i = 0; i < currentValue.length; i++){
+                        let char = currentValue[i];
+                        let charLength = /[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]/.test(char) ? 1 : 
+                                        /[a-zA-Z]/.test(char) ? 0.5 : 0;
+                        
+                        if(truncatedLength + charLength > inputInfo.max){
+                          break;
+                        }
+                        truncated += char;
+                        truncatedLength += charLength;
+                      }
+                      e.target.value = truncated;
+                    }
+                  };
+                  
+                  // 监听输入事件
+                  nodeInput.addEventListener('input', limitInput);
+                  nodeInput.addEventListener('paste', (e) => {
+                    // 粘贴时也需要限制
+                    setTimeout(() => limitInput(e), 0);
+                  });
+                  
+                  // 设置最大长度属性（用于显示提示）
+                  nodeInput.setAttribute('data-input-max', inputInfo.max);
+                }
+              }
+              break
+              case 'TEXT': {
+                let textInfo = data.texts.find(text => text.id == id);
+                this.createElement('div', parentElement, {
+                  texts: textInfo.value,
+                  isRun: isRun
+                });
+              }
+              break
+              case 'VIEW': {
+                this.createElement('div', parentElement, {
+                  attrs: {
+                    'data-node-view': ''
+                  }
+                });
+              }
+              break
+            };
+          }
+        });
+      };
+
+      // 辅助函数：创建连接点checkbox
+      const addCheck = (type, id, link) => {
+        let check = document.createElement('input');
+        check.type = 'checkbox';
+        check.id = data.id + '_' + type + '_' + id + '_dot';
+        let checkbtn = document.createElement('label');
+        checkbtn.setAttribute('for',check.id)
+        checkbtn.setAttribute('data-node-dot','');
+        checkbtn.className = 'check';
+        checkbtn.innerHTML = '<btn-check></btn-check>'
+
+        if(link){
+          let [linkType, linkId] = link[0].split(':');
+          switch (linkType){
+            case 'INPUT':
+              check.addEventListener('change',()=>{
+                let linkInput = nodeMix.querySelector(`[data-node-input="${data.id + '_input_' + linkId}"]`);
+                if(check.checked){
+                  linkInput.disabled = !link[1];
+                }else{
+                  linkInput.disabled = link[1];
+                };
+              });
+            break
+          };
+        };
+
+        return [check,checkbtn];
+      };
+
       data.layout.forEach(row => {
         let line = document.createElement('div');
         line.setAttribute('data-node-line','');
         line.className = row.className;
-        row.items.forEach(item => {
-          let [type,id] = item.split(':');
-          switch (type){
-            case 'IN':
-              let inInfo = data.ins.find(ins => ins.id == id);
-              let nodein = document.createElement('div');
-              nodein.className = 'df-lc';
-              nodein.setAttribute('data-node-in',data.id + '_in_' + id);
-              let indot = inInfo.link ? addCheck('in',inInfo.link) : addCheck('in');
-              nodein.appendChild(indot[0]);
-              nodein.appendChild(indot[1]);
-              let name = inInfo.name ? inInfo.name : ['输入','in'];
-              this.addDiffLanguage(nodein,name,null,isRun);
-              line.appendChild(nodein);
-            break
-            case 'OUT':
-              let nodeout = document.createElement('div');
-              nodeout.className = 'df-lc';
-              nodeout.setAttribute('data-node-out',data.id + '_out_' + id);
-              let outdot = addCheck('out');
-              this.addDiffLanguage(nodeout,['输出','out'],null,isRun);
-              nodeout.appendChild(outdot[0]);
-              nodeout.appendChild(outdot[1]);
-              line.appendChild(nodeout);
-            break
-            case 'INPUT':
-              let inputInfo = data.inputs.find(input => input.id == id);
-              let nodeInput;
-              if(inputInfo.must){
-                nodeInput = this.addDiffLanguage(line,inputInfo.must,'input',null,isRun);
-              }else{
-                nodeInput = document.createElement('input');
-                line.appendChild(nodeInput);
-              };
-              nodeInput.type = 'text';
-              nodeInput.className = 'nobod'
-              nodeInput.setAttribute('data-input','');
-              nodeInput.setAttribute('data-input-type','text');
-              nodeInput.setAttribute('data-node-input',data.id + '_input_' + id);
-            break
-            case 'TEXT':
-              this.addDiffLanguage(line,data.texts.find(text => text.id == id).value,null,isRun);
-            break
-            case 'VIEW':
-              let view = document.createElement('div');
-              view.setAttribute('data-node-view','');
-              line.appendChild(view);
-            break
-          };
-
-          function addCheck(type,link){
-            let check = document.createElement('input');
-            check.type = 'checkbox';
-            check.id = data.id + '_' + type + '_' + id + '_dot';
-            let checkbtn = document.createElement('label');
-            checkbtn.setAttribute('for',check.id)
-            checkbtn.setAttribute('data-node-dot','');
-            checkbtn.className = 'check';
-            checkbtn.innerHTML = '<btn-check></btn-check>'
-
-            if(link){
-              let [type,id] = link[0].split(':');
-              switch (type){
-                case 'INPUT':
-                  check.addEventListener('change',()=>{
-                    let linkInput = nodeMix.querySelector(`[data-node-input="${data.id + '_input_' + id}"]`);
-                    if(check.checked){
-                      linkInput.disabled = !link[1];
-                    }else{
-                      linkInput.disabled = link[1];
-                    };
-                  });
-                break
-              };
-            };
-
-            return [check,checkbtn];
-          };
-        });
-
+        // 使用递归函数处理items
+        processLayoutItems(row.items, line);
         nodeMix.appendChild(line)
       });
       nodeBox.appendChild(nodeMix);
@@ -1393,8 +1689,9 @@ class ZY_NODE {
     }, 100);
     
     return previewContainer;
-  }
+  };
 
+  //复制节点
   duplicateNodes(nodes,e){
     if(nodes.length === 0) return;
     
@@ -1451,11 +1748,24 @@ class ZY_NODE {
         this.addNodes([data]);
       });
     }
-  }
+  };
 
+  //添加连接线
   addConnect(outDot,inDot){
 
-  }
+  };
+
+  //删除节点
+  removeNode(node){
+    let index = this.allNodeDatas.findIndex(item => item.id == node.id);
+    this.allNodeDatas.splice(index,1);
+    this.allNodes = this.allNodes.filter(item => item !== node)
+    node.remove();
+    resizeObserver.unobserve(node);
+  };
+
+  // ========== 连接线相关 ==========
+  
   // 计算控制点（不创建路径）
   calculateControlPoints(start, end, connectStartInfo = null) {
     const deltaX = end.x - start.x;
@@ -1515,7 +1825,7 @@ class ZY_NODE {
     }
     
     return { control1, control2 };
-  }
+  };
 
   // 从控制点创建路径
   createSmoothPathFromControls(start, end, control1, control2, bodW) {
@@ -1526,35 +1836,18 @@ class ZY_NODE {
     path.setAttribute("fill", "none");
     path.setAttribute("stroke-width", bodW);
     return path;
-  }
+  };
 
   // 保留旧方法以兼容（如果需要）
   createSmoothPath(start, end, bodW, connectStartInfo = null) {
     let controlPoints = this.calculateControlPoints(start, end, connectStartInfo);
     return this.createSmoothPathFromControls(start, end, controlPoints.control1, controlPoints.control2, bodW);
-  }
+  };
 
-  // 像素吸附函数，以10px为步长
-  snapToGrid(value, step = 10){
-    return Math.round(value / step) * step;
-  }
+  // ========== 交互相关 ==========
 
-  toRenderXY(e){
-    //计算视口的top/left
-    let rect = this.editorBox.getBoundingClientRect();
-    //计算鼠标相对视口的top/left
-    let mouseX = e.clientX;
-    let mouseY = e.clientY;
-    //计算以左上角为原点的
-    let x = (mouseX - rect.left) + this.editorBox.scrollLeft;
-    let y = (mouseY - rect.top) + this.editorBox.scrollTop;
-    //以画布中心为原点记录
-    let zoom = this.zoom;
-    let x4 = x - this.editorBox.offsetWidth*zoom/2;
-    let y4 = (y - this.editorBox.offsetWidth*zoom/2)*-1;
-    return {top:y, left:x, x:x4, y:y4};
-  }
-
+  //框选节点
+  //[x,y,w,h] 框选区域的左上角坐标、宽度、高度
   pickByArea([x,y,w,h]){
     x = w > 0 ? x : x + w;
     y = h > 0 ? y : y - h;
@@ -1570,61 +1863,228 @@ class ZY_NODE {
         this.pickNodes = this.pickNodes.filter(item => item !== node);
       };
     });
-  }
+  };
 
+  //移动节点
+  moveNode(e,node,nodedata,startinfo){
+    let moveX = (startinfo.x - e.clientX)/this.zoom;
+    let moveY = (startinfo.y - e.clientY)/this.zoom;
+    
+    // 拖拽过程中不应用吸附，保持平滑移动
+    let newTop = startinfo.top - moveY;
+    let newLeft = startinfo.left - moveX;
+    let newX = startinfo.nodeX - moveX;
+    let newY = startinfo.nodeY + moveY;
+    
+    // 限制节点在视窗范围内
+    let nodeWidth = node.offsetWidth || nodedata.width || 140;
+    let nodeHeight = node.offsetHeight || nodedata.height || 140;
+    let viewBoxSize = this.viewBoxSize.current;
+    
+    // 限制left和top在[0, viewBoxSize - nodeSize]范围内
+    newLeft = Math.max(0, Math.min(newLeft, viewBoxSize - nodeWidth));
+    newTop = Math.max(0, Math.min(newTop, viewBoxSize - nodeHeight));
+    
+    // 根据限制后的left和top重新计算x和y（相对于中心的坐标）
+    // 从 toRenderXY 逻辑：x = left - center, y = center - top (因为反转)
+    let centerX = viewBoxSize / 2;
+    newX = newLeft - centerX;
+    newY = centerX - newTop;
+
+    nodedata.x = newX;
+    nodedata.y = newY;
+    nodedata.top = newTop;
+    nodedata.left = newLeft;
+    node.style.top = newTop + 'px';
+    node.style.left = newLeft + 'px';
+  };
+
+  // 在拖拽结束后应用像素吸附
+  snapNodeToGrid(node, nodedata){
+    let newTop = this.snapToGrid(nodedata.top);
+    let newLeft = this.snapToGrid(nodedata.left);
+    
+    // 限制节点在视窗范围内（在吸附前）
+    let nodeWidth = node.offsetWidth || nodedata.width || 140;
+    let nodeHeight = node.offsetHeight || nodedata.height || 140;
+    let viewBoxSize = this.viewBoxSize.current;
+    
+    newLeft = Math.max(0, Math.min(newLeft, viewBoxSize - nodeWidth));
+    newTop = Math.max(0, Math.min(newTop, viewBoxSize - nodeHeight));
+    
+    // 根据限制后的left和top重新计算x和y
+    let centerX = viewBoxSize / 2;
+    let newX = newLeft - centerX;
+    let newY = centerX - newTop;
+
+    nodedata.x = newX;
+    nodedata.y = newY;
+    nodedata.top = newTop;
+    nodedata.left = newLeft;
+    node.style.top = newTop + 'px';
+    node.style.left = newLeft + 'px';
+  };
+
+  // ========== 画布视图相关 ==========
+
+  //修改画布大小
   reViewBoxSize(wh){
-    this.editorBox.style.width = wh;
-    this.editorBox.style.height = wh;
-    this.lineBox.style.width = wh;
-    this.lineBox.style.height = wh;
-  }
+    let oldSize = this.viewBoxSize.current;
+    let newSize = parseInt(wh);
+    
+    // 限制在最大范围内
+    newSize = Math.min(newSize, this.viewBoxSize.max);
+    newSize = Math.max(newSize, this.viewBoxSize.default);
+    
+    // 保持正方形
+    this.viewBoxSize.current = newSize;
+    
+    // 更新所有相关层的大小
+    this.editorBox.style.width = newSize + 'px';
+    this.editorBox.style.height = newSize + 'px';
+    this.lineBox.style.width = newSize + 'px';
+    this.lineBox.style.height = newSize + 'px';
+    
+    // 如果视窗大小改变，需要更新所有节点的top和left坐标
+    // 因为坐标系统以中心为原点，所以需要重新计算
+    if(oldSize !== newSize){
+      this.updateNodesPositionOnViewBoxResize(oldSize, newSize);
+    }
+  };
+  
+  // 在视窗大小改变时更新所有节点的坐标
+  updateNodesPositionOnViewBoxResize(oldSize, newSize){
+    let centerOffset = (newSize - oldSize) / 2;
+    let oldCenter = oldSize / 2;
+    let newCenter = newSize / 2;
+    
+    this.allNodeDatas.forEach(data => {
+      // 更新top和left，保持节点相对于中心的相对位置不变
+      // 由于画布扩大，所有坐标需要加上中心偏移量
+      data.left += centerOffset;
+      data.top += centerOffset;
+      
+      // 更新x和y坐标（相对于中心的坐标）
+      // x = left - center, y = center - top
+      data.x = data.left - newCenter;
+      data.y = newCenter - data.top;
+      
+      // 更新对应的DOM节点位置
+      let node = this.allNodes.find(n => n.id === data.id);
+      if(node){
+        node.style.left = data.left + 'px';
+        node.style.top = data.top + 'px';
+      }
+    });
+  };
 
-  reViewBoxZoom(zoom,e){
-    let oldZoom = this.oldZoom
-    let [flowOldTop,flowOldLeft] = [this.flowBox.scrollTop,this.flowBox.scrollLeft];
+  //修改画布缩放级别
+  // zoom: 缩放值
+  // e: 鼠标事件对象（可选）
+  // skipAttributeUpdate: 是否跳过更新 data-flow-viewzoom 属性（用于防止循环触发，默认false）
+  reViewBoxZoom(zoom,e,skipAttributeUpdate = false){
+    let oldZoom = this.oldZoom;
+    
+    // 在应用缩放之前立即获取滚动值，避免延迟导致的值不准确
+    let flowOldTop = this.flowBox.scrollTop;
+    let flowOldLeft = this.flowBox.scrollLeft;
+    
     //鼠标相当于画布的坐标值
-    let [mouseOldTop,mouseOldLeft,mouseOldX,mouseOldY] = e ? Object.values(this.toRenderXY(e)) : [0,0,0,0];
+    let mouseRenderXY = e ? this.toRenderXY(e) : null;
+    let mouseOldTop = mouseRenderXY ? mouseRenderXY.top : 0;
+    let mouseOldLeft = mouseRenderXY ? mouseRenderXY.left : 0;
+    
+    // 应用缩放范围限制
+    zoom = parseFloat(zoom);
+    zoom = zoom > this.zoomRange.max ? this.zoomRange.max : zoom;
+    zoom = zoom < this.zoomRange.min ? this.zoomRange.min : zoom;
+    zoom = Math.round(zoom * 10)/10;
+    
     this.editorBox.style.zoom = zoom;
     this.lineBox.style.zoom = zoom;
     this.zoom = zoom;
     getElementMix('setzoom').value = Math.floor(zoom * 100);
 
-    if(!e){
-      this.flowBox.scrollTop = (this.editorBox.offsetWidth * zoom - this.flowBox.offsetHeight)/2;
-      this.flowBox.scrollLeft = (this.editorBox.offsetWidth * zoom - this.flowBox.offsetWidth)/2; 
+    // 如果不是跳过属性更新（即手动调用），则更新 data-flow-viewzoom 属性
+    if(!skipAttributeUpdate){
+      this.flowBox.setAttribute('data-flow-viewzoom', zoom);
+      // 设置鼠标事件数据（如果有）
+      if(e){
+        this.flowBox.setAttribute('data-flow-viewMouse', JSON.stringify({
+          clientX: e?.clientX,
+          clientY: e?.clientY,
+          pageX: e?.pageX,
+          pageY: e?.pageY,
+          screenX: e?.screenX,
+          screenY: e?.screenY
+        }));
+      }
+    }
+
+    // 检查是否需要扩大视窗
+    this.checkAndExpandViewBox(zoom);
+
+    // 如果没有鼠标事件（如视窗大小变化时），直接将滚动条居中即可
+    if (!e) {
+      let flowBox = this.flowBox;
+      // 使用已知的 viewBoxSize.current 计算居中位置，而不是依赖 scrollWidth/scrollHeight
+      // 使用 requestAnimationFrame 确保布局已经更新后再设置滚动位置
+      requestAnimationFrame(() => {
+        flowBox.scrollLeft = (this.viewBoxSize.current - flowBox.clientWidth) / 2;
+        flowBox.scrollTop = (this.viewBoxSize.current - flowBox.clientHeight) / 2;
+      });
       return;
-    };
+    }
 
-    requestAnimationFrame(()=>{
-      // 计算缩放后的偏移量
-      let scaleRatio = zoom/ oldZoom;
-      let newLeft = flowOldLeft + mouseOldTop * (scaleRatio - 1);
-      let newTop = flowOldTop + mouseOldLeft * (scaleRatio - 1);
-      this.flowBox.scrollLeft = newLeft;
-      this.flowBox.scrollTop = newTop;
-    });
-  }
+    // 计算缩放后的偏移量，保持鼠标指向的点位置不变
+    let scaleRatio = zoom / oldZoom;
+    // 修正：newLeft 应该使用 mouseOldLeft，newTop 应该使用 mouseOldTop
+    let newLeft = flowOldLeft + mouseOldLeft * (scaleRatio - 1);
+    let newTop = flowOldTop + mouseOldTop * (scaleRatio - 1);
+    this.flowBox.scrollLeft = newLeft;
+    this.flowBox.scrollTop = newTop;
+  };
+  
+  // 检查并自动扩大视窗
+  checkAndExpandViewBox(zoom){
+    let currentViewBoxPixelSize = this.viewBoxSize.current * zoom;
+    let windowWidth = this.flowBox.offsetWidth;
+    let windowHeight = this.flowBox.offsetHeight;
+    
+    // 如果缩放后的视窗小于窗口，需要扩大视窗
+    if(currentViewBoxPixelSize < windowWidth || currentViewBoxPixelSize < windowHeight){
+      // 计算需要的视窗大小（逻辑尺寸）
+      let requiredSize = Math.max(
+        Math.ceil(windowWidth / zoom),
+        Math.ceil(windowHeight / zoom)
+      );
+      
+      // 保持正方形，取较大值，并限制在最大值内
+      requiredSize = Math.min(requiredSize, this.viewBoxSize.max);
+      requiredSize = Math.max(requiredSize, this.viewBoxSize.default);
+      
+      // 如果需要的尺寸大于当前尺寸，则扩大
+      if(requiredSize > this.viewBoxSize.current){
+        this.flowBox.setAttribute('data-flow-viewwidth', requiredSize);
+        // reViewBoxSize 会自动被 MutationObserver 调用
+      }
+    }
+  };
 
+  //修改节点尺寸
   reNodeSize(node){
     let data = this.allNodeDatas.find(item => item.id == node.id);
     // 应用像素吸附到尺寸
     data.width = this.snapToGrid(node.offsetWidth);
     data.height = this.snapToGrid(node.offsetHeight);
-  }
+  };
 
-  removeNode(node){
-    let index = this.allNodeDatas.findIndex(item => item.id == node.id);
-    this.allNodeDatas.splice(index,1);
-    this.allNodes = this.allNodes.filter(item => item !== node)
-    node.remove();
-    resizeObserver.unobserve(node);
-  }
-
-  //====工具函数===//
+  //设置画布缩放级别
   setZoom(zoom,e){
     this.oldZoom = this.zoom;
-    zoom = zoom > 1.5 ? 1.5 : zoom;
-    zoom = zoom < 0.5 ? 0.5 : zoom;
+    // 使用 zoomRange 属性限制缩放范围
+    zoom = zoom > this.zoomRange.max ? this.zoomRange.max : zoom;
+    zoom = zoom < this.zoomRange.min ? this.zoomRange.min : zoom;
     zoom = Math.round(zoom * 10)/10;
     this.flowBox.setAttribute('data-flow-viewzoom',zoom);
  
@@ -1637,8 +2097,33 @@ class ZY_NODE {
       screenY: e?.screenY
     }));
     this.zoom = zoom;
-  }
+  };
 
+  // ========== 工具函数 ==========
+
+  // 像素吸附函数，以10px为步长
+  snapToGrid(value, step = 10){
+    return Math.round(value / step) * step;
+  };
+
+  //计算鼠标相对于画布的坐标值
+  toRenderXY(e){
+    //计算视口的top/left
+    let rect = this.editorBox.getBoundingClientRect();
+    //计算鼠标相对视口的top/left
+    let mouseX = e.clientX;
+    let mouseY = e.clientY;
+    //计算以左上角为原点的
+    let x = (mouseX - rect.left) + this.editorBox.scrollLeft;
+    let y = (mouseY - rect.top) + this.editorBox.scrollTop;
+    //以画布中心为原点记录
+    let zoom = this.zoom;
+    let x4 = x - this.editorBox.offsetWidth*zoom/2;
+    let y4 = (y - this.editorBox.offsetWidth*zoom/2)*-1;
+    return {top:y, left:x, x:x4, y:y4};
+  };
+
+  //动态修改模拟框选区域的容器尺寸
   reAreaSize(e,area,selectStartX,selectStartY){
     let areaW = e.clientX - selectStartX;
     let areaH = e.clientY - selectStartY;
@@ -1663,47 +2148,21 @@ class ZY_NODE {
 
     area.setAttribute('style', 'display: block; ' + x + y + w + h);
     return [areaW,areaH];
-  }
+  };
 
+  //判断节点是否在框选区域内
   isInArea([x,y,w,h],node){
     let data = this.allNodeDatas.find(item => item.id == node.id);
     let [nodeX,nodeY,nodeW,nodeH] = [data.x,data.y,node.offsetWidth,node.offsetHeight];
     return (nodeX >= x && nodeX + nodeW <= x + w && nodeY <= y && nodeY - nodeH >= y - h);
-  }
+  };
 
-  moveNode(e,node,nodedata,startinfo){
-    let moveX = (startinfo.x - e.clientX)/this.zoom;
-    let moveY = (startinfo.y - e.clientY)/this.zoom;
-    
-    // 拖拽过程中不应用吸附，保持平滑移动
-    let newTop = startinfo.top - moveY;
-    let newLeft = startinfo.left - moveX;
-    let newX = startinfo.nodeX - moveX;
-    let newY = startinfo.nodeY + moveY;
-
-    nodedata.x = newX;
-    nodedata.y = newY;
-    nodedata.top = newTop;
-    nodedata.left = newLeft;
-    node.style.top = newTop + 'px';
-    node.style.left = newLeft + 'px';
-  }
-
-  // 在拖拽结束后应用像素吸附
-  snapNodeToGrid(node, nodedata){
-    let newTop = this.snapToGrid(nodedata.top);
-    let newLeft = this.snapToGrid(nodedata.left);
-    let newX = this.snapToGrid(nodedata.x);
-    let newY = this.snapToGrid(nodedata.y);
-
-    nodedata.x = newX;
-    nodedata.y = newY;
-    nodedata.top = newTop;
-    nodedata.left = newLeft;
-    node.style.top = newTop + 'px';
-    node.style.left = newLeft + 'px';
-  }
-
+  //添加多语言内容
+  //parent: 父元素
+  //texts: 多语言内容
+  //tagname: 标签名
+  //isRun: 是否是在初始化时添加的
+  //返回值: 多语言元素
   addDiffLanguage(parent,texts,tagname,isRun){
     let language = ROOT.getAttribute('data-language');
     tagname = tagname ? tagname : 'div';
@@ -1731,6 +2190,9 @@ class ZY_NODE {
     return diff;
   };
 
+  //错误提示
+  //type: 错误类型
+  //返回值: 错误提示
   Error(type){
     switch (type){
       case 'noFlowBox':
@@ -1742,7 +2204,7 @@ class ZY_NODE {
       default :
       tipsAll(['未知错误：' + type,'Unknown Error: ' + type],2000) 
       console.log(type);
-    }
+    };
   };
 };
 
@@ -1753,12 +2215,12 @@ window.addEventListener('load',()=>{
 
   } else {
 
-  }
+  };
 
 });
 
 window.addEventListener('resize',/*防抖*/debounce(()=>{
-
+  FLOW_RENDER.reViewBoxZoom(1);
 },500));
 
 
@@ -1769,7 +2231,7 @@ window.addEventListener('blur',()=>{
 });
 
 
-let FLOW_RENDER = new ZY_NODE(null,null,true);
+let FLOW_RENDER = new ZY_NODE(null,null,true,null,{min: 0.1, max: 2});
 
 getElementMix('data-zoom-auto').addEventListener('click',()=>{
   FLOW_RENDER.reViewBoxZoom(1)

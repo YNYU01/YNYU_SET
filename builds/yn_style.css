@@ -37,6 +37,7 @@ html[data-theme="dark"]{
   --mainColor: #acacac;
   --mainColor2: #fff;
   --mainColor3: #2b2b2b;
+  --mainColor4: #181818;
   --themeColor: #3ac989;
   --themeColor2: #9f92fe;
   --code1:#48a67b;
@@ -44,6 +45,7 @@ html[data-theme="dark"]{
   --boxBod: #494949;
   --boxBak: #202020;
   --boxGry: #393939;
+  --boxDark: #adadad;
   --liColor: #d03b3b;
   --swi-af:var(--themeColor);
   --swi-bod:var(--boxBod);
@@ -55,6 +57,7 @@ html[data-theme="light"]{
   --mainColor: #2b2b2b;
   --mainColor2: #000;
   --mainColor3: #d1d1d1;
+  --mainColor4: #f3f3f3;
   --themeColor: #18e7a6;
   --themeColor2: #9f92fe;
   --code1:#03954c;
@@ -62,6 +65,7 @@ html[data-theme="light"]{
   --boxBod: #aeaeae;
   --boxBak: #eeeeee;
   --boxGry: #dddddd;
+  --boxDark: #777777;
   --liColor: #d03b3b;
   --swi-af:var(--themeColor);
   --swi-bod:var(--boxBod);
@@ -139,7 +143,7 @@ li[data-li-style="2"]::before{
   content: ';';
 }
 
-li a,li i,li [data-highlight]{
+li a,li i,[data-highlight]{
   margin: 0 4px;
   color: var(--themeColor2);
 }
@@ -396,6 +400,22 @@ input[type="range"] {
   align-items: space-between;
 }
 
+.gap4{
+  gap: calc(var(--ratio,1) * 4px);
+}
+
+.gap6{
+  gap: calc(var(--ratio,1) * 6px);
+}
+
+.gap8{
+  gap: calc(var(--ratio,1) * 8px);
+}
+
+.gap10{
+  gap: calc(var(--ratio,1) * 10px);
+}
+
 .ovh{
   overflow: hidden;
 }
@@ -580,7 +600,7 @@ input[type="checkbox"]:checked+.switch::before {
 }
 
 input[type="checkbox"]:checked + .check{
-  --check:var(--mainColor);
+  --check:var(--bod,var(--mainColor));
 }
 
 .btn-op {
@@ -626,12 +646,13 @@ input[type="checkbox"]:checked + .tab-eg::after{
   width: 100%;
 }
 
-.show-next{
+.show-next,.show-next2{
   position: relative;
   display: flex;
   flex: 0 0 auto;
 }
 
+.show-next2::before,
 .show-next::after{
   content: '';
   width: 8px;
@@ -645,15 +666,16 @@ input[type="checkbox"]:checked + .tab-eg::after{
   transform: rotate(var(--show-r,45deg)) translate(var(--show-t,0),var(--show-t,0));
 }
 
-.show-next:hover{
+.show-next:hover,.show-next2:hover{
   --show-o: 0.5;
 }
 
-[data-mobile="true"] .show-next:hover{
+[data-mobile="true"] .show-next:hover,.show-next2:hover{
   --show-o: 1;
 }
 
-input[type="checkbox"]:checked+.show-next {
+input[type="checkbox"]:checked+.show-next,
+input[type="checkbox"]:checked+.show-next2 {
   --show-r:-135deg;
   --show-t:-4px;
 }

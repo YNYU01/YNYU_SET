@@ -12,34 +12,7 @@
 </head>
 <body class="noselect df-ffc df-cc">
   <!--顶部-->
-  <div data-banner-top-mask class="df-sc w100" style="background: var(--mainColor);height: 40px;">
-    <a href="../" target="_blank" class="df-lc h100">
-      <set-zh-works data-any="zh" class="df-cc h100" style="--fill: var(--boxBak);"></set-zh-works>        
-      <set-en-works data-any="en" class="df-cc h100" style="--fill: var(--boxBak);"></set-en-works>       
-      <div data-any="zh" data-en-text=">>YN+ ToolsSet" style="padding-right: 10px; color: var(--boxBak); font-weight: 700; font-size: 16px;">
-        >> 云即·工具集
-      </div>
-      <div data-any="en" data-en-text=">>YN+ ToolsSet" style="padding-right: 10px; color: var(--boxBak); font-weight: 900;">
-        >> 云即·工具集
-     </div>
-    </a>
-    <div class="df-lc" style="gap:4px; padding-right: 10px;">
-      <div id="btn-theme" class="fl0" style="width: 22px; height: 22px; padding: 3px; box-sizing: border-box; background: var(--swi-bak); border-radius: 4px;">
-        <input id="theme-1" data-theme-check type="checkbox" checked="true">
-        <label for="theme-1" class="btn-theme" style="position: relative;">
-          <btn-theme></btn-theme>
-        </label>
-      </div>
-      <input id="language-1" data-language-check type="checkbox" checked="true" >
-      <label for="language-1" class="switch" style="--swi-h:20px; --swi-r:6px; --swi-bod:transparent; --swi-af:var(--mainColor);">
-        <div class="pos-a" data-swi-icon style="top:2px; left: 1px; width: 14px; height: 14px; z-index: 2;">
-          <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
-            <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
-          </svg>
-        </div>
-      </label>  
-    </div>
-  </div>
+
   <!--杂色质感-->
   <div id="noise"></div>
   <div id="watermark" class="watermark"></div>
@@ -49,16 +22,125 @@
           温馨提示
       </div>
   </div>
-  <div class="df-ffc pos-r" style="gap: 20px; width: var(--layout-w);">
- 
+  <!--弹窗-搜索建议-->
+  <div data-dailogsearch data-close-id="dailogsearch" class="pos-a df-ffc df-cc">
+    <!--关闭-->
+    <div data-dailogsearch-close class="df-sc">
+      <input type="text" id="skillsearch"/>
+      <div data-close="close" data-close-for="dailogsearch">
+        <btn-close></btn-close>
+      </div>
+    </div>
+    <div data-dailogsearch-box data-scroll class="ovy scrollbar df-ffc h100">
+      <!--生成内容-->
+    </div>
+  </div>
+  <div data-page-id="help_toolsset" class="df wh100 pos-r">
+    <!--侧边栏模式-->
+    <div class="df pos-a" style="z-index: 3; top: 0; left: 0;">
+      <div data-doc-list-mix class="df-ffc" style="height: 100vh; justify-content: space-between;">
+        <div data-doc-list class="df-ffc h100" style="width: 160px; height: calc(100% - 60px);">
+          <div class="w100 df-cc" style="height: 40px; background: var(--themeColor2); border-right: 1px solid var(--boxBod); box-sizing: border-box;">
+            <a href="../" >
+              <img src="../img/Icon-ToolsSet_200.png" alt="icon" height="100%">
+            </a>
+            <div class="fl1 df-ffc df-cc h100" style="color: #2e2e2e;">
+              <div class="fl1 df-cc w100" data-en-text="YN+ ToolsSet" >云即+ 工具集</div>
+              <div class="fl1 df-cc w100" data-en-text="&lt; HELP DOC &gt;" style="font-weight: 700; margin-top: -1ch;">&lt; 帮助文档 &gt;</div>
+            </div>
+          </div>
+          <div data-tab="auto" data-tab-for="list" data-tab-pick="false"
+          class="df" style="width: calc(100% + 40px); gap: 1px; background: var(--boxBod);"></div>
+          <div data-page-id="list" class="h100 ovy noscrollbar" style="padding: 20px 10px; width: calc(100% + 20px);">
+            <div data-page-name="功能" data-page-name-en="function" data-page-main="true"
+            data-page-tabclass="tab-tag w100 df-cc" class="df-ffc wh100">
+              <div data-tab="auto" data-tab-for="content1" data-tab-pick="false" class="df-ffc gap8"></div>
+            </div>
+            <div data-page-name="开发" data-page-name-en="algorithm" data-page-main="false" 
+            data-page-tabclass="tab-tag w100 df-cc" style="display: none;" class="df-ffc wh100">
+              <div data-tab="auto" data-tab-for="content2" data-tab-pick="false" class="df-ffc gap8"></div>
+            </div>
+          </div>
+        </div>
+        <div data-mainset-side class="df-rc pos-r" style="width: calc(100% + 40px); gap:4px; height: 50px; box-sizing: border-box; padding: 10px; border-top: 1px solid var(--boxBod);">
+          <a href="../../index.html" target="_blank" class="df-lc pos-a" style="height:30px; left: 10px;">
+            <set-zh-works data-any="zh" class="df-cc h100" style="--fill: var(--mainColor);"></set-zh-works>        
+            <set-en-works data-any="en" class="df-cc h100" style="--fill: var(--mainColor);"></set-en-works>       
+          </a>
+          <div class="df gap4">
+            <div id="btn-theme" class="fl0" style="width: 22px; height: 22px; padding: 3px; box-sizing: border-box; background: var(--swi-bak); border-radius: 4px;">
+              <input id="theme-2" data-theme-check type="checkbox" checked="true">
+              <label for="theme-2" class="btn-theme" style="position: relative;">
+                <btn-theme></btn-theme>
+              </label>
+            </div>
+            <input id="language-2" data-language-check type="checkbox" checked="true" >
+            <label for="language-2" class="switch" style="--swi-h:20px; --swi-r:6px; --swi-bod:transparent; --swi-af:var(--mainColor);">
+              <div class="pos-a" data-swi-icon style="top:2px; left: 1px; width: 14px; height: 14px; z-index: 2;">
+                <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
+                  <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
+                </svg>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="df-cc" style="width: 40px; height: 40px; background: var(--boxGry);">
+        <input id="btn-more" type="checkbox" checked onchange="showNext(this,'data-doc-list-mix','flex');showNext(this,'data-doc-list-mix-mask','block')">
+        <label for="btn-more" style="width: 20px; height: 20px;">
+          <svg data-icon-more width="100%" height="100%" viewBox="0 0 20 20">
+            <g data-icon-more-path="1" >
+              <path fill="none" d="M18 0L0 0"></path>
+            </g>
+            <g data-icon-more-path="2">
+              <path fill="none" d="M18 0L0 0"></path>
+            </g>
+            <g data-icon-more-path="3">
+              <path fill="none" d="M18 0L0 0"></path>
+            </g>
+          </svg>
+          
+        </label>
+          
+      </div>
+    </div>
+    <div data-doc-list-mix-mask class="h100 fl0" style="width: 200px; border-right: 1px solid var(--boxBod);"></div>
+    <div class="fl1 h100 df-ffc pos-r">
+      <div data-doc-content-top class="df pos-a" style="right: 0; min-height: 40px; padding:10px; box-sizing: border-box;">
+        <div data-doc-search class="df-lc gap4" data-btn onclick="getElementMix('data-dailogsearch').style.display = 'flex'">
+          Ctrl+K
+          <btn-search></btn-search>
+        </div>
+      </div>
+      <div data-doc-content data-page-id="content1" class="ovy wh100 fl1 noscrollbar">
+        <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
+        <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="编辑" data-page-name-en="editor" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="变量" data-page-name-en="variable" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+
+      </div>
+      <div data-doc-content data-page-id="content2" class="ovy wh100 fl1 noscrollbar" style="display: none;">
+        <div data-page-name="栅格化" data-page-name-en="gridify" data-page-main="true" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
+        <div data-page-name="布局" data-page-name-en="layout" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="矢量" data-page-name-en="vector" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="日志" data-page-name-en="log" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+      </div>
+      <div class="pos-a df-cc" style="--svg-w: 800px; --bod-w: 0.5; opacity: 0.1; z-index: -1;">
+        <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
+        <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
+        <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
+        <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
+      </div>
+    </div>
   </div>
   <div class="w100 fl0" style=" height: 20px;"></div>
   <script src="../../builds/yn_comp.js"></script>
   <script src="../../publics/test.js"></script>
   <script src="../../publics/graph.js"></script>
+  <script src="../../publics/help_data.js"></script>
   <script src="main.js"></script>
-  <script>
-    
-  </script>
 </body>
 </html>
