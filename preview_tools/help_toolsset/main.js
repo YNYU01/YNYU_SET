@@ -2,6 +2,7 @@ const content1 = document.querySelector('[data-page-id="content1"]');
 const content2 = document.querySelector('[data-page-id="content2"]');
 const btnMore = document.getElementById('btn-more');
 const skillSearchInput = document.getElementById('skillsearch');
+const logBox = document.querySelector('[data-page-name-en="log"]');
 
 let logs = [
   {
@@ -60,25 +61,10 @@ window.addEventListener('resize', () => {
 
 let richDoc = new RICH_DOC();
 let skillsSearch = richDoc.allSearchPath['toolsset'];
+richDoc.creDocAll(content1,'toolsset','function',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
+richDoc.creDocAll(content2,'toolsset','algorithm',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
+richDoc.addLog(logBox,logs);
 
-// 标记内容是否已初始化，避免重复初始化
-let content1Initialized = false;
-let content2Initialized = false;
-
-// 检查并执行内容初始化的辅助函数
-function ensureContentReady(container, type, callback) {
-  // 检查容器是否存在且 richDoc 已初始化
-  if (!container || !richDoc || !richDoc.doc) {
-    // 如果未准备好，使用 requestAnimationFrame 延迟执行
-    requestAnimationFrame(() => {
-      ensureContentReady(container, type, callback);
-    });
-    return;
-  }
-  
-  // 执行回调
-  callback();
-}
 
 //搜索功能
 skillSearchInput.addEventListener('input',debounce(()=>{
@@ -164,69 +150,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// 页面完全加载后，主动初始化默认 tab 的内容
-// 这确保即使 tab 切换事件没有触发，默认内容也能正常显示
-window.addEventListener('load', () => {
-  // 使用 requestAnimationFrame 确保 DOM 完全渲染完成
-  requestAnimationFrame(() => {
-    // 检查 content1 是否可见且未初始化
-    if(content1 && !content1Initialized) {
-      const content1Style = window.getComputedStyle(content1);
-      // 如果 content1 是可见的（display 不是 none），则初始化内容
-      if(content1Style.display !== 'none') {
-        ensureContentReady(content1, 'function', () => {
-          richDoc.creDocAll(content1,'toolsset','function',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
-          content1Initialized = true;
-        });
-      }
-    }
-  });
-});
-
 /**
  * @param {Element} node -带有data-tab-pick值的元素, 用于记录用户关闭前所选的tab
  */
 function getUserTab(node){
   let tabPickValue = node.getAttribute('data-tab-pick');
-  // 只有当 tabPickValue 不是 'false' 时才处理
-  if(tabPickValue && tabPickValue !== 'false') {
-    let tabPick = tabPickValue.split('tab_')[1];
-    
-    if(node.getAttribute('data-page-id') == 'list'){
-      if(tabPick == 'function'){
-        content1.style.display = 'block';
-        content2.style.display = 'none';
-      }else if(tabPick == 'algorithm'){
-        content1.style.display = 'none';
-        content2.style.display = 'block';
-      };
+  let tabPick = tabPickValue.split('tab_')[1];
+  
+  if(node.getAttribute('data-page-id') == 'list'){
+    if(tabPick == 'function'){
+      content1.style.display = 'block';
+      content2.style.display = 'none';
+    }else if(tabPick == 'algorithm'){
+      content1.style.display = 'none';
+      content2.style.display = 'block';
     };
-  }
+  };
 
   if(node.getAttribute('data-tab-for') == 'content1'){
-    // 避免重复初始化
-    if(content1Initialized) return;
-    
-    // 确保容器和 richDoc 都准备好后再执行
-    ensureContentReady(content1, 'function', () => {
-      //将radio移动到每个label后面，得到二级目录的列表
-      richDoc.creDocAll(content1,'toolsset','function',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
-      content1Initialized = true;
-    });
+    log(111)
   };
   if(node.getAttribute('data-tab-for') == 'content2'){
-    // 避免重复初始化
-    if(content2Initialized) return;
+    log(222)
     
-    // 确保容器和 richDoc 都准备好后再执行
-    ensureContentReady(content2, 'algorithm', () => {
-      richDoc.creDocAll(content2,'toolsset','algorithm',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
-      let logBox = getElementMix('data-page-name-en="log"');
-      if(logBox) {
-        richDoc.addLog(logBox,logs);
-      }
-      content2Initialized = true;
-    });
   };
 
 };
