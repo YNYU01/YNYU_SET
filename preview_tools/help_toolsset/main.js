@@ -2,7 +2,6 @@ const content1 = document.querySelector('[data-page-id="content1"]');
 const content2 = document.querySelector('[data-page-id="content2"]');
 const btnMore = document.getElementById('btn-more');
 const skillSearchInput = document.getElementById('skillsearch');
-const logBox = document.querySelector('[data-page-name-en="log"]');
 
 let logs = [
   {
@@ -61,9 +60,6 @@ window.addEventListener('resize', () => {
 
 let richDoc = new RICH_DOC();
 let skillsSearch = richDoc.allSearchPath['toolsset'];
-richDoc.creDocAll(content1,'toolsset','function',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
-richDoc.creDocAll(content2,'toolsset','algorithm',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
-richDoc.addLog(logBox,logs);
 
 
 //搜索功能
@@ -168,11 +164,16 @@ function getUserTab(node){
   };
 
   if(node.getAttribute('data-tab-for') == 'content1'){
-    log(111)
+    //log(111)
+    //将radio移动到每个label后面，得到二级目录的列表
+    richDoc.creDocAll(content1,'toolsset','function',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
+
   };
   if(node.getAttribute('data-tab-for') == 'content2'){
-    log(222)
-    
+    //log(222)
+    richDoc.creDocAll(content2,'toolsset','algorithm',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
+    let logBox = getElementMix('data-page-name-en="log"');
+    richDoc.addLog(logBox,logs);
   };
 
 };

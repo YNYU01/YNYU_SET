@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>二维码转SVG · 云即工具</title>
+  <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
+  <link rel="stylesheet" href="../../builds/yn_style.css">
+  <link rel="stylesheet" href="../../publics/fonts.css">
+  <link rel="stylesheet" href="../../publics/style.css">
+  <style>
+    :root{
+      --panel-radius: 16px;
+      --panel-border: 1px solid rgba(255,255,255,.08);
+      --panel-shadow: 0 12px 40px rgba(0,0,0,.25);
+      --stage-border: 1px solid rgba(255,255,255,.12);
+      --grid-line: rgba(255, 66, 66, .9);
+    }
+    body{
+      font-family: 'HarmonyOS Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 16px 40px;
+      background: var(--bgColor);
+      color: var(--textColor);
+    }
+    .qr-app{
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    header h1{
+      margin: 0;
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 600;
+    }
+    header p{
+      margin: 6px 0 0;
+      color: var(--text2);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .panels{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .panel{
+      background: var(--boxGry);
+      border: var(--panel-border);
+      border-radius: var(--panel-radius);
+      padding: 18px;
+      box-shadow: var(--panel-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 360px;
+    }
+    .panel h2{
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--mainColor);
+    }
+    .image-stage,
+    .svg-stage{
+      flex: 1;
+      border-radius: 12px;
+      border: var(--stage-border);
+      background: rgba(0,0,0,.4);
+      position: relative;
+      overflow: hidden;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    #imageHolder{
+      position: relative;
+      width: min(540px, 100%);
+      max-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #sourceImage{
+      display: none;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      user-select: none;
+      pointer-events: none;
+    }
+    .has-image #sourceImage{
+      display: block;
+    }
+    #cropBox{
+      position: absolute;
+      border: 2px dashed var(--mainColor);
+      box-shadow: 0 0 0 999px rgba(0,0,0,.35);
+      cursor: grab;
+      touch-action: none;
+      display: none;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 0),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 0);
+      background-size: var(--grid-step, 20px) var(--grid-step, 20px);
+      background-position: -1px -1px;
+    }
+    .has-image #cropBox{
+      display: block;
+    }
+    #cropBox:active{
+      cursor: grabbing;
+    }
+    .handle{
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--mainColor);
+      border: 2px solid #000;
+      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+    }
+    .handle.br{
+      right: -10px;
+      bottom: -10px;
+      cursor: se-resize;
+    }
+    .touch-tip{
+      font-size: 12px;
+      color: var(--text2);
+      text-align: center;
+    }
+    .controls{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .controls input::after{
+      display: none;
+    }
+    .control{
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .control label{
+      font-size: 13px;
+      color: var(--text2);
+    }
+    .control input{
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: var(--textColor);
+      padding: 0 12px;
+      font-size: 13px;
+      box-shadow: inset 0 6px 20px rgba(0,0,0,.25);
+    }
+    .actions{
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .actions button{
+      flex: 1;
+      min-width: 140px;
+      border: none;
+      border-radius: 999px;
+      height: 40px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      background: var(--mainColor);
+      color: #000;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .actions button.secondary{
+      background: rgba(255,255,255,.08);
+      color: var(--textColor);
+      border: 1px solid rgba(255,255,255,.15);
+    }
+    .actions button:disabled{
+      opacity: .4;
+      cursor: not-allowed;
+    }
+    .actions button:not(:disabled):active{
+      transform: translateY(1px);
+    }
+    textarea{
+      width: 100%;
+      min-height: 140px;
+      border-radius: 12px;
+      margin-top: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.5);
+      color: var(--textColor);
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .status{
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--text2);
+      min-height: 20px;
+    }
+    .svg-stage svg{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    @media (max-width: 600px){
+      body{
+        padding: 20px 14px 40px;
+      }
+      .panel{
+        min-height: 320px;
+      }
+      .actions button{
+        flex: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="qr-app">
+    <header>
+      <h1>二维码转 SVG 工具</h1>
+      <p>
+        上传二维码或黑白图形，拖动正方形裁切框对齐目标区域，设置网格行列后即可一键转换为矩形拼接的 SVG，
+        可直接复制或下载，适合需要在矢量环境中复刻二维码的场景。
+      </p>
+    </header>
+
+    <div class="panels">
+      <section class="panel">
+        <h2>Source & Crop</h2>
+        <div class="image-stage" id="imageStage">
+          <div id="imageHolder">
+            <img id="sourceImage" alt="上传后的预览">
+            <div id="cropBox">
+              <div class="handle br" data-handle="resize"></div>
+            </div>
+          </div>
+          <div class="touch-tip" id="placeholderTip">请先上传一张图片</div>
+        </div>
+        <small class="touch-tip">拖动裁切框或使用右下角圆点缩放，始终保持正方形</small>
+      </section>
+
+      <section class="panel">
+        <h2>SVG Preview</h2>
+        <div class="svg-stage" id="svgStage">
+          <div class="touch-tip">生成的 SVG 会在这里预览</div>
+        </div>
+        <textarea id="svgText" placeholder="生成的 SVG 将展示在这里，可直接复制或微调。" readonly></textarea>
+      </section>
+    </div>
+
+    <div class="controls">
+      <div class="control pos-r">
+        <label for="fileInput">上传二维码 / 自定义图</label>
+        <input type="file" id="fileInput" accept="image/png, image/jpeg, image/webp, image/gif, image/apng">
+      </div>
+      <div class="control">
+        <label for="gridInput">网格行列</label>
+        <input type="number" id="gridInput" min="5" max="177" value="29">
+      </div>
+      <div class="control">
+        <label for="ratioInput">黑色占比阈值</label>
+        <input type="number" id="ratioInput" min="0.1" max="0.95" step="0.05" value="0.6">
+      </div>
+      <div class="control">
+        <label for="brightnessInput">像素亮度阈值</label>
+        <input type="number" id="brightnessInput" min="0" max="255" value="160">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="convertBtn" disabled>转换为 SVG</button>
+      <button id="copyBtn" class="secondary" disabled>复制 SVG</button>
+      <button id="downloadBtn" class="secondary" disabled>保存 SVG</button>
+    </div>
+    <div class="status" id="statusBar"></div>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const gridInput = document.getElementById('gridInput');
+    const ratioInput = document.getElementById('ratioInput');
+    const brightnessInput = document.getElementById('brightnessInput');
+    const convertBtn = document.getElementById('convertBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const svgStage = document.getElementById('svgStage');
+    const svgText = document.getElementById('svgText');
+    const statusBar = document.getElementById('statusBar');
+    const imageStage = document.getElementById('imageStage');
+    const imageHolder = document.getElementById('imageHolder');
+    const placeholderTip = document.getElementById('placeholderTip');
+    const sourceImage = document.getElementById('sourceImage');
+    const cropBox = document.getElementById('cropBox');
+
+    const cropState = {
+      ready: false,
+      x: 0,
+      y: 0,
+      size: 200,
+      pointerId: null,
+      mode: null,
+      startX: 0,
+      startY: 0,
+      startSize: 0,
+      startLeft: 0,
+      startTop: 0,
+      scale: 1,
+    };
+
+    const renderState = {
+      svg: '',
+      lastBlobUrl: null,
+    };
+
+    function clamp(value, min, max){
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function setStatus(text, isError = false){
+      statusBar.textContent = text || '';
+      statusBar.style.color = isError ? '#ff8a8a' : 'var(--text2)';
+    }
+
+    function updateGridBackground(){
+      const count = parseInt(gridInput.value, 10) || 29;
+      cropBox.style.setProperty('--grid-step', `${(cropState.size / count) || 4}px`);
+    }
+
+    function positionCropBox(){
+      cropBox.style.width = `${cropState.size}px`;
+      cropBox.style.height = `${cropState.size}px`;
+      cropBox.style.left = `${cropState.x}px`;
+      cropBox.style.top = `${cropState.y}px`;
+      updateGridBackground();
+    }
+
+    function prepareCropBox(){
+      imageStage.classList.add('has-image');
+      placeholderTip.style.display = 'none';
+      requestAnimationFrame(() => {
+        const bounds = sourceImage.getBoundingClientRect();
+        const displayWidth = bounds.width;
+        const displayHeight = bounds.height;
+        cropState.scale = sourceImage.naturalWidth / displayWidth;
+        cropState.displayWidth = displayWidth;
+        cropState.displayHeight = displayHeight;
+        const stageWidth = displayWidth;
+        const stageHeight = displayHeight;
+        const boxSize = Math.min(displayWidth, displayHeight) * 0.8;
+        cropState.size = boxSize;
+        cropState.x = (stageWidth - boxSize) / 2;
+        cropState.y = (stageHeight - boxSize) / 2;
+        cropState.ready = true;
+        positionCropBox();
+        convertBtn.disabled = false;
+      });
+    }
+
+    function updateStageSize(){
+      if(!sourceImage.src) return;
+      requestAnimationFrame(() => {
+        const bounds = sourceImage.getBoundingClientRect();
+        const newWidth = bounds.width;
+        const newHeight = bounds.height;
+        if(cropState.displayWidth){
+          const ratioX = newWidth / cropState.displayWidth;
+          const ratioY = newHeight / cropState.displayHeight;
+          const ratio = Math.min(ratioX, ratioY);
+          cropState.x *= ratioX;
+          cropState.y *= ratioY;
+          cropState.size *= ratio;
+          positionCropBox();
+        }
+        cropState.displayWidth = newWidth;
+        cropState.displayHeight = newHeight;
+        cropState.scale = sourceImage.naturalWidth / newWidth;
+        updateGridBackground();
+      });
+    }
+
+    function handleFile(file){
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        sourceImage.onload = () => {
+          prepareCropBox();
+          setStatus('图片加载完成，请拖动裁切框后转换。');
+        };
+        sourceImage.src = reader.result;
+      };
+      reader.onerror = () => {
+        setStatus('读取文件失败，请重试。', true);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if(!file){
+        setStatus('未选择文件。');
+        return;
+      }
+      if(!file.type.startsWith('image/')){
+        setStatus('仅支持图片文件。', true);
+        return;
+      }
+      handleFile(file);
+    });
+
+    window.addEventListener('resize', () => {
+      updateStageSize();
+    });
+
+    function beginPointerDrag(event){
+      if(!cropState.ready) return;
+      event.preventDefault();
+      cropState.pointerId = event.pointerId;
+      cropState.mode = event.target.dataset.handle === 'resize' ? 'resize' : 'move';
+      cropState.startX = event.clientX;
+      cropState.startY = event.clientY;
+      cropState.startLeft = cropState.x;
+      cropState.startTop = cropState.y;
+      cropState.startSize = cropState.size;
+      cropBox.setPointerCapture(event.pointerId);
+    }
+
+    function movePointer(event){
+      if(event.pointerId !== cropState.pointerId) return;
+      event.preventDefault();
+      const bounds = imageHolder.getBoundingClientRect();
+      if(cropState.mode === 'move'){
+        const dx = event.clientX - cropState.startX;
+        const dy = event.clientY - cropState.startY;
+        const maxX = bounds.width - cropState.size;
+        const maxY = bounds.height - cropState.size;
+        cropState.x = clamp(cropState.startLeft + dx, 0, Math.max(maxX, 0));
+        cropState.y = clamp(cropState.startTop + dy, 0, Math.max(maxY, 0));
+      } else if(cropState.mode === 'resize'){
+        const delta = Math.max(event.clientX - cropState.startX, event.clientY - cropState.startY);
+        let newSize = clamp(cropState.startSize + delta, 20, bounds.width);
+        newSize = Math.min(newSize, bounds.height);
+        cropState.size = newSize;
+        cropState.x = clamp(cropState.startLeft, 0, Math.max(bounds.width - newSize, 0));
+        cropState.y = clamp(cropState.startTop, 0, Math.max(bounds.height - newSize, 0));
+      }
+      positionCropBox();
+    }
+
+    function endPointerDrag(event){
+      if(event.pointerId !== cropState.pointerId) return;
+      cropBox.releasePointerCapture(event.pointerId);
+      cropState.pointerId = null;
+      cropState.mode = null;
+    }
+
+    cropBox.addEventListener('pointerdown', beginPointerDrag);
+    cropBox.addEventListener('pointermove', movePointer);
+    cropBox.addEventListener('pointerup', endPointerDrag);
+    cropBox.addEventListener('pointerleave', (event) => {
+      if(event.pointerId === cropState.pointerId){
+        endPointerDrag(event);
+      }
+    });
+
+    gridInput.addEventListener('input', () => {
+      let value = parseInt(gridInput.value, 10);
+      if(Number.isNaN(value)){
+        value = 29;
+      }
+      value = clamp(value, 5, 177);
+      gridInput.value = value;
+      updateGridBackground();
+    });
+
+    function convertToSvg(){
+      if(!cropState.ready){
+        setStatus('请先上传并调整裁切框。', true);
+        return;
+      }
+      const grid = parseInt(gridInput.value, 10) || 29;
+      const ratioThreshold = parseFloat(ratioInput.value) || 0.6;
+      const brightnessThreshold = parseInt(brightnessInput.value, 10);
+      if(grid < 5 || grid > 177){
+        setStatus('网格范围为 5~177。', true);
+        return;
+      }
+      if(isNaN(brightnessThreshold) || brightnessThreshold < 0 || brightnessThreshold > 255){
+        setStatus('亮度阈值需为 0~255。', true);
+        return;
+      }
+
+      const sx = cropState.x * cropState.scale;
+      const sy = cropState.y * cropState.scale;
+      const sSize = cropState.size * cropState.scale;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(sSize);
+      canvas.height = Math.round(sSize);
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(
+        sourceImage,
+        sx, sy, sSize, sSize,
+        0, 0, canvas.width, canvas.height
+      );
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const { data, width, height } = imageData;
+      const cellWidth = width / grid;
+      const cellHeight = height / grid;
+
+      const darkRects = [];
+      for(let row = 0; row < grid; row++){
+        const yStart = Math.floor(row * cellHeight);
+        const yEnd = Math.floor((row + 1) * cellHeight);
+        for(let col = 0; col < grid; col++){
+          const xStart = Math.floor(col * cellWidth);
+          const xEnd = Math.floor((col + 1) * cellWidth);
+          let total = 0;
+          let dark = 0;
+          for(let y = yStart; y < yEnd; y++){
+            for(let x = xStart; x < xEnd; x++){
+              const index = (y * width + x) * 4;
+              const r = data[index];
+              const g = data[index + 1];
+              const b = data[index + 2];
+              const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+              if(brightness <= brightnessThreshold){
+                dark++;
+              }
+              total++;
+            }
+          }
+          const ratio = total ? dark / total : 0;
+          if(ratio >= ratioThreshold){
+            darkRects.push(`<rect x="${col}" y="${row}" width="1" height="1" fill="#000"/>`);
+          }
+        }
+      }
+
+      const viewBox = `0 0 ${grid} ${grid}`;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" shape-rendering="crispEdges">
+  <rect width="100%" height="100%" fill="#fff"/>
+  ${darkRects.join('\n  ')}
+</svg>`;
+
+      renderState.svg = svg;
+      svgStage.innerHTML = svg;
+      svgText.value = svg;
+      setStatus(`转换完成，共生成 ${darkRects.length} 个黑色网格。`);
+      copyBtn.disabled = false;
+      downloadBtn.disabled = false;
+    }
+
+    async function copySvg(){
+      if(!renderState.svg){
+        setStatus('没有可复制的 SVG。', true);
+        return;
+      }
+      try{
+        await navigator.clipboard.writeText(renderState.svg);
+        setStatus('SVG 已复制到剪贴板。');
+      }catch(err){
+        setStatus('复制失败：请确认浏览器支持剪贴板权限。', true);
+      }
+    }
+
+    function downloadSvg(){
+      if(!renderState.svg){
+        setStatus('没有可保存的 SVG。', true);
+        return;
+      }
+      const blob = new Blob([renderState.svg], { type: 'image/svg+xml' });
+      if(renderState.lastBlobUrl){
+        URL.revokeObjectURL(renderState.lastBlobUrl);
+      }
+      const url = URL.createObjectURL(blob);
+      renderState.lastBlobUrl = url;
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `qr-svg-${Date.now()}.svg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setStatus('SVG 已保存。');
+    }
+
+    convertBtn.addEventListener('click', convertToSvg);
+    copyBtn.addEventListener('click', copySvg);
+    downloadBtn.addEventListener('click', downloadSvg);
+  </script>
+</body>
+</html>
+

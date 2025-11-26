@@ -1022,6 +1022,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量等比缩放
     if ( type == 'rescaleMix'){
+        //console.log(info)
         let b = getSelectionMix();
         b.forEach(item => {
             switch (info[0]){
