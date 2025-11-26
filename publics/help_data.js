@@ -1,6 +1,5 @@
 class RICH_DOC {
   constructor(){
-    this.language = ROOT.getAttribute('data-language') || 'Zh';
     this.doc = {
       toolsset:{
         create:{
@@ -1702,6 +1701,11 @@ class RICH_DOC {
   }
 
   //======返回数据======//
+  // 获取当前语言设置（动态获取，确保与 localStorage 同步）
+  get language() {
+    return ROOT.getAttribute('data-language') || 'Zh';
+  }
+
   toHighlight(text){
     return text
       .replace(/\/\+\+/g, '<span data-highlight>')
