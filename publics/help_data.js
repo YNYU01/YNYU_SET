@@ -1548,8 +1548,8 @@ class RICH_DOC {
           let card;
           if(isSearch){
             let paths = [
-              [all[key].type,all[key].name[0],list.title[0]],
-              [all[key].type,all[key].name[1],list.title[1]],
+              [all[key].type[0],all[key].name[0],list.title[0]],
+              [all[key].type[1],all[key].name[1],list.title[1]],
             ];
             this.allSearchPath[tool].push(
               {
