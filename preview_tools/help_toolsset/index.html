@@ -31,7 +31,7 @@
         <btn-close></btn-close>
       </div>
     </div>
-    <div data-dailogsearch-box data-scroll class="ovy scrollbar df-ffc h100">
+    <div data-dailogsearch-box data-scroll class="ovy scrollbar df-ffc wh100 gap4">
       <!--生成内容-->
     </div>
   </div>
@@ -107,12 +107,7 @@
     </div>
     <div data-doc-list-mix-mask class="h100 fl0" style="width: 200px; border-right: 1px solid var(--boxBod);"></div>
     <div class="fl1 h100 df-ffc pos-r">
-      <div data-doc-content-top class="df pos-a" style="right: 0; min-height: 40px; padding:10px; box-sizing: border-box;">
-        <div data-doc-search class="df-lc gap4" data-btn onclick="getElementMix('data-dailogsearch').style.display = 'flex'">
-          Ctrl+K
-          <btn-search></btn-search>
-        </div>
-      </div>
+      
       <div data-doc-content data-page-id="content1" class="ovy wh100 fl1 noscrollbar">
         <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
         <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
@@ -123,9 +118,14 @@
 
       </div>
       <div data-doc-content data-page-id="content2" class="ovy wh100 fl1 noscrollbar" style="display: none;">
-        <div data-page-name="栅格化" data-page-name-en="gridify" data-page-main="true" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
-        <div data-page-name="布局" data-page-name-en="layout" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
-        <div data-page-name="矢量" data-page-name-en="vector" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="数据转图层" data-page-name-en="data to layer" data-page-main="true" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
+        <div data-page-name="批量修改" data-page-name-en="batch modify" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="兼容格式" data-page-name-en="compatible format" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="批量变换" data-page-name-en="batch transform" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="布局整理" data-page-name-en="layout organization" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="文件导出" data-page-name-en="file export" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="文本处理" data-page-name-en="text processing" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
+        <div data-page-name="矢量处理" data-page-name-en="vector processing" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>        
         <div data-page-name="日志" data-page-name-en="log" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc" style="display: none;"></div>
       </div>
       <div class="pos-a df-cc" style="--svg-w: 800px; --bod-w: 0.5; opacity: 0.1; z-index: -1;">
@@ -134,9 +134,16 @@
         <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
         <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
       </div>
+      <div data-doc-content-top class="df pos-a" style="right: 0; min-height: 40px; padding:10px; box-sizing: border-box;">
+        <div data-doc-search class="df-lc gap4" data-btn onclick="getElementMix('data-dailogsearch').style.display = 'flex'">
+          Ctrl+K
+          <btn-search></btn-search>
+        </div>
+      </div>
     </div>
   </div>
   <div class="w100 fl0" style=" height: 20px;"></div>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/prism.min.js"></script>
   <script src="../../builds/yn_comp.js"></script>
   <script src="../../publics/test.js"></script>
   <script src="../../publics/graph.js"></script>

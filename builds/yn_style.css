@@ -187,9 +187,6 @@ textarea::-webkit-resizer{
   transparent 51%);
 }
 
-[data-resize]{
-  --resize: block;
-}
 /* 整个滚动条 */
 .scrollbar::-webkit-scrollbar,
 pre::-webkit-scrollbar,
@@ -258,6 +255,10 @@ body::-webkit-scrollbar,
   display: none;
 }
 
+[data-resize]{
+  --resize: block;
+}
+
 [data-resize="pre"]{
   width: 100%;
   position: relative;
@@ -270,6 +271,7 @@ body::-webkit-scrollbar,
   right: 2px;
   width: 8px;
   height: 8px;
+  pointer-events: none;
   background: linear-gradient(to top left,
   transparent 20%,
   var(--boxBod) 21%,

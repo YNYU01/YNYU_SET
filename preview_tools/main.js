@@ -2,7 +2,7 @@ const TOOL_INFO = [
   {
     name: ["云即·工具集 Figma版","    YN+ToolsSet Fig"],
     icon:"url('../preview_tools/img/Icon-ToolsSet_fig_200.png')",
-    url:"",
+    url:"help_toolsset?type=fig",
     about:[
       [
       "说明文案说明文案说明文案说明文案说明文案说明文案说明文案说明文案",
@@ -25,7 +25,7 @@ const TOOL_INFO = [
   {
     name: ["云即·工具集 Mastergo版","YN+ToolsSet Mg"],
     icon:"url('../preview_tools/img/Icon-ToolsSet_mg_200.png')",
-    url:"",
+    url:"help_toolsset?type=mg",
     about:[
       [
       "说明文案说明文案说明文案说明文案说明文案说明文案说明文案说明文案",
@@ -39,7 +39,7 @@ const TOOL_INFO = [
   {
     name: ["云即·工具集 PS版","YN+ToolsSet Ps"],
     icon:"url('../preview_tools/img/Icon-ToolsSet_ps_200.png')",
-    url:"",
+    url:"help_toolsset?type=ps",
     about:[
       [
       "说明文案说明文案说明文案说明文案说明文案说明文案说明文案说明文案",
@@ -221,7 +221,7 @@ function addToolCard(toolsObj){
     if(tools.url){
       toolmore.setAttribute('href',tools.url);
       if(ISLOCAL){
-        toolmore.setAttribute('href',tools.url + '/index.html');
+        toolmore.setAttribute('href',tools.url.replace('?','/index.html?'));
       }
       toolmore.setAttribute('target','_blank');
       toolmore.setAttribute('rel','noopener noreferrer');

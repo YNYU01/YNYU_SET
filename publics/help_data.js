@@ -1,4 +1,3 @@
-
 class RICH_DOC {
   constructor(){
     this.language = ROOT.getAttribute('data-language') || 'Zh';
@@ -6,7 +5,7 @@ class RICH_DOC {
       toolsset:{
         create:{
           name:['创建','create'],
-          type:'function',
+          type:['功能','function'],
           help:[
             ["p",
             "本页功能主要用于/++ 批量创建画板、图层等 ++/",
@@ -96,8 +95,8 @@ class RICH_DOC {
               layout:[
                 {set:[],items:[
                   ["p",
-                  "YN 系列互通的 .zy/.sketch/.svg/.xml/.json/.zip/.rar/.7z 都走这条线路",
-                  "Route .zy/.sketch/.svg/.xml/.json/.zip/.rar/.7z bundles through here for seamless YN interoperability"],
+                  "YN 系列互通的 /++ .zy | .sketch | .svg | .xml | .json | .zip | .rar | .7z ++/ 都走这条线路",
+                  "Route /++ .zy | .sketch | .svg | .xml | .json | .zip | .rar | .7z ++/ bundles through here for seamless YN interoperability"],
                 ]},
                 {set:[],items:[
                   ["li",
@@ -206,8 +205,8 @@ class RICH_DOC {
             }
           ],
           error:[
-            ["上传文件格式不支持: 请检查文件格式是否符合要求, 图片需为常见格式, 表格需为 .csv/.xls/.xlsx",
-            "Unsupported file format: Check if the file format meets requirements, images must be common formats, tables must be .csv/.xls/.xlsx"],
+            ["上传文件格式不支持: 请检查文件格式是否符合要求, 图片需为常见格式, 表格需为 /++ .csv | .xls | .xlsx ++/",
+            "Unsupported file format: Check if the file format meets requirements, images must be common formats, tables must be .csv | .xls | .xlsx"],
             ["表格缺少必填项: 确保表格包含 name、w、h 等必填列, 检查列名是否正确",
             "Missing required fields in table: Ensure the table contains required columns like name, w, h, check if column names are correct"],
             ["标签生成失败: 检查输入数据格式是否正确, 表格数据是否包含表头或格式错误",
@@ -218,7 +217,7 @@ class RICH_DOC {
         },
         export:{
           name:['导出','export'],
-          type:'function',
+          type:['功能','function'],
           help:[
             ["p",
             "导出页聚合/++ Image | .zy | Rich Text ++/三种输出方式, 统一管理渲染任务",
@@ -406,7 +405,7 @@ class RICH_DOC {
         },
         editor:{
           name:['编辑','editor'],
-          type:'function',
+          type:['功能','function'],
           help:[
             ["p",
             "编辑页提供滤镜栈, 支持/++ Up Editable ++/矢量模式与/++ Up Pixel ++/像素模式",
@@ -594,7 +593,7 @@ class RICH_DOC {
         },
         variable:{
           name:['变量','variable'],
-          type:'function',
+          type:['功能','function'],
           help:[
             ["p",
             "变量页整合样式与变量, 打造/++ 检测 → 新建 → 刷新 → 应用 ++/闭环",
@@ -782,7 +781,7 @@ class RICH_DOC {
         },
         sheet:{
           name:['表单','sheet'],
-          type:'function',
+          type:['功能','function'],
           help:[
             ["p",
               "使用本功能需要掌握【组件】和【组件属性】等基本知识",
@@ -984,7 +983,7 @@ class RICH_DOC {
         },
         more_tools:{
           name:['更多功能','more tools'],
-          type:'function',
+          type:['功能','function'],
           help:[
             ['p',
             '汇总收藏、像素、图层、矢量、样式等模块化工具, 作为扩展入口',
@@ -1047,40 +1046,448 @@ class RICH_DOC {
                 ]}
               ]
             },
+            {title:['原地栅格化','in-iitu rasterize'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "原地栅格化页提供按行列/宫格切分长图、批量统一缩放/替换填充等功能, 确保多规格导出一致",
+                  "The InSituRasterize page provides row/column or nine-grid slicing for long pages, batch uniform scaling/replacement fill features to ensure consistent multi-size exports"],
+                ]}
+              ]
+            },
+            {title:['等比缩放','uniform scale'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "等比缩放页提供按行列/宫格切分长图、批量统一缩放/替换填充等功能, 确保多规格导出一致",
+                  "The Uniform Scale page provides row/column or nine-grid slicing for long pages, batch uniform scaling/replacement fill features to ensure consistent multi-size exports"],
+                ]}
+              ]
+            },
+            {title:['斜切','skew'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "斜切页提供按行列/宫格切分长图、批量统一缩放/替换填充等功能, 确保多规格导出一致",
+                  "The Skew page provides row/column or nine-grid slicing for long pages, batch uniform scaling/replacement fill features to ensure consistent multi-size exports"],
+                ]}
+              ]
+            },
+            {title:['宫格裁切','clip by grid'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "宫格裁切页提供按行列/宫格切分长图、批量统一缩放/替换填充等功能, 确保多规格导出一致",
+                  "The Clip By Grid page provides row/column or nine-grid slicing for long pages, batch uniform scaling/replacement fill features to ensure consistent multi-size exports"],
+                ]}
+              ]
+            },
+            {title:['图片填充修改','alter image fill'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "图片填充修改页提供按行列/宫格切分长图、批量统一缩放/替换填充等功能, 确保多规格导出一致",
+                  "The Alter Image Fill page provides row/column or nine-grid slicing for long pages, batch uniform scaling/replacement fill features to ensure consistent multi-size exports"],
+                ]}
+              ]
+            },
+            {title:['拆分文本','split text'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "拆分文本页提供按行/词/字符拆分文本、反向合并、多选图层一键对齐等功能, 便于切换排版策略",
+                  "The Split Text page provides text splitting by line/word/character, reverse merging, and one-click alignment for multiple layer selection for alternative layout strategies"],
+                ]}
+              ]
+            },
+            {title:['合并文本','merge text'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "合并文本页提供按行/词/字符拆分文本、反向合并、多选图层一键对齐等功能, 便于切换排版策略",
+                  "The Merge Text page provides text splitting by line/word/character, reverse merging, and one-click alignment for multiple layer selection for alternative layout strategies"],
+                ]}
+              ]
+            },
+            {title:['图层&布局','layers layout'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "图层&布局页提供按行列/宫格切分长图、批量统一缩放/替换填充等功能, 确保多规格导出一致",
+                  "The Layers Layout page provides row/column or nine-grid slicing for long pages, batch uniform scaling/replacement fill features to ensure consistent multi-size exports"],
+                ]}
+              ]
+            },
+            {title:['提取路径','get path'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "提取路径页提供按行列/宫格切分长图、批量统一缩放/替换填充等功能, 确保多规格导出一致",
+                  "The Get Path page provides row/column or nine-grid slicing for long pages, batch uniform scaling/replacement fill features to ensure consistent multi-size exports"],
+                ]}
+              ]
+            },
+            {title:['获取可编辑SVG','get editable SVG'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "获取可编辑SVG页提供按行列/宫格切分长图、批量统一缩放/替换填充等功能, 确保多规格导出一致",
+                  "The Get Editable SVG page provides row/column or nine-grid slicing for long pages, batch uniform scaling/replacement fill features to ensure consistent multi-size exports"],
+                ]}
+              ]
+            },
           ]
         },
-        gridify:{
-          name:['栅格化','gridify'],
-          type:'algorithm',
+        data_to_layer:{
+          name:['数据转图层','data to layer'],
+          type:['算法','algorithm'],
           help:[
             ['p',
-            '栅格化页提供按行列/宫格切分长图、批量统一缩放/替换填充等功能, 确保多规格导出一致',
-            'The Gridify page provides row/column or nine-grid slicing for long pages, batch uniform scaling/replacement fill features to ensure consistent multi-size exports'
+            '数据转图层算法从表格数据转为图层节点, 实现设计资产的批量创建。算法解析表格数据(CSV/XLS/XLSX), 将每行数据转换为画板或图层, 支持命名、尺寸、样式等属性的批量设置。createFrame根据表格数据创建画板, createImage处理图片数据创建图层, createZy解析兼容格式文件创建图层结构, 为设计系统搭建提供数据驱动的工作流',
+            'Data to layer algorithm converts table data to layer nodes, enabling batch creation of design assets. Algorithm parses table data (CSV/XLS/XLSX), converts each row to frames or layers, supports batch setting of properties like name, size, style. createFrame creates frames from table data, createImage processes image data to create layers, createZy parses compatible format files to create layer structures, providing data-driven workflows for design system building'
             ]
           ],
-          list:[]
+          list:[
+            {title:['从兼容格式创建','createZy'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "从兼容格式文件创建图层结构",
+                  "Creates layer structures from compatible format files"],
+                ]}
+              ]
+            },
+            {title:['表格文本转数组','tableTextToArray'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "表格文本转数组, 支持行列转换",
+                  "Converts table text to array, supports row/column conversion"],
+                ]}
+              ]
+            },
+            {title:['表格数组转对象组','tableArrayToObj'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "表格数组转对象组, 便于数据映射",
+                  "Converts table array to object group for data mapping"],
+                ]}
+              ]
+            }
+          ],
+          code:[
+            {
+              language:'javascript',
+              code:``
+            }
+          ]
         },
-        layout:{
-          name:['布局','layout'],
-          type:'algorithm',
+        batch_modify:{
+          name:['批量修改','batch modify'],
+          type:['算法','algorithm'],
           help:[
             ['p',
-            '布局页提供按行/词/字符拆分文本、反向合并、多选图层一键对齐等功能, 便于切换排版策略',
-            'The Layout page provides text splitting by line/word/character, reverse merging, and one-click alignment for multiple layer selection for alternative layout strategies'
+            '批量修改算法从表格数据批量修改图层节点, 实现设计资产的快速迭代。算法支持名称映射(mapName)、文本映射(mapText)、组件属性映射(mapPro)和标签属性映射(mapTag)四种模式。通过表格数据与图层顺序的对应关系, 批量更新图层的名称、文本内容、组件属性值和标签样式, 支持自动克隆和自动减少行数, 为设计系统维护提供高效的数据驱动方案',
+            'Batch modification algorithm batch modifies layer nodes from table data, enabling rapid iteration of design assets. Algorithm supports four modes: name mapping (mapName), text mapping (mapText), component property mapping (mapPro) and tag property mapping (mapTag). Through correspondence between table data and layer order, batch updates layer names, text content, component property values and tag styles, supports auto clone and auto reduce rows, providing efficient data-driven solutions for design system maintenance'
             ]
           ],
-          list:[]
+          list:[
+            {title:['名称映射','mapName'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "名称映射, 批量修改图层名称",
+                  "Name mapping, batch modifies layer names"],
+                ]}
+              ]
+            },
+            {title:['文本映射','mapText'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "文本映射, 批量修改文本内容",
+                  "Text mapping, batch modifies text content"],
+                ]}
+              ]
+            },
+            {title:['组件属性映射','mapPro'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "组件属性映射, 批量修改组件属性值",
+                  "Component property mapping, batch modifies component property values"],
+                ]}
+              ]
+            },
+            {title:['标签属性映射','mapTag'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "标签属性映射, 批量修改标签样式属性",
+                  "Tag property mapping, batch modifies tag style properties"],
+                ]}
+              ]
+            },
+            {title:['更新表格','reTableByArray'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "根据表格数据更新表格组件",
+                  "Updates table components based on table data"],
+                ]}
+              ]
+            }
+          ],
+          code:[
+            {
+              language:'javascript',
+              code:``
+            }
+          ]
         },
-        vector:{
-          name:['矢量','vector'],
-          type:'algorithm',
+        compatible_format:{
+          name:['兼容格式','compatible format'],
+          type:['算法','algorithm'],
           help:[
             ['p',
-            '矢量页提供输出路径长度、节点数等指标, 便于 QA 或开发对接',
-            'The Vector page provides output path length, node count and similar metrics for QA or engineering handoff'
+            '兼容格式算法搭建易于记录设计性文件可生成和解析的兼容格式, 实现设计资产的跨平台流转。核心算法MdToObj将Markdown格式解析为节点式对象结构, SvgToObj解析SVG文件提取图像节点, exportZyInfo导出为兼容格式。算法支持.zy/.md/.svg等格式的生成和解析, 将设计结构转换为可编辑的文本格式, 便于版本控制和协作, 为设计系统提供可追溯的资产记录方案',
+            'Compatible format algorithm builds easy-to-record design file formats that can be generated and parsed, enabling cross-platform flow of design assets. Core algorithm MdToObj parses Markdown format into node-based object structure, SvgToObj parses SVG files to extract image nodes, exportZyInfo exports to compatible format. Algorithm supports generation and parsing of formats like .zy/.md/.svg, converts design structures to editable text formats, facilitates version control and collaboration, provides traceable asset recording solutions for design systems'
             ]
           ],
-          list:[]
+          list:[
+            {title:['Markdown转节点对象','MdToObj'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "Markdown转节点对象, 解析标题/列表/表格/代码块等结构",
+                  "Markdown to node object, parses structures like headings/lists/tables/code blocks"],
+                ]}
+              ]
+            },
+            {title:['SVG转节点对象','SvgToObj'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "SVG转节点对象, 提取图像节点和属性",
+                  "SVG to node object, extracts image nodes and attributes"],
+                ]}
+              ]
+            },
+            {title:['导出为兼容格式','exportZyInfo'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "导出为兼容格式, 支持设计结构的序列化",
+                  "Exports to compatible format, supports design structure serialization"],
+                ]}
+              ]
+            }
+          ],
+          code:[
+            {
+              language:'javascript',
+              code:``
+            }
+          ]
+        },
+        batch_transform:{
+          name:['批量变换','batch transform'],
+          type:['算法','algorithm'],
+          help:[
+            ['p',
+            '变换算法提供图层的几何变换功能, 支持缩放、斜切等变换操作。rescaleMix实现等比缩放, 支持统一缩放、按宽度缩放和按高度缩放, 根据中心点计算位置偏移。transformMix实现斜切拉伸, 通过正切值计算更新transform矩阵。这些算法为设计调整提供精确的变换控制',
+            'Transform algorithm provides geometric transformation functions for layers, supports scaling, skewing and other transformations. rescaleMix implements uniform scaling, supports uniform/width/height scaling, calculates position offset by center point. transformMix implements skew stretching, updates transform matrix through tangent calculation. These algorithms provide precise transformation control for design adjustments'
+            ]
+          ],
+          list:[
+            {title:['等比缩放','rescaleMix'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "等比缩放, 支持统一/宽度/高度三种模式, 按中心点计算位置偏移",
+                  "Uniform scaling, supports three modes (uniform/width/height), calculates position offset by center point"],
+                ]}
+              ]
+            },
+            {title:['斜切拉伸','transformMix'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "斜切拉伸变换, 通过正切计算更新transform矩阵",
+                  "Skew stretching transformation, updates transform matrix through tangent calculation"],
+                ]}
+              ]
+            }
+          ],
+          code:[
+            {
+              language:'javascript',
+              code:``
+            }
+          ]
+        },
+        layout_organization:{
+          name:['布局整理','layout organization'],
+          type:['算法','algorithm'],
+          help:[
+            ['p',
+            '布局整理算法按横竖比自动整理图层布局, 为设计工作流提供高效的排版辅助。核心算法layoutByRatio将图层按横版、竖版和方形分类, 以最大尺寸为基准进行行列布局, 支持最小到最大或最大到最小排序, 自动计算间距和位置, 帮助设计师快速整理设计稿',
+            'Layout organization algorithm automatically arranges layer layout by aspect ratio, providing efficient layout assistance for design workflows. Core algorithm layoutByRatio categorizes layers by landscape, portrait and square, arranges in rows/columns based on max size, supports min-to-max or max-to-min sorting, automatically calculates spacing and positions, helping designers quickly organize design drafts'
+            ]
+          ],
+          list:[
+            {title:['自动重排','layoutByRatio'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "按横竖版和方形分类自动排列, 以最大尺寸为基准行列布局",
+                  "Auto arrangement by landscape/portrait/square categories, row/column layout based on max size"],
+                ]}
+              ]
+            },
+            {title:['调换位置','Exchange Position'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "调换两个图层的位置，并考虑自动布局和位置中心点",
+                  "Swaps positions of two layers, considering auto layout and position center"],
+                ]}
+              ]
+            }
+          ],
+          code:[
+            {
+              language:'javascript',
+              code:``
+            }
+          ]
+        },
+        file_export:{
+          name:['文件导出','file export'],
+          type:['算法','algorithm'],
+          help:[
+            ['p',
+            '图片导出算法按指定大小导出图片, 支持多规格批量导出和压缩优化。核心算法CUT_AREA基于均匀裁切方案, 按指定倍率(4096/2048/1024)将大图切分为行列网格, 计算每个切片的宽高和坐标。exportImgInfo根据导出设置(SCALE/WIDTH/HEIGHT)计算目标尺寸, 支持PNG/JPG/WEBP格式, 集成压缩算法优化文件大小',
+            'Image export algorithm exports images by specified size, supports batch export for multiple specifications and compression optimization. Core algorithm CUT_AREA uses uniform cutting scheme, slices large images into row/column grids by specified scale (4096/2048/1024), calculates width, height and coordinates for each slice. exportImgInfo calculates target size based on export settings (SCALE/WIDTH/HEIGHT), supports PNG/JPG/WEBP formats, integrates compression algorithms to optimize file size'
+            ]
+          ],
+          list:[
+            {title:['均匀裁切','CUT_AREA'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "均匀裁切方案, 计算行列网格切片的宽高和坐标",
+                  "Uniform cutting scheme, calculates width, height and coordinates for row/column grid slices"],
+                ]}
+              ]
+            },
+            {title:['按目标尺寸导出','exportImgInfo'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "按导出设置计算目标尺寸并导出图片",
+                  "Calculates target size by export settings and exports images"],
+                ]}
+              ]
+            },
+            {title:['图片压缩','CompressImage'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "图片压缩, 支持质量调整和格式转换",
+                  "Image compression, supports quality adjustment and format conversion"],
+                ]}
+              ]
+            },
+            {title:['通过切片实现栅格化','toPixel'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "通过切片实现栅格化, 支持副本和覆盖模式",
+                  "Implements rasterization through slicing, supports copy and overwrite modes"],
+                ]}
+              ]
+            }
+          ],
+          code:[
+            {
+              language:'javascript',
+              code:``
+            }
+          ]
+        },
+        text_processing:{
+          name:['文本处理','text processing'],
+          type:['算法','algorithm'],
+          help:[
+            ['p',
+            '文本处理算法提供文本拆分和样式处理功能。splitText支持按行、按样式属性和按关键词拆分文本, 保持原有样式并自动创建布局容器。算法为文本排版和样式管理提供灵活的处理方案',
+            'Text processing algorithm provides text splitting and style processing functions. splitText supports splitting text by line, style attributes and keywords, preserves original styles and automatically creates layout containers. Algorithm provides flexible processing solutions for text layout and style management'
+            ]
+          ],
+          list:[
+            {title:['文本拆分','splitText'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "文本拆分, 支持按行/样式属性/关键词拆分, 自动创建布局容器",
+                  "Text splitting, supports splitting by line/style attributes/keywords, automatically creates layout containers"],
+                ]}
+              ]
+            }
+          ],
+          code:[
+            {
+              language:'javascript',
+              code:``
+            }
+          ]
+        },
+        vector_processing:{
+          name:['矢量处理','vector processing'],
+          type:['算法','algorithm'],
+          help:[
+            ['p',
+            '矢量处理算法提供路径提取和SVG处理功能。Split Path通过解析vectorPaths数据拆分复合路径, 保留描边样式。Get SVG和Clone As SVG支持SVG代码的导出和重新导入, 为矢量图形的编辑和流转提供支持',
+            'Vector processing algorithm provides path extraction and SVG processing functions. Split Path splits compound paths by parsing vectorPaths data, preserves stroke styles. Get SVG and Clone As SVG support export and re-import of SVG code, providing support for vector graphics editing and flow'
+            ]
+          ],
+          list:[
+            {title:['拆分复合路径','Split Path'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "拆分复合路径为独立路径, 保留描边样式, 支持布尔运算和分组",
+                  "Splits compound paths into independent paths, preserves stroke styles, supports boolean operations and grouping"],
+                ]}
+              ]
+            },
+            {title:['导出SVG代码','Get SVG'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "导出SVG代码, 移除链接属性生成可编辑代码",
+                  "Exports SVG code, removes link attributes to generate editable code"],
+                ]}
+              ]
+            },
+            {title:['以SVG克隆图层','Clone As SVG'],
+              layout:[
+                {set:[],items:[
+                  ["p",
+                  "以SVG克隆图层, 重新导入为可编辑矢量",
+                  "Clones layers as SVG, re-imports as editable vectors"],
+                ]}
+              ]
+            }
+          ],
+          code:[
+            {
+              language:'javascript',
+              code:``
+            }
+          ]
         },
       },
       listease:{},
@@ -1094,20 +1501,31 @@ class RICH_DOC {
     this.doc.toolsset.variable.about = this.doc.toolsset.variable.help[0];
     this.doc.toolsset.sheet.about = this.doc.toolsset.sheet.help[0];
     this.doc.toolsset.more_tools.about = this.doc.toolsset.more_tools.help[0];
-    this.doc.toolsset.gridify.about = this.doc.toolsset.gridify.help[0];
-    this.doc.toolsset.layout.about = this.doc.toolsset.layout.help[0];
-    this.doc.toolsset.vector.about = this.doc.toolsset.vector.help[0];
+    this.doc.toolsset.layout_organization.about = this.doc.toolsset.layout_organization.help[0];
+    this.doc.toolsset.file_export.about = this.doc.toolsset.file_export.help[0];
+    this.doc.toolsset.data_to_layer.about = this.doc.toolsset.data_to_layer.help[0];
+    this.doc.toolsset.batch_modify.about = this.doc.toolsset.batch_modify.help[0];
+    this.doc.toolsset.compatible_format.about = this.doc.toolsset.compatible_format.help[0];
+    this.doc.toolsset.batch_transform.about = this.doc.toolsset.batch_transform.help[0];
+    this.doc.toolsset.text_processing.about = this.doc.toolsset.text_processing.help[0];
+    this.doc.toolsset.vector_processing.about = this.doc.toolsset.vector_processing.help[0];
+    this.allSearchPath = {
+      toolsset:[],
+      listease:[],
+      vfontx:[],
+    };
   }
 
   //======直接修改======//
   creDocAll(parent,tool,type,search){
     let {isSearch = false, parentSearch = null} = search || {};
-    log(isSearch, parentSearch);
+    //log(isSearch);
     let all = this.doc[tool];
-    Object.keys(all).forEach(key => {
-      if(all[key].type === type){
+    let num = 0;
+    Object.keys(all).forEach((key) => {
+      if(all[key].type[1] === type){
         //log(all[key].about);
-        let page = parent.querySelector(`[data-page-name-en="${key.replace('_',' ')}"]`);
+        let page = parent.querySelector(`[data-page-name-en="${key.replace(/\_/g,' ')}"]`);
         if(!page) return;
         let topMix = document.createElement('div');
         topMix.setAttribute('data-doc-topmix','');
@@ -1126,15 +1544,33 @@ class RICH_DOC {
         topMix.appendChild(about);
 
         page.appendChild(topMix);
-        all[key].list.forEach(list => {
-          let card = this.creDocCard(list);
+        all[key].list.forEach((list,index) => {
+          let card;
+          if(isSearch){
+            let paths = [
+              [all[key].type,all[key].name[0],list.title[0]],
+              [all[key].type,all[key].name[1],list.title[1]],
+            ];
+            this.allSearchPath[tool].push(
+              {
+                name:list.title,
+                key:[...list.title[0].split(''),...list.title[1].toLowerCase().split(' ')],
+                path:paths.map(path => path.join(' > '))
+              });
+            card = this.creDocCard(list,[parentSearch,paths],num);
+            num++;
+          } else {
+            card = this.creDocCard(list);
+          }
           page.appendChild(card);
         });
 
         if(all[key].error){
           let error = this.creDocError(all[key].error);
           page.appendChild(error);
-        }
+        };
+
+        
       };
     });
   };
@@ -1143,7 +1579,7 @@ class RICH_DOC {
   };
 
   //======返回节点======//
-  creDocCard(list){
+  creDocCard(list,searchs,index){
     //log(list);
     let card = document.createElement('div');
     card.setAttribute('data-doc-card','');
@@ -1173,11 +1609,23 @@ class RICH_DOC {
       });
       card.appendChild(linemix);
     });
+
+    if(searchs){
+      this.creDocSearch(searchs,index);
+    };
     return card;
   };
 
   creDocList(key){
 
+  };
+
+  creDocCode(code){
+    let codeBox = document.createElement('code');
+    codeBox.setAttribute('data-doc-code','');
+    codeBox.innerHTML = code;
+    Prism.highlightElement(codeBox);
+    return codeBox;
   };
 
   creDocError(error){
@@ -1194,7 +1642,7 @@ class RICH_DOC {
     
     error.forEach(item => {
       let line = document.createElement('li');
-      line.setAttribute('data-li-style','2');
+      line.setAttribute('data-li-style','1');
       line.innerHTML = this.toHighlight(item[this.language == 'Zh' ? 0 : 1]);
       line.setAttribute('data-zh-text', this.toHighlight(item[0]));
       line.setAttribute('data-en-text', this.toHighlight(item[1]));
@@ -1217,8 +1665,40 @@ class RICH_DOC {
     return innerHTML;
   };
 
-  creDocSearch(key){
-    
+  creDocSearch(searchs,index){
+
+    let [parent,paths] = searchs;
+    let turnto = document.createElement('div');
+    turnto.setAttribute('data-search-turnto',index);
+    turnto.className = 'df-sc';
+
+    let info = document.createElement('div');
+    info.setAttribute('data-scroll','');
+    info.className = 'df-ffc fl1 scrollbar';
+    info.innerHTML = `
+    <div data-search-name class="df-lc"
+      data-zh-text="${paths[0][2]}" 
+      data-en-text="${paths[1][2]}">
+        ${this.language == 'Zh' ? paths[0][2] : paths[1][2]}
+      </div>
+      <div data-search-path 
+      data-zh-text="${paths[0].join(' > ')}" 
+      data-en-text="${paths[1].join(' > ')}">
+        ${this.language == 'Zh' ? paths[0].join(' > ') : paths[1].join(' > ')}
+    </div>
+    `;
+    turnto.appendChild(info);
+    let btn = document.createElement('div');
+    btn.className = 'df-cc'
+    btn.setAttribute('data-btn','op');
+    btn.setAttribute('data-zh-text','前往');
+    btn.setAttribute('data-en-text','View');
+    btn.textContent = this.language == 'Zh' ? '前往' : 'View';
+    btn.onclick = ()=>{
+      this.viewPage(paths[1]);
+    };
+    turnto.appendChild(btn);
+    parent.appendChild(turnto);
   }
 
   //======返回数据======//
@@ -1226,6 +1706,51 @@ class RICH_DOC {
     return text
       .replace(/\/\+\+/g, '<span data-highlight>')
       .replace(/\+\+\//g, '</span>');
+  };
+
+  //======工具函数======//
+  viewPage(path){
+    log(path);
+    let input1 = getElementMix(`tab_${path[0]}_0`);
+    let input2 = getElementMix(`tab_${path[1]}_1`);
+    let inputEvent1 = new Event('change',{bubbles:true});
+    let inputEvent2 = new Event('change',{bubbles:true});
+    input1.dispatchEvent(inputEvent1);
+    input2.dispatchEvent(inputEvent2);
+  };
+
+  //{title['',''],date:'',items:['','']}
+  addLog(parent,logs){
+    log(logs);
+    logs.forEach(log => {
+      let logBox = document.createElement('div');
+      logBox.setAttribute('data-doc-log','');
+      let title = document.createElement('div');
+      title.setAttribute('data-doc-title','');
+      title.innerHTML = log.title[this.language == 'Zh' ? 0 : 1];
+      title.setAttribute('data-zh-text', this.toHighlight(log.title[0]));
+      title.setAttribute('data-en-text', this.toHighlight(log.title[1]));
+      logBox.appendChild(title);
+      let date = document.createElement('div');
+      date.setAttribute('data-doc-date','');
+      date.innerHTML = log.date;
+      logBox.appendChild(date);
+      
+      log.items.forEach(item => {
+        let line = document.createElement(item[0]);
+        line.setAttribute('data-doc-line',item[0]);
+        if(item[0] == 'li'){
+          line.setAttribute('data-li-style','2');
+        }
+        let span = document.createElement('span');
+        span.innerHTML = this.toHighlight(item[this.language == 'Zh' ? 1 : 2]);
+        span.setAttribute('data-zh-text', this.toHighlight(item[1]));
+        span.setAttribute('data-en-text', this.toHighlight(item[2]));
+        line.appendChild(span);
+        logBox.appendChild(line);
+      });
+      parent.appendChild(logBox);
+    });
   };
 }
 
