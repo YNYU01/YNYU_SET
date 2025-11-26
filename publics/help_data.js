@@ -1531,7 +1531,7 @@ class RICH_DOC {
 
         let top = document.createElement('div');
         top.setAttribute('data-doc-title','');
-        top.innerHTML = all[key].name[this.language == 'Zh' ? 0 : 1];
+        top.innerHTML = all[key].name[0];
         top.setAttribute('data-zh-text', all[key].name[0]);
         top.setAttribute('data-en-text', all[key].name[1]);
         topMix.appendChild(top);
@@ -1539,7 +1539,7 @@ class RICH_DOC {
         let about = document.createElement(all[key].about[0]);
         about.setAttribute('data-zh-text', this.toHighlight(all[key].about[1]));
         about.setAttribute('data-en-text', this.toHighlight(all[key].about[2]));
-        about.innerHTML = this.toHighlight(all[key].about[this.language == 'Zh' ? 1 : 2]);
+        about.innerHTML = this.toHighlight(all[key].about[1]);
         topMix.appendChild(about);
 
         page.appendChild(topMix);
@@ -1585,7 +1585,7 @@ class RICH_DOC {
 
     let title = document.createElement('div');
     title.setAttribute('data-doc-title','');
-    title.innerHTML = this.toHighlight(list.title[this.language == 'Zh' ? 0 : 1]);
+    title.innerHTML = this.toHighlight(list.title[0]);
     title.setAttribute('data-zh-text', this.toHighlight(list.title[0]));
     title.setAttribute('data-en-text', this.toHighlight(list.title[1]));
 
@@ -1600,7 +1600,7 @@ class RICH_DOC {
           line.setAttribute('data-li-style','2');
         }
         let span = document.createElement('span');
-        span.innerHTML = this.toHighlight(items[this.language == 'Zh' ? 1 : 2]);
+        span.innerHTML = this.toHighlight(items[1]);
         span.setAttribute('data-zh-text', this.toHighlight(items[1]));
         span.setAttribute('data-en-text', this.toHighlight(items[2]));
         line.appendChild(span);
@@ -1633,7 +1633,7 @@ class RICH_DOC {
     let text = ['常见错误','Common errors'];
     let title = document.createElement('div');
     title.setAttribute('data-doc-title','');
-    title.innerHTML = text[this.language == 'Zh' ? 0 : 1];;
+    title.innerHTML = text[0];;
     title.setAttribute('data-zh-text', this.toHighlight(text[0]));
     title.setAttribute('data-en-text', this.toHighlight(text[1]));
 
@@ -1642,7 +1642,7 @@ class RICH_DOC {
     error.forEach(item => {
       let line = document.createElement('li');
       line.setAttribute('data-li-style','1');
-      line.innerHTML = this.toHighlight(item[this.language == 'Zh' ? 0 : 1]);
+      line.innerHTML = this.toHighlight(item[0]);
       line.setAttribute('data-zh-text', this.toHighlight(item[0]));
       line.setAttribute('data-en-text', this.toHighlight(item[1]));
       errorBox.appendChild(line);
@@ -1678,12 +1678,12 @@ class RICH_DOC {
     <div data-search-name class="df-lc"
       data-zh-text="${paths[0][2]}" 
       data-en-text="${paths[1][2]}">
-        ${this.language == 'Zh' ? paths[0][2] : paths[1][2]}
+        ${paths[0][2]}
       </div>
       <div data-search-path 
       data-zh-text="${paths[0].join(' > ')}" 
       data-en-text="${paths[1].join(' > ')}">
-        ${this.language == 'Zh' ? paths[0].join(' > ') : paths[1].join(' > ')}
+        ${paths[0].join(' > ')}
     </div>
     `;
     turnto.appendChild(info);
@@ -1692,7 +1692,7 @@ class RICH_DOC {
     btn.setAttribute('data-btn','op');
     btn.setAttribute('data-zh-text','前往');
     btn.setAttribute('data-en-text','View');
-    btn.textContent = this.language == 'Zh' ? '前往' : 'View';
+    btn.textContent = '前往';
     btn.onclick = ()=>{
       this.viewPage(paths[1]);
     };
@@ -1701,10 +1701,6 @@ class RICH_DOC {
   }
 
   //======返回数据======//
-  // 获取当前语言设置（动态获取，确保与 localStorage 同步）
-  get language() {
-    return ROOT.getAttribute('data-language') || 'Zh';
-  }
 
   toHighlight(text){
     return text
@@ -1731,7 +1727,7 @@ class RICH_DOC {
       logBox.setAttribute('data-doc-log','');
       let title = document.createElement('div');
       title.setAttribute('data-doc-title','');
-      title.innerHTML = log.title[this.language == 'Zh' ? 0 : 1];
+      title.innerHTML = log.title[0];
       title.setAttribute('data-zh-text', this.toHighlight(log.title[0]));
       title.setAttribute('data-en-text', this.toHighlight(log.title[1]));
       logBox.appendChild(title);
@@ -1747,7 +1743,7 @@ class RICH_DOC {
           line.setAttribute('data-li-style','2');
         }
         let span = document.createElement('span');
-        span.innerHTML = this.toHighlight(item[this.language == 'Zh' ? 1 : 2]);
+        span.innerHTML = this.toHighlight(item[1]);
         span.setAttribute('data-zh-text', this.toHighlight(item[1]));
         span.setAttribute('data-en-text', this.toHighlight(item[2]));
         line.appendChild(span);
