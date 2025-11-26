@@ -1479,17 +1479,18 @@ THEME_SWITCH.forEach(item => {
 });
 
 
-TAB_AUTO.forEach((item,index) => {
+TAB_AUTO.forEach((item) => {
 
   let pagefor = document.querySelector(`[data-page-id="${item.getAttribute('data-tab-for')}"]`);
   if(!pagefor) return;
   
   let tabsfor = pagefor.querySelectorAll('[data-page-name]');
   
-  tabsfor.forEach(items => {
+  tabsfor.forEach((items,index) => {
     let tabsforEn = items.getAttribute('data-page-name-en');
     let keyid = tabsforEn ? `tab_${tabsforEn}` : `tab_${items.getAttribute('data-page-name')}`;
-    let id = keyid + '_' + index;
+    let tabNum = item.getAttribute('data-tab-index') | '0';
+    let id = keyid + '_' + tabNum;
     let checked = items.getAttribute('data-page-main') === 'true' ? true : false;
     
     if(tabsforEn == 'gap'){
@@ -1509,7 +1510,7 @@ TAB_AUTO.forEach((item,index) => {
       input.addEventListener('change',() => {
         let oldTabPick = items.parentNode.getAttribute('data-tab-pick');
         if(oldTabPick){
-          let oldInput = document.getElementById(oldTabPick + '_' + index);
+          let oldInput = document.getElementById(oldTabPick + '_' + tabNum);
           if(oldInput){
             oldInput.checked = false;
           }
@@ -1549,6 +1550,7 @@ TAB_AUTO.forEach((item,index) => {
 
       let label = document.createElement('label');
       label.setAttribute('for',id);
+      label.setAttribute('data-tab-index',index);
       if(tabsforEn){
         label.setAttribute('data-en-text',tabsforEn);
       }

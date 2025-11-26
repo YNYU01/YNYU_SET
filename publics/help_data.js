@@ -336,7 +336,7 @@ class RICH_DOC {
                 ]}
               ]
             },
-            {title:['Image 标签区','Image tag bucket'],
+            {title:['图片标签','Image tag'],
               layout:[
                 {set:[],items:[
                   ["p",
@@ -350,7 +350,7 @@ class RICH_DOC {
                 ]}
               ]
             },
-            {title:['.zy 标签区','.zy tag bucket'],
+            {title:['节点标签','.zy tag'],
               layout:[
                 {set:[],items:[
                   ["p",
@@ -364,7 +364,7 @@ class RICH_DOC {
                 ]}
               ]
             },
-            {title:['Rich Text 标签区','Rich text bucket'],
+            {title:['富文本标签','Rich text'],
               layout:[
                 {set:[],items:[
                   ["p",
@@ -378,7 +378,7 @@ class RICH_DOC {
                 ]}
               ]
             },
-            {title:['EXPORT 按钮','EXPORT action'],
+            {title:['导出','Export'],
               layout:[
                 {set:[],items:[
                   ["p",
@@ -496,7 +496,7 @@ class RICH_DOC {
                 ]}
               ]
             },
-            {title:['导入Preset','Import preset'],
+            {title:['导入预设','Import preset'],
               layout:[
                 {set:[],items:[
                   ["p",
@@ -510,7 +510,7 @@ class RICH_DOC {
                 ]}
               ]
             },
-            {title:['导出Preset','Export preset'],
+            {title:['导出预设','Export preset'],
               layout:[
                 {set:[],items:[
                   ["p",
@@ -566,7 +566,7 @@ class RICH_DOC {
                 ]}
               ]
             },
-            {title:['APPLY 按钮','APPLY action'],
+            {title:['应用','Apply'],
               layout:[
                 {set:[],items:[
                   ["p",
@@ -723,20 +723,6 @@ class RICH_DOC {
                   ["li",
                   "两个同步按钮并列, 分别用于从变量更新表格或从表格更新变量",
                   "Two sync buttons side by side, one updates the sheet from variables, the other updates variables from the sheet"],
-                ]}
-              ]
-            },
-            {title:['Scan Styles / Variables','Rescan document'],
-              layout:[
-                {set:[],items:[
-                  ["p",
-                  "再次抓取当前文件的样式或变量, 保留过滤条件",
-                  "Re-harvest styles or variables while keeping existing filters"],
-                ]},
-                {set:[],items:[
-                  ["li",
-                  "按钮位于面板上方, 扫描结果会显示在对应的信息区域",
-                  "Located near the panel top; scan results appear in the corresponding info area"],
                 ]}
               ]
             },
@@ -1255,7 +1241,7 @@ class RICH_DOC {
             ]
           ],
           list:[
-            {title:['Markdown转节点对象','MdToObj'],
+            {title:['富文本转节点对象','MdToObj'],
               layout:[
                 {set:[],items:[
                   ["p",
@@ -1521,7 +1507,10 @@ class RICH_DOC {
     //log(isSearch);
     let all = this.doc[tool];
     let num = 0;
-    Object.keys(all).forEach((key) => {
+    let keys = Object.keys(all);
+    let realNum = 0;
+    for(let i = 0; i < keys.length; i++){
+      let key = keys[i];
       if(all[key].type[1] === type){
         //log(all[key].about);
         let page = parent.querySelector(`[data-page-name-en="${key.replace(/\_/g,' ')}"]`);
@@ -1543,7 +1532,9 @@ class RICH_DOC {
         topMix.appendChild(about);
 
         page.appendChild(topMix);
-        all[key].list.forEach((list,index) => {
+        for(let ii = 0; ii < all[key].list.length; ii++){
+          let list = all[key].list[ii];
+          let index = ii;
           let card;
           if(isSearch){
             let paths = [
@@ -1553,25 +1544,114 @@ class RICH_DOC {
             this.allSearchPath[tool].push(
               {
                 name:list.title,
-                key:[...list.title[0].split(''),...list.title[1].toLowerCase().split(' ')],
-                path:paths.map(path => path.join(' > '))
+                key:[...new Set([...list.title[0].replace(/[^\u4e00-\u9fa5]/g, '').split(''),...list.title[1].toLowerCase().replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').split(' ')])].filter(item => item !== ''),
+                path:paths.map(path => path.join(' > ')),
+                id:all[key].type[1] + '_' + num,
               });
-            card = this.creDocCard(list,[parentSearch,paths],num);
+            card = this.creDocCard(list,[parentSearch,paths,all[key].type[1] + '_' + num],index);
             num++;
           } else {
-            card = this.creDocCard(list);
+            card = this.creDocCard(list,null,index);
           }
           page.appendChild(card);
-        });
+          if(ii == all[key].list.length - 1){
+            //this.allSearchPath[tool].sort((a,b) => a.name[0].localeCompare(b.name[0]));
+          }
+        };
 
         if(all[key].error){
           let error = this.creDocError(all[key].error);
           page.appendChild(error);
         };
 
+        let tabsBottom = document.createElement('div');
+        tabsBottom.setAttribute('data-doc-tabsbottom','');
+        tabsBottom.className = 'df-sc w100';
+
+        let before = document.createElement('div');
+        let after = document.createElement('div');
+
+        if(realNum > 0){
+          let beforeKey = all[keys[i - 1]].name[0].replace(/\_/g,' ');
+          let beforeKeyEn = all[keys[i - 1]].name[1].replace(/\_/g,' ');
+          before = document.createElement('div');
+          before.setAttribute('data-doc-tabsbottom-click',beforeKey);
+          before.setAttribute('data-doc-tabsbottom-click-en',beforeKeyEn);
+          before.setAttribute('data-zh-text','上一页');
+          before.setAttribute('data-en-text','Previous page');
+          before.innerHTML = '上一页';
+
+          before.addEventListener('click',()=>{
+            this.viewPage([all[key].type[1],beforeKeyEn]);
+            page.parentNode.scrollTop = 0;
+          });
+        }
+
+        if((keys[i + 1] && all[keys[i + 1]].type[1] === type) && i !== keys.length - 1){
+          let afterKey = all[keys[i + 1]].name[0].replace(/\_/g,' ');
+          let afterKeyEn = all[keys[i + 1]].name[1].replace(/\_/g,' ');
+          after.setAttribute('data-doc-tabsbottom-click',afterKey);
+          after.setAttribute('data-doc-tabsbottom-click-en',afterKeyEn);
+          after.setAttribute('data-zh-text','下一页');
+          after.setAttribute('data-en-text','Next page');
+          after.innerHTML = '下一页';
+
+          after.addEventListener('click',()=>{
+            this.viewPage([all[key].type[1],afterKeyEn]);
+            page.parentNode.scrollTop = 0;
+          });
+        }
         
+        tabsBottom.appendChild(before);
+        tabsBottom.appendChild(after);
+
+        page.appendChild(tabsBottom);
+        realNum++
       };
-    });
+    }
+
+  };
+
+  creDocList(){
+    //默认已经生成好了doc-card、data-search-turnto、data-page-name元素
+    //每生成一个radio就绑定一下data-search-turnto的view和doc-card的悬停事件
+    let language = ROOT.getAttribute('data-language');
+    let tabs = document.querySelectorAll('[data-tab-sec]');//被标记为需要填充二级元素的元素
+    let cards = document.querySelectorAll('[data-doc-card]');
+    let logs = document.querySelectorAll('[data-doc-log]');
+    //默认在生成时先排序一次搜索标签，后面监听language再排序；
+    this.reSortSearch();
+    //先在tab后添加radio容器，由css控制显隐
+    for(let tabBox of tabs){
+      let tabLabel = tabBox.querySelectorAll('label');
+      for(let label of tabLabel){
+        let radioBox = document.createElement('div');
+        radioBox.className = 'df-ffc gap4';
+        radioBox.setAttribute('data-doc-radiobox',label.getAttribute('for'));
+        radioBox.setAttribute('data-radio-value','');
+        label.parentNode.insertBefore(radioBox,label.nextSibling);
+      };
+    };
+    for(let card of [...cards,...logs]){
+      let radioBox = document.querySelector(`[data-doc-radiobox="tab_${card.parentNode.getAttribute('data-page-name-en')}_0"]`);
+      let radio = document.createElement('div');
+      radio.setAttribute('data-radio','');
+      radio.setAttribute('data-radio-main','false');
+      if(card.getAttribute('data-doc-card') == '0'){
+        radio.setAttribute('data-radio-main','true');
+      }
+      let textEn = card.querySelector('[data-doc-title]').getAttribute('data-en-text');
+      let textZh = card.querySelector('[data-doc-title]').getAttribute('data-zh-text');
+      radio.setAttribute('data-radio-data',textEn);
+      radio.setAttribute('data-zh-text',textZh);
+      radio.setAttribute('data-en-text',textEn);
+      radio.innerHTML = language == 'Zh' ? textZh : textEn;
+      radioBox.appendChild(radio);
+      radio.addEventListener('click',()=>{
+        let path = card.getAttribute('data-search-path');
+        this.viewCard(path)
+      });
+    };
   };
 
   crePluginAll(parent,tool,key){
@@ -1581,8 +1661,8 @@ class RICH_DOC {
   creDocCard(list,searchs,index){
     //log(list);
     let card = document.createElement('div');
-    card.setAttribute('data-doc-card','');
-
+    card.setAttribute('data-doc-card',index);
+    card.style.animationDelay = index* 0.1 + 's';
     let title = document.createElement('div');
     title.setAttribute('data-doc-title','');
     title.innerHTML = this.toHighlight(list.title[0]);
@@ -1610,14 +1690,18 @@ class RICH_DOC {
     });
 
     if(searchs){
-      this.creDocSearch(searchs,index);
+      this.creDocSearch(searchs);
     };
+
+    card.setAttribute('data-search-path',searchs[1][1].join(' > '));
+    card.addEventListener('mouseenter',()=>{
+      let radioBox = document.querySelector(`[data-doc-radiobox="tab_${searchs[1][1][1]}_0"]`);
+      if(!radioBox) return;
+      radioBox.children[index].click();
+    });
     return card;
   };
 
-  creDocList(key){
-
-  };
 
   creDocCode(code){
     let codeBox = document.createElement('code');
@@ -1664,11 +1748,11 @@ class RICH_DOC {
     return innerHTML;
   };
 
-  creDocSearch(searchs,index){
+  creDocSearch(searchs){
 
-    let [parent,paths] = searchs;
+    let [parent,paths,id] = searchs;
     let turnto = document.createElement('div');
-    turnto.setAttribute('data-search-turnto',index);
+    turnto.setAttribute('data-search-turnto',id);
     turnto.className = 'df-sc';
 
     let info = document.createElement('div');
@@ -1709,19 +1793,29 @@ class RICH_DOC {
   };
 
   //======工具函数======//
-  viewPage(path){
-    log(path);
-    let input1 = getElementMix(`tab_${path[0]}_0`);
-    let input2 = getElementMix(`tab_${path[1]}_1`);
+  viewPage(paths){
+    //log(paths);
+    let input1 = getElementMix(`tab_${paths[0]}_0`);
+    let input2 = getElementMix(`tab_${paths[1]}_0`);
     let inputEvent1 = new Event('change',{bubbles:true});
     let inputEvent2 = new Event('change',{bubbles:true});
     input1.dispatchEvent(inputEvent1);
     input2.dispatchEvent(inputEvent2);
   };
 
+  viewCard(path){
+    let card = document.querySelector(`[data-search-path="${path}"]`);
+    if(card){
+      card.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+    }
+  };
+
   //{title['',''],date:'',items:['','']}
   addLog(parent,logs){
-    log(logs);
+    //log(logs);
     logs.forEach(log => {
       let logBox = document.createElement('div');
       logBox.setAttribute('data-doc-log','');
@@ -1751,6 +1845,17 @@ class RICH_DOC {
       });
       parent.appendChild(logBox);
     });
+  };
+
+  reSortSearch(){
+    let searchs = Array.from(document.querySelectorAll('[data-search-turnto]'));
+    //重排data-search-turnto元素,用textContent可以按当前语言排序
+    searchs.sort((a,b) => a.querySelector('[data-search-name]').textContent.localeCompare(b.querySelector('[data-search-name]').textContent));
+    let fragment = document.createDocumentFragment();
+    for(let search of searchs){
+      fragment.appendChild(search);
+    };
+    document.querySelector('[data-dailogsearch-box]').appendChild(fragment);
   };
 }
 

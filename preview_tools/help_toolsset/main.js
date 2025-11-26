@@ -65,6 +65,9 @@ richDoc.creDocAll(content1,'toolsset','function',{isSearch:true, parentSearch:do
 richDoc.creDocAll(content2,'toolsset','algorithm',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
 richDoc.addLog(logBox,logs);
 
+getElementMix('language-2').addEventListener('change',()=>{
+  richDoc.reSortSearch();
+});
 
 //搜索功能
 skillSearchInput.addEventListener('input',debounce(()=>{
@@ -75,7 +78,7 @@ skillSearchInput.addEventListener('input',debounce(()=>{
     return;
   };
   let value = skillSearchInput.value.toLowerCase().trim()
-  let values = value.split(' ');
+  let values = value.replace(/[^\u4e00-\u9fa5\w\s]/g, ' ').trim().split(' ');
   values = values.map(item => {
     if(item.replace(/[a-z0-9]/gi,'').length > 0){
       return item.replace(/[a-z0-9]/gi,'').split('');
@@ -88,27 +91,34 @@ skillSearchInput.addEventListener('input',debounce(()=>{
   //log(skillsSearch);
   //return;
   skillsSearch.forEach((skill,index) => {
-    let list = getElementMix(`data-search-turnto="${index}"`);
+    log(values)
+    let list = getElementMix(`data-search-turnto="${skill.id}"`);
+    //log([list,index]);
     let diff = [...new Set([...skill.key,...values])];
     //log(diff);
-    return
+    //return
     if(value == skill.name[0].toLowerCase().trim() || value == skill.name[1].toLowerCase().trim()){
       list.setAttribute('data-search-pick','true');
       return;
     };
     let samelength = (skill.key.length + values.length - diff.length);
-    
+    //log([skill.key,values,samelength])
     if( samelength > 0 ){
       if(samelength > 1){
         list.setAttribute('data-search-pick','0');
+        
       } else {
         list.setAttribute('data-search-pick','1');
+        log([skill.key,values,samelength])
       }
     } else {
       let same = 0;
       values.filter(item => item.length >= 3).forEach(item => {
         skill.key.forEach(key => {
-          if(key.includes(item)) same++;
+          if(key.includes(item)) {
+            same++;
+            log([key,item,same]);
+          };
         });
       });
       if(same > 0){
@@ -167,12 +177,13 @@ function getUserTab(node){
     };
   };
 
-  if(node.getAttribute('data-tab-for') == 'content1'){
-    log(111)
-  };
+  if(node.parentNode.getAttribute('data-doc-content') !== ''){
+    content1.scrollTop = 0;
+    content2.scrollTop = 0;
+  }
+
   if(node.getAttribute('data-tab-for') == 'content2'){
-    log(222)
-    
+    richDoc.creDocList()
   };
 
 };
