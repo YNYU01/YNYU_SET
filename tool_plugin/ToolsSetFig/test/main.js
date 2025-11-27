@@ -104,7 +104,7 @@ let reStartW,reStartH,reStartX,reStartY;
 let tableTitleMust = userTableTitle.getAttribute('placeholder').split(',');
 let imageType = document.getElementById('input-user-img').getAttribute('accept').split(',').map(item => item.replace('.',''));
 let tableType = document.getElementById('input-user-table').getAttribute('accept').split(',').map(item => item.replace('.',''));
-let zyType = document.getElementById('input-user-zy').getAttribute('accept');
+let zyType = document.getElementById('input-user-zy').getAttribute('accept').split(',').map(item => item.replace('.',''));
 let frameNmaeSelect = [];
 frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
 .forEach(item => {
@@ -1126,19 +1126,22 @@ function addTableTags(){
   addTag('table',CreateTableInfo);
 };
 async function addZyCatalogue(files,codetype){
+  //log([files,files instanceof FileList , files instanceof File])
   if(codetype){
     addTag('zy',files)
-  } else if ( files instanceof FileList){
+  } else if ( files instanceof FileList || files instanceof File || typeof(files) == 'object'){
     for(let i = 0; i < files.length; i++){
       let file = files[i];
       let format = file.name.split('.')[file.name.split('.').length - 1].toLowerCase();
       let filenameRegex = new RegExp('.' + format,'gi');
-      let createname = file.name.replace(filenameRegex,'');
+      let createname = file.name.replace(filenameRegex,'') + '@MD_NODE';
       try{
         let reader = new FileReader();
         reader.onload = async(e)=>{
           switch (format){
             case 'md':
+              userText.value = reader.result.trim();
+              userText.focus();
               let mds = await tool.MdToObj(reader.result.trim(),createname);
               addTag('zy',mds);
             break
