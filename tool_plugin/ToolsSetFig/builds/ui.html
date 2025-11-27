@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20e6fcf6a1eb849ff146b7bbce62294a057dbdd8/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -66,7 +66,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20e6fcf6a1eb849ff146b7bbce62294a057dbdd8/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -4183,15 +4183,15 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20e6fcf6a1eb849ff146b7bbce62294a057dbdd8/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20e6fcf6a1eb849ff146b7bbce62294a057dbdd8/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20e6fcf6a1eb849ff146b7bbce62294a057dbdd8/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20e6fcf6a1eb849ff146b7bbce62294a057dbdd8/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20e6fcf6a1eb849ff146b7bbce62294a057dbdd8/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20e6fcf6a1eb849ff146b7bbce62294a057dbdd8/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20e6fcf6a1eb849ff146b7bbce62294a057dbdd8/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20e6fcf6a1eb849ff146b7bbce62294a057dbdd8/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20e6fcf6a1eb849ff146b7bbce62294a057dbdd8/publics/other/marked.umd.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -5142,9 +5142,11 @@ dropUp.addEventListener('drop',async (e)=>{
   if(filesTypes.every(item => zyType.includes(item))){
     sameType = 'zy';
   };
-  let realyType = await tool.TrueImageFormat(files[0]);
-  if(realyType && imageType.includes(realyType)){
-    sameType = 'image';
+  if(!sameType){
+    let realyType = await tool.TrueImageFormat(files[0]);
+    if(realyType && imageType.includes(realyType)){
+      sameType = 'image';
+    }
   }
   if(sameType){
     files = files.sort((a, b) => b.size - a.size);
