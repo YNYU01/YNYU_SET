@@ -753,9 +753,11 @@ dropUp.addEventListener('drop',async (e)=>{
   if(filesTypes.every(item => zyType.includes(item))){
     sameType = 'zy';
   };
-  let realyType = await tool.TrueImageFormat(files[0]);
-  if(realyType && imageType.includes(realyType)){
-    sameType = 'image';
+  if(!sameType){
+    let realyType = await tool.TrueImageFormat(files[0]);
+    if(realyType && imageType.includes(realyType)){
+      sameType = 'image';
+    }
   }
   if(sameType){
     files = files.sort((a, b) => b.size - a.size);
@@ -1144,7 +1146,7 @@ async function addZyCatalogue(files,codetype){
               let svgs = await tool.SvgToObj(reader.result.trim(),createname);
               addTag('zy',svgs);
             break
-            case 'node':
+            case 'zy':
       
             break
           }

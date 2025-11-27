@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f9f5abfecaa512c495499bc5146dfc2206d713a2/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -66,7 +66,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f9f5abfecaa512c495499bc5146dfc2206d713a2/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -253,7 +253,111 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
   padding: 0.5ch;
   box-sizing: border-box;
 }
+/**md样式--*/
+[data-layerlist]{
+  padding: 0.5ch;
+  --font-size: 8px;
+  font-size: var(--font-size);
+  white-space: normal;
+}
 
+[data-layerlist] img{
+  max-width: calc(100% - 2ch);
+  margin-left: 1ch;
+}
+[data-layerlist] h1,
+[data-layerlist] h2,
+[data-layerlist] h3,
+[data-layerlist] h4,
+[data-layerlist] h5,
+[data-layerlist] h6,
+[data-layerlist] p{
+  padding: 0 0 0 1ch;
+}
+[data-layerlist] h1{
+  font-size: calc(var(--font-size) + 6px);
+}
+[data-layerlist] h2{
+  font-size: calc(var(--font-size) + 5px);
+}
+[data-layerlist] h3{
+  font-size: calc(var(--font-size) + 4px);
+}
+[data-layerlist] h4{
+  font-size: calc(var(--font-size) + 3px);
+}
+[data-layerlist] h5{
+  font-size: calc(var(--font-size) + 2px);
+}
+[data-layerlist] h6{
+  font-size: calc(var(--font-size) + 1px);
+}
+[data-layerlist] ul,
+[data-layerlist] ol,
+[data-layerlist] li{
+  padding-left: 2px;
+}
+[data-layerlist] ul li::before{
+  content: '·';
+  padding: 0 1ch 0 0.5ch;
+}
+[data-layerlist] ol li::before{
+  display: none;
+}
+[data-layerlist] ol li{
+  list-style: decimal;
+  list-style-position: inside;
+}
+[data-layerlist] li:after{
+  content: '';
+}
+[data-layerlist] table{
+  background: var(--boxBod);
+  border-spacing: 1;
+  overflow: hidden;
+  margin: 0.2ch auto;
+  width: calc(100% - 2ch);
+}
+
+[data-layerlist] th,[data-layerlist] td{
+  position: relative;
+  padding: 1ch;
+  background: var(--boxBak);
+}
+
+[data-layerlist] th{
+  font-size: var(--font-size);
+  background-color: var(--boxGry);
+}
+[data-layerlist] td{
+  font-size: calc(var(--font-size) - 1px);
+}
+[data-layerlist] pre{
+  min-width: calc(100% - 2ch);
+  max-width: none;
+  margin: 0.2ch auto;
+  padding: 1ch;
+  width: calc(100% - 2ch);
+  background: var(--mainColor4);
+  border-radius: 0.5ch;
+}
+[data-layerlist] code{
+  font-size: var(--font-size);
+  padding: 0 1ch;
+}
+
+[data-layerlist] blockquote{
+  margin: 0.2ch auto;
+  width: calc(100% - 2ch);
+  border-left: 2px var(--boxBod) solid;
+  padding-left: 1ch;
+}
+
+[data-layerlist] blockquote p{
+  margin: 0;
+  padding: 0;
+}
+/*--md样式*/
 
 /*组件修改--*/
 
@@ -2519,9 +2623,9 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-btn-name data-any="vw300" data-en-text="Table to frame">表格创建画板</div>
                 </div>
                 <div class="df-ffc df-cc" style="gap: 4px;">
-                  <input id="input-user-zy" type="file" accept=".zy,.sketch,.svg,.xml,.json,.zip,.rar,.7z" style="display: none;"/>
+                  <input id="input-user-zy" type="file" accept=".md,.zy,.sketch,.svg,.xml,.json,.zip,.rar,.7z" style="display: none;"/>
                   <label for="input-user-zy" data-tips="auto" data-tips-y="top" data-tips-x="right"
-                  style="--tips-text: '上传由云即系列插件生成的图层信息文件'; --tips-text-en: 'Upload .zy (by YN+) or other compatible file';" >
+                  style="--xx: 36px;--tips-text: '上传由云即系列插件生成的图层信息文件'; --tips-text-en: 'Upload .zy (by YN+) or other compatible file';" >
                     <btn-user-zy data-btn="icon"></btn-user-zy>
                   </label>
                   <div data-btn-name data-any="vw300" data-en-text="Layers frome .zy">兼容格式导入</div>
@@ -2589,7 +2693,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <btn-getbyselect></btn-getbyselect>                   
                   </div>
                   <a href="https://www.ynyuset.cn/tool_web/ListEase/" target="_blank" id="upload-set-3" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="center"
-                  style=" --tips-text:'前往制作更复杂的模板数据';  --tips-text-en:'To create more complex template data';">
+                  style=" --tips-text:'(敬请期待~)前往制作更复杂的模板数据';  --tips-text-en:'(Coming soon~)Create template';"><!--To create more complex template-->
                     <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <circle fill="var(--mainColor)" cx="3" cy="4" r="2"/>
                       <path stroke="var(--mainColor)" d="M3 5V10H9"/>
@@ -2794,11 +2898,13 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               <div data-export-tags="image" data-export-pickall="false" class="w100 df-ffc">
                 <!--动态填充-->
               </div>
-              <div data-export-tags="zy" data-export-pickall="false" class="w100 df-ffc">
+              <div data-export-tags="zy" data-export-pickall="false" class="wh100 df-ffc">
                 <!--动态填充-->
+                <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
               </div>
-              <div data-export-tags="rich" data-export-pickall="false" class="w100 df-ffc">
+              <div data-export-tags="rich" data-export-pickall="false" class="wh100 df-ffc">
                 <!--动态填充-->
+                <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
               </div>
             </div>
             <!--清空-->
@@ -4077,14 +4183,15 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f9f5abfecaa512c495499bc5146dfc2206d713a2/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f9f5abfecaa512c495499bc5146dfc2206d713a2/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f9f5abfecaa512c495499bc5146dfc2206d713a2/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f9f5abfecaa512c495499bc5146dfc2206d713a2/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f9f5abfecaa512c495499bc5146dfc2206d713a2/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f9f5abfecaa512c495499bc5146dfc2206d713a2/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f9f5abfecaa512c495499bc5146dfc2206d713a2/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f9f5abfecaa512c495499bc5146dfc2206d713a2/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@7975fb025ee6b311f760f62f498709bb0764fb66/publics/other/marked.umd.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4286,6 +4393,7 @@ const UI = [300,660];
 const UI_BIG = [620,660];
 const sideMix = document.querySelector('[data-side-mix]');
 const sideMask = document.querySelector('[data-side-mask]');
+const btnHelpDoc = document.querySelector('[data-btn="help"]');
 const btnMore = document.getElementById('btn-more');
 const btnResize = document.querySelector('[data-resize-window]');
 const btnBig = document.getElementById('big');
@@ -4401,7 +4509,7 @@ window.addEventListener('load',()=>{
     return;
   };
   setTimeout(() => {
-    /*
+    /*clear*
     let tabs = ['create','export','editor','variable','sheet','more tools']
     viewPage(tabs[2])
     /**/;
@@ -4433,6 +4541,15 @@ window.addEventListener('resize',/*防抖*/debounce(()=>{
 
 
 /* ---界面初始化--- */
+
+//设置跳转链接
+let hrefDoc = btnHelpDoc.getAttribute('href');
+btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+
+getElementMix('language-1').addEventListener('change',()=>{
+  log(111)
+  btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+});
 
 /**
  * 重载字体样式
@@ -5006,16 +5123,13 @@ dropUp.addEventListener('dragleave',(e)=>{
     dropUp.style.setProperty('--drop-df','visible');
   }
 });
-dropUp.addEventListener('drop',(e)=>{
+dropUp.addEventListener('drop',async (e)=>{
   e.stopPropagation();
   e.preventDefault();
   dropUp.style.filter = '';
   dropUp.style.setProperty('--drop-df','visible');
   let files = Array.from(e.dataTransfer.files);
-  tool.TrueImageFormat(files[0])
-  .then(result => {
-    console.log(result);
-  })
+
   let filesTypes = [...new Set(files.map(item => item.name.split('.')[item.name.split('.').length - 1].toLowerCase()))];
   let sameType = null;
   
@@ -5028,6 +5142,10 @@ dropUp.addEventListener('drop',(e)=>{
   if(filesTypes.every(item => zyType.includes(item))){
     sameType = 'zy';
   };
+  let realyType = await tool.TrueImageFormat(files[0]);
+  if(realyType && imageType.includes(realyType)){
+    sameType = 'image';
+  }
   if(sameType){
     files = files.sort((a, b) => b.size - a.size);
     reFileInfo(files);
@@ -5042,19 +5160,6 @@ dropUp.addEventListener('drop',(e)=>{
   
 });
 
-userText.onfocus = ()=>{
-  let btn = convertTags.querySelector('btn-re');
-  btn.style.animation = 'loadRo2 2s linear infinite';
-  btn.parentNode.style.borderColor = 'var(--mainColor)';
-}
-userText.onblur = ()=>{
-  let btn = convertTags.querySelector('btn-re');
-  btn.style.animation = '';
-  btn.parentNode.style.borderColor = 'var(--boxBod)';
-  if(userText.value == ''){
-    userText.setAttribute('data-textarea-wrap','false');
-  }
-}
 
 userText.addEventListener('paste',(e) => {
   let pasted = e.clipboardData.getData('text/plain') //await navigator.clipboard.readText();
@@ -5166,6 +5271,36 @@ getElementMix('data-imgnum-down').addEventListener('click',()=>{
   imgnumSet.parentNode.setAttribute('data-int-value',imgnumSet.value);
 });
 
+function btnConvert(isStart){
+  let btn = convertTags.querySelector('btn-re');
+  btn.style.animation = isStart ? 'loadRo2 2s linear infinite' : '';
+  btn.parentNode.style.borderColor = isStart ? 'var(--mainColor)' : 'var(--boxBod)';
+}
+
+userText.addEventListener('dblclick',()=>{
+  btnConvert(true);
+});
+
+userText.addEventListener('input',()=>{
+  if(userText.value == ''){
+    btnConvert(false);
+  } else {
+    btnConvert(true);
+  }
+});
+
+[userText.parentNode.parentNode,getElementMix('upload-moreset-box')].forEach(item => {
+  item.addEventListener('mouseenter',()=>{
+    if(userText.value == '') return;
+    btnConvert(true);
+  });
+});
+[userText.parentNode.parentNode,getElementMix('upload-moreset-box')].forEach(item => {
+  item.addEventListener('mouseleave',()=>{
+    if(userText.value !== '') return;
+    btnConvert(false);
+  });
+});
 
 //创建内容
 createAnyBtn.addEventListener('click',() => {
@@ -5398,7 +5533,7 @@ async function addZyCatalogue(files,codetype){
               let svgs = await tool.SvgToObj(reader.result.trim(),createname);
               addTag('zy',svgs);
             break
-            case 'node':
+            case 'zy':
       
             break
           }
@@ -5523,10 +5658,8 @@ function addTag(type,info){
 
         let layerList = document.createElement('div');
         layerList.setAttribute('data-layerlist','');
-        layerList.className = 'df-ffc ovy scrollbar';
-        info.nodes.forEach(node => {
-
-        });
+        let html = marked.parse(userText.value.trim());
+        layerList.innerHTML = html;
         tag.appendChild(layerList);
         cataloguesBox.appendChild(tag);
       }else{
@@ -5962,7 +6095,7 @@ convertTags.addEventListener('click',async ()=>{
   }else if(firstline.includes('svg')){
     let svgs = await tool.SvgToObj(userText.value.trim())
     addZyCatalogue(svgs,'svg')
-  }else{
+  }else if(firstline !== ''){
     //tipsAll(['数据格式错误, 请检查~','Data format error, please check~'],3000)
     try{
       let mds = await tool.MdToObj(userText.value.trim());
