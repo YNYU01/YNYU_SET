@@ -64,6 +64,7 @@ let skillsSearch = richDoc.allSearchPath['toolsset'];
 richDoc.creDocAll(content1,'toolsset','function',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
 richDoc.creDocAll(content2,'toolsset','algorithm',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
 richDoc.addLog(logBox,logs);
+richDoc.creDocList();
 
 getElementMix('language-2').addEventListener('change',()=>{
   richDoc.reSortSearch();
@@ -181,10 +182,6 @@ function getUserTab(node){
     content1.scrollTop = 0;
     content2.scrollTop = 0;
   }
-
-  if(node.getAttribute('data-tab-for') == 'content2'){
-    richDoc.creDocList()
-  };
 
 };
 

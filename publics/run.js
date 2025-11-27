@@ -23,6 +23,26 @@ if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 7
   ISMOBILE = false;
 }
 
+// 读取访问链接中?后的内容并解析为对象
+function getQueryParams() {
+  let query = window.location.search.substring(1);
+  let params = {};
+  if(query) {
+    query.split("&").forEach(function(part) {
+      let item = part.split("=");
+      let key = decodeURIComponent(item[0] || "");
+      let value = decodeURIComponent(item[1] || "");
+      if(key) {
+        params[key] = value;
+      }
+    });
+  }
+  return params;
+}
+
+window.getQueryParams = getQueryParams;
+
+console.log(getQueryParams())
 
 /**
  * 使localStorage兼容浏览器/插件环境
