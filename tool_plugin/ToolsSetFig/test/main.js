@@ -4,6 +4,7 @@ const UI = [300,660];
 const UI_BIG = [620,660];
 const sideMix = document.querySelector('[data-side-mix]');
 const sideMask = document.querySelector('[data-side-mask]');
+const btnHelpDoc = document.querySelector('[data-btn="help"]');
 const btnMore = document.getElementById('btn-more');
 const btnResize = document.querySelector('[data-resize-window]');
 const btnBig = document.getElementById('big');
@@ -119,7 +120,7 @@ window.addEventListener('load',()=>{
     return;
   };
   setTimeout(() => {
-    /*clear*/
+    /*clear*
     let tabs = ['create','export','editor','variable','sheet','more tools']
     viewPage(tabs[2])
     /**/;
@@ -151,6 +152,15 @@ window.addEventListener('resize',/*防抖*/debounce(()=>{
 
 
 /* ---界面初始化--- */
+
+//设置跳转链接
+let hrefDoc = btnHelpDoc.getAttribute('href');
+btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+
+getElementMix('language-1').addEventListener('change',()=>{
+  log(111)
+  btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+});
 
 /**
  * 重载字体样式
@@ -724,16 +734,13 @@ dropUp.addEventListener('dragleave',(e)=>{
     dropUp.style.setProperty('--drop-df','visible');
   }
 });
-dropUp.addEventListener('drop',(e)=>{
+dropUp.addEventListener('drop',async (e)=>{
   e.stopPropagation();
   e.preventDefault();
   dropUp.style.filter = '';
   dropUp.style.setProperty('--drop-df','visible');
   let files = Array.from(e.dataTransfer.files);
-  tool.TrueImageFormat(files[0])
-  .then(result => {
-    console.log(result);
-  })
+
   let filesTypes = [...new Set(files.map(item => item.name.split('.')[item.name.split('.').length - 1].toLowerCase()))];
   let sameType = null;
   
@@ -746,6 +753,10 @@ dropUp.addEventListener('drop',(e)=>{
   if(filesTypes.every(item => zyType.includes(item))){
     sameType = 'zy';
   };
+  let realyType = await tool.TrueImageFormat(files[0]);
+  if(realyType && imageType.includes(realyType)){
+    sameType = 'image';
+  }
   if(sameType){
     files = files.sort((a, b) => b.size - a.size);
     reFileInfo(files);
@@ -760,19 +771,6 @@ dropUp.addEventListener('drop',(e)=>{
   
 });
 
-userText.onfocus = ()=>{
-  let btn = convertTags.querySelector('btn-re');
-  btn.style.animation = 'loadRo2 2s linear infinite';
-  btn.parentNode.style.borderColor = 'var(--mainColor)';
-}
-userText.onblur = ()=>{
-  let btn = convertTags.querySelector('btn-re');
-  btn.style.animation = '';
-  btn.parentNode.style.borderColor = 'var(--boxBod)';
-  if(userText.value == ''){
-    userText.setAttribute('data-textarea-wrap','false');
-  }
-}
 
 userText.addEventListener('paste',(e) => {
   let pasted = e.clipboardData.getData('text/plain') //await navigator.clipboard.readText();
@@ -884,6 +882,36 @@ getElementMix('data-imgnum-down').addEventListener('click',()=>{
   imgnumSet.parentNode.setAttribute('data-int-value',imgnumSet.value);
 });
 
+function btnConvert(isStart){
+  let btn = convertTags.querySelector('btn-re');
+  btn.style.animation = isStart ? 'loadRo2 2s linear infinite' : '';
+  btn.parentNode.style.borderColor = isStart ? 'var(--mainColor)' : 'var(--boxBod)';
+}
+
+userText.addEventListener('dblclick',()=>{
+  btnConvert(true);
+});
+
+userText.addEventListener('input',()=>{
+  if(userText.value == ''){
+    btnConvert(false);
+  } else {
+    btnConvert(true);
+  }
+});
+
+[userText.parentNode.parentNode,getElementMix('upload-moreset-box')].forEach(item => {
+  item.addEventListener('mouseenter',()=>{
+    if(userText.value == '') return;
+    btnConvert(true);
+  });
+});
+[userText.parentNode.parentNode,getElementMix('upload-moreset-box')].forEach(item => {
+  item.addEventListener('mouseleave',()=>{
+    if(userText.value !== '') return;
+    btnConvert(false);
+  });
+});
 
 //创建内容
 createAnyBtn.addEventListener('click',() => {
@@ -1241,10 +1269,8 @@ function addTag(type,info){
 
         let layerList = document.createElement('div');
         layerList.setAttribute('data-layerlist','');
-        layerList.className = 'df-ffc ovy scrollbar';
-        info.nodes.forEach(node => {
-
-        });
+        let html = marked.parse(userText.value.trim());
+        layerList.innerHTML = html;
         tag.appendChild(layerList);
         cataloguesBox.appendChild(tag);
       }else{
@@ -1680,7 +1706,7 @@ convertTags.addEventListener('click',async ()=>{
   }else if(firstline.includes('svg')){
     let svgs = await tool.SvgToObj(userText.value.trim())
     addZyCatalogue(svgs,'svg')
-  }else{
+  }else if(firstline !== ''){
     //tipsAll(['数据格式错误, 请检查~','Data format error, please check~'],3000)
     try{
       let mds = await tool.MdToObj(userText.value.trim());

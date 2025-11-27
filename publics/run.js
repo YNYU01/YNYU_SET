@@ -42,7 +42,7 @@ function getQueryParams() {
 
 window.getQueryParams = getQueryParams;
 
-console.log(getQueryParams())
+//console.log(getQueryParams())
 
 /**
  * 使localStorage兼容浏览器/插件环境
@@ -90,6 +90,18 @@ if(storageMix.get('userLanguage') == 'Zh'){
 }
 if(!storageMix.get('userLanguage') && !ISPLUGIN){
   ROOT.setAttribute("data-language","En");
+  storageMix.set('userLanguage','En');
+}
+
+let QUERY_PARAMS = getQueryParams();
+if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
+  ROOT.setAttribute('data-language','Zh');
+  storageMix.set('userLanguage','Zh');
+}else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
+  ROOT.setAttribute('data-language','En');
+  storageMix.set('userLanguage','En');
+}else{
+  ROOT.setAttribute('data-language','En');
   storageMix.set('userLanguage','En');
 }
 
