@@ -242,6 +242,7 @@ figma.ui.onmessage = async (message) => {
                         let line = addFrame([100,100,null,null,'@h' + level,[]]);
                         addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
                         line.appendChild(text);
+                        text.layoutSizingHorizontal = 'FILL';
                         box.appendChild(line);
                         line.layoutSizingHorizontal = 'FILL';
                     },
@@ -275,6 +276,11 @@ figma.ui.onmessage = async (message) => {
                     },
                     br: function(cre){
                         let line = addFrame([100,24,null,null,'@br',[]]);
+                        box.appendChild(line);
+                        line.layoutSizingHorizontal = 'FILL';
+                    },
+                    hr: function(cre){
+                        let line = addFrame([100,2,null,null,'@hr',color1]);
                         box.appendChild(line);
                         line.layoutSizingHorizontal = 'FILL';
                     },
@@ -357,7 +363,7 @@ figma.ui.onmessage = async (message) => {
                         line.layoutSizingHorizontal = 'FILL';
                     },
                     blockquote: async function(cre){
-                        let characters = cre.content.join('');
+                        let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
                         let text = await addText([{family:'Inter',style:'Light'},characters,22 ,color3]);
                         //text.relativeTransform = [[1,-0.2126,0],[0,0.9771,0]];
                         let line = addFrame([100,100,null,null,'@blockquote',[]]);
@@ -444,7 +450,7 @@ figma.ui.onmessage = async (message) => {
                 if(zy.nodes.findIndex(item => item == cres) == zy.nodes.length - 1){
                     setTimeout(() => {
                         figma.currentPage.selection = [box];
-                        if(!thComp && !tdComp){
+                        if(!thComp && !tdComp && preComp){
                             preComp.y = box.y;
                         }else{
                             layoutByRatio(allComp,true);

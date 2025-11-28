@@ -327,7 +327,7 @@ Object.assign(TOOL_JS.prototype, {
    * @param {string} createname - 创建名称
    * @returns {Array}[{zytype:'md',nodes:[
    * {
-   * type: h | p | code | ul | ol | table ...,
+   * type: h | p | code | ul | ol | table | hr | blockquote | br | image ...,
    * content: string | [{style:'normal' | 'bold' | 'italic' | 'strike', content: ...}]
    * items?:[{content:...}]
    * }
@@ -459,6 +459,13 @@ Object.assign(TOOL_JS.prototype, {
       alignment = null;
     }
 
+    // 分割线处理（horizontal rule）
+    let hrMatch = line.trim().match(/^(-{3,}|\*{3,}|_{3,})$/);
+    if (hrMatch) {
+      ast.push({ type: 'hr' });
+      return;
+    }
+
     // 引用处理
     let quoteMatch = line.match(/^>\s*(.*)/);
     if (quoteMatch) {
@@ -466,7 +473,9 @@ Object.assign(TOOL_JS.prototype, {
         currentQuote = { type: 'blockquote', content: [] };
         ast.push(currentQuote);
       }
-      currentQuote.content.push(quoteMatch[1]);
+      // 解析引用内容中的内联元素（加粗、斜体等）
+      let processedContent = parseInline(quoteMatch[1]);
+      currentQuote.content.push(processedContent);
       return;
     } else if (currentQuote) {
       currentQuote = null;
@@ -604,7 +613,7 @@ Object.assign(TOOL_JS.prototype, {
       ? segments[0].content 
       : segments;
   };
-
+log(ast)
   return { zyType: 'md', zyName: createname, nodes: ast };
   },
 
