@@ -364,6 +364,7 @@ figma.ui.onmessage = async (message) => {
                     },
                     blockquote: async function(cre){
                         let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
+                        console.log(cre,characters)
                         let text = await addText([{family:'Inter',style:'Light'},characters,22 ,color3]);
                         //text.relativeTransform = [[1,-0.2126,0],[0,0.9771,0]];
                         let line = addFrame([100,100,null,null,'@blockquote',[]]);

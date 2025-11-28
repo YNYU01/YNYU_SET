@@ -475,7 +475,7 @@ Object.assign(TOOL_JS.prototype, {
       }
       // 解析引用内容中的内联元素（加粗、斜体等）
       let processedContent = parseInline(quoteMatch[1]);
-      currentQuote.content.push(processedContent);
+      currentQuote.content = processedContent;
       return;
     } else if (currentQuote) {
       currentQuote = null;
