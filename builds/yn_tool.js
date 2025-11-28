@@ -613,7 +613,7 @@ Object.assign(TOOL_JS.prototype, {
       ? segments[0].content 
       : segments;
   };
-log(ast)
+//log(ast)
   return { zyType: 'md', zyName: createname, nodes: ast };
   },
 
