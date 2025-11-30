@@ -1585,7 +1585,7 @@ getElementMix('data-export-delete').addEventListener('click',()=>{
 getElementMix('data-export-reup').addEventListener('click',()=>{
   let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
   let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
-  console.log(picknums)
+  //console.log(picknums)
 });
 //移除所有导出标签
 getElementMix('data-export-tags-delete').addEventListener('click',()=>{
@@ -3033,9 +3033,15 @@ var AuthManager = {
       // 已登录状态
       if (userName) userName.style.display = 'flex';
       if (loginText) loginText.style.display = 'none';
+
+      let [username,emailname] = [this.currentUser.username,this.currentUser.email.split('@')[0]];
+
       if (userName) {
-        const displayName = this.currentUser.username || this.currentUser.email.split('@')[0];
-        userName.textContent = displayName.length > 8 ? displayName.substring(0, 8) + '...' : displayName;
+        let displayName = username || emailname;
+        displayName = displayName.length > 8 ? displayName.substring(0, 8) + '...' : displayName;
+        userName.setAttribute('data-en-text',displayName);
+        userName.setAttribute('data-zh-text',displayName);
+        userName.textContent = displayName;
       }
     } else {
       // 未登录状态
@@ -3100,10 +3106,16 @@ var AuthManager = {
       const userAvatar = document.querySelector('[data-user-avatar]');
       const userId = document.querySelector('[data-user-id]');
       const userPremium = document.querySelector('[data-user-premium]');
-      
-      if (displayName) displayName.textContent = this.currentUser.username || this.currentUser.email.split('@')[0];
-      if (displayEmail) displayEmail.textContent = this.currentUser.email;
-      if (userAvatar) userAvatar.textContent = (this.currentUser.username || this.currentUser.email[0]).toUpperCase();
+      let [username,emailname,useremail] = [this.currentUser.username,this.currentUser.email.split('@')[0],this.currentUser.email];
+      //先取后两位
+      let iconname = username.slice(-2) || emailname.slice(-2);
+      //中文昵称只保留一个字
+      if(iconname.replace(/[^\u4e00-\u9fa5]/g,'').length > 0){
+        iconname = iconname[1];
+      }
+      if (displayName) displayName.textContent = username || emailname;
+      if (displayEmail) displayEmail.textContent = useremail;
+      if (userAvatar) userAvatar.textContent = iconname.toUpperCase();
       if (userId) userId.textContent = this.currentUser.id;
       if (userPremium) userPremium.style.display = this.currentUser.isPremium ? 'block' : 'none';
     }

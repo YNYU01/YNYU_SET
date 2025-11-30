@@ -998,6 +998,16 @@ input[type="checkbox"]:checked + .btn-moreset{
   --mainColor: var(--boxBod)
 }
 
+[data-dailoglogin-box] [data-input]{
+  width: 100%;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--boxBod);
+  border-radius: 6px;
+  background: var(--boxBak);
+  color: var(--mainColor);
+}
+
 #skillsearch{
   height: 24px;
 }

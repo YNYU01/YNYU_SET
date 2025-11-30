@@ -123,8 +123,8 @@
           <div data-en-text="LOGIN">登录</div>
         </div>
         <div class="df-ffc" style="gap: 8px;">
-          <input type="text" id="login-email" placeholder="邮箱" data-input data-placeholder-en="Email" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
-          <input type="password" id="login-password" placeholder="密码" data-input data-placeholder-en="Password" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
+          <input type="text" id="login-email" placeholder="邮箱" data-input data-placeholder-en="Email"/>
+          <input type="password" id="login-password" placeholder="密码" data-input data-placeholder-en="Password"/>
         </div>
         <div data-login-error style="display: none; color: var(--code7); font-size: 12px; padding: 4px 8px;"></div>
         <div class="df-sc" style="gap: 8px;">
@@ -141,10 +141,10 @@
           <div data-en-text="REGISTER">注册</div>
         </div>
         <div class="df-ffc" style="gap: 8px;">
-          <input type="text" id="register-email" placeholder="邮箱" data-input data-placeholder-en="Email" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
-          <input type="text" id="register-username" placeholder="用户名" data-input data-placeholder-en="Username" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
-          <input type="password" id="register-password" placeholder="密码" data-input data-placeholder-en="Password" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
-          <input type="password" id="register-password-confirm" placeholder="确认密码" data-input data-placeholder-en="Confirm Password" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
+          <input type="text" id="register-email" placeholder="邮箱" data-input data-placeholder-en="Email"/>
+          <input type="text" id="register-username" placeholder="用户名" data-input data-placeholder-en="Username"/>
+          <input type="password" id="register-password" placeholder="密码" data-input data-placeholder-en="Password"/>
+          <input type="password" id="register-password-confirm" placeholder="确认密码" data-input data-placeholder-en="Confirm Password"/>
         </div>
         <div data-register-error style="display: none; color: var(--code7); font-size: 12px; padding: 4px 8px;"></div>
         <div class="df-sc" style="gap: 8px;">
@@ -183,7 +183,7 @@
           <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
             <div data-user-name style="display: none;" data-en-text="USER">用户</div>
             <div data-user-login-text data-en-text="LOGIN">登录</div>
-            <div style="width:16px; height:16px; margin-left: 4px;">
+            <div style="width:16px; height:16px; padding: 2px; margin-left: 4px;  --mainColor:#2e2e2e;">
               <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10Z" fill="var(--mainColor)"/>
                 <path d="M10 12C5.58172 12 2 13.7909 2 16V20H18V16C18 13.7909 14.4183 12 10 12Z" fill="var(--mainColor)"/>
@@ -192,10 +192,10 @@
           </div>
           <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" rel="noopener noreferrer" target="_blank" class="df-cc" data-btn="help">
             <div data-en-text="HELP DOC">帮助文档</div>
-            <div style="width:20px; height:20px; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
+            <div style="width:20px; height:20px; --mainColor:#2e2e2e; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
               <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.71411 11.3821H20.7141" stroke="#000" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
-                <path d="M13.3421 4.38208L20.7141 11.3821L13.3421 18.3821" stroke="#000" stroke-width="var(--arrow-w)"></path>
+                <path stroke="var(--mainColor)" d="M2.71411 11.3821H20.7141" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
+                <path stroke="var(--mainColor)" d="M13.3421 4.38208L20.7141 11.3821L13.3421 18.3821" stroke-width="var(--arrow-w)"></path>
               </svg>
             </div>
           </a>
