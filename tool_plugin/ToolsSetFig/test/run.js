@@ -9,6 +9,8 @@ if (ISPLUGIN){
   toolMessage(['userResize','getlocal'],PLUGINAPP);
   toolMessage(['tabPick','getlocal'],PLUGINAPP);
   toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
+  toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
+  toolMessage(['toolsSetFig_users','getlocal'],PLUGINAPP);
 }
 
 window.addEventListener('message',(message)=>{
@@ -29,6 +31,17 @@ window.addEventListener('message',(message)=>{
       switch (type){
         case 'tabPick': viewPage(info);break
         case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
+        case 'toolsSetFig_user': 
+          if(typeof AuthManager !== 'undefined' && info) {
+            AuthManager.setCurrentUser(info);
+            AuthManager.updateUI();
+          }
+          break
+        case 'toolsSetFig_users': 
+          if(typeof AuthManager !== 'undefined' && info) {
+            AuthManager.setUsersList(info);
+          }
+          break
         case 'selectInfo': reSelectInfo(info);break
         case 'selectInfoMain': addTableText(tableObjToText(info));break
         case 'selectComp': reSelectComp(info);break

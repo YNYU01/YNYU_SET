@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b75bbfd555bff3a11dd234658f663e0c1a694341/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@86c9a226a19340a2fb180901f29d3446dba14e14/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -16,6 +16,8 @@ if (ISPLUGIN){
   toolMessage(['userResize','getlocal'],PLUGINAPP);
   toolMessage(['tabPick','getlocal'],PLUGINAPP);
   toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
+  toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
+  toolMessage(['toolsSetFig_users','getlocal'],PLUGINAPP);
 }
 
 window.addEventListener('message',(message)=>{
@@ -36,6 +38,17 @@ window.addEventListener('message',(message)=>{
       switch (type){
         case 'tabPick': viewPage(info);break
         case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
+        case 'toolsSetFig_user': 
+          if(typeof AuthManager !== 'undefined' && info) {
+            AuthManager.setCurrentUser(info);
+            AuthManager.updateUI();
+          }
+          break
+        case 'toolsSetFig_users': 
+          if(typeof AuthManager !== 'undefined' && info) {
+            AuthManager.setUsersList(info);
+          }
+          break
         case 'selectInfo': reSelectInfo(info);break
         case 'selectInfoMain': addTableText(tableObjToText(info));break
         case 'selectComp': reSelectComp(info);break
@@ -66,7 +79,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b75bbfd555bff3a11dd234658f663e0c1a694341/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@86c9a226a19340a2fb180901f29d3446dba14e14/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -967,7 +980,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   white-space: normal;
 }
 
-[data-dailogimg],[data-dailogsearch]{
+[data-dailogimg],[data-dailogsearch],[data-dailoglogin]{
   display: none;
   width: 100vw;
   height: 100vh;
@@ -985,8 +998,14 @@ input[type="checkbox"]:checked + .btn-moreset{
   backdrop-filter: blur(2px);
 }
 
+[data-dailoglogin]{
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0;
+}
+
 [data-theme="light"] [data-dailog],
-[data-theme="light"] [data-dailogsearch]{
+[data-theme="light"] [data-dailogsearch],
+[data-theme="light"] [data-dailoglogin]{
   background: rgba(226, 226, 226, 0.8);
   --boxGry: #ffffff;
   --boxBak: #ffffff;
@@ -1160,9 +1179,46 @@ input[type="checkbox"]:checked + .btn-moreset{
   padding: 10px;
 }
 
+[data-dailoglogin-box]{
+  border-radius: 10px;
+  border: 1px solid var(--boxBod);
+  background: var(--boxGry);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+[data-dailoglogin-close]{
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+[data-dailoglogin-box] input[type="text"],
+[data-dailoglogin-box] input[type="password"]{
+  font-size: 14px;
+}
+
+[data-dailoglogin-box] input[type="text"]::placeholder,
+[data-dailoglogin-box] input[type="password"]::placeholder{
+  opacity: 0.5;
+}
+
+[data-login-error],
+[data-register-error]{
+  border-radius: 4px;
+  background: rgba(166, 72, 72, 0.1);
+}
+
+[data-user-avatar]{
+  text-transform: uppercase;
+}
+
 [data-dailog-close] [data-close],
 [data-dailogimg-close] [data-close],
-[data-dailogsearch ] [data-close]
+[data-dailogsearch ] [data-close],
+[data-dailoglogin-close] [data-close]
 {
   width: 20px;
   height: 20px;
@@ -1425,7 +1481,6 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   box-sizing: border-box;
   padding: 4px 10px;
   max-width: 560px;
-  display: none;
 }
 
 [data-editor-mix]{
@@ -1465,8 +1520,7 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   z-index: 1;
 }
 
-[for="fulleditor"],[data-editor-clear],[data-editor-bg],
-[data-color-mix] [data-getcolor]{
+[for="fulleditor"],[data-editor-clear],[data-editor-bg]{
   width: 20px;
   height: 20px;
   border-radius: 4px;
@@ -1479,10 +1533,6 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 
 [for="fulleditor"]:hover,[data-editor-clear]:hover,[data-editor-bg]:hover{
   opacity: 1;
-}
-
-[data-color-mix]  [data-getcolor]:hover {
-  --mainColor: var(--mainColor2);
 }
 
 input[type="checkbox"]:checked + [for="fulleditor"],
@@ -1515,29 +1565,37 @@ input[type="checkbox"]:checked + [data-editor-bg]{
   border-radius:0.5ch 0.5ch 0 0.5ch;
 }
 
-[data-color-mix] [data-getcolor],
 [data-color-mix] [data-input="hex"],
-[data-color-mix] card-colorpick{
+[data-color-mix] [data-input="hsl"],
+[data-color-mix] [data-input="rgb"],
+[data-color-mix] card-colorpick,
+[data-color-mix] [data-input="colortype"]{
   display: none;
 }
 
-[data-color-mix]:hover [data-getcolor],
+[data-color-mix] [data-input="colortype"]{
+  background: var(--boxGry);
+}
+
+[data-color-mix] [data-color-view],
 [data-color-mix]:hover [data-input="hex"],
-[data-color-mix]:hover card-colorpick{
+[data-color-mix]:hover [data-input="hsl"],
+[data-color-mix]:hover [data-input="rgb"],
+[data-color-mix]:hover [data-color] card-colorpick,
+[data-color-mix]:hover [data-input="colortype"]{
   display: flex;
 }
 
-[data-mobile="true"] [data-getcolor]{
-  pointer-events: none;
+[data-color-mix] [data-input="hex"]{
+  width: 8.5ch;
 }
-[data-mobile="true"] [data-getcolor]::after{
-  content: '';
-  position: absolute;
-  width: 120%;
-  height: 2px;
-  top: calc(50% - 1px);
-  transform: rotate(45deg);
-  background: var(--liColor);
+
+[data-color-mix] [data-input="hsl"]{
+  width: 16.5ch;
+}
+
+[data-color-mix] [data-input="rgb"]{
+  width: 15.5ch;
 }
 
 [data-editor-setlist-title],[data-editor-setlist]{
@@ -1688,7 +1746,8 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   border: 1px solid var(--boxBod);
   box-sizing: border-box;
   border-radius: 4px;
-  min-height: 50px;
+  min-height: 70px;
+  max-height: 80vh;
   margin: -4px 0 10px 0;
 }
 
@@ -1698,7 +1757,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   background: var(--boxGry);
 }
 
-[data-manage-linkstyle] [data-btn="icon"],[data-linkstyle-all],
+[data-manage-linkstyle] [data-btn="icon"],
 [data-manage-selectstyle] [data-btn="icon"],
 [data-manage-variables] [data-btn="icon"]{
   padding: 2px 0;
@@ -2521,20 +2580,97 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
       <!--生成内容-->
     </div>
   </div>
+  <!--弹窗-登录注册-->
+  <div data-dailoglogin data-close-id="dailoglogin" class="pos-a df-ffc df-cc">
+    <!--关闭-->
+    <div data-dailoglogin-close class="df-rc">
+      <div data-close="close" data-close-for="dailoglogin">
+        <btn-close></btn-close>
+      </div>
+    </div>
+    <div data-dailoglogin-box class="df-ffc" style="min-width: 300px; max-width: 400px; padding: 20px; gap: 16px;">
+      <!-- 登录表单 -->
+      <div data-login-form class="df-ffc" style="gap: 12px;">
+        <div class="df-cc" style="font-size: 18px; margin-bottom: 8px;">
+          <div data-en-text="LOGIN">登录</div>
+        </div>
+        <div class="df-ffc" style="gap: 8px;">
+          <input type="text" id="login-email" placeholder="邮箱" data-input data-placeholder-en="Email" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
+          <input type="password" id="login-password" placeholder="密码" data-input data-placeholder-en="Password" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
+        </div>
+        <div data-login-error style="display: none; color: var(--code7); font-size: 12px; padding: 4px 8px;"></div>
+        <div class="df-sc" style="gap: 8px;">
+          <div data-btn="main" data-btn-login class="df-cc" style="flex: 1;" data-en-text="LOGIN">登录</div>
+          <div data-btn="main" data-btn-show-register class="df-cc" style="flex: 1; opacity: 0.6;" data-en-text="REGISTER">注册</div>
+        </div>
+        <div class="df-cc" style="font-size: 11px; opacity: 0.6; margin-top: 8px;">
+          <div data-en-text="Login for feedback & premium features">登录后可提交反馈并使用付费功能</div>
+        </div>
+      </div>
+      <!-- 注册表单 -->
+      <div data-register-form class="df-ffc" style="gap: 12px; display: none;">
+        <div class="df-cc" style="font-size: 18px; margin-bottom: 8px;">
+          <div data-en-text="REGISTER">注册</div>
+        </div>
+        <div class="df-ffc" style="gap: 8px;">
+          <input type="text" id="register-email" placeholder="邮箱" data-input data-placeholder-en="Email" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
+          <input type="text" id="register-username" placeholder="用户名" data-input data-placeholder-en="Username" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
+          <input type="password" id="register-password" placeholder="密码" data-input data-placeholder-en="Password" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
+          <input type="password" id="register-password-confirm" placeholder="确认密码" data-input data-placeholder-en="Confirm Password" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
+        </div>
+        <div data-register-error style="display: none; color: var(--code7); font-size: 12px; padding: 4px 8px;"></div>
+        <div class="df-sc" style="gap: 8px;">
+          <div data-btn="main" data-btn-register class="df-cc" style="flex: 1;" data-en-text="REGISTER">注册</div>
+          <div data-btn="main" data-btn-show-login class="df-cc" style="flex: 1; opacity: 0.6;" data-en-text="LOGIN">登录</div>
+        </div>
+      </div>
+      <!-- 用户信息显示 -->
+      <div data-user-info class="df-ffc" style="gap: 12px; display: none;">
+        <div class="df-sc" style="gap: 12px; align-items: center;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--themeColor); color: #000; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">
+            <span data-user-avatar>U</span>
+          </div>
+          <div class="df-ffc" style="flex: 1; gap: 4px;">
+            <div style="font-size: 16px; font-weight: bold;" data-user-display-name>用户名</div>
+            <div style="font-size: 12px; opacity: 0.6;" data-user-display-email>email@example.com</div>
+            <div style="font-size: 11px; opacity: 0.5;" data-en-text="Premium User" data-user-premium style="display: none;">付费用户</div>
+          </div>
+        </div>
+        <div data-btn="main" data-btn-logout class="df-cc" data-en-text="LOGOUT">退出登录</div>
+        <div class="df-cc" style="font-size: 11px; opacity: 0.6;">
+          <div data-en-text="User ID">用户ID：</div>
+          <span data-user-id style="font-family: monospace;">-</span>
+        </div>
+      </div>
+    </div>
+  </div>
   <!--侧边栏-->
   <div data-side data-any="vw240" class="df pos-a" style="top: 0; left: 0; --fill: var(--mainColor)">
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
       <div class="h100 df-ffc" style="justify-content: space-between;">
         <div ></div>
-        <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" rel="noopener noreferrer" target="_blank" class="df-cc" data-btn="help">
-          <div data-en-text="HELP DOC">帮助文档</div>
-          <div style="width:20px; height:20px; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
-            <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2.71411 11.3821H20.7141" stroke="#000" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
-              <path d="M13.3421 4.38208L20.7141 11.3821L13.3421 18.3821" stroke="#000" stroke-width="var(--arrow-w)"></path>
-            </svg>
+        <div class="df-ffc" style="gap: 8px;">
+          <!-- 用户登录入口 -->
+          <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
+            <div data-user-name style="display: none;" data-en-text="USER">用户</div>
+            <div data-user-login-text data-en-text="LOGIN">登录</div>
+            <div style="width:16px; height:16px; margin-left: 4px;">
+              <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10Z" fill="var(--mainColor)"/>
+                <path d="M10 12C5.58172 12 2 13.7909 2 16V20H18V16C18 13.7909 14.4183 12 10 12Z" fill="var(--mainColor)"/>
+              </svg>
+            </div>
           </div>
-        </a>
+          <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" rel="noopener noreferrer" target="_blank" class="df-cc" data-btn="help">
+            <div data-en-text="HELP DOC">帮助文档</div>
+            <div style="width:20px; height:20px; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
+              <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.71411 11.3821H20.7141" stroke="#000" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
+                <path d="M13.3421 4.38208L20.7141 11.3821L13.3421 18.3821" stroke="#000" stroke-width="var(--arrow-w)"></path>
+              </svg>
+            </div>
+          </a>
+        </div>
       </div>
       <div data-mainset-side-box class="df-sc">
         <a href="https://www.ynyuset.cn" rel="noopener noreferrer" target="_blank" class="df-lc"
@@ -2692,7 +2828,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   style=" --tips-text:'从所选对象获取数据';  --tips-text-en:'Retrieve data from the selected node';">
                     <btn-getbyselect></btn-getbyselect>                   
                   </div>
-                  <a href="https://www.ynyuset.cn/tool_web/ListEase/" target="_blank" id="upload-set-3" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="center"
+                  <a href="https://www.ynyuset.cn/tool_web/ListEase" target="_blank" id="upload-set-3" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="center"
                   style=" --tips-text:'(敬请期待~)前往制作更复杂的模板数据';  --tips-text-en:'(Coming soon~)Create template';"><!--To create more complex template-->
                     <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <circle fill="var(--mainColor)" cx="3" cy="4" r="2"/>
@@ -2749,7 +2885,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </svg>
                 </div>
                 <input id="input-framename" data-input class="nobod fl1" type="text" value=" w×h">  
-                <div class="df-lc pos-r" data-select data-select-value=" w×h" style="gap: 4px; width: 90px; z-index:2;">
+                <div class="df-lc pos-r" data-select data-select-close data-select-value=" w×h" style="gap: 4px; width: 90px; z-index:2;">
                   <input id="select-value-1" type="text" data-select-input readonly value=" w×h">
                   <input id="select-show-1" data-select-pick=" w×h" type="checkbox">
                   <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
@@ -2852,7 +2988,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             <span data-any="vw300" data-en-text="name/type/size..." style="opacity: 0.6;"> 目标格式和文件大小等</span>
           </div>
           <div class="df-cc fl0" style="width: 120px; height: 12px; border-radius: 8px 8px 0 0;">
-            <input id="export-more" type="checkbox" 
+            <input id="export-more" checked type="checkbox" 
             onchange="showNext(this,'data-exportset-more','flex');
             if(this.checked){
               exportTagsBox.setAttribute('data-export-pickall','true');
@@ -2975,8 +3111,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
               </div>
               <div class="wh100 df-lc">
-                <div data-editor-setlist class="h100 df-ffc"></div>
-                <div data-editor-setvalue class="wh100 df-ffc"></div>
+                <div data-editor-setlist class="h100 df-ffc">
+                  <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
+                </div>
+                <div data-editor-setvalue class="wh100 df-ffc">
+                  <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
+                </div>
                 <div data-editor-setcode class="wh100 ovx scrollbar pos-r">
                   <textarea class="wh100" data-textarea-wrap="false" spellcheck="false" id="inputset-textarea" data-textarea="eg" ></textarea>
                     <!--清空-->
@@ -3016,12 +3156,11 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 <div data-color 
                 data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
                 data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
+                data-colorcard-x="right" data-colorcard-y="bottom"
                 style="--colorcard-top: calc(100% - 1px); --colorcard-left:calc(var(--colorpick-w)*-1 + 76px);"
                 class="df-rc">
-                  <div data-any="pc" data-getcolor data-btn class="df-cc">
-                    <btn-getcolor></btn-getcolor>
-                  </div>
-                  <input id="colorvalue-1" class="fl1" type="text" data-input="hex" value="#888888" style="width: 8.5ch;">
+                  <input id="colorvalue-1" class="fl1" type="text" data-input="hex" value="#888888" >
+                  <div data-input="colortype" data-colortype-mode="hex" class="colortype"></div>
                   <div data-editor-bg data-input="colorpick" data-btn class="df-cc">
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 20 20">
                       <rect x="3" y="3" width="14" height="14" rx="2" fill="var(--input-color,#888)"></rect>
@@ -3097,7 +3236,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           </div>
           <!--变量组管理-->
           <div data-variable-varmix class="wh100 df-ffc" style="display: none;">
-            <div data-variable-varinfo-box class="w100 bod-d df-ffc pos-r">
+            <div data-variable-varinfo-box class="w100 fl0 bod-d df-ffc pos-r">
               <div data-variable-varinfo data-variable-hasvar="false" class="df-lc pos-r">
                 <div data-variable-hasnot class="df-lc">
                   <div data-en-text="Find not variable-set">未读取到变量集</div>
@@ -3148,21 +3287,21 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               &nbsp;&nbsp;
               <span data-any="vw300" data-en-text="based on properties/tags map" style="opacity: 0.6;"> 基于标签/组件属性</span>
             </div>
-            <div data-variable-manage class="w100 df-ffc ovh pos-r">
+            <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-variables class="w100 df-sc">
                 <div class="df-lc" style="gap: 8px;">
                   <div data-variables-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
                     <div class="pos-a" style="top: 0; left: 18px;"
-                    data-en-text="Upload selection" >扫描所选</div>                                  
+                    data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
                 <div class="df-lc" style="gap: 4px;">
 
                 </div>
               </div>
-              <div data-manage-variables-list class="w100 df-fc ovy">
-
+              <div data-manage-variables-list class="wh100 df-ffc ovy noscrollbar">
+                <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
               </div>
               <!--清空-->
               <div data-variables-clear class="pos-a" style="right: 4px; top:28px; width: 12px; height: 12px;">
@@ -3172,7 +3311,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           </div>
           <!--样式组管理-->
           <div data-variable-stylemix class="wh100 df-ffc">
-            <div data-variable-styleinfo-box class="w100 bod-d df-ffc pos-r">
+            <div data-variable-styleinfo-box class="w100 fl0 bod-d df-ffc pos-r">
               <div data-variable-styleinfo data-variable-hasstyle="false" class="df-lc pos-r">
                 <div data-variable-hasnot class="df-lc">
                   <div data-en-text="Find not style-set">未读取到样式集</div>
@@ -3222,18 +3361,18 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               &nbsp;&nbsp;
               <span data-any="vw300" data-en-text="Reapply | Create | Override..." style="opacity: 0.6;"> 重链 | 新建 | 覆盖</span>
             </div>
-            <div data-variable-manage class="w100 df-ffc ovh pos-r">
+            <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-linkstyle class="w100 df-sc">
                 <div class="df-lc" style="gap: 8px;">
                   <div data-linkstyle-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
                     <div class="pos-a" style="top: 0; left: 18px;"
-                    data-en-text="Upload selection" >扫描所选</div>                                  
+                    data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
                 <div class="df-lc" style="gap: 4px;">
                   <div data-linkstyle-all="reapply" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
-                  style="--tips-text: '执行全部重链'; --tips-text-en: 'All Reapply Existing';">
+                  style="--tips-text: '全部重链'; --tips-text-en: 'Relink all';">
                     <div data-btn="icon">
                       <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-1)"/>
@@ -3241,7 +3380,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     </div>
                   </div>
                   <div data-linkstyle-all="create" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
-                  style="--tips-text: '执行全部创建'; --tips-text-en: 'All Create New';">
+                  style="--tips-text: '全部创建'; --tips-text-en: 'Create all';">
                     <div data-btn="icon">
                       <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-2)"/>
@@ -3249,7 +3388,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     </div>
                   </div>
                   <div data-linkstyle-all="override" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
-                  style="--tips-text: '执行全部覆盖'; --tips-text-en: 'All Override Current';">
+                  style="--tips-text: '全部覆盖'; --tips-text-en: 'Override all';">
                     <div data-btn="icon">
                       <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-3)"/>
@@ -3258,7 +3397,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </div>
                 </div>
               </div>
-              <div data-manage-linkstyle-list class="w100 df-fc ovy">
+              <div data-manage-linkstyle-list class="wh100 df-ffc ovy noscrollbar">
 
               </div>
               <!--清空-->
@@ -3273,20 +3412,20 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               &nbsp;&nbsp;
               <span data-any="vw300" data-en-text="like variable group" style="opacity: 0.6;"> 类似切换变量组</span>
             </div>
-            <div data-variable-manage class="w100 df-ffc ovh pos-r">
+            <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-selectstyle class="w100 df-sc">
                 <div class="df-lc" style="gap: 8px;">
                   <div data-selectstyle-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
                     <div class="pos-a" style="top: 0; left: 18px;"
-                    data-en-text="Upload selection" >扫描所选</div>                                  
+                    data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
                 <div class="df-lc" style="gap: 4px;">
 
                 </div>
               </div>
-              <div data-manage-selectstyle-list class="w100 df-fc ovy">
+              <div data-manage-selectstyle-list class="wh100 df-ffc ovy noscrollbar">
 
               </div>
               <!--清空-->
@@ -3482,6 +3621,17 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 <div class="df-lc w100" >
                   <div class="df-cc" style="border-radius: 10px 0 0 10px;" data-btn="skill-main" data-en-text="Add C/R">增加行列</div>
                   <div class="df-cc" style="border-left: 0; border-radius:0 10px 10px 0;" data-btn="skill-main" data-en-text="Reduce C/R">减少行列</div>
+                </div>
+                
+              </div>
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-lc w100" >
+                  <div class="df-cc" style="border-radius: 10px 0 0 10px;" data-btn="skill-main" data-en-text="All Border">全描边</div>
+                  <div class="df-cc" style="border-left: 0; border-radius:0 10px 10px 0;" data-btn="skill-main" data-en-text="None Border">全不描边</div>
+                </div>
+                <div class="df-lc w100" >
+                  <div class="df-cc" style="border-radius: 10px 0 0 10px;" data-btn="skill-main" data-en-text="All Fill">全填充</div>
+                  <div class="df-cc" style="border-left: 0; border-radius:0 10px 10px 0;" data-btn="skill-main" data-en-text="None Fill">全不填充</div>
                 </div>
                 
               </div>
@@ -3736,7 +3886,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
-                    <div data-pixel-mix class="df-lc pos-r" data-select data-select-value="≤ 4096px" style="gap: 4px; width: 90px; z-index:2;">
+                    <div data-pixel-mix class="df-lc pos-r" data-select data-select-close data-select-value="≤ 4096px" style="gap: 4px; width: 90px; z-index:2;">
                       <input id="select-value-2" type="text" data-select-input readonly="" value="≤4096">
                       <input id="select-show-2" data-select-pick="≤4096" type="checkbox">
                       <label for="select-show-2" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
@@ -4183,15 +4333,17 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b75bbfd555bff3a11dd234658f663e0c1a694341/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b75bbfd555bff3a11dd234658f663e0c1a694341/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b75bbfd555bff3a11dd234658f663e0c1a694341/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b75bbfd555bff3a11dd234658f663e0c1a694341/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b75bbfd555bff3a11dd234658f663e0c1a694341/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b75bbfd555bff3a11dd234658f663e0c1a694341/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b75bbfd555bff3a11dd234658f663e0c1a694341/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b75bbfd555bff3a11dd234658f663e0c1a694341/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@b75bbfd555bff3a11dd234658f663e0c1a694341/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@86c9a226a19340a2fb180901f29d3446dba14e14/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@86c9a226a19340a2fb180901f29d3446dba14e14/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@86c9a226a19340a2fb180901f29d3446dba14e14/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@86c9a226a19340a2fb180901f29d3446dba14e14/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@86c9a226a19340a2fb180901f29d3446dba14e14/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@86c9a226a19340a2fb180901f29d3446dba14e14/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@86c9a226a19340a2fb180901f29d3446dba14e14/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@86c9a226a19340a2fb180901f29d3446dba14e14/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@86c9a226a19340a2fb180901f29d3446dba14e14/publics/other/marked.umd.js"></script>
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4406,6 +4558,8 @@ const dailogBox = document.querySelector('[data-dailog-box]');
 const dailogImg = document.querySelector('[data-dailogimg]');
 const dailogImgBox = document.querySelector('[data-dailogimg-box]');
 const dailogSearchBox = document.querySelector('[data-dailogsearch-box]');
+const dailogLogin = document.querySelector('[data-dailoglogin]');
+const dailogLoginBox = document.querySelector('[data-dailoglogin-box]');
 const imgnumSet = document.getElementById('imgnum-set');
 const skillSearchInput = document.getElementById('skillsearch');
 const skillTypeBox = document.querySelector('[data-skilltype-box]');
@@ -4423,6 +4577,7 @@ const skillBtnMain = document.querySelectorAll('[data-btn="skill-main"]');
 const clearCreateTags = document.querySelector('[data-create-tags-box]').querySelector('btn-close').parentNode;
 const convertTags = document.getElementById('upload-set-1');
 const getTableText = document.getElementById('upload-set-2');
+const templateBtn = document.getElementById('upload-set-3');
 const chkTablestyle = document.getElementById('chk-tablestyle');
 const chkSelectcomp = document.getElementById('chk-selectcomp');
 const createAnyBtn = document.querySelector('[data-create-any]');
@@ -4431,6 +4586,12 @@ const createTableBtn = document.querySelector('[data-create-table]');
 const tableStyleSet = document.querySelector('[data-tablestyle-set]');
 const styleTosheet = document.querySelector('[data-en-text="Style To Sheet"]');
 const sheetTostyle = document.querySelector('[data-en-text="Sheet To Style"]');
+const btnLinkstyle = document.querySelector('[data-linkstyle-add]');
+const btnSelectstyle = document.querySelector('[data-selectstyle-add]');
+const btnVariables = document.querySelector('[data-variables-add]');
+const manageLinkstyleList = document.querySelector('[data-manage-linkstyle-list]');
+const manageSelectstyleList = document.querySelector('[data-manage-selectstyle-list]');
+const manageVariablesList = document.querySelector('[data-manage-variables-list]');
 
 
 let skillModel = [];
@@ -4545,10 +4706,13 @@ window.addEventListener('resize',/*防抖*/debounce(()=>{
 //设置跳转链接
 let hrefDoc = btnHelpDoc.getAttribute('href');
 btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+let hrefTemplate = templateBtn.getAttribute('href');
+templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
 
 getElementMix('language-1').addEventListener('change',()=>{
-  log(111)
+  //log(111)
   btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+  templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
 });
 
 /**
@@ -6005,6 +6169,19 @@ getElementMix('data-editor-setbg').addEventListener('change',(e)=>{
   }
 })
 
+//管理断链样式
+btnLinkstyle.addEventListener('click',()=>{
+  toolMessage(['','manageLinkStyle'],PLUGINAPP);
+});
+//管理样式组
+btnSelectstyle.addEventListener('click',()=>{
+  toolMessage(['','manageStyleGroup'],PLUGINAPP);
+});
+//管理变量组
+btnVariables.addEventListener('click',()=>{
+  toolMessage(['','manageVariableGroup'],PLUGINAPP);
+});
+
 
 //制表文案转数组, 兼容反转行列
 function tableTextToArray(tableText,isColumn,mustTitle){
@@ -6834,6 +7011,624 @@ function getUserRadio(node){
     };
   };
 };
+
+// ==================== 用户登录/注册模块 ====================
+// 用户认证配置 - 可以后续扩展为 API 调用
+const AUTH_CONFIG = {
+  // Supabase 配置（如果使用 Supabase，请填写下面的信息）
+  USE_SUPABASE: true, // 改为 true 启用 Supabase
+  SUPABASE_URL: 'https://darbnumfpfrscqgyeiqe.supabase.co', // 替换为你的 Project URL
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhcmJudW1mcGZyc2NxZ3llaXFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0OTU1NjksImV4cCI6MjA4MDA3MTU2OX0.UDvrmk8lnumZAu9nugTtEl7WGzxDNhUSfllrCFF4Ws4', // 替换为你的 anon public key
+  
+  // 自定义 API 配置（如果使用自定义 API）
+  API_BASE_URL: null, // 'https://api.ynyuset.cn/auth'
+  
+  // 本地存储键名（保持不变）
+  STORAGE_KEY_USER: 'toolsSetFig_user',
+  STORAGE_KEY_USERS: 'toolsSetFig_users'
+};
+
+// 存储辅助函数 - 支持 Figma 插件和普通环境
+const AuthStorage = {
+  // 获取数据（同步版本，仅用于非插件环境）
+  get(key) {
+    if (!ISPLUGIN || !PLUGINAPP) {
+      // 普通环境：使用 localStorage
+      try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+    // 插件环境下，数据通过消息回调异步获取，这里返回 null
+    // 实际数据会在 run.js 的消息回调中设置到 AuthManager
+    return null;
+  },
+
+  // 设置数据
+  set(key, value) {
+    if (ISPLUGIN && PLUGINAPP) {
+      // Figma 插件环境：通过 toolMessage 存储
+      toolMessage([[key, value], 'setlocal'], PLUGINAPP);
+    } else {
+      // 普通环境：使用 localStorage
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (e) {
+        console.error('Failed to save to localStorage:', e);
+      }
+    }
+  },
+
+  // 删除数据
+  remove(key) {
+    if (ISPLUGIN && PLUGINAPP) {
+      // Figma 插件环境：设置为 null 来删除
+      toolMessage([[key, null], 'setlocal'], PLUGINAPP);
+    } else {
+      // 普通环境：使用 localStorage
+      try {
+        localStorage.removeItem(key);
+      } catch (e) {
+        console.error('Failed to remove from localStorage:', e);
+      }
+    }
+  }
+};
+
+// 初始化 Supabase 客户端（如果使用）
+let supabaseClient = null;
+function initSupabaseClient() {
+  if (AUTH_CONFIG.USE_SUPABASE) {
+    // 检查 Supabase SDK 是否已加载
+    if (typeof supabase !== 'undefined' && supabase.createClient) {
+      try {
+        supabaseClient = supabase.createClient(
+          AUTH_CONFIG.SUPABASE_URL,
+          AUTH_CONFIG.SUPABASE_ANON_KEY
+        );
+        return true;
+      } catch (e) {
+        console.error('Failed to initialize Supabase:', e);
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
+// 用户认证管理 - 在全局作用域定义，run.js 可以直接访问
+var AuthManager = {
+  currentUser: null,
+  usersList: [], // 存储所有用户列表（用于验证）
+
+  // 设置当前用户（由 run.js 的消息回调调用）
+  setCurrentUser(user) {
+    this.currentUser = user;
+  },
+
+  // 设置用户列表（由 run.js 的消息回调调用）
+  setUsersList(users) {
+    this.usersList = users || [];
+  },
+
+  // 初始化：从存储加载用户信息
+  async init() {
+    try {
+      // 如果使用 Supabase，先检查是否有已登录的会话
+      if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
+        try {
+          const { data: { session }, error } = await supabaseClient.auth.getSession();
+          if (!error && session?.user) {
+            // 获取用户配置信息
+            let profile = null;
+            try {
+              const { data: profileData } = await supabaseClient
+                .from('user_profiles')
+                .select('username, is_premium')
+                .eq('id', session.user.id)
+                .single();
+              profile = profileData;
+            } catch (e) {
+              // 表可能不存在，忽略错误
+            }
+
+            this.currentUser = {
+              id: session.user.id,
+              email: session.user.email,
+              username: profile?.username || session.user.email.split('@')[0],
+              isPremium: profile?.is_premium || false
+            };
+            AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+            this.updateUI();
+            return; // Supabase 登录成功，不需要继续
+          }
+        } catch (e) {
+          console.warn('Supabase session check failed:', e);
+        }
+      }
+
+      // 在插件环境下，数据会通过 run.js 的消息回调异步设置
+      // 在非插件环境下，直接从 localStorage 读取
+      if (!ISPLUGIN || !PLUGINAPP) {
+        const user = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USER);
+        if (user) {
+          this.currentUser = user;
+          this.updateUI();
+        }
+        const users = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USERS);
+        if (users) {
+          this.usersList = users;
+        }
+      }
+      // 插件环境下，数据已在 run.js 初始化时通过 getlocal 请求
+      // 会在消息回调中调用 setCurrentUser 和 setUsersList
+    } catch (e) {
+      console.error('Failed to load user data:', e);
+    }
+  },
+
+  // 注册
+  async register(email, username, password) {
+    // 简单验证
+    if (!email || !email.includes('@')) {
+      return { success: false, error: '请输入有效的邮箱地址' };
+    }
+    if (!username || username.length < 2) {
+      return { success: false, error: '用户名至少需要2个字符' };
+    }
+    if (!password || password.length < 6) {
+      return { success: false, error: '密码至少需要6个字符' };
+    }
+
+    // 如果使用 Supabase
+    if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
+      try {
+        // 使用 Supabase 注册
+        const { data, error } = await supabaseClient.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              username: username
+            }
+          }
+        });
+
+        if (error) {
+          // 处理错误信息
+          let errorMsg = error.message;
+          if (error.message.includes('already registered')) {
+            errorMsg = '该邮箱已被注册';
+          } else if (error.message.includes('invalid')) {
+            errorMsg = '邮箱格式不正确';
+          }
+          return { success: false, error: errorMsg };
+        }
+
+        if (!data.user) {
+          return { success: false, error: '注册失败，请重试' };
+        }
+
+        // 创建用户配置记录
+        try {
+          const { error: profileError } = await supabaseClient
+            .from('user_profiles')
+            .insert({
+              id: data.user.id,
+              username: username,
+              is_premium: false
+            });
+
+          if (profileError) {
+            console.warn('Failed to create user profile:', profileError);
+          }
+        } catch (e) {
+          console.warn('User profile creation failed (may not exist yet):', e);
+        }
+
+        // 设置当前用户
+        this.currentUser = {
+          id: data.user.id,
+          email: data.user.email,
+          username: username,
+          isPremium: false
+        };
+
+        AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+        this.updateUI();
+
+        return { success: true, user: this.currentUser };
+      } catch (e) {
+        console.error('Supabase registration failed:', e);
+        return { success: false, error: '注册失败，请重试' };
+      }
+    }
+
+    // 降级到本地存储
+    const existingUsers = this.getUsersList();
+    if (existingUsers.find(u => u.email === email)) {
+      return { success: false, error: '该邮箱已被注册' };
+    }
+
+    const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const user = {
+      id: userId,
+      email: email,
+      username: username,
+      password: this.hashPassword(password),
+      createdAt: new Date().toISOString(),
+      isPremium: false
+    };
+
+    existingUsers.push(user);
+    this.usersList = existingUsers;
+    AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USERS, existingUsers);
+    
+    this.currentUser = { ...user };
+    delete this.currentUser.password;
+    AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+
+    this.updateUI();
+    return { success: true, user: this.currentUser };
+  },
+
+  // 登录
+  async login(email, password) {
+    if (!email || !password) {
+      return { success: false, error: '请输入邮箱和密码' };
+    }
+
+    // 如果使用 Supabase
+    if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
+      try {
+        // 使用 Supabase 登录
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+        if (error) {
+          return { success: false, error: '邮箱或密码错误' };
+        }
+
+        if (!data.user) {
+          return { success: false, error: '登录失败，请重试' };
+        }
+
+        // 获取用户配置信息
+        let profile = null;
+        try {
+          const { data: profileData, error: profileError } = await supabaseClient
+            .from('user_profiles')
+            .select('username, is_premium')
+            .eq('id', data.user.id)
+            .single();
+
+          if (!profileError && profileData) {
+            profile = profileData;
+          }
+        } catch (e) {
+          console.warn('Failed to fetch user profile:', e);
+        }
+
+        // 设置当前用户
+        this.currentUser = {
+          id: data.user.id,
+          email: data.user.email,
+          username: profile?.username || data.user.email.split('@')[0],
+          isPremium: profile?.is_premium || false
+        };
+
+        AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+        this.updateUI();
+
+        return { success: true, user: this.currentUser };
+      } catch (e) {
+        console.error('Supabase login failed:', e);
+        return { success: false, error: '登录失败，请重试' };
+      }
+    }
+
+    // 降级到本地存储
+    const existingUsers = this.getUsersList();
+    const user = existingUsers.find(u => u.email === email);
+    
+    if (!user) {
+      return { success: false, error: '邮箱或密码错误' };
+    }
+
+    if (user.password !== this.hashPassword(password)) {
+      return { success: false, error: '邮箱或密码错误' };
+    }
+
+    this.currentUser = { ...user };
+    delete this.currentUser.password;
+    AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+
+    this.updateUI();
+    return { success: true, user: this.currentUser };
+  },
+
+  // 退出登录
+  async logout() {
+    // 如果使用 Supabase，先退出 Supabase 会话
+    if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
+      try {
+        await supabaseClient.auth.signOut();
+      } catch (e) {
+        console.warn('Supabase sign out failed:', e);
+      }
+    }
+    
+    this.currentUser = null;
+    AuthStorage.remove(AUTH_CONFIG.STORAGE_KEY_USER);
+    this.updateUI();
+    this.showLoginForm();
+  },
+
+  // 获取用户列表
+  getUsersList() {
+    if (this.usersList.length > 0 || (ISPLUGIN && PLUGINAPP)) {
+      return this.usersList;
+    }
+    // 非插件环境下，从 localStorage 读取
+    const users = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USERS);
+    this.usersList = users || [];
+    return this.usersList;
+  },
+
+  // 简单密码哈希（生产环境应使用更安全的方法）
+  hashPassword(password) {
+    // 简单的哈希，仅用于演示，生产环境应使用 bcrypt 等
+    let hash = 0;
+    for (let i = 0; i < password.length; i++) {
+      const char = password.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash.toString();
+  },
+
+  // 更新 UI
+  updateUI() {
+    const loginBtn = document.querySelector('[data-user-login-btn]');
+    const userName = document.querySelector('[data-user-name]');
+    const loginText = document.querySelector('[data-user-login-text]');
+    
+    if (this.currentUser) {
+      // 已登录状态
+      if (userName) userName.style.display = 'flex';
+      if (loginText) loginText.style.display = 'none';
+      if (userName) {
+        const displayName = this.currentUser.username || this.currentUser.email.split('@')[0];
+        userName.textContent = displayName.length > 8 ? displayName.substring(0, 8) + '...' : displayName;
+      }
+    } else {
+      // 未登录状态
+      if (userName) userName.style.display = 'none';
+      if (loginText) loginText.style.display = 'block';
+    }
+  },
+
+  // 显示登录表单
+  showLoginForm() {
+    const loginForm = document.querySelector('[data-login-form]');
+    const registerForm = document.querySelector('[data-register-form]');
+    const userInfo = document.querySelector('[data-user-info]');
+    
+    if (loginForm) loginForm.style.display = 'flex';
+    if (registerForm) registerForm.style.display = 'none';
+    if (userInfo) userInfo.style.display = 'none';
+    
+    // 清空表单
+    const loginEmail = document.getElementById('login-email');
+    const loginPassword = document.getElementById('login-password');
+    if (loginEmail) loginEmail.value = '';
+    if (loginPassword) loginPassword.value = '';
+    this.hideError('login');
+  },
+
+  // 显示注册表单
+  showRegisterForm() {
+    const loginForm = document.querySelector('[data-login-form]');
+    const registerForm = document.querySelector('[data-register-form]');
+    const userInfo = document.querySelector('[data-user-info]');
+    
+    if (loginForm) loginForm.style.display = 'none';
+    if (registerForm) registerForm.style.display = 'flex';
+    if (userInfo) userInfo.style.display = 'none';
+    
+    // 清空表单
+    const registerEmail = document.getElementById('register-email');
+    const registerUsername = document.getElementById('register-username');
+    const registerPassword = document.getElementById('register-password');
+    const registerPasswordConfirm = document.getElementById('register-password-confirm');
+    if (registerEmail) registerEmail.value = '';
+    if (registerUsername) registerUsername.value = '';
+    if (registerPassword) registerPassword.value = '';
+    if (registerPasswordConfirm) registerPasswordConfirm.value = '';
+    this.hideError('register');
+  },
+
+  // 显示用户信息
+  showUserInfo() {
+    const loginForm = document.querySelector('[data-login-form]');
+    const registerForm = document.querySelector('[data-register-form]');
+    const userInfo = document.querySelector('[data-user-info]');
+    
+    if (loginForm) loginForm.style.display = 'none';
+    if (registerForm) registerForm.style.display = 'none';
+    if (userInfo) userInfo.style.display = 'flex';
+    
+    if (this.currentUser && userInfo) {
+      const displayName = document.querySelector('[data-user-display-name]');
+      const displayEmail = document.querySelector('[data-user-display-email]');
+      const userAvatar = document.querySelector('[data-user-avatar]');
+      const userId = document.querySelector('[data-user-id]');
+      const userPremium = document.querySelector('[data-user-premium]');
+      
+      if (displayName) displayName.textContent = this.currentUser.username || this.currentUser.email.split('@')[0];
+      if (displayEmail) displayEmail.textContent = this.currentUser.email;
+      if (userAvatar) userAvatar.textContent = (this.currentUser.username || this.currentUser.email[0]).toUpperCase();
+      if (userId) userId.textContent = this.currentUser.id;
+      if (userPremium) userPremium.style.display = this.currentUser.isPremium ? 'block' : 'none';
+    }
+  },
+
+  // 显示错误信息
+  showError(type, message) {
+    const errorEl = document.querySelector(`[data-${type}-error]`);
+    if (errorEl) {
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+    }
+  },
+
+  // 隐藏错误信息
+  hideError(type) {
+    const errorEl = document.querySelector(`[data-${type}-error]`);
+    if (errorEl) {
+      errorEl.style.display = 'none';
+    }
+  },
+
+  // 检查是否为付费用户
+  isPremium() {
+    return this.currentUser && this.currentUser.isPremium === true;
+  }
+};
+
+// 初始化登录模块和事件绑定
+async function initAuthModule() {
+  // 初始化 Supabase 客户端（如果使用）
+  if (AUTH_CONFIG.USE_SUPABASE) {
+    initSupabaseClient();
+  }
+  
+  // 初始化用户状态（包括检查 Supabase 会话）
+  await AuthManager.init();
+  
+  // 登录按钮点击事件
+  const userLoginBtn = document.querySelector('[data-user-login-btn]');
+  if (userLoginBtn) {
+    userLoginBtn.addEventListener('click', () => {
+      if (AuthManager.currentUser) {
+        // 已登录，显示用户信息
+        AuthManager.showUserInfo();
+        if (dailogLogin) dailogLogin.style.display = 'flex';
+      } else {
+        // 未登录，显示登录表单
+        AuthManager.showLoginForm();
+        if (dailogLogin) dailogLogin.style.display = 'flex';
+      }
+    });
+  }
+}
+
+// 登录表单切换
+const btnShowRegister = document.querySelector('[data-btn-show-register]');
+if (btnShowRegister) {
+  btnShowRegister.addEventListener('click', () => {
+    AuthManager.showRegisterForm();
+  });
+}
+
+const btnShowLogin = document.querySelector('[data-btn-show-login]');
+if (btnShowLogin) {
+  btnShowLogin.addEventListener('click', () => {
+    AuthManager.showLoginForm();
+  });
+}
+
+// 登录按钮
+const btnLogin = document.querySelector('[data-btn-login]');
+if (btnLogin) {
+  btnLogin.addEventListener('click', async () => {
+    const email = document.getElementById('login-email')?.value.trim();
+    const password = document.getElementById('login-password')?.value;
+    
+    AuthManager.hideError('login');
+    
+    const result = await AuthManager.login(email, password);
+    if (result.success) {
+      AuthManager.showUserInfo();
+    } else {
+      AuthManager.showError('login', result.error || '登录失败，请重试');
+    }
+  });
+}
+
+// 注册按钮
+const btnRegister = document.querySelector('[data-btn-register]');
+if (btnRegister) {
+  btnRegister.addEventListener('click', async () => {
+    const email = document.getElementById('register-email')?.value.trim();
+    const username = document.getElementById('register-username')?.value.trim();
+    const password = document.getElementById('register-password')?.value;
+    const passwordConfirm = document.getElementById('register-password-confirm')?.value;
+    
+    AuthManager.hideError('register');
+    
+    if (password !== passwordConfirm) {
+      AuthManager.showError('register', '两次输入的密码不一致');
+      return;
+    }
+    
+    const result = await AuthManager.register(email, username, password);
+    if (result.success) {
+      AuthManager.showUserInfo();
+    } else {
+      AuthManager.showError('register', result.error || '注册失败，请重试');
+    }
+  });
+}
+
+// 退出登录按钮
+const btnLogout = document.querySelector('[data-btn-logout]');
+if (btnLogout) {
+  btnLogout.addEventListener('click', () => {
+    AuthManager.logout();
+  });
+}
+
+// 关闭登录弹窗
+function setupLoginDialogClose() {
+  if (dailogLogin) {
+    // 点击弹窗外部关闭
+    dailogLogin.addEventListener('click', (e) => {
+      if (e.target === dailogLogin) {
+        dailogLogin.style.display = 'none';
+      }
+    });
+    
+    // ESC 键关闭（避免重复绑定）
+    if (!dailogLogin.hasAttribute('data-esc-listener')) {
+      dailogLogin.setAttribute('data-esc-listener', 'true');
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dailogLogin && dailogLogin.style.display === 'flex') {
+          dailogLogin.style.display = 'none';
+        }
+      });
+    }
+  }
+}
+
+// 确保在 DOM 加载后执行初始化
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initAuthModule();
+    setupLoginDialogClose();
+  });
+} else {
+  // DOM 已经加载完成
+  initAuthModule();
+  setupLoginDialogClose();
+}
+
+// AuthManager 已在全局作用域中定义，run.js 可以直接访问
+// 在打包后，run.js 和 main.js 都在同一个文档中，可以直接使用
 
 </script>
 </body>

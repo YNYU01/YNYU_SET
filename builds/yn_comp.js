@@ -182,17 +182,15 @@ class cardcolorpick extends HTMLElement {
   constructor() {
     super();
     this.innerHTML = `
-    <div data-input-color="box" class="df-ffc" style="gap: 4px; display: none; --hsl-h: 0; --hsl-s: 0; --hsl-l: 53; --hsv-s: 0; --hsv-v: 53;">
+    <div data-input-color="box" data-color-view="false" class="df-ffc" style="gap: 4px; --hsl-h: 0; --hsl-s: 0; --hsl-l: 53; --hsv-s: 0; --hsv-v: 53;">
       <div data-input-color="hsv"></div>
       <div data-number-value="0" class="df-lc" style="gap: 4px;">
         <input data-input="hsl-h" type="range" min="0" max="360" value="0"/>
-        <input data-input="value" data-input-color="hsl-h" data-input-must="0-360" type="text" class="txt-c" style="padding: 1px 1px; width: 22px; font-size: 10; flex: 0 0 auto;" value="0" />  
+        <input data-input="value" data-input-color="hsl-h" data-input-must="0,360" type="text" class="txt-c" style="padding: 1px 1px; width: 22px; font-size: 10; flex: 0 0 auto;" value="0" />  
       </div>
     </div>
     `;
     this.className = 'pos-a'
-    this.style.top = 'var(--colorcard-top)'
-    this.style.left = 'var(--colorcard-left)'
   }
 };
 customElements.define('card-colorpick', cardcolorpick);
@@ -276,27 +274,44 @@ function COMP_MAIN(){
     const oldOption = select.querySelector('[data-option-main="true"]');
     if (!oldOption) return;
     
-    const optionValue = option.getAttribute('data-option-value') || option.textContent;
+    // 获取中英文值
+    const currentLanguage = ROOT.getAttribute('data-language');
+    const zhValue = option.getAttribute('data-option-value') || option.textContent;
+    const enValue = option.getAttribute('data-en-text') || zhValue;
+    
+    // 根据当前语言选择对应的值
+    const optionValue = (currentLanguage === 'En' && enValue) ? enValue : zhValue;
+    
     oldOption.setAttribute('data-option-main', 'false');
     option.setAttribute('data-option-main', 'true');
     select.setAttribute('data-select-value', optionValue);
     
     const input = select.querySelector('[data-select-input]');
-    if (input) input.value = optionValue;
+    if (input) {
+      input.value = optionValue;
+      // 更新中英文属性
+      input.setAttribute('data-zh-input', zhValue);
+      input.setAttribute('data-en-input', enValue);
+    }
     
-    const pickCheckbox = select.querySelector('[data-select-pick]');
-    if (pickCheckbox) {
-      pickCheckbox.checked = false;
-    }
-    const optionsContainer = select.querySelector('[data-select-options]');
-    if (optionsContainer) {
-      optionsContainer.style.display = 'none';
-    }
+    /*切换选项后是否关闭下拉框*/
+    let isClose = select.getAttribute('data-select-close') == 'true' ? true : false;
+    if (isClose) {
+      const pickCheckbox = select.querySelector('[data-select-pick]');
+      if (pickCheckbox) {
+        pickCheckbox.checked = false;
+      };
+      const optionsContainer = select.querySelector('[data-select-options]');
+      if (optionsContainer) {
+        optionsContainer.style.display = 'none';
+      };
+    };
+
   });
 
   // 3. 输入框通用处理 - 使用事件委托
   document.addEventListener('keydown', (e) => {
-    const item = e.target.closest('[data-input]');
+    const item = e.target.closest('input[data-input]');
     if (!item) return;
     if (e.key === 'Enter') {
       item.blur();
@@ -304,7 +319,7 @@ function COMP_MAIN(){
   });
 
   // 初始化设置默认值
-  document.querySelectorAll('[data-input]').forEach(item => {
+  document.querySelectorAll('input[data-input]').forEach(item => {
     if (!item.hasAttribute('data-input-default')) {
       item.setAttribute('data-input-default', item.value);
     }
@@ -439,6 +454,11 @@ function COMP_MAIN(){
     const min = info.split(',')[0] * 1;
     const maxVal = max !== null ? max : 0;
     const minVal = min !== null ? min : 0;
+    console.log(maxVal,minVal)
+
+    if(isNaN(item.value) || item.value == ''){
+      item.value = 0;
+    }
     
     if (item.value < minVal || item.value > maxVal || (item.value.replace(/[0-9]/g, '').trim().length > 0 && item.value.replace(/[0-9]/g, '').trim() !== '-')) {
       tipsAll(['数值错误，已修正', 'Wrong type, fixed'], 1000, 3);
@@ -480,7 +500,7 @@ function COMP_MAIN(){
           }
         }
       }
-      colorbox.style.display = 'flex';
+      colorbox.setAttribute('data-color-view', 'true');
     }
   });
 
@@ -492,7 +512,7 @@ function COMP_MAIN(){
     const colorcomp = item.closest('[data-color]');
     if (!colorcomp) return;
     
-    const prevInput = item.previousElementSibling;
+    const prevInput = item.parentNode.querySelector('input[data-input]');//item.previousElementSibling;
     if (!prevInput) return;
     
     const currentMode = item.getAttribute('data-colortype-mode') || 'hex';
@@ -587,7 +607,7 @@ function COMP_MAIN(){
     document.querySelectorAll('[data-input-color="box"]').forEach(item => {
       const inputs = item.parentNode.parentNode;
       if (!item.contains(e.target) && !inputs.contains(e.target) && document.activeElement) {
-        item.style.display = 'none';
+        item.setAttribute('data-color-view', 'false');
       }
     });
   });
@@ -837,22 +857,32 @@ function COMP_MAIN(){
     if (!oldHSLAttr) return;
     
     const oldHSL = oldHSLAttr.replace('hsl(', '').replace(')', '').split(',').map(item => item.replace('%', '').trim());
-    const newRGB = hslTorgb(item.value, oldHSL[1], oldHSL[2], 255);
+    // 输入阶段：仅在当前值为合法数字时才联动更新颜色；空值/非法值时暂不更新
+    let newH = parseFloat(item.value);
+    if (isNaN(newH)) {
+      return;
+    }
+    const newRGB = hslTorgb(newH, oldHSL[1], oldHSL[2], 255);
     const newHEX = rgbTohex(newRGB[0], newRGB[1], newRGB[2]);
-    const newHSV = hslTohsv(item.value, oldHSL[1], oldHSL[2]);
+    const newHSV = hslTohsv(newH, oldHSL[1], oldHSL[2]);
     
     const colorinput1 = colorcomp.querySelector('[data-input="hex"]');
     const colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+    const colorinput3 = colorcomp.querySelector('[data-input="hsl"]');
     if (colorinput1) {
       colorinput1.value = newHEX;
     }
     if (colorinput2) {
       colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
     }
+    // HSL 模式下，拖动 H 滑块或在 H 输入框中输入时，同步更新 HSL 文本输入框的值
+    if (colorinput3) {
+      colorinput3.value = `hsl(${newH},${oldHSL[1]}%,${oldHSL[2]}%)`;
+    }
     
     const colorbox = colorcomp.querySelector('[data-input-color="box"]');
     if (colorbox) {
-      colorbox.style.setProperty('--hsl-h', item.value);
+      colorbox.style.setProperty('--hsl-h', newH);
     }
     
     // 只在值真正改变时才设置属性，避免重复触发 MutationObserver
@@ -861,7 +891,7 @@ function COMP_MAIN(){
       colorcomp.style.setProperty('--input-color', newHEX);
       colorcomp.setAttribute('data-color-hex', newHEX);
       colorcomp.setAttribute('data-color-rgb', `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`);
-      colorcomp.setAttribute('data-color-hsl', `hsl(${item.value},${oldHSL[1]}%,${oldHSL[2]}%)`);
+      colorcomp.setAttribute('data-color-hsl', `hsl(${newH},${oldHSL[1]}%,${oldHSL[2]}%)`);
       colorcomp.setAttribute('data-color-hsv', `hsv(${newHSV[0]},${newHSV[1]}%,${newHSV[2]}%)`);
       // 更新颜色类型按钮的提示文本
       const colortypeBtn = colorcomp.querySelector('[data-input="colortype"]');
@@ -876,7 +906,7 @@ function COMP_MAIN(){
       ? '[data-input-color="hsl-h"]' 
       : '[data-input="hsl-h"]');
     if (otherHSLH) {
-      otherHSLH.value = item.value;
+      otherHSLH.value = newH;
     }
   });
 
@@ -919,11 +949,16 @@ function COMP_MAIN(){
       const newHEX = rgbTohex(newRGB[0], newRGB[1], newRGB[2]);
       const colorinput1 = colorcomp.querySelector('[data-input="hex"]');
       const colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+      const colorinput3 = colorcomp.querySelector('[data-input="hsl"]');
       if (colorinput1) {
         colorinput1.value = newHEX;
       }
       if (colorinput2) {
         colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
+      }
+      // HSL 模式下，点击取色盘时同步更新 HSL 文本输入框的显示值
+      if (colorinput3) {
+        colorinput3.value = `hsl(${oldColor[0]},${SS}%,${VL}%)`;
       }
       const colorbox = item.parentNode;
       if (colorbox) {
@@ -955,11 +990,16 @@ function COMP_MAIN(){
       const newHEX = rgbTohex(newRGB[0], newRGB[1], newRGB[2]);
       const colorinput1 = colorcomp.querySelector('[data-input="hex"]');
       const colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
+      const colorinput3 = colorcomp.querySelector('[data-input="hsl"]');
       if (colorinput1) {
         colorinput1.value = newHEX;
       }
       if (colorinput2) {
         colorinput2.value = `rgb(${newRGB[0]},${newRGB[1]},${newRGB[2]})`;
+      }
+      // HSV 模式下拖拽/点击取色盘时，也在后台同步更新 HSL 文本值，保证数据一致
+      if (colorinput3) {
+        colorinput3.value = `hsl(${newHSL[0]},${newHSL[1]}%,${newHSL[2]}%)`;
       }
       const colorbox = item.parentNode;
       if (colorbox) {

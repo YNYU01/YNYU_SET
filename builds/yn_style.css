@@ -661,10 +661,10 @@ input[type="checkbox"]:checked + .tab-eg::after{
   height: 8px;
   position: absolute;
   opacity: var(--show-o,1);
-  top:calc(50% - 6px);
-  right: 4px;
+  top:var(--show-pos-t,calc(50% - 6px));
+  right: var(--show-pos-r,4px);
   border-radius: 2px;
-  background:linear-gradient(-45deg,var(--mainColor) 0%,var(--mainColor) 50%,rgba(0,0,0,0) 51%,rgba(0,0,0,0) 100%);
+  background:linear-gradient(-45deg,var(--show-cl,var(--mainColor)) 0%,var(--show-cl,var(--mainColor)) 50%,rgba(0,0,0,0) 51%,rgba(0,0,0,0) 100%);
   transform: rotate(var(--show-r,45deg)) translate(var(--show-t,0),var(--show-t,0));
 }
 
@@ -929,6 +929,27 @@ input[type="checkbox"]:checked+.btn-theme {
   border-radius: 4px;
 }
 
+[data-color-view="true"]{
+  display: flex;
+}
+
+[data-color-view="false"]{
+  display: none;
+}
+
+[data-colorcard-x="left"] card-colorpick{
+  left: 0;
+}
+[data-colorcard-x="right"] card-colorpick{
+  right: 0;
+}
+[data-colorcard-y="top"] card-colorpick{
+  bottom: calc(100% + 4px);
+}
+[data-colorcard-y="bottom"] card-colorpick{
+  top: calc(100% + 4px);
+}
+
 [data-input="hsl-h"]{
   width: calc(var(--colorpick-w) - 24px)
 }
@@ -1056,7 +1077,7 @@ input[type="checkbox"]:checked+.btn-theme {
   content: var(--type);
 }
 .colortype::before{
-  content: var(--other1) ' / ' var(--other2);
+  content: var(--other1) ' | ' var(--other2);
   position: absolute;
   top: -2.5ch;
   right: 0;

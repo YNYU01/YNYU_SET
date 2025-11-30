@@ -17,6 +17,8 @@ const dailogBox = document.querySelector('[data-dailog-box]');
 const dailogImg = document.querySelector('[data-dailogimg]');
 const dailogImgBox = document.querySelector('[data-dailogimg-box]');
 const dailogSearchBox = document.querySelector('[data-dailogsearch-box]');
+const dailogLogin = document.querySelector('[data-dailoglogin]');
+const dailogLoginBox = document.querySelector('[data-dailoglogin-box]');
 const imgnumSet = document.getElementById('imgnum-set');
 const skillSearchInput = document.getElementById('skillsearch');
 const skillTypeBox = document.querySelector('[data-skilltype-box]');
@@ -34,6 +36,7 @@ const skillBtnMain = document.querySelectorAll('[data-btn="skill-main"]');
 const clearCreateTags = document.querySelector('[data-create-tags-box]').querySelector('btn-close').parentNode;
 const convertTags = document.getElementById('upload-set-1');
 const getTableText = document.getElementById('upload-set-2');
+const templateBtn = document.getElementById('upload-set-3');
 const chkTablestyle = document.getElementById('chk-tablestyle');
 const chkSelectcomp = document.getElementById('chk-selectcomp');
 const createAnyBtn = document.querySelector('[data-create-any]');
@@ -42,6 +45,12 @@ const createTableBtn = document.querySelector('[data-create-table]');
 const tableStyleSet = document.querySelector('[data-tablestyle-set]');
 const styleTosheet = document.querySelector('[data-en-text="Style To Sheet"]');
 const sheetTostyle = document.querySelector('[data-en-text="Sheet To Style"]');
+const btnLinkstyle = document.querySelector('[data-linkstyle-add]');
+const btnSelectstyle = document.querySelector('[data-selectstyle-add]');
+const btnVariables = document.querySelector('[data-variables-add]');
+const manageLinkstyleList = document.querySelector('[data-manage-linkstyle-list]');
+const manageSelectstyleList = document.querySelector('[data-manage-selectstyle-list]');
+const manageVariablesList = document.querySelector('[data-manage-variables-list]');
 
 
 let skillModel = [];
@@ -156,10 +165,13 @@ window.addEventListener('resize',/*防抖*/debounce(()=>{
 //设置跳转链接
 let hrefDoc = btnHelpDoc.getAttribute('href');
 btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+let hrefTemplate = templateBtn.getAttribute('href');
+templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
 
 getElementMix('language-1').addEventListener('change',()=>{
-  log(111)
+  //log(111)
   btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+  templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
 });
 
 /**
@@ -1616,6 +1628,19 @@ getElementMix('data-editor-setbg').addEventListener('change',(e)=>{
   }
 })
 
+//管理断链样式
+btnLinkstyle.addEventListener('click',()=>{
+  toolMessage(['','manageLinkStyle'],PLUGINAPP);
+});
+//管理样式组
+btnSelectstyle.addEventListener('click',()=>{
+  toolMessage(['','manageStyleGroup'],PLUGINAPP);
+});
+//管理变量组
+btnVariables.addEventListener('click',()=>{
+  toolMessage(['','manageVariableGroup'],PLUGINAPP);
+});
+
 
 //制表文案转数组, 兼容反转行列
 function tableTextToArray(tableText,isColumn,mustTitle){
@@ -2445,3 +2470,621 @@ function getUserRadio(node){
     };
   };
 };
+
+// ==================== 用户登录/注册模块 ====================
+// 用户认证配置 - 可以后续扩展为 API 调用
+const AUTH_CONFIG = {
+  // Supabase 配置（如果使用 Supabase，请填写下面的信息）
+  USE_SUPABASE: true, // 改为 true 启用 Supabase
+  SUPABASE_URL: 'https://darbnumfpfrscqgyeiqe.supabase.co', // 替换为你的 Project URL
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhcmJudW1mcGZyc2NxZ3llaXFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0OTU1NjksImV4cCI6MjA4MDA3MTU2OX0.UDvrmk8lnumZAu9nugTtEl7WGzxDNhUSfllrCFF4Ws4', // 替换为你的 anon public key
+  
+  // 自定义 API 配置（如果使用自定义 API）
+  API_BASE_URL: null, // 'https://api.ynyuset.cn/auth'
+  
+  // 本地存储键名（保持不变）
+  STORAGE_KEY_USER: 'toolsSetFig_user',
+  STORAGE_KEY_USERS: 'toolsSetFig_users'
+};
+
+// 存储辅助函数 - 支持 Figma 插件和普通环境
+const AuthStorage = {
+  // 获取数据（同步版本，仅用于非插件环境）
+  get(key) {
+    if (!ISPLUGIN || !PLUGINAPP) {
+      // 普通环境：使用 localStorage
+      try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+    // 插件环境下，数据通过消息回调异步获取，这里返回 null
+    // 实际数据会在 run.js 的消息回调中设置到 AuthManager
+    return null;
+  },
+
+  // 设置数据
+  set(key, value) {
+    if (ISPLUGIN && PLUGINAPP) {
+      // Figma 插件环境：通过 toolMessage 存储
+      toolMessage([[key, value], 'setlocal'], PLUGINAPP);
+    } else {
+      // 普通环境：使用 localStorage
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (e) {
+        console.error('Failed to save to localStorage:', e);
+      }
+    }
+  },
+
+  // 删除数据
+  remove(key) {
+    if (ISPLUGIN && PLUGINAPP) {
+      // Figma 插件环境：设置为 null 来删除
+      toolMessage([[key, null], 'setlocal'], PLUGINAPP);
+    } else {
+      // 普通环境：使用 localStorage
+      try {
+        localStorage.removeItem(key);
+      } catch (e) {
+        console.error('Failed to remove from localStorage:', e);
+      }
+    }
+  }
+};
+
+// 初始化 Supabase 客户端（如果使用）
+let supabaseClient = null;
+function initSupabaseClient() {
+  if (AUTH_CONFIG.USE_SUPABASE) {
+    // 检查 Supabase SDK 是否已加载
+    if (typeof supabase !== 'undefined' && supabase.createClient) {
+      try {
+        supabaseClient = supabase.createClient(
+          AUTH_CONFIG.SUPABASE_URL,
+          AUTH_CONFIG.SUPABASE_ANON_KEY
+        );
+        return true;
+      } catch (e) {
+        console.error('Failed to initialize Supabase:', e);
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
+// 用户认证管理 - 在全局作用域定义，run.js 可以直接访问
+var AuthManager = {
+  currentUser: null,
+  usersList: [], // 存储所有用户列表（用于验证）
+
+  // 设置当前用户（由 run.js 的消息回调调用）
+  setCurrentUser(user) {
+    this.currentUser = user;
+  },
+
+  // 设置用户列表（由 run.js 的消息回调调用）
+  setUsersList(users) {
+    this.usersList = users || [];
+  },
+
+  // 初始化：从存储加载用户信息
+  async init() {
+    try {
+      // 如果使用 Supabase，先检查是否有已登录的会话
+      if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
+        try {
+          const { data: { session }, error } = await supabaseClient.auth.getSession();
+          if (!error && session?.user) {
+            // 获取用户配置信息
+            let profile = null;
+            try {
+              const { data: profileData } = await supabaseClient
+                .from('user_profiles')
+                .select('username, is_premium')
+                .eq('id', session.user.id)
+                .single();
+              profile = profileData;
+            } catch (e) {
+              // 表可能不存在，忽略错误
+            }
+
+            this.currentUser = {
+              id: session.user.id,
+              email: session.user.email,
+              username: profile?.username || session.user.email.split('@')[0],
+              isPremium: profile?.is_premium || false
+            };
+            AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+            this.updateUI();
+            return; // Supabase 登录成功，不需要继续
+          }
+        } catch (e) {
+          console.warn('Supabase session check failed:', e);
+        }
+      }
+
+      // 在插件环境下，数据会通过 run.js 的消息回调异步设置
+      // 在非插件环境下，直接从 localStorage 读取
+      if (!ISPLUGIN || !PLUGINAPP) {
+        const user = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USER);
+        if (user) {
+          this.currentUser = user;
+          this.updateUI();
+        }
+        const users = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USERS);
+        if (users) {
+          this.usersList = users;
+        }
+      }
+      // 插件环境下，数据已在 run.js 初始化时通过 getlocal 请求
+      // 会在消息回调中调用 setCurrentUser 和 setUsersList
+    } catch (e) {
+      console.error('Failed to load user data:', e);
+    }
+  },
+
+  // 注册
+  async register(email, username, password) {
+    // 简单验证
+    if (!email || !email.includes('@')) {
+      return { success: false, error: '请输入有效的邮箱地址' };
+    }
+    if (!username || username.length < 2) {
+      return { success: false, error: '用户名至少需要2个字符' };
+    }
+    if (!password || password.length < 6) {
+      return { success: false, error: '密码至少需要6个字符' };
+    }
+
+    // 如果使用 Supabase
+    if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
+      try {
+        // 使用 Supabase 注册
+        const { data, error } = await supabaseClient.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              username: username
+            }
+          }
+        });
+
+        if (error) {
+          // 处理错误信息
+          let errorMsg = error.message;
+          if (error.message.includes('already registered')) {
+            errorMsg = '该邮箱已被注册';
+          } else if (error.message.includes('invalid')) {
+            errorMsg = '邮箱格式不正确';
+          }
+          return { success: false, error: errorMsg };
+        }
+
+        if (!data.user) {
+          return { success: false, error: '注册失败，请重试' };
+        }
+
+        // 创建用户配置记录
+        try {
+          const { error: profileError } = await supabaseClient
+            .from('user_profiles')
+            .insert({
+              id: data.user.id,
+              username: username,
+              is_premium: false
+            });
+
+          if (profileError) {
+            console.warn('Failed to create user profile:', profileError);
+          }
+        } catch (e) {
+          console.warn('User profile creation failed (may not exist yet):', e);
+        }
+
+        // 设置当前用户
+        this.currentUser = {
+          id: data.user.id,
+          email: data.user.email,
+          username: username,
+          isPremium: false
+        };
+
+        AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+        this.updateUI();
+
+        return { success: true, user: this.currentUser };
+      } catch (e) {
+        console.error('Supabase registration failed:', e);
+        return { success: false, error: '注册失败，请重试' };
+      }
+    }
+
+    // 降级到本地存储
+    const existingUsers = this.getUsersList();
+    if (existingUsers.find(u => u.email === email)) {
+      return { success: false, error: '该邮箱已被注册' };
+    }
+
+    const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const user = {
+      id: userId,
+      email: email,
+      username: username,
+      password: this.hashPassword(password),
+      createdAt: new Date().toISOString(),
+      isPremium: false
+    };
+
+    existingUsers.push(user);
+    this.usersList = existingUsers;
+    AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USERS, existingUsers);
+    
+    this.currentUser = { ...user };
+    delete this.currentUser.password;
+    AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+
+    this.updateUI();
+    return { success: true, user: this.currentUser };
+  },
+
+  // 登录
+  async login(email, password) {
+    if (!email || !password) {
+      return { success: false, error: '请输入邮箱和密码' };
+    }
+
+    // 如果使用 Supabase
+    if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
+      try {
+        // 使用 Supabase 登录
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+        if (error) {
+          return { success: false, error: '邮箱或密码错误' };
+        }
+
+        if (!data.user) {
+          return { success: false, error: '登录失败，请重试' };
+        }
+
+        // 获取用户配置信息
+        let profile = null;
+        try {
+          const { data: profileData, error: profileError } = await supabaseClient
+            .from('user_profiles')
+            .select('username, is_premium')
+            .eq('id', data.user.id)
+            .single();
+
+          if (!profileError && profileData) {
+            profile = profileData;
+          }
+        } catch (e) {
+          console.warn('Failed to fetch user profile:', e);
+        }
+
+        // 设置当前用户
+        this.currentUser = {
+          id: data.user.id,
+          email: data.user.email,
+          username: profile?.username || data.user.email.split('@')[0],
+          isPremium: profile?.is_premium || false
+        };
+
+        AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+        this.updateUI();
+
+        return { success: true, user: this.currentUser };
+      } catch (e) {
+        console.error('Supabase login failed:', e);
+        return { success: false, error: '登录失败，请重试' };
+      }
+    }
+
+    // 降级到本地存储
+    const existingUsers = this.getUsersList();
+    const user = existingUsers.find(u => u.email === email);
+    
+    if (!user) {
+      return { success: false, error: '邮箱或密码错误' };
+    }
+
+    if (user.password !== this.hashPassword(password)) {
+      return { success: false, error: '邮箱或密码错误' };
+    }
+
+    this.currentUser = { ...user };
+    delete this.currentUser.password;
+    AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+
+    this.updateUI();
+    return { success: true, user: this.currentUser };
+  },
+
+  // 退出登录
+  async logout() {
+    // 如果使用 Supabase，先退出 Supabase 会话
+    if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
+      try {
+        await supabaseClient.auth.signOut();
+      } catch (e) {
+        console.warn('Supabase sign out failed:', e);
+      }
+    }
+    
+    this.currentUser = null;
+    AuthStorage.remove(AUTH_CONFIG.STORAGE_KEY_USER);
+    this.updateUI();
+    this.showLoginForm();
+  },
+
+  // 获取用户列表
+  getUsersList() {
+    if (this.usersList.length > 0 || (ISPLUGIN && PLUGINAPP)) {
+      return this.usersList;
+    }
+    // 非插件环境下，从 localStorage 读取
+    const users = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USERS);
+    this.usersList = users || [];
+    return this.usersList;
+  },
+
+  // 简单密码哈希（生产环境应使用更安全的方法）
+  hashPassword(password) {
+    // 简单的哈希，仅用于演示，生产环境应使用 bcrypt 等
+    let hash = 0;
+    for (let i = 0; i < password.length; i++) {
+      const char = password.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash.toString();
+  },
+
+  // 更新 UI
+  updateUI() {
+    const loginBtn = document.querySelector('[data-user-login-btn]');
+    const userName = document.querySelector('[data-user-name]');
+    const loginText = document.querySelector('[data-user-login-text]');
+    
+    if (this.currentUser) {
+      // 已登录状态
+      if (userName) userName.style.display = 'flex';
+      if (loginText) loginText.style.display = 'none';
+      if (userName) {
+        const displayName = this.currentUser.username || this.currentUser.email.split('@')[0];
+        userName.textContent = displayName.length > 8 ? displayName.substring(0, 8) + '...' : displayName;
+      }
+    } else {
+      // 未登录状态
+      if (userName) userName.style.display = 'none';
+      if (loginText) loginText.style.display = 'block';
+    }
+  },
+
+  // 显示登录表单
+  showLoginForm() {
+    const loginForm = document.querySelector('[data-login-form]');
+    const registerForm = document.querySelector('[data-register-form]');
+    const userInfo = document.querySelector('[data-user-info]');
+    
+    if (loginForm) loginForm.style.display = 'flex';
+    if (registerForm) registerForm.style.display = 'none';
+    if (userInfo) userInfo.style.display = 'none';
+    
+    // 清空表单
+    const loginEmail = document.getElementById('login-email');
+    const loginPassword = document.getElementById('login-password');
+    if (loginEmail) loginEmail.value = '';
+    if (loginPassword) loginPassword.value = '';
+    this.hideError('login');
+  },
+
+  // 显示注册表单
+  showRegisterForm() {
+    const loginForm = document.querySelector('[data-login-form]');
+    const registerForm = document.querySelector('[data-register-form]');
+    const userInfo = document.querySelector('[data-user-info]');
+    
+    if (loginForm) loginForm.style.display = 'none';
+    if (registerForm) registerForm.style.display = 'flex';
+    if (userInfo) userInfo.style.display = 'none';
+    
+    // 清空表单
+    const registerEmail = document.getElementById('register-email');
+    const registerUsername = document.getElementById('register-username');
+    const registerPassword = document.getElementById('register-password');
+    const registerPasswordConfirm = document.getElementById('register-password-confirm');
+    if (registerEmail) registerEmail.value = '';
+    if (registerUsername) registerUsername.value = '';
+    if (registerPassword) registerPassword.value = '';
+    if (registerPasswordConfirm) registerPasswordConfirm.value = '';
+    this.hideError('register');
+  },
+
+  // 显示用户信息
+  showUserInfo() {
+    const loginForm = document.querySelector('[data-login-form]');
+    const registerForm = document.querySelector('[data-register-form]');
+    const userInfo = document.querySelector('[data-user-info]');
+    
+    if (loginForm) loginForm.style.display = 'none';
+    if (registerForm) registerForm.style.display = 'none';
+    if (userInfo) userInfo.style.display = 'flex';
+    
+    if (this.currentUser && userInfo) {
+      const displayName = document.querySelector('[data-user-display-name]');
+      const displayEmail = document.querySelector('[data-user-display-email]');
+      const userAvatar = document.querySelector('[data-user-avatar]');
+      const userId = document.querySelector('[data-user-id]');
+      const userPremium = document.querySelector('[data-user-premium]');
+      
+      if (displayName) displayName.textContent = this.currentUser.username || this.currentUser.email.split('@')[0];
+      if (displayEmail) displayEmail.textContent = this.currentUser.email;
+      if (userAvatar) userAvatar.textContent = (this.currentUser.username || this.currentUser.email[0]).toUpperCase();
+      if (userId) userId.textContent = this.currentUser.id;
+      if (userPremium) userPremium.style.display = this.currentUser.isPremium ? 'block' : 'none';
+    }
+  },
+
+  // 显示错误信息
+  showError(type, message) {
+    const errorEl = document.querySelector(`[data-${type}-error]`);
+    if (errorEl) {
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+    }
+  },
+
+  // 隐藏错误信息
+  hideError(type) {
+    const errorEl = document.querySelector(`[data-${type}-error]`);
+    if (errorEl) {
+      errorEl.style.display = 'none';
+    }
+  },
+
+  // 检查是否为付费用户
+  isPremium() {
+    return this.currentUser && this.currentUser.isPremium === true;
+  }
+};
+
+// 初始化登录模块和事件绑定
+async function initAuthModule() {
+  // 初始化 Supabase 客户端（如果使用）
+  if (AUTH_CONFIG.USE_SUPABASE) {
+    initSupabaseClient();
+  }
+  
+  // 初始化用户状态（包括检查 Supabase 会话）
+  await AuthManager.init();
+  
+  // 登录按钮点击事件
+  const userLoginBtn = document.querySelector('[data-user-login-btn]');
+  if (userLoginBtn) {
+    userLoginBtn.addEventListener('click', () => {
+      if (AuthManager.currentUser) {
+        // 已登录，显示用户信息
+        AuthManager.showUserInfo();
+        if (dailogLogin) dailogLogin.style.display = 'flex';
+      } else {
+        // 未登录，显示登录表单
+        AuthManager.showLoginForm();
+        if (dailogLogin) dailogLogin.style.display = 'flex';
+      }
+    });
+  }
+}
+
+// 登录表单切换
+const btnShowRegister = document.querySelector('[data-btn-show-register]');
+if (btnShowRegister) {
+  btnShowRegister.addEventListener('click', () => {
+    AuthManager.showRegisterForm();
+  });
+}
+
+const btnShowLogin = document.querySelector('[data-btn-show-login]');
+if (btnShowLogin) {
+  btnShowLogin.addEventListener('click', () => {
+    AuthManager.showLoginForm();
+  });
+}
+
+// 登录按钮
+const btnLogin = document.querySelector('[data-btn-login]');
+if (btnLogin) {
+  btnLogin.addEventListener('click', async () => {
+    const email = document.getElementById('login-email')?.value.trim();
+    const password = document.getElementById('login-password')?.value;
+    
+    AuthManager.hideError('login');
+    
+    const result = await AuthManager.login(email, password);
+    if (result.success) {
+      AuthManager.showUserInfo();
+    } else {
+      AuthManager.showError('login', result.error || '登录失败，请重试');
+    }
+  });
+}
+
+// 注册按钮
+const btnRegister = document.querySelector('[data-btn-register]');
+if (btnRegister) {
+  btnRegister.addEventListener('click', async () => {
+    const email = document.getElementById('register-email')?.value.trim();
+    const username = document.getElementById('register-username')?.value.trim();
+    const password = document.getElementById('register-password')?.value;
+    const passwordConfirm = document.getElementById('register-password-confirm')?.value;
+    
+    AuthManager.hideError('register');
+    
+    if (password !== passwordConfirm) {
+      AuthManager.showError('register', '两次输入的密码不一致');
+      return;
+    }
+    
+    const result = await AuthManager.register(email, username, password);
+    if (result.success) {
+      AuthManager.showUserInfo();
+    } else {
+      AuthManager.showError('register', result.error || '注册失败，请重试');
+    }
+  });
+}
+
+// 退出登录按钮
+const btnLogout = document.querySelector('[data-btn-logout]');
+if (btnLogout) {
+  btnLogout.addEventListener('click', () => {
+    AuthManager.logout();
+  });
+}
+
+// 关闭登录弹窗
+function setupLoginDialogClose() {
+  if (dailogLogin) {
+    // 点击弹窗外部关闭
+    dailogLogin.addEventListener('click', (e) => {
+      if (e.target === dailogLogin) {
+        dailogLogin.style.display = 'none';
+      }
+    });
+    
+    // ESC 键关闭（避免重复绑定）
+    if (!dailogLogin.hasAttribute('data-esc-listener')) {
+      dailogLogin.setAttribute('data-esc-listener', 'true');
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dailogLogin && dailogLogin.style.display === 'flex') {
+          dailogLogin.style.display = 'none';
+        }
+      });
+    }
+  }
+}
+
+// 确保在 DOM 加载后执行初始化
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initAuthModule();
+    setupLoginDialogClose();
+  });
+} else {
+  // DOM 已经加载完成
+  initAuthModule();
+  setupLoginDialogClose();
+}
+
+// AuthManager 已在全局作用域中定义，run.js 可以直接访问
+// 在打包后，run.js 和 main.js 都在同一个文档中，可以直接使用

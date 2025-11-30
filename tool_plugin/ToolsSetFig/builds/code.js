@@ -280,7 +280,18 @@ figma.ui.onmessage = async (message) => {
                         line.layoutSizingHorizontal = 'FILL';
                     },
                     hr: function(cre){
-                        let line = addFrame([100,2,null,null,'@hr',color1]);
+                        let line = addFrame([100,24,null,null,'@hr',[]]);
+                        addAutoLayout(line,['V','CC',0,[20,10,20,10]]);
+                        let path = figma.createVector();
+                        path.vectorPaths = [{
+                            windingRule: "NONE",
+                            data: "M 0 0 L 100 0",
+                          }]
+                        path.dashPattern = [4,4];
+                        path.strokeWeight = 1;
+                        path.strokes = color1;
+                        line.appendChild(path);
+                        path.layoutSizingHorizontal = 'FILL';
                         box.appendChild(line);
                         line.layoutSizingHorizontal = 'FILL';
                     },
@@ -364,7 +375,7 @@ figma.ui.onmessage = async (message) => {
                     },
                     blockquote: async function(cre){
                         let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
-                        console.log(cre,characters)
+                        //console.log(cre,characters)
                         let text = await addText([{family:'Inter',style:'Light'},characters,22 ,color3]);
                         //text.relativeTransform = [[1,-0.2126,0],[0,0.9771,0]];
                         let line = addFrame([100,100,null,null,'@blockquote',[]]);
@@ -385,19 +396,35 @@ figma.ui.onmessage = async (message) => {
                         await figma.clientStorage.getAsync('userLanguage')
                         .then (async (language) => {
                             if(!thComp){
-                                thComp = await addTableCompMust('th',language);
+                                thComp = await addTableCompMust('th',language,null,true);
                                 allComp.push(thComp);
                             };
                             if(!tdComp){
-                                tdComp = await addTableCompMust('td',language);
+                                tdComp = await addTableCompMust('td',language,null,true);
                                 allComp.push(tdComp);
                             };
                             let all = await createTable(thComp,tdComp,language,true);  
                             let newth = all[0];
                             let newtd = all[1];
                             let table = all[2];
-                            reCompNum(table,2,1)
-                            reTableByArray(table,cre.rows,'[enter]','--');
+                            
+                            let data = cre.rows;
+                            //反转行列
+                            data = data[0].map((_, i) => data.map(row => row[i]));
+                            data = data.map(item => {
+                                item = item.map(items => {
+                                    if(typeof items == 'object'){
+                                        return items.map(item => item.content).join('');
+                                    }else{
+                                        return items;
+                                    }
+                                });
+                                return item;
+                            });
+                            let H = data[0].length;
+                            let L = data.length - 3;
+                            reCompNum(table,H,L)
+                            reTableByArray(table,data,'[enter]','--');
                             reTableStyle(table,{th:[1,1,1,1,1],td:[1,1,1,1,'rowSpace']});
                             reAnyByTags([newth],[{'#table.fill':'#B8B8B8','#table.stroke':'#272727'}]);
                             reAnyByTags([newtd],[{'#table.fill':'#DADADA','#table.stroke':'#272727'}]);
@@ -643,6 +670,124 @@ figma.ui.onmessage = async (message) => {
             });
                 
         });
+    };
+    //管理断链样式
+    if( type == "manageLinkStyle"){
+        let b = getSelectionMix();
+        let final = [];
+        b.forEach(item => {
+            if(item.fillStyleId || item.strokeStyleId){
+                final.push(item);
+            };
+            final = [...final,...item.findAll(items => items.fillStyleId || items.strokeStyleId)];
+        });
+        //收集所有样式id
+        let allStyleId = [];
+        final.forEach(item => {
+            if(item.fillStyleId){
+                allStyleId.push(item.fillStyleId);
+            };
+            if(item.strokeStyleId){
+                allStyleId.push(item.strokeStyleId);
+            };
+        });
+        allStyleId = [...new Set(allStyleId)];
+        //获取样式,以找到可能存在远程情况的样式
+        let promises = allStyleId.map(item => figma.getStyleByIdAsync(item));
+        let allStyle = await Promise.all(promises);
+        allStyle = allStyle.map(item => {return {id:item.id,name:item.name,paint:item.paints};});
+        //console.log(allStyle)
+        //比对本地样式和远程样式，同名不同id或完全不同名且paints不同,就是未链接的样式
+        //paints相同，就不能reset(覆盖)或create(新建)
+        let unLinkStyle = [];//{id:id,name:name,islink:true,iscreate:true,isreset:true};
+        let localStyleList = localStyles.paint.list;
+        //先排除id相同的,筛选需要link的样式
+        allStyle.forEach(item => {
+            if(localStyleList.every(items => items.id != item.id)){
+                unLinkStyle.push({id:item.id,name:item.name,paint:item.paint,islink:false,iscreate:false,isreset:false});
+            }
+        });
+        //进一步确认能否reset或create
+        unLinkStyle.forEach(item => {
+            //同名则对比paints，相同就不能reset或create，不同名只能create
+            let sameName = localStyleList.find(items => items.name == item.name);
+            if(sameName){
+                item.islink = true;
+                if(JSON.stringify(sameName.paints) !== JSON.stringify(item.paint)){
+                    item.isreset = true;
+                }
+            }else{
+                let name2 = item.name.split('/');
+                //路径长度小于3，可直接认为是不同样式（难以判断是否同一路径）
+                if(name2.length < 3) return;
+                let sameLastName = localStyleList.find(items => items.name.split('/').reverse()[0] == item.name.split('/').reverse()[0] && items.name.split('/').reverse()[1] == item.name.split('/').reverse()[1])
+                if(sameLastName){
+                    //如果lastName相同，就判断是不是路径类似
+                    let name1 = sameLastName.name.split('/');
+                    //按最短长度保留路径，相同则直接认为是同一路径
+                    let minLength = Math.min(name1.length,name2.length,Math.round(name1.length/2),Math.round(name2.length/2));
+                    //console.log(minLength)
+                    let name1path = name1.splice(name1.length - minLength,minLength).join('/');
+                    let name2path = name2.splice(name2.length - minLength,minLength).join('/');
+                    //console.log(name1path,name2path)
+                    if(name1path == name2path){
+                        item.islink = true;
+                        item.isname = sameLastName.name;
+                    } else {
+                        item.islink = false;
+                        item.iscreate = true;
+                    };
+                }else{
+                    item.islink = false;
+                    item.iscreate = true;
+                }
+            }
+        });
+        unLinkStyle.forEach(item => {
+            delete item.paint;
+        });
+        //console.log(unLinkStyle)
+        postmessage([unLinkStyle,'linkStyleInfo']);
+    };
+    //管理样式组
+    if( type == "manageStyleGroup"){
+        let b = getSelectionMix();
+        let final = [];
+        b.forEach(item => {
+            if(item.fillStyleId || item.strokeStyleId){
+                final.push(item);
+            };
+            final = [...final,...item.findAll(items => items.fillStyleId || items.strokeStyleId)];
+        });
+        //收集所有样式id
+        let allStyleId = [];
+        final.forEach(item => {
+            if(item.fillStyleId){
+                allStyleId.push(item.fillStyleId);
+            };
+            if(item.strokeStyleId){
+                allStyleId.push(item.strokeStyleId);
+            };
+        });
+        allStyleId = [...new Set(allStyleId)];
+        //获取样式,以找到可能存在远程情况的样式
+        let promises = allStyleId.map(item => figma.getStyleByIdAsync(item));
+        let allStyle = await Promise.all(promises);
+        allStyle = allStyle.map(item => {return {id:item.id,name:item.name};});
+        //console.log(allStyle)
+        let themeStyle = [];
+        let localThemeStyle = localStyles.paint.list.filter(item => item.name.includes('@set:'));
+        allStyle.forEach(item => {
+            if(localThemeStyle.some(items => items.id == item.id)){
+                themeStyle.push(item);
+            };
+        });
+        //console.log(themeStyle)
+        postmessage([themeStyle,'styleGroupInfo']);
+    };
+    //管理变量组
+    if( type == "manageVariableGroup"){
+        
     };
     //从预设或组件创建表格
     if ( type == "creTable"){
@@ -1008,6 +1153,66 @@ figma.ui.onmessage = async (message) => {
                     reTableTheme(table,[tableBg,tableFill,tableStroke],textColor)
                 ;break
             };
+        });
+    };
+    //全描边
+    if( type == 'All Border'){
+        let b = getSelectionMix();
+        b.forEach(item => {
+            if(item.type == 'INSTANCE'){
+                if(item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')){
+                    reTableStyle(null,null,[[item],[1,1,1,1]]);
+                }
+                return;
+            };
+            let comps = item.findAll(items => items.type == 'INSTANCE' );
+            comps = comps.filter(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn'));
+            reTableStyle(null,null,[comps,[1,1,1,1]]);
+        });
+    };
+    //全不描边
+    if( type == 'None Border'){
+        let b = getSelectionMix();
+        b.forEach(item => {
+            if(item.type == 'INSTANCE'){
+                if(item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')){
+                    reTableStyle(null,null,[[item],[0,0,0,0]]);
+                }
+                return;
+            };
+            let comps = item.findAll(items => items.type == 'INSTANCE' );
+            comps = comps.filter(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn'));
+            reTableStyle(null,null,[comps,[0,0,0,0]]);
+        });
+    };
+    //全填充
+    if( type == 'All Fill'){
+        let b = getSelectionMix();
+        b.forEach(item => {
+            if(item.type == 'INSTANCE'){
+                if(item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')){
+                    reTableStyle(null,null,[[item],[null,null,null,null,1]]);
+                }
+                return;
+            };
+            let comps = item.findAll(items => items.type == 'INSTANCE' );
+            comps = comps.filter(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn'));
+            reTableStyle(null,null,[comps,[null,null,null,null,1]]);
+        });
+    };
+    //全不填充
+    if( type == 'None Fill'){
+        let b = getSelectionMix();
+        b.forEach(item => {
+            if(item.type == 'INSTANCE'){
+                if(item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')){
+                    reTableStyle(null,null,[[item],[null,null,null,null,0]]);
+                }
+                return;
+            };
+            let comps = item.findAll(items => items.type == 'INSTANCE' );
+            comps = comps.filter(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn'));
+            reTableStyle(null,null,[comps,[null,null,null,null,0]]);
         });
     };
     //反转行列
@@ -2475,7 +2680,7 @@ async function createTable(thComp,tdComp,language,isFill = false){
     return [th,td,table];
 };
 //创建表格组件
-async function addTableCompMust(type,language,nodes){
+async function addTableCompMust(type,language,nodes,isFill = false){
     let comp = addFrame([176,52,null,null,'xxx@' + type,[]]);
     if(type == 'td' || type == 'tn'){
         comp.y += 72;
@@ -2498,6 +2703,13 @@ async function addTableCompMust(type,language,nodes){
         };
         let text = await addText([{family:'Inter',style:egtext[type][0]},egtext[type][1],16]);
         comp.appendChild(text);
+        if(isFill){
+            text.layoutSizingHorizontal = 'FILL';
+            if(type == 'th') text.textAlignHorizontal = 'CENTER';
+            //text.textAlignHorizontal = 'CENTER';
+            comp.paddingLeft = 16;
+            comp.paddingRight = 16;
+        };
         makeCompliant(type,comp);
         //绑定数据的组件属性
         addCompPro(comp,text,'--data','TEXT',egtext[type][1]);
@@ -2531,8 +2743,8 @@ function makeCompliant(type,comp){
 //添加描边/区分色
 function addBodFill(node,Array,type){
     let bodfill = figma.createRectangle();
-    if((type == 'td' || type == 'tn') && node.name.includes('fill')){
-        bodfill.opacity = 0.66
+    if((type == 'td' || type == 'tn') && Array[3].includes('fill')){
+        bodfill.opacity = 0.66;
     }
     setMain([176,52,null,null,Array[0],Array[1],Array[2]],bodfill);
     let bodfills = addFrame([176,52,null,null,Array[3],[]]);
@@ -2584,7 +2796,7 @@ async function createLocalSheet(type,comps){
     };
     all.push(table);
     figma.currentPage.selection = all;
-    console.log(comps,all)
+    //console.log(comps,all)
     return [th,td,tn,table]; 
 };
 //创建本地表格组件
@@ -2929,7 +3141,14 @@ function addCompPro(node,layer,name,type,value){
     return proid;
 };
 //修改表格样式
-function reTableStyle(table,style){
+function reTableStyle(table,style,comps){
+    if(comps){
+        comps[0].forEach(item => {
+            //console.log(comps[1])
+            findSetPro(item,comps[1]);
+        });
+        return;
+    };
     let columns = table.findChildren(item => item.name.includes('@column'));
     for(let i = 0; i < columns.length; i++){
         let headers = columns[i].findChildren(item => item.name.includes('@th'));
@@ -2947,35 +3166,36 @@ function reTableStyle(table,style){
             };
         });
     };
+    
     //找到相关组件属性并修改
     function findSetPro(comp,Array,row,column){
         let proKeys = Object.keys(comp.componentProperties);
-        //console.log(Array[4],num)
+        //console.log(proKeys,Array)
         proKeys.forEach(key => {
             //console.log(key.split('#')[0])
             /**/
             switch (key.split('#')[0]){
-                case '--bod-t': comp.setProperties({[key]: Array[0] == 0 ? false : true});break
-                case '--bod-r': comp.setProperties({[key]: Array[1] == 0 ? false : true});break
-                case '--bod-b': comp.setProperties({[key]: Array[2] == 0 ? false : true});break
-                case '--bod-l': comp.setProperties({[key]: Array[3] == 0 ? false : true});break
+                case '--bod-t': comp.setProperties({[key]:(Array[0] !== undefined && Array[0] == 0) ? false : true});break
+                case '--bod-r': comp.setProperties({[key]:(Array[1] !== undefined && Array[1] == 0) ? false : true});break
+                case '--bod-b': comp.setProperties({[key]:(Array[2] !== undefined && Array[2] == 0) ? false : true});break
+                case '--bod-l': comp.setProperties({[key]:(Array[3] !== undefined && Array[3] == 0) ? false : true});break
                 case '--fills':
                     //是否为间格区分色
-                    if(Array[4] == 'rowSpace' && row){
+                    if(Array[4] && Array[4] == 'rowSpace' && row){
                         //console.log('rowSpace')
                         if(row%2 == 0){
                             comp.setProperties({[key]: true});
                         } else {
                             comp.setProperties({[key]: false});
                         };
-                    } else if(Array[4] == 'columnSpace' && column){
+                    } else if(Array[4] && Array[4] == 'columnSpace' && column){
                         if(column%2 == 0){
                             comp.setProperties({[key]: false});
                         } else {
                             comp.setProperties({[key]: true});
                         };
                     } else {
-                        comp.setProperties({[key]: Array[4] == 0 ? false : true});
+                        comp.setProperties({[key]:(Array[4] !== undefined && Array[4] == 0) ? false : true});
                     }
                 ;break
             }

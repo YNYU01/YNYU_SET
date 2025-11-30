@@ -896,7 +896,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   white-space: normal;
 }
 
-[data-dailogimg],[data-dailogsearch]{
+[data-dailogimg],[data-dailogsearch],[data-dailoglogin]{
   display: none;
   width: 100vw;
   height: 100vh;
@@ -914,8 +914,14 @@ input[type="checkbox"]:checked + .btn-moreset{
   backdrop-filter: blur(2px);
 }
 
+[data-dailoglogin]{
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0;
+}
+
 [data-theme="light"] [data-dailog],
-[data-theme="light"] [data-dailogsearch]{
+[data-theme="light"] [data-dailogsearch],
+[data-theme="light"] [data-dailoglogin]{
   background: rgba(226, 226, 226, 0.8);
   --boxGry: #ffffff;
   --boxBak: #ffffff;
@@ -1089,9 +1095,46 @@ input[type="checkbox"]:checked + .btn-moreset{
   padding: 10px;
 }
 
+[data-dailoglogin-box]{
+  border-radius: 10px;
+  border: 1px solid var(--boxBod);
+  background: var(--boxGry);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+[data-dailoglogin-close]{
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+[data-dailoglogin-box] input[type="text"],
+[data-dailoglogin-box] input[type="password"]{
+  font-size: 14px;
+}
+
+[data-dailoglogin-box] input[type="text"]::placeholder,
+[data-dailoglogin-box] input[type="password"]::placeholder{
+  opacity: 0.5;
+}
+
+[data-login-error],
+[data-register-error]{
+  border-radius: 4px;
+  background: rgba(166, 72, 72, 0.1);
+}
+
+[data-user-avatar]{
+  text-transform: uppercase;
+}
+
 [data-dailog-close] [data-close],
 [data-dailogimg-close] [data-close],
-[data-dailogsearch ] [data-close]
+[data-dailogsearch ] [data-close],
+[data-dailoglogin-close] [data-close]
 {
   width: 20px;
   height: 20px;
@@ -1354,7 +1397,6 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   box-sizing: border-box;
   padding: 4px 10px;
   max-width: 560px;
-  display: none;
 }
 
 [data-editor-mix]{
@@ -1394,8 +1436,7 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   z-index: 1;
 }
 
-[for="fulleditor"],[data-editor-clear],[data-editor-bg],
-[data-color-mix] [data-getcolor]{
+[for="fulleditor"],[data-editor-clear],[data-editor-bg]{
   width: 20px;
   height: 20px;
   border-radius: 4px;
@@ -1408,10 +1449,6 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 
 [for="fulleditor"]:hover,[data-editor-clear]:hover,[data-editor-bg]:hover{
   opacity: 1;
-}
-
-[data-color-mix]  [data-getcolor]:hover {
-  --mainColor: var(--mainColor2);
 }
 
 input[type="checkbox"]:checked + [for="fulleditor"],
@@ -1444,29 +1481,37 @@ input[type="checkbox"]:checked + [data-editor-bg]{
   border-radius:0.5ch 0.5ch 0 0.5ch;
 }
 
-[data-color-mix] [data-getcolor],
 [data-color-mix] [data-input="hex"],
-[data-color-mix] card-colorpick{
+[data-color-mix] [data-input="hsl"],
+[data-color-mix] [data-input="rgb"],
+[data-color-mix] card-colorpick,
+[data-color-mix] [data-input="colortype"]{
   display: none;
 }
 
-[data-color-mix]:hover [data-getcolor],
+[data-color-mix] [data-input="colortype"]{
+  background: var(--boxGry);
+}
+
+[data-color-mix] [data-color-view],
 [data-color-mix]:hover [data-input="hex"],
-[data-color-mix]:hover card-colorpick{
+[data-color-mix]:hover [data-input="hsl"],
+[data-color-mix]:hover [data-input="rgb"],
+[data-color-mix]:hover [data-color] card-colorpick,
+[data-color-mix]:hover [data-input="colortype"]{
   display: flex;
 }
 
-[data-mobile="true"] [data-getcolor]{
-  pointer-events: none;
+[data-color-mix] [data-input="hex"]{
+  width: 8.5ch;
 }
-[data-mobile="true"] [data-getcolor]::after{
-  content: '';
-  position: absolute;
-  width: 120%;
-  height: 2px;
-  top: calc(50% - 1px);
-  transform: rotate(45deg);
-  background: var(--liColor);
+
+[data-color-mix] [data-input="hsl"]{
+  width: 16.5ch;
+}
+
+[data-color-mix] [data-input="rgb"]{
+  width: 15.5ch;
 }
 
 [data-editor-setlist-title],[data-editor-setlist]{
@@ -1617,7 +1662,8 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   border: 1px solid var(--boxBod);
   box-sizing: border-box;
   border-radius: 4px;
-  min-height: 50px;
+  min-height: 70px;
+  max-height: 80vh;
   margin: -4px 0 10px 0;
 }
 
@@ -1627,7 +1673,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   background: var(--boxGry);
 }
 
-[data-manage-linkstyle] [data-btn="icon"],[data-linkstyle-all],
+[data-manage-linkstyle] [data-btn="icon"],
 [data-manage-selectstyle] [data-btn="icon"],
 [data-manage-variables] [data-btn="icon"]{
   padding: 2px 0;

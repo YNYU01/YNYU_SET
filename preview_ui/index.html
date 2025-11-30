@@ -51,8 +51,12 @@
       </div>
   </div>
   <div data-page-id="ui" class="df-ffc pos-r" style="gap: 10px; height: calc(100vh - 120px);">
-    <div data-li-style="title" data-en-text="IMPORTANT" class="df" style="font-size: 12px; gap: 4px; margin-top: 10px;">使用说明</div>
-    <div class="df-ffc ww" style="white-space: wrap; gap: 4px; font-size: 12px; padding: 6px; box-sizing: border-box; opacity: 0.6; border: 1px var(--boxBod) dashed; border-radius: 10px;"> 
+    <input id="important-1" type="checkbox" checked
+    onchange="showNext(this,'important-1-content','flex')">
+    <label for="important-1" data-li-style="title" data-en-text="IMPORTANT" class="df show-next"
+    style="font-size: 12px; gap: 4px; margin-top: 10px; padding-right: 20px;
+     --show-cl: var(--boxBak); --show-pos-r: 8px; --show-pos-t: calc(50% - 7px);">使用说明</label>
+    <div id="important-1-content" class="df-ffc ww" style="white-space: wrap; gap: 4px; font-size: 12px; padding: 6px; box-sizing: border-box; opacity: 0.6; border: 1px var(--boxBod) dashed; border-radius: 10px;"> 
       
       <li data-li-style="1">
         <span data-en-text="Import these files">需同时引入</span>
@@ -72,16 +76,6 @@
         </span>
         <span data-en-text="before copying other sample codes. Also, check whether the ID or custom attribute conflicts">
           部分的代码再复制其他示例代码，同样也需检查ID或自定义属性是否冲突
-        </span>
-      </li>
-      <li data-li-style="1">
-        <span data-en-text="Version 2.0 uses event delegation, dynamically added elements will automatically respond to events without rebinding">
-          2.0版本使用事件委托，动态添加的元素会自动响应事件，无需重新绑定
-        </span>
-      </li>
-      <li data-li-style="1">
-        <span data-en-text="Version 2.0 saves original code when page loads, copying will use original code instead of modified content">
-          2.0版本在页面加载时保存原始代码，复制时会使用原始代码而不是修改后的内容
         </span>
       </li>
     </div>
@@ -160,7 +154,7 @@
               <btn-info></btn-info>
             </div>
             select:
-            <div class="df-lc pos-r" data-select data-select-value="选项1" style="gap: 4px; width: 120px;">
+            <div class="df-lc pos-r" data-select data-select-close data-select-value="选项1" style="gap: 4px; width: 120px;">
               <input id="select-value-1" type="text" data-select-input readonly data-en-input="Option 1" value="选项1">
               <input id="select-show-1" data-select-pick type="checkbox">
               <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
@@ -298,7 +292,7 @@
             </div>
             input-color:
             <div data-color data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
-            data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
+            data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)" data-colorcard-x="left" data-colorcard-y="bottom"
             class="df-lc fl1 pos-r" style="gap: 4px;">
               <div data-getcolor class="btn-op" style="width: 14px; height: 14px;">
                 <btn-getcolor></btn-getcolor>
