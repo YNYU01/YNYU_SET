@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>邮箱验证成功 - YN+ ToolsSet</title>
+  <style>
+    /* Figma 插件设计系统变量 */
+    :root {
+      --mainColor: #acacac;
+      --mainColor2: #fff;
+      --mainColor3: #2b2b2b;
+      --mainColor4: #181818;
+      --themeColor: #3ac989;
+      --themeColor2: #9f92fe;
+      --boxBod: #494949;
+      --boxBak: #202020;
+      --boxGry: #2b2b2b;
+      --boxDark: #adadad;
+      --mainFontSize: 14px;
+      --mainFontSize-mini: 12px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: var(--mainFontSize);
+      color: var(--mainColor);
+      background: var(--boxGry);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      font-feature-settings: "kern" on;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      letter-spacing: 0.01em;
+      overflow: hidden;
+    }
+    
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background: var(--boxBak);
+      border-radius: 20px;
+      padding: 40px 32px;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    h1 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: var(--mainColor2);
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .subtitle {
+      font-size: var(--mainFontSize);
+      color: var(--mainColor);
+      margin-bottom: 24px;
+      line-height: 1.6;
+      text-align: center;
+    }
+    
+    .info-box {
+      background: var(--boxGry);
+      border: 1px solid var(--themeColor);
+      background: rgba(66, 153, 110, 0.1);
+      border-radius: 6px;
+      padding: 16px;
+      margin: 24px 0;
+      text-align: left;
+      animation: widthUp 0.2s ease-in-out, boxUp 0.5s ease-in-out;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+    
+    .info-box p {
+      color: var(--mainColor);
+      font-size: var(--mainFontSize);
+      line-height: 1.8;
+      margin: 0;
+    }
+    
+    .info-box p::before {
+      content: '✓ ';
+      color: var(--themeColor);
+      font-weight: bold;
+      margin-right: 4px;
+    }
+    
+    .steps {
+      text-align: left;
+      margin-top: 24px;
+    }
+    
+    .step {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      color: var(--mainColor);
+      font-size: var(--mainFontSize);
+      line-height: 1.6;
+      opacity: 0;
+      animation: boxUp 0.2s ease-in-out forwards;
+    }
+
+    .step[data-step="1"] {
+      animation-delay: 0.2s;
+    }
+    .step[data-step="2"] {
+      animation-delay: 0.3s;
+    }
+    .step[data-step="3"] {
+      animation-delay: 0.4s;
+    }
+    
+    .step-number {
+      background: var(--boxGry);
+      color: var(--mainColor2);
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--mainFontSize-mini);
+      font-weight: 600;
+      margin-right: 12px;
+      flex-shrink: 0;
+      box-shadow: 
+      0 1px 2px 0 rgba(255, 255, 255, 0.377) inset,
+      0 -1px 2px 0 rgba(46, 231, 154, 0.377) inset;
+    }
+    
+    .step-content {
+      flex: 1;
+      padding-top: 2px;
+    }
+    
+    .footer {
+      display: flex;
+      flex-flow: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--boxBod);
+      text-align: center;
+      font-size: var(--mainFontSize-mini);
+      color: var(--themeColor2);
+    }
+    
+    .logo {
+      font-size: var(--mainFontSize);
+      font-weight: 600;
+      color: var(--mainColor2);
+      margin-bottom: 8px;
+    }
+
+    [data-graph-bod]{
+      stroke-width: var(--bod-w,1px);
+      stroke: var(--mainColor);
+      stroke-linecap: square;
+    }
+
+    @keyframes widthUp {
+      0%{
+        width: 0%;
+      }
+      100%{
+        width: 100%;
+      }
+    }
+    @keyframes boxUp{/*从底部入场*/
+      0%{
+        transform: translate(var(--x,0),10px);
+        opacity: 0;
+      }
+      100%{
+        transform: translate(var(--x,0),0);
+        opacity: 1
+      }
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 480px) {
+      .container {
+        padding: 32px 24px;
+      }
+      
+      h1 {
+        font-size: 18px;
+      }
+      
+      .subtitle {
+        font-size: var(--mainFontSize-mini);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <h1 data-lang-zh="🎉 邮箱验证成功 🤗" data-lang-en="🎉 Email Verified 🤗">🎉 邮箱验证成功 🤗</h1>
+    
+    <p class="subtitle" data-lang-zh="您的账户已成功激活" data-lang-en="Your account has been successfully activated">您的账户已成功激活</p>
+    
+    <div class="info-box">
+      <p data-lang-zh="验证已完成，您现在可以: " data-lang-en="Verification completed, you can: ">验证已完成，您现在可以使用所有功能了</p>
+    </div>
+    
+    <div class="steps">
+      <div class="step" data-step="1">
+        <div class="step-number">1</div>
+        <div class="step-content" data-lang-zh="返回 Figma 应用" data-lang-en="Return to Figma application">返回 Figma 应用</div>
+      </div>
+      <div class="step" data-step="2">
+        <div class="step-number">2</div>
+        <div class="step-content" data-lang-zh="打开 YN+ ToolsSet 插件" data-lang-en="Open YN+ ToolsSet plugin">打开 YN+ ToolsSet 插件</div>
+      </div>
+      <div class="step" data-step="3">
+        <div class="step-number">3</div>
+        <div class="step-content" data-lang-zh="使用注册的邮箱和密码登录" data-lang-en="Login with your registered email and password">使用注册的邮箱和密码登录</div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <img style="border-radius: 8px; border: 1px solid var(--boxBod);"  width="48" height="48" src="../../preview_tools/img/Icon-ToolsSet_200.png" alt="YN+ ToolsSet" class="logo-img">
+      <div class="logo">YN+ ToolsSet</div>
+      <div data-lang-zh="感谢您的使用!" data-lang-en="Thank you for using!">感谢您的使用！</div>
+    </div>
+    <div style="position: absolute; top: 0; left: 0; display: flex; justify-content: center; align-items: center; --svg-w: 800px; --bod-w: 0.5; opacity: 0.1; z-index: -1;">
+      <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
+      <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
+      <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
+      <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
+    </div>
+  </div>
+  
+  <script src="../../publics/graph.js"></script>
+
+  <script>
+    // 语言检测和切换
+    const lang = navigator.language || navigator.userLanguage;
+    const isEnglish = lang.startsWith('en');
+    
+    // 从 URL 参数获取语言
+    const urlParams = new URLSearchParams(window.location.search);
+    const langParam = urlParams.get('lang');
+    const useEnglish = langParam === 'en' || langParam === 'En' || (isEnglish && !langParam);
+    
+    // 更新页面文本
+    document.querySelectorAll('[data-lang-zh][data-lang-en]').forEach(el => {
+      el.textContent = useEnglish ? el.getAttribute('data-lang-en') : el.getAttribute('data-lang-zh');
+    });
+  </script>
+</body>
+</html>

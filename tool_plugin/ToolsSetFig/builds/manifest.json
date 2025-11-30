@@ -17,7 +17,9 @@
       "https://cdnjs.cloudflare.com",
       "https://ipapi.co",
       "https://unpkg.com",
-      "https://*.ynyuset.cn"
+      "https://*.ynyuset.cn",
+      "https://*.supabase.co",
+      "https://*.supabase.in"
     ]
   }
 }

@@ -103,7 +103,12 @@ figma.ui.onmessage = async (message) => {
     };
     //设置用户偏好
     if ( type == "setlocal"){
-        figma.clientStorage.setAsync(info[0],info[1]);
+        if(info[1] === null || info[1] === undefined){
+            // 如果值为 null，则删除该键
+            figma.clientStorage.deleteAsync(info[0]);
+        } else {
+            figma.clientStorage.setAsync(info[0],info[1]);
+        }
     };
     //按需发送选中内容信息
     if ( type == "selectInfo"){
