@@ -64,7 +64,14 @@ let storageMix = {
   },
   set: (key,value)=>{
     if(ISPLUGIN){
-      toolMessage? toolMessage([[key,value],'setlocal'],PLUGINAPP) : null;
+      try {
+        if(typeof toolMessage === 'function'){
+          toolMessage([[key,value],'setlocal'],PLUGINAPP);
+        }
+      } catch(e) {
+        // toolMessage 未定义或调用失败时静默处理
+        console.warn('toolMessage not available:', e);
+      }
     } else {
       window.localStorage.setItem(key,value);
     }
