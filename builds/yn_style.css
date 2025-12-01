@@ -422,6 +422,26 @@ input[type="range"] {
   gap: calc(var(--ratio,1) * 10px);
 }
 
+.gap12{
+  gap: calc(var(--ratio,1) * 12px);
+}
+
+.gap14{
+  gap: calc(var(--ratio,1) * 14px);
+}
+
+.gap16{
+  gap: calc(var(--ratio,1) * 16px);
+}
+
+.gap18{
+  gap: calc(var(--ratio,1) * 18px);
+}
+
+.gap20{
+  gap: calc(var(--ratio,1) * 20px);
+}
+
 .pad2{
   padding: calc(var(--ratio,1) * 2px);
 }
