@@ -129,9 +129,9 @@ window.addEventListener('load',()=>{
     return;
   };
   setTimeout(() => {
-    /*clear*
+    /*clear*/
     let tabs = ['create','export','editor','variable','sheet','more tools']
-    viewPage(tabs[2])
+    viewPage(tabs[5])
     /**/;
     if(window.innerWidth < 300){
       TV_MOVE = true;
@@ -2487,6 +2487,80 @@ const AUTH_CONFIG = {
   STORAGE_KEY_USERS: 'toolsSetFig_users'
 };
 
+// 认证模块多语言文本
+const AUTH_I18N = {
+  zh: {
+    invalidEmail: '请输入有效的邮箱地址',
+    usernameTooShort: '用户名至少需要2个字符',
+    passwordTooShort: '密码至少需要6个字符',
+    supabaseNotInitialized: 'Supabase 未初始化，请检查配置和网络连接',
+    emailAlreadyRegistered: '该邮箱已注册，请直接登录',
+    rateLimitError: '请求过于频繁，请等待 {0} 秒后再试',
+    invalidEmailFormat: '邮箱格式不正确',
+    registrationFailed: '注册失败: {0}',
+    unknownError: '未知错误',
+    registrationFailedRetry: '注册失败，请重试',
+    registrationSuccess: '注册成功！请检查邮箱并点击确认链接以完成注册。',
+    registrationSuccessShort: '注册成功！请检查邮箱并点击确认链接。',
+    registrationFailedConfig: '注册失败，请检查 Supabase 配置或网络连接',
+    emailAlreadyRegisteredLocal: '该邮箱已在本地注册，请先清除缓存',
+    enterEmailPassword: '请输入邮箱和密码',
+    emailPasswordIncorrect: '邮箱或密码错误',
+    loginFailedRetry: '登录失败，请重试',
+    fillAllRequired: '请填写所有必填项',
+    passwordsNotMatch: '两次输入的密码不一致',
+    registering: '注册中...',
+    localCacheCleared: '本地缓存已清除',
+    usernameInvalidChars: '用户名只能包含字母、数字、下划线和连字符，且不能纯数字或符号',
+    usernameInvalidLength: '用户名长度必须在2-20个字符之间',
+    passwordInvalidChars: '密码只能包含字母、数字和常见符号',
+    passwordInvalidLength: '密码长度必须在6-50个字符之间'
+  },
+  en: {
+    invalidEmail: 'Please enter a valid email address',
+    usernameTooShort: 'Username must be at least 2 characters',
+    passwordTooShort: 'Password must be at least 6 characters',
+    supabaseNotInitialized: 'Supabase not initialized, please check configuration and network connection',
+    emailAlreadyRegistered: 'This email is already registered, please log in directly',
+    rateLimitError: 'Too many requests, please wait {0} seconds and try again',
+    invalidEmailFormat: 'Invalid email format',
+    registrationFailed: 'Registration failed: {0}',
+    unknownError: 'Unknown error',
+    registrationFailedRetry: 'Registration failed, please try again',
+    registrationSuccess: 'Registration successful! Please check your email and click the confirmation link to complete registration.',
+    registrationSuccessShort: 'Registration successful! Please check your email and click the confirmation link.',
+    registrationFailedConfig: 'Registration failed, please check Supabase configuration or network connection',
+    emailAlreadyRegisteredLocal: 'This email is already registered locally, please clear cache first',
+    enterEmailPassword: 'Please enter email and password',
+    emailPasswordIncorrect: 'Email or password incorrect',
+    loginFailedRetry: 'Login failed, please try again',
+    fillAllRequired: 'Please fill in all required fields',
+    passwordsNotMatch: 'Passwords do not match',
+    registering: 'Registering...',
+    localCacheCleared: 'Local cache cleared',
+    usernameInvalidChars: 'Username can only contain letters, numbers, underscores and hyphens, and cannot be pure numbers or symbols',
+    usernameInvalidLength: 'Username must be between 2-20 characters',
+    passwordInvalidChars: 'Password can only contain letters, numbers and common symbols',
+    passwordInvalidLength: 'Password must be between 6-50 characters'
+  }
+};
+
+// 获取认证模块的多语言文本
+function getAuthText(key, ...args) {
+  const lang = getLanguageIntime() || 'zh';
+  const langMap = AUTH_I18N[lang] || AUTH_I18N.zh;
+  let text = langMap[key] || key;
+  
+  // 支持参数替换 {0}, {1}, ...
+  if (args && args.length > 0) {
+    args.forEach((arg, index) => {
+      text = text.replace(`{${index}}`, arg);
+    });
+  }
+  
+  return text;
+}
+
 // 存储辅助函数 - 支持 Figma 插件和普通环境
 const AuthStorage = {
   // 获取数据（同步版本，仅用于非插件环境）
@@ -2586,17 +2660,17 @@ function tryInitSupabase() {
   }
 }
 
-// 用户认证管理 - 在全局作用域定义，run.js 可以直接访问
+// 用户认证管理
 var AuthManager = {
   currentUser: null,
   usersList: [], // 存储所有用户列表（用于验证）
 
-  // 设置当前用户（由 run.js 的消息回调调用）
+  // 设置当前用户
   setCurrentUser(user) {
     this.currentUser = user;
   },
 
-  // 设置用户列表（由 run.js 的消息回调调用）
+  // 设置用户列表
   setUsersList(users) {
     this.usersList = users || [];
   },
@@ -2671,17 +2745,85 @@ var AuthManager = {
     }
   },
 
+  // 验证用户名格式
+  validateUsername(username) {
+    if (!username) {
+      return { 
+        valid: false, 
+        error: AUTH_I18N.zh.usernameTooShort,
+        errorEn: AUTH_I18N.en.usernameTooShort
+      };
+    }
+    // 用户名只能包含字母、数字、下划线和连字符，长度2-20
+    //不能是纯数字或纯符号
+    if (/^\d+$/.test(username) || /^-+$/.test(username)) {
+      return { 
+        valid: false, 
+        error: AUTH_I18N.zh.usernameInvalidChars,
+        errorEn: AUTH_I18N.en.usernameInvalidChars
+      };
+    }
+    const usernameRegex = /^[a-zA-Z0-9_-]{2,20}$/;
+    if (!usernameRegex.test(username)) {
+      if (username.length < 2 || username.length > 20) {
+        return { 
+          valid: false, 
+          error: AUTH_I18N.zh.usernameInvalidLength,
+          errorEn: AUTH_I18N.en.usernameInvalidLength
+        };
+      }
+      return { 
+        valid: false, 
+        error: AUTH_I18N.zh.usernameInvalidChars,
+        errorEn: AUTH_I18N.en.usernameInvalidChars
+      };
+    }
+    return { valid: true };
+  },
+
+  // 验证密码格式
+  validatePassword(password) {
+    if (!password) {
+      return { 
+        valid: false, 
+        error: AUTH_I18N.zh.passwordTooShort,
+        errorEn: AUTH_I18N.en.passwordTooShort
+      };
+    }
+    // 密码只能包含字母、数字和常见符号，长度6-50
+    const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{6,50}$/;
+    if (!passwordRegex.test(password)) {
+      if (password.length < 6 || password.length > 50) {
+        return { 
+          valid: false, 
+          error: AUTH_I18N.zh.passwordInvalidLength,
+          errorEn: AUTH_I18N.en.passwordInvalidLength
+        };
+      }
+      return { 
+        valid: false, 
+        error: AUTH_I18N.zh.passwordInvalidChars,
+        errorEn: AUTH_I18N.en.passwordInvalidChars
+      };
+    }
+    return { valid: true };
+  },
+
   // 注册
   async register(email, username, password) {
     // 简单验证
     if (!email || !email.includes('@')) {
-      return { success: false, error: '请输入有效的邮箱地址' };
+      return { success: false, error: getAuthText('invalidEmail') };
     }
-    if (!username || username.length < 2) {
-      return { success: false, error: '用户名至少需要2个字符' };
+    // 验证用户名
+    const usernameValidation = this.validateUsername(username);
+    if (!usernameValidation.valid) {
+      return { success: false, error: usernameValidation.error };
     }
-    if (!password || password.length < 6) {
-      return { success: false, error: '密码至少需要6个字符' };
+    // 验证密码
+    const passwordValidation = this.validatePassword(password);
+    if (!passwordValidation.valid) {
+      return { success: false, error: passwordValidation.error };
     }
 
     // 如果使用 Supabase
@@ -2700,13 +2842,12 @@ var AuthManager = {
             'URL configured': !!AUTH_CONFIG.SUPABASE_URL,
             'Key configured': !!AUTH_CONFIG.SUPABASE_ANON_KEY
           });
-          return { success: false, error: 'Supabase 未初始化，请检查配置和网络连接' };
+          return { success: false, error: getAuthText('supabaseNotInitialized') };
         }
       }
       
       try {
         // 使用 Supabase 注册
-        // 注意：如果 Supabase 启用了邮箱确认，需要配置正确的重定向 URL
         const { data, error } = await supabaseClient.auth.signUp({
           email: email,
           password: password,
@@ -2714,8 +2855,6 @@ var AuthManager = {
             data: {
               username: username
             },
-            // 如果需要邮箱确认，可以在这里指定重定向 URL
-            // emailRedirectTo: 'https://your-domain.com/auth/callback'
           }
         });
 
@@ -2736,29 +2875,72 @@ var AuthManager = {
             error.message?.toLowerCase().includes('user already registered') ||
             error.message?.toLowerCase().includes('email already registered') ||
             error.status === 422 && error.message?.toLowerCase().includes('exists') ||
-            error.code === '23505'; // PostgreSQL unique violation
+            error.code === '23505' || // PostgreSQL unique violation
+            error.message?.toLowerCase().includes('duplicate') ||
+            error.message?.toLowerCase().includes('already exists');
           
           if (isAlreadyRegistered) {
-            errorMsg = '该邮箱已在 Supabase 中注册，请直接登录（清除本地缓存不会删除数据库记录）';
+            errorMsg = getAuthText('emailAlreadyRegistered');
           } else if (error.status === 429 || error.code === 'over_email_send_rate_limit') {
             // 速率限制错误
             const waitTime = error.message.match(/(\d+)\s*seconds?/i)?.[1] || '7';
-            errorMsg = `请求过于频繁，请等待 ${waitTime} 秒后再试`;
+            errorMsg = getAuthText('rateLimitError', waitTime);
           } else if (error.message?.toLowerCase().includes('invalid')) {
-            errorMsg = '邮箱格式不正确';
+            errorMsg = getAuthText('invalidEmailFormat');
           } else {
             // 显示原始错误信息，便于调试
-            errorMsg = `注册失败: ${error.message || '未知错误'}`;
+            errorMsg = getAuthText('registrationFailed', error.message || getAuthText('unknownError'));
           }
           return { success: false, error: errorMsg };
         }
 
         if (!data.user) {
-          return { success: false, error: '注册失败，请重试' };
+          return { success: false, error: getAuthText('registrationFailedRetry') };
         }
-
-        // 检查是否有 session（某些 Supabase 配置需要邮箱确认）
+        
+        // 验证用户是否真的是新创建的（Supabase 可能返回已存在的用户对象而不报错）
+        const now = new Date();
+        const createdAt = data.user.created_at ? new Date(data.user.created_at) : null;
+        const timeDiff = createdAt ? (now - createdAt) / 1000 : null; // 秒
         const { data: { session } } = await supabaseClient.auth.getSession();
+        
+        // 检查用户配置是否已存在（最可靠的检查方法）
+        try {
+          const { data: existingProfile } = await supabaseClient
+            .from('user_profiles')
+            .select('id')
+            .eq('id', data.user.id)
+            .maybeSingle();
+          
+          if (existingProfile) {
+            if (session) await supabaseClient.auth.signOut();
+            return { success: false, error: getAuthText('emailAlreadyRegistered') };
+          }
+        } catch (e) {
+          // 查询失败，继续其他检查
+        }
+        
+        // 检查用户是否真的是新创建的
+        // 新注册的用户创建时间应该在几秒内，如果超过10秒很可能是已存在的用户
+        if (timeDiff !== null && timeDiff > 10) {
+          if (session) await supabaseClient.auth.signOut();
+          return { success: false, error: getAuthText('emailAlreadyRegistered') };
+        }
+        
+        // 如果用户已确认邮箱且创建时间超过3秒，肯定是已存在的用户
+        if (data.user.email_confirmed_at && timeDiff !== null && timeDiff > 3) {
+          if (session) await supabaseClient.auth.signOut();
+          return { success: false, error: getAuthText('emailAlreadyRegistered') };
+        }
+        
+        // 如果用户有登录历史，说明是已存在的用户
+        if (data.user.last_sign_in_at && timeDiff !== null && timeDiff > 5) {
+          const lastSignIn = new Date(data.user.last_sign_in_at);
+          if ((now - lastSignIn) / 1000 > 5) {
+            if (session) await supabaseClient.auth.signOut();
+            return { success: false, error: getAuthText('emailAlreadyRegistered') };
+          }
+        }
         
         // 创建用户配置记录（只有在有 session 时才尝试）
         if (session) {
@@ -2775,6 +2957,20 @@ var AuthManager = {
 
             if (profileError) {
               console.error('Failed to create user profile:', profileError);
+              
+              // 检查是否是唯一约束冲突（用户已存在）
+              const isDuplicateError = 
+                profileError.code === '23505' || // PostgreSQL unique violation
+                profileError.message?.toLowerCase().includes('duplicate') ||
+                profileError.message?.toLowerCase().includes('already exists') ||
+                profileError.message?.toLowerCase().includes('unique constraint');
+              
+              if (isDuplicateError) {
+                // 用户配置已存在，说明用户之前已注册
+                await supabaseClient.auth.signOut();
+                return { success: false, error: getAuthText('emailAlreadyRegistered') };
+              }
+              
               // 如果插入失败，可能是 RLS 策略问题，但继续执行
               // 用户配置可能由数据库触发器自动创建
             } else {
@@ -2809,26 +3005,26 @@ var AuthManager = {
             success: true, 
             user: this.currentUser,
             needsConfirmation: true,
-            message: '注册成功！请检查邮箱并点击确认链接以完成注册。'
+            message: getAuthText('registrationSuccess')
           };
         }
       } catch (e) {
         console.error('Supabase registration failed:', e);
-        return { success: false, error: '注册失败，请重试' };
+        return { success: false, error: getAuthText('registrationFailedRetry') };
       }
     }
 
     // 降级到本地存储（仅在未使用 Supabase 时）
     if (AUTH_CONFIG.USE_SUPABASE) {
       // 如果使用 Supabase 但注册失败，不应该降级到本地存储
-      return { success: false, error: '注册失败，请检查 Supabase 配置或网络连接' };
+      return { success: false, error: getAuthText('registrationFailedConfig') };
     }
     
     // 清除可能存在的旧数据，确保检查的是最新数据
     const existingUsers = this.getUsersList();
     console.log('Checking local users list:', existingUsers);
     if (existingUsers && existingUsers.length > 0 && existingUsers.find(u => u.email === email)) {
-      return { success: false, error: '该邮箱已在本地注册，请先清除缓存' };
+      return { success: false, error: getAuthText('emailAlreadyRegisteredLocal') };
     }
 
     const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -2856,7 +3052,7 @@ var AuthManager = {
   // 登录
   async login(email, password) {
     if (!email || !password) {
-      return { success: false, error: '请输入邮箱和密码' };
+      return { success: false, error: getAuthText('enterEmailPassword') };
     }
 
     // 如果使用 Supabase
@@ -2869,11 +3065,11 @@ var AuthManager = {
         });
 
         if (error) {
-          return { success: false, error: '邮箱或密码错误' };
+          return { success: false, error: getAuthText('emailPasswordIncorrect') };
         }
 
         if (!data.user) {
-          return { success: false, error: '登录失败，请重试' };
+          return { success: false, error: getAuthText('loginFailedRetry') };
         }
 
         // 获取用户配置信息
@@ -2939,7 +3135,7 @@ var AuthManager = {
         return { success: true, user: this.currentUser };
       } catch (e) {
         console.error('Supabase login failed:', e);
-        return { success: false, error: '登录失败，请重试' };
+        return { success: false, error: getAuthText('loginFailedRetry') };
       }
     }
 
@@ -2948,11 +3144,11 @@ var AuthManager = {
     const user = existingUsers.find(u => u.email === email);
     
     if (!user) {
-      return { success: false, error: '邮箱或密码错误' };
+      return { success: false, error: getAuthText('emailPasswordIncorrect') };
     }
 
-    if (user.password !== this.hashPassword(password)) {
-      return { success: false, error: '邮箱或密码错误' };
+    if (!this.verifyPassword(password, user.password)) {
+      return { success: false, error: getAuthText('emailPasswordIncorrect') };
     }
 
     this.currentUser = { ...user };
@@ -2997,7 +3193,7 @@ var AuthManager = {
       }
     }
     this.updateUI();
-    console.log('本地缓存已清除');
+    console.log(getAuthText('localCacheCleared'));
   },
 
   // 获取用户列表
@@ -3011,16 +3207,53 @@ var AuthManager = {
     return this.usersList;
   },
 
-  // 简单密码哈希（生产环境应使用更安全的方法）
-  hashPassword(password) {
-    // 简单的哈希，仅用于演示，生产环境应使用 bcrypt 等
+  // 密码哈希（使用盐值和多重哈希，安全性要求不高）
+  hashPassword(password, salt = null) {
+    // 使用固定盐值（可以改为从配置读取）
+    const defaultSalt = 'ynyuset_toolsetfig_2024';
+    const usedSalt = salt || defaultSalt;
+    
+    // 组合密码和盐值
+    const saltedPassword = password + usedSalt + password.length;
+    
+    // 使用改进的哈希算法（djb2 变种）
+    let hash = 5381; // djb2 初始值
+    for (let i = 0; i < saltedPassword.length; i++) {
+      const char = saltedPassword.charCodeAt(i);
+      hash = ((hash << 5) + hash) + char; // hash * 33 + char
+    }
+    
+    // 二次哈希以增加安全性
+    const hashStr = Math.abs(hash).toString(36);
+    let secondHash = 0;
+    for (let i = 0; i < hashStr.length; i++) {
+      secondHash = ((secondHash << 5) - secondHash) + hashStr.charCodeAt(i);
+      secondHash = secondHash & secondHash; // 转换为 32 位整数
+    }
+    
+    // 返回组合的哈希值（包含盐值标识）
+    return `h_${Math.abs(secondHash).toString(36)}_${hashStr}`;
+  },
+
+  // 验证密码（支持新旧哈希格式，向后兼容）
+  verifyPassword(password, storedHash) {
+    if (!password || !storedHash) {
+      return false;
+    }
+    
+    // 新格式：以 h_ 开头
+    if (storedHash.startsWith('h_')) {
+      return storedHash === this.hashPassword(password);
+    }
+    
+    // 旧格式：兼容旧的简单哈希算法
     let hash = 0;
     for (let i = 0; i < password.length; i++) {
       const char = password.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32bit integer
+      hash = hash & hash;
     }
-    return hash.toString();
+    return storedHash === hash.toString();
   },
 
   // 更新 UI
@@ -3088,6 +3321,12 @@ var AuthManager = {
     if (registerPassword) registerPassword.value = '';
     if (registerPasswordConfirm) registerPasswordConfirm.value = '';
     this.hideError('register');
+    
+    // 隐藏验证提示
+    const registerUsernameError = document.getElementById('register-username-error');
+    const registerPasswordError = document.getElementById('register-password-error');
+    if (registerUsernameError) registerUsernameError.style.display = 'none';
+    if (registerPasswordError) registerPasswordError.style.display = 'none';
   },
 
   // 显示用户信息
@@ -3199,7 +3438,7 @@ if (btnLogin) {
     if (result.success) {
       AuthManager.showUserInfo();
     } else {
-      AuthManager.showError('login', result.error || '登录失败，请重试');
+      AuthManager.showError('login', result.error || getAuthText('loginFailedRetry'));
     }
   });
 }
@@ -3223,12 +3462,12 @@ if (btnRegister) {
     
     // 基本验证
     if (!email || !username || !password) {
-      AuthManager.showError('register', '请填写所有必填项');
+      AuthManager.showError('register', getAuthText('fillAllRequired'));
       return;
     }
     
     if (password !== passwordConfirm) {
-      AuthManager.showError('register', '两次输入的密码不一致');
+      AuthManager.showError('register', getAuthText('passwordsNotMatch'));
       return;
     }
     
@@ -3238,7 +3477,7 @@ if (btnRegister) {
     btnRegister.disabled = true;
     btnRegister.style.opacity = '0.6';
     btnRegister.style.pointerEvents = 'none';
-    btnRegister.textContent = '注册中...';
+    btnRegister.textContent = getAuthText('registering');
     
     let result = null;
     let shouldKeepDisabled = false;
@@ -3248,23 +3487,31 @@ if (btnRegister) {
       if (result.success) {
         if (result.needsConfirmation) {
           // 需要邮箱确认
-          AuthManager.showError('register', result.message || '注册成功！请检查邮箱并点击确认链接。');
+          AuthManager.showError('register', result.message || getAuthText('registrationSuccessShort'));
           // 3秒后切换到登录表单
           setTimeout(() => {
             AuthManager.showLoginForm();
             AuthManager.hideError('register');
+            //自动填充好账号邮箱
+            document.getElementById('login-email').value = email;
           }, 3000);
         } else {
           // 注册成功且已登录
           AuthManager.showUserInfo();
         }
       } else {
-        AuthManager.showError('register', result.error || '注册失败，请重试');
+        AuthManager.showError('register', result.error || getAuthText('registrationFailedRetry'));
         
         // 如果是速率限制错误，保持按钮禁用一段时间
-        if (result.error?.includes('等待') || result.error?.includes('秒')) {
+        const lang = getLanguageIntime() || 'zh';
+        const waitPattern = lang === 'zh' ? /(\d+)\s*秒/ : /(\d+)\s*seconds?/i;
+        const rateLimitKeywords = lang === 'zh' ? ['等待', '秒'] : ['wait', 'seconds'];
+        const isRateLimitError = rateLimitKeywords.some(keyword => 
+          result.error?.toLowerCase().includes(keyword.toLowerCase())
+        );
+        if (isRateLimitError) {
           shouldKeepDisabled = true;
-          const waitTime = parseInt(result.error.match(/(\d+)\s*秒/)?.[1] || '7') * 1000;
+          const waitTime = parseInt(result.error.match(waitPattern)?.[1] || '7') * 1000;
           setTimeout(() => {
             isRegistering = false;
             btnRegister.disabled = false;
@@ -3277,7 +3524,7 @@ if (btnRegister) {
       }
     } catch (e) {
       console.error('Registration error:', e);
-      AuthManager.showError('register', '注册失败，请重试');
+      AuthManager.showError('register', getAuthText('registrationFailedRetry'));
     } finally {
       // 恢复按钮状态（除非是速率限制）
       if (!shouldKeepDisabled) {
@@ -3291,25 +3538,69 @@ if (btnRegister) {
   });
 }
 
+// 用户名实时验证
+const registerUsername = document.getElementById('register-username');
+const registerUsernameError = document.getElementById('register-username-error');
+if (registerUsername && registerUsernameError) {
+  const updateUsernameValidation = () => {
+    const username = registerUsername.value.trim();
+    if (username) {
+      const validation = AuthManager.validateUsername(username);
+      if (!validation.valid) {
+        // 显示错误提示（支持中英文）
+        registerUsernameError.style.display = 'block';
+        registerUsernameError.textContent = getLanguageIntime() === 'zh' ? validation.error : validation.errorEn || validation.error;
+        registerUsernameError.setAttribute('data-zh-text', validation.error);
+        registerUsernameError.setAttribute('data-en-text', validation.errorEn || validation.error);
+      } else {
+        // 隐藏错误提示
+        registerUsernameError.style.display = 'none';
+      }
+    } else {
+      // 输入为空时隐藏错误提示
+      registerUsernameError.style.display = 'none';
+    }
+  };
+  
+  registerUsername.addEventListener('input', updateUsernameValidation);
+  registerUsername.addEventListener('blur', updateUsernameValidation);
+}
+
+// 密码实时验证
+const registerPassword = document.getElementById('register-password');
+const registerPasswordError = document.getElementById('register-password-error');
+if (registerPassword && registerPasswordError) {
+  const updatePasswordValidation = () => {
+    const password = registerPassword.value;
+    if (password) {
+      const validation = AuthManager.validatePassword(password);
+      if (!validation.valid) {
+        // 显示错误提示（支持中英文）
+        registerPasswordError.style.display = 'block';
+        registerPasswordError.textContent = getLanguageIntime() === 'zh' ? validation.error : validation.errorEn || validation.error;
+        registerPasswordError.setAttribute('data-zh-text', validation.error);
+        registerPasswordError.setAttribute('data-en-text', validation.errorEn || validation.error);
+      } else {
+        // 隐藏错误提示
+        registerPasswordError.style.display = 'none';
+      }
+    } else {
+      // 输入为空时隐藏错误提示
+      registerPasswordError.style.display = 'none';
+    }
+  };
+  
+  registerPassword.addEventListener('input', updatePasswordValidation);
+  registerPassword.addEventListener('blur', updatePasswordValidation);
+}
+
 // 退出登录按钮
 const btnLogout = document.querySelector('[data-btn-logout]');
 if (btnLogout) {
   btnLogout.addEventListener('click', () => {
     AuthManager.logout();
   });
-}
-
-// 清除本地缓存按钮
-const btnClearCache = document.querySelector('[data-btn-clear-cache]');
-if (btnClearCache) {
-  btnClearCache.addEventListener('click', () => {
-    if (confirm('确定要清除所有本地缓存吗？这将删除本地存储的用户数据。')) {
-      AuthManager.clearLocalCache();
-      AuthManager.showLoginForm();
-      alert('本地缓存已清除');
-    }
-  });
-}
+};
 
 // 关闭登录弹窗
 function setupLoginDialogClose() {
@@ -3320,18 +3611,8 @@ function setupLoginDialogClose() {
         dailogLogin.style.display = 'none';
       }
     });
-    
-    // ESC 键关闭（避免重复绑定）
-    if (!dailogLogin.hasAttribute('data-esc-listener')) {
-      dailogLogin.setAttribute('data-esc-listener', 'true');
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && dailogLogin && dailogLogin.style.display === 'flex') {
-          dailogLogin.style.display = 'none';
-        }
-      });
-    }
-  }
-}
+  };
+};
 
 // 确保在 DOM 加载后执行初始化
 if (document.readyState === 'loading') {
@@ -3343,7 +3624,8 @@ if (document.readyState === 'loading') {
   // DOM 已经加载完成
   initAuthModule();
   setupLoginDialogClose();
-}
+};
 
-// AuthManager 已在全局作用域中定义，run.js 可以直接访问
-// 在打包后，run.js 和 main.js 都在同一个文档中，可以直接使用
+function getLanguageIntime(){
+  return ROOT.getAttribute('data-language').toLowerCase();
+};

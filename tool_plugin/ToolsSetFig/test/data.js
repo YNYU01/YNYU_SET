@@ -7,7 +7,6 @@ let skillSecInfo = [
   {
     id: 'EaseTransform',
     name: ["斜切","skew"],
-    /*name: ["简单变形","ease transform"],*/
   },
   {
     id: 'UniformScale',
@@ -41,19 +40,23 @@ let skillSecInfo = [
     id: 'GetEditableSVG',
     name: ["获取可编辑SVG","get editable SVG"],
   },
+  {
+    id: 'ShadowAsStroke',
+    name: ["阴影伪描边","shadow as stroke"],
+  },
 ]
 
 let toUserTips = {
   worktime: ["🔒下班时间不建议工作~","🔒You shouldn't work after work!"],
   random: [
-    ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
-    ["工作是做不完的, 及时休息~","Put down your work and rest in time~"],
-    ["请支持开源+设计~","Support open source + design~"],
-    ["提效不是义务, 理应多劳多得~","Refuse malicious overtime work~"],
-    ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
-    ["工作是做不完的, 及时休息~","Put down your work and rest in time~"],
-    ["请支持开源+设计~","Support open source + design~"],
-    ["提效不是义务, 理应多劳多得~","Refuse malicious overtime work~"],
+    ["椅子说：你该起来走走了~","Your chair says: time to walk~"],
+    ["累了就歇歇, 效率会更高~","Take a break, boost efficiency~"],
+    ["开源让设计更美好~","Open source makes design better~"],
+    ["提效是为了更好地生活~","Efficiency for a better life~"],
+    ["坐久了, 起来扭一扭~","Sitting too long? Time to move~"],
+    ["工作虽重要, 休息也必要~","Work matters, but so does rest~"],
+    ["支持开源, 让创意自由~","Support open source, free creativity~"],
+    ["效率提升, 拒绝内卷~","Boost efficiency, not burnout~"],
   ],
 };
 

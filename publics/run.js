@@ -108,8 +108,8 @@ if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
   ROOT.setAttribute('data-language','En');
   storageMix.set('userLanguage','En');
 }else{
-  ROOT.setAttribute('data-language','En');
-  storageMix.set('userLanguage','En');
+  ROOT.setAttribute('data-language','Zh');
+  storageMix.set('userLanguage','Zh');
 }
 
 function getUnicode(text){

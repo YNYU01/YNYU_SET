@@ -115,7 +115,8 @@ p [data-highlight]{
 }
 
 [data-option="option"] {
-  padding: 0.5ch 0 0.5ch 3ch;
+  padding: var(--op-pad-t,0.5ch) 0 var(--op-pad-t,0.5ch) var(--op-pad-l,3ch);
+  box-sizing: border-box;
 }
 
 [data-language="En"] [data-tips]::after{
@@ -153,7 +154,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
 
 [data-input-unit]{
   height: 20px;
-  width: 14px;
+  width: 18px;
   flex: 0 0 auto;
   padding: 0 0 0 0.5ch;
   background: var(--boxGry);
@@ -1109,21 +1110,24 @@ input[type="checkbox"]:checked + .btn-moreset{
   border-radius: 10px;
   border: 1px solid var(--boxBod);
   background: var(--boxGry);
+  padding: 20px;
   max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
+  max-width: 400px;
+  width: calc(100% - 40px);
+  box-sizing: border-box;
+  white-space: normal;
 }
 
 [data-dailoglogin-close]{
   width: 100%;
   max-width: 400px;
-  padding: 10px;
+  padding: 10px 20px;
   box-sizing: border-box;
 }
 
 [data-dailoglogin-box] input[type="text"],
 [data-dailoglogin-box] input[type="password"]{
-  font-size: 14px;
+  font-size: 12px;
 }
 
 [data-dailoglogin-box] input[type="text"]::placeholder,
@@ -1137,6 +1141,16 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: rgba(166, 72, 72, 0.1);
 }
 
+[data-user-avatar-box]{
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--themeColor);
+  color: #000;
+  font-size: 20px;
+  font-weight: bold;
+}
 [data-user-avatar]{
   text-transform: uppercase;
 }

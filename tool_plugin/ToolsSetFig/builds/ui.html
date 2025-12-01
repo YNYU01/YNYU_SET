@@ -1,8 +1,8 @@
-<html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
+<html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -79,7 +79,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -199,7 +199,8 @@ p [data-highlight]{
 }
 
 [data-option="option"] {
-  padding: 0.5ch 0 0.5ch 3ch;
+  padding: var(--op-pad-t,0.5ch) 0 var(--op-pad-t,0.5ch) var(--op-pad-l,3ch);
+  box-sizing: border-box;
 }
 
 [data-language="En"] [data-tips]::after{
@@ -237,7 +238,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
 
 [data-input-unit]{
   height: 20px;
-  width: 14px;
+  width: 18px;
   flex: 0 0 auto;
   padding: 0 0 0 0.5ch;
   background: var(--boxGry);
@@ -1082,6 +1083,16 @@ input[type="checkbox"]:checked + .btn-moreset{
   --mainColor: var(--boxBod)
 }
 
+[data-dailoglogin-box] [data-input]{
+  width: 100%;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--boxBod);
+  border-radius: 6px;
+  background: var(--boxBak);
+  color: var(--mainColor);
+}
+
 #skillsearch{
   height: 24px;
 }
@@ -1183,21 +1194,24 @@ input[type="checkbox"]:checked + .btn-moreset{
   border-radius: 10px;
   border: 1px solid var(--boxBod);
   background: var(--boxGry);
+  padding: 20px;
   max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
+  max-width: 400px;
+  width: calc(100% - 40px);
+  box-sizing: border-box;
+  white-space: normal;
 }
 
 [data-dailoglogin-close]{
   width: 100%;
   max-width: 400px;
-  padding: 10px;
+  padding: 10px 20px;
   box-sizing: border-box;
 }
 
 [data-dailoglogin-box] input[type="text"],
 [data-dailoglogin-box] input[type="password"]{
-  font-size: 14px;
+  font-size: 12px;
 }
 
 [data-dailoglogin-box] input[type="text"]::placeholder,
@@ -1211,6 +1225,16 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: rgba(166, 72, 72, 0.1);
 }
 
+[data-user-avatar-box]{
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--themeColor);
+  color: #000;
+  font-size: 20px;
+  font-weight: bold;
+}
 [data-user-avatar]{
   text-transform: uppercase;
 }
@@ -2495,10 +2519,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         </div>  
       </div> 
     </div>
-    <div data-mainset-top class="df-lc" style="gap: 4px; margin-left: 2px;">
+    <div data-mainset-top class="df-lc gap4" style="margin-left: 2px;">
       <div id="btn-theme-3">
         <input id="theme-3" data-theme-check type="checkbox" checked>
-        <label for="theme-3" class="btn-theme" style="position: relative;">
+        <label for="theme-3" class="btn-theme pos-r">
           <btn-theme></btn-theme>
         </label>
       </div>
@@ -2511,7 +2535,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         </div>
       </label>
     </div>
-    <div class="df-cc" style="gap:4px; margin-right: 2%; font-size: 12px;">
+    <div class="df-cc gap4 font-s12" style="margin-right: 2%;">
       <div data-skill-search class="df-cc" onclick="getElementMix('data-dailogsearch').style.display = 'flex'">
         <btn-search></btn-search>
       </div>
@@ -2588,60 +2612,61 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         <btn-close></btn-close>
       </div>
     </div>
-    <div data-dailoglogin-box class="df-ffc" style="min-width: 300px; max-width: 400px; padding: 20px; gap: 16px;">
+    <div data-dailoglogin-box class="df-ffc pos-r ovy noscrollbar">
       <!-- 登录表单 -->
-      <div data-login-form class="df-ffc" style="gap: 12px;">
-        <div class="df-cc" style="font-size: 18px; margin-bottom: 8px;">
-          <div data-en-text="LOGIN">登录</div>
+      <div data-login-form class="df-ffc gap12">
+        <div class="df-cc font-s16" style="margin-bottom: 8px; font-weight: 700;">
+          <div data-en-text="LOG IN">登录</div>
         </div>
-        <div class="df-ffc" style="gap: 8px;">
-          <input type="text" id="login-email" placeholder="邮箱" data-input data-placeholder-en="Email" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
-          <input type="password" id="login-password" placeholder="密码" data-input data-placeholder-en="Password" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
+        <div class="df-ffc gap8">
+          <input type="text" id="login-email" placeholder="邮箱" data-input data-en-placeholder="Email"/>
+          <input type="password" id="login-password" placeholder="密码" data-input data-en-placeholder="Password"/>
         </div>
-        <div data-login-error style="display: none; color: var(--code7); font-size: 12px; padding: 4px 8px;"></div>
-        <div class="df-sc" style="gap: 8px;">
-          <div data-btn="main" data-btn-login class="df-cc" style="flex: 1;" data-en-text="LOGIN">登录</div>
-          <div data-btn="main" data-btn-show-register class="df-cc" style="flex: 1; opacity: 0.6;" data-en-text="REGISTER">注册</div>
+        <div data-login-error class="font-s12" style="display: none; color: var(--code7); padding: 4px 8px;"></div>
+        <div class="df-sc gap8">
+          <div data-btn="main" data-btn-login class="df-cc" style="flex: 1;" data-en-text="LOG IN">登录</div>
+          <div data-btn="main" data-btn-show-register class="df-cc fl1 op6" data-en-text="SIGN UP →">注册 →</div>
         </div>
-        <div class="df-cc" style="font-size: 11px; opacity: 0.6; margin-top: 8px;">
-          <div data-en-text="Login for feedback & premium features">登录后可提交反馈并使用付费功能</div>
+        <div class="df-cc font-s10 op6" style="margin-top: 8px; white-space: normal;">
+          <span data-en-text="*This plugin does't collect any data related to the current file, only for feedback and premium plan">*插件不收集任何与当前文件有关的数据，仅用于提交反馈和付费计划</span>
         </div>
       </div>
       <!-- 注册表单 -->
-      <div data-register-form class="df-ffc" style="gap: 12px; display: none;">
-        <div class="df-cc" style="font-size: 18px; margin-bottom: 8px;">
-          <div data-en-text="REGISTER">注册</div>
+      <div data-register-form class="df-ffc gap12" style="display: none;">
+        <div class="df-cc font-s16" style="margin-bottom: 8px; font-weight: 700;">
+          <div data-en-text="SIGN UP">注册</div>
         </div>
-        <div class="df-ffc" style="gap: 8px;">
-          <input type="text" id="register-email" placeholder="邮箱" data-input data-placeholder-en="Email" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
-          <input type="text" id="register-username" placeholder="用户名" data-input data-placeholder-en="Username" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
-          <input type="password" id="register-password" placeholder="密码" data-input data-placeholder-en="Password" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
-          <input type="password" id="register-password-confirm" placeholder="确认密码" data-input data-placeholder-en="Confirm Password" style="width: 100%; padding: 8px 12px; box-sizing: border-box; border: 1px solid var(--boxBod); border-radius: 6px; background: var(--boxBak); color: var(--mainColor);"/>
+        <div class="df-ffc gap8">
+          <input type="text" id="register-email" placeholder="邮箱" data-input data-en-placeholder="Email"/>
+          <div id="register-username-wrapper" class="df-ffc pos-r gap4">
+            <div id="register-username-error" class="font-s10" data-en-text style="display: none; color: var(--code7); padding: 2px 4px;"></div>
+            <input type="text" id="register-username" placeholder="用户名" data-input data-en-placeholder="Username"/>
+          </div>
+          <div id="register-password-wrapper" class="df-ffc pos-r gap4">
+            <div id="register-password-error" class="font-s10" data-en-text style="display: none; color: var(--code7); padding: 2px 4px;"></div>
+            <input type="password" id="register-password" placeholder="密码" data-input data-en-placeholder="Password"/>
+          </div>
+          <input type="password" id="register-password-confirm" placeholder="确认密码" data-input data-en-placeholder="Confirm Password"/>
         </div>
-        <div data-register-error style="display: none; color: var(--code7); font-size: 12px; padding: 4px 8px;"></div>
-        <div class="df-sc" style="gap: 8px;">
-          <div data-btn="main" data-btn-register class="df-cc" style="flex: 1;" data-en-text="REGISTER">注册</div>
-          <div data-btn="main" data-btn-show-login class="df-cc" style="flex: 1; opacity: 0.6;" data-en-text="LOGIN">登录</div>
+        <div data-register-error class="font-s12" style="display: none; color: var(--code7); padding: 4px 8px;"></div>
+        <div class="df-sc gap8">
+          <div data-btn="main" data-btn-register class="df-cc fl1" data-en-text="SIGN UP">注册</div>
+          <div data-btn="main" data-btn-show-login class="df-cc fl1 op6" data-en-text="LOG IN →">登录 →</div>
         </div>
       </div>
       <!-- 用户信息显示 -->
-      <div data-user-info class="df-ffc" style="gap: 12px; display: none;">
-        <div class="df-sc" style="gap: 12px; align-items: center;">
-          <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--themeColor); color: #000; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">
+      <div data-user-info class="df-ffc gap12" style="display: none;">
+        <div class="df-sc gap12" style="align-items: center;">
+          <div class="df-cc" data-user-avatar-box>
             <span data-user-avatar>U</span>
           </div>
-          <div class="df-ffc" style="flex: 1; gap: 4px;">
-            <div style="font-size: 16px; font-weight: bold;" data-user-display-name>用户名</div>
-            <div style="font-size: 12px; opacity: 0.6;" data-user-display-email>email@example.com</div>
-            <div style="font-size: 11px; opacity: 0.5;" data-en-text="Premium User" data-user-premium style="display: none;">付费用户</div>
+          <div class="df-ffc gap4 fl1">
+            <div class="font-s16" style="font-weight: bold;" data-user-display-name>--</div>
+            <div class="font-s12 op6" data-user-display-email>--</div>
+            <div class="font-s10 op6" data-en-text="Premium User" data-user-premium style="display: none;">付费用户</div>
           </div>
         </div>
-        <div data-btn="main" data-btn-logout class="df-cc" data-en-text="LOGOUT">退出登录</div>
-        <div data-btn="main" data-btn-clear-cache class="df-cc" style="opacity: 0.6;" data-en-text="CLEAR CACHE">清除本地缓存</div>
-        <div class="df-cc" style="font-size: 11px; opacity: 0.6;">
-          <div data-en-text="User ID">用户ID：</div>
-          <span data-user-id style="font-family: monospace;">-</span>
-        </div>
+        <div data-btn="main" data-btn-logout class="df-cc" data-en-text="LOG OUT">退出登录</div>
       </div>
     </div>
   </div>
@@ -2650,12 +2675,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
       <div class="h100 df-ffc" style="justify-content: space-between;">
         <div ></div>
-        <div class="df-ffc" style="gap: 8px;">
+        <div class="df-ffc gap8">
           <!-- 用户登录入口 -->
           <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
             <div data-user-name style="display: none;" data-en-text="USER">用户</div>
-            <div data-user-login-text data-en-text="LOGIN">登录</div>
-            <div style="width:16px; height:16px; margin-left: 4px;">
+            <div data-user-login-text data-en-text="LOG IN">登录</div>
+            <div class="pad2" style="width:16px; height:16px; margin-left: 4px;  --mainColor:#2e2e2e;">
               <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10Z" fill="var(--mainColor)"/>
                 <path d="M10 12C5.58172 12 2 13.7909 2 16V20H18V16C18 13.7909 14.4183 12 10 12Z" fill="var(--mainColor)"/>
@@ -2664,28 +2689,30 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           </div>
           <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" rel="noopener noreferrer" target="_blank" class="df-cc" data-btn="help">
             <div data-en-text="HELP DOC">帮助文档</div>
-            <div style="width:20px; height:20px; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
+            <div style="width:20px; height:20px; --mainColor:#2e2e2e; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
               <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.71411 11.3821H20.7141" stroke="#000" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
-                <path d="M13.3421 4.38208L20.7141 11.3821L13.3421 18.3821" stroke="#000" stroke-width="var(--arrow-w)"></path>
+                <path stroke="var(--mainColor)" d="M2.71411 11.3821H20.7141" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
+                <path stroke="var(--mainColor)" d="M13.3421 4.38208L20.7141 11.3821L13.3421 18.3821" stroke-width="var(--arrow-w)"></path>
               </svg>
             </div>
           </a>
         </div>
       </div>
       <div data-mainset-side-box class="df-sc">
-        <a href="https://www.ynyuset.cn" rel="noopener noreferrer" target="_blank" class="df-lc"
+        <a href="https://www.ynyuset.cn" rel="noopener noreferrer" target="_blank" class="df-lc font-s10 gap2"
         data-tips="set" data-tips-y="top" data-tips-x="left" 
-        style="--tips-gap: -16px; --tips-text: '🔗https://www.ynyuset.cn'; --tips-text-en: '🔗https://www.ynyuset.cn';
-        gap: 2px; color: var(--mainColor); font-size: 10px; flex: 1;">
+        style="--tips-gap: -16px; 
+        --tips-text: '🔗https://www.ynyuset.cn'; 
+        --tips-text-en: '🔗https://www.ynyuset.cn';
+        color: var(--mainColor); flex: 1;">
           ©2024-2025 
           <set-en data-any="en" class="fl0" style="height: 20px; margin-top: -2px;"></set-en>
           <set-zh data-any="zh" class="fl0" style="height: 20px; margin-top: -3px;"></set-zh>
         </a>
-        <div data-mainset-side class="df-lc" style="gap: 4px;">
+        <div data-mainset-side class="df-lc gap4">
           <div id="btn-theme-1">
             <input id="theme-1" data-theme-check type="checkbox" checked>
-            <label for="theme-1" class="btn-theme" style="position: relative;">
+            <label for="theme-1" class="btn-theme pos-r">
               <btn-theme></btn-theme>
             </label>
           </div>
@@ -2727,14 +2754,14 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <div class="df-ffc w100 df-cc">
     <div data-page-id="page" class="df-ffc w100" data-tab-pick="create">
       <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: flex;">
-        <div class="wh100 df-ffc ovy noscrollbar" style="height: calc(100% - 50px); max-width: 560px; align-items: center; padding:0 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovy noscrollbar bsb" style="height: calc(100% - 50px); max-width: 560px; align-items: center; padding:0 10px;">
           <div class="wh100 df-ffc" style="align-items: center;">
             <!--步骤1-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Upload | Drop | Input" >上传 | 拖拽 | 输入</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="data to create node in batches" style="opacity: 0.6;"> 数据以批量创建内容</span>
+              <span data-any="vw300" data-en-text="data to create node in batches op6"> 数据以批量创建内容</span>
               <div data-any="vw300" data-help="create" class="fl0 df-cc">?</div>
             </div>
             <!--上传文件-->
@@ -2743,7 +2770,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 <div data-file-info class="file-tag" data-en-text="📁 No files there">📁 未选择任何文件</div>
               </div>
               <div data-mode-id="upload" class="df-cc">
-                <div class="df-ffc df-cc" style="gap: 4px;">
+                <div class="df-ffc df-cc gap4">
                   <input id="input-user-img" type="file" accept=".jpg,.jpeg,.jfif,.webp,.png,.apng,.gif" style="display: none;" multiple/>
                   <label for="input-user-img" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   style=" --tips-text: '可上传1~10张大图, 支持常见图片格式'; --tips-text-en: 'Upload 1~10 large images (common formats)';" >
@@ -2751,7 +2778,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </label>
                   <div data-btn-name data-any="vw300" data-en-text="Cut large image">大图自动切片</div>
                 </div>
-                <div class="df-ffc df-cc" style="gap: 4px;">
+                <div class="df-ffc df-cc gap4">
                   <input id="input-user-table" type="file" accept=".csv,.xls,.xlsx"  style="display: none;"/>
                   <label for="input-user-table" data-tips="auto" data-tips-y="top" data-tips-x="center"
                   style="--tips-text: '上传单个表格, 需按一定格式填写'; --tips-text-en: 'Upload 1 table in the prescribed format';" >
@@ -2759,7 +2786,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </label>
                   <div data-btn-name data-any="vw300" data-en-text="Table to frame">表格创建画板</div>
                 </div>
-                <div class="df-ffc df-cc" style="gap: 4px;">
+                <div class="df-ffc df-cc gap4">
                   <input id="input-user-zy" type="file" accept=".md,.zy,.sketch,.svg,.xml,.json,.zip,.rar,.7z" style="display: none;"/>
                   <label for="input-user-zy" data-tips="auto" data-tips-y="top" data-tips-x="right"
                   style="--xx: 36px;--tips-text: '上传由云即系列插件生成的图层信息文件'; --tips-text-en: 'Upload .zy (by YN+) or other compatible file';" >
@@ -2770,7 +2797,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               </div>
             </div>
             <!--输入参数-->
-            <div class="w100 df" style="flex-wrap: wrap; margin: 4px 0; gap: 4px;">
+            <div class="w100 df gap4" style="flex-wrap: wrap; margin: 4px 0;">
               <div id="upload-textarea-box" data-resize class="pos-r fl1 df-lc">
                 <div class="h100" style="width: 30px;"></div>
                 <div data-textarea-linenum-box data-scroll class="pos-a h100 ovy noscrollbar">
@@ -2819,7 +2846,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div class="h100" data-btn="down">▼</div>
                 </div>
               </div>
-              <div id="upload-set-box" class="df" style="flex-wrap: wrap; margin:0 0 4px 0; gap: 4px;">
+              <div id="upload-set-box" class="df gap4" style="flex-wrap: wrap; margin:0 0 4px 0;">
                 <div id="upload-set-main" class="df">
                   <div id="upload-set-1" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   style=" --tips-text:'转为标签/大纲';  --tips-text-en:'Convert to tags/catalogue';">
@@ -2850,8 +2877,8 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               </div>
             </div>
             <!--更多设置-->
-            <div id="upload-moreset-box" class="w100 df-lc" style="flex-wrap: wrap;gap: 4px; display: none;">
-              <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 180px;">
+            <div id="upload-moreset-box" class="w100 df-lc gap4" style="flex-wrap: wrap; display: none;">
+              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 180px;">
                 <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
                   --tips-text:'修改生效列, 用于剔除数据';  --tips-text-en:'Select columns to take effect'; width: 20px; height: 20px;">
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2872,7 +2899,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <btn-reset></btn-reset>
                 </div>  
               </div>
-              <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 180px;">
+              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 180px;">
                 <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
                   --tips-text:'画板命名后缀, 自定义格式或选择预设';  --tips-text-en:'Frame naming suffix,input or select a preset'; width: 20px; height: 20px;">
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2886,11 +2913,11 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </svg>
                 </div>
                 <input id="input-framename" data-input class="nobod fl1" type="text" value=" w×h">  
-                <div class="df-lc pos-r" data-select data-select-close data-select-value=" w×h" style="gap: 4px; width: 90px; z-index:2;">
+                <div class="df-lc pos-r gap4" data-select data-select-close data-select-value=" w×h" style="width: 90px; z-index:2;">
                   <input id="select-value-1" type="text" data-select-input readonly value=" w×h">
                   <input id="select-show-1" data-select-pick=" w×h" type="checkbox">
-                  <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
-                  <div data-select-options="" class="df-ffc pos-a w100 noscrollbar" style="white-space: normal; display: none; top:24px;">
+                  <label for="select-show-1" class="show-next wh100 pos-a" style="top:0; right: 0;"></label>
+                  <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: normal; display: none; top:24px;">
                     <div data-option="type" data-en-text="Basic">基础</div>
                     <div data-option="option" data-option-main="false" data-option-value="none">none</div>
                     <div data-option="option" data-option-main="true" data-option-value=" w×h">&nbsp;w×h</div>
@@ -2906,11 +2933,11 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div>
             <div style="height: 4px;"></div>
             <!--步骤2-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0;vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Edit final tags/catalogue" > 编辑标签/大纲 </span>
                 &nbsp;&nbsp;
-                <span data-en-text="to create finally" data-any="vw240" style="opacity: 0.6;">以确认最终创建内容</span>
+                <span data-en-text="to create finally op6" data-any="vw240">以确认最终创建内容</span>
             </div>
             <div data-create-mix class="wh100 df-cc pos-r" ><!--data-resize-->
               <div data-create-tags-box class="wh100 upload-set pos-r">
@@ -2934,17 +2961,17 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         <div data-create-any data-btn="main" class="df-cc" data-en-text="CREATE">创建</div>
       </div>
       <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc ovh" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovh bsb pad10" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding-top:0;">
           <!--步骤1-->
-          <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+          <div class="w100 df-lc op6"  style="padding:4px 0 10px 0;vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
             <span data-en-text="Add selects to list" >添加所选对象到队列</span>
             &nbsp;&nbsp;
-            <span data-any="vw300" data-en-text="by the export-type" style="opacity: 0.6;"> 按所选导出类型</span>
+            <span data-any="vw300" data-en-text="by the export-type op6"> 按所选导出类型</span>
             <div data-any="vw300" data-help="export" class="fl0 df-cc">?</div>
           </div>
           <!--导出类型-->
-          <div class="df-lc pos-r upload-set w100" style="gap:4px; padding: 4px; border-radius: 8px;">
+          <div class="df-lc pos-r upload-set w100 gap4 pad4" style="border-radius: 8px;">
             <div class="noscrollbar" style="margin: 0 auto;">
               <div data-exporttype-set class="df-lc" data-radio-value="1" >
                 <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="true">
@@ -2977,16 +3004,16 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               </div>
             </div>
           </div>
-          <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px;">
+          <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (默认)</div>    
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
           </div>
           <!--步骤2-->
-          <div class="w100 df-lc"  style="padding:10px 0 4px 0; opacity: 0.6; vertical-align: baseline;"> 
+          <div class="w100 df-lc op6"  style="padding:10px 0 4px 0; vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
             <span data-en-text="Set rendering list" >设置渲染队列</span>
             &nbsp;&nbsp;
-            <span data-any="vw300" data-en-text="name/type/size..." style="opacity: 0.6;"> 目标格式和文件大小等</span>
+            <span data-any="vw300" data-en-text="name/type/size..." class="op6"> 目标格式和文件大小等</span>
           </div>
           <div class="df-cc fl0" style="width: 120px; height: 12px; border-radius: 8px 8px 0 0;">
             <input id="export-more" checked type="checkbox" 
@@ -3001,8 +3028,8 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           </div>
           <div data-exportset-more class="w100">
             <div class="w100 df-sc">
-              <div class="df-lc" style="gap: 8px;">
-                <div class="df-lc" data-export-delete data-btn="text" style="gap: 2px;">
+              <div class="df-lc gap8">
+                <div class="df-lc gap2" data-export-delete data-btn="text">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path stroke="var(--mainColor)" d="M2 4.27539H12" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
                     <path stroke="var(--mainColor)" d="M10 2.5V1.5H4V2.5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3012,7 +3039,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </svg>  
                   <div data-en-text="Delete">删除</div>                
                 </div>
-                <div class="df-lc" data-export-reup data-btn="text" style="gap: 2px;">
+                <div class="df-lc gap2" data-export-reup data-btn="text">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path stroke="var(--mainColor)" d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
                     <path stroke="var(--mainColor)" d="M2.99911 2.18428L3.20218 4.65075L5.66323 4.49707" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3020,10 +3047,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-en-text="Re-Upload">重新上传</div>                
                 </div>
               </div>
-              <div class="df-lc" style="gap: 4px;">
+              <div class="df-lc gap4">
                 <div data-en-text="All">全选</div>
                 <input id="exportset-pickall" type="checkbox"/>
-                <label for="exportset-pickall" class="check" style="gap: 4px; width: 16px; height: 16px;">
+                <label for="exportset-pickall gap4" class="check" style="width: 16px; height: 16px;">
                   <btn-check-tick></btn-check-tick>
                 </label>
               </div>
@@ -3053,16 +3080,16 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         <div data-export-any data-btn="main" class="df-cc" data-en-text="EXPORT">导出</div>
       </div>
       <div data-page-name="编辑" data-page-name-en="editor" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc ovh" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovh bsb pad10" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding-top:0;">
           <!--步骤1-->
-          <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+          <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
             <span data-en-text="Upload a node" >选中内容并上传</span>
             &nbsp;&nbsp;
-            <span data-any="vw300" data-en-text="and don't alter it before apply" style="opacity: 0.6;"> 应用前请勿修改原图层</span>
+            <span data-any="vw300" data-en-text="and don't alter it before apply" class="op6"> 应用前请勿修改原图层</span>
             <div data-any="vw300" data-help="editor" class="fl0 df-cc">?</div>
           </div>
-          <div class="w100 df-cc" style="gap: 2px;">
+          <div class="w100 df-cc gap2">
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Editable">上传(可编辑)</div>    
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
           </div>
@@ -3071,7 +3098,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             <div data-editor-setbox class="w100 df-ffc">
               <div class="w100 df-lc">
                 <div data-editor-setlist-title class="df-sc pos-r">
-                  <div data-en-text="Filter" style="opacity: 0.6;">调整</div>
+                  <div data-en-text="Filter" class="op6">调整</div>
                   <div data-btn="icon" data-editor-addset>
                     <svg width="100%" height="100%" viewBox="0 0 20 20">
                       <rect fill="var(--mainColor)" x="0" y="9" width="20" height="2"></rect>
@@ -3080,7 +3107,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </div>
                 </div>
                 <div class="w100 df-sc">
-                  <div class="df-lc" style="gap: 4px; padding-left: 4px;">
+                  <div class="df-lc gap4" style="padding-left: 4px;">
                     <input type="file" id="edito-upset" accept=".json" style="display: none;">
                     <label for="edito-upset" data-tips="auto" data-tips-x="center" data-tips-y="top"
                     style="--tips-text:'导入'; --tips-text-en:'Import';">
@@ -3108,7 +3135,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       </div>
                     </div>
                   </div>
-                  <div data-en-text="Value" style="opacity: 0.6;">属性</div>
+                  <div data-en-text="Value" class="op6" >属性</div>
                 </div>
               </div>
               <div class="wh100 df-lc">
@@ -3177,27 +3204,27 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         <div data-btn="main" class="df-cc" data-en-text="APPLY">应用</div>
       </div>
       <div data-page-name="变量" data-page-name-en="variable" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc ovy noscrollbar" style="height: calc(100% - 20px); max-width: 560px; align-items: center; padding:0 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovy noscrollbar bsb" style="height: calc(100% - 20px); max-width: 560px; align-items: center; padding:0 10px;">
           <!--步骤1-->
-          <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+          <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
             <span data-en-text="Build local sheet" >建立本地变量表</span>
             &nbsp;&nbsp;
-            <span data-any="vw300" data-en-text="editor and apply manually" style="opacity: 0.6;"> 手动编辑和更新</span>
+            <span data-any="vw300" data-en-text="editor and apply manually" class="op6"> 手动编辑和更新</span>
             <div data-any="vw300" data-help="variable" class="fl0 df-cc">?</div>
           </div>
           <div data-variable-type class="w100 df-lc">
-            <div class="fl1 df-lc upload-set" style="gap: 6px;">
-              <div class="df-lc"
+            <div class="fl1 df-lc upload-set gap6">
+              <div class="df-lc gap4"
               data-tips="auto" data-tips-x="left" data-tips-y="top"
-              style="gap: 4px; --tips-text:'数据类型'; --tips-text-en:'Sheet type';">
+              style="--tips-text:'数据类型'; --tips-text-en:'Sheet type';">
                 <svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill="var(--mainColor)" fill-rule="evenodd" clip-rule="evenodd" d="M7.89746 2.57129C7.3268 3.58479 7 4.75402 7 6C7 6.54045 7.06376 7.06601 7.17969 7.57129H3V12.0713H9.5V11.3604C9.81125 11.6219 10.146 11.8557 10.5 12.0605V12.0713H10.5176C11.5434 12.661 12.7318 13 14 13C15.4877 13 16.866 12.5345 18 11.7432V16.5713L17.9893 16.7754C17.887 17.7841 17.0357 18.5713 16 18.5713H4C2.96435 18.5713 2.113 17.7841 2.01074 16.7754L2 16.5713V4.57129C2.00016 3.46686 2.89553 2.57129 4 2.57129H7.89746ZM3 16.5713C3 17.1236 3.44772 17.5713 4 17.5713H9.5V13.0713H3V16.5713ZM10.5 17.5713H16C16.5523 17.5713 17 17.1236 17 16.5713V13.0713H10.5V17.5713Z"/>
                   <path fill="var(--mainColor)" fill-rule="evenodd" clip-rule="evenodd" d="M14 0C17.3137 0 20 2.68629 20 6C20 9.31371 17.3137 12 14 12C10.6863 12 8 9.31371 8 6C8 2.68629 10.6863 0 14 0ZM13.2246 8.71582V10.3145H14.8828V8.71582H13.2246ZM13.9941 1.68555C12.6002 1.68555 11.4709 2.59895 11.4707 4.08887H13.0322C13.0324 3.53626 13.3574 3.0918 13.9941 3.0918C14.5948 3.09191 14.9677 3.51247 14.9678 4.07715C14.9678 4.34154 14.8114 4.63044 14.6191 4.88281L13.7295 6.02441C13.4171 6.43292 13.2725 6.75774 13.2725 7.27441V7.63477H14.835V7.38184C14.8351 7.17761 14.9317 6.92569 15.0518 6.76953L15.9404 5.5918C16.2769 5.14715 16.5293 4.68975 16.5293 4.08887C16.5291 2.56299 15.3519 1.68565 13.9941 1.68555Z"/>
                 </svg>
                 ▶                
               </div>
-              <div class="df-lc data-scroll ovx noscrollbar" data-scroll data-radio-value="style" style="gap: 6px;">
+              <div class="df-lc data-scroll ovx noscrollbar gap6" data-scroll data-radio-value="style">
                 <div class="fl0 df-lc" data-radio data-radio-data="style" data-radio-main="true">
                   <div data-variable-chk>
                     <btn-style></btn-style>
@@ -3277,27 +3304,27 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
               </div>
             </div>
-            <div class="w100 df-cc" style="gap: 2px; margin-bottom: 10px;">
+            <div class="w100 df-cc gap2" style="margin-bottom: 10px;">
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Variable To Sheet">从变量更新表</div>    
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Variable">从表更新变量</div>
             </div>
             <!--步骤2-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Manage variable group" >管理变量组</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="based on properties/tags map" style="opacity: 0.6;"> 基于标签/组件属性</span>
+              <span data-any="vw300" data-en-text="based on properties/tags map" class="op6"> 基于标签/组件属性</span>
             </div>
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-variables class="w100 df-sc">
-                <div class="df-lc" style="gap: 8px;">
+                <div class="df-lc gap8">
                   <div data-variables-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
                     <div class="pos-a" style="top: 0; left: 18px;"
                     data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
-                <div class="df-lc" style="gap: 4px;">
+                <div class="df-lc gap4">
 
                 </div>
               </div>
@@ -3351,27 +3378,27 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
               </div>
             </div>
-            <div class="w100 df-cc" style="gap: 2px; margin-bottom: 10px;">
+            <div class="w100 df-cc gap2" style="margin-bottom: 10px;">
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Style To Sheet">从样式更新表</div>    
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
             </div>
             <!--步骤2-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Manage broken-link style" >管理断链样式</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="Reapply | Create | Override..." style="opacity: 0.6;"> 重链 | 新建 | 覆盖</span>
+              <span data-any="vw300" data-en-text="Reapply | Create | Override..." class="op6"> 重链 | 新建 | 覆盖</span>
             </div>
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-linkstyle class="w100 df-sc">
-                <div class="df-lc" style="gap: 8px;">
+                <div class="df-lc gap8">
                   <div data-linkstyle-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
                     <div class="pos-a" style="top: 0; left: 18px;"
                     data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
-                <div class="df-lc" style="gap: 4px;">
+                <div class="df-lc gap4">
                   <div data-linkstyle-all="reapply" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
                   style="--tips-text: '全部重链'; --tips-text-en: 'Relink all';">
                     <div data-btn="icon">
@@ -3407,22 +3434,22 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
               </div>
             </div>
             <!--步骤3-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Manage thematic style" >管理主题性样式组</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="like variable group" style="opacity: 0.6;"> 类似切换变量组</span>
+              <span data-any="vw300" data-en-text="like variable group" class="op6"> 类似切换变量组</span>
             </div>
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-selectstyle class="w100 df-sc">
-                <div class="df-lc" style="gap: 8px;">
+                <div class="df-lc gap8">
                   <div data-selectstyle-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
                     <div class="pos-a" style="top: 0; left: 18px;"
                     data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
-                <div class="df-lc" style="gap: 4px;">
+                <div class="df-lc gap4">
 
                 </div>
               </div>
@@ -3439,20 +3466,20 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         </div>
       </div>
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc ovy noscrollbar" style="max-width: 560px; align-items: center; padding: 10px 10px 0 10px; box-sizing: border-box;">
-          <div class="wh100 df-ffc" style="box-sizing: border-box;">
+        <div class="wh100 df-ffc ovy noscrollbar pad10 bsb" style="max-width: 560px; align-items: center; padding-bottom: 0;">
+          <div class="wh100 df-ffc bsb">
             <!--步骤1-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Get a basic table" >创建基础表格模板</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="and make it more diverse" style="opacity: 0.6;">并进一步定制化设计</span>
+              <span data-any="vw300" data-en-text="and make it more diverse" class="op6">并进一步定制化设计</span>
               <div data-any="vw300" data-help="sheet" class="fl0 df-cc">?</div>
             </div>
             <!--预设表格样式-->
             <div data-tableset-thtd class="df-lc w100">
-              <div class="df-lc" style="max-width: 100%; margin:0 auto; gap: 4px;">
-                <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px); height: 40px;">
+              <div class="df-lc gap4" style="max-width: 100%; margin:0 auto;">
+                <div class="df-lc pos-r upload-set gap4" style="max-width: calc(100% - 44px); height: 40px;">
                   <input id="chk-tablestyle" checked type="checkbox" >
                   <label for="chk-tablestyle" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;  width: 22px; height: 22px;
                   --tips-text:'按预设样式生成组件/修改表格';  --tips-text-en:'Create/change from the preset style';">
@@ -3461,7 +3488,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       <path fill="var(--mainColor)" d="M11.8598 12.0372L8.12642 15.3311C7.78273 15.6343 7.24651 15.3537 7.29927 14.8985L7.87154 9.95317L11.8598 12.0372ZM12.7329 0.616255C12.9887 0.127036 13.5931 -0.0621097 14.0825 0.193403L16.269 1.33598C16.7583 1.59183 16.9475 2.19621 16.6919 2.68559L12.4702 10.7618L8.51216 8.69243L12.7329 0.616255Z"/>
                     </svg>                  
                   </label>
-                  <div data-tablestyle-box class="df-lc" style="gap: 4px; overflow: auto;">
+                  <div data-tablestyle-box class="df-lc gap4" style="overflow: auto;">
                     ▶
                     <div class="noscrollbar" data-scroll>
                       <div data-tablestyle-set class="df-lc" data-radio-value="1">
@@ -3549,17 +3576,17 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     </div>
                   </div>
                 </div>
-                <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px);">
+                <div class="df-lc pos-r upload-set gap4" style="max-width: calc(100% - 44px);">
                   <input id="chk-selectcomp" type="checkbox" checked >
                   <label for="chk-selectcomp" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="right" style="--tips-w: 8ch;  width: 22px; height: 22px;
                   --tips-text:'以所选对象为组件';  --tips-text-en:'Create from the selected node';">
                     <btn-getbyselect></btn-getbyselect>                  
                   </label>
-                  <div data-selectcomp-box="false" class="df-lc" style="gap: 4px; display: none; overflow: auto;">
+                  <div data-selectcomp-box="false" class="df-lc gap4" style="display: none; overflow: auto;">
                     ▶
                     <div class="noscrollbar df-lc" data-scroll>
                       <div data-selectcomp-no style="padding: 0 10px;" data-en-text="Has not compliant components">未选中有效的组件</div>
-                      <div data-selectcomp-mix class="df-lc" style="gap:4px">
+                      <div data-selectcomp-mix class="df-lc gap4">
                         <span data-any="vw240">
                           <span data-en-text="Header:">表头:</span>
                         </span>
@@ -3576,12 +3603,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
               </div>
             </div> 
-            <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px;">
+            <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
               <div data-create-table class="w100 df-cc" data-btn="main2" data-en-text="Create Table">创建表格</div>
               <div class="w100 df-cc" data-btn="skill-main" data-selects-must data-en-text="Apply Preset" style="border-radius: 20px;">应用预设样式</div>    
               <div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
                 <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
-                <label for="table-more" class="wh100 df-cc btn-more" style=" padding: 4px;">
+                <label for="table-more" class="wh100 df-cc btn-more pad4">
                   <svg data-icon-more width="100%" height="100%" viewBox="0 0 20 20">
                     <g data-icon-more-path="1">
                       <path fill="none" d="M18 0L0 0"></path>
@@ -3596,7 +3623,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </label>
               </div>
             </div>
-            <div class="df-ffc" data-tableset-more data-skill-sec style="gap: 4px; margin: 4px 0; display: none;">
+            <div class="df-ffc gap4" data-tableset-more data-skill-sec style="margin: 4px 0; display: none;">
               <div class="df-lc w100" data-skill-more>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Only Create @th/td">仅创建组件</div>
                 <div class="df-cc"  data-selects-must data-btn="skill-main" data-en-text="Make Compliant">合规化组件</div>
@@ -3609,13 +3636,13 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </span>
               </div>
               <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-lc w100" style="gap: 4px;">
+                <div class="df-lc w100 gap4">
                   <div class="df-lc fl1">
-                    <input id="table-column-num" type="text" value="0" data-input="" data-input-type="int" data-input-must="0,1000" style="text-align: center;">
+                    <input id="table-column-num" type="text" value="0" data-input data-input-type="int" data-input-must="0,1000" style="text-align: center;">
                     <div class="df-cc" data-input-unit="auto" data-en-text=" C ">列</div>
                   </div>
                   <div class="df-lc fl1" >
-                    <input id="table-row-num" type="text" value="0" data-input="" data-input-type="int" data-input-must="0,1000" style="text-align: center;">
+                    <input id="table-row-num" type="text" value="0" data-input data-input-type="int" data-input-must="0,1000" style="text-align: center;">
                     <div class="df-cc" data-input-unit="auto" data-en-text=" R ">行</div>
                   </div>
                 </div>
@@ -3659,7 +3686,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div>
             <div style="min-height: 4px;"></div>
             <!--步骤2-->
-            <div class="w100 df-lc"  style="padding:4px 0 6px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 6px 0;vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Control component properties by sheet" >用表格数据批量+参数化控制组件</span>
             </div>
@@ -3673,15 +3700,15 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
                   <btn-close></btn-close>
                 </div>
-                <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: normal; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
+                <div data-textarea="tips" class="pos-a w100 df-ffc pad10 bsb gap4 font-s10" style="white-space: normal; color: var(--boxBod); bottom: 0; animation: boxUp 0.5s; pointer-events: none;">
                   <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
                   <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
                 </div>
               </div>
             </div>
             <!--更多设置-->
-            <div data-tablearea-moreset class="w100 df-lc" style="flex-wrap: wrap; gap: 4px; margin: 4px 0;">
-              <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 120px;">
+            <div data-tablearea-moreset class="w100 df-lc gap4" style="flex-wrap: wrap; margin: 4px 0;">
+              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 120px;">
                 <div data-tips="auto" class="fl0 df-cc" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
                   --tips-text:'设置换行转义符, 用于兼容需要换行的数据';  --tips-text-en:'Set a character to represent line feed'; width: 20px; height: 20px;">
                   <svg width="120%" height="120%" viewBox="0 0 20 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3697,7 +3724,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <btn-reset></btn-reset>
                 </div>  
               </div>
-              <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 120px;">
+              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 120px;">
                 <div data-tips="auto" class="fl0 df-cc" data-tips-y="top" data-tips-x="center" style="--tips-w: 8ch; 
                   --tips-text:'设置空数据占位符, 可避免潜在的错误';  --tips-text-en:'Set a character to replace null data'; width: 20px; height: 20px;">
                   <svg width="120%" height="120%" viewBox="0 0 20 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3714,10 +3741,10 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div> 
               </div>
             </div>
-            <div class="df-ffc w100 bod-d" data-retable-moreset  style="padding: 4px; gap: 4px; box-sizing: border-box;">
+            <div class="df-ffc w100 bod-d pad4 gap4 bsb" data-retable-moreset >
               <div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one auto-layout with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个自动布局 时生效</div>
-              <div class="df-lc w100" data-skill-more style="flex-wrap: wrap; text-wrap: nowrap; font-size: 10px; gap: 4px; margin-bottom: 4px;">
-                <div class="fl1 df-lc" style=" gap: 4px; min-width: 160px;">
+              <div class="df-lc w100 font-s10 gap4" data-skill-more style="flex-wrap: wrap; text-wrap: nowrap; margin-bottom: 4px;">
+                <div class="fl1 df-lc gap4" style="min-width: 160px;">
                   <div class="df ovh noscrollbar" data-scroll data-en-text="· Clone instance by data quantity">· 数据数量&gt;实例数量时, 复制最末实列</div>
                   <div style="width: 1%;"></div>
                   <div class="df-rc" style="min-width: 36px;">
@@ -3725,7 +3752,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <label for="switch-autoclone" class="switch" style="--swi-h: 16px"></label>
                   </div>
                 </div>
-                <div class="fl1 df-lc" style="gap: 4px; min-width: 160px;">
+                <div class="fl1 df-lc gap4" style="min-width: 160px;">
                   <div class="df ovh noscrollbar" data-scroll data-en-text="· Reduce instance by data quantity">· 数据数量&lt;实例数量时, 从最末实列开始删减</div>
                   <div style="width: 1%;"></div>
                   <div class="df-rc" style="min-width: 36px;">
@@ -3735,7 +3762,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
               </div>
             </div>
-            <div class="df-ffc" data-skill-sec style="gap: 4px; margin: 4px 0;">
+            <div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
               <div class="df-lc w100" data-skill-more data-selects-must>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Names">图层命名映射</div>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Texts">文本数据映射</div>
@@ -3766,7 +3793,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         </div>
       </div>
       <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc" style="max-width: 560px; align-items: center; padding: 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc pad10 bsb pad10" style="max-width: 560px; align-items: center;">
           <!--功能tags-->
           <div class="w100 fl0 noscrollbar df" data-scroll>
             <div data-skilltype-box class="df-lc fl0" data-radio-value="1" >
@@ -3887,11 +3914,11 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
-                    <div data-pixel-mix class="df-lc pos-r" data-select data-select-close data-select-value="≤ 4096px" style="gap: 4px; width: 90px; z-index:2;">
-                      <input id="select-value-2" type="text" data-select-input readonly="" value="≤4096">
+                    <div data-pixel-mix class="df-lc pos-r gap4" data-select data-select-close data-select-value="≤ 4096px" style="width: 90px; z-index:2;">
+                      <input id="select-value-2" type="text" data-select-input readonly value="≤4096">
                       <input id="select-show-2" data-select-pick="≤4096" type="checkbox">
                       <label for="select-show-2" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
-                      <div data-select-options="" class="df-lc pos-a noscrollbar" style="display: none;">
+                      <div data-select-options class="df-lc pos-a noscrollbar" style="display: none;">
                         <div data-option="option" data-option-main="true" data-option-value="≤ 4096px">≤ 4096px</div>
                         <div data-option="option" data-option-main="false" data-option-value="≤ 2048px">≤ 2048px</div>
                         <div data-option="option" data-option-main="false" data-option-value="≤ 1024px">≤ 1024px</div>
@@ -3912,7 +3939,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <div class="df-cc" data-input-unit>x</div>
                     </div>
                     <div></div>
-                    <div class="df-lc fl1" data-pixelscale-set data-radio-value="1" style="gap: 2px;">
+                    <div class="df-lc fl1 gap2" data-pixelscale-set data-radio-value="1">
                       <div data-radio data-radio-data="1" data-radio-main="true" class="df-cc">
                         1x
                       </div>
@@ -3939,25 +3966,25 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       <btn-star></btn-star>
                   </div>
                   <div class="df-sc" data-skill-line>
-                    <div class="df-ffc fl1" style="gap: 7px; max-width: 160px;">
+                    <div class="df-ffc fl1 gap8" style="max-width: 160px;">
                       <div data-any="vw240" style="height: 6px;"></div>
                       <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Each ratio">按百分比</div>
                         <input id="uniform-set-s" type="text" value="1" data-input data-input-type="float" data-input-must="0.01,1000" style="text-align: center;">
-                        <div class="df-cc" data-input-unit="">x</div>
+                        <div class="df-cc" data-input-unit>x</div>
                       </div>
                       <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Same width">按宽度</div>
-                        <input id="uniform-set-w" type="text" value="" data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
-                        <div class="df-cc" data-input-unit="">w</div>
+                        <input id="uniform-set-w" type="text" value data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
+                        <div class="df-cc" data-input-unit>w</div>
                       </div>
                       <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Same height">按高度</div>
-                        <input id="uniform-set-h" type="text" value="" data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
-                        <div class="df-cc" data-input-unit="">h</div>
+                        <input id="uniform-set-h" type="text" value data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
+                        <div class="df-cc" data-input-unit>h</div>
                       </div>
                     </div>
-                    <div data-transform-center-module class="df-ffc df-cc fl1" style="gap: 4px; margin-left: 10px;">
+                    <div data-transform-center-module class="df-ffc df-cc fl1 gap4" style="margin-left: 10px;">
                       <div data-skill-btnname-top data-any="vw240" data-en-text="Scale center">缩放中心</div>
                       <div data-transform-center-box data-radio-value="CC" class="w100" >
                         <div data-radio data-radio-data="TL" data-radio-main="false" class="df-cc">▪</div>
@@ -4057,7 +4084,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </div-->
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Stretch Zone LR">左右拉伸数量</div>
-                    <div class="df-lc fl1" data-clip-w-set data-radio-value="0" style="gap: 4px;">
+                    <div class="df-lc fl1 gap4" data-clip-w-set data-radio-value="0">
                       <div class="df-cc" data-radio data-radio-main="true" data-radio-data="0">none</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="1">x1</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2">x2</div>
@@ -4065,7 +4092,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Stretch Zone TB">上下拉伸数量</div>
-                    <div class="df-lc fl1" data-clip-h-set data-radio-value="0" style="gap: 4px;">
+                    <div class="df-lc fl1 gap4" data-clip-h-set data-radio-value="0">
                       <div class="df-cc" data-radio data-radio-main="true" data-radio-data="0">none</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="1">x1</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2">x2</div>
@@ -4118,7 +4145,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div class="df-ffc bod-d" data-skill-line style="padding: 4px; gap: 4px;">
+                  <div class="df-ffc bod-d gap4 pad4" data-skill-line>
                     <div data-split-tags class="w100 df-lc">
                       <div data-split-tag data-check-checked class="df-lc">
                         <div style="width: 14px; height: 14px;">
@@ -4182,19 +4209,19 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       </div>
                     </div>
                   </div>
-                  <div class="df-sc" data-skill-line="">
+                  <div class="df-sc" data-skill-line>
                     <div class="df-cc" data-btn="skill-main" data-en-text="Split By Conditions">按条件拆分</div>
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Symbol">分割符</div>
                     <input id="split-word" data-input type="text">
-                    <div data-splitword-set class="df-lc fl1" data-radio-value="Suf" style="gap: 4px; min-width: 110px;">
+                    <div data-splitword-set class="df-lc fl1 gap4" data-radio-value="Suf" style="min-width: 110px;">
                       <div class="df-cc" data-radio data-radio-main="true" data-radio-data="Suf" data-en-text="Suf">接后</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="Pre" data-en-text="Pre">接前</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="Null" data-en-text="Null">剔除</div>
                     </div>
                   </div>
-                  <div class="df-sc" data-skill-line="">
+                  <div class="df-sc" data-skill-line>
                     <div class="df-cc" data-btn="skill-main" data-en-text="Split By Symbol">按关键词拆分</div>
                   </div>
                 </div>
@@ -4264,22 +4291,59 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     </div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec="">
+                <div class="fl1"  data-skill-sec>
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text=""></div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text></div>
                     </div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
               <div class="w100 df" data-skill-col="5" data-skillmodule-zh="样式&原型" data-skillmodule="Style & Prototype">
-                <div class="fl1"  data-skill-sec="">
+                <div class="fl1"  data-skill-sec="ShadowAsStroke">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Mum & Width">描边数量和粗细</div>
+                    <div data-shadow-stroke-num class="df-lc pos-r fl1 gap4" data-select data-select-close data-select-value="x4" style="--op-pad-l: 1ch;">
+                      <input id="select-value-3" type="text" data-select-input readonly value="x4">
+                      <input id="select-show-3" data-select-pick type="checkbox">
+                      <label for="select-show-3" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
+                      <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
+                        <div data-option="option" data-option-main="true" data-option-value="x4">x4</div>
+                        <div data-option="option" data-option-main="false" data-option-value="x8">x8</div>
+                        <div data-option="option" data-option-main="false" data-option-value="x12">x12</div>
+                      </div>
+                    </div>
+                    <div class="df-lc fl1" >
+                      <input id="input-shadow-stroke-width" type="text" value="1" data-input="" data-input-type="int" data-input-must="1,10000" style=" text-align: center;">
+                      <div class="df-cc" data-input-unit="">px</div>
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Color">描边颜色</div>
+                    <div data-shadow-stroke-color data-color data-color-hex="#888888" 
+                      data-color-rgb="rgb(136,136,136)" data-color-hsl="hsl(0,0%,53%)" 
+                      data-color-hsv="hsv(0,0%,53%)" data-colorcard-x="left" 
+                      data-colorcard-y="bottom" class="df-lc fl1 pos-r gap4" style="z-index: 1;">
+                        <div data-input="colorpick" style="height:20px; cursor: pointer; border: 1px solid var(--boxBod); border-radius: 5px;">
+                          <btn-color></btn-color>
+                        </div>
+                        <input id="colorvalue-2" class="fl1" type="text" data-input="hex" value="#888888">
+                        <div data-input="colortype" data-colortype-mode="hex" class="colortype"></div>
+                        <card-colorpick></card-colorpick>
+                    </div>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Code Example">代码示例</div>
+                      <div class="df-cc" data-btn-dblclick  data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
+                    </div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -4287,7 +4351,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div>
           </div>
           <!--选中信息-->
-          <div class="df-lc noscrollbar" data-selects-node data-scroll style="padding: 0 10px; box-sizing: border-box;">
+          <div class="df-lc noscrollbar bsb" data-selects-node data-scroll style="padding: 0 10px;">
             <span class="df-lc" data-selects-info-box style="margin: 0 auto;">
               <div style="width: 12px; height: 12px;">
                 <btn-hasselect></btn-hasselect>         
@@ -4313,7 +4377,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
     <div data-scroll class="df noscrollbar" data-tab="auto" data-tab-for="page" style="padding: 6px 4px;">
       <!--自动填充tab-->
     </div>
-    <div data-mainset-bottom class="df-lc" style="gap: 4px; margin-left: 2px;">
+    <div data-mainset-bottom class="df-lc gap4" style="margin-left: 2px;">
       <div id="btn-theme-2">
         <input id="theme-2" data-theme-check type="checkbox" checked>
         <label for="theme-2" class="btn-theme" style="position: relative;">
@@ -4334,17 +4398,17 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/publics/other/marked.umd.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bc77d9295e2592e8d156f35ca5b1daa47e4ff851/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a97bca8148c1885886bf777718a050decd3e2341/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4356,7 +4420,6 @@ let skillSecInfo = [
   {
     id: 'EaseTransform',
     name: ["斜切","skew"],
-    /*name: ["简单变形","ease transform"],*/
   },
   {
     id: 'UniformScale',
@@ -4390,19 +4453,23 @@ let skillSecInfo = [
     id: 'GetEditableSVG',
     name: ["获取可编辑SVG","get editable SVG"],
   },
+  {
+    id: 'ShadowAsStroke',
+    name: ["阴影伪描边","shadow as stroke"],
+  },
 ]
 
 let toUserTips = {
   worktime: ["🔒下班时间不建议工作~","🔒You shouldn't work after work!"],
   random: [
-    ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
-    ["工作是做不完的, 及时休息~","Put down your work and rest in time~"],
-    ["请支持开源+设计~","Support open source + design~"],
-    ["提效不是义务, 理应多劳多得~","Refuse malicious overtime work~"],
-    ["久坐伤身, 快起来走两步吧~","Get up and take a walk now~"],
-    ["工作是做不完的, 及时休息~","Put down your work and rest in time~"],
-    ["请支持开源+设计~","Support open source + design~"],
-    ["提效不是义务, 理应多劳多得~","Refuse malicious overtime work~"],
+    ["椅子说：你该起来走走了~","Your chair says: time to walk~"],
+    ["累了就歇歇, 效率会更高~","Take a break, boost efficiency~"],
+    ["开源让设计更美好~","Open source makes design better~"],
+    ["提效是为了更好地生活~","Efficiency for a better life~"],
+    ["坐久了, 起来扭一扭~","Sitting too long? Time to move~"],
+    ["工作虽重要, 休息也必要~","Work matters, but so does rest~"],
+    ["支持开源, 让创意自由~","Support open source, free creativity~"],
+    ["效率提升, 拒绝内卷~","Boost efficiency, not burnout~"],
   ],
 };
 
@@ -4671,9 +4738,9 @@ window.addEventListener('load',()=>{
     return;
   };
   setTimeout(() => {
-    /*clear*
+    /*
     let tabs = ['create','export','editor','variable','sheet','more tools']
-    viewPage(tabs[2])
+    viewPage(tabs[5])
     /**/;
     if(window.innerWidth < 300){
       TV_MOVE = true;
@@ -6127,7 +6194,7 @@ getElementMix('data-export-delete').addEventListener('click',()=>{
 getElementMix('data-export-reup').addEventListener('click',()=>{
   let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
   let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
-  console.log(picknums)
+  //console.log(picknums)
 });
 //移除所有导出标签
 getElementMix('data-export-tags-delete').addEventListener('click',()=>{
@@ -7029,6 +7096,80 @@ const AUTH_CONFIG = {
   STORAGE_KEY_USERS: 'toolsSetFig_users'
 };
 
+// 认证模块多语言文本
+const AUTH_I18N = {
+  zh: {
+    invalidEmail: '请输入有效的邮箱地址',
+    usernameTooShort: '用户名至少需要2个字符',
+    passwordTooShort: '密码至少需要6个字符',
+    supabaseNotInitialized: 'Supabase 未初始化，请检查配置和网络连接',
+    emailAlreadyRegistered: '该邮箱已注册，请直接登录',
+    rateLimitError: '请求过于频繁，请等待 {0} 秒后再试',
+    invalidEmailFormat: '邮箱格式不正确',
+    registrationFailed: '注册失败: {0}',
+    unknownError: '未知错误',
+    registrationFailedRetry: '注册失败，请重试',
+    registrationSuccess: '注册成功！请检查邮箱并点击确认链接以完成注册。',
+    registrationSuccessShort: '注册成功！请检查邮箱并点击确认链接。',
+    registrationFailedConfig: '注册失败，请检查 Supabase 配置或网络连接',
+    emailAlreadyRegisteredLocal: '该邮箱已在本地注册，请先清除缓存',
+    enterEmailPassword: '请输入邮箱和密码',
+    emailPasswordIncorrect: '邮箱或密码错误',
+    loginFailedRetry: '登录失败，请重试',
+    fillAllRequired: '请填写所有必填项',
+    passwordsNotMatch: '两次输入的密码不一致',
+    registering: '注册中...',
+    localCacheCleared: '本地缓存已清除',
+    usernameInvalidChars: '用户名只能包含字母、数字、下划线和连字符，且不能纯数字或符号',
+    usernameInvalidLength: '用户名长度必须在2-20个字符之间',
+    passwordInvalidChars: '密码只能包含字母、数字和常见符号',
+    passwordInvalidLength: '密码长度必须在6-50个字符之间'
+  },
+  en: {
+    invalidEmail: 'Please enter a valid email address',
+    usernameTooShort: 'Username must be at least 2 characters',
+    passwordTooShort: 'Password must be at least 6 characters',
+    supabaseNotInitialized: 'Supabase not initialized, please check configuration and network connection',
+    emailAlreadyRegistered: 'This email is already registered, please log in directly',
+    rateLimitError: 'Too many requests, please wait {0} seconds and try again',
+    invalidEmailFormat: 'Invalid email format',
+    registrationFailed: 'Registration failed: {0}',
+    unknownError: 'Unknown error',
+    registrationFailedRetry: 'Registration failed, please try again',
+    registrationSuccess: 'Registration successful! Please check your email and click the confirmation link to complete registration.',
+    registrationSuccessShort: 'Registration successful! Please check your email and click the confirmation link.',
+    registrationFailedConfig: 'Registration failed, please check Supabase configuration or network connection',
+    emailAlreadyRegisteredLocal: 'This email is already registered locally, please clear cache first',
+    enterEmailPassword: 'Please enter email and password',
+    emailPasswordIncorrect: 'Email or password incorrect',
+    loginFailedRetry: 'Login failed, please try again',
+    fillAllRequired: 'Please fill in all required fields',
+    passwordsNotMatch: 'Passwords do not match',
+    registering: 'Registering...',
+    localCacheCleared: 'Local cache cleared',
+    usernameInvalidChars: 'Username can only contain letters, numbers, underscores and hyphens, and cannot be pure numbers or symbols',
+    usernameInvalidLength: 'Username must be between 2-20 characters',
+    passwordInvalidChars: 'Password can only contain letters, numbers and common symbols',
+    passwordInvalidLength: 'Password must be between 6-50 characters'
+  }
+};
+
+// 获取认证模块的多语言文本
+function getAuthText(key, ...args) {
+  const lang = getLanguageIntime() || 'zh';
+  const langMap = AUTH_I18N[lang] || AUTH_I18N.zh;
+  let text = langMap[key] || key;
+  
+  // 支持参数替换 {0}, {1}, ...
+  if (args && args.length > 0) {
+    args.forEach((arg, index) => {
+      text = text.replace(`{${index}}`, arg);
+    });
+  }
+  
+  return text;
+}
+
 // 存储辅助函数 - 支持 Figma 插件和普通环境
 const AuthStorage = {
   // 获取数据（同步版本，仅用于非插件环境）
@@ -7128,17 +7269,17 @@ function tryInitSupabase() {
   }
 }
 
-// 用户认证管理 - 在全局作用域定义，run.js 可以直接访问
+// 用户认证管理
 var AuthManager = {
   currentUser: null,
   usersList: [], // 存储所有用户列表（用于验证）
 
-  // 设置当前用户（由 run.js 的消息回调调用）
+  // 设置当前用户
   setCurrentUser(user) {
     this.currentUser = user;
   },
 
-  // 设置用户列表（由 run.js 的消息回调调用）
+  // 设置用户列表
   setUsersList(users) {
     this.usersList = users || [];
   },
@@ -7213,17 +7354,85 @@ var AuthManager = {
     }
   },
 
+  // 验证用户名格式
+  validateUsername(username) {
+    if (!username) {
+      return { 
+        valid: false, 
+        error: AUTH_I18N.zh.usernameTooShort,
+        errorEn: AUTH_I18N.en.usernameTooShort
+      };
+    }
+    // 用户名只能包含字母、数字、下划线和连字符，长度2-20
+    //不能是纯数字或纯符号
+    if (/^\d+$/.test(username) || /^-+$/.test(username)) {
+      return { 
+        valid: false, 
+        error: AUTH_I18N.zh.usernameInvalidChars,
+        errorEn: AUTH_I18N.en.usernameInvalidChars
+      };
+    }
+    const usernameRegex = /^[a-zA-Z0-9_-]{2,20}$/;
+    if (!usernameRegex.test(username)) {
+      if (username.length < 2 || username.length > 20) {
+        return { 
+          valid: false, 
+          error: AUTH_I18N.zh.usernameInvalidLength,
+          errorEn: AUTH_I18N.en.usernameInvalidLength
+        };
+      }
+      return { 
+        valid: false, 
+        error: AUTH_I18N.zh.usernameInvalidChars,
+        errorEn: AUTH_I18N.en.usernameInvalidChars
+      };
+    }
+    return { valid: true };
+  },
+
+  // 验证密码格式
+  validatePassword(password) {
+    if (!password) {
+      return { 
+        valid: false, 
+        error: AUTH_I18N.zh.passwordTooShort,
+        errorEn: AUTH_I18N.en.passwordTooShort
+      };
+    }
+    // 密码只能包含字母、数字和常见符号，长度6-50
+    const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{6,50}$/;
+    if (!passwordRegex.test(password)) {
+      if (password.length < 6 || password.length > 50) {
+        return { 
+          valid: false, 
+          error: AUTH_I18N.zh.passwordInvalidLength,
+          errorEn: AUTH_I18N.en.passwordInvalidLength
+        };
+      }
+      return { 
+        valid: false, 
+        error: AUTH_I18N.zh.passwordInvalidChars,
+        errorEn: AUTH_I18N.en.passwordInvalidChars
+      };
+    }
+    return { valid: true };
+  },
+
   // 注册
   async register(email, username, password) {
     // 简单验证
     if (!email || !email.includes('@')) {
-      return { success: false, error: '请输入有效的邮箱地址' };
+      return { success: false, error: getAuthText('invalidEmail') };
     }
-    if (!username || username.length < 2) {
-      return { success: false, error: '用户名至少需要2个字符' };
+    // 验证用户名
+    const usernameValidation = this.validateUsername(username);
+    if (!usernameValidation.valid) {
+      return { success: false, error: usernameValidation.error };
     }
-    if (!password || password.length < 6) {
-      return { success: false, error: '密码至少需要6个字符' };
+    // 验证密码
+    const passwordValidation = this.validatePassword(password);
+    if (!passwordValidation.valid) {
+      return { success: false, error: passwordValidation.error };
     }
 
     // 如果使用 Supabase
@@ -7242,13 +7451,12 @@ var AuthManager = {
             'URL configured': !!AUTH_CONFIG.SUPABASE_URL,
             'Key configured': !!AUTH_CONFIG.SUPABASE_ANON_KEY
           });
-          return { success: false, error: 'Supabase 未初始化，请检查配置和网络连接' };
+          return { success: false, error: getAuthText('supabaseNotInitialized') };
         }
       }
       
       try {
         // 使用 Supabase 注册
-        // 注意：如果 Supabase 启用了邮箱确认，需要配置正确的重定向 URL
         const { data, error } = await supabaseClient.auth.signUp({
           email: email,
           password: password,
@@ -7256,8 +7464,6 @@ var AuthManager = {
             data: {
               username: username
             },
-            // 如果需要邮箱确认，可以在这里指定重定向 URL
-            // emailRedirectTo: 'https://your-domain.com/auth/callback'
           }
         });
 
@@ -7278,29 +7484,72 @@ var AuthManager = {
             error.message?.toLowerCase().includes('user already registered') ||
             error.message?.toLowerCase().includes('email already registered') ||
             error.status === 422 && error.message?.toLowerCase().includes('exists') ||
-            error.code === '23505'; // PostgreSQL unique violation
+            error.code === '23505' || // PostgreSQL unique violation
+            error.message?.toLowerCase().includes('duplicate') ||
+            error.message?.toLowerCase().includes('already exists');
           
           if (isAlreadyRegistered) {
-            errorMsg = '该邮箱已在 Supabase 中注册，请直接登录（清除本地缓存不会删除数据库记录）';
+            errorMsg = getAuthText('emailAlreadyRegistered');
           } else if (error.status === 429 || error.code === 'over_email_send_rate_limit') {
             // 速率限制错误
             const waitTime = error.message.match(/(\d+)\s*seconds?/i)?.[1] || '7';
-            errorMsg = `请求过于频繁，请等待 ${waitTime} 秒后再试`;
+            errorMsg = getAuthText('rateLimitError', waitTime);
           } else if (error.message?.toLowerCase().includes('invalid')) {
-            errorMsg = '邮箱格式不正确';
+            errorMsg = getAuthText('invalidEmailFormat');
           } else {
             // 显示原始错误信息，便于调试
-            errorMsg = `注册失败: ${error.message || '未知错误'}`;
+            errorMsg = getAuthText('registrationFailed', error.message || getAuthText('unknownError'));
           }
           return { success: false, error: errorMsg };
         }
 
         if (!data.user) {
-          return { success: false, error: '注册失败，请重试' };
+          return { success: false, error: getAuthText('registrationFailedRetry') };
         }
-
-        // 检查是否有 session（某些 Supabase 配置需要邮箱确认）
+        
+        // 验证用户是否真的是新创建的（Supabase 可能返回已存在的用户对象而不报错）
+        const now = new Date();
+        const createdAt = data.user.created_at ? new Date(data.user.created_at) : null;
+        const timeDiff = createdAt ? (now - createdAt) / 1000 : null; // 秒
         const { data: { session } } = await supabaseClient.auth.getSession();
+        
+        // 检查用户配置是否已存在（最可靠的检查方法）
+        try {
+          const { data: existingProfile } = await supabaseClient
+            .from('user_profiles')
+            .select('id')
+            .eq('id', data.user.id)
+            .maybeSingle();
+          
+          if (existingProfile) {
+            if (session) await supabaseClient.auth.signOut();
+            return { success: false, error: getAuthText('emailAlreadyRegistered') };
+          }
+        } catch (e) {
+          // 查询失败，继续其他检查
+        }
+        
+        // 检查用户是否真的是新创建的
+        // 新注册的用户创建时间应该在几秒内，如果超过10秒很可能是已存在的用户
+        if (timeDiff !== null && timeDiff > 10) {
+          if (session) await supabaseClient.auth.signOut();
+          return { success: false, error: getAuthText('emailAlreadyRegistered') };
+        }
+        
+        // 如果用户已确认邮箱且创建时间超过3秒，肯定是已存在的用户
+        if (data.user.email_confirmed_at && timeDiff !== null && timeDiff > 3) {
+          if (session) await supabaseClient.auth.signOut();
+          return { success: false, error: getAuthText('emailAlreadyRegistered') };
+        }
+        
+        // 如果用户有登录历史，说明是已存在的用户
+        if (data.user.last_sign_in_at && timeDiff !== null && timeDiff > 5) {
+          const lastSignIn = new Date(data.user.last_sign_in_at);
+          if ((now - lastSignIn) / 1000 > 5) {
+            if (session) await supabaseClient.auth.signOut();
+            return { success: false, error: getAuthText('emailAlreadyRegistered') };
+          }
+        }
         
         // 创建用户配置记录（只有在有 session 时才尝试）
         if (session) {
@@ -7317,6 +7566,20 @@ var AuthManager = {
 
             if (profileError) {
               console.error('Failed to create user profile:', profileError);
+              
+              // 检查是否是唯一约束冲突（用户已存在）
+              const isDuplicateError = 
+                profileError.code === '23505' || // PostgreSQL unique violation
+                profileError.message?.toLowerCase().includes('duplicate') ||
+                profileError.message?.toLowerCase().includes('already exists') ||
+                profileError.message?.toLowerCase().includes('unique constraint');
+              
+              if (isDuplicateError) {
+                // 用户配置已存在，说明用户之前已注册
+                await supabaseClient.auth.signOut();
+                return { success: false, error: getAuthText('emailAlreadyRegistered') };
+              }
+              
               // 如果插入失败，可能是 RLS 策略问题，但继续执行
               // 用户配置可能由数据库触发器自动创建
             } else {
@@ -7351,26 +7614,26 @@ var AuthManager = {
             success: true, 
             user: this.currentUser,
             needsConfirmation: true,
-            message: '注册成功！请检查邮箱并点击确认链接以完成注册。'
+            message: getAuthText('registrationSuccess')
           };
         }
       } catch (e) {
         console.error('Supabase registration failed:', e);
-        return { success: false, error: '注册失败，请重试' };
+        return { success: false, error: getAuthText('registrationFailedRetry') };
       }
     }
 
     // 降级到本地存储（仅在未使用 Supabase 时）
     if (AUTH_CONFIG.USE_SUPABASE) {
       // 如果使用 Supabase 但注册失败，不应该降级到本地存储
-      return { success: false, error: '注册失败，请检查 Supabase 配置或网络连接' };
+      return { success: false, error: getAuthText('registrationFailedConfig') };
     }
     
     // 清除可能存在的旧数据，确保检查的是最新数据
     const existingUsers = this.getUsersList();
     console.log('Checking local users list:', existingUsers);
     if (existingUsers && existingUsers.length > 0 && existingUsers.find(u => u.email === email)) {
-      return { success: false, error: '该邮箱已在本地注册，请先清除缓存' };
+      return { success: false, error: getAuthText('emailAlreadyRegisteredLocal') };
     }
 
     const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -7398,7 +7661,7 @@ var AuthManager = {
   // 登录
   async login(email, password) {
     if (!email || !password) {
-      return { success: false, error: '请输入邮箱和密码' };
+      return { success: false, error: getAuthText('enterEmailPassword') };
     }
 
     // 如果使用 Supabase
@@ -7411,11 +7674,11 @@ var AuthManager = {
         });
 
         if (error) {
-          return { success: false, error: '邮箱或密码错误' };
+          return { success: false, error: getAuthText('emailPasswordIncorrect') };
         }
 
         if (!data.user) {
-          return { success: false, error: '登录失败，请重试' };
+          return { success: false, error: getAuthText('loginFailedRetry') };
         }
 
         // 获取用户配置信息
@@ -7481,7 +7744,7 @@ var AuthManager = {
         return { success: true, user: this.currentUser };
       } catch (e) {
         console.error('Supabase login failed:', e);
-        return { success: false, error: '登录失败，请重试' };
+        return { success: false, error: getAuthText('loginFailedRetry') };
       }
     }
 
@@ -7490,11 +7753,11 @@ var AuthManager = {
     const user = existingUsers.find(u => u.email === email);
     
     if (!user) {
-      return { success: false, error: '邮箱或密码错误' };
+      return { success: false, error: getAuthText('emailPasswordIncorrect') };
     }
 
-    if (user.password !== this.hashPassword(password)) {
-      return { success: false, error: '邮箱或密码错误' };
+    if (!this.verifyPassword(password, user.password)) {
+      return { success: false, error: getAuthText('emailPasswordIncorrect') };
     }
 
     this.currentUser = { ...user };
@@ -7539,7 +7802,7 @@ var AuthManager = {
       }
     }
     this.updateUI();
-    console.log('本地缓存已清除');
+    console.log(getAuthText('localCacheCleared'));
   },
 
   // 获取用户列表
@@ -7553,16 +7816,53 @@ var AuthManager = {
     return this.usersList;
   },
 
-  // 简单密码哈希（生产环境应使用更安全的方法）
-  hashPassword(password) {
-    // 简单的哈希，仅用于演示，生产环境应使用 bcrypt 等
+  // 密码哈希（使用盐值和多重哈希，安全性要求不高）
+  hashPassword(password, salt = null) {
+    // 使用固定盐值（可以改为从配置读取）
+    const defaultSalt = 'ynyuset_toolsetfig_2024';
+    const usedSalt = salt || defaultSalt;
+    
+    // 组合密码和盐值
+    const saltedPassword = password + usedSalt + password.length;
+    
+    // 使用改进的哈希算法（djb2 变种）
+    let hash = 5381; // djb2 初始值
+    for (let i = 0; i < saltedPassword.length; i++) {
+      const char = saltedPassword.charCodeAt(i);
+      hash = ((hash << 5) + hash) + char; // hash * 33 + char
+    }
+    
+    // 二次哈希以增加安全性
+    const hashStr = Math.abs(hash).toString(36);
+    let secondHash = 0;
+    for (let i = 0; i < hashStr.length; i++) {
+      secondHash = ((secondHash << 5) - secondHash) + hashStr.charCodeAt(i);
+      secondHash = secondHash & secondHash; // 转换为 32 位整数
+    }
+    
+    // 返回组合的哈希值（包含盐值标识）
+    return `h_${Math.abs(secondHash).toString(36)}_${hashStr}`;
+  },
+
+  // 验证密码（支持新旧哈希格式，向后兼容）
+  verifyPassword(password, storedHash) {
+    if (!password || !storedHash) {
+      return false;
+    }
+    
+    // 新格式：以 h_ 开头
+    if (storedHash.startsWith('h_')) {
+      return storedHash === this.hashPassword(password);
+    }
+    
+    // 旧格式：兼容旧的简单哈希算法
     let hash = 0;
     for (let i = 0; i < password.length; i++) {
       const char = password.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32bit integer
+      hash = hash & hash;
     }
-    return hash.toString();
+    return storedHash === hash.toString();
   },
 
   // 更新 UI
@@ -7575,9 +7875,15 @@ var AuthManager = {
       // 已登录状态
       if (userName) userName.style.display = 'flex';
       if (loginText) loginText.style.display = 'none';
+
+      let [username,emailname] = [this.currentUser.username,this.currentUser.email.split('@')[0]];
+
       if (userName) {
-        const displayName = this.currentUser.username || this.currentUser.email.split('@')[0];
-        userName.textContent = displayName.length > 8 ? displayName.substring(0, 8) + '...' : displayName;
+        let displayName = username || emailname;
+        displayName = displayName.length > 8 ? displayName.substring(0, 8) + '...' : displayName;
+        userName.setAttribute('data-en-text',displayName);
+        userName.setAttribute('data-zh-text',displayName);
+        userName.textContent = displayName;
       }
     } else {
       // 未登录状态
@@ -7624,6 +7930,12 @@ var AuthManager = {
     if (registerPassword) registerPassword.value = '';
     if (registerPasswordConfirm) registerPasswordConfirm.value = '';
     this.hideError('register');
+    
+    // 隐藏验证提示
+    const registerUsernameError = document.getElementById('register-username-error');
+    const registerPasswordError = document.getElementById('register-password-error');
+    if (registerUsernameError) registerUsernameError.style.display = 'none';
+    if (registerPasswordError) registerPasswordError.style.display = 'none';
   },
 
   // 显示用户信息
@@ -7642,10 +7954,16 @@ var AuthManager = {
       const userAvatar = document.querySelector('[data-user-avatar]');
       const userId = document.querySelector('[data-user-id]');
       const userPremium = document.querySelector('[data-user-premium]');
-      
-      if (displayName) displayName.textContent = this.currentUser.username || this.currentUser.email.split('@')[0];
-      if (displayEmail) displayEmail.textContent = this.currentUser.email;
-      if (userAvatar) userAvatar.textContent = (this.currentUser.username || this.currentUser.email[0]).toUpperCase();
+      let [username,emailname,useremail] = [this.currentUser.username,this.currentUser.email.split('@')[0],this.currentUser.email];
+      //先取后两位
+      let iconname = username.slice(-2) || emailname.slice(-2);
+      //中文昵称只保留一个字
+      if(iconname.replace(/[^\u4e00-\u9fa5]/g,'').length > 0){
+        iconname = iconname[1];
+      }
+      if (displayName) displayName.textContent = username || emailname;
+      if (displayEmail) displayEmail.textContent = useremail;
+      if (userAvatar) userAvatar.textContent = iconname.toUpperCase();
       if (userId) userId.textContent = this.currentUser.id;
       if (userPremium) userPremium.style.display = this.currentUser.isPremium ? 'block' : 'none';
     }
@@ -7729,7 +8047,7 @@ if (btnLogin) {
     if (result.success) {
       AuthManager.showUserInfo();
     } else {
-      AuthManager.showError('login', result.error || '登录失败，请重试');
+      AuthManager.showError('login', result.error || getAuthText('loginFailedRetry'));
     }
   });
 }
@@ -7753,12 +8071,12 @@ if (btnRegister) {
     
     // 基本验证
     if (!email || !username || !password) {
-      AuthManager.showError('register', '请填写所有必填项');
+      AuthManager.showError('register', getAuthText('fillAllRequired'));
       return;
     }
     
     if (password !== passwordConfirm) {
-      AuthManager.showError('register', '两次输入的密码不一致');
+      AuthManager.showError('register', getAuthText('passwordsNotMatch'));
       return;
     }
     
@@ -7768,7 +8086,7 @@ if (btnRegister) {
     btnRegister.disabled = true;
     btnRegister.style.opacity = '0.6';
     btnRegister.style.pointerEvents = 'none';
-    btnRegister.textContent = '注册中...';
+    btnRegister.textContent = getAuthText('registering');
     
     let result = null;
     let shouldKeepDisabled = false;
@@ -7778,23 +8096,31 @@ if (btnRegister) {
       if (result.success) {
         if (result.needsConfirmation) {
           // 需要邮箱确认
-          AuthManager.showError('register', result.message || '注册成功！请检查邮箱并点击确认链接。');
+          AuthManager.showError('register', result.message || getAuthText('registrationSuccessShort'));
           // 3秒后切换到登录表单
           setTimeout(() => {
             AuthManager.showLoginForm();
             AuthManager.hideError('register');
+            //自动填充好账号邮箱
+            document.getElementById('login-email').value = email;
           }, 3000);
         } else {
           // 注册成功且已登录
           AuthManager.showUserInfo();
         }
       } else {
-        AuthManager.showError('register', result.error || '注册失败，请重试');
+        AuthManager.showError('register', result.error || getAuthText('registrationFailedRetry'));
         
         // 如果是速率限制错误，保持按钮禁用一段时间
-        if (result.error?.includes('等待') || result.error?.includes('秒')) {
+        const lang = getLanguageIntime() || 'zh';
+        const waitPattern = lang === 'zh' ? /(\d+)\s*秒/ : /(\d+)\s*seconds?/i;
+        const rateLimitKeywords = lang === 'zh' ? ['等待', '秒'] : ['wait', 'seconds'];
+        const isRateLimitError = rateLimitKeywords.some(keyword => 
+          result.error?.toLowerCase().includes(keyword.toLowerCase())
+        );
+        if (isRateLimitError) {
           shouldKeepDisabled = true;
-          const waitTime = parseInt(result.error.match(/(\d+)\s*秒/)?.[1] || '7') * 1000;
+          const waitTime = parseInt(result.error.match(waitPattern)?.[1] || '7') * 1000;
           setTimeout(() => {
             isRegistering = false;
             btnRegister.disabled = false;
@@ -7807,7 +8133,7 @@ if (btnRegister) {
       }
     } catch (e) {
       console.error('Registration error:', e);
-      AuthManager.showError('register', '注册失败，请重试');
+      AuthManager.showError('register', getAuthText('registrationFailedRetry'));
     } finally {
       // 恢复按钮状态（除非是速率限制）
       if (!shouldKeepDisabled) {
@@ -7821,25 +8147,69 @@ if (btnRegister) {
   });
 }
 
+// 用户名实时验证
+const registerUsername = document.getElementById('register-username');
+const registerUsernameError = document.getElementById('register-username-error');
+if (registerUsername && registerUsernameError) {
+  const updateUsernameValidation = () => {
+    const username = registerUsername.value.trim();
+    if (username) {
+      const validation = AuthManager.validateUsername(username);
+      if (!validation.valid) {
+        // 显示错误提示（支持中英文）
+        registerUsernameError.style.display = 'block';
+        registerUsernameError.textContent = getLanguageIntime() === 'zh' ? validation.error : validation.errorEn || validation.error;
+        registerUsernameError.setAttribute('data-zh-text', validation.error);
+        registerUsernameError.setAttribute('data-en-text', validation.errorEn || validation.error);
+      } else {
+        // 隐藏错误提示
+        registerUsernameError.style.display = 'none';
+      }
+    } else {
+      // 输入为空时隐藏错误提示
+      registerUsernameError.style.display = 'none';
+    }
+  };
+  
+  registerUsername.addEventListener('input', updateUsernameValidation);
+  registerUsername.addEventListener('blur', updateUsernameValidation);
+}
+
+// 密码实时验证
+const registerPassword = document.getElementById('register-password');
+const registerPasswordError = document.getElementById('register-password-error');
+if (registerPassword && registerPasswordError) {
+  const updatePasswordValidation = () => {
+    const password = registerPassword.value;
+    if (password) {
+      const validation = AuthManager.validatePassword(password);
+      if (!validation.valid) {
+        // 显示错误提示（支持中英文）
+        registerPasswordError.style.display = 'block';
+        registerPasswordError.textContent = getLanguageIntime() === 'zh' ? validation.error : validation.errorEn || validation.error;
+        registerPasswordError.setAttribute('data-zh-text', validation.error);
+        registerPasswordError.setAttribute('data-en-text', validation.errorEn || validation.error);
+      } else {
+        // 隐藏错误提示
+        registerPasswordError.style.display = 'none';
+      }
+    } else {
+      // 输入为空时隐藏错误提示
+      registerPasswordError.style.display = 'none';
+    }
+  };
+  
+  registerPassword.addEventListener('input', updatePasswordValidation);
+  registerPassword.addEventListener('blur', updatePasswordValidation);
+}
+
 // 退出登录按钮
 const btnLogout = document.querySelector('[data-btn-logout]');
 if (btnLogout) {
   btnLogout.addEventListener('click', () => {
     AuthManager.logout();
   });
-}
-
-// 清除本地缓存按钮
-const btnClearCache = document.querySelector('[data-btn-clear-cache]');
-if (btnClearCache) {
-  btnClearCache.addEventListener('click', () => {
-    if (confirm('确定要清除所有本地缓存吗？这将删除本地存储的用户数据。')) {
-      AuthManager.clearLocalCache();
-      AuthManager.showLoginForm();
-      alert('本地缓存已清除');
-    }
-  });
-}
+};
 
 // 关闭登录弹窗
 function setupLoginDialogClose() {
@@ -7850,18 +8220,8 @@ function setupLoginDialogClose() {
         dailogLogin.style.display = 'none';
       }
     });
-    
-    // ESC 键关闭（避免重复绑定）
-    if (!dailogLogin.hasAttribute('data-esc-listener')) {
-      dailogLogin.setAttribute('data-esc-listener', 'true');
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && dailogLogin && dailogLogin.style.display === 'flex') {
-          dailogLogin.style.display = 'none';
-        }
-      });
-    }
-  }
-}
+  };
+};
 
 // 确保在 DOM 加载后执行初始化
 if (document.readyState === 'loading') {
@@ -7873,11 +8233,11 @@ if (document.readyState === 'loading') {
   // DOM 已经加载完成
   initAuthModule();
   setupLoginDialogClose();
-}
+};
 
-// AuthManager 已在全局作用域中定义，run.js 可以直接访问
-// 在打包后，run.js 和 main.js 都在同一个文档中，可以直接使用
-
+function getLanguageIntime(){
+  return ROOT.getAttribute('data-language').toLowerCase();
+};
 </script>
 </body>
 </html>

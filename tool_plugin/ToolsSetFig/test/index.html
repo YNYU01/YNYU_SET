@@ -1,4 +1,4 @@
-<html data-plugin="fig" data-selects="false" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
+<html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
@@ -23,10 +23,10 @@
         </div>  
       </div> 
     </div>
-    <div data-mainset-top class="df-lc" style="gap: 4px; margin-left: 2px;">
+    <div data-mainset-top class="df-lc gap4" style="margin-left: 2px;">
       <div id="btn-theme-3">
         <input id="theme-3" data-theme-check type="checkbox" checked>
-        <label for="theme-3" class="btn-theme" style="position: relative;">
+        <label for="theme-3" class="btn-theme pos-r">
           <btn-theme></btn-theme>
         </label>
       </div>
@@ -39,7 +39,7 @@
         </div>
       </label>
     </div>
-    <div class="df-cc" style="gap:4px; margin-right: 2%; font-size: 12px;">
+    <div class="df-cc gap4 font-s12" style="margin-right: 2%;">
       <div data-skill-search class="df-cc" onclick="getElementMix('data-dailogsearch').style.display = 'flex'">
         <btn-search></btn-search>
       </div>
@@ -116,60 +116,61 @@
         <btn-close></btn-close>
       </div>
     </div>
-    <div data-dailoglogin-box class="df-ffc" style="min-width: 300px; max-width: 400px; padding: 20px; gap: 16px;">
+    <div data-dailoglogin-box class="df-ffc pos-r ovy noscrollbar">
       <!-- 登录表单 -->
-      <div data-login-form class="df-ffc" style="gap: 12px;">
-        <div class="df-cc" style="font-size: 18px; margin-bottom: 8px;">
-          <div data-en-text="LOGIN">登录</div>
+      <div data-login-form class="df-ffc gap12">
+        <div class="df-cc font-s16" style="margin-bottom: 8px; font-weight: 700;">
+          <div data-en-text="LOG IN">登录</div>
         </div>
-        <div class="df-ffc" style="gap: 8px;">
-          <input type="text" id="login-email" placeholder="邮箱" data-input data-placeholder-en="Email"/>
-          <input type="password" id="login-password" placeholder="密码" data-input data-placeholder-en="Password"/>
+        <div class="df-ffc gap8">
+          <input type="text" id="login-email" placeholder="邮箱" data-input data-en-placeholder="Email"/>
+          <input type="password" id="login-password" placeholder="密码" data-input data-en-placeholder="Password"/>
         </div>
-        <div data-login-error style="display: none; color: var(--code7); font-size: 12px; padding: 4px 8px;"></div>
-        <div class="df-sc" style="gap: 8px;">
-          <div data-btn="main" data-btn-login class="df-cc" style="flex: 1;" data-en-text="LOGIN">登录</div>
-          <div data-btn="main" data-btn-show-register class="df-cc" style="flex: 1; opacity: 0.6;" data-en-text="REGISTER">注册</div>
+        <div data-login-error class="font-s12" style="display: none; color: var(--code7); padding: 4px 8px;"></div>
+        <div class="df-sc gap8">
+          <div data-btn="main" data-btn-login class="df-cc" style="flex: 1;" data-en-text="LOG IN">登录</div>
+          <div data-btn="main" data-btn-show-register class="df-cc fl1 op6" data-en-text="SIGN UP →">注册 →</div>
         </div>
-        <div class="df-cc" style="font-size: 11px; opacity: 0.6; margin-top: 8px;">
-          <div data-en-text="Login for feedback & premium features">登录后可提交反馈并使用付费功能</div>
+        <div class="df-cc font-s10 op6" style="margin-top: 8px; white-space: normal;">
+          <span data-en-text="*This plugin does't collect any data related to the current file, only for feedback and premium plan">*插件不收集任何与当前文件有关的数据，仅用于提交反馈和付费计划</span>
         </div>
       </div>
       <!-- 注册表单 -->
-      <div data-register-form class="df-ffc" style="gap: 12px; display: none;">
-        <div class="df-cc" style="font-size: 18px; margin-bottom: 8px;">
-          <div data-en-text="REGISTER">注册</div>
+      <div data-register-form class="df-ffc gap12" style="display: none;">
+        <div class="df-cc font-s16" style="margin-bottom: 8px; font-weight: 700;">
+          <div data-en-text="SIGN UP">注册</div>
         </div>
-        <div class="df-ffc" style="gap: 8px;">
-          <input type="text" id="register-email" placeholder="邮箱" data-input data-placeholder-en="Email"/>
-          <input type="text" id="register-username" placeholder="用户名" data-input data-placeholder-en="Username"/>
-          <input type="password" id="register-password" placeholder="密码" data-input data-placeholder-en="Password"/>
-          <input type="password" id="register-password-confirm" placeholder="确认密码" data-input data-placeholder-en="Confirm Password"/>
+        <div class="df-ffc gap8">
+          <input type="text" id="register-email" placeholder="邮箱" data-input data-en-placeholder="Email"/>
+          <div id="register-username-wrapper" class="df-ffc pos-r gap4">
+            <div id="register-username-error" class="font-s10" data-en-text style="display: none; color: var(--code7); padding: 2px 4px;"></div>
+            <input type="text" id="register-username" placeholder="用户名" data-input data-en-placeholder="Username"/>
+          </div>
+          <div id="register-password-wrapper" class="df-ffc pos-r gap4">
+            <div id="register-password-error" class="font-s10" data-en-text style="display: none; color: var(--code7); padding: 2px 4px;"></div>
+            <input type="password" id="register-password" placeholder="密码" data-input data-en-placeholder="Password"/>
+          </div>
+          <input type="password" id="register-password-confirm" placeholder="确认密码" data-input data-en-placeholder="Confirm Password"/>
         </div>
-        <div data-register-error style="display: none; color: var(--code7); font-size: 12px; padding: 4px 8px;"></div>
-        <div class="df-sc" style="gap: 8px;">
-          <div data-btn="main" data-btn-register class="df-cc" style="flex: 1;" data-en-text="REGISTER">注册</div>
-          <div data-btn="main" data-btn-show-login class="df-cc" style="flex: 1; opacity: 0.6;" data-en-text="LOGIN">登录</div>
+        <div data-register-error class="font-s12" style="display: none; color: var(--code7); padding: 4px 8px;"></div>
+        <div class="df-sc gap8">
+          <div data-btn="main" data-btn-register class="df-cc fl1" data-en-text="SIGN UP">注册</div>
+          <div data-btn="main" data-btn-show-login class="df-cc fl1 op6" data-en-text="LOG IN →">登录 →</div>
         </div>
       </div>
       <!-- 用户信息显示 -->
-      <div data-user-info class="df-ffc" style="gap: 12px; display: none;">
-        <div class="df-sc" style="gap: 12px; align-items: center;">
-          <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--themeColor); color: #000; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">
+      <div data-user-info class="df-ffc gap12" style="display: none;">
+        <div class="df-sc gap12" style="align-items: center;">
+          <div class="df-cc" data-user-avatar-box>
             <span data-user-avatar>U</span>
           </div>
-          <div class="df-ffc" style="flex: 1; gap: 4px;">
-            <div style="font-size: 16px; font-weight: bold;" data-user-display-name>用户名</div>
-            <div style="font-size: 12px; opacity: 0.6;" data-user-display-email>email@example.com</div>
-            <div style="font-size: 11px; opacity: 0.5;" data-en-text="Premium User" data-user-premium style="display: none;">付费用户</div>
+          <div class="df-ffc gap4 fl1">
+            <div class="font-s16" style="font-weight: bold;" data-user-display-name>--</div>
+            <div class="font-s12 op6" data-user-display-email>--</div>
+            <div class="font-s10 op6" data-en-text="Premium User" data-user-premium style="display: none;">付费用户</div>
           </div>
         </div>
-        <div data-btn="main" data-btn-logout class="df-cc" data-en-text="LOGOUT">退出登录</div>
-        <div data-btn="main" data-btn-clear-cache class="df-cc" style="opacity: 0.6;" data-en-text="CLEAR CACHE">清除本地缓存</div>
-        <div class="df-cc" style="font-size: 11px; opacity: 0.6;">
-          <div data-en-text="User ID">用户ID：</div>
-          <span data-user-id style="font-family: monospace;">-</span>
-        </div>
+        <div data-btn="main" data-btn-logout class="df-cc" data-en-text="LOG OUT">退出登录</div>
       </div>
     </div>
   </div>
@@ -178,12 +179,12 @@
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
       <div class="h100 df-ffc" style="justify-content: space-between;">
         <div ></div>
-        <div class="df-ffc" style="gap: 8px;">
+        <div class="df-ffc gap8">
           <!-- 用户登录入口 -->
           <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
             <div data-user-name style="display: none;" data-en-text="USER">用户</div>
-            <div data-user-login-text data-en-text="LOGIN">登录</div>
-            <div style="width:16px; height:16px; padding: 2px; margin-left: 4px;  --mainColor:#2e2e2e;">
+            <div data-user-login-text data-en-text="LOG IN">登录</div>
+            <div class="pad2" style="width:16px; height:16px; margin-left: 4px;  --mainColor:#2e2e2e;">
               <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10Z" fill="var(--mainColor)"/>
                 <path d="M10 12C5.58172 12 2 13.7909 2 16V20H18V16C18 13.7909 14.4183 12 10 12Z" fill="var(--mainColor)"/>
@@ -202,18 +203,20 @@
         </div>
       </div>
       <div data-mainset-side-box class="df-sc">
-        <a href="https://www.ynyuset.cn" rel="noopener noreferrer" target="_blank" class="df-lc"
+        <a href="https://www.ynyuset.cn" rel="noopener noreferrer" target="_blank" class="df-lc font-s10 gap2"
         data-tips="set" data-tips-y="top" data-tips-x="left" 
-        style="--tips-gap: -16px; --tips-text: '🔗https://www.ynyuset.cn'; --tips-text-en: '🔗https://www.ynyuset.cn';
-        gap: 2px; color: var(--mainColor); font-size: 10px; flex: 1;">
+        style="--tips-gap: -16px; 
+        --tips-text: '🔗https://www.ynyuset.cn'; 
+        --tips-text-en: '🔗https://www.ynyuset.cn';
+        color: var(--mainColor); flex: 1;">
           ©2024-2025 
           <set-en data-any="en" class="fl0" style="height: 20px; margin-top: -2px;"></set-en>
           <set-zh data-any="zh" class="fl0" style="height: 20px; margin-top: -3px;"></set-zh>
         </a>
-        <div data-mainset-side class="df-lc" style="gap: 4px;">
+        <div data-mainset-side class="df-lc gap4">
           <div id="btn-theme-1">
             <input id="theme-1" data-theme-check type="checkbox" checked>
-            <label for="theme-1" class="btn-theme" style="position: relative;">
+            <label for="theme-1" class="btn-theme pos-r">
               <btn-theme></btn-theme>
             </label>
           </div>
@@ -255,14 +258,14 @@
   <div class="df-ffc w100 df-cc">
     <div data-page-id="page" class="df-ffc w100" data-tab-pick="create">
       <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: flex;">
-        <div class="wh100 df-ffc ovy noscrollbar" style="height: calc(100% - 50px); max-width: 560px; align-items: center; padding:0 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovy noscrollbar bsb" style="height: calc(100% - 50px); max-width: 560px; align-items: center; padding:0 10px;">
           <div class="wh100 df-ffc" style="align-items: center;">
             <!--步骤1-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Upload | Drop | Input" >上传 | 拖拽 | 输入</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="data to create node in batches" style="opacity: 0.6;"> 数据以批量创建内容</span>
+              <span data-any="vw300" data-en-text="data to create node in batches op6"> 数据以批量创建内容</span>
               <div data-any="vw300" data-help="create" class="fl0 df-cc">?</div>
             </div>
             <!--上传文件-->
@@ -271,7 +274,7 @@
                 <div data-file-info class="file-tag" data-en-text="📁 No files there">📁 未选择任何文件</div>
               </div>
               <div data-mode-id="upload" class="df-cc">
-                <div class="df-ffc df-cc" style="gap: 4px;">
+                <div class="df-ffc df-cc gap4">
                   <input id="input-user-img" type="file" accept=".jpg,.jpeg,.jfif,.webp,.png,.apng,.gif" style="display: none;" multiple/>
                   <label for="input-user-img" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   style=" --tips-text: '可上传1~10张大图, 支持常见图片格式'; --tips-text-en: 'Upload 1~10 large images (common formats)';" >
@@ -279,7 +282,7 @@
                   </label>
                   <div data-btn-name data-any="vw300" data-en-text="Cut large image">大图自动切片</div>
                 </div>
-                <div class="df-ffc df-cc" style="gap: 4px;">
+                <div class="df-ffc df-cc gap4">
                   <input id="input-user-table" type="file" accept=".csv,.xls,.xlsx"  style="display: none;"/>
                   <label for="input-user-table" data-tips="auto" data-tips-y="top" data-tips-x="center"
                   style="--tips-text: '上传单个表格, 需按一定格式填写'; --tips-text-en: 'Upload 1 table in the prescribed format';" >
@@ -287,7 +290,7 @@
                   </label>
                   <div data-btn-name data-any="vw300" data-en-text="Table to frame">表格创建画板</div>
                 </div>
-                <div class="df-ffc df-cc" style="gap: 4px;">
+                <div class="df-ffc df-cc gap4">
                   <input id="input-user-zy" type="file" accept=".md,.zy,.sketch,.svg,.xml,.json,.zip,.rar,.7z" style="display: none;"/>
                   <label for="input-user-zy" data-tips="auto" data-tips-y="top" data-tips-x="right"
                   style="--xx: 36px;--tips-text: '上传由云即系列插件生成的图层信息文件'; --tips-text-en: 'Upload .zy (by YN+) or other compatible file';" >
@@ -298,7 +301,7 @@
               </div>
             </div>
             <!--输入参数-->
-            <div class="w100 df" style="flex-wrap: wrap; margin: 4px 0; gap: 4px;">
+            <div class="w100 df gap4" style="flex-wrap: wrap; margin: 4px 0;">
               <div id="upload-textarea-box" data-resize class="pos-r fl1 df-lc">
                 <div class="h100" style="width: 30px;"></div>
                 <div data-textarea-linenum-box data-scroll class="pos-a h100 ovy noscrollbar">
@@ -347,7 +350,7 @@
                   <div class="h100" data-btn="down">▼</div>
                 </div>
               </div>
-              <div id="upload-set-box" class="df" style="flex-wrap: wrap; margin:0 0 4px 0; gap: 4px;">
+              <div id="upload-set-box" class="df gap4" style="flex-wrap: wrap; margin:0 0 4px 0;">
                 <div id="upload-set-main" class="df">
                   <div id="upload-set-1" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   style=" --tips-text:'转为标签/大纲';  --tips-text-en:'Convert to tags/catalogue';">
@@ -378,8 +381,8 @@
               </div>
             </div>
             <!--更多设置-->
-            <div id="upload-moreset-box" class="w100 df-lc" style="flex-wrap: wrap;gap: 4px; display: none;">
-              <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 180px;">
+            <div id="upload-moreset-box" class="w100 df-lc gap4" style="flex-wrap: wrap; display: none;">
+              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 180px;">
                 <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
                   --tips-text:'修改生效列, 用于剔除数据';  --tips-text-en:'Select columns to take effect'; width: 20px; height: 20px;">
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -400,7 +403,7 @@
                   <btn-reset></btn-reset>
                 </div>  
               </div>
-              <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 180px;">
+              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 180px;">
                 <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
                   --tips-text:'画板命名后缀, 自定义格式或选择预设';  --tips-text-en:'Frame naming suffix,input or select a preset'; width: 20px; height: 20px;">
                   <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -414,11 +417,11 @@
                   </svg>
                 </div>
                 <input id="input-framename" data-input class="nobod fl1" type="text" value=" w×h">  
-                <div class="df-lc pos-r" data-select data-select-close data-select-value=" w×h" style="gap: 4px; width: 90px; z-index:2;">
+                <div class="df-lc pos-r gap4" data-select data-select-close data-select-value=" w×h" style="width: 90px; z-index:2;">
                   <input id="select-value-1" type="text" data-select-input readonly value=" w×h">
                   <input id="select-show-1" data-select-pick=" w×h" type="checkbox">
-                  <label for="select-show-1" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
-                  <div data-select-options="" class="df-ffc pos-a w100 noscrollbar" style="white-space: normal; display: none; top:24px;">
+                  <label for="select-show-1" class="show-next wh100 pos-a" style="top:0; right: 0;"></label>
+                  <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: normal; display: none; top:24px;">
                     <div data-option="type" data-en-text="Basic">基础</div>
                     <div data-option="option" data-option-main="false" data-option-value="none">none</div>
                     <div data-option="option" data-option-main="true" data-option-value=" w×h">&nbsp;w×h</div>
@@ -434,11 +437,11 @@
             </div>
             <div style="height: 4px;"></div>
             <!--步骤2-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0;vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Edit final tags/catalogue" > 编辑标签/大纲 </span>
                 &nbsp;&nbsp;
-                <span data-en-text="to create finally" data-any="vw240" style="opacity: 0.6;">以确认最终创建内容</span>
+                <span data-en-text="to create finally op6" data-any="vw240">以确认最终创建内容</span>
             </div>
             <div data-create-mix class="wh100 df-cc pos-r" ><!--data-resize-->
               <div data-create-tags-box class="wh100 upload-set pos-r">
@@ -462,17 +465,17 @@
         <div data-create-any data-btn="main" class="df-cc" data-en-text="CREATE">创建</div>
       </div>
       <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc ovh" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovh bsb pad10" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding-top:0;">
           <!--步骤1-->
-          <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+          <div class="w100 df-lc op6"  style="padding:4px 0 10px 0;vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
             <span data-en-text="Add selects to list" >添加所选对象到队列</span>
             &nbsp;&nbsp;
-            <span data-any="vw300" data-en-text="by the export-type" style="opacity: 0.6;"> 按所选导出类型</span>
+            <span data-any="vw300" data-en-text="by the export-type op6"> 按所选导出类型</span>
             <div data-any="vw300" data-help="export" class="fl0 df-cc">?</div>
           </div>
           <!--导出类型-->
-          <div class="df-lc pos-r upload-set w100" style="gap:4px; padding: 4px; border-radius: 8px;">
+          <div class="df-lc pos-r upload-set w100 gap4 pad4" style="border-radius: 8px;">
             <div class="noscrollbar" style="margin: 0 auto;">
               <div data-exporttype-set class="df-lc" data-radio-value="1" >
                 <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="true">
@@ -505,16 +508,16 @@
               </div>
             </div>
           </div>
-          <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px;">
+          <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (默认)</div>    
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
           </div>
           <!--步骤2-->
-          <div class="w100 df-lc"  style="padding:10px 0 4px 0; opacity: 0.6; vertical-align: baseline;"> 
+          <div class="w100 df-lc op6"  style="padding:10px 0 4px 0; vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
             <span data-en-text="Set rendering list" >设置渲染队列</span>
             &nbsp;&nbsp;
-            <span data-any="vw300" data-en-text="name/type/size..." style="opacity: 0.6;"> 目标格式和文件大小等</span>
+            <span data-any="vw300" data-en-text="name/type/size..." class="op6"> 目标格式和文件大小等</span>
           </div>
           <div class="df-cc fl0" style="width: 120px; height: 12px; border-radius: 8px 8px 0 0;">
             <input id="export-more" checked type="checkbox" 
@@ -529,8 +532,8 @@
           </div>
           <div data-exportset-more class="w100">
             <div class="w100 df-sc">
-              <div class="df-lc" style="gap: 8px;">
-                <div class="df-lc" data-export-delete data-btn="text" style="gap: 2px;">
+              <div class="df-lc gap8">
+                <div class="df-lc gap2" data-export-delete data-btn="text">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path stroke="var(--mainColor)" d="M2 4.27539H12" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
                     <path stroke="var(--mainColor)" d="M10 2.5V1.5H4V2.5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -540,7 +543,7 @@
                   </svg>  
                   <div data-en-text="Delete">删除</div>                
                 </div>
-                <div class="df-lc" data-export-reup data-btn="text" style="gap: 2px;">
+                <div class="df-lc gap2" data-export-reup data-btn="text">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path stroke="var(--mainColor)" d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
                     <path stroke="var(--mainColor)" d="M2.99911 2.18428L3.20218 4.65075L5.66323 4.49707" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -548,10 +551,10 @@
                   <div data-en-text="Re-Upload">重新上传</div>                
                 </div>
               </div>
-              <div class="df-lc" style="gap: 4px;">
+              <div class="df-lc gap4">
                 <div data-en-text="All">全选</div>
                 <input id="exportset-pickall" type="checkbox"/>
-                <label for="exportset-pickall" class="check" style="gap: 4px; width: 16px; height: 16px;">
+                <label for="exportset-pickall gap4" class="check" style="width: 16px; height: 16px;">
                   <btn-check-tick></btn-check-tick>
                 </label>
               </div>
@@ -581,16 +584,16 @@
         <div data-export-any data-btn="main" class="df-cc" data-en-text="EXPORT">导出</div>
       </div>
       <div data-page-name="编辑" data-page-name-en="editor" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc ovh" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding:0 10px 10px 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovh bsb pad10" style="height: calc(100% - 40px); max-width: 560px; align-items: center; padding-top:0;">
           <!--步骤1-->
-          <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+          <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
             <span data-en-text="Upload a node" >选中内容并上传</span>
             &nbsp;&nbsp;
-            <span data-any="vw300" data-en-text="and don't alter it before apply" style="opacity: 0.6;"> 应用前请勿修改原图层</span>
+            <span data-any="vw300" data-en-text="and don't alter it before apply" class="op6"> 应用前请勿修改原图层</span>
             <div data-any="vw300" data-help="editor" class="fl0 df-cc">?</div>
           </div>
-          <div class="w100 df-cc" style="gap: 2px;">
+          <div class="w100 df-cc gap2">
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Editable">上传(可编辑)</div>    
             <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
           </div>
@@ -599,7 +602,7 @@
             <div data-editor-setbox class="w100 df-ffc">
               <div class="w100 df-lc">
                 <div data-editor-setlist-title class="df-sc pos-r">
-                  <div data-en-text="Filter" style="opacity: 0.6;">调整</div>
+                  <div data-en-text="Filter" class="op6">调整</div>
                   <div data-btn="icon" data-editor-addset>
                     <svg width="100%" height="100%" viewBox="0 0 20 20">
                       <rect fill="var(--mainColor)" x="0" y="9" width="20" height="2"></rect>
@@ -608,7 +611,7 @@
                   </div>
                 </div>
                 <div class="w100 df-sc">
-                  <div class="df-lc" style="gap: 4px; padding-left: 4px;">
+                  <div class="df-lc gap4" style="padding-left: 4px;">
                     <input type="file" id="edito-upset" accept=".json" style="display: none;">
                     <label for="edito-upset" data-tips="auto" data-tips-x="center" data-tips-y="top"
                     style="--tips-text:'导入'; --tips-text-en:'Import';">
@@ -636,7 +639,7 @@
                       </div>
                     </div>
                   </div>
-                  <div data-en-text="Value" style="opacity: 0.6;">属性</div>
+                  <div data-en-text="Value" class="op6" >属性</div>
                 </div>
               </div>
               <div class="wh100 df-lc">
@@ -705,27 +708,27 @@
         <div data-btn="main" class="df-cc" data-en-text="APPLY">应用</div>
       </div>
       <div data-page-name="变量" data-page-name-en="variable" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc ovy noscrollbar" style="height: calc(100% - 20px); max-width: 560px; align-items: center; padding:0 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc ovy noscrollbar bsb" style="height: calc(100% - 20px); max-width: 560px; align-items: center; padding:0 10px;">
           <!--步骤1-->
-          <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+          <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
             <span>▼&nbsp;</span>
             <span data-en-text="Build local sheet" >建立本地变量表</span>
             &nbsp;&nbsp;
-            <span data-any="vw300" data-en-text="editor and apply manually" style="opacity: 0.6;"> 手动编辑和更新</span>
+            <span data-any="vw300" data-en-text="editor and apply manually" class="op6"> 手动编辑和更新</span>
             <div data-any="vw300" data-help="variable" class="fl0 df-cc">?</div>
           </div>
           <div data-variable-type class="w100 df-lc">
-            <div class="fl1 df-lc upload-set" style="gap: 6px;">
-              <div class="df-lc"
+            <div class="fl1 df-lc upload-set gap6">
+              <div class="df-lc gap4"
               data-tips="auto" data-tips-x="left" data-tips-y="top"
-              style="gap: 4px; --tips-text:'数据类型'; --tips-text-en:'Sheet type';">
+              style="--tips-text:'数据类型'; --tips-text-en:'Sheet type';">
                 <svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill="var(--mainColor)" fill-rule="evenodd" clip-rule="evenodd" d="M7.89746 2.57129C7.3268 3.58479 7 4.75402 7 6C7 6.54045 7.06376 7.06601 7.17969 7.57129H3V12.0713H9.5V11.3604C9.81125 11.6219 10.146 11.8557 10.5 12.0605V12.0713H10.5176C11.5434 12.661 12.7318 13 14 13C15.4877 13 16.866 12.5345 18 11.7432V16.5713L17.9893 16.7754C17.887 17.7841 17.0357 18.5713 16 18.5713H4C2.96435 18.5713 2.113 17.7841 2.01074 16.7754L2 16.5713V4.57129C2.00016 3.46686 2.89553 2.57129 4 2.57129H7.89746ZM3 16.5713C3 17.1236 3.44772 17.5713 4 17.5713H9.5V13.0713H3V16.5713ZM10.5 17.5713H16C16.5523 17.5713 17 17.1236 17 16.5713V13.0713H10.5V17.5713Z"/>
                   <path fill="var(--mainColor)" fill-rule="evenodd" clip-rule="evenodd" d="M14 0C17.3137 0 20 2.68629 20 6C20 9.31371 17.3137 12 14 12C10.6863 12 8 9.31371 8 6C8 2.68629 10.6863 0 14 0ZM13.2246 8.71582V10.3145H14.8828V8.71582H13.2246ZM13.9941 1.68555C12.6002 1.68555 11.4709 2.59895 11.4707 4.08887H13.0322C13.0324 3.53626 13.3574 3.0918 13.9941 3.0918C14.5948 3.09191 14.9677 3.51247 14.9678 4.07715C14.9678 4.34154 14.8114 4.63044 14.6191 4.88281L13.7295 6.02441C13.4171 6.43292 13.2725 6.75774 13.2725 7.27441V7.63477H14.835V7.38184C14.8351 7.17761 14.9317 6.92569 15.0518 6.76953L15.9404 5.5918C16.2769 5.14715 16.5293 4.68975 16.5293 4.08887C16.5291 2.56299 15.3519 1.68565 13.9941 1.68555Z"/>
                 </svg>
                 ▶                
               </div>
-              <div class="df-lc data-scroll ovx noscrollbar" data-scroll data-radio-value="style" style="gap: 6px;">
+              <div class="df-lc data-scroll ovx noscrollbar gap6" data-scroll data-radio-value="style">
                 <div class="fl0 df-lc" data-radio data-radio-data="style" data-radio-main="true">
                   <div data-variable-chk>
                     <btn-style></btn-style>
@@ -805,27 +808,27 @@
                 </div>
               </div>
             </div>
-            <div class="w100 df-cc" style="gap: 2px; margin-bottom: 10px;">
+            <div class="w100 df-cc gap2" style="margin-bottom: 10px;">
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Variable To Sheet">从变量更新表</div>    
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Variable">从表更新变量</div>
             </div>
             <!--步骤2-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Manage variable group" >管理变量组</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="based on properties/tags map" style="opacity: 0.6;"> 基于标签/组件属性</span>
+              <span data-any="vw300" data-en-text="based on properties/tags map" class="op6"> 基于标签/组件属性</span>
             </div>
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-variables class="w100 df-sc">
-                <div class="df-lc" style="gap: 8px;">
+                <div class="df-lc gap8">
                   <div data-variables-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
                     <div class="pos-a" style="top: 0; left: 18px;"
                     data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
-                <div class="df-lc" style="gap: 4px;">
+                <div class="df-lc gap4">
 
                 </div>
               </div>
@@ -879,27 +882,27 @@
                 </div>
               </div>
             </div>
-            <div class="w100 df-cc" style="gap: 2px; margin-bottom: 10px;">
+            <div class="w100 df-cc gap2" style="margin-bottom: 10px;">
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Style To Sheet">从样式更新表</div>    
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
             </div>
             <!--步骤2-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Manage broken-link style" >管理断链样式</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="Reapply | Create | Override..." style="opacity: 0.6;"> 重链 | 新建 | 覆盖</span>
+              <span data-any="vw300" data-en-text="Reapply | Create | Override..." class="op6"> 重链 | 新建 | 覆盖</span>
             </div>
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-linkstyle class="w100 df-sc">
-                <div class="df-lc" style="gap: 8px;">
+                <div class="df-lc gap8">
                   <div data-linkstyle-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
                     <div class="pos-a" style="top: 0; left: 18px;"
                     data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
-                <div class="df-lc" style="gap: 4px;">
+                <div class="df-lc gap4">
                   <div data-linkstyle-all="reapply" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
                   style="--tips-text: '全部重链'; --tips-text-en: 'Relink all';">
                     <div data-btn="icon">
@@ -935,22 +938,22 @@
               </div>
             </div>
             <!--步骤3-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Manage thematic style" >管理主题性样式组</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="like variable group" style="opacity: 0.6;"> 类似切换变量组</span>
+              <span data-any="vw300" data-en-text="like variable group" class="op6"> 类似切换变量组</span>
             </div>
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-selectstyle class="w100 df-sc">
-                <div class="df-lc" style="gap: 8px;">
+                <div class="df-lc gap8">
                   <div data-selectstyle-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
                     <div class="pos-a" style="top: 0; left: 18px;"
                     data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
-                <div class="df-lc" style="gap: 4px;">
+                <div class="df-lc gap4">
 
                 </div>
               </div>
@@ -967,20 +970,20 @@
         </div>
       </div>
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc ovy noscrollbar" style="max-width: 560px; align-items: center; padding: 10px 10px 0 10px; box-sizing: border-box;">
-          <div class="wh100 df-ffc" style="box-sizing: border-box;">
+        <div class="wh100 df-ffc ovy noscrollbar pad10 bsb" style="max-width: 560px; align-items: center; padding-bottom: 0;">
+          <div class="wh100 df-ffc bsb">
             <!--步骤1-->
-            <div class="w100 df-lc"  style="padding:4px 0 10px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Get a basic table" >创建基础表格模板</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="and make it more diverse" style="opacity: 0.6;">并进一步定制化设计</span>
+              <span data-any="vw300" data-en-text="and make it more diverse" class="op6">并进一步定制化设计</span>
               <div data-any="vw300" data-help="sheet" class="fl0 df-cc">?</div>
             </div>
             <!--预设表格样式-->
             <div data-tableset-thtd class="df-lc w100">
-              <div class="df-lc" style="max-width: 100%; margin:0 auto; gap: 4px;">
-                <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px); height: 40px;">
+              <div class="df-lc gap4" style="max-width: 100%; margin:0 auto;">
+                <div class="df-lc pos-r upload-set gap4" style="max-width: calc(100% - 44px); height: 40px;">
                   <input id="chk-tablestyle" checked type="checkbox" >
                   <label for="chk-tablestyle" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;  width: 22px; height: 22px;
                   --tips-text:'按预设样式生成组件/修改表格';  --tips-text-en:'Create/change from the preset style';">
@@ -989,7 +992,7 @@
                       <path fill="var(--mainColor)" d="M11.8598 12.0372L8.12642 15.3311C7.78273 15.6343 7.24651 15.3537 7.29927 14.8985L7.87154 9.95317L11.8598 12.0372ZM12.7329 0.616255C12.9887 0.127036 13.5931 -0.0621097 14.0825 0.193403L16.269 1.33598C16.7583 1.59183 16.9475 2.19621 16.6919 2.68559L12.4702 10.7618L8.51216 8.69243L12.7329 0.616255Z"/>
                     </svg>                  
                   </label>
-                  <div data-tablestyle-box class="df-lc" style="gap: 4px; overflow: auto;">
+                  <div data-tablestyle-box class="df-lc gap4" style="overflow: auto;">
                     ▶
                     <div class="noscrollbar" data-scroll>
                       <div data-tablestyle-set class="df-lc" data-radio-value="1">
@@ -1077,17 +1080,17 @@
                     </div>
                   </div>
                 </div>
-                <div class="df-lc pos-r upload-set" style="gap:4px; max-width: calc(100% - 44px);">
+                <div class="df-lc pos-r upload-set gap4" style="max-width: calc(100% - 44px);">
                   <input id="chk-selectcomp" type="checkbox" checked >
                   <label for="chk-selectcomp" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="right" style="--tips-w: 8ch;  width: 22px; height: 22px;
                   --tips-text:'以所选对象为组件';  --tips-text-en:'Create from the selected node';">
                     <btn-getbyselect></btn-getbyselect>                  
                   </label>
-                  <div data-selectcomp-box="false" class="df-lc" style="gap: 4px; display: none; overflow: auto;">
+                  <div data-selectcomp-box="false" class="df-lc gap4" style="display: none; overflow: auto;">
                     ▶
                     <div class="noscrollbar df-lc" data-scroll>
                       <div data-selectcomp-no style="padding: 0 10px;" data-en-text="Has not compliant components">未选中有效的组件</div>
-                      <div data-selectcomp-mix class="df-lc" style="gap:4px">
+                      <div data-selectcomp-mix class="df-lc gap4">
                         <span data-any="vw240">
                           <span data-en-text="Header:">表头:</span>
                         </span>
@@ -1104,12 +1107,12 @@
                 </div>
               </div>
             </div> 
-            <div class="w100 df-cc" style="margin: 8px 0 4px 0; gap: 2px;">
+            <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
               <div data-create-table class="w100 df-cc" data-btn="main2" data-en-text="Create Table">创建表格</div>
               <div class="w100 df-cc" data-btn="skill-main" data-selects-must data-en-text="Apply Preset" style="border-radius: 20px;">应用预设样式</div>    
               <div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
                 <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
-                <label for="table-more" class="wh100 df-cc btn-more" style=" padding: 4px;">
+                <label for="table-more" class="wh100 df-cc btn-more pad4">
                   <svg data-icon-more width="100%" height="100%" viewBox="0 0 20 20">
                     <g data-icon-more-path="1">
                       <path fill="none" d="M18 0L0 0"></path>
@@ -1124,7 +1127,7 @@
                 </label>
               </div>
             </div>
-            <div class="df-ffc" data-tableset-more data-skill-sec style="gap: 4px; margin: 4px 0; display: none;">
+            <div class="df-ffc gap4" data-tableset-more data-skill-sec style="margin: 4px 0; display: none;">
               <div class="df-lc w100" data-skill-more>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Only Create @th/td">仅创建组件</div>
                 <div class="df-cc"  data-selects-must data-btn="skill-main" data-en-text="Make Compliant">合规化组件</div>
@@ -1137,13 +1140,13 @@
                 </span>
               </div>
               <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-lc w100" style="gap: 4px;">
+                <div class="df-lc w100 gap4">
                   <div class="df-lc fl1">
-                    <input id="table-column-num" type="text" value="0" data-input="" data-input-type="int" data-input-must="0,1000" style="text-align: center;">
+                    <input id="table-column-num" type="text" value="0" data-input data-input-type="int" data-input-must="0,1000" style="text-align: center;">
                     <div class="df-cc" data-input-unit="auto" data-en-text=" C ">列</div>
                   </div>
                   <div class="df-lc fl1" >
-                    <input id="table-row-num" type="text" value="0" data-input="" data-input-type="int" data-input-must="0,1000" style="text-align: center;">
+                    <input id="table-row-num" type="text" value="0" data-input data-input-type="int" data-input-must="0,1000" style="text-align: center;">
                     <div class="df-cc" data-input-unit="auto" data-en-text=" R ">行</div>
                   </div>
                 </div>
@@ -1187,7 +1190,7 @@
             </div>
             <div style="min-height: 4px;"></div>
             <!--步骤2-->
-            <div class="w100 df-lc"  style="padding:4px 0 6px 0; opacity: 0.6; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 6px 0;vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Control component properties by sheet" >用表格数据批量+参数化控制组件</span>
             </div>
@@ -1201,15 +1204,15 @@
                 <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
                   <btn-close></btn-close>
                 </div>
-                <div data-textarea="tips" class="pos-a w100 df-ffc" style="white-space: normal; gap: 4px; font-size: 10px; color: var(--boxBod); bottom: 0; padding: 10px; box-sizing: border-box; animation: boxUp 0.5s; pointer-events: none;">
+                <div data-textarea="tips" class="pos-a w100 df-ffc pad10 bsb gap4 font-s10" style="white-space: normal; color: var(--boxBod); bottom: 0; animation: boxUp 0.5s; pointer-events: none;">
                   <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
                   <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
                 </div>
               </div>
             </div>
             <!--更多设置-->
-            <div data-tablearea-moreset class="w100 df-lc" style="flex-wrap: wrap; gap: 4px; margin: 4px 0;">
-              <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 120px;">
+            <div data-tablearea-moreset class="w100 df-lc gap4" style="flex-wrap: wrap; margin: 4px 0;">
+              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 120px;">
                 <div data-tips="auto" class="fl0 df-cc" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
                   --tips-text:'设置换行转义符, 用于兼容需要换行的数据';  --tips-text-en:'Set a character to represent line feed'; width: 20px; height: 20px;">
                   <svg width="120%" height="120%" viewBox="0 0 20 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1225,7 +1228,7 @@
                   <btn-reset></btn-reset>
                 </div>  
               </div>
-              <div class="df-lc fl1 pos-r upload-set" style="gap:4px; min-width: 120px;">
+              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 120px;">
                 <div data-tips="auto" class="fl0 df-cc" data-tips-y="top" data-tips-x="center" style="--tips-w: 8ch; 
                   --tips-text:'设置空数据占位符, 可避免潜在的错误';  --tips-text-en:'Set a character to replace null data'; width: 20px; height: 20px;">
                   <svg width="120%" height="120%" viewBox="0 0 20 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1242,10 +1245,10 @@
                 </div> 
               </div>
             </div>
-            <div class="df-ffc w100 bod-d" data-retable-moreset  style="padding: 4px; gap: 4px; box-sizing: border-box;">
+            <div class="df-ffc w100 bod-d pad4 gap4 bsb" data-retable-moreset >
               <div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one auto-layout with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个自动布局 时生效</div>
-              <div class="df-lc w100" data-skill-more style="flex-wrap: wrap; text-wrap: nowrap; font-size: 10px; gap: 4px; margin-bottom: 4px;">
-                <div class="fl1 df-lc" style=" gap: 4px; min-width: 160px;">
+              <div class="df-lc w100 font-s10 gap4" data-skill-more style="flex-wrap: wrap; text-wrap: nowrap; margin-bottom: 4px;">
+                <div class="fl1 df-lc gap4" style="min-width: 160px;">
                   <div class="df ovh noscrollbar" data-scroll data-en-text="· Clone instance by data quantity">· 数据数量&gt;实例数量时, 复制最末实列</div>
                   <div style="width: 1%;"></div>
                   <div class="df-rc" style="min-width: 36px;">
@@ -1253,7 +1256,7 @@
                     <label for="switch-autoclone" class="switch" style="--swi-h: 16px"></label>
                   </div>
                 </div>
-                <div class="fl1 df-lc" style="gap: 4px; min-width: 160px;">
+                <div class="fl1 df-lc gap4" style="min-width: 160px;">
                   <div class="df ovh noscrollbar" data-scroll data-en-text="· Reduce instance by data quantity">· 数据数量&lt;实例数量时, 从最末实列开始删减</div>
                   <div style="width: 1%;"></div>
                   <div class="df-rc" style="min-width: 36px;">
@@ -1263,7 +1266,7 @@
                 </div>
               </div>
             </div>
-            <div class="df-ffc" data-skill-sec style="gap: 4px; margin: 4px 0;">
+            <div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
               <div class="df-lc w100" data-skill-more data-selects-must>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Names">图层命名映射</div>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Texts">文本数据映射</div>
@@ -1294,7 +1297,7 @@
         </div>
       </div>
       <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100" style="display: none;">
-        <div class="wh100 df-ffc" style="max-width: 560px; align-items: center; padding: 10px; box-sizing: border-box;">
+        <div class="wh100 df-ffc pad10 bsb pad10" style="max-width: 560px; align-items: center;">
           <!--功能tags-->
           <div class="w100 fl0 noscrollbar df" data-scroll>
             <div data-skilltype-box class="df-lc fl0" data-radio-value="1" >
@@ -1415,11 +1418,11 @@
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
-                    <div data-pixel-mix class="df-lc pos-r" data-select data-select-close data-select-value="≤ 4096px" style="gap: 4px; width: 90px; z-index:2;">
-                      <input id="select-value-2" type="text" data-select-input readonly="" value="≤4096">
+                    <div data-pixel-mix class="df-lc pos-r gap4" data-select data-select-close data-select-value="≤ 4096px" style="width: 90px; z-index:2;">
+                      <input id="select-value-2" type="text" data-select-input readonly value="≤4096">
                       <input id="select-show-2" data-select-pick="≤4096" type="checkbox">
                       <label for="select-show-2" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
-                      <div data-select-options="" class="df-lc pos-a noscrollbar" style="display: none;">
+                      <div data-select-options class="df-lc pos-a noscrollbar" style="display: none;">
                         <div data-option="option" data-option-main="true" data-option-value="≤ 4096px">≤ 4096px</div>
                         <div data-option="option" data-option-main="false" data-option-value="≤ 2048px">≤ 2048px</div>
                         <div data-option="option" data-option-main="false" data-option-value="≤ 1024px">≤ 1024px</div>
@@ -1440,7 +1443,7 @@
                     <div class="df-cc" data-input-unit>x</div>
                     </div>
                     <div></div>
-                    <div class="df-lc fl1" data-pixelscale-set data-radio-value="1" style="gap: 2px;">
+                    <div class="df-lc fl1 gap2" data-pixelscale-set data-radio-value="1">
                       <div data-radio data-radio-data="1" data-radio-main="true" class="df-cc">
                         1x
                       </div>
@@ -1467,25 +1470,25 @@
                       <btn-star></btn-star>
                   </div>
                   <div class="df-sc" data-skill-line>
-                    <div class="df-ffc fl1" style="gap: 7px; max-width: 160px;">
+                    <div class="df-ffc fl1 gap8" style="max-width: 160px;">
                       <div data-any="vw240" style="height: 6px;"></div>
                       <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Each ratio">按百分比</div>
                         <input id="uniform-set-s" type="text" value="1" data-input data-input-type="float" data-input-must="0.01,1000" style="text-align: center;">
-                        <div class="df-cc" data-input-unit="">x</div>
+                        <div class="df-cc" data-input-unit>x</div>
                       </div>
                       <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Same width">按宽度</div>
-                        <input id="uniform-set-w" type="text" value="" data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
-                        <div class="df-cc" data-input-unit="">w</div>
+                        <input id="uniform-set-w" type="text" value data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
+                        <div class="df-cc" data-input-unit>w</div>
                       </div>
                       <div class="df-lc w100" style="max-width: 160px;" data-float-value>
                         <div data-skill-btnname data-any="vw240" data-en-text="Same height">按高度</div>
-                        <input id="uniform-set-h" type="text" value="" data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
-                        <div class="df-cc" data-input-unit="">h</div>
+                        <input id="uniform-set-h" type="text" value data-input data-input-type="float" data-input-must="10,10000" style="text-align: center;">
+                        <div class="df-cc" data-input-unit>h</div>
                       </div>
                     </div>
-                    <div data-transform-center-module class="df-ffc df-cc fl1" style="gap: 4px; margin-left: 10px;">
+                    <div data-transform-center-module class="df-ffc df-cc fl1 gap4" style="margin-left: 10px;">
                       <div data-skill-btnname-top data-any="vw240" data-en-text="Scale center">缩放中心</div>
                       <div data-transform-center-box data-radio-value="CC" class="w100" >
                         <div data-radio data-radio-data="TL" data-radio-main="false" class="df-cc">▪</div>
@@ -1585,7 +1588,7 @@
                   </div-->
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Stretch Zone LR">左右拉伸数量</div>
-                    <div class="df-lc fl1" data-clip-w-set data-radio-value="0" style="gap: 4px;">
+                    <div class="df-lc fl1 gap4" data-clip-w-set data-radio-value="0">
                       <div class="df-cc" data-radio data-radio-main="true" data-radio-data="0">none</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="1">x1</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2">x2</div>
@@ -1593,7 +1596,7 @@
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Stretch Zone TB">上下拉伸数量</div>
-                    <div class="df-lc fl1" data-clip-h-set data-radio-value="0" style="gap: 4px;">
+                    <div class="df-lc fl1 gap4" data-clip-h-set data-radio-value="0">
                       <div class="df-cc" data-radio data-radio-main="true" data-radio-data="0">none</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="1">x1</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2">x2</div>
@@ -1646,7 +1649,7 @@
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div class="df-ffc bod-d" data-skill-line style="padding: 4px; gap: 4px;">
+                  <div class="df-ffc bod-d gap4 pad4" data-skill-line>
                     <div data-split-tags class="w100 df-lc">
                       <div data-split-tag data-check-checked class="df-lc">
                         <div style="width: 14px; height: 14px;">
@@ -1710,19 +1713,19 @@
                       </div>
                     </div>
                   </div>
-                  <div class="df-sc" data-skill-line="">
+                  <div class="df-sc" data-skill-line>
                     <div class="df-cc" data-btn="skill-main" data-en-text="Split By Conditions">按条件拆分</div>
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Symbol">分割符</div>
                     <input id="split-word" data-input type="text">
-                    <div data-splitword-set class="df-lc fl1" data-radio-value="Suf" style="gap: 4px; min-width: 110px;">
+                    <div data-splitword-set class="df-lc fl1 gap4" data-radio-value="Suf" style="min-width: 110px;">
                       <div class="df-cc" data-radio data-radio-main="true" data-radio-data="Suf" data-en-text="Suf">接后</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="Pre" data-en-text="Pre">接前</div>
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="Null" data-en-text="Null">剔除</div>
                     </div>
                   </div>
-                  <div class="df-sc" data-skill-line="">
+                  <div class="df-sc" data-skill-line>
                     <div class="df-cc" data-btn="skill-main" data-en-text="Split By Symbol">按关键词拆分</div>
                   </div>
                 </div>
@@ -1792,22 +1795,59 @@
                     </div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec="">
+                <div class="fl1"  data-skill-sec>
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text=""></div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text></div>
                     </div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
               <div class="w100 df" data-skill-col="5" data-skillmodule-zh="样式&原型" data-skillmodule="Style & Prototype">
-                <div class="fl1"  data-skill-sec="">
+                <div class="fl1"  data-skill-sec="ShadowAsStroke">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Mum & Width">描边数量和粗细</div>
+                    <div data-shadow-stroke-num class="df-lc pos-r fl1 gap4" data-select data-select-close data-select-value="x4" style="--op-pad-l: 1ch;">
+                      <input id="select-value-3" type="text" data-select-input readonly value="x4">
+                      <input id="select-show-3" data-select-pick type="checkbox">
+                      <label for="select-show-3" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
+                      <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
+                        <div data-option="option" data-option-main="true" data-option-value="x4">x4</div>
+                        <div data-option="option" data-option-main="false" data-option-value="x8">x8</div>
+                        <div data-option="option" data-option-main="false" data-option-value="x12">x12</div>
+                      </div>
+                    </div>
+                    <div class="df-lc fl1" >
+                      <input id="input-shadow-stroke-width" type="text" value="1" data-input="" data-input-type="int" data-input-must="1,10000" style=" text-align: center;">
+                      <div class="df-cc" data-input-unit="">px</div>
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Color">描边颜色</div>
+                    <div data-shadow-stroke-color data-color data-color-hex="#888888" 
+                      data-color-rgb="rgb(136,136,136)" data-color-hsl="hsl(0,0%,53%)" 
+                      data-color-hsv="hsv(0,0%,53%)" data-colorcard-x="left" 
+                      data-colorcard-y="bottom" class="df-lc fl1 pos-r gap4" style="z-index: 1;">
+                        <div data-input="colorpick" style="height:20px; cursor: pointer; border: 1px solid var(--boxBod); border-radius: 5px;">
+                          <btn-color></btn-color>
+                        </div>
+                        <input id="colorvalue-2" class="fl1" type="text" data-input="hex" value="#888888">
+                        <div data-input="colortype" data-colortype-mode="hex" class="colortype"></div>
+                        <card-colorpick></card-colorpick>
+                    </div>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Code Example">代码示例</div>
+                      <div class="df-cc" data-btn-dblclick  data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
+                    </div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -1815,7 +1855,7 @@
             </div>
           </div>
           <!--选中信息-->
-          <div class="df-lc noscrollbar" data-selects-node data-scroll style="padding: 0 10px; box-sizing: border-box;">
+          <div class="df-lc noscrollbar bsb" data-selects-node data-scroll style="padding: 0 10px;">
             <span class="df-lc" data-selects-info-box style="margin: 0 auto;">
               <div style="width: 12px; height: 12px;">
                 <btn-hasselect></btn-hasselect>         
@@ -1841,7 +1881,7 @@
     <div data-scroll class="df noscrollbar" data-tab="auto" data-tab-for="page" style="padding: 6px 4px;">
       <!--自动填充tab-->
     </div>
-    <div data-mainset-bottom class="df-lc" style="gap: 4px; margin-left: 2px;">
+    <div data-mainset-bottom class="df-lc gap4" style="margin-left: 2px;">
       <div id="btn-theme-2">
         <input id="theme-2" data-theme-check type="checkbox" checked>
         <label for="theme-2" class="btn-theme" style="position: relative;">
