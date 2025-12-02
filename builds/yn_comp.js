@@ -2478,21 +2478,50 @@ function closeShowNexts(e,area,input,isChecked){
  * 立即执行且自动防抖的函数包装器
  * @param {Function} fn - 要执行的函数
  * @param {number} delay - 防抖延迟(毫秒)
- * @param {boolean} immediate - 是否立即执行
+ * @param {boolean} immediate - 是否立即执行（第一次调用时立即执行，后续调用防抖）
+ * @returns {Function} 防抖后的函数
+ * 
+ * @example
+ * // 标准防抖（延迟执行）
+ * btn.addEventListener('click', debounce((e) => {
+ *   console.log('clicked', e.target);
+ * }, 500));
+ * 
+ * // 立即执行防抖（第一次立即执行，后续防抖）
+ * input.addEventListener('input', debounce((e) => {
+ *   console.log('input', e.target.value);
+ * }, 300, true));
  */
 function debounce(fn, delay, immediate = false) {
   let timer = null;
+  let hasExecuted = false; // 用于立即执行模式的标志
   
-  return (function execute(...args) {
+  return function execute(...args) {
+    const context = this; // 保存 this 上下文
+    const callNow = immediate && !hasExecuted; // 是否立即执行
+    
+    // 清除之前的定时器
     clearTimeout(timer);
     
-    if (immediate && !timer) {
-      fn.apply(this, args);
+    // 立即执行模式：第一次调用时立即执行
+    if (callNow) {
+      fn.apply(context, args);
+      hasExecuted = true;
+      // 延迟后重置标志，允许下次立即执行
+      timer = setTimeout(() => {
+        hasExecuted = false;
+        timer = null;
+      }, delay);
+      return;
     }
     
+    // 标准防抖模式：延迟执行
     timer = setTimeout(() => {
-      if (!immediate) fn.apply(this, args);
+      fn.apply(context, args);
       timer = null;
+      if (immediate) {
+        hasExecuted = false; // 重置标志
+      }
     }, delay);
-  });
+  };
 };

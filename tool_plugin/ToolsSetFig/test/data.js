@@ -44,6 +44,10 @@ let skillSecInfo = [
     id: 'ShadowAsStroke',
     name: ["阴影伪描边","shadow as stroke"],
   },
+  {
+    id: 'QRcodeToSVG',
+    name: ["二维码矢量化","qrcode to svg"],
+  },
 ]
 
 let toUserTips = {

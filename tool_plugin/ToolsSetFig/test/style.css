@@ -884,6 +884,58 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: var(--themeColor);
 }
 
+[data-qrcode-view-box]{
+  aspect-ratio: 1/1;
+  --ratio: 2;
+  border: 1px solid var(--boxBod);
+}
+
+[data-qrcode-grid]{
+  aspect-ratio:1/1;
+  --grid: 25;/*10-60*/
+  --grid-w: calc(100% / var(--grid));
+  --col: var(--themeColor);
+  border: 1px solid var(--themeColor);
+  border-left-width: 2px;
+  border-bottom-width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to left,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat,
+  linear-gradient(to bottom,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat;
+  box-shadow: 0 0 0 999px rgba(0,0,0,0.5);
+  position: absolute;
+  cursor: move;
+  user-select: none;
+}
+
+[data-qrcode-grid]:active{
+  cursor:  url('../../../VI/drag_24.png'),grabbing;
+}
+[data-qrcode-grid].dragging{
+  cursor:  url('../../../VI/drag_24.png'),grabbing;
+}
+
+[data-qrcode-grid-resize]{
+  --size:14px;
+  width: var(--size);
+  height: var(--size);
+  background: var(--boxGry);
+  border: 2px solid var(--themeColor);
+  border-radius: 50%;
+  cursor: se-resize;
+}
+
+[data-qrcode-grid-resize="true"]{
+  bottom: 0;
+  right: 0;
+  transform: translate(50%,50%);
+}
+
+[data-qrcode-grid-resize="false"]{
+  top: 0;
+  left: 0;
+  transform: translate(-50%,-50%);
+}
+
 
 /*按钮类--*/
 

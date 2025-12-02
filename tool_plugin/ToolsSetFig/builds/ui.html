@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -79,7 +79,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -966,6 +966,58 @@ input[type="checkbox"]:checked + .btn-moreset{
 [data-transform-center-box] [data-radio-main="true"]{
   color: transparent;
   background: var(--themeColor);
+}
+
+[data-qrcode-view-box]{
+  aspect-ratio: 1/1;
+  --ratio: 2;
+  border: 1px solid var(--boxBod);
+}
+
+[data-qrcode-grid]{
+  aspect-ratio:1/1;
+  --grid: 25;/*10-60*/
+  --grid-w: calc(100% / var(--grid));
+  --col: var(--themeColor);
+  border: 1px solid var(--themeColor);
+  border-left-width: 2px;
+  border-bottom-width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to left,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat,
+  linear-gradient(to bottom,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat;
+  box-shadow: 0 0 0 999px rgba(0,0,0,0.5);
+  position: absolute;
+  cursor: move;
+  user-select: none;
+}
+
+[data-qrcode-grid]:active{
+  cursor:  url('../../../VI/drag_24.png'),grabbing;
+}
+[data-qrcode-grid].dragging{
+  cursor:  url('../../../VI/drag_24.png'),grabbing;
+}
+
+[data-qrcode-grid-resize]{
+  --size:14px;
+  width: var(--size);
+  height: var(--size);
+  background: var(--boxGry);
+  border: 2px solid var(--themeColor);
+  border-radius: 50%;
+  cursor: se-resize;
+}
+
+[data-qrcode-grid-resize="true"]{
+  bottom: 0;
+  right: 0;
+  transform: translate(50%,50%);
+}
+
+[data-qrcode-grid-resize="false"]{
+  top: 0;
+  left: 0;
+  transform: translate(-50%,-50%);
 }
 
 
@@ -2519,7 +2571,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
         </div>  
       </div> 
     </div>
-    <div data-mainset-top class="df-lc gap4" style="margin-left: 2px;">
+    <div data-mainset-top class="df-lc gap4 mar-l2">
       <div id="btn-theme-3">
         <input id="theme-3" data-theme-check type="checkbox" checked>
         <label for="theme-3" class="btn-theme pos-r">
@@ -2529,7 +2581,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
       <input id="language-3" data-language-check type="checkbox" checked/>
       <label for="language-3" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
         <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
-          <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
+          <svg class="mar-a0" style="--mar-lr: 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
             <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
           </svg>
         </div>
@@ -2615,7 +2667,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
     <div data-dailoglogin-box class="df-ffc pos-r ovy noscrollbar">
       <!-- 登录表单 -->
       <div data-login-form class="df-ffc gap12">
-        <div class="df-cc font-s16" style="margin-bottom: 8px; font-weight: 700;">
+        <div class="df-cc font-s16 mar-b8" style="font-weight: 700;">
           <div data-en-text="LOG IN">登录</div>
         </div>
         <div class="df-ffc gap8">
@@ -2633,7 +2685,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
       </div>
       <!-- 注册表单 -->
       <div data-register-form class="df-ffc gap12" style="display: none;">
-        <div class="df-cc font-s16" style="margin-bottom: 8px; font-weight: 700;">
+        <div class="df-cc font-s16 mar-b8" style="font-weight: 700;">
           <div data-en-text="SIGN UP">注册</div>
         </div>
         <div class="df-ffc gap8">
@@ -2680,7 +2732,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
             <div data-user-name style="display: none;" data-en-text="USER">用户</div>
             <div data-user-login-text data-en-text="LOG IN">登录</div>
-            <div class="pad2" style="width:16px; height:16px; margin-left: 4px;  --mainColor:#2e2e2e;">
+            <div class="pad2 mar-l4" style="width:16px; height:16px;  --mainColor:#2e2e2e;">
               <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10Z" fill="var(--mainColor)"/>
                 <path d="M10 12C5.58172 12 2 13.7909 2 16V20H18V16C18 13.7909 14.4183 12 10 12Z" fill="var(--mainColor)"/>
@@ -2719,7 +2771,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           <input id="language-1" data-language-check type="checkbox" checked/>
           <label for="language-1" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
             <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
-              <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
+              <svg class="mar-a0" style="--mar-lr: 1px" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
                 <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
               </svg>
             </div>
@@ -2846,7 +2898,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div class="h100" data-btn="down">▼</div>
                 </div>
               </div>
-              <div id="upload-set-box" class="df gap4" style="flex-wrap: wrap; margin:0 0 4px 0;">
+              <div id="upload-set-box" class="df gap4 mar-b4" style="flex-wrap: wrap;">
                 <div id="upload-set-main" class="df">
                   <div id="upload-set-1" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   style=" --tips-text:'转为标签/大纲';  --tips-text-en:'Convert to tags/catalogue';">
@@ -2972,7 +3024,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
           </div>
           <!--导出类型-->
           <div class="df-lc pos-r upload-set w100 gap4 pad4" style="border-radius: 8px;">
-            <div class="noscrollbar" style="margin: 0 auto;">
+            <div class="noscrollbar mar-0a">
               <div data-exporttype-set class="df-lc" data-radio-value="1" >
                 <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="true">
                   <div data-exporttype-chk>
@@ -3304,7 +3356,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
               </div>
             </div>
-            <div class="w100 df-cc gap2" style="margin-bottom: 10px;">
+            <div class="w100 df-cc gap2 mar-b10">
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Variable To Sheet">从变量更新表</div>    
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Variable">从表更新变量</div>
             </div>
@@ -3378,7 +3430,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                 </div>
               </div>
             </div>
-            <div class="w100 df-cc gap2" style="margin-bottom: 10px;">
+            <div class="w100 df-cc gap2 mar-b10">
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Style To Sheet">从样式更新表</div>    
               <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
             </div>
@@ -3478,7 +3530,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div>
             <!--预设表格样式-->
             <div data-tableset-thtd class="df-lc w100">
-              <div class="df-lc gap4" style="max-width: 100%; margin:0 auto;">
+              <div class="df-lc gap4 mar-0a" style="max-width: 100%;">
                 <div class="df-lc pos-r upload-set gap4" style="max-width: calc(100% - 44px); height: 40px;">
                   <input id="chk-tablestyle" checked type="checkbox" >
                   <label for="chk-tablestyle" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;  width: 22px; height: 22px;
@@ -3743,7 +3795,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
             </div>
             <div class="df-ffc w100 bod-d pad4 gap4 bsb" data-retable-moreset >
               <div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one auto-layout with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个自动布局 时生效</div>
-              <div class="df-lc w100 font-s10 gap4" data-skill-more style="flex-wrap: wrap; text-wrap: nowrap; margin-bottom: 4px;">
+              <div class="df-lc w100 font-s10 gap4 mar-b4" data-skill-more style="flex-wrap: wrap; white-space: nowrap;">
                 <div class="fl1 df-lc gap4" style="min-width: 160px;">
                   <div class="df ovh noscrollbar" data-scroll data-en-text="· Clone instance by data quantity">· 数据数量&gt;实例数量时, 复制最末实列</div>
                   <div style="width: 1%;"></div>
@@ -3984,7 +4036,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         <div class="df-cc" data-input-unit>h</div>
                       </div>
                     </div>
-                    <div data-transform-center-module class="df-ffc df-cc fl1 gap4" style="margin-left: 10px;">
+                    <div data-transform-center-module class="df-ffc df-cc fl1 gap4 mar-l10" >
                       <div data-skill-btnname-top data-any="vw240" data-en-text="Scale center">缩放中心</div>
                       <div data-transform-center-box data-radio-value="CC" class="w100" >
                         <div data-radio data-radio-data="TL" data-radio-main="false" class="df-cc">▪</div>
@@ -4015,7 +4067,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="-80" max="80" value="0">
                       <input data-input="value" data-input-must="-80,80" data-input-type="int" 
-                      type="text" class="txt-c" style="width: 30px; flex: 0 0 auto; margin-left: 4px;" value="0">
+                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="0">
                       <div class="df-cc" data-input-unit>°</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -4027,7 +4079,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <div data-skewset-y data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="-80" max="80" value="0">
                       <input data-input="value" data-input-must="-80,80" data-input-type="int" 
-                      type="text" class="txt-c" style="width: 30px; flex: 0 0 auto; margin-left: 4px;" value="0">
+                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="0">
                       <div class="df-cc" data-input-unit>°</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -4039,7 +4091,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
                       <input data-input="value" data-input-must="1,200" data-input-type="int" 
-                      type="text" class="txt-c" style="width: 30px; flex: 0 0 auto; margin-left: 4px;" value="100">
+                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="100">
                       <div class="df-cc" data-input-unit>%</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -4051,7 +4103,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
                       <input data-input="value" data-input-must="1,200" data-input-type="int" 
-                      type="text" class="txt-c" style="width: 30px; flex: 0 0 auto; margin-left: 4px;" value="100">
+                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="100">
                       <div class="df-cc" data-input-unit>%</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -4145,7 +4197,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div class="df-ffc bod-d gap4 pad4" data-skill-line>
+                  <div class="df-ffc bod-d gap4 pad4 mar-b4" >
                     <div data-split-tags class="w100 df-lc">
                       <div data-split-tag data-check-checked class="df-lc">
                         <div style="width: 14px; height: 14px;">
@@ -4346,13 +4398,47 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     </div>
                   </div>
                 </div>
+                <div class="fl1"  data-skill-sec="QRcodeToSVG">
+                  <div data-skill-star="false">
+                    <btn-star></btn-star>
+                  </div>
+                  <div data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
+                    <div class="wh100 bsb pos-a pad10 df-cc" style="top: 0; left: 0;">
+                      <div data-qrcode-grid class="w100 pos-r bsb">
+                        <div data-qrcode-grid-resize="true" class="fl0 bsb pos-a"></div>
+                      </div>
+                    </div>
+                    <div class="w100 df-cc mar-0a" data-qrcode-view >
+                    <!--二维码-->
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Grid of QR">网格数</div>
+                    <div data-qrcode-grid-num class="df-lc fl1" data-int-value="21" >
+                      <input id="input-qrcode-grid" type="text" value="21" data-input="" data-input-type="int" data-input-must="10,60" style="text-align: center;">
+                      <div class="df-cc" data-input-unit="">▚</div>
+                    </div>
+                    <div data-qrcode-set class="df-lc fl1 gap4" data-radio-value="SMPL" style="min-width:80px;">
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="SMPL" data-en-text="SMPL">简单</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="CMPLX" data-en-text="CMPLX">复杂</div>
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Code">数据</div>
+                    <input type="text" id="input-qrcode-data" value="https://www.google.com">
+                  </div>
+                  <div class="df-cc" data-skill-line>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Convert to SVG">转为矢量网格</div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Create New QRcode">生成新二维码</div>
+                  </div>
+                </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
             </div>
           </div>
           <!--选中信息-->
           <div class="df-lc noscrollbar bsb" data-selects-node data-scroll style="padding: 0 10px;">
-            <span class="df-lc" data-selects-info-box style="margin: 0 auto;">
+            <span class="df-lc mar-0a" data-selects-info-box>
               <div style="width: 12px; height: 12px;">
                 <btn-hasselect></btn-hasselect>         
               </div>
@@ -4377,7 +4463,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
     <div data-scroll class="df noscrollbar" data-tab="auto" data-tab-for="page" style="padding: 6px 4px;">
       <!--自动填充tab-->
     </div>
-    <div data-mainset-bottom class="df-lc gap4" style="margin-left: 2px;">
+    <div data-mainset-bottom class="df-lc gap4 mar-l2">
       <div id="btn-theme-2">
         <input id="theme-2" data-theme-check type="checkbox" checked>
         <label for="theme-2" class="btn-theme" style="position: relative;">
@@ -4387,7 +4473,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
       <input id="language-2" data-language-check type="checkbox" checked/>
       <label for="language-2" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
         <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
-          <svg style="margin: auto 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
+          <svg class="mar-a0" style="--mar-lr:1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
             <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
           </svg>
         </div>
@@ -4398,17 +4484,18 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/publics/other/qrcode.min.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6be3d968656a16ec590a5b014d5fe0d2183f8042/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@2d684a2480f1c9e7dc6c1d92bb4146b01920063a/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4456,6 +4543,10 @@ let skillSecInfo = [
   {
     id: 'ShadowAsStroke',
     name: ["阴影伪描边","shadow as stroke"],
+  },
+  {
+    id: 'QRcodeToSVG',
+    name: ["二维码矢量化","qrcode to svg"],
   },
 ]
 
@@ -4607,128 +4698,403 @@ let helpData = {
 };
 </script>
   <script>
-/*静态数据或对象*/
-const UI_MINI = [208,460];
-const UI = [300,660];
-const UI_BIG = [620,660];
-const sideMix = document.querySelector('[data-side-mix]');
-const sideMask = document.querySelector('[data-side-mask]');
-const btnHelpDoc = document.querySelector('[data-btn="help"]');
-const btnMore = document.getElementById('btn-more');
-const btnResize = document.querySelector('[data-resize-window]');
-const btnBig = document.getElementById('big');
-const TV_text = document.querySelector('[data-tv-text]');
-const dropUp = document.querySelector('[data-drop="upload"]');
-const fileInfo = document.querySelector('[data-file-info]');
-const btnHelp = document.querySelectorAll('[data-help]');
-const dailog = document.querySelector('[data-dailog]');
-const dailogBox = document.querySelector('[data-dailog-box]');
-const dailogImg = document.querySelector('[data-dailogimg]');
-const dailogImgBox = document.querySelector('[data-dailogimg-box]');
-const dailogSearchBox = document.querySelector('[data-dailogsearch-box]');
-const dailogLogin = document.querySelector('[data-dailoglogin]');
-const dailogLoginBox = document.querySelector('[data-dailoglogin-box]');
-const imgnumSet = document.getElementById('imgnum-set');
-const skillSearchInput = document.getElementById('skillsearch');
-const skillTypeBox = document.querySelector('[data-skilltype-box]');
-const skillAllBox = document.querySelector('[data-skills-box]');
-const skillSecNode = document.querySelectorAll('[data-skill-sec]');
-const skillStar = document.querySelectorAll('[data-skill-star]');
-const skillAllModel = document.querySelectorAll('[data-skillmodule]');
-const skillStarModel = document.querySelector('[data-skillmodule="Useful & Starts"]');
-const selectInfoBox = document.querySelectorAll('[data-selects-node]');
-const createTagsBox = document.querySelector('[data-create-tags]');
-const cataloguesBox = document.querySelector('[data-create-catalogues]');
-const editorViewbox = document.querySelector('[data-editor-viewbox]');
-const exportTagsBox = document.querySelector('[data-export-tags]');
-const skillBtnMain = document.querySelectorAll('[data-btn="skill-main"]');
-const clearCreateTags = document.querySelector('[data-create-tags-box]').querySelector('btn-close').parentNode;
-const convertTags = document.getElementById('upload-set-1');
-const getTableText = document.getElementById('upload-set-2');
-const templateBtn = document.getElementById('upload-set-3');
-const chkTablestyle = document.getElementById('chk-tablestyle');
-const chkSelectcomp = document.getElementById('chk-selectcomp');
-const createAnyBtn = document.querySelector('[data-create-any]');
-const exportAnyBtn = document.querySelector('[data-export-any]');
-const createTableBtn = document.querySelector('[data-create-table]');
-const tableStyleSet = document.querySelector('[data-tablestyle-set]');
-const styleTosheet = document.querySelector('[data-en-text="Style To Sheet"]');
-const sheetTostyle = document.querySelector('[data-en-text="Sheet To Style"]');
-const btnLinkstyle = document.querySelector('[data-linkstyle-add]');
-const btnSelectstyle = document.querySelector('[data-selectstyle-add]');
-const btnVariables = document.querySelector('[data-variables-add]');
-const manageLinkstyleList = document.querySelector('[data-manage-linkstyle-list]');
-const manageSelectstyleList = document.querySelector('[data-manage-selectstyle-list]');
-const manageVariablesList = document.querySelector('[data-manage-variables-list]');
+// ========== 常量定义 ==========
+const UI_SIZES = {
+  MINI: [208, 460],
+  NORMAL: [300, 660],
+  BIG: [620, 660]
+};
+const UI_MINI = UI_SIZES.MINI;
+const UI = UI_SIZES.NORMAL;
+const UI_BIG = UI_SIZES.BIG;
 
+// ========== DOM 管理器 ==========
+/**
+ * DOM 元素管理器 - 封装所有 DOM 查询，提供缓存和统一访问
+ */
+const DOM = (() => {
+  const cache = new Map();
+  
+  // DOM 查询辅助函数（带缓存）
+  function query(selector, useCache = true) {
+    if (useCache && cache.has(selector)) {
+      return cache.get(selector);
+    }
+    const element = document.querySelector(selector);
+    if (element && useCache) {
+      cache.set(selector, element);
+    }
+    return element;
+  }
+  
+  function queryAll(selector, useCache = true) {
+    const cacheKey = `all:${selector}`;
+    if (useCache && cache.has(cacheKey)) {
+      const cached = cache.get(cacheKey);
+      // 如果缓存的元素仍然存在于 DOM 中，返回缓存
+      if (cached.length > 0 && cached[0].isConnected) {
+        return cached;
+      }
+      // 否则清除缓存，重新查询
+      cache.delete(cacheKey);
+    }
+    const elements = document.querySelectorAll(selector);
+    // 只缓存非空结果
+    if (elements.length > 0 && useCache) {
+      cache.set(cacheKey, elements);
+    }
+    return elements;
+  }
+  
+  function getById(id, useCache = true) {
+    const cacheKey = `id:${id}`;
+    if (useCache && cache.has(cacheKey)) {
+      return cache.get(cacheKey);
+    }
+    const element = document.getElementById(id);
+    if (element && useCache) {
+      cache.set(cacheKey, element);
+    }
+    return element;
+  }
+  
+  // 初始化所有 DOM 元素
+  const elements = {
+    // 界面控制
+    sideMix: () => query('[data-side-mix]'),
+    sideMask: () => query('[data-side-mask]'),
+    btnMore: () => getById('btn-more'),
+    btnResize: () => query('[data-resize-window]'),
+    btnBig: () => getById('big'),
+    TV_text: () => query('[data-tv-text]'),
+    
+    // 对话框
+    dailog: () => query('[data-dailog]'),
+    dailogBox: () => query('[data-dailog-box]'),
+    dailogImg: () => query('[data-dailogimg]'),
+    dailogImgBox: () => query('[data-dailogimg-box]'),
+    dailogSearchBox: () => query('[data-dailogsearch-box]'),
+    dailogLogin: () => query('[data-dailoglogin]'),
+    dailogLoginBox: () => query('[data-dailoglogin-box]'),
+    
+    // 上传相关
+    dropUp: () => query('[data-drop="upload"]'),
+    fileInfo: () => query('[data-file-info]'),
+    userImg: () => getById('input-user-img'),
+    userTable: () => getById('input-user-table'),
+    userZy: () => getById('input-user-zy'),
+    userText: () => getById('upload-textarea'),
+    
+    // 表单元素
+    userTableTitle: () => getById('input-user-table-title'),
+    frameName: () => getById('input-framename'),
+    pixelScale: () => getById('input-pixelScale'),
+    uniformS: () => getById('uniform-set-s'),
+    uniformW: () => getById('uniform-set-w'),
+    uniformH: () => getById('uniform-set-h'),
+    
+    // 技能相关
+    skillSearchInput: () => getById('skillsearch'),
+    skillTypeBox: () => query('[data-skilltype-box]'),
+    skillAllBox: () => query('[data-skills-box]'),
+    skillSecNode: () => queryAll('[data-skill-sec]'),
+    skillStar: () => queryAll('[data-skill-star]'),
+    skillAllModel: () => queryAll('[data-skillmodule]'),
+    skillStarModel: () => query('[data-skillmodule="Useful & Starts"]'),
+    skillBtnMain: () => queryAll('[data-btn="skill-main"]'),
+    
+    // 标签相关
+    createTagsBox: () => query('[data-create-tags]'),
+    cataloguesBox: () => query('[data-create-catalogues]'),
+    exportTagsBox: () => query('[data-export-tags]'),
+    clearCreateTags: () => {
+      const box = query('[data-create-tags-box]');
+      return box ? box.querySelector('btn-close')?.parentNode : null;
+    },
+    
+    // 编辑器
+    editorViewbox: () => query('[data-editor-viewbox]'),
+    imgnumSet: () => getById('imgnum-set'),
+    
+    // 按钮
+    btnHelpDoc: () => query('[data-btn="help"]'),
+    btnHelp: () => queryAll('[data-help]'),
+    convertTags: () => getById('upload-set-1'),
+    getTableText: () => getById('upload-set-2'),
+    templateBtn: () => getById('upload-set-3'),
+    chkTablestyle: () => getById('chk-tablestyle'),
+    chkSelectcomp: () => getById('chk-selectcomp'),
+    createAnyBtn: () => query('[data-create-any]'),
+    exportAnyBtn: () => query('[data-export-any]'),
+    createTableBtn: () => query('[data-create-table]'),
+    tableStyleSet: () => query('[data-tablestyle-set]'),
+    styleTosheet: () => query('[data-en-text="Style To Sheet"]'),
+    sheetTostyle: () => query('[data-en-text="Sheet To Style"]'),
+    btnLinkstyle: () => query('[data-linkstyle-add]'),
+    btnSelectstyle: () => query('[data-selectstyle-add]'),
+    btnVariables: () => query('[data-variables-add]'),
+    
+    // 管理列表
+    manageLinkstyleList: () => query('[data-manage-linkstyle-list]'),
+    manageSelectstyleList: () => query('[data-manage-selectstyle-list]'),
+    manageVariablesList: () => query('[data-manage-variables-list]'),
+    
+    // 选择信息
+    selectInfoBox: () => queryAll('[data-selects-node]'),
+    
+    // 动态查询的元素（不缓存）
+    scaleSetX: () => getElementMix('data-scaleset-x')?.querySelector('[data-input="value"]'),
+    scaleSetY: () => getElementMix('data-scaleset-y')?.querySelector('[data-input="value"]'),
+    skewSetX: () => getElementMix('data-skewset-x')?.querySelector('[data-input="value"]'),
+    skewSetY: () => getElementMix('data-skewset-y')?.querySelector('[data-input="value"]'),
+    skewRangeX: () => getElementMix('data-skewset-x')?.querySelector('[data-input="range"]'),
+    skewRangeY: () => getElementMix('data-skewset-y')?.querySelector('[data-input="range"]'),
+  };
+  
+  // 返回代理对象，实现懒加载
+  return new Proxy({}, {
+    get(target, prop) {
+      if (elements[prop]) {
+        return elements[prop]();
+      }
+      return undefined;
+    }
+  });
+})();
 
-let skillModel = [];
-let skilltypeNameNode = document.querySelectorAll('[data-skillmodule]');
-skilltypeNameNode.forEach(item => {
-  let name1 = item.getAttribute('data-skillmodule-zh');
-  name1 = name1 ? name1 : item.textContent.trim();
-  let name2 = item.getAttribute('data-skillmodule');
-  skillModel.push([name1,name2]);
-});
-let isSkillScroll = true;
-let tableStyle = [
-  {th:[0,0,0,0,1],td:[0,0,0,0,'rowSpace']},//横间格区分色
-  {th:[0,0,0,0,'columnSpace'],td:[0,0,0,0,'columnSpace']},//竖间格区分色
-  {th:[0,0,0,0,1],td:[0,0,0,0,0]},//无描边
-  {th:[0,0,0,0,1],td:[1,0,1,0,0]},//仅横线
-  {th:[0,0,0,0,1],td:[0,1,0,1,0]},//仅竖线
-  {th:[0,0,0,0,1],td:[1,1,1,1,0]},//全描边
-  {th:[0,0,0,0,0],td:[0,0,0,0,0]},//无描边（表头无区分色
-  {th:[1,0,1,0,0],td:[1,0,1,0,0]},//仅横线（表头无区分色
-  {th:[0,1,0,1,0],td:[0,1,0,1,0]},//仅竖线（表头无区分色
-  {th:[1,1,1,1,0],td:[1,1,1,1,0]},//全描边（表头无区分色
-];
-let skillsSearch = []
+// ========== 状态管理器 ==========
+/**
+ * 应用状态管理器 - 封装所有全局状态变量
+ */
+const State = (() => {
+  const state = {
+    // 技能相关
+    skillModel: [],
+    isSkillScroll: true,
+    skillsSearch: [],
+    
+    // 表格样式
+    tableStyle: [
+      {th:[0,0,0,0,1],td:[0,0,0,0,'rowSpace']},//横间格区分色
+      {th:[0,0,0,0,'columnSpace'],td:[0,0,0,0,'columnSpace']},//竖间格区分色
+      {th:[0,0,0,0,1],td:[0,0,0,0,0]},//无描边
+      {th:[0,0,0,0,1],td:[1,0,1,0,0]},//仅横线
+      {th:[0,0,0,0,1],td:[0,1,0,1,0]},//仅竖线
+      {th:[0,0,0,0,1],td:[1,1,1,1,0]},//全描边
+      {th:[0,0,0,0,0],td:[0,0,0,0,0]},//无描边（表头无区分色
+      {th:[1,0,1,0,0],td:[1,0,1,0,0]},//仅横线（表头无区分色
+      {th:[0,1,0,1,0],td:[0,1,0,1,0]},//仅竖线（表头无区分色
+      {th:[1,1,1,1,0],td:[1,1,1,1,0]},//全描边（表头无区分色
+    ],
+    
+    // 创建数据
+    createImageInfo: [],
+    createTableInfo: [],
+    cataloguesInfo: [],
+    
+    // 导出数据
+    exportImageInfo: [],
+    
+    // 选择数据
+    selectNodeInfo: [],
+    
+    // 编辑器信息
+    editorInfo: {
+      preview: '', // u8a
+      set: [], // {type:HSL | HUE | }
+      new: [], // {type:image | fills | node,content:[u8a | array]}
+    },
+    
+    // 界面状态
+    isResize: false,
+    reStartW: null,
+    reStartH: null,
+    reStartX: null,
+    reStartY: null,
+    textareaLineNum: 20,
+    
+    // 文件类型
+    imageType: [],
+    tableType: [],
+    zyType: [],
+    tableTitleMust: [],
+    frameNmaeSelect: [],
+  };
+  
+  return {
+    get(key) {
+      return state[key];
+    },
+    set(key, value) {
+      state[key] = value;
+    },
+    reset(key) {
+      if (Array.isArray(state[key])) {
+        state[key] = [];
+      } else if (typeof state[key] === 'object' && state[key] !== null) {
+        state[key] = {};
+      } else {
+        state[key] = null;
+      }
+    }
+  };
+})();
 
-/*表单绑定*/
-const userImg = document.getElementById('input-user-img');
-const userTable = document.getElementById('input-user-table');
-const userZy = document.getElementById('input-user-zy');
-const userTableTitle = document.getElementById('input-user-table-title');
-const frameName =  document.getElementById('input-framename');
-const userText = document.getElementById('upload-textarea');
-let textareaLineNum = 20;
+// 初始化技能模型
+(function initSkillModel() {
+  const skilltypeNameNode = DOM.skillAllModel;
+  if (skilltypeNameNode) {
+    skilltypeNameNode.forEach(item => {
+      let name1 = item.getAttribute('data-skillmodule-zh');
+      name1 = name1 ? name1 : item.textContent.trim();
+      let name2 = item.getAttribute('data-skillmodule');
+      State.get('skillModel').push([name1, name2]);
+    });
+  }
+})();
 
-const pixelScale = document.getElementById('input-pixelScale');
-let scaleSetX = getElementMix('data-scaleset-x').querySelector('[data-input="value"]');
-let scaleSetY = getElementMix('data-scaleset-y').querySelector('[data-input="value"]');
-let skewSetX = getElementMix('data-skewset-x').querySelector('[data-input="value"]');
-let skewSetY = getElementMix('data-skewset-y').querySelector('[data-input="value"]');
-let skewRangeX = getElementMix('data-skewset-x').querySelector('[data-input="range"]');
-let skewRangeY = getElementMix('data-skewset-y').querySelector('[data-input="range"]');
-let uniformS = document.getElementById('uniform-set-s');
-let uniformW = document.getElementById('uniform-set-w');
-let uniformH = document.getElementById('uniform-set-h');
+// 初始化文件类型和配置
+(function initFileTypes() {
+  const userImg = DOM.userImg;
+  const userTable = DOM.userTable;
+  const userZy = DOM.userZy;
+  const userTableTitle = DOM.userTableTitle;
+  const frameName = DOM.frameName;
+  
+  if (userImg) {
+    State.set('imageType', userImg.getAttribute('accept')?.split(',').map(item => item.replace('.','')) || []);
+  }
+  if (userTable) {
+    State.set('tableType', userTable.getAttribute('accept')?.split(',').map(item => item.replace('.','')) || []);
+  }
+  if (userZy) {
+    State.set('zyType', userZy.getAttribute('accept')?.split(',').map(item => item.replace('.','')) || []);
+  }
+  if (userTableTitle) {
+    State.set('tableTitleMust', userTableTitle.getAttribute('placeholder')?.split(',') || []);
+  }
+  if (frameName?.nextElementSibling) {
+    const options = frameName.nextElementSibling.querySelectorAll('[data-option="option"]');
+    const frameNmaeSelect = [];
+    options.forEach(item => {
+      frameNmaeSelect.push(item.getAttribute('data-option-value'));
+    });
+    State.set('frameNmaeSelect', frameNmaeSelect);
+  }
+})();
 
-/*动态数据或对象*/
-let CreateImageInfo = [];
-let CreateTableInfo = [];
-let SelectNodeInfo = [];
-let ExportImageInfo = [];
-let CataloguesInfo = [];
-let EditorInfo = {
-  preview:'',//u8a
-  set:[],//{type:HSL | HUE | }
-  new:[],//{type:image | fills | node,content:[u8a | array]}
+// ========== 向后兼容：创建全局变量别名 ==========
+// 保持向后兼容，逐步迁移
+const sideMix = DOM.sideMix;
+const sideMask = DOM.sideMask;
+const btnHelpDoc = DOM.btnHelpDoc;
+const btnMore = DOM.btnMore;
+const btnResize = DOM.btnResize;
+const btnBig = DOM.btnBig;
+const TV_text = DOM.TV_text;
+const dropUp = DOM.dropUp;
+const fileInfo = DOM.fileInfo;
+const btnHelp = DOM.btnHelp;
+const dailog = DOM.dailog;
+const dailogBox = DOM.dailogBox;
+const dailogImg = DOM.dailogImg;
+const dailogImgBox = DOM.dailogImgBox;
+const dailogSearchBox = DOM.dailogSearchBox;
+const dailogLogin = DOM.dailogLogin;
+const dailogLoginBox = DOM.dailogLoginBox;
+const imgnumSet = DOM.imgnumSet;
+const skillSearchInput = DOM.skillSearchInput;
+const skillTypeBox = DOM.skillTypeBox;
+const skillAllBox = DOM.skillAllBox;
+const skillSecNode = DOM.skillSecNode;
+const skillStar = DOM.skillStar;
+const skillAllModel = DOM.skillAllModel;
+const skillStarModel = DOM.skillStarModel;
+const selectInfoBox = DOM.selectInfoBox;
+const createTagsBox = DOM.createTagsBox;
+const cataloguesBox = DOM.cataloguesBox;
+const editorViewbox = DOM.editorViewbox;
+const exportTagsBox = DOM.exportTagsBox;
+const skillBtnMain = DOM.skillBtnMain;
+const clearCreateTags = DOM.clearCreateTags;
+const convertTags = DOM.convertTags;
+const getTableText = DOM.getTableText;
+const templateBtn = DOM.templateBtn;
+const chkTablestyle = DOM.chkTablestyle;
+const chkSelectcomp = DOM.chkSelectcomp;
+const createAnyBtn = DOM.createAnyBtn;
+const exportAnyBtn = DOM.exportAnyBtn;
+const createTableBtn = DOM.createTableBtn;
+const tableStyleSet = DOM.tableStyleSet;
+const styleTosheet = DOM.styleTosheet;
+const sheetTostyle = DOM.sheetTostyle;
+const btnLinkstyle = DOM.btnLinkstyle;
+const btnSelectstyle = DOM.btnSelectstyle;
+const btnVariables = DOM.btnVariables;
+const manageLinkstyleList = DOM.manageLinkstyleList;
+const manageSelectstyleList = DOM.manageSelectstyleList;
+const manageVariablesList = DOM.manageVariablesList;
+const userImg = DOM.userImg;
+const userTable = DOM.userTable;
+const userZy = DOM.userZy;
+const userTableTitle = DOM.userTableTitle;
+const frameName = DOM.frameName;
+const userText = DOM.userText;
+const pixelScale = DOM.pixelScale;
+const uniformS = DOM.uniformS;
+const uniformW = DOM.uniformW;
+const uniformH = DOM.uniformH;
+
+// 状态变量别名
+let skillModel = State.get('skillModel');
+let isSkillScroll = State.get('isSkillScroll');
+let skillsSearch = State.get('skillsSearch');
+let tableStyle = State.get('tableStyle');
+let CreateImageInfo = State.get('createImageInfo');
+let CreateTableInfo = State.get('createTableInfo');
+let CataloguesInfo = State.get('cataloguesInfo');
+let ExportImageInfo = State.get('exportImageInfo');
+let SelectNodeInfo = State.get('selectNodeInfo');
+let EditorInfo = State.get('editorInfo');
+let isResize = State.get('isResize');
+let textareaLineNum = State.get('textareaLineNum');
+let imageType = State.get('imageType');
+let tableType = State.get('tableType');
+let zyType = State.get('zyType');
+let tableTitleMust = State.get('tableTitleMust');
+let frameNmaeSelect = State.get('frameNmaeSelect');
+
+// 动态查询的元素（保持原样，因为它们是动态的）
+let scaleSetX = DOM.scaleSetX;
+let scaleSetY = DOM.scaleSetY;
+let skewSetX = DOM.skewSetX;
+let skewSetY = DOM.skewSetY;
+let skewRangeX = DOM.skewRangeX;
+let skewRangeY = DOM.skewRangeY;
+
+// ========== 工具函数 ==========
+
+//设置跳转链接
+let hrefDoc = btnHelpDoc?.getAttribute('href');
+if (hrefDoc && btnHelpDoc) {
+  btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+}
+let hrefTemplate = templateBtn?.getAttribute('href');
+if (hrefTemplate && templateBtn) {
+  templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
 }
 
-let isResize = false;
-let reStartW,reStartH,reStartX,reStartY;
-let tableTitleMust = userTableTitle.getAttribute('placeholder').split(',');
-let imageType = document.getElementById('input-user-img').getAttribute('accept').split(',').map(item => item.replace('.',''));
-let tableType = document.getElementById('input-user-table').getAttribute('accept').split(',').map(item => item.replace('.',''));
-let zyType = document.getElementById('input-user-zy').getAttribute('accept').split(',').map(item => item.replace('.',''));
-let frameNmaeSelect = [];
-frameName.nextElementSibling.querySelectorAll('[data-option="option"]')
-.forEach(item => {
-  frameNmaeSelect.push(item.getAttribute('data-option-value'));
+getElementMix('language-1')?.addEventListener('change',()=>{
+  if (btnHelpDoc && hrefDoc) {
+    btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+  }
+  if (templateBtn && hrefTemplate) {
+    templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
+  }
 });
 
+// ========== 初始化事件 ==========
+// 窗口加载事件
 window.addEventListener('load',()=>{
   let time = getTime('HH')[0];
   if(time*1 > 20 && !PULGIN_LOCAL){
@@ -4757,9 +5123,9 @@ window.addEventListener('load',()=>{
     }, 12000);
     addSearchs();
   }, 100);
-  
 });
 
+// 窗口大小调整事件
 window.addEventListener('resize',/*防抖*/debounce(()=>{
   if(window.innerWidth < 300){
     TV_MOVE = true;
@@ -4768,25 +5134,6 @@ window.addEventListener('resize',/*防抖*/debounce(()=>{
   };
 },500,true));
 
-
-/* ---界面初始化--- */
-
-//设置跳转链接
-let hrefDoc = btnHelpDoc.getAttribute('href');
-btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
-let hrefTemplate = templateBtn.getAttribute('href');
-templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
-
-getElementMix('language-1').addEventListener('change',()=>{
-  //log(111)
-  btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
-  templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
-});
-
-/**
- * 重载字体样式
- * @param {node | null} area -可传入重载范围, 可以是元素本身, 或id/自定义属性等唯一值；
- */
 function loadFont(area){
   let loadFontAfter = [
     "data-en-text",
@@ -4810,6 +5157,7 @@ function loadFont(area){
     });
   },100);
 };
+
 //动态变化公屏文案
 function addToUserTips(kind){
   let languge = ROOT.getAttribute('data-language');
@@ -4831,10 +5179,33 @@ function addToUserTips(kind){
 };
 //添加更多功能的二级标题
 function addSkillTitle(){
-  skillSecNode.forEach(secnode =>{
+  // 获取技能节点（每次调用时重新查询，确保获取最新元素）
+  const skillSecNodes = DOM.skillSecNode;
+  
+  // 检查 skillSecNodes 和 skillSecInfo 是否存在
+  if (!skillSecNodes || skillSecNodes.length === 0) {
+    console.warn('addSkillTitle: skillSecNodes not found');
+    return;
+  }
+  
+  if (!skillSecInfo || !Array.isArray(skillSecInfo)) {
+    console.warn('addSkillTitle: skillSecInfo not found or not an array');
+    return;
+  }
+  
+  skillSecNodes.forEach(secnode =>{
+    if (!secnode) return;
+    
     let secid = secnode.getAttribute('data-skill-sec');
     if(secid){
-      let info = skillSecInfo.find(item => item.id == secid);
+      let info = skillSecInfo.find(item => item && item.id == secid);
+      
+      // 检查是否找到对应的信息
+      if (!info || !info.name) {
+        console.warn(`addSkillTitle: info not found for secid: ${secid}`);
+        return;
+      }
+      
       let node = document.createElement('div');
       node.setAttribute('data-skill-title','');
       node.className = 'df-lc';
@@ -4854,10 +5225,13 @@ function addSkillTitle(){
       node.appendChild(name);
       secnode.prepend(node);
       //重置文字样式
-      loadFont(secnode.parentNode);
+      if (secnode.parentNode) {
+        loadFont(secnode.parentNode);
+      }
     };
   });
 };
+
 //处理选中图层的信息（基础）
 function reSelectInfo(info){
   SelectNodeInfo = info;
@@ -4899,6 +5273,7 @@ function reSelectInfo(info){
     ROOT.setAttribute('data-selects-more','false');
   };
 };
+
 //按用户偏好修改界面大小
 function reRootSize(info){
   if(info[0] > UI[0]){
@@ -5142,7 +5517,7 @@ class EDITOR_TAB {
 let Editor = new EDITOR_TAB();
 Editor.init();
 
-/* ---界面交互--- */
+//========== 界面交互 ==========
 
 let tool = new TOOL_JS();
 //侧边栏展开
@@ -5170,6 +5545,16 @@ document.addEventListener('mousedown',(event)=>{
   }
 });
 //缩放窗口
+// 保存窗口大小的防抖函数
+const saveWindowSize = debounce((w, h) => {
+  storageMix.set('userResize',[w,h]);
+  if(w > UI[0]){
+    btnBig.checked = true;
+  } else {
+    btnBig.checked = false;
+  }
+}, 500);
+
 btnResize.addEventListener('mousedown',(event)=>{
   isResize = true;
   let reNodeStyle = document.defaultView.getComputedStyle(ROOT);
@@ -5191,19 +5576,8 @@ btnResize.addEventListener('mousedown',(event)=>{
       ROOT.style.height = h;
       //*/
       
-      /*防抖*/
-      let MOVE_TIMEOUT;
-      if(MOVE_TIMEOUT){
-          clearTimeout(MOVE_TIMEOUT);
-      };
-      MOVE_TIMEOUT = setTimeout(()=>{
-        storageMix.set('userResize',[w,h]);
-        if(w > UI[0]){
-          btnBig.checked = true;
-        } else {
-          btnBig.checked = false;
-        }
-      },500);
+      // 使用防抖函数保存窗口大小
+      saveWindowSize(w, h);
     }
   });
   document.addEventListener('mouseup',()=>{
@@ -5220,61 +5594,64 @@ function nullPage(){
   getElementMix('data-tab').style.pointerEvents = 'none'
 };
 //搜索功能
-skillSearchInput.addEventListener('input',()=>{
-  /*防抖*/
-  let MOVE_TIMEOUT;
-  if(MOVE_TIMEOUT){
-      clearTimeout(MOVE_TIMEOUT);
+// 搜索处理函数
+function handleSearchInput(){
+  const input = DOM.skillSearchInput;
+  if (!input) return;
+  
+  if(input.value.trim() == ''){
+    document.querySelectorAll('[data-search-turnto]').forEach(item => {
+      item.setAttribute('data-search-pick','false');
+    });
+    return;
   };
-  MOVE_TIMEOUT = setTimeout(()=>{
-    if(skillSearchInput.value.trim() == ''){
-      document.querySelectorAll('[data-search-turnto]').forEach(item => {
-        item.setAttribute('data-search-pick','false');
-      });
+  
+  let value = input.value.toLowerCase().trim();
+  let values = value.split(' ');
+  values = values.map(item => {
+    if(item.replace(/[a-z0-9]/gi,'').length > 0){
+      return item.replace(/[a-z0-9]/gi,'').split('');
+    }
+    return item;
+  });
+  values = [].concat(...values);
+  values = [...new Set(values)];
+
+  skillsSearch.forEach((skill,index) => {
+    let list = getElementMix(`data-search-turnto="${index}"`);
+    if (!list) return;
+    
+    let diff = [...new Set([...skill.key,...values])];
+    if(value == skill.name[0].toLowerCase().trim() || value == skill.name[1].toLowerCase().trim()){
+      list.setAttribute('data-search-pick','true');
       return;
     };
-    let value = skillSearchInput.value.toLowerCase().trim()
-    let values = value.split(' ');
-    values = values.map(item => {
-      if(item.replace(/[a-z0-9]/gi,'').length > 0){
-        return item.replace(/[a-z0-9]/gi,'').split('');
-      }
-      return item;
-    });
-    values = [].concat(...values);
-    values = [...new Set(values)];
-
-    skillsSearch.forEach((skill,index) => {
-      let list = getElementMix(`data-search-turnto="${index}"`);
-      let diff = [...new Set([...skill.key,...values])];
-      if(value == skill.name[0].toLowerCase().trim() || value == skill.name[1].toLowerCase().trim()){
-        list.setAttribute('data-search-pick','true');
-        return;
-      };
-      let samelength = (skill.key.length + values.length - diff.length);
-      
-      if( samelength > 0 ){
-        if(samelength > 1){
-          list.setAttribute('data-search-pick','0');
-        } else {
-          list.setAttribute('data-search-pick','1');
-        }
+    let samelength = (skill.key.length + values.length - diff.length);
+    
+    if( samelength > 0 ){
+      if(samelength > 1){
+        list.setAttribute('data-search-pick','0');
       } else {
-        let same = 0;
-        values.filter(item => item.length >= 3).forEach(item => {
-          skill.key.forEach(key => {
-            if(key.includes(item)) same++;
-          });
-        });
-        if(same > 0){
-          list.setAttribute('data-search-pick','2');
-        }else{
-          list.setAttribute('data-search-pick','3');
-        }
+        list.setAttribute('data-search-pick','1');
       }
-    })
-  },500);
-});
+    } else {
+      let same = 0;
+      values.filter(item => item.length >= 3).forEach(item => {
+        skill.key.forEach(key => {
+          if(key.includes(item)) same++;
+        });
+      });
+      if(same > 0){
+        list.setAttribute('data-search-pick','2');
+      }else{
+        list.setAttribute('data-search-pick','3');
+      }
+    }
+  });
+};
+
+// 使用防抖函数优化搜索
+skillSearchInput?.addEventListener('input', debounce(handleSearchInput, 500));
 function addFindBox(node,info,isForin){
   let renderBounds = node.getBoundingClientRect();
   //console.log(renderBounds);
@@ -5537,50 +5914,110 @@ userText.addEventListener('input',()=>{
 });
 
 //创建内容
-createAnyBtn.addEventListener('click',() => {
-  let type = createTagsBox.parentNode.parentNode.getAttribute('data-create-tags-box');
-  switch (type){
-    case 'image':
-      let images = getFinalInfo(CreateImageInfo);
-      tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],images.length * 800);
-      setTimeout(()=>{
-        toolMessage([images,'createImage'],PLUGINAPP);
-      },100);
-    ;break
-    case 'table':
-      //console.log(CreateTableInfo)
-      let tables = getFinalInfo(CreateTableInfo,true);
-      tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],CreateTableInfo.length * 100);
-      setTimeout(()=>{
-        toolMessage([tables,'createFrame'],PLUGINAPP);
-      },100);
-    ;break
-    case 'zy':
-      let zys = getFinalInfo(CataloguesInfo,true);
-      tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],CataloguesInfo.length * 100);
-      setTimeout(()=>{
-        toolMessage([zys,'createZy'],PLUGINAPP);
-      },100);
-    ;break
-  };
-  //移除未勾选的数据
-  function getFinalInfo(info,isname){
-    let finalCreate = [...info]
-    let nocreateTag = createTagsBox.querySelectorAll('[data-create-final="false"]');
-    nocreateTag.forEach(item => {
-      let id = item.querySelector('input').id;
-      let idnum = id.split('_')[id.split('_').length - 1];
-      finalCreate.splice(idnum,1);
-    });
-    if(isname){
-      let createTag = createTagsBox.querySelectorAll('[data-create-final="true"]');
-      createTag.forEach((item,index) => {
-        let name = item.querySelector('[data-create-info="name"]').textContent.trim()
-        finalCreate[index].name = name;
-      });
-    };
+// ========== 创建内容辅助函数 ==========
+//移除未勾选的数据
+function getFinalInfo(info,isname){
+  if (!info || !Array.isArray(info)) {
+    return [];
+  }
+  let finalCreate = [...info];
+  const tagsBox = DOM.createTagsBox;
+  if (!tagsBox) {
+    console.warn('getFinalInfo: createTagsBox not found');
     return finalCreate;
+  }
+  
+  let nocreateTag = tagsBox.querySelectorAll('[data-create-final="false"]');
+  nocreateTag.forEach(item => {
+    const input = item.querySelector('input');
+    if (input && input.id) {
+      let idnum = input.id.split('_')[input.id.split('_').length - 1];
+      finalCreate.splice(idnum,1);
+    }
+  });
+  
+  if(isname){
+    let createTag = tagsBox.querySelectorAll('[data-create-final="true"]');
+    createTag.forEach((item,index) => {
+      const nameEl = item.querySelector('[data-create-info="name"]');
+      if (nameEl) {
+        finalCreate[index].name = nameEl.textContent.trim();
+      }
+    });
   };
+  return finalCreate;
+};
+
+// ========== 创建内容策略函数 ==========
+// 创建图片策略
+function createImageStrategy(){
+  const images = getFinalInfo(CreateImageInfo);
+  if (images.length === 0) {
+    console.warn('createImageStrategy: No images to create');
+    return;
+  }
+  tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],images.length * 800);
+  setTimeout(()=>{
+    toolMessage([images,'createImage'],PLUGINAPP);
+  },100);
+};
+
+// 创建表格策略
+function createTableStrategy(){
+  const tables = getFinalInfo(CreateTableInfo,true);
+  if (tables.length === 0) {
+    console.warn('createTableStrategy: No tables to create');
+    return;
+  }
+  tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],CreateTableInfo.length * 100);
+  setTimeout(()=>{
+    toolMessage([tables,'createFrame'],PLUGINAPP);
+  },100);
+};
+
+// 创建资源目录策略
+function createZyStrategy(){
+  const zys = getFinalInfo(CataloguesInfo,true);
+  if (zys.length === 0) {
+    console.warn('createZyStrategy: No catalogues to create');
+    return;
+  }
+  tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],CataloguesInfo.length * 100);
+  setTimeout(()=>{
+    toolMessage([zys,'createZy'],PLUGINAPP);
+  },100);
+};
+
+// ========== 创建内容策略映射 ==========
+const CREATE_STRATEGIES = {
+  'image': createImageStrategy,
+  'table': createTableStrategy,
+  'zy': createZyStrategy
+};
+
+// 执行创建策略
+function executeCreateStrategy(type){
+  const strategy = CREATE_STRATEGIES[type];
+  if (strategy) {
+    strategy();
+  } else {
+    console.warn(`executeCreateStrategy: Unknown type: ${type}`);
+  }
+};
+
+//创建内容（策略模式重构）
+createAnyBtn?.addEventListener('click',() => {
+  const tagsBox = DOM.createTagsBox;
+  if (!tagsBox || !tagsBox.parentNode || !tagsBox.parentNode.parentNode) {
+    console.warn('createAnyBtn: createTagsBox structure not found');
+    return;
+  }
+  let type = tagsBox.parentNode.parentNode.getAttribute('data-create-tags-box');
+  if (!type) {
+    console.warn('createAnyBtn: No type attribute found');
+    return;
+  }
+  executeCreateStrategy(type);
 });
 //功能列表滚动绑定tab
 skillAllModel.forEach(item =>{
@@ -5785,355 +6222,381 @@ async function addZyCatalogue(files,codetype){
     };
   }
 };
-//添加标签-总
-function addTag(type,info){
-  switch (type){
-    case 'image':
-      info.forEach((img,index) => {
-        let tag = document.createElement('div');
-        createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','image');
-        addTagMain(tag,index,'create');
-        let name = document.createElement('div');
-        name.setAttribute('data-create-info','name');
-        name.innerHTML = tool.TextMaxLength(img.n,16,'...');
-        tag.appendChild(name);
-        if(img.cuts.length > 1){
-          let span = document.createElement('span');
-          span.setAttribute('style','cursor: var(--pointer,pointer)');
-          let text = ROOT.getAttribute('data-language') == 'Zh' ? "切片" : "Slice"
-          span.innerHTML = `▶ 
-          <span style="color: var(--themeColor)">${img.cuts.length}</span>
+
+// ========== 标签处理辅助函数 ==========
+//所有tag都支持二次确认, 以得到最终要生成的内容
+function addTagMain(tag,index,type){
+  tag.setAttribute('data-' + type + '-tag',index);
+  tag.setAttribute('data-' + type + '-final','true');
+  tag.className = type == 'create' ? 'df-lc' : 'df-ffc';
+
+  let main = document.createElement('div');
+  main.className = 'df-lc';
+  main.setAttribute('style','gap: 4px;');
+
+  let checkbox = document.createElement('div');
+  checkbox.setAttribute('style','width: 14px; height: 14px;');
+  let checkid = type + '_chk_' + index;
+  let checkinput = document.createElement('input');
+  checkinput.id = checkid;
+  checkinput.type = 'checkbox';
+  checkinput.setAttribute('checked','true');
+  let checklabel = document.createElement('label');
+  checklabel.setAttribute('for',checkid);
+  checklabel.className = 'check';
+  checklabel.innerHTML = '<btn-check></btn-check>';
+  checkbox.appendChild(checkinput);
+  checkbox.appendChild(checklabel);
+  main.appendChild(checkbox);
+
+  let tagNum = document.createElement('span');
+  tagNum.setAttribute('data-tags-index','')
+  tagNum.innerHTML += index + 1 + '.';
+  main.appendChild(tagNum);
+  tag.appendChild(main);
+  checkinput.addEventListener('change',()=>{
+    if(checkinput.checked){
+      tag.setAttribute('data-check-checked','true');
+      tag.setAttribute('data-' + type + '-final','true');
+    }else{
+      tag.setAttribute('data-check-checked','false');
+      tag.setAttribute('data-' + type + '-final','false');
+    };
+  });
+  return main;
+};
+
+//生成下拉选项
+function addSelect(index,options,def){
+  let select = document.createElement('div');
+  select.className = 'df-lc pos-r';
+  select.setAttribute('data-select','');
+  select.setAttribute('data-select-value',def);
+  select.setAttribute('style','gap: 4px; width: 72px;');
+  let value = document.createElement('input');
+  value.setAttribute('data-select-input','');
+  value.setAttribute('readonly','');
+  value.type = 'text'
+  value.id = 'export-format-' + index;
+  //console.log(def)
+  value.value = def;
+  
+  select.appendChild(value)
+  let show = document.createElement('input');
+  show.setAttribute('data-select-pick','');
+  show.type = 'checkbox'
+  show.id = 'format-show-' + index;
+  let showlabel =  document.createElement('label');
+  showlabel.setAttribute('for','format-show-' + index);
+  showlabel.className = 'show-next wh100';
+  showlabel.setAttribute('style','position: absolute; top: 0; right: 0;')
+  select.appendChild(show);
+  select.appendChild(showlabel);
+  let optionbox = document.createElement('div');
+  optionbox.setAttribute('data-select-options','');
+  optionbox.className = 'df-ffc pos-a w100 noscrollbar';
+  optionbox.setAttribute('style','display: none; top: 24px; z-index:3;');
+  options.forEach(item => {
+    let option = document.createElement('div');
+    option.setAttribute('data-option','option');
+    let isMain = item == def ? 'true' : 'false';
+    option.setAttribute('data-option-main',isMain);
+    option.setAttribute('data-option-value',item);
+    option.textContent = item;
+    optionbox.appendChild(option);
+  });
+  select.appendChild(optionbox);
+
+  return select;
+};
+
+// ========== 标签创建策略函数 ==========
+// 图片标签策略
+function createImageTagStrategy(info){
+  info.forEach((img,index) => {
+    let tag = document.createElement('div');
+    createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','image');
+    addTagMain(tag,index,'create');
+    let name = document.createElement('div');
+    name.setAttribute('data-create-info','name');
+    name.innerHTML = tool.TextMaxLength(img.n,16,'...');
+    tag.appendChild(name);
+    if(img.cuts.length > 1){
+      let span = document.createElement('span');
+      span.setAttribute('style','cursor: var(--pointer,pointer)');
+      let text = ROOT.getAttribute('data-language') == 'Zh' ? "切片" : "Slice"
+      span.innerHTML = `▶ 
+      <span style="color: var(--themeColor)">${img.cuts.length}</span>
+      <span data-en-text="Slice" data-zh-text="切片">${text}</span>
+      ` ;
+      tag.appendChild(span);
+      span.addEventListener('click',()=>{
+        dailogBox.innerHTML = '';
+        dailog.style.display = 'flex';
+        let cutinfo = document.createElement('div');
+        cutinfo.className = 'w100 df-ffc';
+        cutinfo.setAttribute('style','gap: 4px');
+        img.cuts.forEach((cut,num) => { 
+          let blob = new Blob([cut.img],{ type: 'image/png' });
+          let cutone = document.createElement('span');
+          cutone.innerHTML = `▶ 
           <span data-en-text="Slice" data-zh-text="切片">${text}</span>
+          <span> &nbsp;${(num + 1)}</span>
           ` ;
-          tag.appendChild(span);
-          span.addEventListener('click',()=>{
-            dailogBox.innerHTML = '';
-            dailog.style.display = 'flex';
-            let cutinfo = document.createElement('div');
-            cutinfo.className = 'w100 df-ffc';
-            cutinfo.setAttribute('style','gap: 4px');
-            img.cuts.forEach((cut,num) => { 
-              let blob = new Blob([cut.img],{ type: 'image/png' });
-              let cutone = document.createElement('span');
-              cutone.innerHTML = `▶ 
-              <span data-en-text="Slice" data-zh-text="切片">${text}</span>
-              <span> &nbsp;${(num + 1)}</span>
-              ` ;
-              cutinfo.appendChild(cutone);
-              let cutimgbox = document.createElement('a');
-              cutimgbox.className = 'w100 df-cc'
-              cutimgbox.href = URL.createObjectURL(blob);
-              cutimgbox.setAttribute('download', tool.TextMaxLength(img.n,16,'...') + '_' + text + (num + 1)  + '.png')
-              let cutimg = document.createElement('img');
-              cutimg.setAttribute('style','width: 80%;');
-              cutimg.src = URL.createObjectURL(blob);
-              cutimgbox.appendChild(cutimg);
-              cutinfo.appendChild(cutimgbox);
-            });
-            dailogBox.appendChild(cutinfo);
-          });
-        }
-        createTagsBox.appendChild(tag);
-      });
-    break
-    case 'table':
-      let nameRegex = frameName.value;
-      info.forEach((list,index) => {
-        let tag = document.createElement('div');
-        createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','table');
-        addTagMain(tag,index,'create');
-        let name = document.createElement('div');
-        name.setAttribute('data-create-info','name');
-        let end = nameRegex
-        .replace(/w/g,list.w)
-        .replace(/h/g,list.h)
-
-        if(list.type && list.type  !== ''){
-          end = end.replace(/type/g,list.type)
-        }else{
-          end = end.replace(/type/g,'')
-        }
-        if(list.note && list.note !== ''){
-          end = end.replace(/note/g,list.note)
-        }else{
-          end = end.replace(/note/g,'')
-        }
-        if(list.s && list.s !== ''){
-          end = end.replace(/s/g,list.s + 'k');
-        } else {
-          end = end.replace(/s/g,'');
-        };
-        name.innerHTML = `${list.name}${end}`.trim();
-        if(nameRegex == 'none'){
-          name.innerHTML = list.name;
-        };
-        tag.appendChild(name);
-        createTagsBox.appendChild(tag);
-      });
-    break
-    case 'zy':
-      if(info.zyType){
-        CataloguesInfo.push(info);
-        //log(info)
-        let index = Array.from(cataloguesBox.children).length;
-        let tag = document.createElement('div');
-        cataloguesBox.parentNode.parentNode.setAttribute('data-create-tags-box','zy');
-        let main = addTagMain(tag,index,'zynode');
-
-        let name = document.createElement('input');
-        name.type = 'text';
-        name.value = info.zyName;
-        name.id = 'zynode_n_' + index;
-        name.setAttribute('data-input','');
-        name.setAttribute('data-zynode-info','name');
-        name.className = 'nobod fl1';
-        name.addEventListener('change',() => {
-          inputMust(name,['text',info.zyName]);
-          CataloguesInfo[index].zyName = name.value;
+          cutinfo.appendChild(cutone);
+          let cutimgbox = document.createElement('a');
+          cutimgbox.className = 'w100 df-cc'
+          cutimgbox.href = URL.createObjectURL(blob);
+          cutimgbox.setAttribute('download', tool.TextMaxLength(img.n,16,'...') + '_' + text + (num + 1)  + '.png')
+          let cutimg = document.createElement('img');
+          cutimg.setAttribute('style','width: 80%;');
+          cutimg.src = URL.createObjectURL(blob);
+          cutimgbox.appendChild(cutimg);
+          cutinfo.appendChild(cutimgbox);
         });
-        main.appendChild(name);
+        dailogBox.appendChild(cutinfo);
+      });
+    }
+    createTagsBox.appendChild(tag);
+  });
+};
 
-        let layerList = document.createElement('div');
-        layerList.setAttribute('data-layerlist','');
-        let html = marked.parse(userText.value.trim());
-        layerList.innerHTML = html;
-        tag.appendChild(layerList);
-        cataloguesBox.appendChild(tag);
-      }else{
+// 表格标签策略
+function createTableTagStrategy(info){
+  let nameRegex = frameName.value;
+  info.forEach((list,index) => {
+    let tag = document.createElement('div');
+    createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','table');
+    addTagMain(tag,index,'create');
+    let name = document.createElement('div');
+    name.setAttribute('data-create-info','name');
+    let end = nameRegex
+    .replace(/w/g,list.w)
+    .replace(/h/g,list.h)
 
-      };
-    break
-    case 'export-img':
-      ExportImageInfo.push(...info);
-      getElementMix('data-imgnum-max').textContent = ExportImageInfo.length;
-      exportTagsBox.innerHTML = '<!--动态填充-->';
-      ExportImageInfo.forEach((layer,index) => {
-        let tag = document.createElement('div');
-        let main = addTagMain(tag,index,'export');
-        let name = document.createElement('input');
-        name.type = 'text';
-        name.value = layer.fileName;
-        name.id = 'export_n_' + index;
-        name.setAttribute('data-input','');
-        name.setAttribute('data-export-info','name');
-        name.className = 'nobod fl1';
-        name.addEventListener('change',() => {
-          inputMust(name,['text',layer.fileName]);
-          layer.fileName = name.value;
-        });
-        main.appendChild(name);
-        let checksetbox = document.createElement('div');
+    if(list.type && list.type  !== ''){
+      end = end.replace(/type/g,list.type)
+    }else{
+      end = end.replace(/type/g,'')
+    }
+    if(list.note && list.note !== ''){
+      end = end.replace(/note/g,list.note)
+    }else{
+      end = end.replace(/note/g,'')
+    }
+    if(list.s && list.s !== ''){
+      end = end.replace(/s/g,list.s + 'k');
+    } else {
+      end = end.replace(/s/g,'');
+    };
+    name.innerHTML = `${list.name}${end}`.trim();
+    if(nameRegex == 'none'){
+      name.innerHTML = list.name;
+    };
+    tag.appendChild(name);
+    createTagsBox.appendChild(tag);
+  });
+};
+
+// 资源目录标签策略
+function createZyTagStrategy(info){
+  if(info.zyType){
+    CataloguesInfo.push(info);
+    //log(info)
+    let index = Array.from(cataloguesBox.children).length;
+    let tag = document.createElement('div');
+    cataloguesBox.parentNode.parentNode.setAttribute('data-create-tags-box','zy');
+    let main = addTagMain(tag,index,'zynode');
+
+    let name = document.createElement('input');
+    name.type = 'text';
+    name.value = info.zyName;
+    name.id = 'zynode_n_' + index;
+    name.setAttribute('data-input','');
+    name.setAttribute('data-zynode-info','name');
+    name.className = 'nobod fl1';
+    name.addEventListener('change',() => {
+      inputMust(name,['text',info.zyName]);
+      CataloguesInfo[index].zyName = name.value;
+    });
+    main.appendChild(name);
+
+    let layerList = document.createElement('div');
+    layerList.setAttribute('data-layerlist','');
+    let html = marked.parse(userText.value.trim());
+    layerList.innerHTML = html;
+    tag.appendChild(layerList);
+    cataloguesBox.appendChild(tag);
+  }else{
+
+  };
+};
+
+// 导出图片标签策略
+function createExportImgTagStrategy(info){
+  ExportImageInfo.push(...info);
+  getElementMix('data-imgnum-max').textContent = ExportImageInfo.length;
+  exportTagsBox.innerHTML = '<!--动态填充-->';
+  ExportImageInfo.forEach((layer,index) => {
+    let tag = document.createElement('div');
+    let main = addTagMain(tag,index,'export');
+    let name = document.createElement('input');
+    name.type = 'text';
+    name.value = layer.fileName;
+    name.id = 'export_n_' + index;
+    name.setAttribute('data-input','');
+    name.setAttribute('data-export-info','name');
+    name.className = 'nobod fl1';
+    name.addEventListener('change',() => {
+      inputMust(name,['text',layer.fileName]);
+      layer.fileName = name.value;
+    });
+    main.appendChild(name);
+    let checksetbox = document.createElement('div');
+    checksetbox.setAttribute('data-export-pick','false');
+    checksetbox.setAttribute('data-export-picknum',index);
+    checksetbox.setAttribute('style','width: 14px; height: 14px;');
+    let checksetid = 'export_pick_' + index;
+    let checkset = document.createElement('input');
+    checkset.type = 'checkbox';
+    checkset.id = checksetid;
+    if(getElementMix('exportset-pickall').checked){
+      checkset.setAttribute('checked','true');
+      checksetbox.setAttribute('data-export-pick','true');
+    };
+    checkset.addEventListener('change',()=>{
+      if(checkset.checked){
+        checksetbox.setAttribute('data-export-pick','true');
+      } else {
         checksetbox.setAttribute('data-export-pick','false');
-        checksetbox.setAttribute('data-export-picknum',index);
-        checksetbox.setAttribute('style','width: 14px; height: 14px;');
-        let checksetid = 'export_pick_' + index;
-        let checkset = document.createElement('input');
-        checkset.type = 'checkbox';
-        checkset.id = checksetid;
-        if(getElementMix('exportset-pickall').checked){
-          checkset.setAttribute('checked','true');
-          checksetbox.setAttribute('data-export-pick','true');
-        };
-        checkset.addEventListener('change',()=>{
-          if(checkset.checked){
-            checksetbox.setAttribute('data-export-pick','true');
-          } else {
-            checksetbox.setAttribute('data-export-pick','false');
-            getElementMix('exportset-pickall').checked = false;
-          };
-        });
-        checksetbox.appendChild(checkset)
-        let checksetlabel = document.createElement('label');
-        checksetlabel.setAttribute('for',checksetid);
-        checksetlabel.className = 'check';
-        checksetlabel.innerHTML = '<btn-check-tick></btn-check-tick>';
-        checksetbox.appendChild(checksetlabel);
-        main.appendChild(checksetbox);
-
-        let exportset = document.createElement('div');
-        exportset.className = 'df-lc';
-        exportset.setAttribute('style','gap: 4px; flex-wrap: wrap;');
-        let formatSelect = addSelect(index,['PNG','JPG','JPEG','WEBP'],layer.format)
-        exportset.appendChild(formatSelect);
-
-        let sizesetbox = document.createElement('div');
-        sizesetbox.className = 'df-lc';
-        sizesetbox.setAttribute('data-int-value','');
-        sizesetbox.setAttribute('data-export-size',index);
-        sizesetbox.setAttribute('style','width: 82px;');
-        let sizeset = document.createElement('input');
-        sizeset.type = 'text';
-        sizeset.id = 'export-size-' + index;
-        sizeset.setAttribute('style','height: 22px;');
-        sizeset.setAttribute('data-input','');
-        sizeset.setAttribute('data-input-type','int');
-        sizeset.setAttribute('data-input-must','1,10000');
-        if(layer.finalSize){
-          sizeset.value = layer.finalSize;
-        };
-        sizesetbox.appendChild(sizeset);
-        let unit = document.createElement('div');
-        unit.setAttribute('style','height: fit-content; font-size: 11px');
-        unit.setAttribute('data-input-unit','auto');
-        unit.textContent = 'KB';
-        sizesetbox.appendChild(unit);
-        exportset.appendChild(sizesetbox);
-
-        let sizeinfo = document.createElement('div');
-        sizeinfo.className = 'df-rc fl1';
-        sizeinfo.setAttribute('data-sizeinfo','')
-        sizeinfo.setAttribute('style','min-width: 64px; flex-wrap: wrap; opacity: 0.6;');
-        sizeinfo.innerHTML += '<div style="width: fit-content">' + layer.width + '×' + layer.height + '</div>';
-        sizeinfo.innerHTML += '<div style="width: fit-content; padding-left: 4px">' + Math.floor(layer.u8a.length/10.24)/100 + ' KB →</div>';
-        let sizebox = document.createElement('div');
-        sizebox.className = 'df-rc';
-        sizebox.setAttribute('style','width: fit-content; padding-left: 4px;');
-        let realsize = document.createElement('div');
-        realsize.textContent = layer.compressed ? Math.floor(layer.compressed.size/10.24)/100 : '--';
-        let isminRealsize = layer.compressed ? (layer.u8a.length > layer.compressed.size ? 'true' : 'false') : ''
-        realsize.setAttribute('data-export-realsize',isminRealsize);// ''|true|false
-        sizebox.appendChild(realsize);
-        sizebox.innerHTML += 'KB /';
-        let quality  = document.createElement('div');
-        quality.setAttribute('data-export-quality','');
-        quality.textContent = '10';
-        sizebox.appendChild(quality);
-        let view = document.createElement('div');
-        view.innerHTML = '<btn-view></btn-view>';
-        view.setAttribute('style','width:14px; height: 14px;');
-        view.className = 'btn-op';
-        view.addEventListener('click',()=>{
-          imgnumSet.value = index + 1;
-          let img = layer.compressed ? layer.compressed : layer.u8a;
-          dailogImgBox.innerHTML = '';
-          dailogImg.style.display = 'flex';
-          let viewimg = document.createElement('img');
-          let ismaxW = layer.width >= layer.height ? 'true' : 'false';
-          viewimg.setAttribute('data-ismaxW',ismaxW);
-          viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
-          dailogImgBox.appendChild(viewimg);
-          viewimg.setAttribute('data-imgnum-pick',index + 1);
-        });
-        sizebox.appendChild(view);
-        sizeinfo.appendChild(sizebox);
-        exportset.appendChild(sizeinfo);
-
-        tag.appendChild(exportset);
-        exportTagsBox.appendChild(tag);
-      });
-    break
-  };
-  //所有tag都支持二次确认, 以得到最终要生成的内容
-  function addTagMain(tag,index,type){
-    tag.setAttribute('data-' + type + '-tag',index);
-    tag.setAttribute('data-' + type + '-final','true');
-    tag.className = type == 'create' ? 'df-lc' : 'df-ffc';
-
-    let main = document.createElement('div');
-    main.className = 'df-lc';
-    main.setAttribute('style','gap: 4px;');
-
-    let checkbox = document.createElement('div');
-    checkbox.setAttribute('style','width: 14px; height: 14px;');
-    let checkid = type + '_chk_' + index;
-    let checkinput = document.createElement('input');
-    checkinput.id = checkid;
-    checkinput.type = 'checkbox';
-    checkinput.setAttribute('checked','true');
-    let checklabel = document.createElement('label');
-    checklabel.setAttribute('for',checkid);
-    checklabel.className = 'check';
-    checklabel.innerHTML = '<btn-check></btn-check>';
-    checkbox.appendChild(checkinput);
-    checkbox.appendChild(checklabel);
-    main.appendChild(checkbox);
-
-    let tagNum = document.createElement('span');
-    tagNum.setAttribute('data-tags-index','')
-    tagNum.innerHTML += index + 1 + '.';
-    main.appendChild(tagNum);
-    tag.appendChild(main);
-    checkinput.addEventListener('change',()=>{
-      if(checkinput.checked){
-        tag.setAttribute('data-check-checked','true');
-        tag.setAttribute('data-' + type + '-final','true');
-      }else{
-        tag.setAttribute('data-check-checked','false');
-        tag.setAttribute('data-' + type + '-final','false');
+        getElementMix('exportset-pickall').checked = false;
       };
     });
-    return main;
-  };
-  //生成下拉选项
-  function addSelect(index,options,def){
-    let select = document.createElement('div');
-    select.className = 'df-lc pos-r';
-    select.setAttribute('data-select','');
-    select.setAttribute('data-select-value',def);
-    select.setAttribute('style','gap: 4px; width: 72px;');
-    let value = document.createElement('input');
-    value.setAttribute('data-select-input','');
-    value.setAttribute('readonly','');
-    value.type = 'text'
-    value.id = 'export-format-' + index;
-    //console.log(def)
-    value.value = def;
-    
-    select.appendChild(value)
-    let show = document.createElement('input');
-    show.setAttribute('data-select-pick','');
-    show.type = 'checkbox'
-    show.id = 'format-show-' + index;
-    let showlabel =  document.createElement('label');
-    showlabel.setAttribute('for','format-show-' + index);
-    showlabel.className = 'show-next wh100';
-    showlabel.setAttribute('style','position: absolute; top: 0; right: 0;')
-    select.appendChild(show);
-    select.appendChild(showlabel);
-    let optionbox = document.createElement('div');
-    optionbox.setAttribute('data-select-options','');
-    optionbox.className = 'df-ffc pos-a w100 noscrollbar';
-    optionbox.setAttribute('style','display: none; top: 24px; z-index:3;');
-    options.forEach(item => {
-      let option = document.createElement('div');
-      option.setAttribute('data-option','option');
-      let isMain = item == def ? 'true' : 'false';
-      option.setAttribute('data-option-main',isMain);
-      option.setAttribute('data-option-value',item);
-      option.textContent = item;
-      optionbox.appendChild(option);
-    });
-    select.appendChild(optionbox);
+    checksetbox.appendChild(checkset)
+    let checksetlabel = document.createElement('label');
+    checksetlabel.setAttribute('for',checksetid);
+    checksetlabel.className = 'check';
+    checksetlabel.innerHTML = '<btn-check-tick></btn-check-tick>';
+    checksetbox.appendChild(checksetlabel);
+    main.appendChild(checksetbox);
 
-    /*
-    value.addEventListener('change',()=>{
-      ExportImageInfo[index].format = value.value;
-      show.setAttribute('data-select-pick',value.value);
-      console.log(ExportImageInfo)
+    let exportset = document.createElement('div');
+    exportset.className = 'df-lc';
+    exportset.setAttribute('style','gap: 4px; flex-wrap: wrap;');
+    let formatSelect = addSelect(index,['PNG','JPG','JPEG','WEBP'],layer.format)
+    exportset.appendChild(formatSelect);
+
+    let sizesetbox = document.createElement('div');
+    sizesetbox.className = 'df-lc';
+    sizesetbox.setAttribute('data-int-value','');
+    sizesetbox.setAttribute('data-export-size',index);
+    sizesetbox.setAttribute('style','width: 82px;');
+    let sizeset = document.createElement('input');
+    sizeset.type = 'text';
+    sizeset.id = 'export-size-' + index;
+    sizeset.setAttribute('style','height: 22px;');
+    sizeset.setAttribute('data-input','');
+    sizeset.setAttribute('data-input-type','int');
+    sizeset.setAttribute('data-input-must','1,10000');
+    if(layer.finalSize){
+      sizeset.value = layer.finalSize;
+    };
+    sizesetbox.appendChild(sizeset);
+    let unit = document.createElement('div');
+    unit.setAttribute('style','height: fit-content; font-size: 11px');
+    unit.setAttribute('data-input-unit','auto');
+    unit.textContent = 'KB';
+    sizesetbox.appendChild(unit);
+    exportset.appendChild(sizesetbox);
+
+    let sizeinfo = document.createElement('div');
+    sizeinfo.className = 'df-rc fl1';
+    sizeinfo.setAttribute('data-sizeinfo','')
+    sizeinfo.setAttribute('style','min-width: 64px; flex-wrap: wrap; opacity: 0.6;');
+    sizeinfo.innerHTML += '<div style="width: fit-content">' + layer.width + '×' + layer.height + '</div>';
+    sizeinfo.innerHTML += '<div style="width: fit-content; padding-left: 4px">' + Math.floor(layer.u8a.length/10.24)/100 + ' KB →</div>';
+    let sizebox = document.createElement('div');
+    sizebox.className = 'df-rc';
+    sizebox.setAttribute('style','width: fit-content; padding-left: 4px;');
+    let realsize = document.createElement('div');
+    realsize.textContent = layer.compressed ? Math.floor(layer.compressed.size/10.24)/100 : '--';
+    let isminRealsize = layer.compressed ? (layer.u8a.length > layer.compressed.size ? 'true' : 'false') : ''
+    realsize.setAttribute('data-export-realsize',isminRealsize);// ''|true|false
+    sizebox.appendChild(realsize);
+    sizebox.innerHTML += 'KB /';
+    let quality  = document.createElement('div');
+    quality.setAttribute('data-export-quality','');
+    quality.textContent = '10';
+    sizebox.appendChild(quality);
+    let view = document.createElement('div');
+    view.innerHTML = '<btn-view></btn-view>';
+    view.setAttribute('style','width:14px; height: 14px;');
+    view.className = 'btn-op';
+    view.addEventListener('click',()=>{
+      imgnumSet.value = index + 1;
+      let img = layer.compressed ? layer.compressed : layer.u8a;
+      dailogImgBox.innerHTML = '';
+      dailogImg.style.display = 'flex';
+      let viewimg = document.createElement('img');
+      let ismaxW = layer.width >= layer.height ? 'true' : 'false';
+      viewimg.setAttribute('data-ismaxW',ismaxW);
+      viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
+      dailogImgBox.appendChild(viewimg);
+      viewimg.setAttribute('data-imgnum-pick',index + 1);
     });
-    */
-    return select;
-  };
-  //更新绑定和钩子
-  // 注意：yn_comp.js 已优化为事件委托，动态生成的组件会自动响应，无需再调用 COMP_MAIN()
-  // getCompChange 已优化为全局单例，传入容器可提高效率
-  let container = null;
+    sizebox.appendChild(view);
+    sizeinfo.appendChild(sizebox);
+    exportset.appendChild(sizeinfo);
+
+    tag.appendChild(exportset);
+    exportTagsBox.appendChild(tag);
+  });
+};
+
+// ========== 获取容器辅助函数 ==========
+function getContainerByType(type){
   switch(type) {
     case 'image':
     case 'table':
-      container = createTagsBox;
-      break;
+      return createTagsBox;
     case 'zy':
-      container = cataloguesBox;
-      break;
+      return cataloguesBox;
     case 'export-img':
-      container = exportTagsBox;
-      break;
+      return exportTagsBox;
+    default:
+      return null;
   }
-  getCompChange(container);
+};
+
+//添加标签-总（策略模式重构）
+function addTag(type,info){
+  // 策略注册表
+  const TAG_STRATEGIES = {
+    'image': createImageTagStrategy,
+    'table': createTableTagStrategy,
+    'zy': createZyTagStrategy,
+    'export-img': createExportImgTagStrategy
+  };
+
+  // 获取策略函数
+  const strategy = TAG_STRATEGIES[type];
+  if (!strategy) {
+    console.error(`Unknown tag type: ${type}`);
+    return;
+  }
+
+  // 执行策略
+  strategy(info);
+
+  // 公共后处理逻辑
+  const container = getContainerByType(type);
+  if (container) {
+    getCompChange(container);
+  }
   //重置文字样式
   loadFont(createTagsBox.parentNode);
 };
+
 //预览导出图片-放大
 getElementMix('fullimg').addEventListener('change',(e)=>{
   if(e.target.checked){
@@ -6688,148 +7151,587 @@ getElementMix('data-split-tags').querySelectorAll('[type="checkbox"]').forEach(c
     };
   });
 });
-//点击即执行的功能
-skillBtnMain.forEach(btn => {
-  let MOVE_TIMEOUT;
-  btn.addEventListener('dblclick',()=>{
-    if(MOVE_TIMEOUT){
-        clearTimeout(MOVE_TIMEOUT);
-    };
-    let skillname = btn.getAttribute('data-en-text');
-    if(btn.getAttribute('data-btn-dblclick') !== null){
-      switch (skillname){
-        default : toolMessage([true,skillname],PLUGINAPP);break
-      };
-    };
-  });
-  btn.addEventListener('click',()=>{
-    let skillname = btn.getAttribute('data-en-text');
-    /*防抖*/
-    if(MOVE_TIMEOUT){
-        clearTimeout(MOVE_TIMEOUT);
-    };
-    MOVE_TIMEOUT = setTimeout(()=>{
-      switch (skillname){
-        case 'Pixel As Copy':sendPixel(skillname);break
-        case 'Pixel Overwrite':sendPixel(skillname);break
-        case 'Reset All Transform':;break
-        case 'Split By Conditions':sendSplit('tags');break
-        case 'Split By Symbol':sendSplit('inputs');break
-        case 'Mapping Names':sendTable('mapName');break
-        case 'Mapping Texts':sendTable('mapText');break
-        case 'Mapping Properties':sendTable('mapPro');break
-        case 'Mapping Tags':sendTable('mapTag');break
-        case 'Get Names':sendTable('getName');break
-        case 'Get Texts':sendTable('getText');break
-        case 'Get Properties':sendTable('getPro');break
-        case 'Get Tags':sendTable('getTag');break
-        case 'Apply Preset':sendTableSet('style');break
-        case 'Add C/R':sendTableSet('add');break
-        case 'Reduce C/R':sendTableSet('reduce');break
-        case 'Random Theme':sendTableSet('theme');break
-        case 'Select a Row':sendTablePick('row');break
-        case 'Select many Rows':sendTablePick('allrow');break
-        case 'Select Block':sendTablePick('block');break
-        case 'Select Inline':sendTablePick('inline');break
-        case 'Up Export-set':upSelect('exportset');break
-        case 'Up Default':upSelect('default');break
-        default : toolMessage(['',skillname],PLUGINAPP);break
-      };
-    },500);
-  });
+
+// QR码网格拖拽和调整大小功能 - 类封装
+class QRCodeGridController {
+  constructor(gridSelector, resizeSelector, viewBoxSelector) {
+    // DOM 元素引用
+    this.grid = document.querySelector(gridSelector);
+    this.resize = document.querySelector(resizeSelector);
+    this.viewBox = document.querySelector(viewBoxSelector);
+    
+    if(!this.grid || !this.resize || !this.viewBox) {
+      console.warn('QRCodeGridController: 缺少必要的DOM元素');
+      return;
+    }
+    
+    // 获取实际的父容器（绝对定位的容器）
+    this.parent = this.grid.parentElement;
+    
+    // 状态变量
+    this.isDragging = false;
+    this.isResizing = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+    this.gridStartX = 0;
+    this.gridStartY = 0;
+    this.resizeStartX = 0;
+    this.resizeStartY = 0;
+    this.gridStartWidth = 0;
+    this.isInitialized = false;
+    
+    // 事件监听器引用（用于后续清理）
+    this.mousemoveHandler = null;
+    this.mouseupHandler = null;
+    this.resizeObserver = null;
+    this.resizeTimeout = null;
+    
+    // 初始化
+    this.init();
+  }
   
-
-  function sendPixel(name){
-    //返回裁切方案以栅格化
-    let mix = skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
-    let s = pixelScale.value;
-    let cuts = [];
-    tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],SelectNodeInfo.length * 800);
-    setTimeout(()=>{
-      SelectNodeInfo.forEach((item) => {
-      let w = item[1];
-      let h = item[2];
-      let cut = tool.CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix);
-      cuts.push(cut);
+  // 自动调整裁剪框大小为父元素的80%
+  setGridSizeToEightyPercent() {
+    const parentRect = this.parent.getBoundingClientRect();
+    if(parentRect.width > 0 && parentRect.height > 0) {
+      const eightyPercent = Math.min(parentRect.width, parentRect.height) * 0.8;
+      this.grid.style.width = eightyPercent + 'px';
+      return true;
+    }
+    return false;
+  }
+  
+  // 拖拽开始处理
+  handleDragStart(e) {
+    // 如果点击的是调整大小按钮，不触发拖拽
+    if(e.target === this.resize || this.resize.contains(e.target)) {
+      return;
+    }
+    
+    this.isDragging = true;
+    this.grid.classList.add('dragging');
+    
+    this.dragStartX = e.clientX;
+    this.dragStartY = e.clientY;
+    
+    // 获取当前元素的位置（相对于父容器）
+    const computedStyle = window.getComputedStyle(this.grid);
+    this.gridStartX = parseFloat(computedStyle.left) || 0;
+    this.gridStartY = parseFloat(computedStyle.top) || 0;
+    
+    e.preventDefault();
+  }
+  
+  // 调整大小开始处理
+  handleResizeStart(e) {
+    this.isResizing = true;
+    
+    const gridRect = this.grid.getBoundingClientRect();
+    this.resizeStartX = e.clientX;
+    this.resizeStartY = e.clientY;
+    this.gridStartWidth = gridRect.width;
+    
+    // 保存初始位置，调整大小时保持位置不变（从左上角固定）
+    const computedStyle = window.getComputedStyle(this.grid);
+    this.gridStartX = parseFloat(computedStyle.left) || 0;
+    this.gridStartY = parseFloat(computedStyle.top) || 0;
+    
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  
+  // 鼠标移动处理
+  handleMouseMove(e) {
+    if(this.isDragging) {
+      const parentRect = this.parent.getBoundingClientRect();
+      const gridRect = this.grid.getBoundingClientRect();
+      
+      // 计算新位置（相对于父容器）
+      let newX = this.gridStartX + (e.clientX - this.dragStartX);
+      let newY = this.gridStartY + (e.clientY - this.dragStartY);
+      
+      // 限制在父元素范围内
+      const maxX = parentRect.width - gridRect.width;
+      const maxY = parentRect.height - gridRect.height;
+      
+      newX = Math.max(0, Math.min(newX, maxX));
+      newY = Math.max(0, Math.min(newY, maxY));
+      
+      this.grid.style.left = newX + 'px';
+      this.grid.style.top = newY + 'px';
+    }
+    
+    if(this.isResizing) {
+      const parentRect = this.parent.getBoundingClientRect();
+      
+      // 计算鼠标移动的距离
+      const deltaX = e.clientX - this.resizeStartX;
+      const deltaY = e.clientY - this.resizeStartY;
+      
+      // 使用较大的绝对值来保持1:1比例，方向由主要移动方向决定
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+      const delta = absX > absY ? deltaX : deltaY;
+      
+      // 计算新宽度（保持1:1比例）
+      let newWidth = this.gridStartWidth + delta;
+      
+      // 限制最小和最大尺寸
+      const minWidth = 50;
+      // 最大尺寸为父元素的大小（考虑当前位置）
+      const maxWidth = Math.min(parentRect.width - this.gridStartX, parentRect.height - this.gridStartY);
+      
+      newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+      
+      // 确保不超出父元素范围
+      if(this.gridStartX + newWidth > parentRect.width) {
+        newWidth = parentRect.width - this.gridStartX;
+      }
+      if(this.gridStartY + newWidth > parentRect.height) {
+        newWidth = parentRect.height - this.gridStartY;
+      }
+      
+      this.grid.style.width = newWidth + 'px';
+      // aspect-ratio 会自动保持高度
+    }
+  }
+  
+  // 鼠标释放处理
+  handleMouseUp() {
+    if(this.isDragging) {
+      this.isDragging = false;
+      this.grid.classList.remove('dragging');
+    }
+    if(this.isResizing) {
+      this.isResizing = false;
+    }
+  }
+  
+  // 自动居中裁剪框
+  centerGrid() {
+    const parentRect = this.parent.getBoundingClientRect();
+    const computedStyle = window.getComputedStyle(this.grid);
+    const currentWidth = parseFloat(computedStyle.width);
+    
+    // 检查父元素是否有有效尺寸
+    if(parentRect.width <= 0 || parentRect.height <= 0) {
+      return false; // 父元素尺寸无效，稍后重试
+    }
+    
+    // 如果宽度无效，返回false
+    if(!currentWidth || currentWidth <= 0) {
+      return false;
+    }
+    
+    // 计算居中位置
+    const centerLeft = (parentRect.width - currentWidth) / 2;
+    const centerTop = (parentRect.height - currentWidth) / 2;
+    
+    // 直接设置居中位置
+    this.grid.style.left = Math.max(0, centerLeft) + 'px';
+    this.grid.style.top = Math.max(0, centerTop) + 'px';
+    
+    return true;
+  }
+  
+  // 调整裁剪框以适应父元素大小
+  adjustGridToFitParent() {
+    if(this.isDragging || this.isResizing) return; // 如果正在拖拽或调整大小，不自动调整
+    
+    const parentRect = this.parent.getBoundingClientRect();
+    const computedStyle = window.getComputedStyle(this.grid);
+    const currentWidth = parseFloat(computedStyle.width) || 200;
+    const currentLeft = parseFloat(computedStyle.left) || 0;
+    const currentTop = parseFloat(computedStyle.top) || 0;
+    
+    let newWidth = currentWidth;
+    let newLeft = currentLeft;
+    let newTop = currentTop;
+    
+    // 如果裁剪框宽度超出父元素，缩小它
+    if(newWidth > parentRect.width) {
+      newWidth = parentRect.width;
+    }
+    
+    // 如果裁剪框高度超出父元素（考虑1:1比例），缩小它
+    if(newWidth > parentRect.height) {
+      newWidth = parentRect.height;
+    }
+    
+    // 确保最小尺寸
+    const minWidth = 180;
+    if(newWidth < minWidth) {
+      newWidth = minWidth;
+    }
+    
+    // 检查位置是否超出范围，如果超出则调整位置
+    if(newLeft + newWidth > parentRect.width) {
+      newLeft = Math.max(0, parentRect.width - newWidth);
+    }
+    if(newTop + newWidth > parentRect.height) {
+      newTop = Math.max(0, parentRect.height - newWidth);
+    }
+    
+    // 如果位置为负，重置为0
+    if(newLeft < 0) newLeft = 0;
+    if(newTop < 0) newTop = 0;
+    
+    // 应用调整
+    if(newWidth !== currentWidth) {
+      this.grid.style.width = newWidth + 'px';
+    }
+    if(newLeft !== currentLeft) {
+      this.grid.style.left = newLeft + 'px';
+    }
+    if(newTop !== currentTop) {
+      this.grid.style.top = newTop + 'px';
+    }
+  }
+  
+  // 初始化裁剪框
+  initializeGrid() {
+    // 先自动调整大小为80%
+    const sizeSet = this.setGridSizeToEightyPercent();
+    if(sizeSet) {
+      // 然后自动居中
+      this.centerGrid();
+      // 标记已初始化
+      this.isInitialized = true;
+      // 最后检查是否需要调整以适应父元素（防止超出范围）
+      this.adjustGridToFitParent();
+    }
+  }
+  
+  // 尝试初始化
+  tryInitialize() {
+    const parentRect = this.parent.getBoundingClientRect();
+    // 确保父元素有有效尺寸
+    if(parentRect.width > 0 && parentRect.height > 0) {
+      this.initializeGrid();
+    } else {
+      // 如果父元素尺寸无效，稍后重试（最多重试10次）
+      let retryCount = 0;
+      const maxRetries = 10;
+      const retryInterval = setInterval(() => {
+        retryCount++;
+        const rect = this.parent.getBoundingClientRect();
+        if(rect.width > 0 && rect.height > 0) {
+          this.initializeGrid();
+          clearInterval(retryInterval);
+        } else if(retryCount >= maxRetries) {
+          clearInterval(retryInterval);
+          // 即使尺寸无效也尝试初始化
+          this.initializeGrid();
+        }
+      }, 50);
+    }
+  }
+  
+  // 初始化事件监听
+  init() {
+    if(!this.grid || !this.resize || !this.viewBox) return;
+    
+    // 绑定事件监听器
+    this.grid.addEventListener('mousedown', (e) => this.handleDragStart(e));
+    this.resize.addEventListener('mousedown', (e) => this.handleResizeStart(e));
+    
+    // 使用箭头函数绑定this，并保存引用以便后续清理
+    this.mousemoveHandler = (e) => this.handleMouseMove(e);
+    this.mouseupHandler = () => this.handleMouseUp();
+    
+    document.addEventListener('mousemove', this.mousemoveHandler);
+    document.addEventListener('mouseup', this.mouseupHandler);
+    
+    // 使用 ResizeObserver 监听父元素大小变化
+    this.resizeObserver = new ResizeObserver(() => {
+      if(!this.isInitialized) {
+        // 初始化时先调整大小，再居中
+        this.initializeGrid();
+      } else {
+        // 已初始化后，只调整以适应父元素
+        this.adjustGridToFitParent();
+      }
     });
-    //console.log(cuts);
-    toolMessage([cuts,name],PLUGINAPP);
-    },100);
-  };
-
-  function sendSplit(type){
-    if(type == 'tags'){
-      let tagsBox = getElementMix('data-split-tags').querySelectorAll('[data-check-checked="true"]');
-      let tags = [];
-      tagsBox.forEach(item => {
-        let tag = item.querySelector('[data-split-info="name"]').getAttribute('data-en-text');
-        tags.push(tag);
+    
+    this.resizeObserver.observe(this.parent);
+    
+    // 监听窗口大小变化
+    window.addEventListener('resize', () => {
+      clearTimeout(this.resizeTimeout);
+      this.resizeTimeout = setTimeout(() => {
+        if(!this.isInitialized) {
+          // 初始化时先调整大小，再居中
+          this.initializeGrid();
+        } else {
+          // 已初始化后，只调整以适应父元素
+          this.adjustGridToFitParent();
+        }
+      }, 100); // 防抖处理
+    });
+    
+    // 延迟初始化
+    if(document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => this.tryInitialize(), 100);
       });
-      //console.log(tags)
-      toolMessage([[tags,'tags'],'splitText'],PLUGINAPP);
-    };
-    if(type == 'inputs'){
-      let inputs = document.getElementById('split-word').value;
-      let type = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
-      toolMessage([[[inputs,type],'inputs'],'splitText'],PLUGINAPP);
-    };
-  };
+    } else {
+      setTimeout(() => this.tryInitialize(), 100);
+    }
+  }
+  
+  // 销毁方法（清理事件监听器）
+  destroy() {
+    if(this.mousemoveHandler) {
+      document.removeEventListener('mousemove', this.mousemoveHandler);
+    }
+    if(this.mouseupHandler) {
+      document.removeEventListener('mouseup', this.mouseupHandler);
+    }
+    if(this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+    if(this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout);
+    }
+  }
+}
 
-  function sendTable(type){
-    let data = '';
-    let clone = true;
-    let reduce = false;
-    let enters = getElementMix('input-linefeed').value;
-    let nulls = getElementMix('input-nulldata').value;
-    if(type == 'mapName' || type == 'mapText' ){
-      data = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
-    };
-    if(type == 'mapPro' || type == 'mapTag' ){
-      data = tableArrayToObj(tableTextToArray(getElementMix('upload-tablearea').value.trim()))
-    };
-    if(type.includes('map')){
-      clone = getElementMix('switch-autoclone').checked;
-      reduce = getElementMix('switch-autoreduce').checked;
+// 创建实例
+const qrcodeGridController = new QRCodeGridController(
+  '[data-qrcode-grid]',
+  '[data-qrcode-grid-resize]',
+  '[data-qrcode-view-box]'
+);
+
+
+//========== 处理函数 ==========
+
+// ========== 小功能按钮辅助函数 ==========
+//返回裁切方案以栅格化
+function sendPixel(name){
+  let mix = skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+  let s = pixelScale.value;
+  let cuts = [];
+  tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],SelectNodeInfo.length * 800);
+  setTimeout(()=>{
+    SelectNodeInfo.forEach((item) => {
+    let w = item[1];
+    let h = item[2];
+    let cut = tool.CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix);
+    cuts.push(cut);
+  });
+  //console.log(cuts);
+  toolMessage([cuts,name],PLUGINAPP);
+  },100);
+};
+
+function sendSplit(type){
+  if(type == 'tags'){
+    let tagsBox = getElementMix('data-split-tags').querySelectorAll('[data-check-checked="true"]');
+    let tags = [];
+    tagsBox.forEach(item => {
+      let tag = item.querySelector('[data-split-info="name"]').getAttribute('data-en-text');
+      tags.push(tag);
+    });
+    //console.log(tags)
+    toolMessage([[tags,'tags'],'splitText'],PLUGINAPP);
+  };
+  if(type == 'inputs'){
+    let inputs = document.getElementById('split-word').value;
+    let type = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
+    toolMessage([[[inputs,type],'inputs'],'splitText'],PLUGINAPP);
+  };
+};
+
+function sendTable(type){
+  let data = '';
+  let clone = true;
+  let reduce = false;
+  let enters = getElementMix('input-linefeed').value;
+  let nulls = getElementMix('input-nulldata').value;
+  if(type == 'mapName' || type == 'mapText' ){
+    data = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
+  };
+  if(type == 'mapPro' || type == 'mapTag' ){
+    data = tableArrayToObj(tableTextToArray(getElementMix('upload-tablearea').value.trim()))
+  };
+  if(type.includes('map')){
+    clone = getElementMix('switch-autoclone').checked;
+    reduce = getElementMix('switch-autoreduce').checked;
+  };
+  
+  toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
+};
+
+// ========== 表格设置策略函数 ==========
+// 应用预设样式策略
+function applyTableStyleStrategy(){
+  const styleId = tableStyleSet?.getAttribute('data-radio-value') - 1;
+  if (styleId >= 0 && tableStyle && tableStyle[styleId]) {
+    toolMessage([[tableStyle[styleId],'style'],'reTable'],PLUGINAPP);
+  } else {
+    console.warn('applyTableStyleStrategy: Invalid styleId or tableStyle');
+  }
+};
+
+// 添加行列策略
+function addTableRowColStrategy(){
+  const H = getElementMix('table-column-num');
+  const V = getElementMix('table-row-num');
+  if (H && V) {
+    toolMessage([[[H.value,V.value],'add'],'reTable'],PLUGINAPP);
+    H.value = 0;
+    V.value = 0;
+  } else {
+    console.warn('addTableRowColStrategy: H or V element not found');
+  }
+};
+
+// 减少行列策略
+function reduceTableRowColStrategy(){
+  const H = getElementMix('table-column-num');
+  const V = getElementMix('table-row-num');
+  if (H && V) {
+    toolMessage([[[H.value * -1,V.value * -1],'reduce'],'reTable'],PLUGINAPP);
+    H.value = 0;
+    V.value = 0;
+  } else {
+    console.warn('reduceTableRowColStrategy: H or V element not found');
+  }
+};
+
+// 随机主题策略
+function randomTableThemeStrategy(){
+  const styleId = tableStyleSet?.getAttribute('data-radio-value') - 1;
+  if (styleId >= 0 && tableStyle && tableStyle[styleId]) {
+    // 可选：随机主题逻辑
+    // let num = Math.floor(Math.random() * tableStyle.length * 2);
+    // toolMessage([[[...tableStyle,...tableStyle][num],'theme'],'reTable'],PLUGINAPP);
+    toolMessage([[tableStyle[styleId],'theme'],'reTable'],PLUGINAPP);
+  } else {
+    console.warn('randomTableThemeStrategy: Invalid styleId or tableStyle');
+  }
+};
+
+// ========== 表格设置策略映射 ==========
+const TABLE_SET_STRATEGIES = {
+  'style': applyTableStyleStrategy,
+  'add': addTableRowColStrategy,
+  'reduce': reduceTableRowColStrategy,
+  'theme': randomTableThemeStrategy
+};
+
+// 执行表格设置策略（策略模式重构）
+function sendTableSet(type){
+  const strategy = TABLE_SET_STRATEGIES[type];
+  if (strategy) {
+    strategy();
+  } else {
+    console.warn(`sendTableSet: Unknown type: ${type}`);
+  }
+};
+
+function sendTablePick(type){
+  toolMessage([type,'pickTable'],PLUGINAPP);
+};
+
+function upSelect(type){
+  let exporttype = getElementMix('data-exporttype-set').getAttribute('data-radio-value');
+  let types = ['image','zy','rich']
+  toolMessage([[types[exporttype - 1],type],'upSelect'],PLUGINAPP);
+};
+
+// ========== 小功能按钮策略映射 ==========
+// 单击策略映射
+const SKILL_STRATEGIES = {
+  'Pixel As Copy': () => sendPixel('Pixel As Copy'),
+  'Pixel Overwrite': () => sendPixel('Pixel Overwrite'),
+  'Reset All Transform': () => {}, // 空操作
+  'Split By Conditions': () => sendSplit('tags'),
+  'Split By Symbol': () => sendSplit('inputs'),
+  'Mapping Names': () => sendTable('mapName'),
+  'Mapping Texts': () => sendTable('mapText'),
+  'Mapping Properties': () => sendTable('mapPro'),
+  'Mapping Tags': () => sendTable('mapTag'),
+  'Get Names': () => sendTable('getName'),
+  'Get Texts': () => sendTable('getText'),
+  'Get Properties': () => sendTable('getPro'),
+  'Get Tags': () => sendTable('getTag'),
+  'Apply Preset': () => sendTableSet('style'),
+  'Add C/R': () => sendTableSet('add'),
+  'Reduce C/R': () => sendTableSet('reduce'),
+  'Random Theme': () => sendTableSet('theme'),
+  'Select a Row': () => sendTablePick('row'),
+  'Select many Rows': () => sendTablePick('allrow'),
+  'Select Block': () => sendTablePick('block'),
+  'Select Inline': () => sendTablePick('inline'),
+  'Up Export-set': () => upSelect('exportset'),
+  'Up Default': () => upSelect('default')
+};
+
+// 双击策略映射（可根据需要添加特定处理函数）
+const SKILL_DBLCLICK_STRATEGIES = {
+  // 示例：如果有特定双击处理，可以在这里添加
+  // 'Pixel As Copy': () => sendPixelDoubleClick('Pixel As Copy'),
+  // 'Mapping Names': () => sendTableDoubleClick('mapName'),
+};
+
+//执行小功能策略（单击）
+function executeSkillStrategy(skillname){
+  const strategy = SKILL_STRATEGIES[skillname];
+  if (strategy) {
+    strategy();
+  } else {
+    // 默认策略：发送消息
+    toolMessage(['',skillname],PLUGINAPP);
+  }
+};
+
+//执行小功能策略（双击）
+function executeSkillDoubleClickStrategy(skillname){
+  const strategy = SKILL_DBLCLICK_STRATEGIES[skillname];
+  if (strategy) {
+    strategy();
+  } else {
+    // 兜底处理：发送消息
+    toolMessage([true,skillname],PLUGINAPP);
+  }
+};
+
+//点击即执行的功能（策略模式重构）
+skillBtnMain.forEach(btn => {
+  let clickTimer = null;
+  
+  // 双击事件处理（策略模式）
+  btn.addEventListener('dblclick',()=>{
+    // 清除单击事件的定时器
+    if(clickTimer){
+      clearTimeout(clickTimer);
+      clickTimer = null;
     };
     
-    toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
-  };
-
-  function sendTableSet(type){
-    let styleId = tableStyleSet.getAttribute('data-radio-value') - 1;
-    let H = getElementMix('table-column-num');
-    let V = getElementMix('table-row-num');
-    switch (type){
-      case 'style':
-        toolMessage([[tableStyle[styleId],type],'reTable'],PLUGINAPP);
-      ;break
-      case 'add':
-        toolMessage([[[H.value,V.value],type],'reTable'],PLUGINAPP);
-        H.value = 0;
-        V.value = 0;
-      ;break
-      case 'reduce':
-        toolMessage([[[H.value * -1,V.value * -1],type],'reTable'],PLUGINAPP);
-        H.value = 0;
-        V.value = 0;
-      ;break
-      case 'theme':
-        //let num = Math.floor(Math.random() * tableStyle.length * 2)
-        //toolMessage([[[...tableStyle,...tableStyle][num],type],'reTable'],PLUGINAPP);
-        toolMessage([[tableStyle[styleId],type],'reTable'],PLUGINAPP);
-        break
+    const skillname = btn.getAttribute('data-en-text');
+    if(btn.getAttribute('data-btn-dblclick') !== null && skillname){
+      executeSkillDoubleClickStrategy(skillname);
     };
-  };
-
-  function sendTablePick(type){
-    toolMessage([type,'pickTable'],PLUGINAPP);
-  };
-
-  function upSelect(type){
-    let exporttype = getElementMix('data-exporttype-set').getAttribute('data-radio-value');
-    let types = ['image','zy','rich']
-    toolMessage([[types[exporttype - 1],type],'upSelect'],PLUGINAPP);
-  };
+  });
+  
+  // 单击事件处理（带防抖）
+  btn.addEventListener('click',()=>{
+    const skillname = btn.getAttribute('data-en-text');
+    if (!skillname) return;
+    
+    // 清除之前的定时器
+    if(clickTimer){
+      clearTimeout(clickTimer);
+    };
+    
+    // 设置新的定时器
+    clickTimer = setTimeout(()=>{
+      executeSkillStrategy(skillname);
+      clickTimer = null;
+    },500);
+  });
 });
 //处理回传的选中对象的数据
 function reSelectComp(info){//判断是否选中表格组件
@@ -6890,6 +7792,8 @@ function viewPage(name){
   tab.dispatchEvent(inputEvent);
 };
 
+
+//=========== 监听函数 ===========
 
 /* ---钩子--- */
 /*监听组件的自定义属性值, 变化时触发函数, 用于已经绑定事件用于自身的组件, 如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
@@ -6988,6 +7892,9 @@ function getUserInt(node){
     dailogImgBox.appendChild(viewimg);
     viewimg.setAttribute('data-imgnum-pick',int);
   }
+  if(node.getAttribute('data-qrcode-grid-num') !== null){
+    getElementMix('data-qrcode-grid').style.setProperty('--grid',int);
+  };
   //console.log(int)
 };
 
@@ -8238,6 +9145,8 @@ if (document.readyState === 'loading') {
 function getLanguageIntime(){
   return ROOT.getAttribute('data-language').toLowerCase();
 };
+
+
 </script>
 </body>
 </html>

@@ -462,6 +462,54 @@ input[type="range"] {
   padding: calc(var(--ratio,1) * 10px);
 }
 
+.mar-b2{
+  margin-bottom: 2px;
+}
+
+.mar-0a{
+  margin: var(--mar-tb,0) auto;
+}
+
+.mar-a0{
+  margin: auto var(--mar-lr,0);
+}
+
+.mar-b4{
+  margin-bottom: 4px;
+}
+
+.mar-b6{
+  margin-bottom: 6px;
+}
+
+.mar-b8{
+  margin-bottom: 8px;
+}
+
+.mar-b10{
+  margin-bottom: 10px;
+}
+
+.mar-l2{
+  margin-left: 2px;
+}
+
+.mar-l4{
+  margin-left: 4px;
+}
+
+.mar-l6{
+  margin-left: 6px;
+}
+
+.mar-l8{
+  margin-left: 8px;
+}
+
+.mar-l10{
+  margin-left: 10px;
+}
+
 .bsb{
   box-sizing: border-box;
 }
@@ -777,7 +825,7 @@ input[type="checkbox"]:checked + .tab-eg::after{
 }
 
 .show-next,.show-next2{
-  position: relative;
+  /*position: relative;*/
   display: flex;
   flex: 0 0 auto;
 }

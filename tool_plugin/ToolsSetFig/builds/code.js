@@ -352,7 +352,6 @@ figma.ui.onmessage = async (message) => {
                         newPre.setProperties({[proId]: (cre.content.length).toString()});
                         box.appendChild(line);
                         line.layoutSizingHorizontal = 'FILL';
-                        let codeView = figma.widget.register()
                     },
                     ul: async function(cre){
                         let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
@@ -2030,17 +2029,8 @@ figma.ui.onmessage = async (message) => {
     
 };
 
-//let vars = figma.variables.createVariableCollection('test');
-//figma.variables.createVariable('color1',vars,"COLOR");
+//==========初始化==========//
 
-//封装postMessage
-function postmessage(data){
-    //console.log(data)
-    /*figma*/
-    figma.ui.postMessage({pluginMessage:data})
-    /*mastergo*/
-    //figma.ui.postMessage(data)
-};
 
 figma.on('selectionchange',()=>{
     sendInfo();
@@ -2126,6 +2116,16 @@ function sendSendComp(){
     postmessage([info,'selectComp']);
 };
 
+//==========工具函数==========//
+
+//封装postMessage
+function postmessage(data){
+    //console.log(data)
+    /*figma*/
+    figma.ui.postMessage({pluginMessage:data})
+    /*mastergo*/
+    //figma.ui.postMessage(data)
+};
 
 /**
  * @param {[object] | null} info -新建页面的设置项，命名、背景色、页码
