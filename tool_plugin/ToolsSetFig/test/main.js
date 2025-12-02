@@ -1,13 +1,3 @@
-// ========== 常量定义 ==========
-const UI_SIZES = {
-  MINI: [208, 460],
-  NORMAL: [300, 660],
-  BIG: [620, 660]
-};
-const UI_MINI = UI_SIZES.MINI;
-const UI = UI_SIZES.NORMAL;
-const UI_BIG = UI_SIZES.BIG;
-
 // ========== DOM 管理器 ==========
 /**
  * DOM 元素管理器 - 封装所有 DOM 查询，提供缓存和统一访问
@@ -173,19 +163,8 @@ const State = (() => {
     isSkillScroll: true,
     skillsSearch: [],
     
-    // 表格样式
-    tableStyle: [
-      {th:[0,0,0,0,1],td:[0,0,0,0,'rowSpace']},//横间格区分色
-      {th:[0,0,0,0,'columnSpace'],td:[0,0,0,0,'columnSpace']},//竖间格区分色
-      {th:[0,0,0,0,1],td:[0,0,0,0,0]},//无描边
-      {th:[0,0,0,0,1],td:[1,0,1,0,0]},//仅横线
-      {th:[0,0,0,0,1],td:[0,1,0,1,0]},//仅竖线
-      {th:[0,0,0,0,1],td:[1,1,1,1,0]},//全描边
-      {th:[0,0,0,0,0],td:[0,0,0,0,0]},//无描边（表头无区分色
-      {th:[1,0,1,0,0],td:[1,0,1,0,0]},//仅横线（表头无区分色
-      {th:[0,1,0,1,0],td:[0,1,0,1,0]},//仅竖线（表头无区分色
-      {th:[1,1,1,1,0],td:[1,1,1,1,0]},//全描边（表头无区分色
-    ],
+    // 表格样式（从 data.js 引用）
+    tableStyle: TABLE_STYLE,
     
     // 创建数据
     createImageInfo: [],
@@ -255,26 +234,20 @@ const State = (() => {
 
 // 初始化文件类型和配置
 (function initFileTypes() {
-  const userImg = DOM.userImg;
-  const userTable = DOM.userTable;
-  const userZy = DOM.userZy;
-  const userTableTitle = DOM.userTableTitle;
-  const frameName = DOM.frameName;
-  
-  if (userImg) {
-    State.set('imageType', userImg.getAttribute('accept')?.split(',').map(item => item.replace('.','')) || []);
+  if (DOM.userImg) {
+    State.set('imageType', DOM.userImg.getAttribute('accept')?.split(',').map(item => item.replace('.','')) || []);
   }
-  if (userTable) {
-    State.set('tableType', userTable.getAttribute('accept')?.split(',').map(item => item.replace('.','')) || []);
+  if (DOM.userTable) {
+    State.set('tableType', DOM.userTable.getAttribute('accept')?.split(',').map(item => item.replace('.','')) || []);
   }
-  if (userZy) {
-    State.set('zyType', userZy.getAttribute('accept')?.split(',').map(item => item.replace('.','')) || []);
+  if (DOM.userZy) {
+    State.set('zyType', DOM.userZy.getAttribute('accept')?.split(',').map(item => item.replace('.','')) || []);
   }
-  if (userTableTitle) {
-    State.set('tableTitleMust', userTableTitle.getAttribute('placeholder')?.split(',') || []);
+  if (DOM.userTableTitle) {
+    State.set('tableTitleMust', DOM.userTableTitle.getAttribute('placeholder')?.split(',') || []);
   }
-  if (frameName?.nextElementSibling) {
-    const options = frameName.nextElementSibling.querySelectorAll('[data-option="option"]');
+  if (DOM.frameName?.nextElementSibling) {
+    const options = DOM.frameName.nextElementSibling.querySelectorAll('[data-option="option"]');
     const frameNmaeSelect = [];
     options.forEach(item => {
       frameNmaeSelect.push(item.getAttribute('data-option-value'));
@@ -283,69 +256,17 @@ const State = (() => {
   }
 })();
 
-// ========== 向后兼容：创建全局变量别名 ==========
-// 保持向后兼容，逐步迁移
-const sideMix = DOM.sideMix;
-const sideMask = DOM.sideMask;
-const btnHelpDoc = DOM.btnHelpDoc;
-const btnMore = DOM.btnMore;
-const btnResize = DOM.btnResize;
-const btnBig = DOM.btnBig;
-const TV_text = DOM.TV_text;
-const dropUp = DOM.dropUp;
-const fileInfo = DOM.fileInfo;
-const btnHelp = DOM.btnHelp;
-const dailog = DOM.dailog;
-const dailogBox = DOM.dailogBox;
-const dailogImg = DOM.dailogImg;
-const dailogImgBox = DOM.dailogImgBox;
-const dailogSearchBox = DOM.dailogSearchBox;
-const dailogLogin = DOM.dailogLogin;
-const dailogLoginBox = DOM.dailogLoginBox;
-const imgnumSet = DOM.imgnumSet;
-const skillSearchInput = DOM.skillSearchInput;
-const skillTypeBox = DOM.skillTypeBox;
-const skillAllBox = DOM.skillAllBox;
-const skillSecNode = DOM.skillSecNode;
-const skillStar = DOM.skillStar;
-const skillAllModel = DOM.skillAllModel;
-const skillStarModel = DOM.skillStarModel;
-const selectInfoBox = DOM.selectInfoBox;
-const createTagsBox = DOM.createTagsBox;
-const cataloguesBox = DOM.cataloguesBox;
-const editorViewbox = DOM.editorViewbox;
-const exportTagsBox = DOM.exportTagsBox;
-const skillBtnMain = DOM.skillBtnMain;
-const clearCreateTags = DOM.clearCreateTags;
-const convertTags = DOM.convertTags;
-const getTableText = DOM.getTableText;
-const templateBtn = DOM.templateBtn;
-const chkTablestyle = DOM.chkTablestyle;
-const chkSelectcomp = DOM.chkSelectcomp;
-const createAnyBtn = DOM.createAnyBtn;
-const exportAnyBtn = DOM.exportAnyBtn;
-const createTableBtn = DOM.createTableBtn;
-const tableStyleSet = DOM.tableStyleSet;
-const styleTosheet = DOM.styleTosheet;
-const sheetTostyle = DOM.sheetTostyle;
-const btnLinkstyle = DOM.btnLinkstyle;
-const btnSelectstyle = DOM.btnSelectstyle;
-const btnVariables = DOM.btnVariables;
-const manageLinkstyleList = DOM.manageLinkstyleList;
-const manageSelectstyleList = DOM.manageSelectstyleList;
-const manageVariablesList = DOM.manageVariablesList;
-const userImg = DOM.userImg;
-const userTable = DOM.userTable;
-const userZy = DOM.userZy;
-const userTableTitle = DOM.userTableTitle;
-const frameName = DOM.frameName;
-const userText = DOM.userText;
-const pixelScale = DOM.pixelScale;
-const uniformS = DOM.uniformS;
-const uniformW = DOM.uniformW;
-const uniformH = DOM.uniformH;
+// ========== 状态变量访问 ==========
+// 注意：状态变量应通过 State.get() 和 State.set() 访问，以保持状态同步
+// 以下提供便捷访问函数，但建议直接使用 State.get/set 以保持一致性
 
-// 状态变量别名
+// 获取状态（只读访问）
+const getState = (key) => State.get(key);
+// 设置状态
+const setState = (key, value) => State.set(key, value);
+
+// 常用状态的便捷访问（保持向后兼容，但建议逐步迁移到直接使用 State）
+// 这些变量在代码中会被直接赋值，所以保留为 let 变量
 let skillModel = State.get('skillModel');
 let isSkillScroll = State.get('isSkillScroll');
 let skillsSearch = State.get('skillsSearch');
@@ -364,32 +285,37 @@ let zyType = State.get('zyType');
 let tableTitleMust = State.get('tableTitleMust');
 let frameNmaeSelect = State.get('frameNmaeSelect');
 
-// 动态查询的元素（保持原样，因为它们是动态的）
-let scaleSetX = DOM.scaleSetX;
-let scaleSetY = DOM.scaleSetY;
-let skewSetX = DOM.skewSetX;
-let skewSetY = DOM.skewSetY;
-let skewRangeX = DOM.skewRangeX;
-let skewRangeY = DOM.skewRangeY;
-
 // ========== 工具函数 ==========
+// 创建图片对象 URL（统一管理，便于后续优化和内存管理）
+function createImageObjectURL(data, format = 'png'){
+  if (!data) return null;
+  const blob = data instanceof Blob ? data : new Blob([data], {type: `image/${format}`});
+  return URL.createObjectURL(blob);
+};
+
+// 释放对象 URL（避免内存泄漏）
+function revokeImageObjectURL(url){
+  if (url && url.startsWith('blob:')) {
+    URL.revokeObjectURL(url);
+  }
+};
 
 //设置跳转链接
-let hrefDoc = btnHelpDoc?.getAttribute('href');
-if (hrefDoc && btnHelpDoc) {
-  btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+let hrefDoc = DOM.btnHelpDoc?.getAttribute('href');
+if (hrefDoc && DOM.btnHelpDoc) {
+  DOM.btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
 }
-let hrefTemplate = templateBtn?.getAttribute('href');
-if (hrefTemplate && templateBtn) {
-  templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
+let hrefTemplate = DOM.templateBtn?.getAttribute('href');
+if (hrefTemplate && DOM.templateBtn) {
+  DOM.templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
 }
 
 getElementMix('language-1')?.addEventListener('change',()=>{
-  if (btnHelpDoc && hrefDoc) {
-    btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+  if (DOM.btnHelpDoc && hrefDoc) {
+    DOM.btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
   }
-  if (templateBtn && hrefTemplate) {
-    templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
+  if (DOM.templateBtn && hrefTemplate) {
+    DOM.templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
   }
 });
 
@@ -420,9 +346,9 @@ window.addEventListener('load',()=>{
     addToUserTips();
     setInterval(() => {
       addToUserTips();
-    }, 12000);
+    }, DELAY.TIPS_INTERVAL);
     addSearchs();
-  }, 100);
+  }, DELAY.INIT);
 });
 
 // 窗口大小调整事件
@@ -432,7 +358,7 @@ window.addEventListener('resize',/*防抖*/debounce(()=>{
   } else {
     TV_MOVE = false;
   };
-},500,true));
+}, DELAY.DEBOUNCE, true));
 
 function loadFont(area){
   let loadFontAfter = [
@@ -465,16 +391,16 @@ function addToUserTips(kind){
   let languge2 = languge == 'Zh' ? 'en' : 'zh';
   let random = toUserTips.random[Math.floor(Math.random()*toUserTips.random.length)]
   if(kind && kind == 'worktime') random = toUserTips.worktime;
-  TV_text.textContent = random[num];
-  TV_text.setAttribute('data-'+ languge2 +'-text',random[1 - num]);
-  TV_text.setAttribute('data-'+ languge.toLowerCase() +'-text',random[num]);
+  DOM.TV_text.textContent = random[num];
+  DOM.TV_text.setAttribute('data-'+ languge2 +'-text',random[1 - num]);
+  DOM.TV_text.setAttribute('data-'+ languge.toLowerCase() +'-text',random[num]);
   let textW;
   if(num){
     textW = random[num].length * -1 - 4 + 'ch';//英文1ch
   }else{
     textW = random[num].length * -2 - 4 + 'ch';//中文2ch
   }
-  TV_text.parentNode.style.setProperty('--tv-w',textW)
+  DOM.TV_text.parentNode.style.setProperty('--tv-w',textW)
 
 };
 //添加更多功能的二级标题
@@ -532,41 +458,79 @@ function addSkillTitle(){
   });
 };
 
+// ========== 选中图层信息处理辅助函数 ==========
+// 更新选中信息的显示
+function updateSelectInfoDisplay(info){
+  DOM.selectInfoBox.forEach(item => {
+    const main = item.querySelector('[data-selects-info="main"]');
+    const sec = item.querySelector('[data-selects-info="sec"]');
+    const num = item.querySelector('[data-selects-info="num"]');
+    if (main) main.textContent = info[0][0];
+    if (sec) sec.textContent = info[1] ? info[1][0] : '';
+    if (num) num.textContent = info.length;
+  });
+};
+
+// 更新变换控制（斜切）
+function updateTransformControls(transform){
+  if (DOM.skewSetX && DOM.skewRangeX) {
+    DOM.skewSetX.value = transform[0];
+    DOM.skewRangeX.value = transform[0];
+  }
+  if (DOM.skewSetY && DOM.skewRangeY) {
+    DOM.skewSetY.value = transform[1];
+    DOM.skewRangeY.value = transform[1];
+  }
+};
+
+// 更新裁剪设置
+function updateClipSettings(clipRC){
+  const clipHSet = getElementMix('data-clip-h-set');
+  const clipWSet = getElementMix('data-clip-w-set');
+  
+  if (clipHSet && clipWSet) {
+    // 清除所有选中状态
+    clipHSet.querySelectorAll('[data-radio-main="true"]').forEach(item => {
+      item.setAttribute('data-radio-main','false');
+    });
+    clipWSet.querySelectorAll('[data-radio-main="true"]').forEach(item => {
+      item.setAttribute('data-radio-main','false');
+    });
+    
+    // 设置新的选中状态
+    const clipHItem = clipHSet.querySelector(`[data-radio-data="${clipRC[1]}"]`);
+    const clipWItem = clipWSet.querySelector(`[data-radio-data="${clipRC[0]}"]`);
+    if (clipHItem) clipHItem.setAttribute('data-radio-main','true');
+    if (clipWItem) clipWItem.setAttribute('data-radio-main','true');
+  }
+};
+
 //处理选中图层的信息（基础）
 function reSelectInfo(info){
   SelectNodeInfo = info;
+  
+  // 更新选中状态
   if(info[0][0] !== null){
     ROOT.setAttribute('data-selects','true');
-    selectInfoBox.forEach(item => {
-      let main = item.querySelector('[data-selects-info="main"]');
-      let sec = item.querySelector('[data-selects-info="sec"]');
-      let num = item.querySelector('[data-selects-info="num"]');
-      main.textContent = info[0][0];
-      sec.textContent = info[1] ? info[1][0] : '';
-      num.textContent = info.length;
-    });
+    updateSelectInfoDisplay(info);
   } else{
-    ROOT.setAttribute('data-selects','false')
-  };  
-  if(info.length == 1){
-    //console.log(info[0][3])
-    let transform = info[0][3];
-    skewSetX.value = transform[0];
-    skewRangeX.value = transform[0];
-    skewSetY.value = transform[1];
-    skewRangeY.value = transform[1];
-    /*
-    const inputEvent = new Event('input', { bubbles: true });
-    skewSetX.dispatchEvent(inputEvent);
-    skewSetY.dispatchEvent(inputEvent);
-    */
-    
-    let clipRC = info[0][4];
-    getElementMix('data-clip-h-set').querySelector(`[data-radio-main="true"]`).setAttribute('data-radio-main','false');
-    getElementMix('data-clip-w-set').querySelector(`[data-radio-main="true"]`).setAttribute('data-radio-main','false');
-    getElementMix('data-clip-h-set').querySelector(`[data-radio-data="${clipRC[1]}"]`).setAttribute('data-radio-main','true');
-    getElementMix('data-clip-w-set').querySelector(`[data-radio-data="${clipRC[0]}"]`).setAttribute('data-radio-main','true');
+    ROOT.setAttribute('data-selects','false');
   };
+  
+  // 单个选中时的特殊处理
+  if(info.length == 1){
+    // 更新变换控制
+    if (info[0][3]) {
+      updateTransformControls(info[0][3]);
+    }
+    
+    // 更新裁剪设置
+    if (info[0][4]) {
+      updateClipSettings(info[0][4]);
+    }
+  };
+  
+  // 多选状态
   if(info.length > 1){
     ROOT.setAttribute('data-selects-more','true');
   }else{
@@ -577,9 +541,9 @@ function reSelectInfo(info){
 //按用户偏好修改界面大小
 function reRootSize(info){
   if(info[0] > UI[0]){
-    btnBig.checked = true;
+    DOM.btnBig.checked = true;
   } else {
-    btnBig.checked = false;
+    DOM.btnBig.checked = false;
   };
 };
 //提取功能点用于搜索定位
@@ -645,7 +609,7 @@ function addSearchs(){
     btn.setAttribute('data-en-text','View');
     btn.textContent = language == 'Zh' ? '前往' : 'View';
     btn.onclick = ()=>{
-      dailogSearchBox.parentNode.style.display = 'none';
+      DOM.dailogSearchBox.parentNode.style.display = 'none';
       viewPage(list.page[1]);
       let viewskill = getElementMix('data-page-id="page"').querySelector(`[data-en-text="${list.name[1]}"]`);
       if(!viewskill) return;
@@ -655,11 +619,11 @@ function addSearchs(){
       },500);
     };
     turnto.appendChild(btn);
-    dailogSearchBox.appendChild(turnto)
+    DOM.dailogSearchBox.appendChild(turnto)
   });
  
   //重置文字样式
-  loadFont(dailogSearchBox);
+  loadFont(DOM.dailogSearchBox);
 };
 
 class EDITOR_TAB {
@@ -821,27 +785,47 @@ Editor.init();
 
 let tool = new TOOL_JS();
 //侧边栏展开
-btnMore.addEventListener('change',(event)=>{
+// ========== 侧边栏控制辅助函数 ==========
+// 打开侧边栏
+function openSidebar(){
+  if (!DOM.sideMix || !DOM.sideMask) return;
+  DOM.sideMix.style.display = 'flex';
+  DOM.sideMask.style.display = 'block';
+  DOM.sideMix.style.animation = 'sideUp 0.3s ease-out';
+  DOM.sideMask.style.animation = 'loadOp 0.3s';
+};
+
+// 关闭侧边栏
+function closeSidebar(){
+  if (!DOM.sideMix || !DOM.sideMask) return;
+  DOM.sideMix.style.animation = 'sideOver 0.3s ease-out';
+  DOM.sideMask.style.animation = 'overOp 0.3s ease-out';
+  setTimeout(()=>{ 
+    DOM.sideMix.style.display = 'none';
+    DOM.sideMask.style.display = 'none';
+  }, DELAY.SIDEBAR_CLOSE);
+};
+
+//侧边栏展开/关闭
+DOM.btnMore.addEventListener('change',(event)=>{
   if(event.target.checked){
-    sideMix.style.display = 'flex';
-    sideMask.style.display = 'block';
-    sideMix.style.animation = 'sideUp 0.3s ease-out';
-    sideMask.style.animation = 'loadOp 0.3s ';
+    openSidebar();
   } else {
-    sideMix.style.animation = 'sideOver 0.3s ease-out';
-    sideMask.style.animation = 'overOp 0.3s ease-out';
-    setTimeout(()=>{ 
-      sideMix.style.display = 'none'
-      sideMask.style.display = 'none'
-    },280)
+    closeSidebar();
   }
 });
-//侧边栏关闭
+//侧边栏关闭（点击外部区域）
 document.addEventListener('mousedown',(event)=>{
-  if(!sideMix.contains(event.target) && sideMask.style.display !== 'none' && sideMix.style.display !== 'none' && btnMore.checked == true ){
-    btnMore.checked = false;
-    let inputEvent = new Event('change',{bubbles:true});
-    btnMore.dispatchEvent(inputEvent);
+  if (!DOM.sideMix || !DOM.sideMask || !DOM.btnMore) return;
+  
+  const isOutside = !DOM.sideMix.contains(event.target);
+  const isVisible = DOM.sideMask.style.display !== 'none' && DOM.sideMix.style.display !== 'none';
+  const isOpen = DOM.btnMore.checked === true;
+  
+  if(isOutside && isVisible && isOpen){
+    DOM.btnMore.checked = false;
+    const inputEvent = new Event('change', {bubbles: true});
+    DOM.btnMore.dispatchEvent(inputEvent);
   }
 });
 //缩放窗口
@@ -849,13 +833,13 @@ document.addEventListener('mousedown',(event)=>{
 const saveWindowSize = debounce((w, h) => {
   storageMix.set('userResize',[w,h]);
   if(w > UI[0]){
-    btnBig.checked = true;
+    DOM.btnBig.checked = true;
   } else {
-    btnBig.checked = false;
+    DOM.btnBig.checked = false;
   }
-}, 500);
+}, DELAY.RESIZE_SAVE);
 
-btnResize.addEventListener('mousedown',(event)=>{
+DOM.btnResize.addEventListener('mousedown',(event)=>{
   isResize = true;
   let reNodeStyle = document.defaultView.getComputedStyle(ROOT);
   reStartW = parseInt(reNodeStyle.width,10);
@@ -951,7 +935,7 @@ function handleSearchInput(){
 };
 
 // 使用防抖函数优化搜索
-skillSearchInput?.addEventListener('input', debounce(handleSearchInput, 500));
+DOM.skillSearchInput?.addEventListener('input', debounce(handleSearchInput, DELAY.SEARCH));
 function addFindBox(node,info,isForin){
   let renderBounds = node.getBoundingClientRect();
   //console.log(renderBounds);
@@ -974,16 +958,16 @@ function addFindBox(node,info,isForin){
   findBox.setAttribute('data-findbox','')
   findBox.setAttribute('style',`width:${renderBounds.width}px; height:${renderBounds.height}px; top:${renderBounds.y - 4}px; left:${renderBounds.x - 4}px`)
   document.querySelector('body').appendChild(findBox);
-  setTimeout(()=>{findBox.remove()},2000);
+  setTimeout(()=>{findBox.remove()}, DELAY.FIND_BOX_REMOVE);
 }
 //最大化窗口
-btnBig.addEventListener('change',()=>{
+DOM.btnBig.addEventListener('change',()=>{
   let w = window.innerWidth;
   let h = window.innerHeight;
-  if(btnBig.checked){
+  if(DOM.btnBig.checked){
     if(w < UI[0] || h < UI[1]){
       toolMessage([false,'big'],PLUGINAPP);
-      btnBig.checked = false;
+      DOM.btnBig.checked = false;
     }else{
       toolMessage([true,'big'],PLUGINAPP);
     }
@@ -992,32 +976,32 @@ btnBig.addEventListener('change',()=>{
   }
 });
 //点击上传
-userImg.addEventListener('change',(e)=>{
-  let files = Array.from(userImg.files);
+DOM.userImg.addEventListener('change',(e)=>{
+  let files = Array.from(DOM.userImg.files);
   reFileInfo(files);
   addImageTags(files)
 });
-userTable.addEventListener('change',(e)=>{
-  let files = Array.from(userTable.files);
+DOM.userTable.addEventListener('change',(e)=>{
+  let files = Array.from(DOM.userTable.files);
   reFileInfo(files);
   addTableText(files)
 });
-userZy.addEventListener('change',(e)=>{
-  let files = Array.from(userZy.files);
+DOM.userZy.addEventListener('change',(e)=>{
+  let files = Array.from(DOM.userZy.files);
   reFileInfo(files);
   addZyCatalogue(files)
 });
 //拖拽上传
 let dragAreaInfo;
-dropUp.addEventListener('dragover',(e)=>{
-  dragAreaInfo = dropUp.getBoundingClientRect();
+DOM.dropUp.addEventListener('dragover',(e)=>{
+  dragAreaInfo = DOM.dropUp.getBoundingClientRect();
   e.stopPropagation();
   e.preventDefault();
   e.dataTransfer.dropEffect = 'copy';
-  dropUp.style.filter = 'drop-shadow(0 0 4px let(--mainColor))';
-  dropUp.style.setProperty('--drop-df','collapse');
+  DOM.dropUp.style.filter = 'drop-shadow(0 0 4px let(--mainColor))';
+  DOM.dropUp.style.setProperty('--drop-df','collapse');
 });
-dropUp.addEventListener('dragleave',(e)=>{
+DOM.dropUp.addEventListener('dragleave',(e)=>{
   let x = e.clientX;
   let y = e.clientY;
   let areaX = dragAreaInfo.x;
@@ -1028,62 +1012,169 @@ dropUp.addEventListener('dragleave',(e)=>{
     e.stopPropagation();
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
-    dropUp.style.filter = '';
-    dropUp.style.setProperty('--drop-df','visible');
+    DOM.dropUp.style.filter = '';
+    DOM.dropUp.style.setProperty('--drop-df','visible');
   }
 });
-dropUp.addEventListener('drop',async (e)=>{
-  e.stopPropagation();
-  e.preventDefault();
-  dropUp.style.filter = '';
-  dropUp.style.setProperty('--drop-df','visible');
-  let files = Array.from(e.dataTransfer.files);
+// ========== 文件上传策略函数 ==========
+// 文件上传策略映射
+const FILE_UPLOAD_STRATEGIES = {
+  'image': (files) => addImageTags(files, true),
+  'table': (files) => addTableText(files, true),
+  'zy': (files) => addZyCatalogue(files)
+};
 
-  let filesTypes = [...new Set(files.map(item => item.name.split('.')[item.name.split('.').length - 1].toLowerCase()))];
-  let sameType = null;
-  
-  if(filesTypes.every(item => imageType.includes(item))){
-    sameType = 'image';
-  };
-  if(filesTypes.every(item => tableType.includes(item))){
-    sameType = 'table';
-  };
-  if(filesTypes.every(item => zyType.includes(item))){
-    sameType = 'zy';
-  };
-  if(!sameType){
-    let realyType = await tool.TrueImageFormat(files[0]);
-    if(realyType && imageType.includes(realyType)){
-      sameType = 'image';
+// 执行文件上传策略（简化：直接使用策略映射，保留错误处理）
+function executeFileUploadStrategy(type, files){
+  const strategy = FILE_UPLOAD_STRATEGIES[type];
+  if (!strategy) {
+    console.warn(`Unknown file type: ${type}`);
+    return;
+  }
+  strategy(files);
+};
+
+// ========== 文件格式处理策略函数 ==========
+// Markdown 文件处理策略
+async function handleMarkdownFile(content, createname){
+  const textarea = DOM.userText;
+  if (textarea) {
+    textarea.value = content.trim();
+    textarea.focus();
+    try {
+      const mds = await tool.MdToObj(content.trim(), createname);
+      if (!mds || (Array.isArray(mds) && mds.length === 0)) {
+        tipsAll(MESSAGES.ZY_DATA_ERROR, 3000);
+        return;
+      }
+      addTag('zy', mds);
+    } catch (error) {
+      console.error('Markdown parsing error:', error);
+      tipsAll(MESSAGES.ZY_DATA_ERROR, 3000);
     }
   }
+};
+
+// SVG 文件处理策略
+async function handleSvgFile(content, createname){
+  const textarea = DOM.userText;
+  if (textarea) {
+    textarea.value = content.trim();
+    textarea.focus();
+    try {
+      const svgs = await tool.SvgToObj(content.trim(), createname);
+      if (!svgs || (Array.isArray(svgs) && svgs.length === 0)) {
+        tipsAll(MESSAGES.ZY_DATA_ERROR, 3000);
+        return;
+      }
+      addTag('zy', svgs);
+    } catch (error) {
+      console.error('SVG parsing error:', error);
+      tipsAll(MESSAGES.ZY_DATA_ERROR, 3000);
+    }
+  }
+};
+
+// ZY 文件处理策略（占位符）
+async function handleZyFile(content, createname){
+  // TODO: 实现 ZY 文件处理逻辑
+  console.warn('handleZyFile: ZY file format not yet implemented');
+};
+
+// 文件格式处理策略映射
+const FILE_FORMAT_STRATEGIES = {
+  'md': handleMarkdownFile,
+  'svg': handleSvgFile,
+  'zy': handleZyFile
+};
+
+// 执行文件格式处理策略（简化：直接使用策略映射，保留错误处理）
+async function executeFileFormatStrategy(format, content, createname){
+  const strategy = FILE_FORMAT_STRATEGIES[format];
+  if (!strategy) {
+    console.warn(`Unknown file format: ${format}`);
+    return;
+  }
+  await strategy(content, createname);
+};
+
+// 检测文件类型
+async function detectFileType(files, filesTypes){
+  if (!files || files.length === 0) return null;
+  
+  // 优先检测真实图片格式（对于可能的图片文件）
+  // 先检查扩展名是否可能是图片
+  const possibleImageExts = filesTypes.filter(ext => imageType.length > 0 && imageType.includes(ext));
+  if (possibleImageExts.length > 0 && files.length > 0) {
+    // 对第一个可能的图片文件检测真实格式
+    const realyType = await tool.TrueImageFormat(files[0]);
+    if (realyType && imageType.includes(realyType)) {
+      // 如果真实格式是图片，检查所有文件是否都是图片格式
+      if (filesTypes.every(item => imageType.includes(item))) {
+        return 'image';
+      }
+    }
+  }
+  
+  // 通过扩展名判断（需要确保类型数组不为空）
+  if (imageType.length > 0 && filesTypes.every(item => imageType.includes(item))) {
+    return 'image';
+  } else if (tableType.length > 0 && filesTypes.every(item => tableType.includes(item))) {
+    return 'table';
+  } else if (zyType.length > 0 && filesTypes.every(item => zyType.includes(item))) {
+    return 'zy';
+  }
+  
+  // 如果无法通过扩展名判断，再次尝试检测真实格式（作为兜底）
+  if (files.length > 0) {
+    const realyType = await tool.TrueImageFormat(files[0]);
+    if (realyType && imageType.length > 0 && imageType.includes(realyType)) {
+      return 'image';
+    }
+  }
+  
+  return null;
+};
+
+DOM.dropUp.addEventListener('drop',async (e)=>{
+  e.stopPropagation();
+  e.preventDefault();
+  DOM.dropUp.style.filter = '';
+  DOM.dropUp.style.setProperty('--drop-df','visible');
+  let files = Array.from(e.dataTransfer.files);
+
+  // 提取文件扩展名（更安全的提取方式）
+  let filesTypes = [...new Set(files.map(item => {
+    const name = item.name;
+    const lastDotIndex = name.lastIndexOf('.');
+    return lastDotIndex > 0 ? name.substring(lastDotIndex + 1).toLowerCase() : '';
+  }).filter(ext => ext !== ''))];
+  let sameType = await detectFileType(files, filesTypes);
+  
   if(sameType){
     files = files.sort((a, b) => b.size - a.size);
     reFileInfo(files);
-    switch (sameType){
-      case 'image': addImageTags(files,true);break
-      case 'table': addTableText(files,true);break
-      case 'zy': addZyCatalogue(files);break
-    }
+    // 使用策略模式处理文件上传
+    executeFileUploadStrategy(sameType, files);
   } else {
-    tipsAll(['只能上传同类型文件','The file type must meet the requirements'],3000)
+    tipsAll(MESSAGES.FILE_TYPE_ERROR, 3000);
   }
   
 });
 
 
-userText.addEventListener('paste',(e) => {
+DOM.userText.addEventListener('paste',(e) => {
   let pasted = e.clipboardData.getData('text/plain') //await navigator.clipboard.readText();
   
   if(pasted.includes('base64,')){
-    userText.setAttribute('data-textarea-wrap','true');
-    setTimeout(()=>{userText.scrollTop = 0})
+    DOM.userText.setAttribute('data-textarea-wrap','true');
+    setTimeout(()=>{DOM.userText.scrollTop = 0})
   }else {
-    userText.setAttribute('data-textarea-wrap','false');
+    DOM.userText.setAttribute('data-textarea-wrap','false');
   }
 })
-userText.parentNode.querySelector('[data-close]').addEventListener('click',()=>{
-  userText.setAttribute('data-textarea-wrap','false');
+DOM.userText.parentNode.querySelector('[data-close]').addEventListener('click',()=>{
+  DOM.userText.setAttribute('data-textarea-wrap','false');
 
   let linenums = getElementMix('data-textarea-linenum');
   textareaLineNum = 20;
@@ -1109,11 +1200,11 @@ userText.parentNode.querySelector('[data-close]').addEventListener('click',()=>{
   <div>20</div>`;
 
 })
-userText.addEventListener('scroll',()=>{
+DOM.userText.addEventListener('scroll',()=>{
   let numbox = getElementMix('data-textarea-linenum-box');
   let linenums = getElementMix('data-textarea-linenum');
-  numbox.scrollTop = userText.scrollTop;
-  if(textareaLineNum*16 < userText.scrollTop + userText.offsetHeight){
+  numbox.scrollTop = DOM.userText.scrollTop;
+  if(textareaLineNum*16 < DOM.userText.scrollTop + DOM.userText.offsetHeight){
     let addnum = 100;//Math.min((999 - textareaLineNum),100)
     if (addnum < 0) return;
     for(let i = textareaLineNum; i < textareaLineNum + addnum; i++){
@@ -1138,20 +1229,20 @@ let userText_ScrollUp = null;
 let userText_ScrollDown = null;
 
 userText_BtnUp.addEventListener('dblclick',()=>{
-  userText.scrollTop = 0;
+  DOM.userText.scrollTop = 0;
 });
 userText_BtnDown.addEventListener('dblclick',()=>{
-  userText.scrollTop = userText.scrollHeight;
+  DOM.userText.scrollTop = DOM.userText.scrollHeight;
 });
 
 userText_BtnUp.addEventListener('mousedown',()=>{
   userText_ScrollUp = setInterval(()=>{
-    userText.scrollTop -= userText.offsetHeight;
+    DOM.userText.scrollTop -= DOM.userText.offsetHeight;
   },10);
 });
 userText_BtnDown.addEventListener('mousedown',()=>{
   userText_ScrollDown = setInterval(()=>{
-    userText.scrollTop += userText.offsetHeight;
+    DOM.userText.scrollTop += DOM.userText.offsetHeight;
   },10);
 });
 userText_BtnUp.addEventListener('mouseup',()=>{
@@ -1169,46 +1260,46 @@ userText_BtnDown.addEventListener('mouseleave',()=>{
 
 //切换预览图
 getElementMix('data-imgnum-up').addEventListener('click',()=>{
-  let oldvalue = imgnumSet.value * 1;
+  let oldvalue = DOM.imgnumSet.value * 1;
   let maxnum = ExportImageInfo.length;
-  imgnumSet.value = (oldvalue + 1) <= maxnum ? (oldvalue + 1) : maxnum;
-  if(imgnumSet.value == oldvalue) return;
-  imgnumSet.parentNode.setAttribute('data-int-value',imgnumSet.value);
+  DOM.imgnumSet.value = (oldvalue + 1) <= maxnum ? (oldvalue + 1) : maxnum;
+  if(DOM.imgnumSet.value == oldvalue) return;
+  DOM.imgnumSet.parentNode.setAttribute('data-int-value',DOM.imgnumSet.value);
 });
 getElementMix('data-imgnum-down').addEventListener('click',()=>{
-  let oldvalue = imgnumSet.value * 1;
-  imgnumSet.value = (oldvalue - 1) >= 1 ? (oldvalue - 1) : 1;
-  if(imgnumSet.value == oldvalue) return;
-  imgnumSet.parentNode.setAttribute('data-int-value',imgnumSet.value);
+  let oldvalue = DOM.imgnumSet.value * 1;
+  DOM.imgnumSet.value = (oldvalue - 1) >= 1 ? (oldvalue - 1) : 1;
+  if(DOM.imgnumSet.value == oldvalue) return;
+  DOM.imgnumSet.parentNode.setAttribute('data-int-value',DOM.imgnumSet.value);
 });
 
 function btnConvert(isStart){
-  let btn = convertTags.querySelector('btn-re');
+  let btn = DOM.convertTags.querySelector('btn-re');
   btn.style.animation = isStart ? 'loadRo2 2s linear infinite' : '';
   btn.parentNode.style.borderColor = isStart ? 'var(--mainColor)' : 'var(--boxBod)';
 }
 
-userText.addEventListener('dblclick',()=>{
+DOM.userText.addEventListener('dblclick',()=>{
   btnConvert(true);
 });
 
-userText.addEventListener('input',()=>{
-  if(userText.value == ''){
+DOM.userText.addEventListener('input',()=>{
+  if(DOM.userText.value == ''){
     btnConvert(false);
   } else {
     btnConvert(true);
   }
 });
 
-[userText.parentNode.parentNode,getElementMix('upload-moreset-box')].forEach(item => {
+[DOM.userText.parentNode.parentNode,getElementMix('upload-moreset-box')].forEach(item => {
   item.addEventListener('mouseenter',()=>{
-    if(userText.value == '') return;
+    if(DOM.userText.value == '') return;
     btnConvert(true);
   });
 });
-[userText.parentNode.parentNode,getElementMix('upload-moreset-box')].forEach(item => {
+[DOM.userText.parentNode.parentNode,getElementMix('upload-moreset-box')].forEach(item => {
   item.addEventListener('mouseleave',()=>{
-    if(userText.value !== '') return;
+    if(DOM.userText.value !== '') return;
     btnConvert(false);
   });
 });
@@ -1256,7 +1347,7 @@ function createImageStrategy(){
     console.warn('createImageStrategy: No images to create');
     return;
   }
-  tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],images.length * 800);
+  tipsAll(MESSAGES.READING, images.length * 800);
   setTimeout(()=>{
     toolMessage([images,'createImage'],PLUGINAPP);
   },100);
@@ -1269,7 +1360,7 @@ function createTableStrategy(){
     console.warn('createTableStrategy: No tables to create');
     return;
   }
-  tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],CreateTableInfo.length * 100);
+  tipsAll(MESSAGES.READING, CreateTableInfo.length * 100);
   setTimeout(()=>{
     toolMessage([tables,'createFrame'],PLUGINAPP);
   },100);
@@ -1282,7 +1373,7 @@ function createZyStrategy(){
     console.warn('createZyStrategy: No catalogues to create');
     return;
   }
-  tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],CataloguesInfo.length * 100);
+  tipsAll(MESSAGES.READING, CataloguesInfo.length * 100);
   setTimeout(()=>{
     toolMessage([zys,'createZy'],PLUGINAPP);
   },100);
@@ -1295,18 +1386,18 @@ const CREATE_STRATEGIES = {
   'zy': createZyStrategy
 };
 
-// 执行创建策略
+// 执行创建策略（简化：直接使用策略映射，保留错误处理）
 function executeCreateStrategy(type){
   const strategy = CREATE_STRATEGIES[type];
-  if (strategy) {
-    strategy();
-  } else {
-    console.warn(`executeCreateStrategy: Unknown type: ${type}`);
+  if (!strategy) {
+    console.warn(`Unknown create type: ${type}`);
+    return;
   }
+  strategy();
 };
 
 //创建内容（策略模式重构）
-createAnyBtn?.addEventListener('click',() => {
+DOM.createAnyBtn?.addEventListener('click',() => {
   const tagsBox = DOM.createTagsBox;
   if (!tagsBox || !tagsBox.parentNode || !tagsBox.parentNode.parentNode) {
     console.warn('createAnyBtn: createTagsBox structure not found');
@@ -1320,7 +1411,7 @@ createAnyBtn?.addEventListener('click',() => {
   executeCreateStrategy(type);
 });
 //功能列表滚动绑定tab
-skillAllModel.forEach(item =>{
+DOM.skillAllModel.forEach(item =>{
   /**/
   let icon = document.querySelector(`[data-skillmodule-for="${item.getAttribute('data-skillmodule')}"]`).previousElementSibling.cloneNode(true);
   icon.setAttribute('data-skilltype-icon','mini');
@@ -1330,11 +1421,11 @@ skillAllModel.forEach(item =>{
     isSkillScroll = false;
     let modelid = item.getAttribute('data-skillmodule');
     let index = skillModel.findIndex(skill => skill.includes(modelid));
-    let tab = skillTypeBox.querySelector(`[data-radio-data="${(index + 1)}"]`);
+    let tab = DOM.skillTypeBox.querySelector(`[data-radio-data="${(index + 1)}"]`);
     tab.click();
   });
 });
-skillTypeBox.addEventListener('mouseenter',() => {
+DOM.skillTypeBox.addEventListener('mouseenter',() => {
   isSkillScroll = true;
 });
 
@@ -1437,11 +1528,11 @@ function loadTable(file){
 
 //添加标签前处理
 async function addImageTags(files,isCreate){
-  clearCreateTags.click();
+  DOM.clearCreateTags.click();
   let sizes = files.map(item => item.size);
   let sizeAll = sizes.reduce((a,b) => a + b, 0);
   sizeAll = sizeAll*1 == NaN ? files.length : sizeAll; //大图至少算1M大小
-  tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],sizeAll/1024/1024 * 100); //加载1M需要100毫秒
+  tipsAll(MESSAGES.READING, sizeAll/1024/1024 * 100); //加载1M需要100毫秒
   for(let i = 0; i < files.length; i++){
     let file = files[i];
     let name = file.name.split('.').filter(item => !imageType.includes(item.toLowerCase())).join('_');
@@ -1462,22 +1553,54 @@ async function addImageTags(files,isCreate){
   };
 }
 async function addTableText(files,isTags){
-  clearCreateTags.click();
-  userText.focus();
-  userText.value = '';
+  DOM.clearCreateTags.click();
+  DOM.userText.focus();
+  DOM.userText.value = '';
   let tableText;
   if(typeof(files) == 'string'){
     tableText = files;
   } else {
     tableText = await loadTable(files[0])
   }
-  userText.value = tableText;
-  let tableArray = tableTextToArray(tableText);
-  let tableObj = tableArrayToObj(tableArray);
-  CreateTableInfo = tableObj;
-  //console.log(tableArray,tableTextToArray(tableText,true),tableObj)
+  DOM.userText.value = tableText;
+  
+  // 如果是拖拽上传（isTags=true），需要先验证表格格式
   if(isTags){
-    convertTags.click()
+    // 检查第一行是否包含表格必需的字段
+    const firstline = tableText.trim().split('\n')[0];
+    const isTableText = ['name','w','h'].every(item => firstline.includes(item));
+    
+    if(!isTableText){
+      // 表格格式错误，提示用户
+      tipsAll(MESSAGES.TABLE_DATA_ERROR, 3000);
+      return; // 不继续处理，不调用 convertTags.click()
+    }
+    
+    // 验证表格数据是否可以正确解析
+    try {
+      let tableArray = tableTextToArray(tableText, false, DOM.userTableTitle.value.split(','));
+      if(!tableArray || tableArray.length < 2){
+        tipsAll(MESSAGES.TABLE_DATA_ERROR, 3000);
+        return;
+      }
+      let tableObj = tableArrayToObj(tableArray);
+      if(!tableObj || tableObj.length === 0){
+        tipsAll(MESSAGES.TABLE_DATA_ERROR, 3000);
+        return;
+      }
+      CreateTableInfo = tableObj;
+      // 格式正确，触发转换
+      DOM.convertTags.click();
+    } catch (error) {
+      console.error('Table data parsing error:', error);
+      tipsAll(MESSAGES.TABLE_DATA_ERROR, 3000);
+      return;
+    }
+  } else {
+    // 手动输入的情况，直接解析（允许用户尝试不同格式）
+    let tableArray = tableTextToArray(tableText);
+    let tableObj = tableArrayToObj(tableArray);
+    CreateTableInfo = tableObj;
   }
 }
 function addTableTags(){
@@ -1486,40 +1609,57 @@ function addTableTags(){
 async function addZyCatalogue(files,codetype){
   //log([files,files instanceof FileList , files instanceof File])
   if(codetype){
+    // 如果指定了 codetype，说明是从文本框转换来的，直接添加标签
     addTag('zy',files)
-  } else if ( files instanceof FileList || files instanceof File || typeof(files) == 'object'){
+  } else if ( files instanceof FileList || files instanceof File || (Array.isArray(files) && files.length > 0)){
+    // 拖拽上传的情况，需要验证文件格式
+    let hasError = false;
+    let processedCount = 0;
+    
     for(let i = 0; i < files.length; i++){
       let file = files[i];
-      let format = file.name.split('.')[file.name.split('.').length - 1].toLowerCase();
+      // 更安全的扩展名提取
+      const lastDotIndex = file.name.lastIndexOf('.');
+      const format = lastDotIndex > 0 ? file.name.substring(lastDotIndex + 1).toLowerCase() : '';
+      
+      // 检查格式是否支持（md, svg, zy）
+      const supportedFormats = ['md', 'svg', 'zy'];
+      if (!format || !supportedFormats.includes(format)) {
+        hasError = true;
+        continue;
+      }
+      
       let filenameRegex = new RegExp('.' + format,'gi');
       let createname = file.name.replace(filenameRegex,'') + '@MD_NODE';
+      
       try{
         let reader = new FileReader();
         reader.onload = async(e)=>{
-          switch (format){
-            case 'md':
-              userText.value = reader.result.trim();
-              userText.focus();
-              let mds = await tool.MdToObj(reader.result.trim(),createname);
-              addTag('zy',mds);
-            break
-            case 'svg':
-              let svgs = await tool.SvgToObj(reader.result.trim(),createname);
-              addTag('zy',svgs);
-            break
-            case 'zy':
-      
-            break
+          try {
+            // 使用策略模式处理文件格式
+            await executeFileFormatStrategy(format, reader.result, createname);
+            processedCount++;
+          } catch (error) {
+            console.error('File format processing error:', error);
+            hasError = true;
           }
         };
-        reader.onerror = (error)=>{reject(error)};
+        reader.onerror = (error)=>{
+          console.error('FileReader error:', error);
+          hasError = true;
+        };
         reader.readAsText(file);
         
       } catch (error) {
-        console.log(error)
+        console.error('File processing error:', error);
+        hasError = true;
       }
-      
     };
+    
+    // 如果所有文件处理都失败，提示错误
+    if (hasError && processedCount === 0) {
+      tipsAll(MESSAGES.ZY_DATA_ERROR, 3000);
+    }
   }
 };
 
@@ -1615,7 +1755,7 @@ function addSelect(index,options,def){
 function createImageTagStrategy(info){
   info.forEach((img,index) => {
     let tag = document.createElement('div');
-    createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','image');
+    DOM.createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','image');
     addTagMain(tag,index,'create');
     let name = document.createElement('div');
     name.setAttribute('data-create-info','name');
@@ -1631,8 +1771,8 @@ function createImageTagStrategy(info){
       ` ;
       tag.appendChild(span);
       span.addEventListener('click',()=>{
-        dailogBox.innerHTML = '';
-        dailog.style.display = 'flex';
+        DOM.dailogBox.innerHTML = '';
+        DOM.dailog.style.display = 'flex';
         let cutinfo = document.createElement('div');
         cutinfo.className = 'w100 df-ffc';
         cutinfo.setAttribute('style','gap: 4px');
@@ -1654,19 +1794,19 @@ function createImageTagStrategy(info){
           cutimgbox.appendChild(cutimg);
           cutinfo.appendChild(cutimgbox);
         });
-        dailogBox.appendChild(cutinfo);
+        DOM.dailogBox.appendChild(cutinfo);
       });
     }
-    createTagsBox.appendChild(tag);
+    DOM.createTagsBox.appendChild(tag);
   });
 };
 
 // 表格标签策略
 function createTableTagStrategy(info){
-  let nameRegex = frameName.value;
+  let nameRegex = DOM.frameName.value;
   info.forEach((list,index) => {
     let tag = document.createElement('div');
-    createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','table');
+    DOM.createTagsBox.parentNode.parentNode.setAttribute('data-create-tags-box','table');
     addTagMain(tag,index,'create');
     let name = document.createElement('div');
     name.setAttribute('data-create-info','name');
@@ -1694,7 +1834,7 @@ function createTableTagStrategy(info){
       name.innerHTML = list.name;
     };
     tag.appendChild(name);
-    createTagsBox.appendChild(tag);
+    DOM.createTagsBox.appendChild(tag);
   });
 };
 
@@ -1703,9 +1843,9 @@ function createZyTagStrategy(info){
   if(info.zyType){
     CataloguesInfo.push(info);
     //log(info)
-    let index = Array.from(cataloguesBox.children).length;
+    let index = Array.from(DOM.cataloguesBox.children).length;
     let tag = document.createElement('div');
-    cataloguesBox.parentNode.parentNode.setAttribute('data-create-tags-box','zy');
+    DOM.cataloguesBox.parentNode.parentNode.setAttribute('data-create-tags-box','zy');
     let main = addTagMain(tag,index,'zynode');
 
     let name = document.createElement('input');
@@ -1723,10 +1863,10 @@ function createZyTagStrategy(info){
 
     let layerList = document.createElement('div');
     layerList.setAttribute('data-layerlist','');
-    let html = marked.parse(userText.value.trim());
+    let html = marked.parse(DOM.userText.value.trim());
     layerList.innerHTML = html;
     tag.appendChild(layerList);
-    cataloguesBox.appendChild(tag);
+    DOM.cataloguesBox.appendChild(tag);
   }else{
 
   };
@@ -1736,7 +1876,7 @@ function createZyTagStrategy(info){
 function createExportImgTagStrategy(info){
   ExportImageInfo.push(...info);
   getElementMix('data-imgnum-max').textContent = ExportImageInfo.length;
-  exportTagsBox.innerHTML = '<!--动态填充-->';
+  DOM.exportTagsBox.innerHTML = '<!--动态填充-->';
   ExportImageInfo.forEach((layer,index) => {
     let tag = document.createElement('div');
     let main = addTagMain(tag,index,'export');
@@ -1833,15 +1973,15 @@ function createExportImgTagStrategy(info){
     view.setAttribute('style','width:14px; height: 14px;');
     view.className = 'btn-op';
     view.addEventListener('click',()=>{
-      imgnumSet.value = index + 1;
+      DOM.imgnumSet.value = index + 1;
       let img = layer.compressed ? layer.compressed : layer.u8a;
-      dailogImgBox.innerHTML = '';
-      dailogImg.style.display = 'flex';
+      DOM.dailogImgBox.innerHTML = '';
+      DOM.dailogImg.style.display = 'flex';
       let viewimg = document.createElement('img');
       let ismaxW = layer.width >= layer.height ? 'true' : 'false';
       viewimg.setAttribute('data-ismaxW',ismaxW);
       viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
-      dailogImgBox.appendChild(viewimg);
+      DOM.dailogImgBox.appendChild(viewimg);
       viewimg.setAttribute('data-imgnum-pick',index + 1);
     });
     sizebox.appendChild(view);
@@ -1849,7 +1989,7 @@ function createExportImgTagStrategy(info){
     exportset.appendChild(sizeinfo);
 
     tag.appendChild(exportset);
-    exportTagsBox.appendChild(tag);
+    DOM.exportTagsBox.appendChild(tag);
   });
 };
 
@@ -1858,11 +1998,11 @@ function getContainerByType(type){
   switch(type) {
     case 'image':
     case 'table':
-      return createTagsBox;
+      return DOM.createTagsBox;
     case 'zy':
-      return cataloguesBox;
+      return DOM.cataloguesBox;
     case 'export-img':
-      return exportTagsBox;
+      return DOM.exportTagsBox;
     default:
       return null;
   }
@@ -1894,32 +2034,32 @@ function addTag(type,info){
     getCompChange(container);
   }
   //重置文字样式
-  loadFont(createTagsBox.parentNode);
+  loadFont(DOM.createTagsBox.parentNode);
 };
 
 //预览导出图片-放大
 getElementMix('fullimg').addEventListener('change',(e)=>{
   if(e.target.checked){
-    dailogImgBox.setAttribute('data-isfull','true');
+    DOM.dailogImgBox.setAttribute('data-isfull','true');
   }else{
-    dailogImgBox.setAttribute('data-isfull','false');
+    DOM.dailogImgBox.setAttribute('data-isfull','false');
   };
 });
 getElementMix('fulleditor').addEventListener('change',(e)=>{
   if(e.target.checked){
-    editorViewbox.setAttribute('data-isfull','true');
+    DOM.editorViewbox.setAttribute('data-isfull','true');
   }else{
-    editorViewbox.setAttribute('data-isfull','false');
+    DOM.editorViewbox.setAttribute('data-isfull','false');
   };
 });
 //编辑预览图
 function addEditorView(info){
-  let viewimg = editorViewbox.querySelector('img');
+  let viewimg = DOM.editorViewbox.querySelector('img');
   viewimg = viewimg ? viewimg : document.createElement('img');
   let ismaxW = info.width >= info.height ? 'true' : 'false';
   viewimg.setAttribute('data-ismaxW',ismaxW);
   viewimg.src = URL.createObjectURL(new Blob([info.u8a],{type:'image/png'}));
-  editorViewbox.appendChild(viewimg);
+  DOM.editorViewbox.appendChild(viewimg);
 }
 //选中导出标签进行管理
 document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
@@ -1962,11 +2102,11 @@ getElementMix('data-export-reup').addEventListener('click',()=>{
 //移除所有导出标签
 getElementMix('data-export-tags-delete').addEventListener('click',()=>{
   ExportImageInfo = [];
-  exportTagsBox.innerHTML = '<!--动态填充-->';
+  DOM.exportTagsBox.innerHTML = '<!--动态填充-->';
 });
 
 //导出内容
-exportAnyBtn.addEventListener('click',()=>{
+DOM.exportAnyBtn.addEventListener('click',()=>{
   let isFinal = []
   for (let i = 0; i < ExportImageInfo.length; i++) {
     let finaltag = getElementMix('data-export-tag="'+ i +'"');
@@ -1994,22 +2134,22 @@ getElementMix('data-editor-setbg').addEventListener('change',(e)=>{
   showNext(e.target,'data-color-mix','flex');
   if(e.target.checked){
     let color = getElementMix('data-color-mix').querySelector('[data-color]').getAttribute('data-color-hex')
-    editorViewbox.style.setProperty('--bg',color)
+    DOM.editorViewbox.style.setProperty('--bg',color)
   }else{
-    editorViewbox.style.setProperty('--bg','none')
+    DOM.editorViewbox.style.setProperty('--bg','none')
   }
 })
 
 //管理断链样式
-btnLinkstyle.addEventListener('click',()=>{
+DOM.btnLinkstyle.addEventListener('click',()=>{
   toolMessage(['','manageLinkStyle'],PLUGINAPP);
 });
 //管理样式组
-btnSelectstyle.addEventListener('click',()=>{
+DOM.btnSelectstyle.addEventListener('click',()=>{
   toolMessage(['','manageStyleGroup'],PLUGINAPP);
 });
 //管理变量组
-btnVariables.addEventListener('click',()=>{
+DOM.btnVariables.addEventListener('click',()=>{
   toolMessage(['','manageVariableGroup'],PLUGINAPP);
 });
 
@@ -2081,20 +2221,20 @@ function tableObjToText(obj){
   return header + values;
 };
 //移除所有创建标签
-clearCreateTags.addEventListener('click',()=>{
+DOM.clearCreateTags.addEventListener('click',()=>{
   CreateImageInfo = [];
   CreateTableInfo = [];
   CataloguesInfo = [];
-  createTagsBox.innerHTML = '';
-  cataloguesBox.innerHTML = '';
+  DOM.createTagsBox.innerHTML = '';
+  DOM.cataloguesBox.innerHTML = '';
 });
 //文本框内容转标签/大纲
-convertTags.addEventListener('click',async ()=>{
-  clearCreateTags.click();
-  let firstline = userText.value.trim().split('\n')[0];
+DOM.convertTags.addEventListener('click',async ()=>{
+  DOM.clearCreateTags.click();
+  let firstline = DOM.userText.value.trim().split('\n')[0];
   let isTableText = ['name','w','h'].every(item => firstline.includes(item));
   if(isTableText){
-    let tableArray = tableTextToArray(userText.value.trim(),false,userTableTitle.value.split(','));
+    let tableArray = tableTextToArray(DOM.userText.value.trim(),false,DOM.userTableTitle.value.split(','));
     let tableObj = tableArrayToObj(tableArray);
     CreateTableInfo = tableObj;
 
@@ -2104,108 +2244,121 @@ convertTags.addEventListener('click',async ()=>{
     };
     setTimeout(()=>{
       addTableTags();
-    },100);
+    }, DELAY.CONVERT_TAGS);
   }else if(firstline.includes('svg')){
-    let svgs = await tool.SvgToObj(userText.value.trim())
+    let svgs = await tool.SvgToObj(DOM.userText.value.trim())
     addZyCatalogue(svgs,'svg')
   }else if(firstline !== ''){
     //tipsAll(['数据格式错误, 请检查~','Data format error, please check~'],3000)
     try{
-      let mds = await tool.MdToObj(userText.value.trim());
+      let mds = await tool.MdToObj(DOM.userText.value.trim());
       //console.log(mds)
       addZyCatalogue(mds,'md')
-    } catch {e => {
-      console.log(e);
-    }};
+    } catch (e) {
+      console.error('Failed to parse markdown:', e);
+    }
   };
 });
 //从所选图层获取数据
-getTableText.addEventListener('click',()=>{
+DOM.getTableText.addEventListener('click',()=>{
   toolMessage(['','getTableBySelects'],PLUGINAPP);
 });
-//显示所上传文件名
+//显示所上传文件名（优化：提取逻辑，提高可读性）
 function reFileInfo(files){
-  let languge = ROOT.getAttribute('data-language');
-  let fileLength = '<span style="color: let(--code2)">' + files.length + '</span>'
-  let fileName1 = files.length == 1 ? files[0].name : files[0].name + ' ...等 ' + fileLength + '  个文件';
-  let fileName2 = files.length == 1 ? files[0].name : files[0].name + ' ... ' + fileLength + ' files';
-  fileName1 = '📁 ' + tool.TextMaxLength(fileName1,20,'..');
-  fileName2 = '📁 ' + tool.TextMaxLength(fileName2,20,'..');
-  fileInfo.setAttribute('data-zh-text',fileName1);
-  fileInfo.setAttribute('data-en-text',fileName2);
-  if(languge == "Zh"){
-    fileInfo.innerHTML = fileName1;
-  }else{
-    fileInfo.innerHTML = fileName2;
-  };
+  if (!files || files.length === 0 || !DOM.fileInfo) {
+    return;
+  }
+  
+  const language = ROOT.getAttribute('data-language');
+  const fileCount = files.length;
+  const fileLength = `<span style="color: var(--code2)">${fileCount}</span>`;
+  
+  // 构建文件名显示文本
+  const fileName1 = fileCount === 1 
+    ? files[0].name 
+    : `${files[0].name} ...等 ${fileLength} 个文件`;
+  const fileName2 = fileCount === 1 
+    ? files[0].name 
+    : `${files[0].name} ... ${fileLength} files`;
+  
+  // 截断文本并添加图标
+  const displayName1 = '📁 ' + tool.TextMaxLength(fileName1, 20, '..');
+  const displayName2 = '📁 ' + tool.TextMaxLength(fileName2, 20, '..');
+  
+  // 设置多语言属性
+  DOM.fileInfo.setAttribute('data-zh-text', displayName1);
+  DOM.fileInfo.setAttribute('data-en-text', displayName2);
+  
+  // 根据当前语言显示
+  DOM.fileInfo.innerHTML = language === "Zh" ? displayName1 : displayName2;
 };
 //设置画板命名格式
-frameName.addEventListener('input',()=>{
-  if(frameNmaeSelect.includes(frameName.value)){
-    frameName.nextElementSibling.querySelector(`[data-option-value="${frameName.value}"]`).click();
+DOM.frameName.addEventListener('input',()=>{
+  if(frameNmaeSelect.includes(DOM.frameName.value)){
+    DOM.frameName.nextElementSibling.querySelector(`[data-option-value="${DOM.frameName.value}"]`).click();
   }else{
-    frameName.nextElementSibling.querySelector(`[data-select-input]`).value = '';
+    DOM.frameName.nextElementSibling.querySelector(`[data-select-input]`).value = '';
   };
 });
-frameName.addEventListener('change',()=>{
-  convertTags.click();
+DOM.frameName.addEventListener('change',()=>{
+  DOM.convertTags.click();
 });
 //设置画板数据表头规则
-userTableTitle.addEventListener('change',()=>{
-  userTableTitle.value = reTableTitle(userTableTitle.value);
+DOM.userTableTitle.addEventListener('change',()=>{
+  DOM.userTableTitle.value = reTableTitle(DOM.userTableTitle.value);
 });
-function reTableTitle(text){
+// ========== 表格标题处理辅助函数 ==========
+// 确保包含必需的字段
+function ensureRequiredFields(texts){
+  const required = ['name', 'w', 'h'];
+  const result = [...new Set(texts)];
+  required.forEach(field => {
+    if(!result.includes(field)){
+      result.push(field);
+    }
+  });
+  return result;
+};
+
+// 验证并清理表格标题
+function validateTableTitle(text){
   if(text == ''){
     return '';
   }
-  //首先必须是逗号隔开的单词形式
-  let regex = /^[a-z]+$/;
-  let texts = text.split(',');
-  if(texts.some(item => !tableTitleMust.includes(item))){
-    tipsAll(['请用指定单词, 并用逗号隔开','Must use example words and separated by commas'],3000);
+  
+  let texts = text.split(',').map(item => item.trim());
+  
+  // 检查是否包含无效单词
+  const invalidWords = texts.filter(item => !tableTitleMust.includes(item));
+  if(invalidWords.length > 0){
+    tipsAll(MESSAGES.TABLE_TITLE_WORDS_ERROR, 3000);
     texts = texts.filter(item => tableTitleMust.includes(item));
+    
     if(texts.length == 0){
-      return 'name,w,h'
-    } else {
-      if(texts.includes('name') && texts.includes('w') && texts.includes('h')){
-        return [...new Set(texts)].join(',');
-      }else{
-        texts = [...new Set(texts)];
-        if(!texts.includes('name')){
-          texts.push('name')
-        };
-        if(!texts.includes('w')){
-          texts.push('w')
-        };
-        if(!texts.includes('h')){
-          texts.push('h')
-        }
-        return texts.join(',');
-      }
+      return 'name,w,h';
     }
-  }else{ 
-    if(texts.includes('name') && texts.includes('w') && texts.includes('h')){
-      if(texts.length == [...new Set(texts)].length){
-        return text;
-      }else{
-        tipsAll(['单词重复','The word is repeated'],3000);
-        return [...new Set(texts)].join(',');
-      }
-    }else{
-      tipsAll(['必须包含name、w、h','Must include name, w, h'],3000);
-      texts = [...new Set(texts)];
-      if(!texts.includes('name')){
-        texts.push('name')
-      };
-      if(!texts.includes('w')){
-        texts.push('w')
-      };
-      if(!texts.includes('h')){
-        texts.push('h')
-      }
-      return texts.join(',');
-    }
-  }; 
+  }
+  
+  // 去重
+  texts = [...new Set(texts)];
+  
+  // 检查是否包含必需字段
+  const hasRequired = texts.includes('name') && texts.includes('w') && texts.includes('h');
+  
+  if(!hasRequired){
+    tipsAll(MESSAGES.TABLE_TITLE_REQUIRED_ERROR, 3000);
+    texts = ensureRequiredFields(texts);
+  } else if(texts.length !== [...new Set(text.split(',').map(item => item.trim()))].length){
+    // 检查是否有重复（在去重前）
+    tipsAll(MESSAGES.TABLE_TITLE_REPEAT_ERROR, 3000);
+  }
+  
+  return texts.join(',');
+};
+
+//设置画板数据表头规则（简化重构）
+function reTableTitle(text){
+  return validateTableTitle(text);
 };
 //刷新样式信息
 getElementMix('data-variable-refresh="style"').addEventListener('click',()=>{
@@ -2220,10 +2373,10 @@ function reStyleInfo(info){
   let hasstyle = getElementMix('data-variable-hasstyle');
   if(info){
     hasstyle.setAttribute('data-variable-hasstyle','true');
-    styleTosheet.setAttribute('data-any','');
+    DOM.styleTosheet.setAttribute('data-any','');
   }else{
     hasstyle.setAttribute('data-variable-hasstyle','false');
-    styleTosheet.setAttribute('data-any','unclick');
+    DOM.styleTosheet.setAttribute('data-any','unclick');
   };
 };
 //修改样式表信息读取状态
@@ -2231,10 +2384,10 @@ function reStyleSheetInfo(info){
   let hasstylesheet = getElementMix('data-variable-hasstylesheet');
   if(info){
     hasstylesheet.setAttribute('data-variable-hasstylesheet','true');
-    sheetTostyle.setAttribute('data-any','');
+    DOM.sheetTostyle.setAttribute('data-any','');
   }else{
     hasstylesheet.setAttribute('data-variable-hasstylesheet','false');
-    sheetTostyle.setAttribute('data-any','unclick');
+    DOM.sheetTostyle.setAttribute('data-any','unclick');
   };
 };
 //修改变量信息读取状态
@@ -2276,27 +2429,27 @@ getElementMix('data-variable-relayout').addEventListener('click',()=>{
   toolMessage(['','reVariableLayout'],PLUGINAPP);
 });
 //设置表格初始样式
-chkTablestyle.addEventListener('change',()=>{
-  chkTablestyle.checked = true;
+DOM.chkTablestyle.addEventListener('change',()=>{
+  DOM.chkTablestyle.checked = true;
   getElementMix('chk-selectcomp').checked = false;
   getElementMix('data-selectcomp-box').style.display = 'none';
   getElementMix('data-tablestyle-box').style.display = 'flex';
   toolMessage([false,'selectComp'],PLUGINAPP);
 });
-chkSelectcomp.addEventListener('change',()=>{
-  chkSelectcomp.checked = true;
+DOM.chkSelectcomp.addEventListener('change',()=>{
+  DOM.chkSelectcomp.checked = true;
   getElementMix('chk-tablestyle').checked = false;
   getElementMix('data-tablestyle-box').style.display = 'none';
   getElementMix('data-selectcomp-box').style.display = 'flex';
   toolMessage([true,'selectComp'],PLUGINAPP);
 });
 //创建表格
-createTableBtn.addEventListener('click',()=>{
+DOM.createTableBtn.addEventListener('click',()=>{
   let comp1 = getElementMix('data-selectcomp-1').textContent;
   let comp2 = getElementMix('data-selectcomp-2').textContent;
   comp1 = comp1 == 'none' ? null : comp1;
   comp2 = comp2 == 'none' ? null : comp2;
-  let styleId = tableStyleSet.getAttribute('data-radio-value') - 1;
+  let styleId = DOM.tableStyleSet.getAttribute('data-radio-value') - 1;
   if(getElementMix('chk-tablestyle').checked){
     toolMessage([[tableStyle[styleId]],'creTable'],PLUGINAPP);
   }else{
@@ -2304,11 +2457,11 @@ createTableBtn.addEventListener('click',()=>{
   };
 });
 //上传|拖拽|输入 的规则说明
-btnHelp.forEach(item => {
+DOM.btnHelp.forEach(item => {
   item.addEventListener('click',()=>{
     let key = item.getAttribute('data-help');
-    if(dailogBox.innerHTML.split(helpData[key][0][1].split('<')[0]).length == 1){
-      dailogBox.innerHTML = '';
+    if(DOM.dailogBox.innerHTML.split(helpData[key][0][1].split('<')[0]).length == 1){
+      DOM.dailogBox.innerHTML = '';
       let node = document.createElement('div');
       node.className = 'df-ffc';
       helpData[key].forEach(item =>{
@@ -2322,26 +2475,26 @@ btnHelp.forEach(item => {
         };
         node.appendChild(line);
       });
-      dailogBox.appendChild(node);
+      DOM.dailogBox.appendChild(node);
       //最后重置下语言
       if(ROOT.getAttribute('data-language') == 'En'){
         setLanguage(true);
         setLanguage(false);
       };
       //重置文字样式
-      loadFont(dailogBox);
+      loadFont(DOM.dailogBox);
     };
-    dailog.style.display = 'flex';
+    DOM.dailog.style.display = 'flex';
   });
 });
 //点击弹窗外关闭弹窗
-dailog.addEventListener('click',(e)=>{
-  if(!dailogBox.contains(e.target)){
-    dailog.style.display = 'none';
+DOM.dailog.addEventListener('click',(e)=>{
+  if(!DOM.dailogBox.contains(e.target)){
+    DOM.dailog.style.display = 'none';
   };
 });
 //收藏功能
-skillStar.forEach(item =>{
+DOM.skillStar.forEach(item =>{
   item.addEventListener('click',()=>{
     let isStar = item.getAttribute('data-skill-star');
     let skillId = item.parentNode.getAttribute('data-skill-sec');
@@ -2383,7 +2536,7 @@ function moveSkillStar(stars){
       cover.setAttribute('data-skill-cover',item);
       cover.setAttribute('style','display: none');
       skillNode.parentNode.insertBefore(cover,skillNode);
-      skillStarModel.prepend(skillNode);
+      DOM.skillStarModel.prepend(skillNode);
       let star = skillNode.querySelector('[data-skill-star]');
       star.setAttribute('data-skill-star','true')
     };
@@ -2408,15 +2561,15 @@ document.querySelectorAll('[data-reset-all]').forEach(reall => {
   });
 });
 //栅格化像素倍率绑定
-pixelScale.addEventListener('change',()=>{
+DOM.pixelScale.addEventListener('change',()=>{
   let set = document.querySelector('[data-pixelscale-set]');
   let sets = set.querySelectorAll('[data-radio-data]');
   let num = [];
   sets.forEach(item => {
     num.push(item.getAttribute('data-radio-data'));
   })
-  if(num.includes(pixelScale.value)){
-    set.querySelector(`[data-radio-data="${pixelScale.value}"]`);
+  if(num.includes(DOM.pixelScale.value)){
+    set.querySelector(`[data-radio-data="${DOM.pixelScale.value}"]`);
   }else{
     num.forEach(item => {
       set.querySelector(`[data-radio-data="${item}"]`).setAttribute('data-radio-main','false')
@@ -2424,7 +2577,7 @@ pixelScale.addEventListener('change',()=>{
   };
 });
 //返回裁切方案以栅格化
-skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
+DOM.skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
   
 });
 //按各自比例/统一宽高进行等比缩放
@@ -2434,10 +2587,10 @@ function scaleRWH(){
 //斜切拉伸
 function sendTransform(){
   let data = {
-    x: skewSetX.value * 1,
-    y: skewSetY.value * 1,
-    w: scaleSetX.value * 1,
-    h: scaleSetY.value * 1,
+    x: DOM.skewSetX.value * 1,
+    y: DOM.skewSetY.value * 1,
+    w: DOM.scaleSetX.value * 1,
+    h: DOM.scaleSetY.value * 1,
   }
   toolMessage([data,'transformMix'],PLUGINAPP);
 };
@@ -2467,6 +2620,8 @@ class QRCodeGridController {
     
     // 获取实际的父容器（绝对定位的容器）
     this.parent = this.grid.parentElement;
+    //所在页面
+    this.page = this.grid.closest('[data-page-main]');
     
     // 状态变量
     this.isDragging = false;
@@ -2636,7 +2791,7 @@ class QRCodeGridController {
   
   // 调整裁剪框以适应父元素大小
   adjustGridToFitParent() {
-    if(this.isDragging || this.isResizing) return; // 如果正在拖拽或调整大小，不自动调整
+    if(this.isDragging || this.isResizing || this.page.getAttribute('data-page-main') == 'library') return; // 如果正在拖拽或调整大小，不自动调整
     
     const parentRect = this.parent.getBoundingClientRect();
     const computedStyle = window.getComputedStyle(this.grid);
@@ -2809,10 +2964,10 @@ const qrcodeGridController = new QRCodeGridController(
 // ========== 小功能按钮辅助函数 ==========
 //返回裁切方案以栅格化
 function sendPixel(name){
-  let mix = skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
-  let s = pixelScale.value;
+  let mix = DOM.skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+  let s = DOM.pixelScale.value;
   let cuts = [];
-  tipsAll(['读取中, 请耐心等待','Reading, please wait a moment'],SelectNodeInfo.length * 800);
+  tipsAll(MESSAGES.READING, SelectNodeInfo.length * 800);
   setTimeout(()=>{
     SelectNodeInfo.forEach((item) => {
     let w = item[1];
@@ -2921,14 +3076,14 @@ const TABLE_SET_STRATEGIES = {
   'theme': randomTableThemeStrategy
 };
 
-// 执行表格设置策略（策略模式重构）
+// 执行表格设置策略（简化：直接使用策略映射，保留错误处理）
 function sendTableSet(type){
   const strategy = TABLE_SET_STRATEGIES[type];
-  if (strategy) {
-    strategy();
-  } else {
-    console.warn(`sendTableSet: Unknown type: ${type}`);
+  if (!strategy) {
+    console.warn(`Unknown table set type: ${type}`);
+    return;
   }
+  strategy();
 };
 
 function sendTablePick(type){
@@ -2999,7 +3154,7 @@ function executeSkillDoubleClickStrategy(skillname){
 };
 
 //点击即执行的功能（策略模式重构）
-skillBtnMain.forEach(btn => {
+DOM.skillBtnMain.forEach(btn => {
   let clickTimer = null;
   
   // 双击事件处理（策略模式）
@@ -3030,7 +3185,7 @@ skillBtnMain.forEach(btn => {
     clickTimer = setTimeout(()=>{
       executeSkillStrategy(skillname);
       clickTimer = null;
-    },500);
+    }, DELAY.SKILL_CLICK);
   });
 });
 //处理回传的选中对象的数据
@@ -3134,7 +3289,7 @@ function getUserColor(node){
     HSV:node.getAttribute('data-color-hsv'),
   }
   if(node.parentNode.getAttribute('data-color-mix') !== null){
-    editorViewbox.style.setProperty('--bg',color.HEX);
+    DOM.editorViewbox.style.setProperty('--bg',color.HEX);
   }
   //console.log(color)
 };
@@ -3178,9 +3333,9 @@ function getUserInt(node){
     realSize.nextElementSibling.textContent = '10';
   };
   if(node.getAttribute('data-imgnum-input') !== null){
-    let viewimg = dailogImgBox.querySelector('img');
+    let viewimg = DOM.dailogImgBox.querySelector('img');
     if(int > ExportImageInfo.length){
-      imgnumSet.value = viewimg.getAttribute('data-imgnum-pick');
+      DOM.imgnumSet.value = viewimg.getAttribute('data-imgnum-pick');
       return
     }
     let layer = ExportImageInfo[int - 1];
@@ -3189,7 +3344,7 @@ function getUserInt(node){
     let ismaxW = layer.width >= layer.height ? 'true' : 'false';
     viewimg.setAttribute('data-ismaxW',ismaxW);
     viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
-    dailogImgBox.appendChild(viewimg);
+    DOM.dailogImgBox.appendChild(viewimg);
     viewimg.setAttribute('data-imgnum-pick',int);
   }
   if(node.getAttribute('data-qrcode-grid-num') !== null){
@@ -3200,23 +3355,23 @@ function getUserInt(node){
 
 function getUserFloat(node){
   let float = node.getAttribute('data-float-value');
-  if(node == uniformS.parentNode){
+  if(node == DOM.uniformS.parentNode){
     let value = float * 1;
     let center = getElementMix('data-transform-center-box').getAttribute('data-radio-value');
     toolMessage([['S',value,center],'rescaleMix'],PLUGINAPP);
-    uniformS.value = 1;
+    DOM.uniformS.value = 1;
   };
-  if(node == uniformW.parentNode){
+  if(node == DOM.uniformW.parentNode){
     let value = float * 1;
     let center = getElementMix('data-transform-center-box').getAttribute('data-radio-value');
     toolMessage([['W',value,center],'rescaleMix'],PLUGINAPP);
-    uniformW.value = '';
+    DOM.uniformW.value = '';
   };
-  if(node == uniformH.parentNode){
+  if(node == DOM.uniformH.parentNode){
     let value = float * 1;
     let center = getElementMix('data-transform-center-box').getAttribute('data-radio-value');
     toolMessage([['H',value,center],'rescaleMix'],PLUGINAPP);
-    uniformH.value = '';
+    DOM.uniformH.value = '';
   };
   //console.log(float)
 };
@@ -3224,7 +3379,7 @@ function getUserFloat(node){
 function getUserSelect(node){
   let userSelect = node.getAttribute('data-select-value');
   if(node.parentNode.parentNode.id == 'upload-moreset-box'){
-    frameName.value = userSelect;
+    DOM.frameName.value = userSelect;
   }
   if(node.parentNode.parentNode.getAttribute('data-export-tag') !== null){
     let index = node.parentNode.parentNode.getAttribute('data-export-tag');
@@ -3242,7 +3397,7 @@ function getUserRadio(node){
   let userRadio= node.getAttribute('data-radio-value');
   if(userRadio){
     if(node.getAttribute('data-pixelscale-set') !== null){
-      pixelScale.value = userRadio;
+      DOM.pixelScale.value = userRadio;
     };
     
     if(node.getAttribute('data-clip-w-set') !== null){
@@ -3257,7 +3412,7 @@ function getUserRadio(node){
     if(node.getAttribute('data-skilltype-box') !== null){
       let modelid = skillModel[userRadio - 1][1];
       //console.log(modelid);
-      let model = skillAllBox.querySelector(`[data-skillmodule="${modelid}"]`);
+      let model = DOM.skillAllBox.querySelector(`[data-skillmodule="${modelid}"]`);
       let skillnode = model.querySelector('[data-skill-sec]');
       if(isSkillScroll){
         skillnode.scrollIntoView({
@@ -3288,78 +3443,7 @@ function getUserRadio(node){
 };
 
 // ==================== 用户登录/注册模块 ====================
-// 用户认证配置 - 可以后续扩展为 API 调用
-const AUTH_CONFIG = {
-  // Supabase 配置（如果使用 Supabase，请填写下面的信息）
-  USE_SUPABASE: true, // 改为 true 启用 Supabase
-  SUPABASE_URL: 'https://darbnumfpfrscqgyeiqe.supabase.co', // 替换为你的 Project URL
-  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhcmJudW1mcGZyc2NxZ3llaXFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0OTU1NjksImV4cCI6MjA4MDA3MTU2OX0.UDvrmk8lnumZAu9nugTtEl7WGzxDNhUSfllrCFF4Ws4', // 替换为你的 anon public key
-  
-  // 自定义 API 配置（如果使用自定义 API）
-  API_BASE_URL: null, // 'https://api.ynyuset.cn/auth'
-  
-  // 本地存储键名（保持不变）
-  STORAGE_KEY_USER: 'toolsSetFig_user',
-  STORAGE_KEY_USERS: 'toolsSetFig_users'
-};
-
-// 认证模块多语言文本
-const AUTH_I18N = {
-  zh: {
-    invalidEmail: '请输入有效的邮箱地址',
-    usernameTooShort: '用户名至少需要2个字符',
-    passwordTooShort: '密码至少需要6个字符',
-    supabaseNotInitialized: 'Supabase 未初始化，请检查配置和网络连接',
-    emailAlreadyRegistered: '该邮箱已注册，请直接登录',
-    rateLimitError: '请求过于频繁，请等待 {0} 秒后再试',
-    invalidEmailFormat: '邮箱格式不正确',
-    registrationFailed: '注册失败: {0}',
-    unknownError: '未知错误',
-    registrationFailedRetry: '注册失败，请重试',
-    registrationSuccess: '注册成功！请检查邮箱并点击确认链接以完成注册。',
-    registrationSuccessShort: '注册成功！请检查邮箱并点击确认链接。',
-    registrationFailedConfig: '注册失败，请检查 Supabase 配置或网络连接',
-    emailAlreadyRegisteredLocal: '该邮箱已在本地注册，请先清除缓存',
-    enterEmailPassword: '请输入邮箱和密码',
-    emailPasswordIncorrect: '邮箱或密码错误',
-    loginFailedRetry: '登录失败，请重试',
-    fillAllRequired: '请填写所有必填项',
-    passwordsNotMatch: '两次输入的密码不一致',
-    registering: '注册中...',
-    localCacheCleared: '本地缓存已清除',
-    usernameInvalidChars: '用户名只能包含字母、数字、下划线和连字符，且不能纯数字或符号',
-    usernameInvalidLength: '用户名长度必须在2-20个字符之间',
-    passwordInvalidChars: '密码只能包含字母、数字和常见符号',
-    passwordInvalidLength: '密码长度必须在6-50个字符之间'
-  },
-  en: {
-    invalidEmail: 'Please enter a valid email address',
-    usernameTooShort: 'Username must be at least 2 characters',
-    passwordTooShort: 'Password must be at least 6 characters',
-    supabaseNotInitialized: 'Supabase not initialized, please check configuration and network connection',
-    emailAlreadyRegistered: 'This email is already registered, please log in directly',
-    rateLimitError: 'Too many requests, please wait {0} seconds and try again',
-    invalidEmailFormat: 'Invalid email format',
-    registrationFailed: 'Registration failed: {0}',
-    unknownError: 'Unknown error',
-    registrationFailedRetry: 'Registration failed, please try again',
-    registrationSuccess: 'Registration successful! Please check your email and click the confirmation link to complete registration.',
-    registrationSuccessShort: 'Registration successful! Please check your email and click the confirmation link.',
-    registrationFailedConfig: 'Registration failed, please check Supabase configuration or network connection',
-    emailAlreadyRegisteredLocal: 'This email is already registered locally, please clear cache first',
-    enterEmailPassword: 'Please enter email and password',
-    emailPasswordIncorrect: 'Email or password incorrect',
-    loginFailedRetry: 'Login failed, please try again',
-    fillAllRequired: 'Please fill in all required fields',
-    passwordsNotMatch: 'Passwords do not match',
-    registering: 'Registering...',
-    localCacheCleared: 'Local cache cleared',
-    usernameInvalidChars: 'Username can only contain letters, numbers, underscores and hyphens, and cannot be pure numbers or symbols',
-    usernameInvalidLength: 'Username must be between 2-20 characters',
-    passwordInvalidChars: 'Password can only contain letters, numbers and common symbols',
-    passwordInvalidLength: 'Password must be between 6-50 characters'
-  }
-};
+// 用户认证配置和国际化文本已移至 data.js，直接使用全局变量 AUTH_CONFIG 和 AUTH_I18N
 
 // 获取认证模块的多语言文本
 function getAuthText(key, ...args) {
@@ -4216,11 +4300,11 @@ async function initAuthModule() {
       if (AuthManager.currentUser) {
         // 已登录，显示用户信息
         AuthManager.showUserInfo();
-        if (dailogLogin) dailogLogin.style.display = 'flex';
+        if (DOM.dailogLogin) DOM.dailogLogin.style.display = 'flex';
       } else {
         // 未登录，显示登录表单
         AuthManager.showLoginForm();
-        if (dailogLogin) dailogLogin.style.display = 'flex';
+        if (DOM.dailogLogin) DOM.dailogLogin.style.display = 'flex';
       }
     });
   }
@@ -4420,11 +4504,11 @@ if (btnLogout) {
 
 // 关闭登录弹窗
 function setupLoginDialogClose() {
-  if (dailogLogin) {
+  if (DOM.dailogLogin) {
     // 点击弹窗外部关闭
-    dailogLogin.addEventListener('click', (e) => {
-      if (e.target === dailogLogin) {
-        dailogLogin.style.display = 'none';
+    DOM.dailogLogin.addEventListener('click', (e) => {
+      if (e.target === DOM.dailogLogin) {
+        DOM.dailogLogin.style.display = 'none';
       }
     });
   };

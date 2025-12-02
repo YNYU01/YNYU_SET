@@ -1545,7 +1545,7 @@ TAB_AUTO.forEach((item) => {
       input.style.display = 'none';
       if(checked){
         items.parentNode.setAttribute('data-tab-pick',keyid);
-        items.style.display = 'flex';
+        items.setAttribute('data-page-main','true');
       }
       input.addEventListener('change',() => {
         let oldTabPick = items.parentNode.getAttribute('data-tab-pick');
@@ -1563,10 +1563,10 @@ TAB_AUTO.forEach((item) => {
             oldpage = document.querySelector(`[data-page-name-en="${oldPageName}"]`);
           }
           if(oldpage){
-            oldpage.style.display = 'none';
+            oldpage.setAttribute('data-page-main','false');
           }
         }
-        items.style.display = 'flex';
+        items.setAttribute('data-page-main','true');
         items.parentNode.setAttribute('data-tab-pick',keyid);
         if(input.parentNode.getAttribute('data-scroll') !== null){
           let allinput = Array.from(input.parentNode.querySelectorAll('input'));

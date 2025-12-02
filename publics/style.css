@@ -737,6 +737,7 @@ input[type="checkbox"]:checked + .tab-top::after{
 [data-doc-radiobox] [data-radio-main="true"]{
   background: var(--boxGry);
   opacity: 1;
+  --mainColor: inherit;
 }
 [data-doc-radiobox] [data-radio-main="true"]:before{
   content: '';

@@ -64,135 +64,135 @@ let toUserTips = {
   ],
 };
 
+let richDoc = new RICH_DOC();
+
 let helpData = {
-  create: [
-    ["p",
-    "本页功能主要用于/++ 批量创建画板、图层等 ++/",
-    "This page is used for batch creation of /++ frames, layers, etc ++/"],
-    ["li",
-    "传入大图（长图）可创建大小均匀的切片组, 以避免压缩",
-    "Upload large/long images to create evenly-sized slice groups, avoiding compression"],
-    ["li",
-    "传入带命名、宽高等信息的表格数据则创建画板",
-    "Upload table data with name, width, height, etc. to create frames"],
-    ["li",
-    "传入由本系列插件生成的兼容文件则创建图层",
-    "Upload YN+ or other compatible files to create layers"],
-    ["li",
-    "图片支持格式: <br> /++ .jpg | .jpeg | .jfif | .webp | .png | .apng | .gif ++/",
-    "Image file type:<br> /++ .jpg | .jpeg | .jfif | .webp | .png | .apng | .gif ++/"],
-    ["li",
-    "表格支持格式: <br> /++ .csv | .xls | .xlsx ++/",
-    "Table file type: <br> /++ .csv | .xls | .xlsx ++/"],
-    ["li",
-    "兼容文件支持格式: <br>/++ .zy | .md | .sketch | .svg | .xml | .json | .zip | .rar | .7z ++/",
-    "Compatible file type: <br> /++ .zy | .md | .sketch | .svg | .xml | .json | .zip | .rar | .7z ++/"],
-    ["br","",""],
-    ["p",
-    "拖拽和上传文件会立即生成用以确认最终生成内容的/++ 标签/大纲 ++/",
-    "Dragging or uploading files immediately converts to /++ tags/catalogue ++/"],
-    ["li",
-    "拖拽的文件需全部是为图片类、全部是表格类或全部是兼容文件, /++ 不能混杂类型 ++/",
-    "Drag and drop files must be all images, tables, or compatible files. /++ Mixed file types are not allowed ++/"],
-    ["li",
-    "上传文件设置了具体格式, 不支持的格式将无法点选",
-    "The three upload buttons restrict the file format, and unsupported formats cannot be uploaded"],
-    ["br","",""],
-    ["p",
-    "通过文本框输入数据, 需要点击第一个按钮来生成标签/大纲",
-    "For textarea input, click the first button to convert data to tags/catalogue"],
-    ["li",
-    "输入表格数据无需包含表头、单位, /++ 可双击文本框查看示例 ++/",
-    "No table header or unit needed. /++ Double-click textarea to view example ++/"],
-    ["li",
-    "可以选中文件里的画板或图层, 然后点击第二个按钮获取命名和宽高数据",
-    "Select frames or layers, then click the second button to get name, width and height data"],
-    ["li",
-    "如果需要制作更复杂的模板, 点击第三个按钮前往资源助手",
-    "For complex templates, click the third button to go to /++ YN+ ListEase ++/"],
-    ["br","",""],
-    ["p",
-    "表格数据默认按/++ 命名、宽高、目标文件大小、目标文件格式、补充信息 ++/的顺序读取列, 如需修改规则可点击第四个按钮展开高级设置",
-    "Table data reads columns in order: /++ name, width, height, target file size, format, supplementary info ++/. Click the fourth button to modify rules"],
-    ["li",
-    "修改列顺序规则时需注意,必须包含命名和宽高",
-    "Column order rules must include /++ name, width and height ++/"],
-    ["li",
-    "画板名默认带w×h后缀, 如/++ kv 1920×1080 ++/, 可选择其他预设或自行定义",
-    "Frame name defaults to width×height suffix, e.g. /++ kv 1920×1080 ++/. Can select presets or customize"],
-  ],
-  sheet: [
-    ["p",
-    "使用本功能需要掌握【组件】和【组件属性】等基本知识",
-    "Requires basic knowledge of Components and Component Properties"],
-    ["li",
-    "组件使元素能保持一致的样式, 并通过实例的/++ 继承性 ++/实现批量控制样式",
-    "Components maintain consistent styles and enable batch control via instance /++ inheritance ++/"],
-    ["li",
-    "组件属性是将需要修改的样式以表单的形式放在属性栏最上方, 方便/++ 参数化管理组件 ++/",
-    "Component Properties display editable styles as forms at the top for /++ parameterized component management ++/"],
-    ["p",
-    "表格由至少两个组件: /++ xxx@th(表头) | xxx@td(表数据) ++/, 嵌套自动布局而成, 请注意, 这里采用先按列再按行的布局, 与常见表格逻辑相反, 但更适合设计领域",
-    "Table built with auto-layout from at least 2 components: /++ xxx@th(header) | xxx@td(data) ++/. Layout is column-first then row, opposite to common table logic but better for design"],
-    ["li",
-    "首次使用该功能, 建议直接点击按钮生成一个表格示例, 以便理解其中的规范要求",
-    "First-time users: click button to generate a table example to understand requirements"],
-    ["li",
-    "默认生成3*3的表格, 也可以输入具体行列来生成, 但随后填充数据时会自动调节行列",
-    "Defaults to 3×3 table. Can input specific rows/columns, auto-adjusts when filling data"],
-    ["li",
-    "默认先生成表头和表格组件, 如选中了命名为xxx@th和xxx@td的组件, 则会直接生成表格",
-    "By default, generates header and cell components first. If xxx@th and xxx@td are selected, generates table directly"],
-    ["li",
-    "组件必须包含用多个图层实现的描边和填充, 并绑定/++ 布尔类型组件属性: --bod-l(左描边) | --bod-r(右描边) | --bod-t(上描边) | --bod-b(下描边) | --fills(填充) ++/",
-    "Components must include strokes and fills (multiple layers) bound to /++ boolean properties: --bod-l(left) | --bod-r(right) | --bod-t(top) | --bod-b(bottom) | --fills(fill) ++/"],
-    ["li",
-    "组件会先包裹在一个列中xxx@column, xxx@th会始终在第一个, 然后多个列会包裹在一个表中xxx@table",
-    "Components wrap in xxx@column first, xxx@th always first, then multiple columns wrap in xxx@table"],
-    ["li",
-    "组件必须包含一个文字图层, 并绑定/++ 字符类型组件属性: --data(数值/文本) ++/",
-    "Components must include a text layer bound to /++ text property: --data(value/text) ++/"],
-    ["br","",""],
-    ["p",
-    "因为【组件属性】功能的强大, 我们会有很多办法实现批量替换数据, 不仅限于表格, 因此【表格】可视为【批量替换数据】的一种特殊情况",
-    "Component Properties enable various batch data replacement methods beyond tables. Tables are a special case of batch data replacement"],
-    ["li",
-    "使用【文本数据映射】时, 仅检索xxx@table下,每列xxx@column的xxx@th和xxx@td的--data属性进行修改",
-    "Text Data Mapping only modifies --data property of xxx@th and xxx@td in each xxx@column under xxx@table"],
-    ["li",
-    "如需要更复杂的组件属性组合, 需使用【组件属性映射】功能来完成数据映射",
-    "For complex component property combinations, use Component Property Mapping"],
-    ["li",
-    "【文本数据映射】不需要表头作为查找组件属性的依据, 直接按行列对应关系填充数据, 【组件属性映射】则需要将对应组件属性名作为表头, 按图层顺序修改对应的值",
-    "Text Data Mapping fills data by row/column without headers. Component Property Mapping uses property names as headers, modifies values by layer order"],
-    ["li",
-    "【组件属性映射】对变体的选项值也同样生效,需设置唯一的变体属性名(默认是Property) 需避免存在同名的情况, 变体集内的组件命名无影响",
-    "Component Property Mapping also works for variant options. Set unique variant property name (default: Property), avoid duplicates. Component names in variant sets don't matter"],
-    ["br","",""],
-    ["p",
-    "通过将xxx@th和xxx@td组件宽度设置为充满, 我们可以轻松地用xxx@column控制列宽,也可以直接在图层里连选列内的xxx@td, 而选中行的方式可能比较复杂",
-    "Set xxx@th and xxx@td width to fill to control column width via xxx@column, or select xxx@td in layers. Row selection is more complex"],
-    ["li",
-    "【选中单行】功能可以查找相邻父级同位置的图层, 请确保图层结构的一致性",
-    "Select Single Row finds adjacent parent layers at same position. Ensure consistent layer structure"],
-    ["li",
-    "【选中多行】功能可以选中多个单行",
-    "Select Multiple Rows selects multiple single rows"],
-    ["li",
-    "【区域选中】功能类似框选, 会在选中两个xxx@td形成的框内所有的xxx@td ",
-    "Area Select works like marquee, selects all xxx@td within box formed by two selected xxx@td"],
-    ["li",
-    "【连续选中】功能可类似文本段落的连选, 会从第一个xxx@td开始逐行选中, 到第二个xxx@td结束",
-    "Continuous Select works like text selection, selects from first xxx@td row by row to second xxx@td"],
-    ["li",
-    "选中后插件还是聚焦状态, 此时无法对画布内容进行操作, 可以用鼠标中建点击画布区域以重新聚焦到画布",
-    "After selection, plugin remains focused. Middle-click canvas to refocus"],
-    ["br","",""],
-    ["p",
-    "为弥补组件属性的局限性问题, 可使用【标签属性映射】来完成 /++ #xxx.fill(填充色值) | #xxx.stroke(描边色值) | #xxx.fillStyle(填充样式名) | #xxx.strokeStyle(描边样式名)| #xxx.visible(可见性true/false) | #xxx.opacity(透明度0~1) | #xxx.fontSize(字号) ++/ 的参数化控制",
-    "Use Tag Property Mapping to overcome component property limitations: /++ #xxx.fill | #xxx.stroke | #xxx.fillStyle | #xxx.strokeStyle | #xxx.visible(true/false) | #xxx.opacity(0~1) | #xxx.fontSize ++/"],
-    ["li",
-    "选中的对象将按图层顺序对应每一行的数值,修改时会先判断对象是否带标签, 然后再遍历子对象, 对象/子对象本身可以包含多个标签, 可以存在不同的标签组合, /++ 注意标签与命名或其他标签之间要用空格隔开 ++/, 这对实现更复杂的样式变化很有用 ",
-    "Selected objects correspond to each row by layer order. Checks for tags first, then traverses children. Objects/children can have multiple tags with different combinations. /++ Separate tags/names with spaces ++/. Useful for complex style variations"],
-  ]
+  create: richDoc.doc.toolsset.create.help,
+  export: richDoc.doc.toolsset.export.help,
+  editor: richDoc.doc.toolsset.editor.help,
+  variable: richDoc.doc.toolsset.variable.help,
+  sheet: richDoc.doc.toolsset.sheet.help,
+};
+
+// ========== 常量定义 ==========
+const UI_SIZES = {
+  MINI: [208, 460],
+  NORMAL: [300, 660],
+  BIG: [620, 660]
+};
+const UI_MINI = UI_SIZES.MINI;
+const UI = UI_SIZES.NORMAL;
+const UI_BIG = UI_SIZES.BIG;
+
+// 延迟时间常量
+const DELAY = {
+  DEBOUNCE: 500,
+  SEARCH: 500,
+  RESIZE_SAVE: 500,
+  SKILL_CLICK: 500,
+  INIT: 100,
+  FONT_LOAD: 100,
+  TIPS_INTERVAL: 12000,
+  SIDEBAR_CLOSE: 280,  // 侧边栏关闭动画延迟
+  FIND_BOX_REMOVE: 2000,  // 查找框移除延迟
+  CONVERT_TAGS: 100  // 转换标签延迟
+};
+
+// 提示消息常量
+const MESSAGES = {
+  FILE_TYPE_ERROR: ['只能上传同类型文件', 'The file type must meet the requirements'],
+  READING: ['读取中, 请耐心等待', 'Reading, please wait a moment'],
+  WORKTIME: ['工作时间限制', 'Work time restriction'],
+  TABLE_TITLE_WORDS_ERROR: ['请用指定单词, 并用逗号隔开', 'Must use example words and separated by commas'],
+  TABLE_TITLE_REQUIRED_ERROR: ['必须包含name、w、h', 'Must include name, w, h'],
+  TABLE_TITLE_REPEAT_ERROR: ['单词重复', 'The word is repeated'],
+  TABLE_DATA_ERROR: ['表格数据格式错误, 请检查文件内容', 'Table data format error, please check file content'],
+  ZY_DATA_ERROR: ['资源目录数据格式错误, 请检查文件内容', 'Catalogue data format error, please check file content']
+};
+
+// ========== 表格样式数据 ==========
+const TABLE_STYLE = [
+  {th:[0,0,0,0,1],td:[0,0,0,0,'rowSpace']},//横间格区分色
+  {th:[0,0,0,0,'columnSpace'],td:[0,0,0,0,'columnSpace']},//竖间格区分色
+  {th:[0,0,0,0,1],td:[0,0,0,0,0]},//无描边
+  {th:[0,0,0,0,1],td:[1,0,1,0,0]},//仅横线
+  {th:[0,0,0,0,1],td:[0,1,0,1,0]},//仅竖线
+  {th:[0,0,0,0,1],td:[1,1,1,1,0]},//全描边
+  {th:[0,0,0,0,0],td:[0,0,0,0,0]},//无描边（表头无区分色
+  {th:[1,0,1,0,0],td:[1,0,1,0,0]},//仅横线（表头无区分色
+  {th:[0,1,0,1,0],td:[0,1,0,1,0]},//仅竖线（表头无区分色
+  {th:[1,1,1,1,0],td:[1,1,1,1,0]},//全描边（表头无区分色
+];
+
+// ========== 用户认证配置 ==========
+const AUTH_CONFIG = {
+  // Supabase 配置（如果使用 Supabase，请填写下面的信息）
+  USE_SUPABASE: true, // 改为 true 启用 Supabase
+  SUPABASE_URL: 'https://darbnumfpfrscqgyeiqe.supabase.co', // 替换为你的 Project URL
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhcmJudW1mcGZyc2NxZ3llaXFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0OTU1NjksImV4cCI6MjA4MDA3MTU2OX0.UDvrmk8lnumZAu9nugTtEl7WGzxDNhUSfllrCFF4Ws4', // 替换为你的 anon public key
+  
+  // 自定义 API 配置（如果使用自定义 API）
+  API_BASE_URL: null, // 'https://api.ynyuset.cn/auth'
+  
+  // 本地存储键名（保持不变）
+  STORAGE_KEY_USER: 'toolsSetFig_user',
+  STORAGE_KEY_USERS: 'toolsSetFig_users'
+};
+
+// 认证模块多语言文本
+const AUTH_I18N = {
+  zh: {
+    invalidEmail: '请输入有效的邮箱地址',
+    usernameTooShort: '用户名至少需要2个字符',
+    passwordTooShort: '密码至少需要6个字符',
+    supabaseNotInitialized: 'Supabase 未初始化，请检查配置和网络连接',
+    emailAlreadyRegistered: '该邮箱已注册，请直接登录',
+    rateLimitError: '请求过于频繁，请等待 {0} 秒后再试',
+    invalidEmailFormat: '邮箱格式不正确',
+    registrationFailed: '注册失败: {0}',
+    unknownError: '未知错误',
+    registrationFailedRetry: '注册失败，请重试',
+    registrationSuccess: '注册成功！请检查邮箱并点击确认链接以完成注册。',
+    registrationSuccessShort: '注册成功！请检查邮箱并点击确认链接。',
+    registrationFailedConfig: '注册失败，请检查 Supabase 配置或网络连接',
+    emailAlreadyRegisteredLocal: '该邮箱已在本地注册，请先清除缓存',
+    enterEmailPassword: '请输入邮箱和密码',
+    emailPasswordIncorrect: '邮箱或密码错误',
+    loginFailedRetry: '登录失败，请重试',
+    fillAllRequired: '请填写所有必填项',
+    passwordsNotMatch: '两次输入的密码不一致',
+    registering: '注册中...',
+    localCacheCleared: '本地缓存已清除',
+    usernameInvalidChars: '用户名只能包含字母、数字、下划线和连字符，且不能纯数字或符号',
+    usernameInvalidLength: '用户名长度必须在2-20个字符之间',
+    passwordInvalidChars: '密码只能包含字母、数字和常见符号',
+    passwordInvalidLength: '密码长度必须在6-50个字符之间'
+  },
+  en: {
+    invalidEmail: 'Please enter a valid email address',
+    usernameTooShort: 'Username must be at least 2 characters',
+    passwordTooShort: 'Password must be at least 6 characters',
+    supabaseNotInitialized: 'Supabase not initialized, please check configuration and network connection',
+    emailAlreadyRegistered: 'This email is already registered, please log in directly',
+    rateLimitError: 'Too many requests, please wait {0} seconds and try again',
+    invalidEmailFormat: 'Invalid email format',
+    registrationFailed: 'Registration failed: {0}',
+    unknownError: 'Unknown error',
+    registrationFailedRetry: 'Registration failed, please try again',
+    registrationSuccess: 'Registration successful! Please check your email and click the confirmation link to complete registration.',
+    registrationSuccessShort: 'Registration successful! Please check your email and click the confirmation link.',
+    registrationFailedConfig: 'Registration failed, please check Supabase configuration or network connection',
+    emailAlreadyRegisteredLocal: 'This email is already registered locally, please clear cache first',
+    enterEmailPassword: 'Please enter email and password',
+    emailPasswordIncorrect: 'Email or password incorrect',
+    loginFailedRetry: 'Login failed, please try again',
+    fillAllRequired: 'Please fill in all required fields',
+    passwordsNotMatch: 'Passwords do not match',
+    registering: 'Registering...',
+    localCacheCleared: 'Local cache cleared',
+    usernameInvalidChars: 'Username can only contain letters, numbers, underscores and hyphens, and cannot be pure numbers or symbols',
+    usernameInvalidLength: 'Username must be between 2-20 characters',
+    passwordInvalidChars: 'Password can only contain letters, numbers and common symbols',
+    passwordInvalidLength: 'Password must be between 6-50 characters'
+  }
 };

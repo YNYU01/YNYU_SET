@@ -894,6 +894,14 @@ input[type="checkbox"]:checked+.show-next2 {
   background: var(--themeColor);
 }
 
+[data-page-main="false"]{
+  display: none;
+}
+
+[data-page-main="true"]{
+  display: flex;
+}
+
 [data-radio]{
   cursor: var(--pointer,pointer);
   width: var(--radio-w,14px);

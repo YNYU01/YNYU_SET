@@ -630,6 +630,7 @@ Object.assign(TOOL_JS.prototype, {
    * ]}
    */
   async SvgToObj(svgText, createname) {
+    const self = this;
     const parser = new DOMParser();
     const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
     const svgRoot = svgDoc.documentElement;
@@ -641,6 +642,7 @@ Object.assign(TOOL_JS.prototype, {
     try {
       const images = await traverse(svgRoot);
       //console.log('Found images:', images);
+      //log({zyType: 'svg', zyName: createname, nodes: images})
       return {zyType: 'svg', zyName: createname, nodes: images};
     } catch (error) {
       console.error('Error processing SVG:', error);
@@ -696,39 +698,26 @@ Object.assign(TOOL_JS.prototype, {
             attributes.y = attributes.y.replace('px','') * 1
           }
           let imgPromise = (attributes)=>{
-            if(attributes.width <= 4096 && attributes.height <= 4096) {
-              let b64data;
-              if(attributes['xlink:href']){
-                b64data = attributes['xlink:href'].split(',')[1]
-              }
-              if(attributes['href']){
-                b64data = attributes['href'].split(',')[1]
-              }
-              return {
-                attributes,
-                cuts: {
-                  img: this.B64ToU8A(b64data),
-                  w: attributes.width,
-                  h: attributes.height,
-                  x: 0,
-                  y: 0,
-                }
-              };
-            }
+            // 统一使用 CUT_IMAGE 方法处理所有图片，确保 cuts 始终为数组格式
+            // 这样无论图片大小，数据格式都与导入大图功能保持一致
             return new Promise((resolveImg) => {
               let img = new Image();
-              img.src = attributes["xlink:href"] || attributes.href;;
+              img.src = attributes["xlink:href"] || attributes.href;
               img.onload = async () => {
                 try {
-                  let cuts = await this.CUT_IMAGE(img)
-                  resolveImg({ attributes, cuts: cuts })
-                } catch {
+                  let cuts = await self.CUT_IMAGE(img);
+                  resolveImg({ attributes, cuts: cuts });
+                } catch (error) {
+                  console.error('Error processing image with CUT_IMAGE:', error);
                   resolveImg({ attributes, cuts: null });
                 }
               };
-              img.onerror = () => resolveImg(null);
-            }
-          )};
+              img.onerror = () => {
+                console.error('Error loading image:', attributes["xlink:href"] || attributes.href);
+                resolveImg({ attributes, cuts: null });
+              };
+            });
+          };
           results.push(await imgPromise(attributes));
         };
       };
@@ -743,6 +732,656 @@ Object.assign(TOOL_JS.prototype, {
       });
     });
   }
+  },
+
+  /**
+   * 将SVG完全解析为常规节点数据（.zy兼容格式的核心）
+   * 参考Sketch的解析思路，将SVG标签映射到节点类型
+   * @param {string} svgText - svg文本
+   * @param {string} createname - 创建名称
+   * @returns {Promise<Object>} {zyType:'svg', zyName: string, nodes: Array}
+   * nodes结构: [{
+   *   type: 'FRAME' | 'RECTANGLE' | 'ELLIPSE' | 'VECTOR' | 'TEXT' | 'GROUP',
+   *   name: string,
+   *   x: number,
+   *   y: number,
+   *   width: number,
+   *   height: number,
+   *   fills: Array,
+   *   strokes: Array,
+   *   strokeWeight: number,
+   *   opacity: number,
+   *   visible: boolean,
+   *   transform: Array,
+   *   children: Array,
+   *   // 特殊属性
+   *   cornerRadius?: number, // RECTANGLE
+   *   text?: string, // TEXT
+   *   pathData?: string, // VECTOR
+   *   imageData?: {cuts: Array, attributes: Object}, // IMAGE
+   * }]
+   */
+  async SvgToNodes(svgText, createname) {
+    const self = this;
+    const parser = new DOMParser();
+    createname = createname ? createname : '@SVG_NODE';
+    
+    try {
+      const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+      const svgRoot = svgDoc.documentElement;
+      
+      // 检查解析错误
+      const parserError = svgDoc.querySelector('parsererror');
+      if (parserError) {
+        console.error('SVG parsing error:', parserError.textContent);
+        return { zyType: null, zyName: null, nodes: null };
+      }
+
+      // 获取SVG根元素属性
+      const svgAttrs = this._getAttributes(svgRoot);
+      const svgWidth = this._parseLength(svgAttrs.width || svgAttrs.viewBox?.split(' ')[2] || '100');
+      const svgHeight = this._parseLength(svgAttrs.height || svgAttrs.viewBox?.split(' ')[3] || '100');
+      const viewBox = svgAttrs.viewBox ? svgAttrs.viewBox.split(' ').map(v => parseFloat(v)) : [0, 0, svgWidth, svgHeight];
+
+      // 收集所有定义（渐变、图案、滤镜等）
+      const defs = svgRoot.querySelector('defs');
+      const definitions = this._parseDefinitions(defs || null);
+
+      // 解析根节点
+      const rootNode = {
+        type: 'FRAME',
+        name: createname,
+        x: viewBox[0] || 0,
+        y: viewBox[1] || 0,
+        width: svgWidth,
+        height: svgHeight,
+        fills: this._parseFill(svgAttrs, definitions),
+        strokes: this._parseStroke(svgAttrs, definitions),
+        strokeWeight: this._parseLength(svgAttrs['stroke-width'] || '0'),
+        opacity: this._parseOpacity(svgAttrs),
+        visible: svgAttrs.display !== 'none' && svgAttrs.visibility !== 'hidden',
+        transform: this._parseTransform(svgAttrs.transform),
+        children: []
+      };
+
+      // 遍历所有子元素
+      const children = await this._traverseNodes(svgRoot, definitions, self);
+      rootNode.children = children;
+
+      return {
+        zyType: 'svg',
+        zyName: createname,
+        nodes: [rootNode]
+      };
+    } catch (error) {
+      console.error('Error processing SVG to nodes:', error);
+      return { zyType: null, zyName: null, nodes: null };
+    }
+  },
+
+  /**
+   * SVG标签到节点类型的映射表
+   */
+  _svgTagToNodeType: {
+    'svg': 'FRAME',
+    'g': 'GROUP',
+    'rect': 'RECTANGLE',
+    'circle': 'ELLIPSE',
+    'ellipse': 'ELLIPSE',
+    'line': 'VECTOR',
+    'polyline': 'VECTOR',
+    'polygon': 'VECTOR',
+    'path': 'VECTOR',
+    'text': 'TEXT',
+    'tspan': 'TEXT',
+    'image': 'IMAGE',
+    'use': 'INSTANCE', // 引用元素
+    'symbol': 'COMPONENT',
+    'defs': null, // 定义，不创建节点
+    'style': null,
+    'script': null,
+    'title': null,
+    'desc': null,
+  },
+
+  /**
+   * 获取元素的所有属性
+   */
+  _getAttributes(node) {
+    if (!node || !node.attributes) return {};
+    const attrs = {};
+    Array.from(node.attributes).forEach(attr => {
+      attrs[attr.name] = attr.value;
+    });
+    return attrs;
+  },
+
+  /**
+   * 解析长度值（支持px, em, %, 无单位）
+   */
+  _parseLength(value, defaultValue = 0) {
+    if (!value || value === 'none') return defaultValue;
+    if (typeof value === 'number') return value;
+    const num = parseFloat(value);
+    if (isNaN(num)) return defaultValue;
+    return num;
+  },
+
+  /**
+   * 解析透明度
+   */
+  _parseOpacity(attrs) {
+    const opacity = parseFloat(attrs.opacity);
+    if (!isNaN(opacity)) return opacity;
+    return 1;
+  },
+
+  /**
+   * 解析变换矩阵
+   */
+  _parseTransform(transform) {
+    if (!transform) return null;
+    // 简化处理，返回原始transform字符串，后续可在code.js中解析
+    // 支持: translate, rotate, scale, matrix, skewX, skewY
+    return transform;
+  },
+
+  /**
+   * 解析填充
+   */
+  _parseFill(attrs, definitions) {
+    const fill = attrs.fill;
+    if (!fill || fill === 'none') return [];
+    
+    // 解析颜色
+    if (fill.startsWith('url(#')) {
+      // 渐变或图案引用
+      const id = fill.match(/#([^)]+)/)?.[1];
+      const def = definitions[id];
+      if (def) {
+        return this._parseGradient(def, definitions);
+      }
+    } else {
+      // 纯色填充
+      const color = this._parseColor(fill);
+      if (color) {
+        return [{
+          type: 'SOLID',
+          color: color,
+          opacity: this._parseOpacity(attrs)
+        }];
+      }
+    }
+    return [];
+  },
+
+  /**
+   * 解析描边
+   */
+  _parseStroke(attrs, definitions) {
+    const stroke = attrs.stroke;
+    if (!stroke || stroke === 'none') return [];
+    
+    if (stroke.startsWith('url(#')) {
+      const id = stroke.match(/#([^)]+)/)?.[1];
+      const def = definitions[id];
+      if (def) {
+        return this._parseGradient(def, definitions);
+      }
+    } else {
+      const color = this._parseColor(stroke);
+      if (color) {
+        return [{
+          type: 'SOLID',
+          color: color,
+          opacity: this._parseOpacity(attrs)
+        }];
+      }
+    }
+    return [];
+  },
+
+  /**
+   * 解析颜色值（支持hex, rgb, rgba, 颜色名）
+   */
+  _parseColor(colorStr) {
+    if (!colorStr) return null;
+    
+    // 移除空格
+    colorStr = colorStr.trim();
+    
+    // 颜色名映射
+    const colorNames = {
+      'black': { r: 0, g: 0, b: 0 },
+      'white': { r: 1, g: 1, b: 1 },
+      'red': { r: 1, g: 0, b: 0 },
+      'green': { r: 0, g: 1, b: 0 },
+      'blue': { r: 0, g: 0, b: 1 },
+      'transparent': null
+    };
+    
+    if (colorNames[colorStr.toLowerCase()]) {
+      return colorNames[colorStr.toLowerCase()];
+    }
+    
+    // hex颜色 #rgb, #rrggbb
+    if (colorStr.startsWith('#')) {
+      const hex = colorStr.slice(1);
+      if (hex.length === 3) {
+        return {
+          r: parseInt(hex[0] + hex[0], 16) / 255,
+          g: parseInt(hex[1] + hex[1], 16) / 255,
+          b: parseInt(hex[2] + hex[2], 16) / 255
+        };
+      } else if (hex.length === 6) {
+        return {
+          r: parseInt(hex.slice(0, 2), 16) / 255,
+          g: parseInt(hex.slice(2, 4), 16) / 255,
+          b: parseInt(hex.slice(4, 6), 16) / 255
+        };
+      }
+    }
+    
+    // rgb/rgba
+    const rgbMatch = colorStr.match(/rgba?\(([^)]+)\)/);
+    if (rgbMatch) {
+      const values = rgbMatch[1].split(',').map(v => parseFloat(v.trim()));
+      return {
+        r: values[0] / 255,
+        g: values[1] / 255,
+        b: values[2] / 255
+      };
+    }
+    
+    return null;
+  },
+
+  /**
+   * 解析渐变
+   */
+  _parseGradient(gradientDef, definitions) {
+    if (!gradientDef) return [];
+    
+    const type = gradientDef.tagName.toLowerCase();
+    if (type === 'lineargradient') {
+      const stops = Array.from(gradientDef.querySelectorAll('stop')).map(stop => {
+        const attrs = this._getAttributes(stop);
+        const color = this._parseColor(attrs.stopColor || attrs.style?.match(/stop-color:\s*([^;]+)/)?.[1]);
+        const offset = parseFloat(attrs.offset || '0');
+        return {
+          color: color || { r: 0, g: 0, b: 0 },
+          position: offset
+        };
+      });
+      
+      return [{
+        type: 'GRADIENT_LINEAR',
+        gradientStops: stops,
+        gradientTransform: this._parseTransform(gradientDef.getAttribute('gradientTransform'))
+      }];
+    } else if (type === 'radialgradient') {
+      const stops = Array.from(gradientDef.querySelectorAll('stop')).map(stop => {
+        const attrs = this._getAttributes(stop);
+        const color = this._parseColor(attrs.stopColor || attrs.style?.match(/stop-color:\s*([^;]+)/)?.[1]);
+        const offset = parseFloat(attrs.offset || '0');
+        return {
+          color: color || { r: 0, g: 0, b: 0 },
+          position: offset
+        };
+      });
+      
+      return [{
+        type: 'GRADIENT_RADIAL',
+        gradientStops: stops,
+        gradientTransform: this._parseTransform(gradientDef.getAttribute('gradientTransform'))
+      }];
+    }
+    
+    return [];
+  },
+
+  /**
+   * 解析defs中的定义（渐变、图案、滤镜等）
+   */
+  _parseDefinitions(defs) {
+    const definitions = {};
+    if (!defs) return definitions;
+    
+    Array.from(defs.children).forEach(child => {
+      const id = child.getAttribute('id');
+      if (id) {
+        definitions[id] = child;
+      }
+    });
+    
+    return definitions;
+  },
+
+  /**
+   * 遍历节点树，转换为节点数据
+   */
+  async _traverseNodes(parentElement, definitions, self) {
+    const nodes = [];
+    
+    for (const child of Array.from(parentElement.children)) {
+      const tagName = child.tagName.toLowerCase();
+      
+      // 跳过不需要创建节点的元素
+      if (tagName === 'defs' || tagName === 'style' || tagName === 'script' || 
+          tagName === 'title' || tagName === 'desc' || tagName === 'metadata') {
+        continue;
+      }
+      
+      const nodeType = this._svgTagToNodeType[tagName];
+      if (!nodeType) continue;
+      
+      const attrs = this._getAttributes(child);
+      let node = null;
+      
+      switch (tagName) {
+        case 'rect':
+          node = this._parseRect(child, attrs, definitions);
+          break;
+        case 'circle':
+          node = this._parseCircle(child, attrs, definitions);
+          break;
+        case 'ellipse':
+          node = this._parseEllipse(child, attrs, definitions);
+          break;
+        case 'path':
+          node = this._parsePath(child, attrs, definitions);
+          break;
+        case 'line':
+        case 'polyline':
+        case 'polygon':
+          node = this._parsePolyline(child, attrs, definitions);
+          break;
+        case 'text':
+        case 'tspan':
+          node = this._parseText(child, attrs, definitions);
+          break;
+        case 'image':
+          node = await this._parseImage(child, attrs, self);
+          break;
+        case 'g':
+          node = this._parseGroup(child, attrs, definitions);
+          break;
+        case 'use':
+          node = this._parseUse(child, attrs, definitions, parentElement);
+          break;
+        default:
+          // 默认作为GROUP处理
+          node = this._parseGroup(child, attrs, definitions);
+      }
+      
+      if (node) {
+        // 递归处理子节点
+        if (node.children !== undefined) {
+          node.children = await this._traverseNodes(child, definitions, self);
+        }
+        nodes.push(node);
+      }
+    }
+    
+    return nodes;
+  },
+
+  /**
+   * 解析rect元素
+   */
+  _parseRect(element, attrs, definitions) {
+    const x = this._parseLength(attrs.x, 0);
+    const y = this._parseLength(attrs.y, 0);
+    const width = this._parseLength(attrs.width, 0);
+    const height = this._parseLength(attrs.height, 0);
+    const rx = this._parseLength(attrs.rx || attrs.r, 0);
+    const ry = this._parseLength(attrs.ry || attrs.r, 0);
+    
+    return {
+      type: 'RECTANGLE',
+      name: attrs.id || attrs.class || 'rect',
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      cornerRadius: Math.max(rx, ry),
+      fills: this._parseFill(attrs, definitions),
+      strokes: this._parseStroke(attrs, definitions),
+      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
+      opacity: this._parseOpacity(attrs),
+      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
+      transform: this._parseTransform(attrs.transform)
+    };
+  },
+
+  /**
+   * 解析circle元素
+   */
+  _parseCircle(element, attrs, definitions) {
+    const cx = this._parseLength(attrs.cx, 0);
+    const cy = this._parseLength(attrs.cy, 0);
+    const r = this._parseLength(attrs.r, 0);
+    
+    return {
+      type: 'ELLIPSE',
+      name: attrs.id || attrs.class || 'circle',
+      x: cx - r,
+      y: cy - r,
+      width: r * 2,
+      height: r * 2,
+      fills: this._parseFill(attrs, definitions),
+      strokes: this._parseStroke(attrs, definitions),
+      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
+      opacity: this._parseOpacity(attrs),
+      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
+      transform: this._parseTransform(attrs.transform)
+    };
+  },
+
+  /**
+   * 解析ellipse元素
+   */
+  _parseEllipse(element, attrs, definitions) {
+    const cx = this._parseLength(attrs.cx, 0);
+    const cy = this._parseLength(attrs.cy, 0);
+    const rx = this._parseLength(attrs.rx, 0);
+    const ry = this._parseLength(attrs.ry, 0);
+    
+    return {
+      type: 'ELLIPSE',
+      name: attrs.id || attrs.class || 'ellipse',
+      x: cx - rx,
+      y: cy - ry,
+      width: rx * 2,
+      height: ry * 2,
+      fills: this._parseFill(attrs, definitions),
+      strokes: this._parseStroke(attrs, definitions),
+      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
+      opacity: this._parseOpacity(attrs),
+      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
+      transform: this._parseTransform(attrs.transform)
+    };
+  },
+
+  /**
+   * 解析path元素
+   */
+  _parsePath(element, attrs, definitions) {
+    const pathData = attrs.d || '';
+    
+    return {
+      type: 'VECTOR',
+      name: attrs.id || attrs.class || 'path',
+      x: 0,
+      y: 0,
+      width: 0, // 需要计算路径边界框
+      height: 0,
+      pathData: pathData,
+      fills: this._parseFill(attrs, definitions),
+      strokes: this._parseStroke(attrs, definitions),
+      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
+      opacity: this._parseOpacity(attrs),
+      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
+      transform: this._parseTransform(attrs.transform)
+    };
+  },
+
+  /**
+   * 解析polyline/polygon元素
+   */
+  _parsePolyline(element, attrs, definitions) {
+    const points = attrs.points || '';
+    const pointArray = points.split(/[\s,]+/).filter(p => p).map(p => parseFloat(p));
+    
+    // 转换为path数据
+    let pathData = '';
+    for (let i = 0; i < pointArray.length; i += 2) {
+      if (i === 0) {
+        pathData += `M ${pointArray[i]} ${pointArray[i + 1]}`;
+      } else {
+        pathData += ` L ${pointArray[i]} ${pointArray[i + 1]}`;
+      }
+    }
+    
+    // polygon需要闭合
+    if (element.tagName.toLowerCase() === 'polygon' && pointArray.length >= 4) {
+      pathData += ' Z';
+    }
+    
+    return {
+      type: 'VECTOR',
+      name: attrs.id || attrs.class || 'polyline',
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      pathData: pathData,
+      fills: this._parseFill(attrs, definitions),
+      strokes: this._parseStroke(attrs, definitions),
+      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
+      opacity: this._parseOpacity(attrs),
+      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
+      transform: this._parseTransform(attrs.transform)
+    };
+  },
+
+  /**
+   * 解析text元素
+   */
+  _parseText(element, attrs, definitions) {
+    const x = this._parseLength(attrs.x, 0);
+    const y = this._parseLength(attrs.y, 0);
+    const textContent = element.textContent || element.textContent || '';
+    
+    return {
+      type: 'TEXT',
+      name: attrs.id || attrs.class || 'text',
+      x: x,
+      y: y,
+      width: 0, // 需要根据字体计算
+      height: 0,
+      text: textContent,
+      fontSize: this._parseLength(attrs['font-size'] || '16'),
+      fontFamily: attrs['font-family'] || 'Arial',
+      fills: this._parseFill(attrs, definitions),
+      strokes: this._parseStroke(attrs, definitions),
+      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
+      opacity: this._parseOpacity(attrs),
+      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
+      transform: this._parseTransform(attrs.transform)
+    };
+  },
+
+  /**
+   * 解析image元素（复用SvgToObj的逻辑）
+   */
+  async _parseImage(element, attrs, self) {
+    const x = this._parseLength(attrs.x, 0);
+    const y = this._parseLength(attrs.y, 0);
+    const width = this._parseLength(attrs.width, 0);
+    const height = this._parseLength(attrs.height, 0);
+    
+    // 处理图片数据（复用CUT_IMAGE逻辑）
+    let imageData = null;
+    const href = attrs['xlink:href'] || attrs.href;
+    if (href) {
+      if (href.startsWith('data:')) {
+        try {
+          const img = new Image();
+          img.src = href;
+          await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+            if (img.complete) resolve();
+          });
+          const cuts = await self.CUT_IMAGE(img);
+          imageData = { cuts: cuts, attributes: attrs };
+        } catch (error) {
+          console.error('Error processing image:', error);
+        }
+      }
+    }
+    
+    return {
+      type: 'IMAGE',
+      name: attrs.id || attrs.class || 'image',
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      imageData: imageData,
+      opacity: this._parseOpacity(attrs),
+      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
+      transform: this._parseTransform(attrs.transform)
+    };
+  },
+
+  /**
+   * 解析group元素
+   */
+  _parseGroup(element, attrs, definitions) {
+    return {
+      type: 'GROUP',
+      name: attrs.id || attrs.class || 'group',
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      opacity: this._parseOpacity(attrs),
+      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
+      transform: this._parseTransform(attrs.transform),
+      children: []
+    };
+  },
+
+  /**
+   * 解析use元素（引用）
+   */
+  _parseUse(element, attrs, definitions, parentElement) {
+    const href = attrs['xlink:href'] || attrs.href;
+    if (!href || !href.startsWith('#')) {
+      return null;
+    }
+    
+    const id = href.slice(1);
+    const referencedElement = parentElement.ownerDocument.getElementById(id);
+    if (!referencedElement) {
+      return null;
+    }
+    
+    // 创建引用节点
+    return {
+      type: 'INSTANCE',
+      name: attrs.id || attrs.class || 'use',
+      x: this._parseLength(attrs.x, 0),
+      y: this._parseLength(attrs.y, 0),
+      width: 0,
+      height: 0,
+      referenceId: id,
+      opacity: this._parseOpacity(attrs),
+      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
+      transform: this._parseTransform(attrs.transform)
+    };
   },
 
 /**==========压缩图片模块==========
