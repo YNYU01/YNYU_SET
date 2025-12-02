@@ -1509,11 +1509,11 @@
                     <btn-star></btn-star>
                   </div>
                   <!--figma不支持拉伸变形-->
-                  <!--div class="df-cc" data-skill-line>
+                  <div class="df-cc" data-skill-line>
                     <div data-skewscale-box class="fl0 df-cc">
                       <div data-skewscale-view ></div>
                     </div>
-                  </div-->
+                  </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Skew X">左右倾斜</div>
                     <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
@@ -1538,7 +1538,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line="false">
+                  <div class="df-lc" data-skill-line="">
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右变形</div>
                     <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
@@ -1550,7 +1550,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line="false">
+                  <div class="df-lc" data-skill-line="">
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale Y">上下变形</div>
                     <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
@@ -1649,9 +1649,12 @@
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
+                  <div class="df-sc" data-skill-line>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By SVG">按SVG拆分</div>
+                  </div>
                   <div class="df-ffc bod-d gap4 pad4 mar-b4" >
                     <div data-split-tags class="w100 df-lc">
-                      <div data-split-tag data-check-checked class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_0" type="checkbox" checked>
                           <label for="split_chk_0" class="check">
@@ -1661,7 +1664,7 @@
                         </div>
                         <div data-split-info="name" data-en-text="Wrap">换行</div>
                       </div>
-                      <div data-split-tag data-check-checked class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_1" type="checkbox" checked>
                           <label for="split_chk_1" class="check">
@@ -1671,7 +1674,7 @@
                         </div>
                         <div data-split-info="name" data-en-text="FontSize">字号</div>
                       </div>
-                      <div data-split-tag data-check-checked class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_2" type="checkbox" checked>
                           <label for="split_chk_2" class="check">
@@ -1681,7 +1684,7 @@
                         </div>
                         <div data-split-info="name" data-en-text="Fills">填充</div>
                       </div>
-                      <div data-split-tag data-check-checked class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_3" type="checkbox" checked>
                           <label for="split_chk_3" class="check">

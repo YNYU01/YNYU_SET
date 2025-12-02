@@ -139,6 +139,8 @@ const DOM = (() => {
     skewSetY: () => getElementMix('data-skewset-y')?.querySelector('[data-input="value"]'),
     skewRangeX: () => getElementMix('data-skewset-x')?.querySelector('[data-input="range"]'),
     skewRangeY: () => getElementMix('data-skewset-y')?.querySelector('[data-input="range"]'),
+    scaleRangeX: () => getElementMix('data-scaleset-x')?.querySelector('[data-input="range"]'),
+    scaleRangeY: () => getElementMix('data-scaleset-y')?.querySelector('[data-input="range"]'),
   };
   
   // 返回代理对象，实现懒加载
@@ -480,6 +482,14 @@ function updateTransformControls(transform){
   if (DOM.skewSetY && DOM.skewRangeY) {
     DOM.skewSetY.value = transform[1];
     DOM.skewRangeY.value = transform[1];
+  }
+  if (DOM.scaleSetX && DOM.scaleRangeX) {
+    DOM.scaleSetX.value = transform[2];
+    DOM.scaleRangeX.value = transform[2];
+  }
+  if (DOM.scaleSetY && DOM.scaleRangeY) {
+    DOM.scaleSetY.value = transform[3];
+    DOM.scaleRangeY.value = transform[3];
   }
 };
 
@@ -3101,7 +3111,6 @@ function upSelect(type){
 const SKILL_STRATEGIES = {
   'Pixel As Copy': () => sendPixel('Pixel As Copy'),
   'Pixel Overwrite': () => sendPixel('Pixel Overwrite'),
-  'Reset All Transform': () => {}, // 空操作
   'Split By Conditions': () => sendSplit('tags'),
   'Split By Symbol': () => sendSplit('inputs'),
   'Mapping Names': () => sendTable('mapName'),

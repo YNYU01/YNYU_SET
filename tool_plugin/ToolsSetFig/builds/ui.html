@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -79,7 +79,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -4057,11 +4057,11 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     <btn-star></btn-star>
                   </div>
                   <!--figma不支持拉伸变形-->
-                  <!--div class="df-cc" data-skill-line>
+                  <div class="df-cc" data-skill-line>
                     <div data-skewscale-box class="fl0 df-cc">
                       <div data-skewscale-view ></div>
                     </div>
-                  </div-->
+                  </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Skew X">左右倾斜</div>
                     <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
@@ -4086,7 +4086,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       </div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line="false">
+                  <div class="df-lc" data-skill-line="">
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右变形</div>
                     <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
@@ -4098,7 +4098,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       </div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line="false">
+                  <div class="df-lc" data-skill-line="">
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale Y">上下变形</div>
                     <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
@@ -4197,9 +4197,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
+                  <div class="df-sc" data-skill-line>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By SVG">按SVG拆分</div>
+                  </div>
                   <div class="df-ffc bod-d gap4 pad4 mar-b4" >
                     <div data-split-tags class="w100 df-lc">
-                      <div data-split-tag data-check-checked class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_0" type="checkbox" checked>
                           <label for="split_chk_0" class="check">
@@ -4209,7 +4212,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         </div>
                         <div data-split-info="name" data-en-text="Wrap">换行</div>
                       </div>
-                      <div data-split-tag data-check-checked class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_1" type="checkbox" checked>
                           <label for="split_chk_1" class="check">
@@ -4219,7 +4222,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         </div>
                         <div data-split-info="name" data-en-text="FontSize">字号</div>
                       </div>
-                      <div data-split-tag data-check-checked class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_2" type="checkbox" checked>
                           <label for="split_chk_2" class="check">
@@ -4229,7 +4232,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                         </div>
                         <div data-split-info="name" data-en-text="Fills">填充</div>
                       </div>
-                      <div data-split-tag data-check-checked class="df-lc">
+                      <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_3" type="checkbox" checked>
                           <label for="split_chk_3" class="check">
@@ -4484,19 +4487,19 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/publics/other/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/qrcode.min.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@51873b96b2f6f7addc510deacb1f50e8ce914d53/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4840,6 +4843,8 @@ const DOM = (() => {
     skewSetY: () => getElementMix('data-skewset-y')?.querySelector('[data-input="value"]'),
     skewRangeX: () => getElementMix('data-skewset-x')?.querySelector('[data-input="range"]'),
     skewRangeY: () => getElementMix('data-skewset-y')?.querySelector('[data-input="range"]'),
+    scaleRangeX: () => getElementMix('data-scaleset-x')?.querySelector('[data-input="range"]'),
+    scaleRangeY: () => getElementMix('data-scaleset-y')?.querySelector('[data-input="range"]'),
   };
   
   // 返回代理对象，实现懒加载
@@ -5181,6 +5186,14 @@ function updateTransformControls(transform){
   if (DOM.skewSetY && DOM.skewRangeY) {
     DOM.skewSetY.value = transform[1];
     DOM.skewRangeY.value = transform[1];
+  }
+  if (DOM.scaleSetX && DOM.scaleRangeX) {
+    DOM.scaleSetX.value = transform[2];
+    DOM.scaleRangeX.value = transform[2];
+  }
+  if (DOM.scaleSetY && DOM.scaleRangeY) {
+    DOM.scaleSetY.value = transform[3];
+    DOM.scaleRangeY.value = transform[3];
   }
 };
 

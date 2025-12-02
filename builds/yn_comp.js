@@ -1240,8 +1240,10 @@ const getUserMix = (function() {
     if (observer) return;
     
     observer = new MutationObserver((mutations) => {
-      // 使用 Map 来去重，避免同一元素在同一批次中触发多次回调
-      const processed = new Map();
+      // 使用 Map<Element, Set<type>> 去重：
+      // - 同一元素同一类型在同一批次内只触发一次
+      // - 不同元素各自都会触发，不会被错误合并
+      const processed = new Map(); // key: Element, value: Set<type>
       
       mutations.forEach((mutation) => {
         if (mutation.type === 'attributes') {
@@ -1251,28 +1253,29 @@ const getUserMix = (function() {
           // 查找对应的类型
           for (const [type, config] of Object.entries(typeConfigs)) {
             if (config.attributeFilter.includes(attributeName)) {
-              // 使用元素+类型的组合作为 key，避免同一元素同一类型重复触发
-              const key = `${target}-${type}`;
-              if (!processed.has(key)) {
-                processed.set(key, { target, type });
+              if (!processed.has(target)) {
+                processed.set(target, new Set());
               }
+              processed.get(target).add(type);
               break;
             }
           }
         }
       });
       
-      // 批量执行回调，每个元素每种类型只执行一次
-      processed.forEach(({ target, type }) => {
-        if (callbacks[type]) {
-          callbacks[type].forEach(callback => {
-            try {
-              callback(target);
-            } catch (e) {
-              console.error(`Error in getUserMix callback for type "${type}":`, e);
-            }
-          });
-        }
+      // 批量执行回调：每个元素的每种类型只执行一次
+      processed.forEach((types, target) => {
+        types.forEach(type => {
+          if (callbacks[type]) {
+            callbacks[type].forEach(callback => {
+              try {
+                callback(target);
+              } catch (e) {
+                console.error(`Error in getUserMix callback for type "${type}":`, e);
+              }
+            });
+          }
+        });
       });
     });
     

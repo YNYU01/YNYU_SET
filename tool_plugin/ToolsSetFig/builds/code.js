@@ -1259,14 +1259,21 @@ figma.ui.onmessage = async (message) => {
     //斜切拉伸
     if( type == 'transformMix'){
         let b = getSelectionMix();
-        //console.log(info)
+        console.log(info)
         b.forEach(item => {
+            let oldWH;
+            if(!item.getPluginData('oldWH')){
+                item.setPluginData('oldWH',JSON.stringify([item.width,item.height]));
+            }else{
+                oldWH = JSON.parse(item.getPluginData('oldWH'));
+            };
             let skewX = Math.tan(info.x*(Math.PI/180));
             let scaleX = item.relativeTransform[0][0];
             let x = item.relativeTransform[0][2];
             let skewY = Math.tan(info.y*(Math.PI/180));
             let scaleY = item.relativeTransform[1][1];
             let y = item.relativeTransform[1][2];
+            item.resize(oldWH[0] * info.w/100,oldWH[1] * info.h/100);
             //console.log(scaleX,scaleY)
             if(skewX !== item.relativeTransform[0][1] || skewY !== item.relativeTransform[1][0]){
                 //console.log(666)
@@ -1635,6 +1642,7 @@ figma.ui.onmessage = async (message) => {
     };
     //拆分文案
     if ( type == "splitText"){
+        
         let b = getSelectionMix();
         let texts = b.filter(item => item.type == 'TEXT');
         let safeTexts = texts.filter(item => item.hasMissingFont == false)
@@ -1671,6 +1679,7 @@ figma.ui.onmessage = async (message) => {
                         switch (splitType){
                             case 'tags':
                                 let splitTag = splitKeys.filter(item => splitTags[item]).map(item => splitTags[item]);
+                                console.log(splitTag)
                                 splitText(textSafe,oldnode,splitTag,splitKeys);
                             ;break
                             case 'inputs':
@@ -1684,6 +1693,40 @@ figma.ui.onmessage = async (message) => {
             }; 
         }
     };
+    //借助svg对文本的处理裁切文案
+    if ( type == 'Split By SVG'){
+        let b = getSelectionMix();
+        let texts = b.filter(item => item.type == 'TEXT');
+        let selects = [];
+        texts.forEach(async (item) => {
+            let safeMain = getSafeMain(item);
+            let svgcode = await item.exportAsync({
+                format: 'SVG_STRING',
+                svgOutlineText: false,
+                svgIdAttribute: true,
+            })
+            let newNode = figma.createNodeFromSvg(svgcode);
+            //newNode.x = safeMain[2];
+            //newNode.y = safeMain[3];
+
+            let group = figma.group(newNode.children,item.parent,(item.parent.children.findIndex(items => items.id == item.id) + 1));
+            group.name = item.name.length > 14 ? item.name.slice(0,14) + '...' : item.name;
+            group.name += ' @split:svg';
+            group.children.forEach(items => {
+                if(items.type == 'GROUP'){
+                    figma.ungroup(items);
+                };
+            });
+            group.x = item.x;
+            group.y = item.y;
+
+            newNode.remove();
+            selects.push(group);
+            item.visible = false;
+        });
+        figma.currentPage.selection = selects;
+        return;
+    }
     //自动排列
     if ( type == 'Arrange By Ratio'){
         if(info){
@@ -2060,8 +2103,8 @@ function sendInfo(){
             let w = node.absoluteRenderBounds ? node.absoluteRenderBounds.width : node.absoluteBoundingBox.width;
             let h = node.absoluteRenderBounds ? node.absoluteRenderBounds.height : node.absoluteBoundingBox.height;
             let transform = node.absoluteTransform;
-            //let scaleX = 100// Math.floor(transform[0][0] * 100);
-            //let scaleY = 100//Math.floor(transform[1][1] * 100);
+            let scaleX = node.getPluginData('oldWH') ? Math.round(node.width/JSON.parse(node.getPluginData('oldWH'))[0]*100) : 100;// Math.floor(transform[0][0] * 100);
+            let scaleY = node.getPluginData('oldWH') ? Math.round(node.height/JSON.parse(node.getPluginData('oldWH'))[1]*100) : 100;//Math.floor(transform[1][1] * 100);
             let skewX = Math.round(Math.atan(transform[0][1])/(Math.PI/180));
             let skewY = Math.round(Math.atan(transform[1][0])/(Math.PI/180));
             //console.log([skewX,skewY])
@@ -2074,11 +2117,11 @@ function sendInfo(){
             };
             column = column <= 2 ? column : 0;
             row = row <= 2 ? row : 0;
-            data.push([n,w,h,[skewX,skewY],[column,row],nodeType]);
+            data.push([n,w,h,[skewX,skewY,scaleX,scaleY],[column,row],nodeType]);
         });
         postmessage([data,'selectInfo']);
     } else {
-        postmessage([[[null,null,null,[0,0],[0,0]]],'selectInfo']);
+        postmessage([[[null,null,null,[0,0,100,100],[0,0]]],'selectInfo']);
     };
 };
 
@@ -2681,6 +2724,7 @@ async function createTable(thComp,tdComp,language,isFill = false){
     }else{
         addAutoLayout(table,['H','TL']);
     };
+    table.layoutSizingVertical = 'HUG';
     table.x += 200;
     return [th,td,table];
 };
@@ -3548,10 +3592,10 @@ function swapTable(table){
     //console.log(H)
     let newTable = table.clone();
     setMain([],newTable,table);
-    if(newTable.name.includes('-swap')){
-        newTable.name = newTable.name.replace('-swap','');
+    if(newTable.name.includes(':swap')){
+        newTable.name = newTable.name.replace(':swap','');
     } else {
-        newTable.name += '-swap';
+        newTable.name += ':swap';
     };
     table.parent.insertChild((layerIndex + 1),newTable);
     
@@ -3957,6 +4001,8 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
         splitnodes = [];
         let group = addFrame([],oldnode);
         oldnode.parent.insertChild((layerIndex + 1),group);
+        group.x = oldnode.x;
+        group.y = oldnode.y;
         group.name = '@split-p';
         addAutoLayout(group,['V','TL',0,[0,0]],[true,false]);
         for(let i = 0; i < lines.length; i++){
@@ -3985,6 +4031,8 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
                 let group2 = addFrame([],splitnodes[i]);
                 if(!splitKeys.includes('Wrap') || splitnodes.length == 1){
                     oldnode.parent.insertChild((layerIndex + 1),group2);
+                    group2.x = oldnode.x;
+                    group2.y = oldnode.y;
                 }else{
                     let layerIndex2 = splitnodes[i].parent.children.findIndex(items => items.id == splitnodes[i].id);
                     splitnodes[i].parent.insertChild((layerIndex2 + 1),group2);
