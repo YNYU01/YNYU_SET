@@ -136,7 +136,7 @@ var md_清新古风 = [
         {type:'fontFamily-main',value:'Aa诗宋体',},
         {type:'fontStyle-main',value:[
             ["color","transparent"],
-            ["background","linear-gradient(to top,rgba(175, 129, 1, 0.56) 0%,rgba(113, 43, 0, 0.48) 80%,rgba(108, 27, 0, 0.69) 100%),url('../../../img/noise.png') 0 1em/1em,linear-gradient(to top,rgb(165, 124, 0) 0%,rgb(83, 32, 1) 80%,rgb(108, 27, 0) 100%)"],
+            ["background","linear-gradient(to top,rgba(175, 129, 1, 0.56) 0%,rgba(113, 43, 0, 0.48) 80%,rgba(108, 27, 0, 0.69) 100%),url('../img/noise.png') 0 1em/1em,linear-gradient(to top,rgb(165, 124, 0) 0%,rgb(83, 32, 1) 80%,rgb(108, 27, 0) 100%)"],
             ["background-clip","text"],
             ["transform","matrix(1.1, 0, 0, 1.1, 0, 0)"],
             ["letter-spacing","-0.05em"],
@@ -310,7 +310,7 @@ var md_江湖快意 = [
         {type:'fontFamily-main',value:'FZYaSongS-B-GB',},
         {type:'fontStyle-main',value:[
             ["color","transparent"],
-            ["background","linear-gradient(to top,rgba(255, 230, 155, 0.48),rgba(252, 255, 223, 0.59)),url('../../../img/noise.png') 0 1em/1em, linear-gradient(to top,rgb(255, 230, 155),rgb(252, 255, 223))"],
+            ["background","linear-gradient(to top,rgba(255, 230, 155, 0.48),rgba(252, 255, 223, 0.59)),url('../img/noise.png') 0 1em/1em, linear-gradient(to top,rgb(255, 230, 155),rgb(252, 255, 223))"],
             ["background-clip","text"],
             ["transform","matrix(1, 0, 0, 1, 0, 0)"],
             ["letter-spacing","0"],
@@ -353,7 +353,7 @@ var md_江湖快意 = [
         {type:'fontFamily-main',value:'YouSheBiaoTiHei',},
         {type:'fontStyle-main',value:[
             ["color","transparent"],
-            ["background","linear-gradient(to top,rgba(179, 3, 3, 0.57) 0%, rgba(122, 0, 0, 0.44) 30%,rgba(21, 19, 19, 0.7) 100% ),url('../../../img/noise.png') 0 1em/1em, linear-gradient(to top,rgb(179, 3, 3) 0%, rgb(122, 0, 0) 30%,rgb(21, 19, 19) 100%)"],
+            ["background","linear-gradient(to top,rgba(179, 3, 3, 0.57) 0%, rgba(122, 0, 0, 0.44) 30%,rgba(21, 19, 19, 0.7) 100% ),url('../img/noise.png') 0 1em/1em, linear-gradient(to top,rgb(179, 3, 3) 0%, rgb(122, 0, 0) 30%,rgb(21, 19, 19) 100%)"],
             ["background-clip","text"],
             ["transform","matrix(1.1, 0, 0, 1.35, 0, 0)"],
             ["letter-spacing","0"],
