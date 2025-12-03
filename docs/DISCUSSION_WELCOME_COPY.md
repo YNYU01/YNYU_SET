@@ -1,0 +1,34 @@
+# 可直接复制的内容（用于GitHub Discussions）
+
+## 👋 欢迎！
+
+我们使用 Discussions 作为与社区成员交流的平台。我们希望你能：
+
+- 💬 **提问**：提出你好奇的问题
+- 💡 **分享想法**：分享你的创意和建议
+- 🤝 **参与交流**：与其他社区成员互动
+- 🌟 **欢迎新人**：保持开放的心态，记住这是我们共同建设的社区 💪
+
+## 🚀 开始使用
+
+在下方评论中介绍一下自己，告诉我们你在这个社区中做什么，或者你想参与哪些方面的工作。
+
+### 你可以分享：
+- 你的背景和兴趣
+- 你想贡献的领域（代码、设计、文档等）
+- 你对项目的想法
+- 你遇到的问题或想要的功能
+
+---
+
+## 📚 相关资源
+
+- 📖 [项目文档](https://github.com/YNYU01/YNYU_SET#readme)
+- 🤝 [贡献指南](https://github.com/YNYU01/YNYU_SET/blob/main/OPEN_SOURCE_PLAN.md)
+- 🐛 [报告问题](https://github.com/YNYU01/YNYU_SET/issues)
+- 💡 [功能建议](https://github.com/YNYU01/YNYU_SET/issues/new?template=feature_request.md)
+
+---
+
+**让我们一起，从依赖软件到定义格式！** 🎉
+
