@@ -237,6 +237,7 @@ function addZYtable(){
 
     /*资源切换option*/
     if(exportAllname || zys.length > 0){
+        let allname;
         if(exportAllname){
             allname = exportAllname.split('KV+\n')[1].split('\n');
         }else{
