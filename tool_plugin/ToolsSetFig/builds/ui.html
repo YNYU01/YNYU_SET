@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
@@ -79,7 +79,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -968,7 +968,7 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: var(--themeColor);
 }
 
-[data-qrcode-view-box]{
+[data-qrcode-view-box],[data-skewscale-view-box]{
   aspect-ratio: 1/1;
   --ratio: 2;
   border: 1px solid var(--boxBod);
@@ -2086,11 +2086,51 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   gap: 4px;
 }
 
+[for="skewscale-view-pick"]{
+  min-height: 30px;
+  font-size: 10px;
+}
+
+input[type="checkbox"]:checked + [for="skewscale-view-pick"]{
+  border: 1px var(--themeColor) solid;
+}
+
+[for="skewscale-view-pick"] span{
+  opacity: 0.6;
+  text-align: center;
+}
+
+input[type="checkbox"]:checked + [for="skewscale-view-pick"] .tip1,
+[for="skewscale-view-pick"] .tip2,
+[data-skewscale-copy]{
+  display: none;
+}
+
+input[type="checkbox"]:checked + [for="skewscale-view-pick"] .tip2{
+  display: block;
+  color: var(--themeColor);
+}
+
+[data-theme="light"] [for="skewscale-view-pick"]{
+  background: var(--themeColor);
+  border: 1px rgba(0, 0, 0, 0.8) solid !important;
+}
+
+[data-theme="light"] input[type="checkbox"]:checked +  [for="skewscale-view-pick"] .tip2{
+  color: var(--mainColor);
+  opacity: 1;
+}
+
+input[type="checkbox"]:checked + * + [data-skewscale-copy]{
+  display: flex;
+}
+
+input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewscale-box]{
+  display: none;
+}
+
 [data-skewscale-box]{
-  width: 100%;
   height: 60px;
-  position: relative;
-  overflow: hidden;
 }
 [data-skewscale-box]::after{
   content: '+';
@@ -2189,6 +2229,12 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
 [data-selects="false"] [data-selects-must]{
   pointer-events: none;
   opacity: 0.6;
+}
+
+[data-selects="false"] [data-selects-must="false"],
+[data-selects="false"] [data-skill-line][data-selects-must="false"]{
+  pointer-events: auto;
+  opacity: 1;
 }
 
 [data-skill-gap]{
@@ -4056,12 +4102,20 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <!--figma不支持拉伸变形-->
-                  <div class="df-cc" data-skill-line>
-                    <div data-skewscale-box class="fl0 df-cc">
+                  <!--figma不支持拉伸变形，要么斜切+记录原始宽高来缩放，要么修改剪切板信息来实现拉伸-->
+                  <!--input type="checkbox" id="skewscale-view-pick">
+                  <label for="skewscale-view-pick" class="df-ffc df-cc bod-d gap4 pad2 mar-b4" style="display: flex;">
+                    <span class="tip1" data-en-text="Edit directly or Ctrl+C copy the layer, then click here~">直接编辑, 或Ctrl+C复制图层, 然后点击此处~</span>
+                    <span class="tip2" data-en-text="Ctrl+V paste here and edit the data from clipboard,click again to cancel~">Ctrl+V粘贴, 即可基于剪贴板数据变形,再次点击取消~</span>
+                  </label>
+                  <div class="df-cc mar-b4" data-skewscale-copy data-btn="skill-main" data-en-text="Replace Clipboard Data">替换剪贴板数据</div-->
+
+                  <!--div data-skewscale-view-box class="w100 df-cc pos-r tex-pixelbg mar-0a mar-b8 ovh" style="max-width: 240px;">
+                    <div data-skewscale-box class="w100 pos-r fl0 df-cc ">
                       <div data-skewscale-view ></div>
                     </div>
-                  </div>
+
+                  </div-->
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Skew X">左右倾斜</div>
                     <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
@@ -4086,8 +4140,18 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       </div>
                     </div>
                   </div>
+                  <div class="w100 df-cc">
+                    <span data-skill-gap>
+                      <span>----</span>
+                      <span data-any="vw240"
+                      data-en-text="Mark initial width and height for scale calculation, not real transform">
+                        标记初始宽高计算缩放, 非真实变形
+                      </span>
+                      <span>----</span>
+                    </span>
+                  </div>
                   <div class="df-lc" data-skill-line="">
-                    <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右变形</div>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右缩放</div>
                     <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
                       <input data-input="value" data-input-must="1,200" data-input-type="int" 
@@ -4099,7 +4163,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line="">
-                    <div data-any="vw240" data-skill-btnname data-en-text="Scale Y">上下变形</div>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Scale Y">上下缩放</div>
                     <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
                       <input data-input="value" data-input-must="1,200" data-input-type="int" 
@@ -4111,7 +4175,8 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
-                    <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="Reset All Transform">重置全部</div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Reset Scale Mark">清除缩放标记</div>
+                    <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="All Reset">重置全部</div>
                   </div>
                 </div>
                 <div class="fl1"  data-skill-sec="ClipByGrid">
@@ -4405,7 +4470,7 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
+                  <div data-selects-must data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
                     <div class="wh100 bsb pos-a pad10 df-cc" style="top: 0; left: 0;">
                       <div data-qrcode-grid class="w100 pos-r bsb">
                         <div data-qrcode-grid-resize="true" class="fl0 bsb pos-a"></div>
@@ -4426,13 +4491,13 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="CMPLX" data-en-text="CMPLX">复杂</div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line>
+                  <div class="df-lc" data-skill-line data-selects-must="false">
                     <div data-any="vw240" data-skill-btnname data-en-text="Code">数据</div>
                     <input type="text" id="input-qrcode-data" value="https://www.google.com">
                   </div>
-                  <div class="df-cc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Convert to SVG">转为矢量网格</div>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Create New QRcode">生成新二维码</div>
+                  <div class="df-cc" data-skill-line data-selects-must="false">
+                    <div class="df-cc" data-btn="skill-main" data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
+                    <div class="df-cc" data-btn="skill-main" data-selects-must data-en-text="Convert to SVG">转为矢量网格</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -4487,19 +4552,19 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/publics/other/qrcode.min.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f05d90224da801f874e342cc2878ee563c513351/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@090f42b2fa11ec128e879df7155d9856a2599005/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 /*初始数据*/
@@ -4510,7 +4575,7 @@ let skillSecInfo = [
   },
   {
     id: 'EaseTransform',
-    name: ["斜切","skew"],
+    name: ["斜切拉伸","ease transform"],
   },
   {
     id: 'UniformScale',
@@ -4778,6 +4843,7 @@ const DOM = (() => {
     userTable: () => getById('input-user-table'),
     userZy: () => getById('input-user-zy'),
     userText: () => getById('upload-textarea'),
+    skewscaleViewPick: () => getById('skewscale-view-pick'),
     
     // 表单元素
     userTableTitle: () => getById('input-user-table-title'),
@@ -7815,7 +7881,6 @@ function upSelect(type){
 const SKILL_STRATEGIES = {
   'Pixel As Copy': () => sendPixel('Pixel As Copy'),
   'Pixel Overwrite': () => sendPixel('Pixel Overwrite'),
-  'Reset All Transform': () => {}, // 空操作
   'Split By Conditions': () => sendSplit('tags'),
   'Split By Symbol': () => sendSplit('inputs'),
   'Mapping Names': () => sendTable('mapName'),
@@ -7963,6 +8028,25 @@ function viewPage(name){
 
 
 //=========== 监听函数 ===========
+
+
+// 监听粘贴事件
+document.addEventListener('paste', async (e) => {
+    if(!DOM.skewscaleViewPick.checked) return;
+    
+    e.preventDefault();
+    console.log(e.clipboardData);
+    console.log(e.clipboardData.types);
+    if(e.clipboardData.types.includes('text/html')){
+        const html = e.clipboardData.getData('text/html');
+        console.log(html);
+    }
+    if(e.clipboardData.types.includes('text/plain')){
+        const text = e.clipboardData.getData('text/plain');
+        console.log(text);
+    }
+
+});
 
 /* ---钩子--- */
 /*监听组件的自定义属性值, 变化时触发函数, 用于已经绑定事件用于自身的组件, 如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/

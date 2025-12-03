@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 讨论交流
+    url: https://github.com/YNYU01/YNYU_SET/discussions
+    about: 在 Discussions 中提问和讨论想法
+  - name: 📖 文档
+    url: https://github.com/YNYU01/YNYU_SET#-文档导航
+    about: 查看项目文档
+

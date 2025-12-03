@@ -74,6 +74,7 @@ const DOM = (() => {
     userTable: () => getById('input-user-table'),
     userZy: () => getById('input-user-zy'),
     userText: () => getById('upload-textarea'),
+    skewscaleViewPick: () => getById('skewscale-view-pick'),
     
     // 表单元素
     userTableTitle: () => getById('input-user-table-title'),
@@ -3258,6 +3259,25 @@ function viewPage(name){
 
 
 //=========== 监听函数 ===========
+
+
+// 监听粘贴事件
+document.addEventListener('paste', async (e) => {
+    if(!DOM.skewscaleViewPick.checked) return;
+    
+    e.preventDefault();
+    console.log(e.clipboardData);
+    console.log(e.clipboardData.types);
+    if(e.clipboardData.types.includes('text/html')){
+        const html = e.clipboardData.getData('text/html');
+        console.log(html);
+    }
+    if(e.clipboardData.types.includes('text/plain')){
+        const text = e.clipboardData.getData('text/plain');
+        console.log(text);
+    }
+
+});
 
 /* ---钩子--- */
 /*监听组件的自定义属性值, 变化时触发函数, 用于已经绑定事件用于自身的组件, 如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/

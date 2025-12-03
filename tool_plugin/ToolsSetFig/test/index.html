@@ -1508,12 +1508,20 @@
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <!--figma不支持拉伸变形-->
-                  <div class="df-cc" data-skill-line>
-                    <div data-skewscale-box class="fl0 df-cc">
+                  <!--figma不支持拉伸变形，要么斜切+记录原始宽高来缩放，要么修改剪切板信息来实现拉伸-->
+                  <!--input type="checkbox" id="skewscale-view-pick">
+                  <label for="skewscale-view-pick" class="df-ffc df-cc bod-d gap4 pad2 mar-b4" style="display: flex;">
+                    <span class="tip1" data-en-text="Edit directly or Ctrl+C copy the layer, then click here~">直接编辑, 或Ctrl+C复制图层, 然后点击此处~</span>
+                    <span class="tip2" data-en-text="Ctrl+V paste here and edit the data from clipboard,click again to cancel~">Ctrl+V粘贴, 即可基于剪贴板数据变形,再次点击取消~</span>
+                  </label>
+                  <div class="df-cc mar-b4" data-skewscale-copy data-btn="skill-main" data-en-text="Replace Clipboard Data">替换剪贴板数据</div-->
+
+                  <!--div data-skewscale-view-box class="w100 df-cc pos-r tex-pixelbg mar-0a mar-b8 ovh" style="max-width: 240px;">
+                    <div data-skewscale-box class="w100 pos-r fl0 df-cc ">
                       <div data-skewscale-view ></div>
                     </div>
-                  </div>
+
+                  </div-->
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Skew X">左右倾斜</div>
                     <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
@@ -1538,8 +1546,18 @@
                       </div>
                     </div>
                   </div>
+                  <div class="w100 df-cc">
+                    <span data-skill-gap>
+                      <span>----</span>
+                      <span data-any="vw240"
+                      data-en-text="Mark initial width and height for scale calculation, not real transform">
+                        标记初始宽高计算缩放, 非真实变形
+                      </span>
+                      <span>----</span>
+                    </span>
+                  </div>
                   <div class="df-lc" data-skill-line="">
-                    <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右变形</div>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右缩放</div>
                     <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
                       <input data-input="value" data-input-must="1,200" data-input-type="int" 
@@ -1551,7 +1569,7 @@
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line="">
-                    <div data-any="vw240" data-skill-btnname data-en-text="Scale Y">上下变形</div>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Scale Y">上下缩放</div>
                     <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
                       <input data-input="range" type="range" min="1" max="200" value="100">
                       <input data-input="value" data-input-must="1,200" data-input-type="int" 
@@ -1563,7 +1581,8 @@
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
-                    <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="Reset All Transform">重置全部</div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Reset Scale Mark">清除缩放标记</div>
+                    <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="All Reset">重置全部</div>
                   </div>
                 </div>
                 <div class="fl1"  data-skill-sec="ClipByGrid">
@@ -1857,7 +1876,7 @@
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
+                  <div data-selects-must data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
                     <div class="wh100 bsb pos-a pad10 df-cc" style="top: 0; left: 0;">
                       <div data-qrcode-grid class="w100 pos-r bsb">
                         <div data-qrcode-grid-resize="true" class="fl0 bsb pos-a"></div>
@@ -1878,13 +1897,13 @@
                       <div class="df-cc" data-radio data-radio-main="false" data-radio-data="CMPLX" data-en-text="CMPLX">复杂</div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line>
+                  <div class="df-lc" data-skill-line data-selects-must="false">
                     <div data-any="vw240" data-skill-btnname data-en-text="Code">数据</div>
                     <input type="text" id="input-qrcode-data" value="https://www.google.com">
                   </div>
-                  <div class="df-cc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Convert to SVG">转为矢量网格</div>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Create New QRcode">生成新二维码</div>
+                  <div class="df-cc" data-skill-line data-selects-must="false">
+                    <div class="df-cc" data-btn="skill-main" data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
+                    <div class="df-cc" data-btn="skill-main" data-selects-must data-en-text="Convert to SVG">转为矢量网格</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>

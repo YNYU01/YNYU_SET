@@ -62,32 +62,9 @@ let CLIP_NAME = [
 ];
 let localStyles = {paint:null,text:null,effect:null,grid:null};
 let localVariable;
-function getTablesByNodes(nodes = [], deep = true){
-    let tables = [];
-    if(!Array.isArray(nodes)){
-        return tables;
-    };
-    tables = nodes.filter(node => node && node.name.includes('@table'));
-    if(deep){
-        const nested = nodes
-        .filter(node => node && typeof node.findAll === 'function')
-        .map(node => node.findAll(item => item.name.includes('@table')))
-        .flat();
-        tables = tables.concat(nested);
-    };
-    const ids = new Set();
-    return tables.filter(table => {
-        if(!table || !table.id){
-            return false;
-        };
-        if(ids.has(table.id)){
-            return false;
-        };
-        ids.add(table.id);
-        return true;
-    });
-};
-//核心功能
+
+//==========核心功能==========
+
 figma.ui.onmessage = async (message) => { 
     const info = message[0]
     const type = message[1]
@@ -134,6 +111,9 @@ figma.ui.onmessage = async (message) => {
             console.log("当前节点信息：");
             let b = figma.currentPage.selection[0];
             console.log(b);
+            //使用深层拷贝函数获取可序列化的JSON数据
+            let nodeData = nodeToJSON(b);
+            console.log(nodeData)//JSON.stringify(nodeData, null, 2));
             if(b.type == 'TEXT'){
                 //console.log(b.getRangeListOptions(0,b.characters.length));
             };
@@ -1259,8 +1239,11 @@ figma.ui.onmessage = async (message) => {
     //斜切拉伸
     if( type == 'transformMix'){
         let b = getSelectionMix();
-        console.log(info)
+        //console.log(info)
         b.forEach(item => {
+            if(item.type == 'TEXT'){
+                return;
+            };
             let oldWH;
             if(!item.getPluginData('oldWH')){
                 item.setPluginData('oldWH',JSON.stringify([item.width,item.height]));
@@ -1279,6 +1262,26 @@ figma.ui.onmessage = async (message) => {
                 //console.log(666)
                 item.relativeTransform = [[scaleX,skewX,x],[skewY,scaleY,y]];
             };
+            
+        });
+    };
+    //保留伸缩重置
+    if( type == 'Keep Scale Reset'){
+        let b = getSelectionMix();
+        b.forEach(item => {
+            if(item.type == 'TEXT'){
+                return;
+            };
+            console.log(item.width,item.height)
+            item.setPluginData('oldWH',JSON.stringify([item.width,item.height]));
+
+            let scaleX = item.relativeTransform[0][0];
+            let x = item.relativeTransform[0][2];
+            let scaleY = item.relativeTransform[1][1];
+            let y = item.relativeTransform[1][2];
+            item.relativeTransform = [[scaleX,0,x],[0,scaleY,y]];
+
+            sendInfo();
         });
     };
     //网格裁切
@@ -2072,8 +2075,7 @@ figma.ui.onmessage = async (message) => {
     
 };
 
-//==========初始化==========//
-
+//==========初始化==========
 
 figma.on('selectionchange',()=>{
     sendInfo();
@@ -2159,7 +2161,7 @@ function sendSendComp(){
     postmessage([info,'selectComp']);
 };
 
-//==========工具函数==========//
+//==========工具函数==========
 
 //封装postMessage
 function postmessage(data){
@@ -4473,4 +4475,238 @@ function getSelectionMix(){
     selects.sort((a,b) => a[1].localeCompare(b[1]));
     //console.log(selects.map(item=> item[0].name))
     return selects.map(item=> item[0]);
+};
+
+function getTablesByNodes(nodes = [], deep = true){
+    let tables = [];
+    if(!Array.isArray(nodes)){
+        return tables;
+    };
+    tables = nodes.filter(node => node && node.name.includes('@table'));
+    if(deep){
+        const nested = nodes
+        .filter(node => node && typeof node.findAll === 'function')
+        .map(node => node.findAll(item => item.name.includes('@table')))
+        .flat();
+        tables = tables.concat(nested);
+    };
+    const ids = new Set();
+    return tables.filter(table => {
+        if(!table || !table.id){
+            return false;
+        };
+        if(ids.has(table.id)){
+            return false;
+        };
+        ids.add(table.id);
+        return true;
+    });
+};
+
+const BASIC_PROPS = [
+    "a",//RGBA-A
+    "absoluteBoundingBox",//定界框
+    "absoluteRenderBounds",//渲染框
+    "absoluteTransform",//绝对变换
+    "b",//RGBA-B
+    "blendMode",//混合模式
+    "booleanOperation",//布尔运算
+    "characters",//字符
+    "children",//子元素
+    "clipsContent",//是否裁剪边界
+    "color",//颜色
+    "componentProperties",//组件属性
+    "constrainProportions",//约束比例
+    "componentPropertyDefinitions",//组件属性定义
+    "componentPropertyReferences",//组件属性引用
+    "constraints",//约束
+    "contrast",//滤镜-对比度
+    "cornerRadius",//圆角
+    "cornerSmoothing",//圆角平滑
+    "counterAxisAlignContent",//次轴对齐
+    "counterAxisAlignItems",//子元素次轴对齐
+    "counterAxisSizingMode",//次轴缩放模式
+    "counterAxisSpacing",//次轴间距
+    "dashPattern",//虚线模式
+    "effectStyleId",//效果样式
+    "effects",//效果
+    "exportSettings",//导出设置
+    "exposure",//滤镜-曝光
+    "fillStyleId",//填充样式
+    "fills",//填充
+    "filters",//滤镜
+    "fontName",//字体名称
+    "family",//字体家族
+    "style",//字重名
+    "fontSize",//字体大小
+    "fontWeight",//字重数值
+    "g",//RGBA-G
+    "gridStyleId",//网格样式
+    "guides",//引导线
+    "horizontal",//水平
+    "vertical",//垂直
+    "hangingPunctuation",//标点符号悬挂处理
+    "hangingList",//列表符号悬挂处理
+    "height",//高度
+    "highlights",//滤镜-高光
+    "hyperlink",//超链接
+    "id",//ID
+    "isMask",//是否遮罩
+    "itemSpacing",//子元素间距
+    "imageHash",//图片哈希
+    "imageTransform",//图片变换
+    "key",//关键字
+    "layoutAlign",//布局对齐
+    "layoutGrids",//网格布局
+    "alignment",//网格布局-对齐
+    "count",//网格布局-数量
+    "gutterSize",//网格布局-间距
+    "offset",//网格布局-偏移
+    "pattern",//网格布局-模式
+    "sectionSize",//网格布局-段落大小
+    "layoutGrow",//布局增长
+    "layoutMode",//布局模式
+    "layoutPositioning",//布局位置
+    "layoutSizingHorizontal",//布局水平缩放
+    "layoutSizingVertical",//布局垂直缩放
+    "letterSpacing",//字母间距
+    "lineHeight",//行高
+    "listOptions",//列表选项
+    "listSpacing",//列表间距
+    "locked",//锁定图层
+    "maxHeight",//最大高度
+    "maxWidth",//最大宽度
+    "minHeight",//最小高度
+    "minWidth",//最小宽度
+    "mainComponent",//主组件
+    "name",//名称
+    "numberOfFixedChildren",//固定子元素数量
+    "opacity",//透明度
+    "paddingBottom",//下内边距
+    "paddingLeft",//左内边距
+    "paddingRight",//右内边距
+    "paddingTop",//上内边距
+    "paragraphIndent",//段落缩进
+    "paragraphSpacing",//段落间距
+    "parent",//父级
+    "primaryAxisAlignItems",//子元素主轴对齐
+    "primaryAxisSizingMode",//子元素主轴缩放模式
+    "r",//RGBA-R
+    "relativeTransform",//相对变换
+    "rotation",//旋转
+    "saturation",//滤镜-饱和度
+    "shadows",//滤镜-阴影
+    "strokeAlign",//描边对齐
+    "strokeCap",//描边端点
+    "strokeGeometry",//描边几何
+    "strokeJoin",//描边连接
+    "strokeMiterAngle",//描边斜接角度
+    "strokeMiterLimit",//描边斜接限制
+    "strokeStyleId",//描边样式
+    "strokeWeight",//描边宽度
+    "strokeLeftWeight",//描边宽度-左
+    "strokeRightWeight",//描边宽度-右
+    "strokeTopWeight",//描边宽度-上
+    "strokeBottomWeight",//描边宽度-下
+    "strokes",//描边填充
+    "targetAspectRatio",//目标宽高比
+    "topLeftRadius",//圆角-左上
+    "topRightRadius",//圆角-右上
+    "bottomLeftRadius",//圆角-左下
+    "bottomRightRadius",//圆角-右下
+    "temperature",//滤镜-温度
+    "tint",//滤镜-色调
+    "textAlignHorizontal",//文本水平对齐
+    "textAlignVertical",//文本垂直对齐
+    "textAutoResize",//文本自动调整
+    "textCase",//文本大小写
+    "textDecoration",//文本装饰
+    "textStyleId",//文本样式
+    "textSvgHash",//文本SVG哈希
+    "type",//类型
+    "variantProperties",//变体属性
+    "vectorPaths",//矢量路径
+    "visible",//可见
+    "width",//宽度
+    "x",//X
+    "y",//Y
+]
+//将Figma节点转换为可序列化的JSON对象
+function nodeToJSON(node, visited = new WeakSet(), depth = 0, maxDepth = 10, isChild = false){
+    if(!node || depth > maxDepth){
+        return null;
+    };
+    //避免循环引用（但允许children正常序列化）
+    //isChild为true时表示这是children中的节点，允许继续处理
+    if(typeof node === 'object' && visited.has(node) && !isChild){
+        return '[Circular Reference]';
+    };
+    //只有不在visited中的节点才添加到visited，避免重复添加
+    if(typeof node === 'object' && !visited.has(node)){
+        visited.add(node);
+    };
+    let result = {};
+    //获取节点的所有可枚举属性
+    try {
+        for(let prop of BASIC_PROPS){
+            try {
+                if(prop in node){
+                    let value = node[prop];
+                    //跳过函数
+                    if(typeof value === 'function'){
+                        continue;
+                    };
+                    //处理特殊类型
+                    if(value === null || value === undefined){
+                        result[prop] = value;
+                    } else if(Array.isArray(value)){
+                        //特殊处理：absoluteTransform和relativeTransform是数组的数组（数字矩阵），直接序列化
+                        if(prop === 'absoluteTransform' || prop === 'relativeTransform' || prop === 'imageTransform'){
+                            result[prop] = value.map(row => {
+                                if(Array.isArray(row)){
+                                    // 数字数组直接返回
+                                    return [...row];
+                                };
+                                return row;
+                            });
+                        } else {
+                            result[prop] = value.map(item => {
+                                if(typeof item === 'object' && item !== null){
+                                    return nodeToJSON(item, visited, depth + 1, maxDepth, false);
+                                };
+                                return item;
+                            });
+                        };
+                    } else if(typeof value === 'object'){
+                        //对于parent等引用，只保存id
+                        if(prop === 'parent' && value && 'id' in value){
+                            result[prop] = { id: value.id, type: value.type || null };
+                        } else if(prop === 'mainComponent' && value && 'id' in value){
+                            result[prop] = { id: value.id, type: value.type || null };
+                        } else {
+                            result[prop] = nodeToJSON(value, visited, depth + 1, maxDepth, false);
+                        };
+                    } else {
+                        result[prop] = value;
+                    };
+                };
+            } catch(e){
+                //忽略无法访问的属性
+                continue;
+            };
+        };
+        //处理children（如果有）
+        if('children' in node && Array.isArray(node.children)){
+            result.children = node.children.map(child => {
+                if(child && typeof child === 'object'){
+                    //children中的节点使用isChild=true，允许正常序列化
+                    return nodeToJSON(child, visited, depth + 1, maxDepth, true);
+                };
+                return child;
+            });
+        };
+    } catch(e){
+        result._error = e.message;
+    };
+    return result;
 };

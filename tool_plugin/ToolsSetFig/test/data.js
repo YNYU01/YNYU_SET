@@ -6,7 +6,7 @@ let skillSecInfo = [
   },
   {
     id: 'EaseTransform',
-    name: ["斜切","skew"],
+    name: ["斜切拉伸","ease transform"],
   },
   {
     id: 'UniformScale',
