@@ -698,26 +698,39 @@ Object.assign(TOOL_JS.prototype, {
             attributes.y = attributes.y.replace('px','') * 1
           }
           let imgPromise = (attributes)=>{
-            // 统一使用 CUT_IMAGE 方法处理所有图片，确保 cuts 始终为数组格式
-            // 这样无论图片大小，数据格式都与导入大图功能保持一致
+            if(attributes.width <= 4096 && attributes.height <= 4096) {
+              let b64data;
+              if(attributes['xlink:href']){
+                b64data = attributes['xlink:href'].split(',')[1]
+              }
+              if(attributes['href']){
+                b64data = attributes['href'].split(',')[1]
+              }
+              return {
+                attributes,
+                cuts: {
+                  img: self.B64ToU8A(b64data),
+                  w: attributes.width,
+                  h: attributes.height,
+                  x: 0,
+                  y: 0,
+                }
+              };
+            }
             return new Promise((resolveImg) => {
               let img = new Image();
-              img.src = attributes["xlink:href"] || attributes.href;
+              img.src = attributes["xlink:href"] || attributes.href;;
               img.onload = async () => {
                 try {
-                  let cuts = await self.CUT_IMAGE(img);
-                  resolveImg({ attributes, cuts: cuts });
-                } catch (error) {
-                  console.error('Error processing image with CUT_IMAGE:', error);
+                  let cuts = await self.CUT_IMAGE(img)
+                  resolveImg({ attributes, cuts: cuts })
+                } catch {
                   resolveImg({ attributes, cuts: null });
                 }
               };
-              img.onerror = () => {
-                console.error('Error loading image:', attributes["xlink:href"] || attributes.href);
-                resolveImg({ attributes, cuts: null });
-              };
-            });
-          };
+              img.onerror = () => resolveImg(null);
+            }
+          )};
           results.push(await imgPromise(attributes));
         };
       };
@@ -732,656 +745,6 @@ Object.assign(TOOL_JS.prototype, {
       });
     });
   }
-  },
-
-  /**
-   * 将SVG完全解析为常规节点数据（.zy兼容格式的核心）
-   * 参考Sketch的解析思路，将SVG标签映射到节点类型
-   * @param {string} svgText - svg文本
-   * @param {string} createname - 创建名称
-   * @returns {Promise<Object>} {zyType:'svg', zyName: string, nodes: Array}
-   * nodes结构: [{
-   *   type: 'FRAME' | 'RECTANGLE' | 'ELLIPSE' | 'VECTOR' | 'TEXT' | 'GROUP',
-   *   name: string,
-   *   x: number,
-   *   y: number,
-   *   width: number,
-   *   height: number,
-   *   fills: Array,
-   *   strokes: Array,
-   *   strokeWeight: number,
-   *   opacity: number,
-   *   visible: boolean,
-   *   transform: Array,
-   *   children: Array,
-   *   // 特殊属性
-   *   cornerRadius?: number, // RECTANGLE
-   *   text?: string, // TEXT
-   *   pathData?: string, // VECTOR
-   *   imageData?: {cuts: Array, attributes: Object}, // IMAGE
-   * }]
-   */
-  async SvgToNodes(svgText, createname) {
-    const self = this;
-    const parser = new DOMParser();
-    createname = createname ? createname : '@SVG_NODE';
-    
-    try {
-      const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
-      const svgRoot = svgDoc.documentElement;
-      
-      // 检查解析错误
-      const parserError = svgDoc.querySelector('parsererror');
-      if (parserError) {
-        console.error('SVG parsing error:', parserError.textContent);
-        return { zyType: null, zyName: null, nodes: null };
-      }
-
-      // 获取SVG根元素属性
-      const svgAttrs = this._getAttributes(svgRoot);
-      const svgWidth = this._parseLength(svgAttrs.width || svgAttrs.viewBox?.split(' ')[2] || '100');
-      const svgHeight = this._parseLength(svgAttrs.height || svgAttrs.viewBox?.split(' ')[3] || '100');
-      const viewBox = svgAttrs.viewBox ? svgAttrs.viewBox.split(' ').map(v => parseFloat(v)) : [0, 0, svgWidth, svgHeight];
-
-      // 收集所有定义（渐变、图案、滤镜等）
-      const defs = svgRoot.querySelector('defs');
-      const definitions = this._parseDefinitions(defs || null);
-
-      // 解析根节点
-      const rootNode = {
-        type: 'FRAME',
-        name: createname,
-        x: viewBox[0] || 0,
-        y: viewBox[1] || 0,
-        width: svgWidth,
-        height: svgHeight,
-        fills: this._parseFill(svgAttrs, definitions),
-        strokes: this._parseStroke(svgAttrs, definitions),
-        strokeWeight: this._parseLength(svgAttrs['stroke-width'] || '0'),
-        opacity: this._parseOpacity(svgAttrs),
-        visible: svgAttrs.display !== 'none' && svgAttrs.visibility !== 'hidden',
-        transform: this._parseTransform(svgAttrs.transform),
-        children: []
-      };
-
-      // 遍历所有子元素
-      const children = await this._traverseNodes(svgRoot, definitions, self);
-      rootNode.children = children;
-
-      return {
-        zyType: 'svg',
-        zyName: createname,
-        nodes: [rootNode]
-      };
-    } catch (error) {
-      console.error('Error processing SVG to nodes:', error);
-      return { zyType: null, zyName: null, nodes: null };
-    }
-  },
-
-  /**
-   * SVG标签到节点类型的映射表
-   */
-  _svgTagToNodeType: {
-    'svg': 'FRAME',
-    'g': 'GROUP',
-    'rect': 'RECTANGLE',
-    'circle': 'ELLIPSE',
-    'ellipse': 'ELLIPSE',
-    'line': 'VECTOR',
-    'polyline': 'VECTOR',
-    'polygon': 'VECTOR',
-    'path': 'VECTOR',
-    'text': 'TEXT',
-    'tspan': 'TEXT',
-    'image': 'IMAGE',
-    'use': 'INSTANCE', // 引用元素
-    'symbol': 'COMPONENT',
-    'defs': null, // 定义，不创建节点
-    'style': null,
-    'script': null,
-    'title': null,
-    'desc': null,
-  },
-
-  /**
-   * 获取元素的所有属性
-   */
-  _getAttributes(node) {
-    if (!node || !node.attributes) return {};
-    const attrs = {};
-    Array.from(node.attributes).forEach(attr => {
-      attrs[attr.name] = attr.value;
-    });
-    return attrs;
-  },
-
-  /**
-   * 解析长度值（支持px, em, %, 无单位）
-   */
-  _parseLength(value, defaultValue = 0) {
-    if (!value || value === 'none') return defaultValue;
-    if (typeof value === 'number') return value;
-    const num = parseFloat(value);
-    if (isNaN(num)) return defaultValue;
-    return num;
-  },
-
-  /**
-   * 解析透明度
-   */
-  _parseOpacity(attrs) {
-    const opacity = parseFloat(attrs.opacity);
-    if (!isNaN(opacity)) return opacity;
-    return 1;
-  },
-
-  /**
-   * 解析变换矩阵
-   */
-  _parseTransform(transform) {
-    if (!transform) return null;
-    // 简化处理，返回原始transform字符串，后续可在code.js中解析
-    // 支持: translate, rotate, scale, matrix, skewX, skewY
-    return transform;
-  },
-
-  /**
-   * 解析填充
-   */
-  _parseFill(attrs, definitions) {
-    const fill = attrs.fill;
-    if (!fill || fill === 'none') return [];
-    
-    // 解析颜色
-    if (fill.startsWith('url(#')) {
-      // 渐变或图案引用
-      const id = fill.match(/#([^)]+)/)?.[1];
-      const def = definitions[id];
-      if (def) {
-        return this._parseGradient(def, definitions);
-      }
-    } else {
-      // 纯色填充
-      const color = this._parseColor(fill);
-      if (color) {
-        return [{
-          type: 'SOLID',
-          color: color,
-          opacity: this._parseOpacity(attrs)
-        }];
-      }
-    }
-    return [];
-  },
-
-  /**
-   * 解析描边
-   */
-  _parseStroke(attrs, definitions) {
-    const stroke = attrs.stroke;
-    if (!stroke || stroke === 'none') return [];
-    
-    if (stroke.startsWith('url(#')) {
-      const id = stroke.match(/#([^)]+)/)?.[1];
-      const def = definitions[id];
-      if (def) {
-        return this._parseGradient(def, definitions);
-      }
-    } else {
-      const color = this._parseColor(stroke);
-      if (color) {
-        return [{
-          type: 'SOLID',
-          color: color,
-          opacity: this._parseOpacity(attrs)
-        }];
-      }
-    }
-    return [];
-  },
-
-  /**
-   * 解析颜色值（支持hex, rgb, rgba, 颜色名）
-   */
-  _parseColor(colorStr) {
-    if (!colorStr) return null;
-    
-    // 移除空格
-    colorStr = colorStr.trim();
-    
-    // 颜色名映射
-    const colorNames = {
-      'black': { r: 0, g: 0, b: 0 },
-      'white': { r: 1, g: 1, b: 1 },
-      'red': { r: 1, g: 0, b: 0 },
-      'green': { r: 0, g: 1, b: 0 },
-      'blue': { r: 0, g: 0, b: 1 },
-      'transparent': null
-    };
-    
-    if (colorNames[colorStr.toLowerCase()]) {
-      return colorNames[colorStr.toLowerCase()];
-    }
-    
-    // hex颜色 #rgb, #rrggbb
-    if (colorStr.startsWith('#')) {
-      const hex = colorStr.slice(1);
-      if (hex.length === 3) {
-        return {
-          r: parseInt(hex[0] + hex[0], 16) / 255,
-          g: parseInt(hex[1] + hex[1], 16) / 255,
-          b: parseInt(hex[2] + hex[2], 16) / 255
-        };
-      } else if (hex.length === 6) {
-        return {
-          r: parseInt(hex.slice(0, 2), 16) / 255,
-          g: parseInt(hex.slice(2, 4), 16) / 255,
-          b: parseInt(hex.slice(4, 6), 16) / 255
-        };
-      }
-    }
-    
-    // rgb/rgba
-    const rgbMatch = colorStr.match(/rgba?\(([^)]+)\)/);
-    if (rgbMatch) {
-      const values = rgbMatch[1].split(',').map(v => parseFloat(v.trim()));
-      return {
-        r: values[0] / 255,
-        g: values[1] / 255,
-        b: values[2] / 255
-      };
-    }
-    
-    return null;
-  },
-
-  /**
-   * 解析渐变
-   */
-  _parseGradient(gradientDef, definitions) {
-    if (!gradientDef) return [];
-    
-    const type = gradientDef.tagName.toLowerCase();
-    if (type === 'lineargradient') {
-      const stops = Array.from(gradientDef.querySelectorAll('stop')).map(stop => {
-        const attrs = this._getAttributes(stop);
-        const color = this._parseColor(attrs.stopColor || attrs.style?.match(/stop-color:\s*([^;]+)/)?.[1]);
-        const offset = parseFloat(attrs.offset || '0');
-        return {
-          color: color || { r: 0, g: 0, b: 0 },
-          position: offset
-        };
-      });
-      
-      return [{
-        type: 'GRADIENT_LINEAR',
-        gradientStops: stops,
-        gradientTransform: this._parseTransform(gradientDef.getAttribute('gradientTransform'))
-      }];
-    } else if (type === 'radialgradient') {
-      const stops = Array.from(gradientDef.querySelectorAll('stop')).map(stop => {
-        const attrs = this._getAttributes(stop);
-        const color = this._parseColor(attrs.stopColor || attrs.style?.match(/stop-color:\s*([^;]+)/)?.[1]);
-        const offset = parseFloat(attrs.offset || '0');
-        return {
-          color: color || { r: 0, g: 0, b: 0 },
-          position: offset
-        };
-      });
-      
-      return [{
-        type: 'GRADIENT_RADIAL',
-        gradientStops: stops,
-        gradientTransform: this._parseTransform(gradientDef.getAttribute('gradientTransform'))
-      }];
-    }
-    
-    return [];
-  },
-
-  /**
-   * 解析defs中的定义（渐变、图案、滤镜等）
-   */
-  _parseDefinitions(defs) {
-    const definitions = {};
-    if (!defs) return definitions;
-    
-    Array.from(defs.children).forEach(child => {
-      const id = child.getAttribute('id');
-      if (id) {
-        definitions[id] = child;
-      }
-    });
-    
-    return definitions;
-  },
-
-  /**
-   * 遍历节点树，转换为节点数据
-   */
-  async _traverseNodes(parentElement, definitions, self) {
-    const nodes = [];
-    
-    for (const child of Array.from(parentElement.children)) {
-      const tagName = child.tagName.toLowerCase();
-      
-      // 跳过不需要创建节点的元素
-      if (tagName === 'defs' || tagName === 'style' || tagName === 'script' || 
-          tagName === 'title' || tagName === 'desc' || tagName === 'metadata') {
-        continue;
-      }
-      
-      const nodeType = this._svgTagToNodeType[tagName];
-      if (!nodeType) continue;
-      
-      const attrs = this._getAttributes(child);
-      let node = null;
-      
-      switch (tagName) {
-        case 'rect':
-          node = this._parseRect(child, attrs, definitions);
-          break;
-        case 'circle':
-          node = this._parseCircle(child, attrs, definitions);
-          break;
-        case 'ellipse':
-          node = this._parseEllipse(child, attrs, definitions);
-          break;
-        case 'path':
-          node = this._parsePath(child, attrs, definitions);
-          break;
-        case 'line':
-        case 'polyline':
-        case 'polygon':
-          node = this._parsePolyline(child, attrs, definitions);
-          break;
-        case 'text':
-        case 'tspan':
-          node = this._parseText(child, attrs, definitions);
-          break;
-        case 'image':
-          node = await this._parseImage(child, attrs, self);
-          break;
-        case 'g':
-          node = this._parseGroup(child, attrs, definitions);
-          break;
-        case 'use':
-          node = this._parseUse(child, attrs, definitions, parentElement);
-          break;
-        default:
-          // 默认作为GROUP处理
-          node = this._parseGroup(child, attrs, definitions);
-      }
-      
-      if (node) {
-        // 递归处理子节点
-        if (node.children !== undefined) {
-          node.children = await this._traverseNodes(child, definitions, self);
-        }
-        nodes.push(node);
-      }
-    }
-    
-    return nodes;
-  },
-
-  /**
-   * 解析rect元素
-   */
-  _parseRect(element, attrs, definitions) {
-    const x = this._parseLength(attrs.x, 0);
-    const y = this._parseLength(attrs.y, 0);
-    const width = this._parseLength(attrs.width, 0);
-    const height = this._parseLength(attrs.height, 0);
-    const rx = this._parseLength(attrs.rx || attrs.r, 0);
-    const ry = this._parseLength(attrs.ry || attrs.r, 0);
-    
-    return {
-      type: 'RECTANGLE',
-      name: attrs.id || attrs.class || 'rect',
-      x: x,
-      y: y,
-      width: width,
-      height: height,
-      cornerRadius: Math.max(rx, ry),
-      fills: this._parseFill(attrs, definitions),
-      strokes: this._parseStroke(attrs, definitions),
-      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
-      opacity: this._parseOpacity(attrs),
-      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
-      transform: this._parseTransform(attrs.transform)
-    };
-  },
-
-  /**
-   * 解析circle元素
-   */
-  _parseCircle(element, attrs, definitions) {
-    const cx = this._parseLength(attrs.cx, 0);
-    const cy = this._parseLength(attrs.cy, 0);
-    const r = this._parseLength(attrs.r, 0);
-    
-    return {
-      type: 'ELLIPSE',
-      name: attrs.id || attrs.class || 'circle',
-      x: cx - r,
-      y: cy - r,
-      width: r * 2,
-      height: r * 2,
-      fills: this._parseFill(attrs, definitions),
-      strokes: this._parseStroke(attrs, definitions),
-      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
-      opacity: this._parseOpacity(attrs),
-      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
-      transform: this._parseTransform(attrs.transform)
-    };
-  },
-
-  /**
-   * 解析ellipse元素
-   */
-  _parseEllipse(element, attrs, definitions) {
-    const cx = this._parseLength(attrs.cx, 0);
-    const cy = this._parseLength(attrs.cy, 0);
-    const rx = this._parseLength(attrs.rx, 0);
-    const ry = this._parseLength(attrs.ry, 0);
-    
-    return {
-      type: 'ELLIPSE',
-      name: attrs.id || attrs.class || 'ellipse',
-      x: cx - rx,
-      y: cy - ry,
-      width: rx * 2,
-      height: ry * 2,
-      fills: this._parseFill(attrs, definitions),
-      strokes: this._parseStroke(attrs, definitions),
-      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
-      opacity: this._parseOpacity(attrs),
-      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
-      transform: this._parseTransform(attrs.transform)
-    };
-  },
-
-  /**
-   * 解析path元素
-   */
-  _parsePath(element, attrs, definitions) {
-    const pathData = attrs.d || '';
-    
-    return {
-      type: 'VECTOR',
-      name: attrs.id || attrs.class || 'path',
-      x: 0,
-      y: 0,
-      width: 0, // 需要计算路径边界框
-      height: 0,
-      pathData: pathData,
-      fills: this._parseFill(attrs, definitions),
-      strokes: this._parseStroke(attrs, definitions),
-      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
-      opacity: this._parseOpacity(attrs),
-      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
-      transform: this._parseTransform(attrs.transform)
-    };
-  },
-
-  /**
-   * 解析polyline/polygon元素
-   */
-  _parsePolyline(element, attrs, definitions) {
-    const points = attrs.points || '';
-    const pointArray = points.split(/[\s,]+/).filter(p => p).map(p => parseFloat(p));
-    
-    // 转换为path数据
-    let pathData = '';
-    for (let i = 0; i < pointArray.length; i += 2) {
-      if (i === 0) {
-        pathData += `M ${pointArray[i]} ${pointArray[i + 1]}`;
-      } else {
-        pathData += ` L ${pointArray[i]} ${pointArray[i + 1]}`;
-      }
-    }
-    
-    // polygon需要闭合
-    if (element.tagName.toLowerCase() === 'polygon' && pointArray.length >= 4) {
-      pathData += ' Z';
-    }
-    
-    return {
-      type: 'VECTOR',
-      name: attrs.id || attrs.class || 'polyline',
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      pathData: pathData,
-      fills: this._parseFill(attrs, definitions),
-      strokes: this._parseStroke(attrs, definitions),
-      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
-      opacity: this._parseOpacity(attrs),
-      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
-      transform: this._parseTransform(attrs.transform)
-    };
-  },
-
-  /**
-   * 解析text元素
-   */
-  _parseText(element, attrs, definitions) {
-    const x = this._parseLength(attrs.x, 0);
-    const y = this._parseLength(attrs.y, 0);
-    const textContent = element.textContent || element.textContent || '';
-    
-    return {
-      type: 'TEXT',
-      name: attrs.id || attrs.class || 'text',
-      x: x,
-      y: y,
-      width: 0, // 需要根据字体计算
-      height: 0,
-      text: textContent,
-      fontSize: this._parseLength(attrs['font-size'] || '16'),
-      fontFamily: attrs['font-family'] || 'Arial',
-      fills: this._parseFill(attrs, definitions),
-      strokes: this._parseStroke(attrs, definitions),
-      strokeWeight: this._parseLength(attrs['stroke-width'] || '0'),
-      opacity: this._parseOpacity(attrs),
-      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
-      transform: this._parseTransform(attrs.transform)
-    };
-  },
-
-  /**
-   * 解析image元素（复用SvgToObj的逻辑）
-   */
-  async _parseImage(element, attrs, self) {
-    const x = this._parseLength(attrs.x, 0);
-    const y = this._parseLength(attrs.y, 0);
-    const width = this._parseLength(attrs.width, 0);
-    const height = this._parseLength(attrs.height, 0);
-    
-    // 处理图片数据（复用CUT_IMAGE逻辑）
-    let imageData = null;
-    const href = attrs['xlink:href'] || attrs.href;
-    if (href) {
-      if (href.startsWith('data:')) {
-        try {
-          const img = new Image();
-          img.src = href;
-          await new Promise((resolve, reject) => {
-            img.onload = resolve;
-            img.onerror = reject;
-            if (img.complete) resolve();
-          });
-          const cuts = await self.CUT_IMAGE(img);
-          imageData = { cuts: cuts, attributes: attrs };
-        } catch (error) {
-          console.error('Error processing image:', error);
-        }
-      }
-    }
-    
-    return {
-      type: 'IMAGE',
-      name: attrs.id || attrs.class || 'image',
-      x: x,
-      y: y,
-      width: width,
-      height: height,
-      imageData: imageData,
-      opacity: this._parseOpacity(attrs),
-      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
-      transform: this._parseTransform(attrs.transform)
-    };
-  },
-
-  /**
-   * 解析group元素
-   */
-  _parseGroup(element, attrs, definitions) {
-    return {
-      type: 'GROUP',
-      name: attrs.id || attrs.class || 'group',
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      opacity: this._parseOpacity(attrs),
-      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
-      transform: this._parseTransform(attrs.transform),
-      children: []
-    };
-  },
-
-  /**
-   * 解析use元素（引用）
-   */
-  _parseUse(element, attrs, definitions, parentElement) {
-    const href = attrs['xlink:href'] || attrs.href;
-    if (!href || !href.startsWith('#')) {
-      return null;
-    }
-    
-    const id = href.slice(1);
-    const referencedElement = parentElement.ownerDocument.getElementById(id);
-    if (!referencedElement) {
-      return null;
-    }
-    
-    // 创建引用节点
-    return {
-      type: 'INSTANCE',
-      name: attrs.id || attrs.class || 'use',
-      x: this._parseLength(attrs.x, 0),
-      y: this._parseLength(attrs.y, 0),
-      width: 0,
-      height: 0,
-      referenceId: id,
-      opacity: this._parseOpacity(attrs),
-      visible: attrs.display !== 'none' && attrs.visibility !== 'hidden',
-      transform: this._parseTransform(attrs.transform)
-    };
   },
 
 /**==========压缩图片模块==========
@@ -1412,8 +775,23 @@ Object.assign(TOOL_JS.prototype, {
   async ExportImgByData(callback, imgExportData, isFinal, zipName) {
     if (imgExportData.length > 0) {
       try {
+        // 统一调用压缩方法
         const compressedImages = await this.CompressImages(callback, imgExportData, isFinal);
-        this.CreateZipAndDownload(compressedImages, imgExportData, zipName);
+        
+        // 如果只有1个文件，直接下载，不打包为 zip
+        if (imgExportData.length === 1) {
+          const imgData = imgExportData[0];
+          const blob = compressedImages[0];
+          if (blob) {
+            const fileName = (imgData.fileName && imgData.fileName.trim()) || 'image';
+            const format = imgData.format.toLowerCase();
+            const timeName = getDate('YYYYMMDD')[0].slice(2) + '_' + getTime('HHMMSS')[0];
+            saveAs(blob, fileName + '_' + timeName + '.' + format);
+          }
+        } else {
+          // 多个文件时，打包为 zip
+          this.CreateZipAndDownload(compressedImages, imgExportData, zipName);
+        }
       } catch (error) {
         console.error('处理过程中发生错误:', error);
       }
@@ -1785,5 +1163,891 @@ Object.assign(TOOL_JS.prototype, {
         saveAs(content, zipName + timeName + '.zip');
       });
     }
+  },
+
+/**==========DOM转图片模块==========
+ * 将 DOM 节点转换为 Canvas，然后可通过 CompressImage 压缩为不同格式
+ * 基于 dom-to-image 实现，修改为返回 imgExportData 格式
+*/
+
+  // DOM转图片内部实现
+  _domToImgUtil: (function() {
+    function mimes() {
+      var WOFF = 'application/font-woff';
+      var JPEG = 'image/jpeg';
+      return {
+        'woff': WOFF,
+        'woff2': WOFF,
+        'ttf': 'application/font-truetype',
+        'eot': 'application/vnd.ms-fontobject',
+        'png': 'image/png',
+        'jpg': JPEG,
+        'jpeg': JPEG,
+        'gif': 'image/gif',
+        'tiff': 'image/tiff',
+        'svg': 'image/svg+xml'
+      };
+    }
+
+    return {
+      escape: function(string) {
+        return string.replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1');
+      },
+      parseExtension: function(url) {
+        var match = /\.([^\.\/]*?)$/g.exec(url);
+        if (match) return match[1];
+        else return '';
+      },
+      mimeType: function(url) {
+        var extension = this.parseExtension(url).toLowerCase();
+        return mimes()[extension] || '';
+      },
+      isDataUrl: function(url) {
+        return url.search(/^(data:)/) !== -1;
+      },
+      canvasToBlob: function(canvas) {
+        if (canvas.toBlob)
+          return new Promise(function (resolve) {
+            canvas.toBlob(resolve);
+          });
+        return new Promise(function (resolve) {
+          var binaryString = window.atob(canvas.toDataURL().split(',')[1]);
+          var length = binaryString.length;
+          var binaryArray = new Uint8Array(length);
+          for (var i = 0; i < length; i++)
+            binaryArray[i] = binaryString.charCodeAt(i);
+          resolve(new Blob([binaryArray], { type: 'image/png' }));
+        });
+      },
+      resolveUrl: function(url, baseUrl) {
+        var doc = document.implementation.createHTMLDocument();
+        var base = doc.createElement('base');
+        doc.head.appendChild(base);
+        var a = doc.createElement('a');
+        doc.body.appendChild(a);
+        base.href = baseUrl;
+        a.href = url;
+        return a.href;
+      },
+      uid: (function() {
+        var index = 0;
+        return function () {
+          return 'u' + fourRandomChars() + index++;
+          function fourRandomChars() {
+            return ('0000' + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
+          }
+        };
+      })(),
+      makeImage: function(uri) {
+        return new Promise(function (resolve, reject) {
+          var image = new Image();
+          var timeoutId = setTimeout(function() {
+            image.onload = null;
+            image.onerror = null;
+            reject(new Error('Image load timeout after 30s'));
+          }, 30000);
+          image.onload = function () {
+            clearTimeout(timeoutId);
+            resolve(image);
+          };
+          image.onerror = function(error) {
+            clearTimeout(timeoutId);
+            var uriPreview = uri.length > 200 ? uri.substring(0, 200) + '...' : uri;
+            console.error('Image load error, URI preview:', uriPreview);
+            reject(error || new Error('Image load failed'));
+          };
+          image.src = uri;
+        });
+      },
+      getAndEncode: function(url, cacheBust, imagePlaceholder) {
+        var TIMEOUT = 30000;
+        if(cacheBust) {
+          url += ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
+        }
+        return new Promise(function (resolve) {
+          var request = new XMLHttpRequest();
+          request.onreadystatechange = done;
+          request.ontimeout = timeout;
+          request.responseType = 'blob';
+          request.timeout = TIMEOUT;
+          request.open('GET', url, true);
+          request.send();
+
+          var placeholder;
+          if(imagePlaceholder) {
+            var split = imagePlaceholder.split(/,/);
+            if(split && split[1]) {
+              placeholder = split[1];
+            }
+          }
+
+          function done() {
+            if (request.readyState !== 4) return;
+            if (request.status !== 200) {
+              if(placeholder) {
+                resolve(placeholder);
+              } else {
+                fail('cannot fetch resource: ' + url + ', status: ' + request.status);
+              }
+              return;
+            }
+            var encoder = new FileReader();
+            encoder.onloadend = function () {
+              var content = encoder.result.split(/,/)[1];
+              resolve(content);
+            };
+            encoder.readAsDataURL(request.response);
+          }
+
+          function timeout() {
+            if(placeholder) {
+              resolve(placeholder);
+            } else {
+              fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url);
+            }
+          }
+
+          function fail(message) {
+            console.error(message);
+            resolve('');
+          }
+        });
+      },
+      dataAsUrl: function(content, type) {
+        return 'data:' + type + ';base64,' + content;
+      },
+      delay: function(ms) {
+        return function (arg) {
+          return new Promise(function (resolve) {
+            setTimeout(function () {
+              resolve(arg);
+            }, ms);
+          });
+        };
+      },
+      asArray: function(arrayLike) {
+        var array = [];
+        var length = arrayLike.length;
+        for (var i = 0; i < length; i++) array.push(arrayLike[i]);
+        return array;
+      },
+      escapeXhtml: function(string) {
+        return string.replace(/#/g, '%23').replace(/\n/g, '%0A');
+      },
+      width: function(node) {
+        var leftBorder = px(node, 'border-left-width');
+        var rightBorder = px(node, 'border-right-width');
+        var tagName = node.tagName ? node.tagName.toLowerCase() : '';
+        
+        return node.scrollWidth + leftBorder + rightBorder;
+      },
+      height: function(node) {
+        var topBorder = px(node, 'border-top-width');
+        var bottomBorder = px(node, 'border-bottom-width');
+        var tagName = node.tagName ? node.tagName.toLowerCase() : '';
+        
+        return node.scrollHeight + topBorder + bottomBorder;
+      }
+    };
+
+    function px(node, styleProperty) {
+      var value = window.getComputedStyle(node).getPropertyValue(styleProperty);
+      return parseFloat(value.replace('px', ''));
+    }
+  })(),
+
+  _domToImgInliner: (function() {
+    var URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
+
+    return {
+      shouldProcess: function(string) {
+        return string.search(URL_REGEX) !== -1;
+      },
+      readUrls: function(string, util) {
+        var result = [];
+        var match;
+        while ((match = URL_REGEX.exec(string)) !== null) {
+          result.push(match[1]);
+        }
+        return result.filter(function (url) {
+          return !util.isDataUrl(url);
+        });
+      },
+      inline: function(string, url, baseUrl, get, util) {
+        return Promise.resolve(url)
+          .then(function (url) {
+            return baseUrl ? util.resolveUrl(url, baseUrl) : url;
+          })
+          .then(get || function(url) { return util.getAndEncode(url, false, null); })
+          .then(function (data) {
+            return util.dataAsUrl(data, util.mimeType(url));
+          })
+          .then(function (dataUrl) {
+            return string.replace(urlAsRegex(url, util), '$1' + dataUrl + '$3');
+          });
+
+        function urlAsRegex(url, util) {
+          return new RegExp('(url\\([\'"]?)(' + util.escape(url) + ')([\'"]?\\))', 'g');
+        }
+      },
+      inlineAll: function(string, baseUrl, get, util) {
+        if (!this.shouldProcess(string)) return Promise.resolve(string);
+        var self = this;
+        return Promise.resolve(string)
+          .then(function(str) { return self.readUrls(str, util); })
+          .then(function (urls) {
+            var done = Promise.resolve(string);
+            urls.forEach(function (url) {
+              done = done.then(function (string) {
+                return self.inline(string, url, baseUrl, get, util);
+              });
+            });
+            return done;
+          });
+      }
+    };
+  })(),
+
+  _domToImgFontFaces: (function() {
+    return {
+      resolveAll: function(util, inliner) {
+        return this.readAll(util, inliner)
+          .then(function (webFonts) {
+            return Promise.all(
+              webFonts.map(function (webFont) {
+                return webFont.resolve();
+              })
+            );
+          })
+          .then(function (cssStrings) {
+            return cssStrings.join('\n');
+          });
+      },
+      readAll: function(util, inliner) {
+        return Promise.resolve(util.asArray(document.styleSheets))
+          .then(function(sheets) { return getCssRules(sheets, util); })
+          .then(function(rules) { return selectWebFontRules(rules, inliner); })
+          .then(function (rules) {
+            return rules.map(function(rule) { return newWebFont(rule, inliner); });
+          });
+
+        function selectWebFontRules(cssRules, inliner) {
+          return cssRules
+            .filter(function (rule) {
+              return rule.type === CSSRule.FONT_FACE_RULE;
+            })
+            .filter(function (rule) {
+              return inliner.shouldProcess(rule.style.getPropertyValue('src'));
+            });
+        }
+
+        function getCssRules(styleSheets, util) {
+          var cssRules = [];
+          styleSheets.forEach(function (sheet) {
+            try {
+              util.asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules));
+            } catch (e) {
+              // 忽略跨域样式表错误
+            }
+          });
+          return cssRules;
+        }
+
+        function newWebFont(webFontRule, inliner) {
+          return {
+            resolve: function resolve() {
+              var baseUrl = (webFontRule.parentStyleSheet || {}).href;
+              return inliner.inlineAll(webFontRule.cssText, baseUrl, null, inliner._util || {
+                resolveUrl: function(url, base) { return url; },
+                getAndEncode: function(url) { return Promise.resolve(''); },
+                dataAsUrl: function(data, type) { return 'data:' + type + ';base64,' + data; },
+                mimeType: function(url) { return 'application/font-woff'; },
+                escape: function(str) { return str.replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1'); },
+                isDataUrl: function(url) { return url.search(/^(data:)/) !== -1; }
+              });
+            },
+            src: function () {
+              return webFontRule.style.getPropertyValue('src');
+            }
+          };
+        }
+      }
+    };
+  })(),
+
+  _domToImgImages: (function() {
+    function inlineBackground(node, util, inliner) {
+      var background = node.style.getPropertyValue('background');
+      if (!background) return Promise.resolve(node);
+      return inliner.inlineAll(background, null, null, util)
+        .then(function (inlined) {
+          node.style.setProperty(
+            'background',
+            inlined,
+            node.style.getPropertyPriority('background')
+          );
+        })
+        .then(function () {
+          return node;
+        });
+    }
+
+    function newImage(element, util) {
+      return {
+        inline: function inline(get) {
+          if (util.isDataUrl(element.src)) return Promise.resolve();
+          return Promise.resolve(element.src)
+            .then(get || function(url) { return util.getAndEncode(url, false, null); })
+            .then(function (data) {
+              return util.dataAsUrl(data, util.mimeType(element.src));
+            })
+            .then(function (dataUrl) {
+              return new Promise(function (resolve, reject) {
+                element.onload = resolve;
+                element.onerror = reject;
+                element.src = dataUrl;
+              });
+            });
+        }
+      };
+    }
+
+    var imagesObj = {
+      inlineAll: function(node, util, inliner) {
+        if (!(node instanceof Element)) return Promise.resolve(node);
+        return inlineBackground(node, util, inliner)
+          .then(function () {
+            if (node instanceof HTMLImageElement)
+              return newImage(node, util).inline();
+            else
+              return Promise.all(
+                util.asArray(node.childNodes).map(function (child) {
+                  return imagesObj.inlineAll(child, util, inliner);
+                })
+              );
+          });
+      }
+    };
+    return imagesObj;
+  })(),
+
+  /**
+   * 将 DOM 节点转换为 SVG 数据 URI
+   * @param {Node} node - DOM 节点
+   * @param {Object} options - 选项
+   * @returns {Promise<string>} SVG 数据 URI
+   */
+  async toSvg(node, options) {
+    options = options || {};
+    var util = this._domToImgUtil;
+    var inliner = this._domToImgInliner;
+    var fontFaces = this._domToImgFontFaces;
+    var images = this._domToImgImages;
+    var defaultOptions = {
+      imagePlaceholder: undefined,
+      cacheBust: false
+    };
+
+    // 复制选项
+    var imagePlaceholder = typeof(options.imagePlaceholder) === 'undefined' 
+      ? defaultOptions.imagePlaceholder 
+      : options.imagePlaceholder;
+    var cacheBust = typeof(options.cacheBust) === 'undefined' 
+      ? defaultOptions.cacheBust 
+      : options.cacheBust;
+
+    return Promise.resolve(node)
+      .then(function (node) {
+        return this._cloneNode(node, options.filter, true, util, inliner, fontFaces, images, cacheBust, imagePlaceholder);
+      }.bind(this))
+      .then(function (clone) {
+        return this._embedFonts(clone, util, inliner, fontFaces, cacheBust, imagePlaceholder);
+      }.bind(this))
+      .then(function (clone) {
+        return this._inlineImages(clone, util, inliner, images, cacheBust, imagePlaceholder);
+      }.bind(this))
+      .then(function (clone) {
+        return this._applyOptions(clone, options);
+      }.bind(this))
+      .then(function (clone) {
+        return this._makeSvgDataUri(clone,
+          options.width || util.width(node),
+          options.height || util.height(node),
+          options.bgcolor,
+          util
+        );
+      }.bind(this));
+  },
+
+  _applyOptions: function(clone, options) {
+    if (options.bgcolor) {
+      clone.style.setProperty('background-color', options.bgcolor, 'important');
+    }
+    if (options.width) clone.style.width = options.width + 'px';
+    if (options.height) clone.style.height = options.height + 'px';
+    if (options.style) {
+      Object.keys(options.style).forEach(function (property) {
+        clone.style[property] = options.style[property];
+      });
+    }
+    return Promise.resolve(clone);
+  },
+
+  _cloneNode: function(node, filter, root, util, inliner, fontFaces, images, cacheBust, imagePlaceholder) {
+    if (!root && filter && !filter(node)) return Promise.resolve();
+
+    return Promise.resolve(node)
+      .then(function (node) {
+        if (node instanceof HTMLCanvasElement) return util.makeImage(node.toDataURL());
+        return node.cloneNode(false);
+      })
+      .then(function (clone) {
+        return this._cloneChildren(node, clone, filter, util, inliner, fontFaces, images, cacheBust, imagePlaceholder);
+      }.bind(this))
+      .then(function (clone) {
+        return this._processClone(node, clone, util, inliner);
+      }.bind(this));
+  },
+
+  _cloneChildren: function(original, clone, filter, util, inliner, fontFaces, images, cacheBust, imagePlaceholder) {
+    var children = original.childNodes;
+    if (children.length === 0) return Promise.resolve(clone);
+
+    return this._cloneChildrenInOrder(clone, util.asArray(children), filter, util, inliner, fontFaces, images, cacheBust, imagePlaceholder)
+      .then(function () {
+        return clone;
+      });
+  },
+
+  _cloneChildrenInOrder: function(parent, children, filter, util, inliner, fontFaces, images, cacheBust, imagePlaceholder) {
+    var done = Promise.resolve();
+    var self = this;
+    children.forEach(function (child) {
+      done = done
+        .then(function () {
+          return self._cloneNode(child, filter, false, util, inliner, fontFaces, images, cacheBust, imagePlaceholder);
+        })
+        .then(function (childClone) {
+          if (childClone) parent.appendChild(childClone);
+        });
+    });
+    return done;
+  },
+
+  _processClone: function(original, clone, util, inliner) {
+    if (!(clone instanceof Element)) return Promise.resolve(clone);
+
+    return Promise.resolve()
+      .then(function() { return this._cloneStyle(original, clone, util); }.bind(this))
+      .then(function() { return this._clonePseudoElements(original, clone, util); }.bind(this))
+      .then(function() { return this._copyUserInput(original, clone); }.bind(this))
+      .then(function() { return this._hideScrollbars(clone); }.bind(this))
+      .then(function() { return this._fixSvg(clone); }.bind(this))
+      .then(function () {
+        return clone;
+      });
+  },
+
+  _cloneStyle: function(original, clone, util) {
+    var source = window.getComputedStyle(original);
+    var target = clone.style;
+    if (source.cssText) target.cssText = source.cssText;
+    else {
+      util.asArray(source).forEach(function (name) {
+        target.setProperty(
+          name,
+          source.getPropertyValue(name),
+          source.getPropertyPriority(name)
+        );
+      });
+    }
+  },
+
+  _clonePseudoElements: function(original, clone, util) {
+    [':before', ':after'].forEach(function (element) {
+      this._clonePseudoElement(original, clone, element, util);
+    }.bind(this));
+  },
+
+  _clonePseudoElement: function(original, clone, element, util) {
+    var style = window.getComputedStyle(original, element);
+    var content = style.getPropertyValue('content');
+    if (content === '' || content === 'none') return;
+
+    var className = util.uid();
+    clone.className = clone.className + ' ' + className;
+    var styleElement = document.createElement('style');
+    styleElement.appendChild(this._formatPseudoElementStyle(className, element, style, util));
+    clone.appendChild(styleElement);
+  },
+
+  _formatPseudoElementStyle: function(className, element, style, util) {
+    var selector = '.' + className + ':' + element;
+    var cssText = style.cssText ? this._formatCssText(style) : this._formatCssProperties(style, util);
+    return document.createTextNode(selector + '{' + cssText + '}');
+  },
+
+  _formatCssText: function(style) {
+    var content = style.getPropertyValue('content');
+    return style.cssText + ' content: ' + content + ';';
+  },
+
+  _formatCssProperties: function(style, util) {
+    return util.asArray(style)
+      .map(function(name) {
+        return name + ': ' +
+          style.getPropertyValue(name) +
+          (style.getPropertyPriority(name) ? ' !important' : '');
+      })
+      .join('; ') + ';';
+  },
+
+  _copyUserInput: function(original, clone) {
+    if (original instanceof HTMLTextAreaElement) clone.innerHTML = original.value;
+    if (original instanceof HTMLInputElement) clone.setAttribute("value", original.value);
+  },
+
+  _hideScrollbars: function(clone) {
+    this._hideScrollbarsRecursive(clone);
+  },
+
+  _hideScrollbarsRecursive: function(node) {
+    if (!(node instanceof Element)) return;
+    var util = this._domToImgUtil;
+    var computedStyle = window.getComputedStyle(node);
+    var overflow = computedStyle.overflow;
+    var overflowX = computedStyle.overflowX;
+    var overflowY = computedStyle.overflowY;
+    var resize = computedStyle.resize;
+    var tagName = node.tagName ? node.tagName.toLowerCase() : '';
+    
+    var hasScroll = overflow === 'auto' || overflow === 'scroll' || 
+                   overflowX === 'auto' || overflowX === 'scroll' ||
+                   overflowY === 'auto' || overflowY === 'scroll' ||
+                   tagName === 'pre' || tagName === 'textarea';
+    
+    var hasResize = resize === 'both' || resize === 'horizontal' || resize === 'vertical' ||
+                   node.hasAttribute('data-resize') ||
+                   tagName === 'pre' || tagName === 'textarea';
+    
+    if (hasScroll) {
+      node.style.scrollbarWidth = 'none';
+      node.style.setProperty('-ms-overflow-style', 'none', 'important');
+      if (overflow === 'auto' || overflow === 'scroll' || tagName === 'pre' || tagName === 'textarea') {
+        node.style.setProperty('overflow', 'hidden', 'important');
+      }
+      if (overflowX === 'auto' || overflowX === 'scroll') {
+        node.style.setProperty('overflow-x', 'hidden', 'important');
+      }
+      if (overflowY === 'auto' || overflowY === 'scroll') {
+        node.style.setProperty('overflow-y', 'hidden', 'important');
+      }
+    }
+    
+    if (hasResize) {
+      node.style.setProperty('resize', 'none', 'important');
+    }
+    
+    if (node.hasAttribute('data-resize')) {
+      var styleId = 'hide-resize-' + Date.now();
+      var existingStyle = document.getElementById(styleId);
+      if (!existingStyle) {
+        var styleElement = document.createElement('style');
+        styleElement.id = styleId;
+        styleElement.textContent = '[data-resize]::after { display: none !important; }';
+        clone.appendChild(styleElement);
+      }
+    }
+    
+    util.asArray(node.children).forEach(function(child) {
+      this._hideScrollbarsRecursive(child);
+    }.bind(this));
+  },
+
+  _fixSvg: function(clone) {
+    if (!(clone instanceof SVGElement)) return;
+    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    if (!(clone instanceof SVGRectElement)) return;
+    ['width', 'height'].forEach(function (attribute) {
+      var value = clone.getAttribute(attribute);
+      if (!value) return;
+      clone.style.setProperty(attribute, value);
+    });
+  },
+
+  _embedFonts: function(node, util, inliner, fontFaces, cacheBust, imagePlaceholder) {
+    var self = this;
+    inliner._util = {
+      resolveUrl: function(url, base) { return util.resolveUrl(url, base); },
+      getAndEncode: function(url) { return util.getAndEncode(url, cacheBust, imagePlaceholder); },
+      dataAsUrl: function(data, type) { return util.dataAsUrl(data, type); },
+      mimeType: function(url) { return util.mimeType(url); },
+      escape: function(str) { return util.escape(str); },
+      isDataUrl: function(url) { return util.isDataUrl(url); }
+    };
+    return fontFaces.resolveAll(util, inliner)
+      .then(function (cssText) {
+        var styleNode = document.createElement('style');
+        node.appendChild(styleNode);
+        styleNode.appendChild(document.createTextNode(cssText));
+        return node;
+      });
+  },
+
+  _inlineImages: function(node, util, inliner, images, cacheBust, imagePlaceholder) {
+    var self = this;
+    var getAndEncode = function(url) {
+      return util.getAndEncode(url, cacheBust, imagePlaceholder);
+    };
+    return images.inlineAll(node, util, inliner)
+      .then(function () {
+        return node;
+      });
+  },
+
+  _makeSvgDataUri: function(node, width, height, bgcolor, util) {
+    return Promise.resolve(node)
+      .then(function (node) {
+        node.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+        return new XMLSerializer().serializeToString(node);
+      })
+      .then(function(xhtml) { return util.escapeXhtml(xhtml); })
+      .then(function (xhtml) {
+        return '<foreignObject x="0" y="0" width="100%" height="100%">' + xhtml + '</foreignObject>';
+      })
+      .then(function (foreignObject) {
+        var bgRect = '';
+        if (bgcolor) {
+          var escapedBgcolor = String(bgcolor)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+          bgRect = '<rect x="0" y="0" width="' + width + '" height="' + height + '" fill="' + escapedBgcolor + '"/>';
+        }
+        var svgContent = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">' +
+          bgRect + foreignObject + '</svg>';
+        return svgContent;
+      })
+      .then(function (svg) {
+        return 'data:image/svg+xml;charset=utf-8,' + util.escapeXhtml(svg);
+      });
+  },
+
+  _draw: function(domNode, options) {
+    options = options || {};
+    var util = this._domToImgUtil;
+    var self = this;
+    return this.toSvg(domNode, options)
+      .then(function(svg) { return util.makeImage(svg); })
+      .then(util.delay(100))
+      .then(function (image) {
+        var canvas = self._newCanvas(domNode, options, util);
+        var ctx = canvas.getContext('2d');
+        
+        if (options.bgcolor) {
+          ctx.fillStyle = options.bgcolor;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        ctx.save();
+        if (options.bgcolor) {
+          ctx.globalCompositeOperation = 'source-over';
+        }
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+        return canvas;
+      });
+  },
+
+  _newCanvas: function(domNode, options, util) {
+    var canvas = document.createElement('canvas');
+    canvas.width = options.width || util.width(domNode);
+    canvas.height = options.height || util.height(domNode);
+    return canvas;
+  },
+
+  /**
+   * 准备高清元素（用于缩放）
+   * @param {Node} dom - 原始 DOM 节点
+   * @param {number} scale - 缩放倍数
+   * @param {Object} util - 工具对象
+   * @returns {Object} {container: 容器元素, originalWidth: 原始宽度, originalHeight: 原始高度}
+   */
+  _prepareHighDpiElement: function(dom, scale, util) {
+    // 获取原始尺寸和样式（使用实际计算后的尺寸，而不是样式值）
+    var originalWidth = util.width(dom);
+    var originalHeight = util.height(dom);
+    var computedStyle = window.getComputedStyle(dom);
+    
+    // 保存原始样式值
+    var originalStyles = {
+      width: dom.style.width || '',
+      height: dom.style.height || '',
+      zoom: dom.style.zoom || '',
+      boxSizing: dom.style.boxSizing || '',
+      minWidth: dom.style.minWidth || '',
+      maxWidth: dom.style.maxWidth || '',
+      minHeight: dom.style.minHeight || '',
+      maxHeight: dom.style.maxHeight || ''
+    };
+    
+    // 同时修改宽高和 zoom，确保等比例放大且不重排
+    var scaledWidth = originalWidth ;
+    var scaledHeight = originalHeight ;
+    
+    // 先清除可能影响布局的样式
+    dom.style.minWidth = '0';
+    dom.style.maxWidth = 'none';
+    dom.style.minHeight = '0';
+    dom.style.maxHeight = 'none';
+    
+    // 修改宽高为固定像素值（基于实际计算后的尺寸）
+    dom.style.width = scaledWidth + 'px';
+    dom.style.height = scaledHeight + 'px';
+    
+    // 设置 zoom 来放大内容（配合宽高修改，确保等比例放大）
+    dom.style.zoom = scale;
+    dom.style.boxSizing = computedStyle.boxSizing || 'border-box';
+    
+    // 强制浏览器重新计算布局
+    dom.offsetHeight;
+    
+    return {
+      dom: dom,
+      originalWidth: originalWidth,
+      originalHeight: originalHeight,
+      scaledWidth: scaledWidth * scale,
+      scaledHeight: scaledHeight * scale,
+      originalStyles: originalStyles
+    };
+  },
+  
+  _restoreHighDpiElement: function(highDpiData) {
+    // 恢复原始样式
+    var dom = highDpiData.dom;
+    var originalStyles = highDpiData.originalStyles;
+    
+    dom.style.width = originalStyles.width;
+    dom.style.height = originalStyles.height;
+    dom.style.zoom = originalStyles.zoom;
+    dom.style.boxSizing = originalStyles.boxSizing;
+    dom.style.minWidth = originalStyles.minWidth;
+    dom.style.maxWidth = originalStyles.maxWidth;
+    dom.style.minHeight = originalStyles.minHeight;
+    dom.style.maxHeight = originalStyles.maxHeight;
+  },
+
+  /**
+   * 将 DOM 节点转换为 imgExportData 格式
+   * @param {Node} dom - DOM 节点
+   * @param {Object} options - 选项
+   * @param {string} options.format - 图片格式 'png' | 'jpeg' | 'jpg'（可选，默认 'png'）
+   * @param {string} options.fileName - 文件名（可选）
+   * @param {string} options.id - ID（可选）
+   * @param {number} options.finalSize - 目标文件大小（KB，可选）
+   * @param {number} options.quality - 质量 0-10（可选，默认10）
+   * @param {string} options.bgcolor - 背景色（可选）
+   * @param {number} options.width - 宽度（可选）
+   * @param {number} options.height - 高度（可选）
+   * @param {Object} options.style - 样式对象（可选）
+   * @param {Function} options.filter - 节点过滤函数（可选）
+   * @param {number} options.scale - 高清缩放倍数（可选，默认1，建议2-3倍）
+   * @returns {Promise<Object>} imgExportData 格式的对象
+   */
+  async DomToImagedata(dom, options) {
+    options = options || {};
+    var util = this._domToImgUtil;
+    var format = (options.format || 'png').toLowerCase();
+    var quality = options.quality !== undefined ? options.quality : 10;
+    var scale = options.scale || 1;
+    
+    // 确定 MIME 类型
+    var mimeType = 'image/png';
+    if (format === 'jpeg' || format === 'jpg') {
+      mimeType = 'image/jpeg';
+      format = 'jpeg';
+    } else {
+      format = 'png';
+    }
+    
+    var self = this;
+    var highDpiData = null;
+    
+    // 如果需要缩放，直接修改原元素的宽高和 zoom
+    if (scale > 1) {
+      highDpiData = this._prepareHighDpiElement(dom, scale, util);
+      
+      // 更新选项中的宽高为缩放后的尺寸
+      options = Object.assign({}, options);
+      options.width = highDpiData.scaledWidth;
+      options.height = highDpiData.scaledHeight;
+      
+      // 等待一帧确保渲染完成
+      return util.delay(100)()
+        .then(function() {
+          return self._draw(dom, options);
+        })
+        .then(function (canvas) {
+          // 恢复原元素样式
+          if (highDpiData) {
+            self._restoreHighDpiElement(highDpiData);
+          }
+          
+          // 直接使用 canvas 的尺寸（如果是缩放，就是缩放后的尺寸）
+          var outputWidth = canvas.width;
+          var outputHeight = canvas.height;
+          
+          var dataUrl = canvas.toDataURL(mimeType, format === 'jpeg' ? quality / 10 : undefined);
+          var base64Data = dataUrl.split(',')[1];
+          var u8a = this.B64ToU8A(base64Data);
+          
+          return {
+            fileName: options.fileName || 'image',
+            id: options.id || '',
+            format: format,
+            u8a: u8a,
+            finalSize: options.finalSize || null,
+            width: outputWidth,
+            height: outputHeight,
+            compressed: null,
+            realSize: Math.floor(u8a.length / 1024 * 100) / 100,
+            quality: quality
+          };
+        }.bind(this))
+        .catch(function(error) {
+          // 确保在出错时也恢复原元素样式
+          if (highDpiData) {
+            self._restoreHighDpiElement(highDpiData);
+          }
+          throw error;
+        });
+    } else {
+      // 不需要缩放，直接使用旧逻辑
+      return this._draw(dom, options)
+        .then(function (canvas) {
+          var outputWidth = canvas.width;
+          var outputHeight = canvas.height;
+          
+          var dataUrl = canvas.toDataURL(mimeType, format === 'jpeg' ? quality / 10 : undefined);
+          var base64Data = dataUrl.split(',')[1];
+          var u8a = this.B64ToU8A(base64Data);
+          
+          return {
+            fileName: options.fileName || 'image',
+            id: options.id || '',
+            format: format,
+            u8a: u8a,
+            finalSize: options.finalSize || null,
+            width: outputWidth,
+            height: outputHeight,
+            compressed: null,
+            realSize: Math.floor(u8a.length / 1024 * 100) / 100,
+            quality: quality
+          };
+        }.bind(this));
+    }
   }
+
 });

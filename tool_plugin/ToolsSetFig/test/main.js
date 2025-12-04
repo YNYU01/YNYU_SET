@@ -335,7 +335,7 @@ window.addEventListener('load',()=>{
   setTimeout(() => {
     /*clear*/
     let tabs = ['create','export','editor','variable','sheet','more tools']
-    viewPage(tabs[5])
+    //viewPage(tabs[5])
     /**/;
     if(window.innerWidth < 300){
       TV_MOVE = true;
@@ -1874,8 +1874,25 @@ function createZyTagStrategy(info){
 
     let layerList = document.createElement('div');
     layerList.setAttribute('data-layerlist','');
-    let html = marked.parse(DOM.userText.value.trim());
-    layerList.innerHTML = html;
+    switch(info.zyType){
+      case 'md':
+        let html = marked.parse(DOM.userText.value.trim());
+        layerList.innerHTML = html;
+        layerList.addEventListener('dblclick',async()=>{
+          
+          let imgdata = await tool.DomToImagedata(layerList,{scale:3});
+          imgdata.fileName = info.zyName;
+          //console.log(imgdata)
+          tool.ExportImgByData(hasExport,[imgdata],false,imgdata.fileName)
+          function hasExport(index,finalSize,quality,isSuccess){
+            log(index,finalSize,quality,isSuccess)
+          };
+          
+        });
+        break;
+      case 'svg':
+        break;
+    }
     tag.appendChild(layerList);
     DOM.cataloguesBox.appendChild(tag);
   }else{

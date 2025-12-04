@@ -8,10 +8,12 @@
 
     // Default impl options
     var defaultOptions = {
-        // Default is to fail on error, no placeholder
         imagePlaceholder: undefined,
-        // Default cache bust is false, it will use the cache
-        cacheBust: false
+        cacheBust: false,
+        maxRetries: 2, // 最大重试次数
+        retryDelay: 1000, // 重试延迟（毫秒）
+        imageTimeout: 10000, // 图片加载超时（毫秒）
+        skipFailedImages: true // 是否跳过失败的图片
     };
 
     var domtoimage = {
@@ -34,22 +36,6 @@
     else
         global.domtoimage = domtoimage;
 
-
-    /**
-     * @param {Node} node - The DOM Node object to render
-     * @param {Object} options - Rendering options
-     * @param {Function} options.filter - Should return true if passed node should be included in the output
-     *          (excluding node means excluding it's children as well). Not called on the root node.
-     * @param {String} options.bgcolor - color for the background, any valid CSS color value.
-     * @param {Number} options.width - width to be applied to node before rendering.
-     * @param {Number} options.height - height to be applied to node before rendering.
-     * @param {Object} options.style - an object whose properties to be copied to node's style before rendering.
-     * @param {Number} options.quality - a Number between 0 and 1 indicating image quality (applicable to JPEG only),
-                defaults to 1.0.
-     * @param {String} options.imagePlaceholder - dataURL to use as a placeholder for failed images, default behaviour is to fail fast on images we can't fetch
-     * @param {Boolean} options.cacheBust - set to true to cache bust by appending the time to the request url
-     * @return {Promise} - A promise that is fulfilled with a SVG image data URL
-     * */
     function toSvg(node, options) {
         options = options || {};
         copyOptions(options);
@@ -63,53 +49,33 @@
             .then(function (clone) {
                 return makeSvgDataUri(clone,
                     options.width || util.width(node),
-                    options.height || util.height(node),
-                    options.bgcolor
+                    options.height || util.height(node)
                 );
             });
 
         function applyOptions(clone) {
-            // 应用背景色到克隆节点（作为备用）
-            // 注意：主要背景色在 SVG 根元素和 Canvas 层面添加
-            if (options.bgcolor) {
-                // 确保背景色应用到根元素
-                clone.style.setProperty('background-color', options.bgcolor, 'important');
-            }
-
+            if (options.bgcolor) clone.style.backgroundColor = options.bgcolor;
             if (options.width) clone.style.width = options.width + 'px';
             if (options.height) clone.style.height = options.height + 'px';
-
             if (options.style)
                 Object.keys(options.style).forEach(function (property) {
                     clone.style[property] = options.style[property];
                 });
-
             return clone;
         }
     }
 
-    /**
-     * @param {Node} node - The DOM Node object to render
-     * @param {Object} options - Rendering options, @see {@link toSvg}
-     * @return {Promise} - A promise that is fulfilled with a Uint8Array containing RGBA pixel data.
-     * */
     function toPixelData(node, options) {
         return draw(node, options || {})
             .then(function (canvas) {
                 return canvas.getContext('2d').getImageData(
-                    0,
-                    0,
+                    0, 0,
                     util.width(node),
                     util.height(node)
                 ).data;
             });
     }
 
-    /**
-     * @param {Node} node - The DOM Node object to render
-     * @param {Object} options - Rendering options, @see {@link toSvg}
-     * @return {Promise} - A promise that is fulfilled with a PNG image data URL
-     * */
     function toPng(node, options) {
         return draw(node, options || {})
             .then(function (canvas) {
@@ -117,11 +83,6 @@
             });
     }
 
-    /**
-     * @param {Node} node - The DOM Node object to render
-     * @param {Object} options - Rendering options, @see {@link toSvg}
-     * @return {Promise} - A promise that is fulfilled with a JPEG image data URL
-     * */
     function toJpeg(node, options) {
         options = options || {};
         return draw(node, options)
@@ -130,70 +91,54 @@
             });
     }
 
-    /**
-     * @param {Node} node - The DOM Node object to render
-     * @param {Object} options - Rendering options, @see {@link toSvg}
-     * @return {Promise} - A promise that is fulfilled with a PNG image blob
-     * */
     function toBlob(node, options) {
         return draw(node, options || {})
             .then(util.canvasToBlob);
     }
 
     function copyOptions(options) {
-        // Copy options to impl options for use in impl
         if(typeof(options.imagePlaceholder) === 'undefined') {
             domtoimage.impl.options.imagePlaceholder = defaultOptions.imagePlaceholder;
         } else {
             domtoimage.impl.options.imagePlaceholder = options.imagePlaceholder;
         }
-
         if(typeof(options.cacheBust) === 'undefined') {
             domtoimage.impl.options.cacheBust = defaultOptions.cacheBust;
         } else {
             domtoimage.impl.options.cacheBust = options.cacheBust;
         }
+        // 新增选项
+        domtoimage.impl.options.maxRetries = options.maxRetries !== undefined ? options.maxRetries : defaultOptions.maxRetries;
+        domtoimage.impl.options.retryDelay = options.retryDelay !== undefined ? options.retryDelay : defaultOptions.retryDelay;
+        domtoimage.impl.options.imageTimeout = options.imageTimeout !== undefined ? options.imageTimeout : defaultOptions.imageTimeout;
+        domtoimage.impl.options.skipFailedImages = options.skipFailedImages !== undefined ? options.skipFailedImages : defaultOptions.skipFailedImages;
     }
 
     function draw(domNode, options) {
-        options = options || {};
         return toSvg(domNode, options)
             .then(util.makeImage)
             .then(util.delay(100))
             .then(function (image) {
-                var canvas = newCanvas(domNode, options);
-                var ctx = canvas.getContext('2d');
-                
-                // 关键修复：先绘制背景色，确保背景色显示
-                // 即使 SVG 转图片时背景被剔除，Canvas 层面的背景色也会显示
-                if (options.bgcolor) {
-                    ctx.fillStyle = options.bgcolor;
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                }
-                
-                // 使用 destination-over 合成模式，让 SVG 内容绘制在背景色之上
-                // 但保持透明区域显示背景色
-                ctx.save();
-                if (options.bgcolor) {
-                    // 如果 SVG 图片有透明区域，背景色会显示
-                    ctx.globalCompositeOperation = 'source-over';
-                }
-                ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-                ctx.restore();
+                var canvas = newCanvas(domNode);
+                canvas.getContext('2d').drawImage(image, 0, 0);
                 return canvas;
             });
 
-        function newCanvas(domNode, options) {
+        function newCanvas(domNode) {
             var canvas = document.createElement('canvas');
             canvas.width = options.width || util.width(domNode);
             canvas.height = options.height || util.height(domNode);
+            if (options.bgcolor) {
+                var ctx = canvas.getContext('2d');
+                ctx.fillStyle = options.bgcolor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
             return canvas;
         }
     }
 
     function cloneNode(node, filter, root) {
         if (!root && filter && !filter(node)) return Promise.resolve();
-
         return Promise.resolve(node)
             .then(makeNodeCopy)
             .then(function (clone) {
@@ -211,7 +156,6 @@
         function cloneChildren(original, clone, filter) {
             var children = original.childNodes;
             if (children.length === 0) return Promise.resolve(clone);
-
             return cloneChildrenInOrder(clone, util.asArray(children), filter)
                 .then(function () {
                     return clone;
@@ -234,12 +178,10 @@
 
         function processClone(original, clone) {
             if (!(clone instanceof Element)) return clone;
-
             return Promise.resolve()
                 .then(cloneStyle)
                 .then(clonePseudoElements)
                 .then(copyUserInput)
-                .then(hideScrollbars)
                 .then(fixSvg)
                 .then(function () {
                     return clone;
@@ -247,11 +189,9 @@
 
             function cloneStyle() {
                 copyStyle(window.getComputedStyle(original), clone.style);
-
                 function copyStyle(source, target) {
                     if (source.cssText) target.cssText = source.cssText;
                     else copyProperties(source, target);
-
                     function copyProperties(source, target) {
                         util.asArray(source).forEach(function (name) {
                             target.setProperty(
@@ -268,35 +208,27 @@
                 [':before', ':after'].forEach(function (element) {
                     clonePseudoElement(element);
                 });
-
                 function clonePseudoElement(element) {
                     var style = window.getComputedStyle(original, element);
                     var content = style.getPropertyValue('content');
-
                     if (content === '' || content === 'none') return;
-
                     var className = util.uid();
                     clone.className = clone.className + ' ' + className;
                     var styleElement = document.createElement('style');
                     styleElement.appendChild(formatPseudoElementStyle(className, element, style));
                     clone.appendChild(styleElement);
-
                     function formatPseudoElementStyle(className, element, style) {
                         var selector = '.' + className + ':' + element;
                         var cssText = style.cssText ? formatCssText(style) : formatCssProperties(style);
                         return document.createTextNode(selector + '{' + cssText + '}');
-
                         function formatCssText(style) {
                             var content = style.getPropertyValue('content');
                             return style.cssText + ' content: ' + content + ';';
                         }
-
                         function formatCssProperties(style) {
-
                             return util.asArray(style)
                                 .map(formatProperty)
                                 .join('; ') + ';';
-
                             function formatProperty(name) {
                                 return name + ': ' +
                                     style.getPropertyValue(name) +
@@ -312,87 +244,13 @@
                 if (original instanceof HTMLInputElement) clone.setAttribute("value", original.value);
             }
 
-            function hideScrollbars() {
-                // 递归隐藏所有滚动条和 resize 指示器
-                hideScrollbarsRecursive(clone);
-                
-                function hideScrollbarsRecursive(node) {
-                    if (!(node instanceof Element)) return;
-                    
-                    var computedStyle = window.getComputedStyle(node);
-                    var overflow = computedStyle.overflow;
-                    var overflowX = computedStyle.overflowX;
-                    var overflowY = computedStyle.overflowY;
-                    var resize = computedStyle.resize;
-                    var tagName = node.tagName ? node.tagName.toLowerCase() : '';
-                    
-                    // 检查元素是否有滚动
-                    var hasScroll = overflow === 'auto' || overflow === 'scroll' || 
-                                   overflowX === 'auto' || overflowX === 'scroll' ||
-                                   overflowY === 'auto' || overflowY === 'scroll' ||
-                                   tagName === 'pre' || tagName === 'textarea';
-                    
-                    // 检查元素是否有 resize 属性
-                    var hasResize = resize === 'both' || resize === 'horizontal' || resize === 'vertical' ||
-                                   node.hasAttribute('data-resize') ||
-                                   tagName === 'pre' || tagName === 'textarea';
-                    
-                    if (hasScroll) {
-                        // 强制隐藏滚动条（适用于所有浏览器）
-                        node.style.scrollbarWidth = 'none'; // Firefox
-                        node.style.setProperty('-ms-overflow-style', 'none', 'important'); // IE/Edge
-                        
-                        // 对于 Webkit 浏览器，直接设置 overflow 为 hidden 来完全避免滚动条显示
-                        if (overflow === 'auto' || overflow === 'scroll' || tagName === 'pre' || tagName === 'textarea') {
-                            node.style.setProperty('overflow', 'hidden', 'important');
-                        }
-                        if (overflowX === 'auto' || overflowX === 'scroll') {
-                            node.style.setProperty('overflow-x', 'hidden', 'important');
-                        }
-                        if (overflowY === 'auto' || overflowY === 'scroll') {
-                            node.style.setProperty('overflow-y', 'hidden', 'important');
-                        }
-                    }
-                    
-                    // 隐藏 resize 指示器
-                    if (hasResize) {
-                        // 禁用 resize 功能
-                        node.style.setProperty('resize', 'none', 'important');
-                        
-                        // 隐藏 Webkit 浏览器的 resize 指示器（通过添加样式）
-                        // 由于伪元素无法直接通过 JavaScript 修改，我们需要通过添加内联样式类来实现
-                        // 但更简单的方法是直接禁用 resize
-                    }
-                    
-                    // 隐藏自定义的 resize 指示器（如 [data-resize]::after）
-                    if (node.hasAttribute('data-resize')) {
-                        // 创建一个 style 元素来隐藏 ::after 伪元素
-                        var styleId = 'hide-resize-' + Date.now();
-                        var existingStyle = document.getElementById(styleId);
-                        if (!existingStyle) {
-                            var styleElement = document.createElement('style');
-                            styleElement.id = styleId;
-                            styleElement.textContent = '[data-resize]::after { display: none !important; }';
-                            clone.appendChild(styleElement);
-                        }
-                    }
-                    
-                    // 递归处理子元素
-                    util.asArray(node.children).forEach(function(child) {
-                        hideScrollbarsRecursive(child);
-                    });
-                }
-            }
-
             function fixSvg() {
                 if (!(clone instanceof SVGElement)) return;
                 clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-
                 if (!(clone instanceof SVGRectElement)) return;
                 ['width', 'height'].forEach(function (attribute) {
                     var value = clone.getAttribute(attribute);
                     if (!value) return;
-
                     clone.style.setProperty(attribute, value);
                 });
             }
@@ -416,7 +274,7 @@
             });
     }
 
-    function makeSvgDataUri(node, width, height, bgcolor) {
+    function makeSvgDataUri(node, width, height) {
         return Promise.resolve(node)
             .then(function (node) {
                 node.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
@@ -424,33 +282,14 @@
             })
             .then(util.escapeXhtml)
             .then(function (xhtml) {
-                // foreignObject 不设置背景，让 SVG 根元素的背景矩形显示
                 return '<foreignObject x="0" y="0" width="100%" height="100%">' + xhtml + '</foreignObject>';
             })
             .then(function (foreignObject) {
-                // 在 SVG 根元素中添加背景矩形，放在最底层
-                // 这样即使 foreignObject 有透明区域，背景色也能显示
-                var bgRect = '';
-                if (bgcolor) {
-                    // 转义背景色中的特殊字符，确保 SVG 格式正确
-                    var escapedBgcolor = String(bgcolor)
-                        .replace(/&/g, '&amp;')
-                        .replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;')
-                        .replace(/"/g, '&quot;')
-                        .replace(/'/g, '&apos;');
-                    // 背景矩形放在最前面，作为底层
-                    bgRect = '<rect x="0" y="0" width="' + width + '" height="' + height + '" fill="' + escapedBgcolor + '"/>';
-                }
-                // 确保背景矩形在 foreignObject 之前，这样背景会在底层
-                var svgContent = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">' +
-                    bgRect + foreignObject + '</svg>';
-                return svgContent;
+                return '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" >' +
+                    foreignObject + '</svg>';
             })
             .then(function (svg) {
-                // 使用原有的转义方式，但确保 SVG 格式正确
-                // escapeXhtml 已经处理了 # 和 \n，这里直接使用
-                return 'data:image/svg+xml;charset=utf-8,' + util.escapeXhtml(svg);
+                return 'data:image/svg+xml;charset=utf-8,' + svg;
             });
     }
 
@@ -474,13 +313,8 @@
         };
 
         function mimes() {
-            /*
-             * Only WOFF and EOT mime types for fonts are 'real'
-             * see http://www.iana.org/assignments/media-types/media-types.xhtml
-             */
             var WOFF = 'application/font-woff';
             var JPEG = 'image/jpeg';
-
             return {
                 'woff': WOFF,
                 'woff2': WOFF,
@@ -515,10 +349,8 @@
                 var binaryString = window.atob(canvas.toDataURL().split(',')[1]);
                 var length = binaryString.length;
                 var binaryArray = new Uint8Array(length);
-
                 for (var i = 0; i < length; i++)
                     binaryArray[i] = binaryString.charCodeAt(i);
-
                 resolve(new Blob([binaryArray], {
                     type: 'image/png'
                 }));
@@ -530,7 +362,6 @@
                 return new Promise(function (resolve) {
                     canvas.toBlob(resolve);
                 });
-
             return toBlob(canvas);
         }
 
@@ -547,12 +378,9 @@
 
         function uid() {
             var index = 0;
-
             return function () {
                 return 'u' + fourRandomChars() + index++;
-
                 function fourRandomChars() {
-                    /* see http://stackoverflow.com/a/6248722/2519373 */
                     return ('0000' + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
                 }
             };
@@ -561,87 +389,163 @@
         function makeImage(uri) {
             return new Promise(function (resolve, reject) {
                 var image = new Image();
-                var timeoutId = setTimeout(function() {
+                var timeoutId;
+                // 添加超时处理
+                timeoutId = setTimeout(function() {
                     image.onload = null;
                     image.onerror = null;
-                    reject(new Error('Image load timeout after 30s'));
-                }, 30000); // 30秒超时
+                    reject(new Error('Image load timeout: ' + uri));
+                }, domtoimage.impl.options.imageTimeout || 10000);
                 
                 image.onload = function () {
                     clearTimeout(timeoutId);
                     resolve(image);
                 };
-                image.onerror = function(error) {
+                image.onerror = function() {
                     clearTimeout(timeoutId);
-                    // 打印部分 URI 用于调试（避免打印过长的 SVG）
-                    var uriPreview = uri.length > 200 ? uri.substring(0, 200) + '...' : uri;
-                    console.error('Image load error, URI preview:', uriPreview);
-                    reject(error || new Error('Image load failed'));
+                    reject(new Error('Image load error: ' + uri));
                 };
                 image.src = uri;
             });
         }
 
-        function getAndEncode(url) {
-            var TIMEOUT = 30000;
+        // 改进的 getAndEncode 函数，添加重试机制和更好的错误处理
+        function getAndEncode(url, retryCount) {
+            retryCount = retryCount || 0;
+            var TIMEOUT = domtoimage.impl.options.imageTimeout || 10000;
+            var MAX_RETRIES = domtoimage.impl.options.maxRetries || 2;
+            var RETRY_DELAY = domtoimage.impl.options.retryDelay || 1000;
+            var SKIP_FAILED = domtoimage.impl.options.skipFailedImages !== false;
+
             if(domtoimage.impl.options.cacheBust) {
-                // Cache bypass so we dont have CORS issues with cached images
-                // Source: https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest#Bypassing_the_cache
                 url += ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
             }
 
-            /*容易报错的位置*/
-            return new Promise(function (resolve) {
+            return new Promise(function (resolve, reject) {
                 var request = new XMLHttpRequest();
+                var timeoutId;
+                var aborted = false;
 
-                request.onreadystatechange = done;
-                request.ontimeout = timeout;
-                request.responseType = 'blob';/*text*/
-                request.timeout = TIMEOUT;
-                request.open('GET', url, true);
-                request.send();
-
-                var placeholder;
-                if(domtoimage.impl.options.imagePlaceholder) {
-                    var split = domtoimage.impl.options.imagePlaceholder.split(/,/);
-                    if(split && split[1]) {
-                        placeholder = split[1];
-                    }
+                function cleanup() {
+                    if (timeoutId) clearTimeout(timeoutId);
+                    request.onreadystatechange = null;
+                    request.ontimeout = null;
+                    request.onerror = null;
                 }
 
                 function done() {
+                    if (aborted) return;
                     if (request.readyState !== 4) return;
 
-                    if (request.status !== 200) {
-                        if(placeholder) {
-                            resolve(placeholder);
-                        } else {
-                            fail('cannot fetch resource: ' + url + ', status: ' + request.status);
+                    cleanup();
+
+                    if (request.status === 200) {
+                        try {
+                            var encoder = new FileReader();
+                            encoder.onloadend = function () {
+                                var content = encoder.result.split(/,/)[1];
+                                resolve(content);
+                            };
+                            encoder.onerror = function() {
+                                if (retryCount < MAX_RETRIES) {
+                                    setTimeout(function() {
+                                        getAndEncode(url, retryCount + 1).then(resolve).catch(reject);
+                                    }, RETRY_DELAY);
+                                } else {
+                                    handleFailure('FileReader error');
+                                }
+                            };
+                            encoder.readAsDataURL(request.response);
+                        } catch (e) {
+                            if (retryCount < MAX_RETRIES) {
+                                setTimeout(function() {
+                                    getAndEncode(url, retryCount + 1).then(resolve).catch(reject);
+                                }, RETRY_DELAY);
+                            } else {
+                                handleFailure('Encoding error: ' + e.message);
+                            }
                         }
-
-                        return;
+                    } else {
+                        if (retryCount < MAX_RETRIES && request.status !== 404) {
+                            setTimeout(function() {
+                                getAndEncode(url, retryCount + 1).then(resolve).catch(reject);
+                            }, RETRY_DELAY);
+                        } else {
+                            handleFailure('HTTP ' + request.status + ': ' + url);
+                        }
                     }
-
-                    var encoder = new FileReader();
-                    encoder.onloadend = function () {
-                        var content = encoder.result.split(/,/)[1];
-                        resolve(content);
-                    };
-                    encoder.readAsDataURL(request.response);
                 }
 
                 function timeout() {
-                    if(placeholder) {
-                        resolve(placeholder);
+                    if (aborted) return;
+                    cleanup();
+                    if (retryCount < MAX_RETRIES) {
+                        setTimeout(function() {
+                            getAndEncode(url, retryCount + 1).then(resolve).catch(reject);
+                        }, RETRY_DELAY);
                     } else {
-                        fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url);
+                        handleFailure('Timeout after ' + TIMEOUT + 'ms: ' + url);
                     }
                 }
 
-                function fail(message) {
-                    console.error(message);
-                    resolve('');
+                function handleError() {
+                    if (aborted) return;
+                    cleanup();
+                    if (retryCount < MAX_RETRIES) {
+                        setTimeout(function() {
+                            getAndEncode(url, retryCount + 1).then(resolve).catch(reject);
+                        }, RETRY_DELAY);
+                    } else {
+                        handleFailure('Network error: ' + url);
+                    }
                 }
+
+                function handleFailure(message) {
+                    console.warn('[domtoimage] ' + message);
+                    var placeholder;
+                    if(domtoimage.impl.options.imagePlaceholder) {
+                        var split = domtoimage.impl.options.imagePlaceholder.split(/,/);
+                        if(split && split[1]) {
+                            placeholder = split[1];
+                            resolve(placeholder);
+                            return;
+                        }
+                    }
+                    if (SKIP_FAILED) {
+                        // 返回一个透明的 1x1 像素图片作为占位符
+                        resolve('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
+                    } else {
+                        reject(new Error(message));
+                    }
+                }
+
+                request.onreadystatechange = done;
+                request.ontimeout = timeout;
+                request.onerror = handleError;
+                request.responseType = 'blob';
+                request.timeout = TIMEOUT;
+
+                try {
+                    request.open('GET', url, true);
+                    request.send();
+                } catch (e) {
+                    cleanup();
+                    if (retryCount < MAX_RETRIES) {
+                        setTimeout(function() {
+                            getAndEncode(url, retryCount + 1).then(resolve).catch(reject);
+                        }, RETRY_DELAY);
+                    } else {
+                        handleFailure('Request error: ' + e.message);
+                    }
+                }
+
+                // 添加 abort 支持
+                var originalAbort = request.abort;
+                request.abort = function() {
+                    aborted = true;
+                    cleanup();
+                    originalAbort.call(this);
+                };
             });
         }
 
@@ -725,10 +629,20 @@
                     return baseUrl ? util.resolveUrl(url, baseUrl) : url;
                 })
                 .then(get || util.getAndEncode)
+                .catch(function(error) {
+                    // 如果图片加载失败，返回原始字符串（不替换）
+                    console.warn('[domtoimage] Failed to inline image: ' + url, error);
+                    return string;
+                })
                 .then(function (data) {
+                    if (typeof data === 'string' && data === string) {
+                        // 如果返回的是原始字符串，说明加载失败
+                        return string;
+                    }
                     return util.dataAsUrl(data, util.mimeType(url));
                 })
                 .then(function (dataUrl) {
+                    if (dataUrl === string) return string;
                     return string.replace(urlAsRegex(url), '$1' + dataUrl + '$3');
                 });
 
@@ -739,7 +653,6 @@
 
         function inlineAll(string, baseUrl, get) {
             if (nothingToInline()) return Promise.resolve(string);
-
             return Promise.resolve(string)
                 .then(readUrls)
                 .then(function (urls) {
@@ -804,8 +717,7 @@
                     try {
                         util.asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules));
                     } catch (e) {
-                        /*易报错，先隐藏*/
-                        //console.log('Error while reading CSS rules from ' + sheet.href, e.toString());
+                        // 忽略跨域样式表错误
                     }
                 });
                 return cssRules;
@@ -843,13 +755,37 @@
 
                 return Promise.resolve(element.src)
                     .then(get || util.getAndEncode)
+                    .catch(function(error) {
+                        // 图片加载失败时，使用占位符或跳过
+                        console.warn('[domtoimage] Failed to load image: ' + element.src, error);
+                        if (domtoimage.impl.options.imagePlaceholder) {
+                            var split = domtoimage.impl.options.imagePlaceholder.split(/,/);
+                            if (split && split[1]) {
+                                return util.dataAsUrl(split[1], util.mimeType(element.src));
+                            }
+                        }
+                        // 返回透明像素
+                        return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+                    })
                     .then(function (data) {
                         return util.dataAsUrl(data, util.mimeType(element.src));
                     })
                     .then(function (dataUrl) {
                         return new Promise(function (resolve, reject) {
-                            element.onload = resolve;
-                            element.onerror = reject;
+                            var timeoutId = setTimeout(function() {
+                                element.onload = null;
+                                element.onerror = null;
+                                resolve(); // 超时也继续，不阻塞
+                            }, domtoimage.impl.options.imageTimeout || 10000);
+                            
+                            element.onload = function () {
+                                clearTimeout(timeoutId);
+                                resolve();
+                            };
+                            element.onerror = function() {
+                                clearTimeout(timeoutId);
+                                resolve(); // 错误也继续，不阻塞
+                            };
                             element.src = dataUrl;
                         });
                     });
@@ -873,7 +809,6 @@
 
             function inlineBackground(node) {
                 var background = node.style.getPropertyValue('background');
-
                 if (!background) return Promise.resolve(node);
 
                 return inliner.inlineAll(background)
@@ -891,3 +826,4 @@
         }
     }
 })(this);
+
