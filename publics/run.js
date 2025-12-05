@@ -87,6 +87,7 @@ if(storageMix.get('userTheme') == 'dark'){
 if(!storageMix.get('userTheme') && !ISPLUGIN){
   ROOT.setAttribute("data-theme","light");
   storageMix.set('userTheme','light');
+  console.log('userTheme not set, set to light');
 }
 
 if(storageMix.get('userLanguage') == 'En'){
@@ -98,19 +99,21 @@ if(storageMix.get('userLanguage') == 'Zh'){
 if(!storageMix.get('userLanguage') && !ISPLUGIN){
   ROOT.setAttribute("data-language","En");
   storageMix.set('userLanguage','En');
+  console.log('userLanguage not set, set to En');
 }
 
 let QUERY_PARAMS = getQueryParams();
-if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
-  ROOT.setAttribute('data-language','Zh');
-  storageMix.set('userLanguage','Zh');
-}else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
-  ROOT.setAttribute('data-language','En');
-  storageMix.set('userLanguage','En');
-}else{
-  ROOT.setAttribute('data-language','Zh');
-  storageMix.set('userLanguage','Zh');
+if(QUERY_PARAMS){
+  if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
+    ROOT.setAttribute('data-language','Zh');
+    storageMix.set('userLanguage','Zh');
+  }else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
+    ROOT.setAttribute('data-language','En');
+    storageMix.set('userLanguage','En');
+    console.log('QUERY_PARAMS: lan=en, set to En');
+  }
 }
+
 
 function getUnicode(text){
   return text.replace(/[^]/g,(char)=>{

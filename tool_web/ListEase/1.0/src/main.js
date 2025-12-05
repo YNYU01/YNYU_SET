@@ -54,6 +54,9 @@ var modelPick = null;
 var tipsTime = [];//记录有限次数提示
 
 
+// 初始化 TOOL_JS 实例（如果尚未初始化）
+var toolInstance = new TOOL_JS();
+
 window.onload = ()=>{
     if(localStorage.getItem('userTheme') == 'light'){
         document.getElementById('theme').checked = false;

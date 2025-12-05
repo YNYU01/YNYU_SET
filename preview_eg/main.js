@@ -47,6 +47,11 @@ function getUserText(node){
   //console.log(text)
 }
 
+function getUserInt(node){
+  let int = node.getAttribute('data-int-value');
+
+  //console.log(int)
+};
 
 function getUserFloat(node){
   let float = node.getAttribute('data-float-value');

@@ -1306,6 +1306,203 @@ function seeStyle(e){
 }
 
 //导出
+// ========== 以下代码已迁移至 builds/yn_tool.js ==========
+// DOM转图片以及压缩打包功能已迁移到 yn_tool.js 中的 TOOL_JS
+// 保留原有函数以便向后兼容，现重新实现以调用迁移后的功能
+// ========================================================
+
+/**
+ * @param {string} regex - 带格式占位的字符串，如"YYYY年MM月DD日"
+ * @param {Boolean} isZh - 是否用中文表示
+ */
+function getDate(regex,isZh){
+    let now = new Date();
+    let YYYY = now.getFullYear();
+    let M = now.getMonth()*1 + 1;
+    let MM = M.toString().padStart(2,'0');
+    let D = now.getDate();
+    let DD = D.toString().padStart(2,'0');
+    let numZh = ['〇','一','二','三','四','五','六','七','八','九','十','十一','十二'];
+    if(isZh){
+      YYYY = Array.from(YYYY.toString()).map(item => {return numZh[item*1]} ).join('');
+      M = numZh[M];
+      MM = M;
+      if(D >= 10){
+        D = Array.from(D.toString());
+        D[0] = D[0] == '1' ? '十' : numZh[D[0]*1] + '十';
+        D[1] = D[1] == '0' ? '' : numZh[D[1]*1];
+        D = D.join('');
+      } else {
+        D = numZh[D];
+      };
+      DD = D;
+      //console.log(`${YYYY}年${MM}月${DD}日`)
+    }
+    regex = regex.replace('YYYY',YYYY);
+    regex = regex.replace('MM',MM);
+    regex = regex.replace('DD',DD);
+    regex = regex.replace('M',M);
+    regex = regex.replace('D',D);
+    return [regex,[YYYY,MM,DD]];
+  }
+  
+  /**
+   * @param {string} regex - 带格式占位的字符串，如"YYYY年MM月DD日"
+   * @param {Boolean} is12 - 是否用12小时制
+   */
+  function getTime(regex,is12){
+    let now = new Date();
+    let H = now.getHours();
+    let HH = H.toString().padStart(2,'0');
+    let M = now.getMinutes();
+    let MM = M.toString().padStart(2,'0');
+    let S = now.getSeconds();
+    let SS = S.toString().padStart(2,'0');
+    if(is12){
+      if(H >= 12){
+        H = H - 12;
+        HH = H.toString().padStart(2,'0');
+      }
+    }
+    regex = regex.replace('HH',HH);
+    regex = regex.replace('MM',MM);
+    regex = regex.replace('SS',SS);
+    regex = regex.replace('H',H);
+    regex = regex.replace('M',M);
+    regex = regex.replace('S',S);
+    return [regex,[HH,MM,SS]];
+  }
+
+// 导出数据数组，用于批量导出
+var imgExportDataArray = [];
+
+async function exportAll(){
+
+    if(zyAllId.length == 1){//单个导出
+        await exportOne(0);
+    }else{
+        // 批量导出：准备所有图片数据
+        imgExportDataArray = [];
+        
+        // 收集所有待导出的节点
+        var allNodes = [];
+        for(var i = 0; i < zyAllId.length; i++){
+            var id = zyAllId[i];
+            var zyNode = document.getElementById(id + '-clone');
+            if(zyNode){
+                allNodes.push(zyNode);
+            }
+        }
+        
+        // 依次处理每个图片，准备导出数据
+        for(var i = 0; i < zyAllId.length; i++){
+            await exportOne(i, true);
+        }
+        
+        // 所有图片数据准备完成后，调用批量导出
+        if(imgExportDataArray.length === zyAllId.length){
+            // 生成ZIP文件名
+            var MN = new Date();
+            var M = String(MN.getMonth() + 1).padStart(2, '0');
+            var N = String(MN.getDate()).padStart(2, '0');
+            var HHMMSS = String(MN.getHours()).padStart(2, '0') + String(MN.getMinutes()).padStart(2, '0') + String(MN.getSeconds()).padStart(2, '0');
+            var zipName = '【' + userImgData.main.game[0] + '】' + userImgData.main.title[0].replace('，','_') + ' ' + M + N + '_' + HHMMSS;
+            
+            // 生成 isFinal 数组（所有都需要导出）
+            var isFinal = new Array(zyAllId.length).fill(true);
+            
+            // 调用迁移后的批量导出方法
+            toolInstance.ExportImgByData(
+                function(index, finalSize, quality, success){
+                    // 压缩回调（可选）
+                },
+                imgExportDataArray,
+                isFinal,
+                zipName
+            );
+        }
+    }
+}
+
+async function exportOne(e, isAll){
+    
+    var id = zyAllId[e];
+    var zyType = userImgData.zy[e].img.type;
+    var w = userImgData.zy[e].img.w;
+    var h = userImgData.zy[e].img.h;
+    var zyName = 'img';
+    var zyNode = document.getElementById(id + '-clone');
+    
+    if(!zyNode){
+        console.error('未找到节点: ' + id + '-clone');
+        return;
+    }
+    
+    // 设置导出中的样式
+    zyNode.parentNode.parentNode.className = 'df-ffc cc ovh cloneimg downing';
+
+    // 获取资源名称
+    if(zyAllname.length > 0){
+        zyName = zyAllname[e];
+    }
+    
+    if(isAll){
+        // 批量导出模式：准备数据
+        await exportOneAs(zyNode, zyType, zyName, w, h, e, true);
+    }else{
+        // 单个导出模式：直接导出
+        await exportOneAs(zyNode, zyType, zyName, w, h, e, false);
+        tipsAll('后台正在创建下载，请耐心等待~', 3000);
+    }
+}
+
+async function exportOneAs(node, type, name, w, h, e, isAll){
+    // 格式化图片类型
+    var format = type;
+    if(type == 'jpg'){
+        format = 'jpeg';
+    }
+    
+    try {
+        
+        // 使用迁移后的 DomToImagedata 方法
+        var imgExportData = await toolInstance.DomToImagedata(node, {
+            format: format,
+            fileName: name,
+            id: zyAllId[e],
+            width: w,
+            height: h,
+            quality: 10, // 默认最高质量
+            scale:1,
+        });
+        
+        if(isAll){
+            // 批量导出：添加到数组
+            imgExportDataArray.push(imgExportData);
+        }else{
+            // 单个导出：直接调用 ExportImgByData（单个文件也会自动下载，不会打包）
+            toolInstance.ExportImgByData(
+                function(index, finalSize, quality, success){
+                    // 压缩回调（可选）
+                },
+                [imgExportData],
+                [true],
+                null
+            );
+        }
+    } catch(error){
+        console.error('导出失败:', error);
+    } finally {
+        // 恢复节点样式
+        setTimeout(()=>{
+            node.parentNode.parentNode.className = 'df-ffc cc ovh cloneimg';
+        }, 500);
+    }
+}
+
+// ========== 以下为已迁移的旧代码（已注释，保留作为参考） ==========
+/*
+//导出
 var dataurls = [];
 async function exportAll(){
     
@@ -1352,7 +1549,7 @@ async function exportOne(e,isAll){
 }
 
 async function exportOneAs(node,type,name,w,h,e,isAll){
-    /* toJpeg(node,{quality:number}) | toPng(node) | toPixelData(node).then(function(pixels){} | toBlob(node)*/
+    // toJpeg(node,{quality:number}) | toPng(node) | toPixelData(node).then(function(pixels){} | toBlob(node)
     if(type == 'jpeg' || type == 'jpg' || type == 'webp'){
         setTimeout(()=>{
             domtoimage.toJpeg(node, { quality: 0.9,with:w,height:h})
@@ -1495,23 +1692,7 @@ function createZipAndDownload(compressedImages) {
     var N = String(MN.getDate()).padStart(2, '0');
     var HHMMSS = String(MN.getHours()).padStart(2, '0') + String(MN.getMinutes()).padStart(2, '0') + String(MN.getSeconds()).padStart(2, '0');
     var zip = new JSZip();
-    /*
-    compressedImages.forEach((blob,index) => {
-        var path = zyAllname[index].split('/');
-        var name = path.pop() + '.' + userImgData.zy[index].img.type;
-        if (zyAllname[index].split('/').length == 2) {
-            var folder = zip.folder(path[0]);
-            folder.file(name,blob);
-        } else if (zyAllname[index].split('/').length == 3) {
-            var folder1 = zip.folder(path[0]);
-            var folder2 = folder1.folder(path[1]);
-            folder2.file(name,blob);
-        } else {
-            zip.file(name,blob);
-        }
-    });
-    */
-
+    
     for(var i = 0; i < compressedImages.length; i++){
         var name = zyAllname[i] + '.' + userImgData.zy[i].img.type;
         zip.file(name,compressedImages[i]);
@@ -1539,3 +1720,4 @@ function createZipAndDownload(compressedImages) {
     // 创建Blob对象
     return new Blob([u8arr], { type: mime });
 }
+*/

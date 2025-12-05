@@ -1129,31 +1129,61 @@ Object.assign(TOOL_JS.prototype, {
   let timeName = getDate('YYYYMMDD')[0].slice(2) + '_' + getTime('HHMMSS')[0]
   let zip = new JSZip();
 
+  // 确保 fileBlobs 和 fileInfos 长度一致，通过 id 或索引关联
+  // 如果长度不一致，使用 id 进行匹配
+  var fileMap = new Map();
+  if (fileBlobs.length !== fileInfos.length) {
+    // 通过 id 匹配
+    fileInfos.forEach(function(info, index) {
+      if (info.id) {
+        fileMap.set(info.id, { info: info, index: index });
+      }
+    });
+    
+    // 重新排序 fileBlobs 以匹配 fileInfos
+    var sortedBlobs = [];
+    fileInfos.forEach(function(info) {
+      var mapped = fileMap.get(info.id);
+      if (mapped && fileBlobs[mapped.index]) {
+        sortedBlobs.push(fileBlobs[mapped.index]);
+      } else {
+        sortedBlobs.push(null);
+      }
+    });
+    fileBlobs = sortedBlobs;
+  }
+
   //处理同文件夹下同名问题
-  let names = fileInfos.map(item => item.fileName + '.' + item.format.toLowerCase());
-  let groupSames = names.reduce((acc, name) => {
+  let names = fileInfos.map(function(item, index) {
+    // 确保使用正确的文件名和格式
+    var fileName = (item.fileName && item.fileName.trim()) || 'image_' + index;
+    var format = (item.format && item.format.toLowerCase()) || 'png';
+    return fileName + '.' + format;
+  });
+  
+  let groupSames = names.reduce((acc, name, index) => {
     if (!acc[name]) acc[name] = [];
-      acc[name].push(name);
+      acc[name].push({ name: name, index: index });
       return acc;
   }, {});
 
-  let finalfileNames = [];
+  let finalfileNames = new Array(names.length);
   Object.values(groupSames).forEach(group => {
     if (group.length == 1) {
-      finalfileNames.push(group[0]);
+      finalfileNames[group[0].index] = group[0].name;
     } else {
-        group.forEach((name, index) => {
-          let oldname = name.split('/').pop();
+        group.forEach((item, idx) => {
+          let oldname = item.name.split('/').pop();
           let format = '.' + oldname.split('.').pop();
-          let newname = name.replace(format, `(${(index + 1)})` + format)
-          finalfileNames.push(newname);
+          let newname = item.name.replace(format, `(${(idx + 1)})` + format);
+          finalfileNames[item.index] = newname;
         });
     };
   });
 
     if (!fileBlobs.every(item => item == null)) {
       fileBlobs.forEach((blob, index) => {
-        if (blob) {
+        if (blob && finalfileNames[index]) {
           zip.file(finalfileNames[index], blob);
         }
       });
@@ -1180,6 +1210,7 @@ Object.assign(TOOL_JS.prototype, {
         'woff2': WOFF,
         'ttf': 'application/font-truetype',
         'eot': 'application/vnd.ms-fontobject',
+        'otf': 'application/font-opentype',
         'png': 'image/png',
         'jpg': JPEG,
         'jpeg': JPEG,
@@ -1187,6 +1218,30 @@ Object.assign(TOOL_JS.prototype, {
         'tiff': 'image/tiff',
         'svg': 'image/svg+xml'
       };
+    }
+
+    // 全局资源缓存（字体、图片等）- 在批量处理时共享，避免重复加载
+    var globalResourceCache = {
+      fonts: {
+        success: {}, // { url: base64Data }
+        failed: {}   // { url: true } - 快速失败标记
+      },
+      images: {
+        success: {}, // { url: base64Data }
+        failed: {}   // { url: true } - 快速失败标记
+      }
+    };
+    
+    // 向后兼容：保留旧的 fontCache 引用
+    var fontCache = globalResourceCache.fonts;
+    
+    // 将缓存暴露到 util 对象，以便外部访问
+    this._globalResourceCache = globalResourceCache;
+
+    // 判断是否为字体文件
+    function isFontFile(url) {
+      var ext = url.split('.').pop().toLowerCase().split('?')[0];
+      return ['woff', 'woff2', 'ttf', 'otf', 'eot'].indexOf(ext) !== -1;
     }
 
     return {
@@ -1220,6 +1275,31 @@ Object.assign(TOOL_JS.prototype, {
         });
       },
       resolveUrl: function(url, baseUrl) {
+        // 如果 URL 已经是绝对路径，直接返回
+        if (url.match(/^https?:\/\//) || url.match(/^data:/) || url.match(/^\/\//)) {
+          return url;
+        }
+        
+        // 如果没有 baseUrl，使用当前页面的 location
+        if (!baseUrl) {
+          baseUrl = window.location.href;
+        }
+        
+        // 确保 baseUrl 是完整的 URL
+        try {
+          // 如果 baseUrl 是相对路径，先解析它
+          if (!baseUrl.match(/^https?:\/\//)) {
+            var base = document.createElement('base');
+            base.href = window.location.href;
+            var tempA = document.createElement('a');
+            tempA.href = baseUrl;
+            baseUrl = tempA.href;
+          }
+        } catch(e) {
+          // 如果解析失败，使用当前页面 URL
+          baseUrl = window.location.href;
+        }
+        
         var doc = document.implementation.createHTMLDocument();
         var base = doc.createElement('base');
         doc.head.appendChild(base);
@@ -1260,26 +1340,101 @@ Object.assign(TOOL_JS.prototype, {
         });
       },
       getAndEncode: function(url, cacheBust, imagePlaceholder) {
-        var TIMEOUT = 30000;
+        // 对于字体文件，使用更短的超时时间；对于其他资源，使用标准超时
+        var isFont = isFontFile(url);
+        var TIMEOUT = isFont ? 2000 : 30000; // 字体2秒超时，其他30秒
+        
+        // 提取基础URL作为缓存键（去除查询参数和hash）
+        var getCacheKey = function(url) {
+          try {
+            var urlObj = new URL(url, window.location.href);
+            return urlObj.origin + urlObj.pathname;
+          } catch(e) {
+            // 如果URL解析失败，尝试手动去除查询参数
+            return url.split('?')[0].split('#')[0];
+          }
+        };
+        var cacheKey = getCacheKey(url);
+        var originalUrl = url; // 保存原始URL用于日志
+        
         if(cacheBust) {
           url += ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
         }
+
+        // 检查资源缓存（字体和图片都使用全局缓存）
+        var resourceCache = isFont ? globalResourceCache.fonts : globalResourceCache.images;
+        
+        if (isFont) {
+          // 如果之前成功加载过，直接返回缓存的数据
+          if (resourceCache.success[cacheKey]) {
+            return Promise.resolve(resourceCache.success[cacheKey]);
+          }
+          // 如果之前加载失败过，快速失败
+          if (resourceCache.failed[cacheKey]) {
+            // 静默处理，不输出警告
+            return Promise.resolve('');
+          }
+        } else {
+          // 图片也使用缓存
+          if (resourceCache.success[cacheKey]) {
+            return Promise.resolve(resourceCache.success[cacheKey]);
+          }
+          if (resourceCache.failed[cacheKey]) {
+            return Promise.resolve('');
+          }
+        }
+
+        var placeholder;
+        if(imagePlaceholder) {
+          var split = imagePlaceholder.split(/,/);
+          if(split && split[1]) {
+            placeholder = split[1];
+          }
+        }
+
+        function fail(message) {
+          // 使用全局资源缓存
+          var resourceCache = isFont ? globalResourceCache.fonts : globalResourceCache.images;
+          resourceCache.failed[cacheKey] = true;
+          
+          // 对于字体和图片文件，静默处理失败
+          if (isFont) {
+            // 不输出警告，因为字体可能通过其他路径成功加载
+            return '';
+          }
+          // 图片失败时也不输出警告（批量处理时避免过多日志）
+          return '';
+        }
+
+        function success(data) {
+          // 使用全局资源缓存，缓存成功的数据（字体和图片）
+          var resourceCache = isFont ? globalResourceCache.fonts : globalResourceCache.images;
+          if (data) {
+            resourceCache.success[cacheKey] = data;
+          }
+          return data;
+        }
+
         return new Promise(function (resolve) {
           var request = new XMLHttpRequest();
           request.onreadystatechange = done;
           request.ontimeout = timeout;
+          request.onerror = function() {
+            if(placeholder) {
+              resolve(placeholder);
+            } else {
+              // 对于字体文件，静默处理错误（可能通过其他路径成功加载）
+              if (isFont) {
+                resolve(fail(''));
+              } else {
+                resolve(fail('Failed to fetch resource: ' + originalUrl));
+              }
+            }
+          };
           request.responseType = 'blob';
           request.timeout = TIMEOUT;
           request.open('GET', url, true);
           request.send();
-
-          var placeholder;
-          if(imagePlaceholder) {
-            var split = imagePlaceholder.split(/,/);
-            if(split && split[1]) {
-              placeholder = split[1];
-            }
-          }
 
           function done() {
             if (request.readyState !== 4) return;
@@ -1287,14 +1442,27 @@ Object.assign(TOOL_JS.prototype, {
               if(placeholder) {
                 resolve(placeholder);
               } else {
-                fail('cannot fetch resource: ' + url + ', status: ' + request.status);
+                // 对于字体文件，静默处理404错误（可能通过其他路径成功加载）
+                if (isFont) {
+                  resolve(fail(''));
+                } else {
+                  resolve(fail('cannot fetch resource: ' + originalUrl + ', status: ' + request.status));
+                }
               }
               return;
             }
             var encoder = new FileReader();
             encoder.onloadend = function () {
               var content = encoder.result.split(/,/)[1];
-              resolve(content);
+              resolve(success(content));
+            };
+            encoder.onerror = function() {
+              // 对于字体文件，静默处理错误
+              if (isFont) {
+                resolve(fail(''));
+              } else {
+                resolve(fail('FileReader error for: ' + originalUrl));
+              }
             };
             encoder.readAsDataURL(request.response);
           }
@@ -1303,13 +1471,13 @@ Object.assign(TOOL_JS.prototype, {
             if(placeholder) {
               resolve(placeholder);
             } else {
-              fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url);
+              // 对于字体文件，静默处理超时（可能通过其他路径成功加载）
+              if (isFont) {
+                resolve(fail(''));
+              } else {
+                resolve(fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + originalUrl));
+              }
             }
-          }
-
-          function fail(message) {
-            console.error(message);
-            resolve('');
           }
         });
       },
@@ -1335,6 +1503,18 @@ Object.assign(TOOL_JS.prototype, {
         return string.replace(/#/g, '%23').replace(/\n/g, '%0A');
       },
       width: function(node) {
+        // 如果已经设置了 style.width，优先使用它
+        var styleWidth = node.style.width;
+        if (styleWidth && styleWidth !== 'auto' && styleWidth !== '') {
+          var widthValue = parseFloat(styleWidth);
+          if (!isNaN(widthValue)) {
+            var leftBorder = px(node, 'border-left-width');
+            var rightBorder = px(node, 'border-right-width');
+            return widthValue + leftBorder + rightBorder;
+          }
+        }
+        
+        // 否则使用 scrollWidth
         var leftBorder = px(node, 'border-left-width');
         var rightBorder = px(node, 'border-right-width');
         var tagName = node.tagName ? node.tagName.toLowerCase() : '';
@@ -1342,6 +1522,18 @@ Object.assign(TOOL_JS.prototype, {
         return node.scrollWidth + leftBorder + rightBorder;
       },
       height: function(node) {
+        // 如果已经设置了 style.height，优先使用它
+        var styleHeight = node.style.height;
+        if (styleHeight && styleHeight !== 'auto' && styleHeight !== '') {
+          var heightValue = parseFloat(styleHeight);
+          if (!isNaN(heightValue)) {
+            var topBorder = px(node, 'border-top-width');
+            var bottomBorder = px(node, 'border-bottom-width');
+            return heightValue + topBorder + bottomBorder;
+          }
+        }
+        
+        // 否则使用 scrollHeight
         var topBorder = px(node, 'border-top-width');
         var bottomBorder = px(node, 'border-bottom-width');
         var tagName = node.tagName ? node.tagName.toLowerCase() : '';
@@ -1374,16 +1566,40 @@ Object.assign(TOOL_JS.prototype, {
         });
       },
       inline: function(string, url, baseUrl, get, util) {
+        // 判断是否为字体文件
+        var isFont = (function() {
+          var ext = url.split('.').pop().toLowerCase().split('?')[0];
+          return ['woff', 'woff2', 'ttf', 'otf', 'eot'].indexOf(ext) !== -1;
+        })();
+        
         return Promise.resolve(url)
           .then(function (url) {
             return baseUrl ? util.resolveUrl(url, baseUrl) : url;
           })
           .then(get || function(url) { return util.getAndEncode(url, false, null); })
           .then(function (data) {
+            if (!data) {
+              // 对于字体文件，静默处理失败（可能通过其他路径成功加载）
+              if (!isFont) {
+                console.warn('Failed to load resource, skipping:', url);
+              }
+              return string;
+            }
             return util.dataAsUrl(data, util.mimeType(url));
           })
           .then(function (dataUrl) {
+            if (!dataUrl || dataUrl.indexOf('data:') !== 0) {
+              // 如果 dataUrl 无效，返回原字符串（跳过）
+              return string;
+            }
             return string.replace(urlAsRegex(url, util), '$1' + dataUrl + '$3');
+          })
+          .catch(function(err) {
+            // 对于字体文件，静默处理错误
+            if (!isFont) {
+              console.warn('Resource inline failed, skipping:', url, err.message);
+            }
+            return string;
           });
 
         function urlAsRegex(url, util) {
@@ -1399,10 +1615,19 @@ Object.assign(TOOL_JS.prototype, {
             var done = Promise.resolve(string);
             urls.forEach(function (url) {
               done = done.then(function (string) {
-                return self.inline(string, url, baseUrl, get, util);
+                return self.inline(string, url, baseUrl, get, util).catch(function(err) {
+                  // 单个 URL 处理失败，继续处理其他 URL
+                  console.warn('URL inline failed, continuing:', url, err.message);
+                  return string;
+                });
               });
             });
             return done;
+          })
+          .catch(function(err) {
+            // 整个 inlineAll 失败，返回原字符串
+            console.warn('inlineAll failed, returning original string:', err.message);
+            return string;
           });
       }
     };
@@ -1410,8 +1635,8 @@ Object.assign(TOOL_JS.prototype, {
 
   _domToImgFontFaces: (function() {
     return {
-      resolveAll: function(util, inliner) {
-        return this.readAll(util, inliner)
+      resolveAll: function(util, inliner, usedFonts) {
+        return this.readAll(util, inliner, usedFonts)
           .then(function (webFonts) {
             return Promise.all(
               webFonts.map(function (webFont) {
@@ -1423,22 +1648,43 @@ Object.assign(TOOL_JS.prototype, {
             return cssStrings.join('\n');
           });
       },
-      readAll: function(util, inliner) {
+      readAll: function(util, inliner, usedFonts) {
         return Promise.resolve(util.asArray(document.styleSheets))
           .then(function(sheets) { return getCssRules(sheets, util); })
-          .then(function(rules) { return selectWebFontRules(rules, inliner); })
+          .then(function(rules) { return selectWebFontRules(rules, inliner, usedFonts); })
           .then(function (rules) {
             return rules.map(function(rule) { return newWebFont(rule, inliner); });
           });
 
-        function selectWebFontRules(cssRules, inliner) {
-          return cssRules
+        function selectWebFontRules(cssRules, inliner, usedFonts) {
+          var allRules = cssRules
             .filter(function (rule) {
               return rule.type === CSSRule.FONT_FACE_RULE;
             })
             .filter(function (rule) {
               return inliner.shouldProcess(rule.style.getPropertyValue('src'));
             });
+          
+          // 如果提供了使用的字体列表，只返回那些被使用的字体
+          if (usedFonts && usedFonts.size > 0) {
+            return allRules.filter(function (rule) {
+              var fontFamily = rule.style.getPropertyValue('font-family');
+              if (!fontFamily) return false;
+              // 去除引号和空格
+              var cleanFamily = fontFamily.replace(/^['"]|['"]$/g, '').trim();
+              // 检查是否在使用的字体列表中（支持精确匹配）
+              var found = false;
+              usedFonts.forEach(function(usedFont) {
+                if (cleanFamily === usedFont || cleanFamily.indexOf(usedFont) !== -1) {
+                  found = true;
+                }
+              });
+              return found;
+            });
+          }
+          
+          // 如果没有提供使用的字体列表，返回所有规则（向后兼容）
+          return allRules;
         }
 
         function getCssRules(styleSheets, util) {
@@ -1457,6 +1703,10 @@ Object.assign(TOOL_JS.prototype, {
           return {
             resolve: function resolve() {
               var baseUrl = (webFontRule.parentStyleSheet || {}).href;
+              // 如果 baseUrl 为空，使用当前页面的 URL
+              if (!baseUrl) {
+                baseUrl = window.location.href;
+              }
               return inliner.inlineAll(webFontRule.cssText, baseUrl, null, inliner._util || {
                 resolveUrl: function(url, base) { return url; },
                 getAndEncode: function(url) { return Promise.resolve(''); },
@@ -1489,6 +1739,11 @@ Object.assign(TOOL_JS.prototype, {
         })
         .then(function () {
           return node;
+        })
+        .catch(function(err) {
+          // 背景图片处理失败，跳过但不中断流程
+          console.warn('Background image processing failed, skipping:', err.message);
+          return node;
         });
     }
 
@@ -1499,14 +1754,28 @@ Object.assign(TOOL_JS.prototype, {
           return Promise.resolve(element.src)
             .then(get || function(url) { return util.getAndEncode(url, false, null); })
             .then(function (data) {
+              if (!data) {
+                // 加载失败，跳过这个图片
+                console.warn('Image load failed, skipping:', element.src);
+                return Promise.resolve();
+              }
               return util.dataAsUrl(data, util.mimeType(element.src));
             })
             .then(function (dataUrl) {
-              return new Promise(function (resolve, reject) {
+              if (!dataUrl) {
+                // 如果 dataUrl 为空，说明加载失败，跳过
+                return Promise.resolve();
+              }
+              return new Promise(function (resolve) {
                 element.onload = resolve;
-                element.onerror = reject;
+                element.onerror = resolve; // 即使失败也 resolve，不中断流程
                 element.src = dataUrl;
               });
+            })
+            .catch(function(err) {
+              // 任何错误都捕获，不中断流程
+              console.warn('Image processing failed, skipping:', element.src, err.message);
+              return Promise.resolve();
             });
         }
       };
@@ -1522,9 +1791,21 @@ Object.assign(TOOL_JS.prototype, {
             else
               return Promise.all(
                 util.asArray(node.childNodes).map(function (child) {
-                  return imagesObj.inlineAll(child, util, inliner);
+                  return imagesObj.inlineAll(child, util, inliner).catch(function(err) {
+                    // 子节点处理失败，跳过但不中断流程
+                    console.warn('Child node processing failed, skipping:', err.message);
+                    return Promise.resolve(child);
+                  });
                 })
               );
+          })
+          .then(function() {
+            return node;
+          })
+          .catch(function(err) {
+            // 任何错误都捕获，返回节点继续处理
+            console.warn('Node processing failed, continuing:', err.message);
+            return node;
           });
       }
     };
@@ -1556,12 +1837,16 @@ Object.assign(TOOL_JS.prototype, {
       ? defaultOptions.cacheBust 
       : options.cacheBust;
 
+    // 在克隆之前收集实际使用的字体（从原始节点）
+    // 如果 options 中提供了共享字体集合，优先使用（批量处理时）
+    var usedFonts = options._sharedFonts || this._collectUsedFonts(node);
+    
     return Promise.resolve(node)
       .then(function (node) {
         return this._cloneNode(node, options.filter, true, util, inliner, fontFaces, images, cacheBust, imagePlaceholder);
       }.bind(this))
       .then(function (clone) {
-        return this._embedFonts(clone, util, inliner, fontFaces, cacheBust, imagePlaceholder);
+        return this._embedFonts(clone, util, inliner, fontFaces, cacheBust, imagePlaceholder, usedFonts);
       }.bind(this))
       .then(function (clone) {
         return this._inlineImages(clone, util, inliner, images, cacheBust, imagePlaceholder);
@@ -1775,7 +2060,7 @@ Object.assign(TOOL_JS.prototype, {
     });
   },
 
-  _embedFonts: function(node, util, inliner, fontFaces, cacheBust, imagePlaceholder) {
+  _embedFonts: function(node, util, inliner, fontFaces, cacheBust, imagePlaceholder, usedFonts) {
     var self = this;
     inliner._util = {
       resolveUrl: function(url, base) { return util.resolveUrl(url, base); },
@@ -1785,13 +2070,77 @@ Object.assign(TOOL_JS.prototype, {
       escape: function(str) { return util.escape(str); },
       isDataUrl: function(url) { return util.isDataUrl(url); }
     };
-    return fontFaces.resolveAll(util, inliner)
+    // 使用传入的已使用字体列表，如果没有则收集（向后兼容）
+    if (!usedFonts) {
+      usedFonts = this._collectUsedFonts(node);
+    }
+    return fontFaces.resolveAll(util, inliner, usedFonts)
       .then(function (cssText) {
         var styleNode = document.createElement('style');
         node.appendChild(styleNode);
         styleNode.appendChild(document.createTextNode(cssText));
         return node;
       });
+  },
+  
+  _collectUsedFonts: function(node) {
+    var usedFonts = new Set();
+    
+    function collectFromElement(el) {
+      if (!el || !(el instanceof Element)) return;
+      
+      try {
+        var computedStyle = window.getComputedStyle(el);
+        var fontFamily = computedStyle.getPropertyValue('font-family');
+        if (fontFamily) {
+          // 解析 font-family，可能包含多个字体，用逗号分隔
+          var fonts = fontFamily.split(',').map(function(f) {
+            // 去除引号和空格
+            return f.trim().replace(/^['"]|['"]$/g, '');
+          });
+          fonts.forEach(function(font) {
+            // 只添加非系统字体和有效的字体名称
+            if (font && 
+                font !== 'inherit' && 
+                font !== 'initial' && 
+                font !== 'unset' &&
+                font !== 'serif' &&
+                font !== 'sans-serif' &&
+                font !== 'monospace' &&
+                font !== 'cursive' &&
+                font !== 'fantasy') {
+              usedFonts.add(font);
+            }
+          });
+        }
+      } catch(e) {
+        // 忽略无法获取样式的元素（如跨域 iframe）
+      }
+      
+      // 递归处理子元素
+      var children = el.children || el.childNodes;
+      if (children) {
+        for (var i = 0; i < children.length; i++) {
+          collectFromElement(children[i]);
+        }
+      }
+    }
+    
+    collectFromElement(node);
+    return usedFonts;
+  },
+  
+  /**
+   * 清除全局资源缓存（用于批量处理完成后释放内存）
+   */
+  clearResourceCache: function() {
+    var util = this._domToImgUtil;
+    if (util && util._globalResourceCache) {
+      util._globalResourceCache.fonts.success = {};
+      util._globalResourceCache.fonts.failed = {};
+      util._globalResourceCache.images.success = {};
+      util._globalResourceCache.images.failed = {};
+    }
   },
 
   _inlineImages: function(node, util, inliner, images, cacheBust, imagePlaceholder) {
@@ -1894,8 +2243,8 @@ Object.assign(TOOL_JS.prototype, {
     };
     
     // 同时修改宽高和 zoom，确保等比例放大且不重排
-    var scaledWidth = originalWidth ;
-    var scaledHeight = originalHeight ;
+    var scaledWidth = originalWidth;
+    var scaledHeight = originalHeight;
     
     // 先清除可能影响布局的样式
     dom.style.minWidth = '0';
@@ -1940,6 +2289,67 @@ Object.assign(TOOL_JS.prototype, {
   },
 
   /**
+   * 批量将 DOM 节点转换为 imgExportData 格式（优化资源加载，避免重复请求）
+   * @param {Array} doms - DOM 节点数组，每个元素为 { dom: Node, options: Object }
+   * @param {Object} batchOptions - 批量处理选项
+   * @param {boolean} batchOptions.sharedResources - 是否共享资源缓存（默认 true）
+   * @param {Function} batchOptions.onProgress - 进度回调 (index, total, currentData) => {}
+   * @returns {Promise<Array>} imgExportData 格式的对象数组
+   */
+  async DomToImagedataBatch(doms, batchOptions) {
+    batchOptions = batchOptions || {};
+    var sharedResources = batchOptions.sharedResources !== false; // 默认共享资源
+    
+    // 如果共享资源，先收集所有节点使用的字体
+    var allUsedFonts = new Set();
+    if (sharedResources) {
+      doms.forEach(function(item) {
+        var usedFonts = this._collectUsedFonts(item.dom || item);
+        usedFonts.forEach(function(font) {
+          allUsedFonts.add(font);
+        });
+      }.bind(this));
+    }
+    
+    // 批量处理
+    var results = [];
+    var self = this;
+    
+    for (var i = 0; i < doms.length; i++) {
+      var item = doms[i];
+      var dom = item.dom || item;
+      var options = item.options || item;
+      
+      try {
+        // 如果共享资源，传递已收集的字体列表
+        if (sharedResources && allUsedFonts.size > 0) {
+          options._sharedFonts = allUsedFonts;
+        }
+        
+        var result = await this.DomToImagedata(dom, options);
+        results.push(result);
+        
+        // 进度回调
+        if (batchOptions.onProgress) {
+          batchOptions.onProgress(i, doms.length, result);
+        }
+      } catch (error) {
+        console.error('批量处理第 ' + (i + 1) + ' 个元素时出错:', error);
+        // 即使出错也添加一个占位对象，保持数组长度一致
+        results.push({
+          fileName: (options.fileName || 'error') + '_' + i,
+          id: options.id || '',
+          format: options.format || 'png',
+          u8a: null,
+          error: error.message
+        });
+      }
+    }
+    
+    return results;
+  },
+
+  /**
    * 将 DOM 节点转换为 imgExportData 格式
    * @param {Node} dom - DOM 节点
    * @param {Object} options - 选项
@@ -1954,6 +2364,7 @@ Object.assign(TOOL_JS.prototype, {
    * @param {Object} options.style - 样式对象（可选）
    * @param {Function} options.filter - 节点过滤函数（可选）
    * @param {number} options.scale - 高清缩放倍数（可选，默认1，建议2-3倍）
+   * @param {Set} options._sharedFonts - 内部使用：共享的字体集合（可选）
    * @returns {Promise<Object>} imgExportData 格式的对象
    */
   async DomToImagedata(dom, options) {
@@ -1962,6 +2373,65 @@ Object.assign(TOOL_JS.prototype, {
     var format = (options.format || 'png').toLowerCase();
     var quality = options.quality !== undefined ? options.quality : 10;
     var scale = options.scale || 1;
+    
+    // 在函数最开始就检测并处理 transform 中的 scale
+    var computedStyle = window.getComputedStyle(dom);
+    var originalTransform = dom.style.transform || '';
+    var computedTransform = computedStyle.transform || 'none';
+    var hasScale = false;
+    var transformScale = 1;
+    
+    // 检测 transform 中是否包含 scale
+    if (computedTransform !== 'none' && computedTransform.indexOf('scale') !== -1) {
+      hasScale = true;
+      // 提取 scale 值
+      var scaleMatch = computedTransform.match(/scale\(([^)]+)\)/i);
+      if (scaleMatch) {
+        transformScale = parseFloat(scaleMatch[1]) || 1;
+      }
+    } else if (originalTransform && originalTransform.indexOf('scale') !== -1) {
+      hasScale = true;
+      // 提取 scale 值
+      var scaleMatch = originalTransform.match(/scale\(([^)]+)\)/i);
+      if (scaleMatch) {
+        transformScale = parseFloat(scaleMatch[1]) || 1;
+      }
+    }
+    
+    // 如果检测到 scale，将其归为 1，并使用强制重渲确保生效
+    if (hasScale) {
+      console.log('Transform scale detected:', transformScale);
+      
+      // 将 transform scale 归为 1
+      var transformValue = originalTransform || computedTransform;
+      if (transformValue && transformValue !== 'none') {
+        // 使用正则表达式替换 scale 部分为 scale(1)
+        transformValue = transformValue.replace(/scale\([^)]*\)/gi, 'scale(1)');
+        dom.style.transform = transformValue;
+        console.log('Transform reset to:', transformValue);
+      } else {
+        dom.style.transform = 'scale(1)';
+        console.log('Transform reset to: scale(1)');
+      }
+      
+      // 使用 appendChild/removeChild 强制浏览器重新渲染
+      var parent = dom.parentNode;
+      if (parent) {
+        var nextSibling = dom.nextSibling;
+        parent.removeChild(dom);
+        if (nextSibling) {
+          parent.insertBefore(dom, nextSibling);
+        } else {
+          parent.appendChild(dom);
+        }
+      }
+      
+      // 强制浏览器重新计算布局
+      dom.offsetHeight;
+      
+      console.log('After transform reset - util.width():', util.width(dom));
+      console.log('After transform reset - util.height():', util.height(dom));
+    }
     
     // 确定 MIME 类型
     var mimeType = 'image/png';
@@ -1975,79 +2445,156 @@ Object.assign(TOOL_JS.prototype, {
     var self = this;
     var highDpiData = null;
     
-    // 如果需要缩放，直接修改原元素的宽高和 zoom
-    if (scale > 1) {
-      highDpiData = this._prepareHighDpiElement(dom, scale, util);
-      
-      // 更新选项中的宽高为缩放后的尺寸
-      options = Object.assign({}, options);
-      options.width = highDpiData.scaledWidth;
-      options.height = highDpiData.scaledHeight;
-      
-      // 等待一帧确保渲染完成
-      return util.delay(100)()
-        .then(function() {
-          return self._draw(dom, options);
-        })
-        .then(function (canvas) {
-          // 恢复原元素样式
-          if (highDpiData) {
-            self._restoreHighDpiElement(highDpiData);
+    // 使用 Promise 确保 transform 处理后再执行后续操作
+    return Promise.resolve()
+      .then(function() {
+        // 如果需要缩放，直接修改原元素的宽高和 zoom
+        if (scale) {
+          highDpiData = self._prepareHighDpiElement(dom, scale, util);
+          
+          // 更新选项中的宽高为缩放后的尺寸
+          options = Object.assign({}, options);
+          options.width = highDpiData.scaledWidth;
+          options.height = highDpiData.scaledHeight;
+          
+          // 等待一帧确保渲染完成
+          return util.delay(100)()
+            .then(function() {
+              return self._draw(dom, options);
+            })
+            .then(function (canvas) {
+              // 恢复原元素样式
+              if (highDpiData) {
+                self._restoreHighDpiElement(highDpiData);
+              }
+
+            // 恢复原始 transform
+            if (hasScale) {
+              dom.style.transform = originalTransform;
+              console.log('Transform restored to:', originalTransform || '(empty)');
+            }
+              
+              // 直接使用 canvas 的尺寸（如果是缩放，就是缩放后的尺寸）
+              var outputWidth = canvas.width;
+              var outputHeight = canvas.height;
+              
+              var dataUrl = canvas.toDataURL(mimeType, format === 'jpeg' ? quality / 10 : undefined);
+              var base64Data = dataUrl.split(',')[1];
+              var u8a = self.B64ToU8A(base64Data);
+              
+              return {
+                fileName: options.fileName || 'image',
+                id: options.id || '',
+                format: format,
+                u8a: u8a,
+                finalSize: options.finalSize || null,
+                width: outputWidth,
+                height: outputHeight,
+                compressed: null,
+                realSize: Math.floor(u8a.length / 1024 * 100) / 100,
+                quality: quality
+              };
+            })
+            .catch(function(error) {
+              // 确保在出错时也恢复原元素样式
+              if (highDpiData) {
+                self._restoreHighDpiElement(highDpiData);
+              }
+            // 恢复原始 transform
+            if (hasScale) {
+              dom.style.transform = originalTransform;
+              console.log('Transform restored to:', originalTransform || '(empty)');
+            }
+              throw error;
+            });
+        } else {
+          // 不需要缩放，直接使用旧逻辑
+          return self._draw(dom, options)
+            .then(function (canvas) {
+              var outputWidth = canvas.width;
+              var outputHeight = canvas.height;
+              
+              var dataUrl = canvas.toDataURL(mimeType, format === 'jpeg' ? quality / 10 : undefined);
+              var base64Data = dataUrl.split(',')[1];
+              var u8a = self.B64ToU8A(base64Data);
+              
+            // 恢复原始 transform
+            if (hasScale) {
+              dom.style.transform = originalTransform;
+              console.log('Transform restored to:', originalTransform || '(empty)');
+            }
+              
+              return {
+                fileName: options.fileName || 'image',
+                id: options.id || '',
+                format: format,
+                u8a: u8a,
+                finalSize: options.finalSize || null,
+                width: outputWidth,
+                height: outputHeight,
+                compressed: null,
+                realSize: Math.floor(u8a.length / 1024 * 100) / 100,
+                quality: quality
+              };
+            })
+            .catch(function(error) {
+              // 确保在出错时也恢复 transform
+              if (hasScale) {
+                dom.style.transform = originalTransform;
+                console.log('Transform restored to:', originalTransform || '(empty)');
+              }
+              throw error;
+            });
+        }
+      })
+  },
+
+  /**
+   * 遍历元素（含子元素）的所有图片相关的值，转为base64 url
+   * @param {HTMLElement|Array<HTMLElement>} elements - 要遍历的DOM元素或元素数组
+   * @param {Function} callback - 转换完成后的回调函数（可选）
+   * @returns {Promise<void>}
+   */
+  /**
+   * 获取图片的像素数据（ImageData）
+   * @param {HTMLImageElement} imgElement - 图片元素
+   * @returns {Promise<ImageData>} 像素数据
+   */
+  async GetImagePixels(imgElement) {
+    return new Promise((resolve, reject) => {
+      try {
+        if (!imgElement.complete || imgElement.naturalWidth === 0) {
+          if (imgElement.complete) {
+            reject(new Error('Image not loaded'));
+            return;
           }
-          
-          // 直接使用 canvas 的尺寸（如果是缩放，就是缩放后的尺寸）
-          var outputWidth = canvas.width;
-          var outputHeight = canvas.height;
-          
-          var dataUrl = canvas.toDataURL(mimeType, format === 'jpeg' ? quality / 10 : undefined);
-          var base64Data = dataUrl.split(',')[1];
-          var u8a = this.B64ToU8A(base64Data);
-          
-          return {
-            fileName: options.fileName || 'image',
-            id: options.id || '',
-            format: format,
-            u8a: u8a,
-            finalSize: options.finalSize || null,
-            width: outputWidth,
-            height: outputHeight,
-            compressed: null,
-            realSize: Math.floor(u8a.length / 1024 * 100) / 100,
-            quality: quality
+          imgElement.onload = () => {
+            this.GetImagePixels(imgElement).then(resolve).catch(reject);
           };
-        }.bind(this))
-        .catch(function(error) {
-          // 确保在出错时也恢复原元素样式
-          if (highDpiData) {
-            self._restoreHighDpiElement(highDpiData);
-          }
-          throw error;
-        });
-    } else {
-      // 不需要缩放，直接使用旧逻辑
-      return this._draw(dom, options)
-        .then(function (canvas) {
-          var outputWidth = canvas.width;
-          var outputHeight = canvas.height;
-          
-          var dataUrl = canvas.toDataURL(mimeType, format === 'jpeg' ? quality / 10 : undefined);
-          var base64Data = dataUrl.split(',')[1];
-          var u8a = this.B64ToU8A(base64Data);
-          
-          return {
-            fileName: options.fileName || 'image',
-            id: options.id || '',
-            format: format,
-            u8a: u8a,
-            finalSize: options.finalSize || null,
-            width: outputWidth,
-            height: outputHeight,
-            compressed: null,
-            realSize: Math.floor(u8a.length / 1024 * 100) / 100,
-            quality: quality
-          };
-        }.bind(this));
-    }
+          imgElement.onerror = () => reject(new Error('Image load error'));
+          return;
+        }
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = imgElement.naturalWidth || imgElement.width;
+        canvas.height = imgElement.naturalHeight || imgElement.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(imgElement, 0, 0);
+        
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        
+        // 清理 canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.width = 0;
+        canvas.height = 0;
+        
+        resolve(imageData);
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
 });
+
+

@@ -44,7 +44,7 @@
         <btn-search></btn-search>
       </div>
       <input id="big" type="checkbox">
-      <label for="big" class="btn-big df-cc">
+      <label for="big" class="btn-big df-cc" style="--fill: var(--boxBod)">
         <btn-show></btn-show>
       </label>
     </div>
@@ -527,7 +527,7 @@
             }else{
               exportTagsBox.setAttribute('data-export-pickall','false');
             }">
-            <label for="export-more" class="wh100 df-cc show-next">
+            <label for="export-more" class="wh100 df-cc show-next pos-r">
             </label>
           </div>
           <div data-exportset-more class="w100">
@@ -1421,7 +1421,7 @@
                     <div data-pixel-mix class="df-lc pos-r gap4" data-select data-select-close data-select-value="≤ 4096px" style="width: 90px; z-index:2;">
                       <input id="select-value-2" type="text" data-select-input readonly value="≤4096">
                       <input id="select-show-2" data-select-pick="≤4096" type="checkbox">
-                      <label for="select-show-2" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
+                      <label for="select-show-2" class="show-next wh100 pos-a" style="top:0; right: 0;"></label>
                       <div data-select-options class="df-lc pos-a noscrollbar" style="display: none;">
                         <div data-option="option" data-option-main="true" data-option-value="≤ 4096px">≤ 4096px</div>
                         <div data-option="option" data-option-main="false" data-option-value="≤ 2048px">≤ 2048px</div>
@@ -1839,7 +1839,7 @@
                     <div data-shadow-stroke-num class="df-lc pos-r fl1 gap4" data-select data-select-close data-select-value="x4" style="--op-pad-l: 1ch;">
                       <input id="select-value-3" type="text" data-select-input readonly value="x4">
                       <input id="select-show-3" data-select-pick type="checkbox">
-                      <label for="select-show-3" class="show-next wh100" style="position: absolute; top:0; right: 0;"></label>
+                      <label for="select-show-3" class="show-next wh100 pos-a" style="top:0; right: 0;"></label>
                       <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: wrap; display: none; top:24px;">
                         <div data-option="option" data-option-main="true" data-option-value="x4">x4</div>
                         <div data-option="option" data-option-main="false" data-option-value="x8">x8</div>
@@ -1958,6 +1958,7 @@
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
+  <script src="../../../builds/yn_icon.js"></script>
   <script src="../../../builds/yn_comp.js"></script>
   <script src="../../../builds/yn_tool.js"></script>
   <script src="../../../publics/graph.js"></script>

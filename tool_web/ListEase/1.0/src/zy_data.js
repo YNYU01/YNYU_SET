@@ -10,6 +10,10 @@
 // 自动获取当前页面的基础路径，用于 dom_to_img 读取图片（需要绝对路径）
 var haxi = (function() {
     var baseUrl = window.location.href;
+    // 如果是 file:// 协议，返回空字符串，使用相对路径
+    if (baseUrl.startsWith('file://')) {
+        return '';
+    }
     var lastSlash = baseUrl.lastIndexOf('/');
     return baseUrl.substring(0, lastSlash + 1);
 })();

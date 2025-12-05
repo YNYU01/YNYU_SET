@@ -956,8 +956,8 @@ btn-copy:hover{
 }
 
 .btn-theme {
-  --theme-l:rgba(0,0,0,0);
-  --theme-d:var(--mainColor);
+  --df-l: none;
+  --df-d: block;
   cursor: var(--pointer,pointer);
 }
 
@@ -970,9 +970,9 @@ btn-copy:hover{
 }
 
 
-input[type="checkbox"]:checked+.btn-theme {
-  --theme-l:var(--mainColor);
-  --theme-d:rgba(0,0,0,0);
+input[type="checkbox"]:checked + .btn-theme {
+  --df-l: block;
+  --df-d: none;
 }
 
 [data-check-checked="false"]{

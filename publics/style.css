@@ -44,6 +44,10 @@ html{
   pointer-events: none;
 }
 
+*[download]{
+  cursor: url('../VI/pointer_32.png'),pointer;
+}
+
 [data-draging="true"]{
   cursor: url('../VI/drag_32.png'),grabbing;
 }
@@ -463,8 +467,9 @@ input[type="checkbox"]:checked + .tab-top::after{
 
 [data-tab-top] .tab-top{
   padding: 2px 8px;
+  box-sizing: border-box;
   color:var(--boxBak);
-  height: 100%;
+  height: calc(100% - var(--tab-pick-af-h,2px)*2);
 }
 
 [data-tab-side-list] .tab-top{
