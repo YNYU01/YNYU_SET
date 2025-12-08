@@ -52,11 +52,10 @@ function getQueryParams() {
 /**
  * 使localStorage兼容浏览器/插件环境
  */
-let ISPLUGIN = ROOT.getAttribute('data-plugin')? true : false;
 
 let storageMix = {
   get: (key)=>{
-    if(ISPLUGIN){
+    if(PLUGINAPP){
       if(typeof toolMessage === 'function'){
         toolMessage([key,'getlocal'],PLUGINAPP);
       };
@@ -65,7 +64,7 @@ let storageMix = {
     }
   },
   set: (key,value)=>{
-    if(ISPLUGIN){
+    if(PLUGINAPP){
       try {
         if(typeof toolMessage === 'function'){
           toolMessage([[key,value],'setlocal'],PLUGINAPP);
@@ -81,7 +80,7 @@ let storageMix = {
 };
 
 //插件中不使用storageMix，因为插件中没有localStorage
-if(!ISPLUGIN){
+if(!PLUGINAPP){
   if(storageMix.get('userTheme') == 'light'){
     ROOT.setAttribute("data-theme","light");
   }else if(storageMix.get('userTheme') == 'dark'){
