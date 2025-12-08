@@ -28,33 +28,12 @@ if (window.location.protocol === 'file:' || window.location.hostname === 'localh
   ISLOCAL = true;
 };
 
-
-/**
- * 使localStorage兼容浏览器/插件环境
- */
 var storageMix = {
   get: (key)=>{
-    if(PLUGINAPP){
-      if(typeof toolMessage === 'function'){
-        toolMessage([key,'getlocal'],PLUGINAPP);
-      };
-    } else {
-      return window.localStorage.getItem(key);
-    }
+    return window.localStorage.getItem(key);
   },
   set: (key,value)=>{
-    if(PLUGINAPP){
-      try {
-        if(typeof toolMessage === 'function'){
-          toolMessage([[key,value],'setlocal'],PLUGINAPP);
-        }
-      } catch(e) {
-        // toolMessage 未定义或调用失败时静默处理
-        console.warn('toolMessage not available:', e);
-      };
-    } else {
-      window.localStorage.setItem(key,value);
-    };
+    window.localStorage.setItem(key,value);
   }
 };
 
