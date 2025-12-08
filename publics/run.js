@@ -80,9 +80,6 @@ window.storageMix = window.storageMix || {
   }
 };
 
-// 为了向后兼容，同时使用 let 声明（但实际使用 window.storageMix）
-let storageMix = window.storageMix;
-
 //插件中不使用storageMix，因为插件中没有localStorage
 if(!PLUGINAPP){
   if(storageMix.get('userTheme') == 'light'){
