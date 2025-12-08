@@ -2,23 +2,20 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 PULGIN_LOCAL = true;
 let ISWORK_TIME = true;
 let userSkillStar = [];
-if (ISPLUGIN){
-  ROOT.setAttribute('data-mobile','false');
-  ISMOBILE = false;
-  toolMessage(['userTheme','getlocal'],PLUGINAPP);
-  toolMessage(['userLanguage','getlocal'],PLUGINAPP);
-  toolMessage(['userResize','getlocal'],PLUGINAPP);
-  toolMessage(['tabPick','getlocal'],PLUGINAPP);
-  toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
-  toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
-  toolMessage(['toolsSetFig_users','getlocal'],PLUGINAPP);
-}
+
+toolMessage(['userTheme','getlocal'],PLUGINAPP);
+toolMessage(['userLanguage','getlocal'],PLUGINAPP);
+toolMessage(['userResize','getlocal'],PLUGINAPP);
+toolMessage(['tabPick','getlocal'],PLUGINAPP);
+toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
+toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
+toolMessage(['toolsSetFig_users','getlocal'],PLUGINAPP);
 
 window.addEventListener('message',(message)=>{
   let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
@@ -34,32 +31,21 @@ window.addEventListener('message',(message)=>{
       case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
       case 'userResize': reRootSize(info);break
     };
-    if(ISWORK_TIME){
+    if(ISWORK_TIME && info){
       switch (type){
         case 'tabPick': viewPage(info);break
         case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
         case 'toolsSetFig_user':
-          if(typeof AuthManager !== 'undefined' && info) {
+          if(typeof AuthManager !== 'undefined') {
             AuthManager.setCurrentUser(info);
             AuthManager.updateUI();
-          }
-          break
+          };
+        break
         case 'toolsSetFig_users':
-          if(typeof AuthManager !== 'undefined' && info) {
+          if(typeof AuthManager !== 'undefined') {
             AuthManager.setUsersList(info);
-          }
-          break
-        case 'selectInfo': reSelectInfo(info);break
-        case 'selectInfoMain': addTableText(tableObjToText(info));break
-        case 'selectComp': reSelectComp(info);break
-        case 'selectDatas': reSelectDatas(info);break
-        case 'exportImgInfo': addTag('export-img',info);break
-        case 'editorView': addEditorView(info);break
-        case 'styleInfo': reStyleInfo(info);break
-        case 'styleSheetInfo': reStyleSheetInfo(info);break
-        case 'variableInfo': reVariableInfo(info);break
-        case 'variableSheetInfo': reVariableSheetInfo(info);break
-        case 'editImage': editImage(info);break
+          };
+        break
       };
     }
   };
@@ -75,7 +61,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -4537,21 +4523,21 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/other/qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/other/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@c3eaac885a3f2344a4d26e726b2bdf34f0f41738/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e56af6fb0c1ad932cbf73c990a825e426bbd8fbb/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -5014,24 +5000,6 @@ function revokeImageObjectURL(url){
   }
 };
 
-let hrefDoc = DOM.btnHelpDoc?.getAttribute('href');
-if (hrefDoc && DOM.btnHelpDoc) {
-  DOM.btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
-}
-let hrefTemplate = DOM.templateBtn?.getAttribute('href');
-if (hrefTemplate && DOM.templateBtn) {
-  DOM.templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
-}
-
-getElementMix('language-1')?.addEventListener('change',()=>{
-  if (DOM.btnHelpDoc && hrefDoc) {
-    DOM.btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
-  }
-  if (DOM.templateBtn && hrefTemplate) {
-    DOM.templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
-  }
-});
-
 window.addEventListener('load',()=>{
   let time = getTime('HH')[0];
   if(time*1 > 20 && !PULGIN_LOCAL){
@@ -5060,6 +5028,24 @@ window.addEventListener('load',()=>{
   }, DELAY.INIT);
 });
 
+let hrefDoc = DOM.btnHelpDoc?.getAttribute('href');
+if (hrefDoc && DOM.btnHelpDoc) {
+  DOM.btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+}
+let hrefTemplate = DOM.templateBtn?.getAttribute('href');
+if (hrefTemplate && DOM.templateBtn) {
+  DOM.templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
+}
+
+getElementMix('language-1')?.addEventListener('change',()=>{
+  if (DOM.btnHelpDoc && hrefDoc) {
+    DOM.btnHelpDoc.setAttribute('href',`${hrefDoc}?type=fig&lan=${ROOT.getAttribute('data-language')}`);
+  }
+  if (DOM.templateBtn && hrefTemplate) {
+    DOM.templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
+  }
+});
+
 window.addEventListener('resize',debounce(()=>{
   if(window.innerWidth < 300){
     TV_MOVE = true;
@@ -5068,29 +5054,32 @@ window.addEventListener('resize',debounce(()=>{
   };
 }, DELAY.DEBOUNCE, true));
 
-function loadFont(area){
-  let loadFontAfter = [
-    "data-en-text",
-    "data-en-input",
-    "data-en-placeholder",
-    "data-turnto",
-    "data-back",
-  ];
-  let areas;
-  if(area){
-    areas = getElementMix(area);
-  } else {
-    areas = document;
+window.addEventListener('message',(message)=>{
+  let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
+  if(!isPluginMessge){
+    let messages = message.data.pluginMessage.pluginMessage || ['',''];
+    let info = messages[0];
+    let type = messages[1];
+    if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
+      info = JSON.parse(info);
+    }
+    if(ISWORK_TIME && info){
+      switch (type){
+        case 'selectInfo': reSelectInfo(info);break
+        case 'selectInfoMain': addTableText(tableObjToText(info));break
+        case 'selectComp': reSelectComp(info);break
+        case 'selectDatas': reSelectDatas(info);break
+        case 'exportImgInfo': addTag('export-img',info);break
+        case 'editorView': addEditorView(info);break
+        case 'styleInfo': reStyleInfo(info);break
+        case 'styleSheetInfo': reStyleSheetInfo(info);break
+        case 'variableInfo': reVariableInfo(info);break
+        case 'variableSheetInfo': reVariableSheetInfo(info);break
+        case 'editImage': editImage(info);break
+      };
+    }
   };
-  setTimeout(()=>{
-    loadFontAfter.forEach(key => {
-      let nodes = areas.querySelectorAll(`[${key}]`);
-      nodes.forEach(item => {
-        item.style.fontFamily = '"Shanggu Sans", Arial, Helvetica, sans-serif';
-      })
-    });
-  },100);
-};
+});
 
 function addToUserTips(kind){
   let languge = ROOT.getAttribute('data-language');
@@ -7214,24 +7203,6 @@ DOM.pixelScale.addEventListener('change',()=>{
   };
 });
 
-DOM.skillAllBox.querySelector('[data-pixel-copy]').addEventListener('click',()=>{
-
-});
-
-function scaleRWH(){
-
-};
-
-function sendTransform(){
-  let data = {
-    x: DOM.skewSetX.value * 1,
-    y: DOM.skewSetY.value * 1,
-    w: DOM.scaleSetX.value * 1,
-    h: DOM.scaleSetY.value * 1,
-  }
-  toolMessage([data,'transformMix'],PLUGINAPP);
-};
-
 getElementMix('data-split-tags').querySelectorAll('[type="checkbox"]').forEach(check => {
   check.addEventListener('change',()=>{
     if(check.checked){
@@ -7554,210 +7525,6 @@ const qrcodeGridController = new QRCodeGridController(
   '[data-qrcode-view-box]'
 );
 
-function sendPixel(name){
-  let mix = DOM.skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
-  let s = DOM.pixelScale.value;
-  let cuts = [];
-  tipsAll(MESSAGES.READING, SelectNodeInfo.length * 800);
-  setTimeout(()=>{
-    SelectNodeInfo.forEach((item) => {
-    let w = item[1];
-    let h = item[2];
-    let cut = tool.CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix);
-    cuts.push(cut);
-  });
-
-  toolMessage([cuts,name],PLUGINAPP);
-  },100);
-};
-
-function sendSplit(type){
-  if(type == 'tags'){
-    let tagsBox = getElementMix('data-split-tags').querySelectorAll('[data-check-checked="true"]');
-    let tags = [];
-    tagsBox.forEach(item => {
-      let tag = item.querySelector('[data-split-info="name"]').getAttribute('data-en-text');
-      tags.push(tag);
-    });
-
-    toolMessage([[tags,'tags'],'splitText'],PLUGINAPP);
-  };
-  if(type == 'inputs'){
-    let inputs = document.getElementById('split-word').value;
-    let type = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
-    toolMessage([[[inputs,type],'inputs'],'splitText'],PLUGINAPP);
-  };
-};
-
-function sendTable(type){
-  let data = '';
-  let clone = true;
-  let reduce = false;
-  let enters = getElementMix('input-linefeed').value;
-  let nulls = getElementMix('input-nulldata').value;
-  if(type == 'mapName' || type == 'mapText' ){
-    data = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
-  };
-  if(type == 'mapPro' || type == 'mapTag' ){
-    data = tableArrayToObj(tableTextToArray(getElementMix('upload-tablearea').value.trim()))
-  };
-  if(type.includes('map')){
-    clone = getElementMix('switch-autoclone').checked;
-    reduce = getElementMix('switch-autoreduce').checked;
-  };
-
-  toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
-};
-
-function applyTableStyleStrategy(){
-  const styleId = tableStyleSet?.getAttribute('data-radio-value') - 1;
-  if (styleId >= 0 && tableStyle && tableStyle[styleId]) {
-    toolMessage([[tableStyle[styleId],'style'],'reTable'],PLUGINAPP);
-  } else {
-    console.warn('applyTableStyleStrategy: Invalid styleId or tableStyle');
-  }
-};
-
-function addTableRowColStrategy(){
-  const H = getElementMix('table-column-num');
-  const V = getElementMix('table-row-num');
-  if (H && V) {
-    toolMessage([[[H.value,V.value],'add'],'reTable'],PLUGINAPP);
-    H.value = 0;
-    V.value = 0;
-  } else {
-    console.warn('addTableRowColStrategy: H or V element not found');
-  }
-};
-
-function reduceTableRowColStrategy(){
-  const H = getElementMix('table-column-num');
-  const V = getElementMix('table-row-num');
-  if (H && V) {
-    toolMessage([[[H.value * -1,V.value * -1],'reduce'],'reTable'],PLUGINAPP);
-    H.value = 0;
-    V.value = 0;
-  } else {
-    console.warn('reduceTableRowColStrategy: H or V element not found');
-  }
-};
-
-function randomTableThemeStrategy(){
-  const styleId = tableStyleSet?.getAttribute('data-radio-value') - 1;
-  if (styleId >= 0 && tableStyle && tableStyle[styleId]) {
-
-    toolMessage([[tableStyle[styleId],'theme'],'reTable'],PLUGINAPP);
-  } else {
-    console.warn('randomTableThemeStrategy: Invalid styleId or tableStyle');
-  }
-};
-
-const TABLE_SET_STRATEGIES = {
-  'style': applyTableStyleStrategy,
-  'add': addTableRowColStrategy,
-  'reduce': reduceTableRowColStrategy,
-  'theme': randomTableThemeStrategy
-};
-
-function sendTableSet(type){
-  const strategy = TABLE_SET_STRATEGIES[type];
-  if (!strategy) {
-    console.warn(`Unknown table set type: ${type}`);
-    return;
-  }
-  strategy();
-};
-
-function sendTablePick(type){
-  toolMessage([type,'pickTable'],PLUGINAPP);
-};
-
-function upSelect(type){
-  let exporttype = getElementMix('data-exporttype-set').getAttribute('data-radio-value');
-  let types = ['image','zy','rich']
-  toolMessage([[types[exporttype - 1],type],'upSelect'],PLUGINAPP);
-};
-
-const SKILL_STRATEGIES = {
-  'Pixel As Copy': () => sendPixel('Pixel As Copy'),
-  'Pixel Overwrite': () => sendPixel('Pixel Overwrite'),
-  'Split By Conditions': () => sendSplit('tags'),
-  'Split By Symbol': () => sendSplit('inputs'),
-  'Mapping Names': () => sendTable('mapName'),
-  'Mapping Texts': () => sendTable('mapText'),
-  'Mapping Properties': () => sendTable('mapPro'),
-  'Mapping Tags': () => sendTable('mapTag'),
-  'Get Names': () => sendTable('getName'),
-  'Get Texts': () => sendTable('getText'),
-  'Get Properties': () => sendTable('getPro'),
-  'Get Tags': () => sendTable('getTag'),
-  'Apply Preset': () => sendTableSet('style'),
-  'Add C/R': () => sendTableSet('add'),
-  'Reduce C/R': () => sendTableSet('reduce'),
-  'Random Theme': () => sendTableSet('theme'),
-  'Select a Row': () => sendTablePick('row'),
-  'Select many Rows': () => sendTablePick('allrow'),
-  'Select Block': () => sendTablePick('block'),
-  'Select Inline': () => sendTablePick('inline'),
-  'Up Export-set': () => upSelect('exportset'),
-  'Up Default': () => upSelect('default')
-};
-
-const SKILL_DBLCLICK_STRATEGIES = {
-
-};
-
-function executeSkillStrategy(skillname){
-  const strategy = SKILL_STRATEGIES[skillname];
-  if (strategy) {
-    strategy();
-  } else {
-
-    toolMessage(['',skillname],PLUGINAPP);
-  }
-};
-
-function executeSkillDoubleClickStrategy(skillname){
-  const strategy = SKILL_DBLCLICK_STRATEGIES[skillname];
-  if (strategy) {
-    strategy();
-  } else {
-
-    toolMessage([true,skillname],PLUGINAPP);
-  }
-};
-
-DOM.skillBtnMain.forEach(btn => {
-  let clickTimer = null;
-
-  btn.addEventListener('dblclick',()=>{
-
-    if(clickTimer){
-      clearTimeout(clickTimer);
-      clickTimer = null;
-    };
-
-    const skillname = btn.getAttribute('data-en-text');
-    if(btn.getAttribute('data-btn-dblclick') !== null && skillname){
-      executeSkillDoubleClickStrategy(skillname);
-    };
-  });
-
-  btn.addEventListener('click',()=>{
-    const skillname = btn.getAttribute('data-en-text');
-    if (!skillname) return;
-
-    if(clickTimer){
-      clearTimeout(clickTimer);
-    };
-
-    clickTimer = setTimeout(()=>{
-      executeSkillStrategy(skillname);
-      clickTimer = null;
-    }, DELAY.SKILL_CLICK);
-  });
-});
-
 function reSelectComp(info){
 
   if(info[0] || info[1] || info[2]){
@@ -8012,6 +7779,220 @@ function getUserRadio(node){
     };
   };
 };
+
+
+</script>
+  <script>
+
+
+const SKILL_STRATEGIES = {
+  'Pixel As Copy': () => sendPixel('Pixel As Copy'),
+  'Pixel Overwrite': () => sendPixel('Pixel Overwrite'),
+  'Split By Conditions': () => sendSplit('tags'),
+  'Split By Symbol': () => sendSplit('inputs'),
+  'Mapping Names': () => sendTable('mapName'),
+  'Mapping Texts': () => sendTable('mapText'),
+  'Mapping Properties': () => sendTable('mapPro'),
+  'Mapping Tags': () => sendTable('mapTag'),
+  'Get Names': () => sendTable('getName'),
+  'Get Texts': () => sendTable('getText'),
+  'Get Properties': () => sendTable('getPro'),
+  'Get Tags': () => sendTable('getTag'),
+  'Apply Preset': () => sendTableSet('style'),
+  'Add C/R': () => sendTableSet('add'),
+  'Reduce C/R': () => sendTableSet('reduce'),
+  'Random Theme': () => sendTableSet('theme'),
+  'Select a Row': () => sendTablePick('row'),
+  'Select many Rows': () => sendTablePick('allrow'),
+  'Select Block': () => sendTablePick('block'),
+  'Select Inline': () => sendTablePick('inline'),
+  'Up Export-set': () => upSelect('exportset'),
+  'Up Default': () => upSelect('default')
+};
+
+const SKILL_DBLCLICK_STRATEGIES = {
+
+};
+
+DOM.skillBtnMain.forEach(btn => {
+  let clickTimer = null;
+
+  btn.addEventListener('dblclick',()=>{
+
+    if(clickTimer){
+      clearTimeout(clickTimer);
+      clickTimer = null;
+    };
+
+    const skillname = btn.getAttribute('data-en-text');
+    if(btn.getAttribute('data-btn-dblclick') !== null && skillname){
+      const strategy = SKILL_STRATEGIES[skillname];
+      if (strategy) {
+        strategy();
+      } else {
+        toolMessage(['',skillname],PLUGINAPP);
+      }
+    };
+  });
+
+  btn.addEventListener('click',()=>{
+    const skillname = btn.getAttribute('data-en-text');
+    if (!skillname) return;
+
+    if(clickTimer){
+      clearTimeout(clickTimer);
+    };
+
+    clickTimer = setTimeout(()=>{
+      const strategy = SKILL_DBLCLICK_STRATEGIES[skillname];
+      if (strategy) {
+        strategy();
+      } else {
+        toolMessage([true,skillname],PLUGINAPP);
+      }
+      clickTimer = null;
+    }, DELAY.SKILL_CLICK);
+  });
+});
+
+function sendPixel(name){
+  let mix = DOM.skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+  let s = DOM.pixelScale.value;
+  let cuts = [];
+  tipsAll(MESSAGES.READING, SelectNodeInfo.length * 800);
+  setTimeout(()=>{
+    SelectNodeInfo.forEach((item) => {
+    let w = item[1];
+    let h = item[2];
+    let cut = tool.CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix);
+    cuts.push(cut);
+  });
+
+  toolMessage([cuts,name],PLUGINAPP);
+  },100);
+};
+
+function sendTransform(){
+  let data = {
+    x: DOM.skewSetX.value * 1,
+    y: DOM.skewSetY.value * 1,
+    w: DOM.scaleSetX.value * 1,
+    h: DOM.scaleSetY.value * 1,
+  }
+  toolMessage([data,'transformMix'],PLUGINAPP);
+};
+
+function sendSplit(type){
+  if(type == 'tags'){
+    let tagsBox = getElementMix('data-split-tags').querySelectorAll('[data-check-checked="true"]');
+    let tags = [];
+    tagsBox.forEach(item => {
+      let tag = item.querySelector('[data-split-info="name"]').getAttribute('data-en-text');
+      tags.push(tag);
+    });
+
+    toolMessage([[tags,'tags'],'splitText'],PLUGINAPP);
+  };
+  if(type == 'inputs'){
+    let inputs = document.getElementById('split-word').value;
+    let type = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
+    toolMessage([[[inputs,type],'inputs'],'splitText'],PLUGINAPP);
+  };
+};
+
+function sendTable(type){
+  let data = '';
+  let clone = true;
+  let reduce = false;
+  let enters = getElementMix('input-linefeed').value;
+  let nulls = getElementMix('input-nulldata').value;
+  if(type == 'mapName' || type == 'mapText' ){
+    data = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
+  };
+  if(type == 'mapPro' || type == 'mapTag' ){
+    data = tableArrayToObj(tableTextToArray(getElementMix('upload-tablearea').value.trim()))
+  };
+  if(type.includes('map')){
+    clone = getElementMix('switch-autoclone').checked;
+    reduce = getElementMix('switch-autoreduce').checked;
+  };
+
+  toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
+};
+
+function applyTableStyleStrategy(){
+  const styleId = tableStyleSet?.getAttribute('data-radio-value') - 1;
+  if (styleId >= 0 && tableStyle && tableStyle[styleId]) {
+    toolMessage([[tableStyle[styleId],'style'],'reTable'],PLUGINAPP);
+  } else {
+    console.warn('applyTableStyleStrategy: Invalid styleId or tableStyle');
+  }
+};
+
+function addTableRowColStrategy(){
+  const H = getElementMix('table-column-num');
+  const V = getElementMix('table-row-num');
+  if (H && V) {
+    toolMessage([[[H.value,V.value],'add'],'reTable'],PLUGINAPP);
+    H.value = 0;
+    V.value = 0;
+  } else {
+    console.warn('addTableRowColStrategy: H or V element not found');
+  }
+};
+
+function reduceTableRowColStrategy(){
+  const H = getElementMix('table-column-num');
+  const V = getElementMix('table-row-num');
+  if (H && V) {
+    toolMessage([[[H.value * -1,V.value * -1],'reduce'],'reTable'],PLUGINAPP);
+    H.value = 0;
+    V.value = 0;
+  } else {
+    console.warn('reduceTableRowColStrategy: H or V element not found');
+  }
+};
+
+function randomTableThemeStrategy(){
+  const styleId = DOM.tableStyleSet?.getAttribute('data-radio-value') - 1;
+  if (styleId >= 0 && tableStyle && tableStyle[styleId]) {
+
+    toolMessage([[tableStyle[styleId],'theme'],'reTable'],PLUGINAPP);
+  } else {
+    console.warn('randomTableThemeStrategy: Invalid styleId or tableStyle');
+  }
+};
+
+const TABLE_SET_FUNCTIONS = {
+  'style': applyTableStyleStrategy,
+  'add': addTableRowColStrategy,
+  'reduce': reduceTableRowColStrategy,
+  'theme': randomTableThemeStrategy
+};
+
+function sendTableSet(type){
+  const strategy = TABLE_SET_FUNCTIONS[type];
+  if (!strategy) {
+    console.warn(`Unknown table set type: ${type}`);
+    return;
+  }
+  strategy();
+};
+
+function sendTablePick(type){
+  toolMessage([type,'pickTable'],PLUGINAPP);
+};
+
+function upSelect(type){
+  let exporttype = getElementMix('data-exporttype-set').getAttribute('data-radio-value');
+  let types = ['image','zy','rich']
+  toolMessage([[types[exporttype - 1],type],'upSelect'],PLUGINAPP);
+};
+
+
+</script>
+  <script>
+
 
 function getAuthText(key, ...args) {
   const lang = getLanguageIntime() || 'zh';
@@ -9022,9 +9003,6 @@ if (document.readyState === 'loading') {
 function getLanguageIntime(){
   return ROOT.getAttribute('data-language').toLowerCase();
 };
-
 </script>
-  
-  
 </body>
 </html>

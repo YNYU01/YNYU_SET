@@ -1,4 +1,5 @@
-PULGIN_LOCAL = true;
+let PULGIN_LOCAL = true;
+let PLUGINAPP = ROOT.getAttribute('data-plugin');
 let ISWORK_TIME = true;
 let userSkillStar = [];
 

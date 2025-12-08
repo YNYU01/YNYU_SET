@@ -53,7 +53,6 @@ function getQueryParams() {
  * 使localStorage兼容浏览器/插件环境
  */
 let ISPLUGIN = ROOT.getAttribute('data-plugin')? true : false;
-let PLUGINAPP = ISPLUGIN ? ROOT.getAttribute('data-plugin') : null;
 
 let storageMix = {
   get: (key)=>{
