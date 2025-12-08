@@ -52,27 +52,3 @@ window.addEventListener('load',()=>{
   
   loadFont();
 });
-
-function loadFont(area){
-  let loadFontAfter = [
-    "data-en-text",
-    "data-en-input",
-    "data-en-placeholder",
-    "data-turnto",
-    "data-back",
-  ];
-  let areas;
-  if(area){
-    areas = getElementMix(area);
-  } else {
-    areas = document;
-  };
-  setTimeout(()=>{
-    loadFontAfter.forEach(key => {
-      let nodes = areas.querySelectorAll(`[${key}]`);
-      nodes.forEach(item => {
-        item.style.fontFamily = '"Shanggu Sans", Arial, Helvetica, sans-serif';
-      })
-    });
-  },100);
-};
