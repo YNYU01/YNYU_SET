@@ -1,18 +1,16 @@
 PULGIN_LOCAL = true;
 let ISWORK_TIME = true;
 let userSkillStar = [];
-if (ISPLUGIN){
-  ROOT.setAttribute('data-mobile','false');
-  ISMOBILE = false;
-  toolMessage(['userTheme','getlocal'],PLUGINAPP);
-  toolMessage(['userLanguage','getlocal'],PLUGINAPP);
-  toolMessage(['userResize','getlocal'],PLUGINAPP);
-  toolMessage(['tabPick','getlocal'],PLUGINAPP);
-  toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
-  toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
-  toolMessage(['toolsSetFig_users','getlocal'],PLUGINAPP);
-}
 
+//========== 初始化插件界面偏好 ==========
+toolMessage(['userTheme','getlocal'],PLUGINAPP);
+toolMessage(['userLanguage','getlocal'],PLUGINAPP);
+toolMessage(['userResize','getlocal'],PLUGINAPP);
+toolMessage(['tabPick','getlocal'],PLUGINAPP);
+toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
+toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
+toolMessage(['toolsSetFig_users','getlocal'],PLUGINAPP);
+ 
 window.addEventListener('message',(message)=>{
   let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
   if(!isPluginMessge){
@@ -27,32 +25,21 @@ window.addEventListener('message',(message)=>{
       case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
       case 'userResize': reRootSize(info);break
     };
-    if(ISWORK_TIME){
+    if(ISWORK_TIME && info){
       switch (type){
         case 'tabPick': viewPage(info);break
         case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
         case 'toolsSetFig_user': 
-          if(typeof AuthManager !== 'undefined' && info) {
+          if(typeof AuthManager !== 'undefined') {
             AuthManager.setCurrentUser(info);
             AuthManager.updateUI();
-          }
-          break
+          };
+        break
         case 'toolsSetFig_users': 
-          if(typeof AuthManager !== 'undefined' && info) {
+          if(typeof AuthManager !== 'undefined') {
             AuthManager.setUsersList(info);
-          }
-          break
-        case 'selectInfo': reSelectInfo(info);break
-        case 'selectInfoMain': addTableText(tableObjToText(info));break
-        case 'selectComp': reSelectComp(info);break
-        case 'selectDatas': reSelectDatas(info);break
-        case 'exportImgInfo': addTag('export-img',info);break
-        case 'editorView': addEditorView(info);break
-        case 'styleInfo': reStyleInfo(info);break
-        case 'styleSheetInfo': reStyleSheetInfo(info);break
-        case 'variableInfo': reVariableInfo(info);break
-        case 'variableSheetInfo': reVariableSheetInfo(info);break
-        case 'editImage': editImage(info);break
+          };
+        break
       };
     }
   };

@@ -32,12 +32,6 @@ class cardcolorpick extends HTMLElement {
 };
 customElements.define('card-colorpick', cardcolorpick);
 
-//初始化
-let ISLOCAL = false;
-if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || PULGIN_LOCAL){
-  ISLOCAL = true;
-};
-
 let GETCOLOR = null;
 let TIPS_TIMES = [];
 let USER_KEYING = false;
@@ -1898,7 +1892,7 @@ function setLanguage(isZh,istips){
  * @param {any} type - text | self | toimg
  * @param {string?} other - 通过其他方法得到的用于复制的字符串或图片信息
  */
-function copy(node,type,other){
+function copyMix(node,type,other){
   let copyText = '';
   node = node.innerHTML ? node : document.getElementById(node.id);
   if(!node){

@@ -1,0 +1,234 @@
+//============= 功能快速通信（策略模式） ==============
+// 带数据通信的单击功能映射
+const SKILL_STRATEGIES = {
+  'Pixel As Copy': () => sendPixel('Pixel As Copy'),
+  'Pixel Overwrite': () => sendPixel('Pixel Overwrite'),
+  'Split By Conditions': () => sendSplit('tags'),
+  'Split By Symbol': () => sendSplit('inputs'),
+  'Mapping Names': () => sendTable('mapName'),
+  'Mapping Texts': () => sendTable('mapText'),
+  'Mapping Properties': () => sendTable('mapPro'),
+  'Mapping Tags': () => sendTable('mapTag'),
+  'Get Names': () => sendTable('getName'),
+  'Get Texts': () => sendTable('getText'),
+  'Get Properties': () => sendTable('getPro'),
+  'Get Tags': () => sendTable('getTag'),
+  'Apply Preset': () => sendTableSet('style'),
+  'Add C/R': () => sendTableSet('add'),
+  'Reduce C/R': () => sendTableSet('reduce'),
+  'Random Theme': () => sendTableSet('theme'),
+  'Select a Row': () => sendTablePick('row'),
+  'Select many Rows': () => sendTablePick('allrow'),
+  'Select Block': () => sendTablePick('block'),
+  'Select Inline': () => sendTablePick('inline'),
+  'Up Export-set': () => upSelect('exportset'),
+  'Up Default': () => upSelect('default')
+};
+
+// 带数据通信的双击功能映射
+const SKILL_DBLCLICK_STRATEGIES = {
+  // 示例：如果有特定双击处理，可以在这里添加
+  // 'Pixel As Copy': () => sendPixelDoubleClick('Pixel As Copy'),
+  // 'Mapping Names': () => sendTableDoubleClick('mapName'),
+};
+/**
+ * 通过data-skill-click/dblclick属性（收集进DOM.skillBtnMain）,为按钮添加点击即执行的功能，单击和双击事件分开处理
+ * 功能通信机制
+ * 1. 单击功能映射：默认直接发送功能名称，由主线程执行，如果需携带数据，添加映射到单击功能映射表
+ * 2. 双击功能映射：默认直接发送功能名称+是否是双击，由主线程执行，如果需携带数据，添加映射到双击功能映射表
+ * 
+ */
+DOM.skillBtnMain.forEach(btn => {
+  let clickTimer = null;
+  
+  // 双击事件处理
+  btn.addEventListener('dblclick',()=>{
+    // 清除单击事件的定时器
+    if(clickTimer){
+      clearTimeout(clickTimer);
+      clickTimer = null;
+    };
+    
+    const skillname = btn.getAttribute('data-en-text');
+    if(btn.getAttribute('data-btn-dblclick') !== null && skillname){
+      const strategy = SKILL_STRATEGIES[skillname];
+      if (strategy) {
+        strategy();
+      } else {
+        toolMessage(['',skillname],PLUGINAPP);
+      }
+    };
+  });
+  
+  // 单击事件处理（带防抖）
+  btn.addEventListener('click',()=>{
+    const skillname = btn.getAttribute('data-en-text');
+    if (!skillname) return;
+    
+    // 清除之前的定时器
+    if(clickTimer){
+      clearTimeout(clickTimer);
+    };
+    
+    // 设置新的定时器
+    clickTimer = setTimeout(()=>{
+      const strategy = SKILL_DBLCLICK_STRATEGIES[skillname];
+      if (strategy) {
+        strategy();
+      } else {
+        toolMessage([true,skillname],PLUGINAPP);
+      }
+      clickTimer = null;
+    }, DELAY.SKILL_CLICK);
+  });
+});
+
+
+// 更多功能 > 返回裁切方案以栅格化
+function sendPixel(name){
+  let mix = DOM.skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+  let s = DOM.pixelScale.value;
+  let cuts = [];
+  tipsAll(MESSAGES.READING, SelectNodeInfo.length * 800);
+  setTimeout(()=>{
+    SelectNodeInfo.forEach((item) => {
+    let w = item[1];
+    let h = item[2];
+    let cut = tool.CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix);
+    cuts.push(cut);
+  });
+  //console.log(cuts);
+  toolMessage([cuts,name],PLUGINAPP);
+  },100);
+};
+
+// 更多功能 > 斜切拉伸
+function sendTransform(){
+  let data = {
+    x: DOM.skewSetX.value * 1,
+    y: DOM.skewSetY.value * 1,
+    w: DOM.scaleSetX.value * 1,
+    h: DOM.scaleSetY.value * 1,
+  }
+  toolMessage([data,'transformMix'],PLUGINAPP);
+};
+
+// 更多功能 > 拆分文本-按条件标签选中/按符号选中
+function sendSplit(type){
+  if(type == 'tags'){
+    let tagsBox = getElementMix('data-split-tags').querySelectorAll('[data-check-checked="true"]');
+    let tags = [];
+    tagsBox.forEach(item => {
+      let tag = item.querySelector('[data-split-info="name"]').getAttribute('data-en-text');
+      tags.push(tag);
+    });
+    //console.log(tags)
+    toolMessage([[tags,'tags'],'splitText'],PLUGINAPP);
+  };
+  if(type == 'inputs'){
+    let inputs = document.getElementById('split-word').value;
+    let type = document.querySelector('[data-splitword-set]').getAttribute('data-radio-value');
+    toolMessage([[[inputs,type],'inputs'],'splitText'],PLUGINAPP);
+  };
+};
+
+// 表单页 > 表格设置-按名称/文本/属性/标签来映射及获取数据
+function sendTable(type){
+  let data = '';
+  let clone = true;
+  let reduce = false;
+  let enters = getElementMix('input-linefeed').value;
+  let nulls = getElementMix('input-nulldata').value;
+  if(type == 'mapName' || type == 'mapText' ){
+    data = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
+  };
+  if(type == 'mapPro' || type == 'mapTag' ){
+    data = tableArrayToObj(tableTextToArray(getElementMix('upload-tablearea').value.trim()))
+  };
+  if(type.includes('map')){
+    clone = getElementMix('switch-autoclone').checked;
+    reduce = getElementMix('switch-autoreduce').checked;
+  };
+  
+  toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
+};
+
+
+// 表单页 > 应用预设样式-随机主题
+function applyTableStyleStrategy(){
+  const styleId = tableStyleSet?.getAttribute('data-radio-value') - 1;
+  if (styleId >= 0 && tableStyle && tableStyle[styleId]) {
+    toolMessage([[tableStyle[styleId],'style'],'reTable'],PLUGINAPP);
+  } else {
+    console.warn('applyTableStyleStrategy: Invalid styleId or tableStyle');
+  }
+};
+
+// 表单页 > 添加行列
+function addTableRowColStrategy(){
+  const H = getElementMix('table-column-num');
+  const V = getElementMix('table-row-num');
+  if (H && V) {
+    toolMessage([[[H.value,V.value],'add'],'reTable'],PLUGINAPP);
+    H.value = 0;
+    V.value = 0;
+  } else {
+    console.warn('addTableRowColStrategy: H or V element not found');
+  }
+};
+
+// 表单页 > 减少行列
+function reduceTableRowColStrategy(){
+  const H = getElementMix('table-column-num');
+  const V = getElementMix('table-row-num');
+  if (H && V) {
+    toolMessage([[[H.value * -1,V.value * -1],'reduce'],'reTable'],PLUGINAPP);
+    H.value = 0;
+    V.value = 0;
+  } else {
+    console.warn('reduceTableRowColStrategy: H or V element not found');
+  }
+};
+
+// 表单页 > 随机主题策略
+function randomTableThemeStrategy(){
+  const styleId = DOM.tableStyleSet?.getAttribute('data-radio-value') - 1;
+  if (styleId >= 0 && tableStyle && tableStyle[styleId]) {
+    // 可选：随机主题逻辑
+    // let num = Math.floor(Math.random() * tableStyle.length * 2);
+    // toolMessage([[[...tableStyle,...tableStyle][num],'theme'],'reTable'],PLUGINAPP);
+    toolMessage([[tableStyle[styleId],'theme'],'reTable'],PLUGINAPP);
+  } else {
+    console.warn('randomTableThemeStrategy: Invalid styleId or tableStyle');
+  }
+};
+
+const TABLE_SET_FUNCTIONS = {
+  'style': applyTableStyleStrategy,
+  'add': addTableRowColStrategy,
+  'reduce': reduceTableRowColStrategy,
+  'theme': randomTableThemeStrategy
+};
+
+// 表单页 > 执行表格设置功能
+function sendTableSet(type){
+  const strategy = TABLE_SET_FUNCTIONS[type];
+  if (!strategy) {
+    console.warn(`Unknown table set type: ${type}`);
+    return;
+  }
+  strategy();
+};
+
+// 表单页 > 按单元格所在行/多单元格所在行/单元格形成框选区域/单元格形成连续区域 选中单元格
+function sendTablePick(type){
+  toolMessage([type,'pickTable'],PLUGINAPP);
+};
+
+// 导出页 > 按导出设置/默认设置、导出类型上传所选图层
+function upSelect(type){
+  let exporttype = getElementMix('data-exporttype-set').getAttribute('data-radio-value');
+  let types = ['image','zy','rich']
+  toolMessage([[types[exporttype - 1],type],'upSelect'],PLUGINAPP);
+};
+

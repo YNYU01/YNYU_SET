@@ -294,7 +294,7 @@ document.addEventListener('click', (e) => {
     });
   }
   let copyrights = language == 'Zh' ? "\n<!-- © 2024-2025 『云即』系列开源计划 @云雨 lvynyu@163.com https://www.ynyuset.cn -->" : "\n<!-- © 2024-2025 [YNYU_SET] OPEN DESIGN & SOURCE @YNYU lvynyu2@gmail.com https://www.ynyuset.cn -->";
-  copy(node,'text',htmlcode.trim() + copyrights);
+  copyMix(node,'text',htmlcode.trim() + copyrights);
 });
 
 // 初始化提示文本的功能已合并到 initTips() 函数中

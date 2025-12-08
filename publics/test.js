@@ -53,22 +53,26 @@ window.addEventListener('load',()=>{
   loadFont();
 });
 
-
-let loadFontAfter = [
-  "data-en-text",
-  "data-en-input",
-  "data-en-placeholder",
-  "data-turnto",
-  "data-back",
-]
-
-function loadFont(){
+function loadFont(area){
+  let loadFontAfter = [
+    "data-en-text",
+    "data-en-input",
+    "data-en-placeholder",
+    "data-turnto",
+    "data-back",
+  ];
+  let areas;
+  if(area){
+    areas = getElementMix(area);
+  } else {
+    areas = document;
+  };
   setTimeout(()=>{
     loadFontAfter.forEach(key => {
-      let nodes = document.querySelectorAll(`[${key}]`);
+      let nodes = areas.querySelectorAll(`[${key}]`);
       nodes.forEach(item => {
-        item.style.fontFamily = `'Shanggu Sans', Arial, Helvetica, sans-serif`;
+        item.style.fontFamily = '"Shanggu Sans", Arial, Helvetica, sans-serif';
       })
     });
-  },500);
-}
+  },100);
+};
