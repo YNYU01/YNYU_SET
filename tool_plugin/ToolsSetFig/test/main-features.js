@@ -51,7 +51,7 @@ DOM.skillBtnMain.forEach(btn => {
     
     const skillname = btn.getAttribute('data-en-text');
     if(btn.getAttribute('data-btn-dblclick') !== null && skillname){
-      const strategy = SKILL_STRATEGIES[skillname];
+      const strategy = SKILL_DBLCLICK_STRATEGIES[skillname];
       if (strategy) {
         strategy();
       } else {
@@ -72,7 +72,7 @@ DOM.skillBtnMain.forEach(btn => {
     
     // 设置新的定时器
     clickTimer = setTimeout(()=>{
-      const strategy = SKILL_DBLCLICK_STRATEGIES[skillname];
+      const strategy = SKILL_STRATEGIES[skillname];
       if (strategy) {
         strategy();
       } else {
@@ -156,7 +156,7 @@ function sendTable(type){
 
 // 表单页 > 应用预设样式-随机主题
 function applyTableStyleStrategy(){
-  const styleId = tableStyleSet?.getAttribute('data-radio-value') - 1;
+  const styleId = DOM.tableStyleSet?.getAttribute('data-radio-value') - 1;
   if (styleId >= 0 && tableStyle && tableStyle[styleId]) {
     toolMessage([[tableStyle[styleId],'style'],'reTable'],PLUGINAPP);
   } else {
