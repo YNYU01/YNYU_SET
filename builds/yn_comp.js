@@ -15,6 +15,12 @@
   * For external libraries referenced in the project, it is necessary to comply with the corresponding open source protocols;
   * When using the code of this project, it is prohibited to delete this statement;
 */
+
+// 确保 storageMix 可用（优先使用 window.storageMix，确保全局可访问）
+// 如果局部作用域中没有 storageMix，使用全局的 window.storageMix
+if(typeof storageMix === 'undefined' && typeof window !== 'undefined' && window.storageMix){
+  var storageMix = window.storageMix;
+}
 class cardcolorpick extends HTMLElement {
   constructor() {
     super();
@@ -1307,8 +1313,6 @@ window.addEventListener('load', () => {
     } else {
       setTheme(true,false);
     };
-
-
 
     if(storageMix.get('userLanguage') == 'En'){
       setLanguage(false);

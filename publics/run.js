@@ -51,9 +51,10 @@ function getQueryParams() {
 
 /**
  * 使localStorage兼容浏览器/插件环境
+ * 使用 window.storageMix 确保全局可访问，避免脚本加载顺序问题
  */
 
-let storageMix = {
+window.storageMix = window.storageMix || {
   get: (key)=>{
     if(PLUGINAPP){
       if(typeof toolMessage === 'function'){
@@ -78,6 +79,9 @@ let storageMix = {
     };
   }
 };
+
+// 为了向后兼容，同时使用 let 声明（但实际使用 window.storageMix）
+let storageMix = window.storageMix;
 
 //插件中不使用storageMix，因为插件中没有localStorage
 if(!PLUGINAPP){

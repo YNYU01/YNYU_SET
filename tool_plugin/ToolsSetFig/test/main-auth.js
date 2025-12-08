@@ -22,7 +22,7 @@ function getAuthText(key, ...args) {
 const AuthStorage = {
   // 获取数据（同步版本，仅用于非插件环境）
   get(key) {
-    if (!ISPLUGIN || !PLUGINAPP) {
+    if (!PLUGINAPP) {
       // 普通环境：使用 localStorage
       try {
         const stored = localStorage.getItem(key);
@@ -38,7 +38,7 @@ const AuthStorage = {
 
   // 设置数据
   set(key, value) {
-    if (ISPLUGIN && PLUGINAPP) {
+    if (PLUGINAPP) {
       // Figma 插件环境：通过 toolMessage 存储
       toolMessage([[key, value], 'setlocal'], PLUGINAPP);
     } else {
@@ -53,7 +53,7 @@ const AuthStorage = {
 
   // 删除数据
   remove(key) {
-    if (ISPLUGIN && PLUGINAPP) {
+    if (PLUGINAPP) {
       // Figma 插件环境：设置为 null 来删除
       toolMessage([[key, null], 'setlocal'], PLUGINAPP);
     } else {
@@ -184,7 +184,7 @@ var AuthManager = {
 
       // 在插件环境下，数据会通过 run.js 的消息回调异步设置
       // 在非插件环境下，直接从 localStorage 读取
-      if (!ISPLUGIN || !PLUGINAPP) {
+      if (!PLUGINAPP) {
         const user = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USER);
         if (user) {
           this.currentUser = user;
@@ -655,7 +655,7 @@ var AuthManager = {
 
   // 获取用户列表
   getUsersList() {
-    if (this.usersList.length > 0 || (ISPLUGIN && PLUGINAPP)) {
+    if (this.usersList.length > 0 || PLUGINAPP) {
       return this.usersList;
     }
     // 非插件环境下，从 localStorage 读取

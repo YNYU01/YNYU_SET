@@ -153,7 +153,6 @@ class InlineJsCssPlugin {
       const templateAbsolutePath = path.resolve(__dirname, this.templatePath);
       const outputDir = path.dirname(templateAbsolutePath); // 获取 test 目录的绝对路径
       const mainJsPath = path.join(outputDir, 'main.js');
-      const mainUtilsJsPath = path.join(outputDir, 'main-utils.js');
       const mainFeaturesJsPath = path.join(outputDir, 'main-features.js');
       const mainAuthJsPath = path.join(outputDir, 'main-auth.js');
       const mainCssPath = path.join(outputDir, 'style.css');
@@ -162,7 +161,6 @@ class InlineJsCssPlugin {
 
       // 读取 JS 和 CSS 内容
       let jsContent = '';
-      let jsUtilsContent = '';
       let jsFeaturesContent = '';
       let jsAuthContent = '';
       let dataContent = '';
@@ -180,16 +178,6 @@ class InlineJsCssPlugin {
         }
       } catch (e) {
         console.warn('找不到 main.js 或 data.js');
-      }
-
-      try {
-        jsUtilsContent = fs.readFileSync(mainUtilsJsPath, 'utf-8');
-        // 清理注释
-        if (this.removeComments) {
-          jsUtilsContent = this.removeJsComments(jsUtilsContent);
-        }
-      } catch (e) {
-        console.warn('找不到 main-utils.js（可选文件）');
       }
 
       try {
@@ -239,11 +227,10 @@ class InlineJsCssPlugin {
       html = html
         .replace(/\.\.\/\.\.\/\.\./g,'https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@' + this.hash)
         .replace('<link rel="stylesheet" href="style.css">', `<style>\n${cssContent}\n</style>`)
-        .replace('<script src="data.js"></script>', `<script>\n${dataContent}\n</script>`)
-        .replace('<script src="main-utils.js"></script>', jsUtilsContent ? `<script>\n${jsUtilsContent}\n</script>` : '')
-        .replace('<script src="main.js"></script>', `<script>\n${jsContent}\n</script>`)
-        .replace('<script src="main-features.js"></script>', jsFeaturesContent ? `<script>\n${jsFeaturesContent}\n</script>` : '')
-        .replace('<script src="main-auth.js"></script>', jsAuthContent ? `<script>\n${jsAuthContent}\n</script>` : '')
+        .replace('<script src="data.js"></script>', `<script>\n${dataContent}\n`)
+        .replace('<script src="main.js"></script>', `\n${jsContent}\n`)
+        .replace('<script src="main-features.js"></script>', `\n${jsFeaturesContent}\n`)
+        .replace('<script src="main-auth.js"></script>', `\n${jsAuthContent}\n</script>`)
         .replace('<script src="run.js"></script>', `<script>\n${runContent}\n</script>`)
       
       // 写入新文件

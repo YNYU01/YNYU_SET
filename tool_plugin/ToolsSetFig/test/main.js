@@ -3080,7 +3080,9 @@ function getCompChange(container){
 function getUserTab(node){
   let tabPick = node.getAttribute('data-tab-pick').split('tab_')[1]
   if(tabPick){
-    storageMix.set('tabPick',tabPick);
+    if(typeof storageMix !== 'undefined' && storageMix && typeof storageMix.set === 'function'){
+      storageMix.set('tabPick',tabPick);
+    }
     if(tabPick == 'more tools'){
       toolMessage(['','selectInfo'],PLUGINAPP);
     }
