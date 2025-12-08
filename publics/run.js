@@ -24,37 +24,15 @@ if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 7
 }
 
 let ISLOCAL = false;
-//PULGIN_LOCAL会在插件中早于此行设置，生产环境会删除，不影响其他判断条件
-if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || PULGIN_LOCAL){
+if (window.location.protocol === 'file:' || window.location.hostname === 'localhost'){
   ISLOCAL = true;
 };
 
 
-// 读取访问链接中?后的内容并解析为对象
-function getQueryParams() {
-  let query = window.location.search.substring(1);
-  let params = {};
-  if(query) {
-    query.split("&").forEach(function(part) {
-      let item = part.split("=");
-      let key = decodeURIComponent(item[0] || "");
-      let value = decodeURIComponent(item[1] || "");
-      if(key) {
-        params[key] = value;
-      }
-    });
-  }
-  return params;
-}
-
-//console.log(getQueryParams())
-
 /**
  * 使localStorage兼容浏览器/插件环境
- * 使用 window.storageMix 确保全局可访问，避免脚本加载顺序问题
  */
-
-window.storageMix = window.storageMix || {
+var storageMix = {
   get: (key)=>{
     if(PLUGINAPP){
       if(typeof toolMessage === 'function'){
@@ -80,8 +58,7 @@ window.storageMix = window.storageMix || {
   }
 };
 
-//插件中不使用storageMix，因为插件中没有localStorage
-if(!PLUGINAPP){
+if(!ISLOCAL){
   if(storageMix.get('userTheme') == 'light'){
     ROOT.setAttribute("data-theme","light");
   }else if(storageMix.get('userTheme') == 'dark'){
@@ -99,26 +76,18 @@ if(!PLUGINAPP){
     storageMix.set('userLanguage','En');
     console.log('userLanguage not set, set to En');
   };
-}
 
-
-let QUERY_PARAMS = getQueryParams();
-if(QUERY_PARAMS){
-  if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
-    ROOT.setAttribute('data-language','Zh');
-    storageMix.set('userLanguage','Zh');
-  }else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
-    ROOT.setAttribute('data-language','En');
-    storageMix.set('userLanguage','En');
-    console.log('QUERY_PARAMS: lan=en, set to En');
+  let QUERY_PARAMS = getQueryParams();
+  if(QUERY_PARAMS){
+    if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
+      ROOT.setAttribute('data-language','Zh');
+      storageMix.set('userLanguage','Zh');
+    }else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
+      ROOT.setAttribute('data-language','En');
+      storageMix.set('userLanguage','En');
+      console.log('QUERY_PARAMS: lan=en, set to En');
+    }
   }
-}
-
-
-function getUnicode(text){
-  return text.replace(/[^]/g,(char)=>{
-    return "\\u" + ("0000" + char.charCodeAt(0).toString(16)).slice(-4)
-  })
 }
 
 //console.log(getUnicode(COPYRIGHT_ZH))
@@ -161,26 +130,26 @@ if(!ISLOCAL){
 //setTimeout(()=>{console.log(USER_VISITOR)},500)
 
 
-function loadFont(area){
-  let loadFontAfter = [
-    "data-en-text",
-    "data-en-input",
-    "data-en-placeholder",
-    "data-turnto",
-    "data-back",
-  ];
-  let areas;
-  if(area){
-    areas = getElementMix(area);
-  } else {
-    areas = document;
-  };
-  setTimeout(()=>{
-    loadFontAfter.forEach(key => {
-      let nodes = areas.querySelectorAll(`[${key}]`);
-      nodes.forEach(item => {
-        item.style.fontFamily = '"Shanggu Sans", Arial, Helvetica, sans-serif';
-      })
+// 读取访问链接中?后的内容并解析为对象
+function getQueryParams() {
+  let query = window.location.search.substring(1);
+  let params = {};
+  if(query) {
+    query.split("&").forEach(function(part) {
+      let item = part.split("=");
+      let key = decodeURIComponent(item[0] || "");
+      let value = decodeURIComponent(item[1] || "");
+      if(key) {
+        params[key] = value;
+      }
     });
-  },100);
-};
+  }
+  return params;
+}
+
+
+function getUnicode(text){
+  return text.replace(/[^]/g,(char)=>{
+    return "\\u" + ("0000" + char.charCodeAt(0).toString(16)).slice(-4)
+  })
+}

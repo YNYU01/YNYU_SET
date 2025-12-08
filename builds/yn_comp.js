@@ -16,11 +16,6 @@
   * When using the code of this project, it is prohibited to delete this statement;
 */
 
-// 确保 storageMix 可用（优先使用 window.storageMix，确保全局可访问）
-// 如果局部作用域中没有 storageMix，使用全局的 window.storageMix
-if(typeof storageMix === 'undefined' && typeof window !== 'undefined' && window.storageMix){
-  var storageMix = window.storageMix;
-}
 class cardcolorpick extends HTMLElement {
   constructor() {
     super();
@@ -2359,4 +2354,33 @@ function debounce(fn, delay, immediate = false) {
       }
     }, delay);
   };
+};
+
+//加载字体
+/**
+ * 加载字体
+ * @param {string} area - 需要加载字体的范围, 可选, 默认加载整个文档，可传入元素、id、自定义属性等；
+ */
+function loadFont(area){
+  let loadFontAfter = [
+    "data-en-text",
+    "data-en-input",
+    "data-en-placeholder",
+    "data-turnto",
+    "data-back",
+  ];
+  let areas;
+  if(area){
+    areas = getElementMix(area);
+  } else {
+    areas = document;
+  };
+  setTimeout(()=>{
+    loadFontAfter.forEach(key => {
+      let nodes = areas.querySelectorAll(`[${key}]`);
+      nodes.forEach(item => {
+        item.style.fontFamily = '"Shanggu Sans", Arial, Helvetica, sans-serif';
+      })
+    });
+  },100);
 };
