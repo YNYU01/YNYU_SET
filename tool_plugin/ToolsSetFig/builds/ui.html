@@ -6,6 +6,16 @@
   <script>
 const ROOT = document.documentElement;
 
+let MOBILE_KEYS = /mobile | android | iphone | ipad | blackberry | windows phone/i
+let ISMOBILE = false;
+if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 750){
+  ISMOBILE = true;
+  ROOT.setAttribute('data-mobile','true');
+} else {
+  ROOT.setAttribute('data-mobile','false');
+  ISMOBILE = false;
+}
+
 let ISLOCAL = false;
 if (window.location.protocol === 'file:' || window.location.hostname === 'localhost'){
   ISLOCAL = true;
@@ -18,7 +28,7 @@ let userSkillStar = [];
 
 var storageMix = {
   get: (key)=>{
-    if(PLUGINAPP){
+    if(PLUGINAPP && !ISLOCAL){
       if(typeof toolMessage === 'function'){
         toolMessage([key,'getlocal'],PLUGINAPP);
       };
@@ -27,7 +37,7 @@ var storageMix = {
     }
   },
   set: (key,value)=>{
-    if(PLUGINAPP){
+    if(PLUGINAPP && !ISLOCAL){
       try {
         if(typeof toolMessage === 'function'){
           toolMessage([[key,value],'setlocal'],PLUGINAPP);
@@ -129,7 +139,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -510,14 +520,6 @@ input[type="checkbox"]:checked + .tab-top{
   height: 12px;
   margin-left: 4px;
   cursor: var(--pointer,pointer);
-}
-
-input[type="checkbox"]:checked+[for="big"] .path1 {
-  transform: translateY(6px) translateX(-6px);
-}
-
-input[type="checkbox"]:checked+[for="big"] .path2 {
-  transform: translateX(6px) translateY(-6px);
 }
 
 [data-side]{
@@ -2496,15 +2498,6 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
 
 
 
-@keyframes loadRo2 {
-  0%{
-    transform: rotate(0deg) scale(1.1);
-  }
-  100%{
-    transform: rotate(-180deg) scale(1.1);
-  }
-}
-
 @media (max-width:469px) {
   [data-any="vw470"]{
     display: none;
@@ -2677,7 +2670,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
         <btn-search></btn-search>
       </div>
       <input id="big" type="checkbox">
-      <label for="big" class="btn-big df-cc" style="--fill: var(--boxBod)">
+      <label for="big" class="btn-show df-cc" style="--fill: var(--boxBod)">
         <btn-show></btn-show>
       </label>
     </div>
@@ -4591,21 +4584,21 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/publics/other/qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/publics/other/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@00f2dfd443e30e9d68638e682d9eb599cf145306/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@265a4ada2110c234fc93666556f1b3e10eda5678/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 

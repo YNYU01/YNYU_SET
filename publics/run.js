@@ -28,12 +28,34 @@ if (window.location.protocol === 'file:' || window.location.hostname === 'localh
   ISLOCAL = true;
 };
 
+let PLUGINAPP = ROOT.getAttribute('data-plugin');
+
+/**
+ * 使localStorage兼容浏览器/插件环境
+ */
 var storageMix = {
   get: (key)=>{
-    return window.localStorage.getItem(key);
+    if(PLUGINAPP && !ISLOCAL){
+      if(typeof toolMessage === 'function'){
+        toolMessage([key,'getlocal'],PLUGINAPP);
+      };
+    } else {
+      return window.localStorage.getItem(key);
+    }
   },
   set: (key,value)=>{
-    window.localStorage.setItem(key,value);
+    if(PLUGINAPP && !ISLOCAL){
+      try {
+        if(typeof toolMessage === 'function'){
+          toolMessage([[key,value],'setlocal'],PLUGINAPP);
+        }
+      } catch(e) {
+        // toolMessage 未定义或调用失败时静默处理
+        console.warn('toolMessage not available:', e);
+      };
+    } else {
+      window.localStorage.setItem(key,value);
+    };
   }
 };
 

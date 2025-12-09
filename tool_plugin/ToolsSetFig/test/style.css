@@ -378,14 +378,6 @@ input[type="checkbox"]:checked + .tab-top{
   cursor: var(--pointer,pointer);
 }
 
-input[type="checkbox"]:checked+[for="big"] .path1 {
-  transform: translateY(6px) translateX(-6px);
-}
-
-input[type="checkbox"]:checked+[for="big"] .path2 {
-  transform: translateX(6px) translateY(-6px);
-}
-
 [data-side]{
   left: 0;
   z-index: 11;
@@ -2372,15 +2364,6 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
 }
 
 /*纹理类--*/
-
-@keyframes loadRo2 {/*旋转*/
-  0%{
-    transform: rotate(0deg) scale(1.1);
-  }
-  100%{
-    transform: rotate(-180deg) scale(1.1);
-  }
-}
 
 @media (max-width:469px) {
   [data-any="vw470"]{
