@@ -2,11 +2,7 @@ let PULGIN_LOCAL = true;
 let ISWORK_TIME = true;
 let userSkillStar = [];
 
-
-//========== 初始化插件界面偏好 ==========
-toolMessage(['userTheme','getlocal'],PLUGINAPP);
-toolMessage(['userLanguage','getlocal'],PLUGINAPP);
-toolMessage(['userResize','getlocal'],PLUGINAPP);
+//========== 初始化插件界面偏好(可滞后) ==========
 toolMessage(['tabPick','getlocal'],PLUGINAPP);
 toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
 toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
@@ -22,8 +18,13 @@ window.addEventListener('message',(message)=>{
       info = JSON.parse(info);
     }
     switch (type){
-      case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
-      case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
+      case 'userTheme':
+        info == 'light' ? setTheme(true) : setTheme(false);
+        console.log('userTheme:',info);
+      break
+      case 'userLanguage':
+        info == 'Zh' ? setLanguage(true) : setLanguage(false);
+      break
       case 'userResize': reRootSize(info);break
     };
     if(ISWORK_TIME && info){

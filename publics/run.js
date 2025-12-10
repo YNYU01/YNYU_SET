@@ -24,7 +24,12 @@ if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 7
 }
 
 let ISLOCAL = false;
-if (window.location.protocol === 'file:' || window.location.hostname === 'localhost'){
+// 更严格地检测本地环境：file:// 协议、localhost、127.0.0.1、或 origin 为 null
+if (window.location.protocol === 'file:' || 
+    window.location.hostname === 'localhost' || 
+    window.location.hostname === '127.0.0.1' ||
+    window.location.origin === 'null' ||
+    !window.location.origin) {
   ISLOCAL = true;
 };
 
@@ -97,14 +102,46 @@ if(QUERY_PARAMS){
 
 let USER_VISITOR = null;
 
-if(!ISLOCAL){
-fetch('https://ipapi.co/json/')
-  .then(async (response) => response.json())
-  .then(data => {
+// 获取用户位置信息的函数
+function fetchUserLocation() {
+  // 双重检查：确保不是本地环境且 origin 有效
+  if (ISLOCAL || !window.location.origin || window.location.origin === 'null') {
+    return;
+  }
+
+  // 使用 AbortController 实现超时控制（兼容性更好）
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+
+  fetch('https://ipapi.co/json/', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+    },
+    signal: controller.signal
+  })
+    .then(async (response) => {
+      clearTimeout(timeoutId); // 清除超时定时器
+      // 检查响应状态
+      if (!response.ok) {
+        // 429 错误：请求过多
+        if (response.status === 429) {
+          console.warn('IP定位服务请求频率过高，已跳过。如需使用，请稍后再试。');
+          return null;
+        }
+        // 其他错误
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (!data) return; // 429 错误时 data 为 null
+      
       USER_VISITOR = data;
       const country = data.country_name;
       const countryCode = data.country_code;
-      if(countryCode !== "CN"){
+      
+      if (countryCode && countryCode !== "CN") {
         let links = document.querySelectorAll('link');
         let scripts = document.querySelectorAll('script');
   
@@ -125,10 +162,25 @@ fetch('https://ipapi.co/json/')
 
         console.log(`访问者国家/地区：${country} (${countryCode}),已切换对应资源链接`)
       }
-  })
-  .catch(e => {
-    console.log(e)
-  });
+    })
+    .catch(e => {
+      clearTimeout(timeoutId); // 确保在错误时也清除超时定时器
+      // 区分不同类型的错误
+      if (e.name === 'AbortError') {
+        console.warn('IP定位请求超时，已跳过。');
+      } else if (e.message && e.message.includes('CORS')) {
+        console.warn('IP定位请求被CORS策略阻止（可能是本地文件环境），已跳过。');
+      } else if (e.message && e.message.includes('Failed to fetch')) {
+        console.warn('IP定位请求失败（网络错误或服务不可用），已跳过。');
+      } else {
+        console.warn('IP定位请求出错：', e.message || e);
+      }
+    });
+}
+
+// 执行获取位置信息
+if (!ISLOCAL) {
+  fetchUserLocation();
 }
 
 //setTimeout(()=>{console.log(USER_VISITOR)},500)

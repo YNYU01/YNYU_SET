@@ -13,8 +13,26 @@ let UI = [300,660];
 let UI_BIG = [620,660];
 let vX = figma.viewport.bounds.x,vY = figma.viewport.bounds.y;
 figma.skipInvisibleInstanceChildren = true;//忽略不可见元素及其子集
- 
+
 figma.showUI(__html__,{position:{x:vX,y:vY},themeColors:true});
+
+//直接主线程发起初始化插件界面偏好
+figma.clientStorage.getAsync('userTheme')
+.then (data => {
+    postmessage([data,'userTheme']);
+})
+.catch (error => {
+    postmessage(['dark','userTheme']);
+});
+
+figma.clientStorage.getAsync('userLanguage')
+.then (data => {
+    postmessage([data,'userLanguage']);
+})
+.catch (error => {
+    postmessage(['En','userLanguage']);
+});
+
 figma.clientStorage.getAsync('userResize')
 .then (data => {
     figma.ui.resize(data[0], data[1]);

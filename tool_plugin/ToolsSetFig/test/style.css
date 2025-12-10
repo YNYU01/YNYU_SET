@@ -47,8 +47,14 @@ html{
   cursor: inherit;
 }
 
+[data-theme="none"] body{
+  display: none;
+}
+
+
 body{
   min-width: 200px;
+  animation: loadOp 1s;
 }
 
 /*--组件修改*/

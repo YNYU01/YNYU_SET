@@ -1,17 +1,14 @@
-<html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="dark" data-language="Zh" data-mobile="false">
+<html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let PULGIN_LOCAL = true;
 let ISWORK_TIME = true;
 let userSkillStar = [];
 
-toolMessage(['userTheme','getlocal'],PLUGINAPP);
-toolMessage(['userLanguage','getlocal'],PLUGINAPP);
-toolMessage(['userResize','getlocal'],PLUGINAPP);
 toolMessage(['tabPick','getlocal'],PLUGINAPP);
 toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
 toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
@@ -27,8 +24,13 @@ window.addEventListener('message',(message)=>{
       info = JSON.parse(info);
     }
     switch (type){
-      case 'userTheme': info == 'light' ? setTheme(true,false) : setTheme(false,false);break
-      case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
+      case 'userTheme':
+        info == 'light' ? setTheme(true) : setTheme(false);
+        console.log('userTheme:',info);
+      break
+      case 'userLanguage':
+        info == 'Zh' ? setLanguage(true) : setLanguage(false);
+      break
       case 'userResize': reRootSize(info);break
     };
     if(ISWORK_TIME && info){
@@ -61,7 +63,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -113,8 +115,14 @@ html{
   cursor: inherit;
 }
 
+[data-theme="none"] body{
+  display: none;
+}
+
+
 body{
   min-width: 200px;
+  animation: loadOp 1s;
 }
 
 
@@ -2736,7 +2744,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
               <span>▼&nbsp;</span>
               <span data-en-text="Upload | Drop | Input" >上传 | 拖拽 | 输入</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="data to create node in batches op6"> 数据以批量创建内容</span>
+              <span data-any="vw300" data-en-text="data to create node in batches" class="op6"> 数据以批量创建内容</span>
               <div data-any="vw300" data-help="create" class="fl0 df-cc">?</div>
             </div>
             <!--上传文件-->
@@ -2889,7 +2897,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
               <span>▼&nbsp;</span>
               <span data-en-text="Edit final tags/catalogue" > 编辑标签/大纲 </span>
                 &nbsp;&nbsp;
-                <span data-en-text="to create finally op6" data-any="vw240">以确认最终创建内容</span>
+                <span data-en-text="to create finally" class="op6" data-any="vw240">以确认最终创建内容</span>
             </div>
             <div data-create-mix class="wh100 df-cc pos-r" ><!--data-resize-->
               <div data-create-tags-box class="wh100 upload-set pos-r">
@@ -2919,7 +2927,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
             <span>▼&nbsp;</span>
             <span data-en-text="Add selects to list" >添加所选对象到队列</span>
             &nbsp;&nbsp;
-            <span data-any="vw300" data-en-text="by the export-type op6"> 按所选导出类型</span>
+            <span data-any="vw300" data-en-text="by the export-type" class="op6"> 按所选导出类型</span>
             <div data-any="vw300" data-help="export" class="fl0 df-cc">?</div>
           </div>
           <!--导出类型-->
@@ -4261,21 +4269,21 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/other/qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/other/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4cd6b16ed3f983067dda6b3a6416e6939a0a88f0/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@48d749d9b1985875fd1569bebc5eae5f189c979b/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
