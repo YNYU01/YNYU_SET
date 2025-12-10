@@ -24,18 +24,16 @@
       </div> 
     </div>
     <div data-mainset-top class="df-lc gap4 mar-l2">
-      <div id="btn-theme-3">
+      <div id="btn-theme-3" class="pad2 bod-r4 bsb">
         <input id="theme-3" data-theme-check type="checkbox" checked>
         <label for="theme-3" class="btn-theme pos-r">
           <btn-theme></btn-theme>
         </label>
       </div>
       <input id="language-3" data-language-check type="checkbox" checked/>
-      <label for="language-3" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
-        <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
-          <svg class="mar-a0" style="--mar-lr: 1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
-            <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
-          </svg>
+      <label for="language-3" class="switch pos-a font-s12">
+        <div class="pos-a" data-swi-icon>
+          <btn-lang></btn-lang>
         </div>
       </label>
     </div>
@@ -44,7 +42,7 @@
         <btn-search></btn-search>
       </div>
       <input id="big" type="checkbox">
-      <label for="big" class="btn-show df-cc" style="--fill: var(--boxBod)">
+      <label for="big" class="btn-show df-cc pointer wh-12">
         <btn-show></btn-show>
       </label>
     </div>
@@ -70,13 +68,8 @@
     <!--关闭-->
     <div data-dailogimg-close class="df-sc">
       <input type="checkbox" id="fullimg"/>
-      <label for="fullimg" class="df-cc">
-        <svg width="80%" height="80%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill="var(--mainColor)" d="M10.8219 8.1537L16.2146 2.76098L12.6399 2.76162C12.2562 2.76162 11.9447 2.45006 11.9447 2.06643C11.9447 1.68279 12.2562 1.37123 12.6399 1.37123L17.8915 1.37187C18.2752 1.37187 18.5861 1.68279 18.5861 2.06643L18.5867 7.31806C18.5867 7.7017 18.2752 8.01326 17.8915 8.01326C17.5079 8.01326 17.1963 7.7017 17.1963 7.31806L17.197 3.74334L11.8042 9.13605C11.533 9.40732 11.0932 9.40732 10.8219 9.13605C10.5506 8.86478 10.5506 8.42497 10.8219 8.1537Z"/>
-          <path fill="var(--mainColor)" d="M11.796 10.8138L17.1887 16.2066L17.1881 12.6318C17.1881 12.2482 17.4996 11.9366 17.8833 11.9366C18.2669 11.9366 18.5785 12.2482 18.5785 12.6318L18.5778 17.8835C18.5778 18.2671 18.2669 18.578 17.8833 18.578L12.6316 18.5787C12.248 18.5787 11.9364 18.2671 11.9364 17.8835C11.9364 17.4998 12.248 17.1883 12.6316 17.1883L16.2064 17.1889L10.8137 11.7962C10.5424 11.5249 10.5424 11.0851 10.8137 10.8138C11.0849 10.5426 11.5247 10.5426 11.796 10.8138Z"/>
-          <path fill="var(--mainColor)" d="M9.13636 11.796L3.74364 17.1887L7.31837 17.1881C7.702 17.1881 8.01356 17.4996 8.01356 17.8833C8.01356 18.2669 7.702 18.5785 7.31837 18.5785L2.06673 18.5778C1.6831 18.5778 1.37218 18.2669 1.37218 17.8833L1.37154 12.6316C1.37154 12.248 1.6831 11.9364 2.06673 11.9364C2.45037 11.9364 2.76193 12.248 2.76193 12.6316L2.76129 16.2064L8.15401 10.8137C8.42527 10.5424 8.86509 10.5424 9.13636 10.8137C9.40763 11.0849 9.40763 11.5247 9.13636 11.796Z"/>
-          <path fill="var(--mainColor)" d="M8.162 9.13587L2.76928 3.74315L2.76992 7.31788C2.76992 7.70152 2.45836 8.01308 2.07473 8.01308C1.69109 8.01308 1.37953 7.70152 1.37953 7.31788L1.38017 2.06624C1.38017 1.68261 1.69109 1.37169 2.07473 1.37169L7.32636 1.37105C7.71 1.37105 8.02156 1.68261 8.02156 2.06625C8.02156 2.44988 7.71 2.76144 7.32636 2.76144L3.75164 2.7608L9.14435 8.15352C9.41562 8.42479 9.41562 8.8646 9.14435 9.13587C8.87308 9.40714 8.43327 9.40714 8.162 9.13587Z"/>
-        </svg>          
+      <label for="fullimg" class="df-cc pad2">
+        <btn-full></btn-full>          
       </label>
       <div data-imgnum="1" class="df-cc">
         <div data-imgnum-down data-btn class="df-cc">◀</div>
@@ -184,48 +177,38 @@
           <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
             <div data-user-name style="display: none;" data-en-text="USER">用户</div>
             <div data-user-login-text data-en-text="LOG IN">登录</div>
-            <div class="pad2 mar-l4" style="width:16px; height:16px;  --mainColor:#2e2e2e;">
-              <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10Z" fill="var(--mainColor)"/>
-                <path d="M10 12C5.58172 12 2 13.7909 2 16V20H18V16C18 13.7909 14.4183 12 10 12Z" fill="var(--mainColor)"/>
-              </svg>
+            <div class="pad2 mar-l4 wh-16" style=" --fill:#2e2e2e;">
+              <btn-login></btn-login>
             </div>
           </div>
           <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" rel="noopener noreferrer" target="_blank" class="df-cc" data-btn="help">
             <div data-en-text="HELP DOC">帮助文档</div>
-            <div style="width:20px; height:20px; --mainColor:#2e2e2e; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
-              <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path stroke="var(--mainColor)" d="M2.71411 11.3821H20.7141" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
-                <path stroke="var(--mainColor)" d="M13.3421 4.38208L20.7141 11.3821L13.3421 18.3821" stroke-width="var(--arrow-w)"></path>
-              </svg>
+            <div class="wh-20" style=" --mainColor:#2e2e2e; --arrow-w:2; --arrow-ro: -45deg;">
+              <btn-goto-mini></btn-goto-mini>
             </div>
           </a>
         </div>
       </div>
       <div data-mainset-side-box class="df-sc">
-        <a href="https://www.ynyuset.cn" rel="noopener noreferrer" target="_blank" class="df-lc font-s10 gap2"
+        <a href="https://www.ynyuset.cn" rel="noopener noreferrer" target="_blank" class="df-lc fl1 font-s10 gap2 pos-r"
         data-tips="set" data-tips-y="top" data-tips-x="left" 
-        style="--tips-gap: -16px; 
-        --tips-text: '🔗https://www.ynyuset.cn'; 
-        --tips-text-en: '🔗https://www.ynyuset.cn';
-        color: var(--mainColor); flex: 1;">
+        style="--tips-gap: -16px; color: var(--mainColor);"
+        data-tips-text="🔗https://www.ynyuset.cn" data-tips-text-en="🔗https://www.ynyuset.cn">
           ©2024-2025 
           <set-en data-any="en" class="fl0" style="height: 20px; margin-top: -2px;"></set-en>
           <set-zh data-any="zh" class="fl0" style="height: 20px; margin-top: -3px;"></set-zh>
         </a>
         <div data-mainset-side class="df-lc gap4">
-          <div id="btn-theme-1">
+          <div id="btn-theme-1" class="pad2 bod-r4 bsb">
             <input id="theme-1" data-theme-check type="checkbox" checked>
             <label for="theme-1" class="btn-theme pos-r">
               <btn-theme></btn-theme>
             </label>
           </div>
           <input id="language-1" data-language-check type="checkbox" checked/>
-          <label for="language-1" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
-            <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
-              <svg class="mar-a0" style="--mar-lr: 1px" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
-                <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
-              </svg>
+          <label for="language-1" class="switch pos-a font-s12">
+            <div class="pos-a" data-swi-icon>
+              <btn-lang></btn-lang>
             </div>
           </label>
         </div>
@@ -235,17 +218,7 @@
     <div class="df-cc" style="width: var(--top-h); height: var(--top-h); background: var(--boxGry);">
       <input id="btn-more" type="checkbox" />
       <label for="btn-more" class="btn-more" >
-        <svg data-icon-more width="100%" height="100%" viewBox="0 0 20 20">
-          <g data-icon-more-path="1" >
-            <path fill="none" d="M18 0L0 0"></path>
-          </g>
-          <g data-icon-more-path="2">
-            <path fill="none" d="M18 0L0 0"></path>
-          </g>
-          <g data-icon-more-path="3">
-            <path fill="none" d="M18 0L0 0"></path>
-          </g>
-        </svg>
+        <btn-more></btn-more>
       </label>
     </div>
   </div>
@@ -276,24 +249,24 @@
               <div data-mode-id="upload" class="df-cc">
                 <div class="df-ffc df-cc gap4">
                   <input id="input-user-img" type="file" accept=".jpg,.jpeg,.jfif,.webp,.png,.apng,.gif" style="display: none;" multiple/>
-                  <label for="input-user-img" data-tips="auto" data-tips-y="top" data-tips-x="left"
-                  style=" --tips-text: '可上传1~10张大图, 支持常见图片格式'; --tips-text-en: 'Upload 1~10 large images (common formats)';" >
+                  <label for="input-user-img" class="wh-40 pos-r" data-tips="auto" data-tips-y="top" data-tips-x="left"
+                  data-tips-text="可上传1~10张大图, 支持常见图片格式" data-tips-text-en="Upload 1~10 large images (common formats)" >
                     <btn-user-img  data-btn="icon" ></btn-user-img>
                   </label>
                   <div data-btn-name data-any="vw300" data-en-text="Cut large image">大图自动切片</div>
                 </div>
                 <div class="df-ffc df-cc gap4">
                   <input id="input-user-table" type="file" accept=".csv,.xls,.xlsx"  style="display: none;"/>
-                  <label for="input-user-table" data-tips="auto" data-tips-y="top" data-tips-x="center"
-                  style="--tips-text: '上传单个表格, 需按一定格式填写'; --tips-text-en: 'Upload 1 table in the prescribed format';" >
+                  <label for="input-user-table" class="wh-40 pos-r" data-tips="auto" data-tips-y="top" data-tips-x="center"
+                  data-tips-text="上传单个表格, 需按一定格式填写" data-tips-text-en="Upload 1 table in the prescribed format" >
                     <btn-user-table data-btn="icon"></btn-user-table>
                   </label>
                   <div data-btn-name data-any="vw300" data-en-text="Table to frame">表格创建画板</div>
                 </div>
                 <div class="df-ffc df-cc gap4">
                   <input id="input-user-zy" type="file" accept=".md,.zy,.sketch,.svg,.xml,.json,.zip,.rar,.7z" style="display: none;"/>
-                  <label for="input-user-zy" data-tips="auto" data-tips-y="top" data-tips-x="right"
-                  style="--xx: 36px;--tips-text: '上传由云即系列插件生成的图层信息文件'; --tips-text-en: 'Upload .zy (by YN+) or other compatible file';" >
+                  <label for="input-user-zy" class="wh-40 pos-r" data-tips="auto" data-tips-y="top" data-tips-x="right"
+                  style="--xx: 36px;" data-tips-text="上传由云即系列插件生成的图层信息文件" data-tips-text-en="Upload .zy (by YN+) or other compatible file" >
                     <btn-user-zy data-btn="icon"></btn-user-zy>
                   </label>
                   <div data-btn-name data-any="vw300" data-en-text="Layers frome .zy">兼容格式导入</div>
@@ -352,30 +325,22 @@
               </div>
               <div id="upload-set-box" class="df gap4 mar-b4" style="flex-wrap: wrap;">
                 <div id="upload-set-main" class="df">
-                  <div id="upload-set-1" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
-                  style=" --tips-text:'转为标签/大纲';  --tips-text-en:'Convert to tags/catalogue';">
+                  <div id="upload-set-1" class="pos-r" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
+                  data-tips-text="转为标签/大纲" data-tips-text-en="Convert to tags/catalogue">
                     <btn-re class="df-cc wh100"></btn-re>                   
                   </div>
-                  <div id="upload-set-2" data-selects-must data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
-                  style=" --tips-text:'从所选对象获取数据';  --tips-text-en:'Retrieve data from the selected node';">
+                  <div id="upload-set-2" class="pos-r" data-selects-must data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
+                  data-tips-text="从所选对象获取数据" data-tips-text-en="Retrieve data from the selected node">
                     <btn-getbyselect></btn-getbyselect>                   
                   </div>
-                  <a href="https://www.ynyuset.cn/tool_web/ListEase" target="_blank" id="upload-set-3" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="center"
-                  style=" --tips-text:'(敬请期待~)前往制作更复杂的模板数据';  --tips-text-en:'(Coming soon~)Create template';"><!--To create more complex template-->
-                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle fill="var(--mainColor)" cx="3" cy="4" r="2"/>
-                      <path stroke="var(--mainColor)" d="M3 5V10H9"/>
-                      <path stroke="var(--mainColor)" d="M3 4H9"/>
-                      <path stroke="var(--mainColor)" d="M3 5V16H9"/>
-                      <rect fill="var(--mainColor)" x="7" y="8" width="12" height="4" rx="2"/>
-                      <rect fill="var(--mainColor)" x="7" y="2" width="12" height="4" rx="2"/>
-                      <rect fill="var(--mainColor)" x="7" y="14" width="12" height="4" rx="2"/>
-                    </svg>                                       
+                  <a class="pos-r" href="https://www.ynyuset.cn/tool_web/ListEase" target="_blank" id="upload-set-3" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="center"
+                  data-tips-text="(敬请期待~)前往制作更复杂的模板数据" data-tips-text-en="(Coming soon~)Create template"><!--To create more complex template-->
+                    <btn-listease></btn-listease>                                      
                   </a>
                 </div>
                 <input id="upload-moreset" type="checkbox" checked onchange="showNext(this,this.parentNode.parentNode.nextElementSibling,'flex',true)">
-                <label for="upload-moreset" class="btn-moreset" data-tips="auto" data-tips-y="top" data-tips-x="right"
-                style="--tips-text:'高级设置';  --tips-text-en:'Advanced setting'; --xx: 40px;">
+                <label for="upload-moreset" class="btn-moreset pos-r" data-tips="auto" data-tips-y="top" data-tips-x="right"
+                data-tips-text="高级设置" data-tips-text-en="Advanced setting" style="--xx:40px;">
                   <btn-set></btn-set>
                 </label>
               </div>
@@ -383,16 +348,9 @@
             <!--更多设置-->
             <div id="upload-moreset-box" class="w100 df-lc gap4" style="flex-wrap: wrap; display: none;">
               <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 180px;">
-                <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
-                  --tips-text:'修改生效列, 用于剔除数据';  --tips-text-en:'Select columns to take effect'; width: 20px; height: 20px;">
-                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke="var(--mainColor)" fill="var(--mainColor)" d="M1.40967 3.66602C1.40967 2.56145 2.3051 1.66602 3.40967 1.66602H7.40967V6.59054H1.40967V3.66602Z"/>
-                    <rect stroke="var(--mainColor)" x="1.40967" y="7.13843" width="5.63721" height="5.5603" />
-                    <path stroke="var(--mainColor)" d="M1.40967 12.6987H7.04688V18.2185H3.40967C2.3051 18.2185 1.40967 17.3231 1.40967 16.2185V12.6987Z"/>
-                    <path stroke="var(--mainColor)" fill="var(--mainColor)" d="M9.86572 2.19995H17C18.1046 2.19995 19 3.09538 19 4.19995V7.36918H9.86572V2.19995Z"/>
-                    <rect stroke="var(--mainColor)" x="9.86572" y="7.36914" width="9.13428" height="5.7478"/>
-                    <path stroke="var(--mainColor)" d="M9.86572 13.1169H19V17.0002C19 18.1048 18.1046 19.0002 17 19.0002H9.86572V13.1169Z"/>
-                  </svg>
+                <div data-tips="auto" class="fl0 wh-20 pos-r" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                data-tips-text="修改生效列, 用于剔除数据" data-tips-text-en="Select columns to take effect">
+                  <input-tabletitle></input-tabletitle>
                 </div>
                 <input id="input-user-table-title" data-input class="nobod fl1" type="text" 
                 placeholder="name,w,h,s,type,note,node" 
@@ -404,17 +362,9 @@
                 </div>  
               </div>
               <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 180px;">
-                <div data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
-                  --tips-text:'画板命名后缀, 自定义格式或选择预设';  --tips-text-en:'Frame naming suffix,input or select a preset'; width: 20px; height: 20px;">
-                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect fill="var(--mainColor)" x="16" y="4" width="4" height="2" rx="1"/>
-                    <rect fill="var(--mainColor)" y="4" width="8.5" height="2" rx="1"/>
-                    <rect fill="var(--mainColor)" y="16" width="20" height="2" rx="1"/>
-                    <rect fill="var(--mainColor)" x="18" y="4" width="17" height="2" rx="1" transform="rotate(90 18 4)"/>
-                    <rect fill="var(--mainColor)" x="4" y="2" width="20" height="2" rx="1" transform="rotate(90 4 2)"/>
-                    <path fill="var(--mainColor)" d="M6.97137 16.0954C6.62768 16.3986 6.09115 16.1182 6.14391 15.6629L6.71709 10.717L10.7051 12.8016L6.97137 16.0954Z"/>
-                    <path fill="var(--mainColor)" d="M11.3154 11.5259L7.35709 9.45685L11.5784 1.38079C11.8343 0.891339 12.4385 0.701954 12.9279 0.957792L15.1138 2.10035C15.6032 2.35618 15.7926 2.96036 15.5368 3.44982L11.3154 11.5259Z"/>
-                  </svg>
+                <div data-tips="auto" class="fl0 wh-20 pos-r" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; "
+                data-tips-text="画板命名后缀, 自定义格式或选择预设" data-tips-text-en="Frame naming suffix,input or select a preset">
+                  <input-namerule></input-namerule>
                 </div>
                 <input id="input-framename" data-input class="nobod fl1" type="text" value=" w×h">  
                 <div class="df-lc pos-r gap4" data-select data-select-close data-select-value=" w×h" style="width: 90px; z-index:2;">
@@ -480,28 +430,19 @@
               <div data-exporttype-set class="df-lc" data-radio-value="1" >
                 <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="true">
                   <div data-exporttype-chk>
-                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill="var(--mainColor)" d="M17 1.5C18.1046 1.5 19 2.39543 19 3.5V14.8975L19.124 15.084L19 15.166V16.5C19 17.5357 18.2128 18.387 17.2041 18.4893L17 18.5H3L2.7959 18.4893C1.85435 18.3938 1.1062 17.6457 1.01074 16.7041L1 16.5V12.6787L0.869141 12.5947L1 12.3906V3.5C1 2.39543 1.89543 1.5 3 1.5H17ZM7.05469 9.01074C6.56123 8.2485 5.44533 8.25001 4.9541 9.01367L2.5 12.8311V16.5C2.5 16.7761 2.72386 17 3 17H17C17.2761 17 17.5 16.7761 17.5 16.5V15.3516L16.1406 13.3135C15.7217 12.6853 14.8456 12.5692 14.2773 13.0664L11.9941 15.0645L11.3418 15.6357L10.8701 14.9072L7.05469 9.01074ZM3 3C2.72386 3 2.5 3.22386 2.5 3.5V10.0576L3.69238 8.20312C4.77297 6.52221 7.22888 6.51858 8.31445 8.19629L11.6582 13.3643L13.29 11.9375C14.5402 10.8436 16.4671 11.0993 17.3887 12.4814L17.5 12.6475V3.5C17.5 3.22386 17.2761 3 17 3H3Z"/>
-                      <circle fill="var(--mainColor)" cx="13.5" cy="7.15747" r="2.5"/>
-                    </svg>
+                    <export-img></export-img>
                   </div>
                   <div data-any="vw360" data-exporttype-name data-en-text="Image(Pixel)">普通图片</div>         
                 </div>
                 <div class="fl0 df-lc" data-radio data-radio-data="2" data-radio-main="false">
                   <div data-exporttype-chk>
-                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill="var(--mainColor)" d="M17 1.5C18.1046 1.5 19 2.39543 19 3.5V16.5C19 17.5357 18.2128 18.387 17.2041 18.4893L17 18.5H3L2.7959 18.4893C1.85435 18.3938 1.1062 17.6457 1.01074 16.7041L1 16.5V3.5C1 2.39543 1.89543 1.5 3 1.5H17ZM3 3C2.72386 3 2.5 3.22386 2.5 3.5V16.5C2.5 16.7761 2.72386 17 3 17H17C17.2761 17 17.5 16.7761 17.5 16.5V3.5C17.5 3.22386 17.2761 3 17 3H3ZM13.0537 10.7266L14.3027 6.85742H15.9492L13.2695 14.1279C13.1374 14.4763 12.993 14.7404 12.8008 14.9326C12.4403 15.2931 11.9718 15.4131 11.4551 15.4131H10.8418V14.0078H11.2031C11.6474 14.0077 11.8272 13.8989 11.9834 13.4424L12.248 12.6738L10.1094 6.85742H11.7559L13.0537 10.7266ZM10.0186 8.04688L7.20605 11.7119H10.0186V13.1182H5.24707V11.9287L8.02344 8.2627H5.40332V6.85742H10.0186V8.04688Z"/>
-                    </svg>  
+                    <export-zy></export-zy>
                   </div>
                   <div data-any="vw360" data-exporttype-name data-en-text=".zy(Plugin)">系列兼容格式</div>         
                 </div>
                 <div class="fl0 df-lc" data-radio data-radio-data="3" data-radio-main="false">
                   <div data-exporttype-chk>
-                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill="var(--mainColor)" d="M17 1.5C18.1046 1.5 19 2.39543 19 3.5V16.5C19 17.5357 18.2128 18.387 17.2041 18.4893L17 18.5H3L2.7959 18.4893C1.85435 18.3938 1.1062 17.6457 1.01074 16.7041L1 16.5V3.5C1 2.39543 1.89543 1.5 3 1.5H17ZM3 3C2.72386 3 2.5 3.22386 2.5 3.5V16.5C2.5 16.7761 2.72386 17 3 17H17C17.2761 17 17.5 16.7761 17.5 16.5V3.5C17.5 3.22386 17.2761 3 17 3H3Z"/>
-                      <path fill="var(--mainColor)" d="M16.1181 13.5933C16.685 13.7505 16.7002 14.5498 16.1396 14.728L10.2509 16.5972C10.1359 16.6336 10.0117 16.6339 9.89641 16.5981L3.87395 14.729C3.30848 14.5533 3.32303 13.7472 3.89446 13.5923L4.98137 13.2983L10.0741 14.8784L15.0507 13.2983L16.1181 13.5933ZM16.1181 10.9487C16.6851 11.1059 16.7003 11.9043 16.1396 12.0825L10.2519 13.9526C10.1368 13.9892 10.0127 13.9893 9.89739 13.9536L3.87395 12.0835C3.30864 11.9078 3.32321 11.1028 3.89446 10.9478L7.15813 10.064V12.0522H12.6259V9.98291L16.1181 10.9487Z"/>
-                      <path fill="var(--mainColor)" d="M13.5 4.33447L13.4999 7.14766H12.528L12.4413 6.23008H10.6935L10.683 9.46251L11.6259 9.61635V11.0522H8.15778V9.61635L9.22159 9.46251L9.23214 6.23008H7.55867L7.47767 7.14766H6.5L6.50008 4.33447H13.5Z"/>
-                    </svg>                          
+                    <export-text></export-text>                        
                   </div>
                   <div data-any="vw360" data-exporttype-name data-en-text="Rich Text">复合文本内容</div>         
                 </div>
@@ -534,27 +475,18 @@
             <div class="w100 df-sc">
               <div class="df-lc gap8">
                 <div class="df-lc gap2" data-export-delete data-btn="text">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke="var(--mainColor)" d="M2 4.27539H12" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path stroke="var(--mainColor)" d="M10 2.5V1.5H4V2.5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path stroke="var(--mainColor)" d="M11 4.27539L9.85714 12.2754H4.14286L3 4.27539" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path stroke="var(--mainColor)" d="M6 6.27539V10.2754" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path stroke="var(--mainColor)" d="M8 6.27539V10.2754" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>  
+                  <btn-del class="wh-14"></btn-del>
                   <div data-en-text="Delete">删除</div>                
                 </div>
                 <div class="df-lc gap2" data-export-reup data-btn="text">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke="var(--mainColor)" d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path stroke="var(--mainColor)" d="M2.99911 2.18428L3.20218 4.65075L5.66323 4.49707" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>                     
+                  <btn-reup class="wh-14"></btn-reup>                    
                   <div data-en-text="Re-Upload">重新上传</div>                
                 </div>
               </div>
               <div class="df-lc gap4">
                 <div data-en-text="All">全选</div>
                 <input id="exportset-pickall" type="checkbox"/>
-                <label for="exportset-pickall gap4" class="check" style="width: 16px; height: 16px;">
+                <label for="exportset-pickall" class="check gap4" style="width: 16px; height: 16px;">
                   <btn-check-tick></btn-check-tick>
                 </label>
               </div>
@@ -604,38 +536,29 @@
                 <div data-editor-setlist-title class="df-sc pos-r">
                   <div data-en-text="Filter" class="op6">调整</div>
                   <div data-btn="icon" data-editor-addset>
-                    <svg width="100%" height="100%" viewBox="0 0 20 20">
-                      <rect fill="var(--mainColor)" x="0" y="9" width="20" height="2"></rect>
-                      <rect fill="var(--mainColor)" x="9" y="0" width="2" height="20"></rect>
-                    </svg>
+                    <btn-add></btn-add>
                   </div>
                 </div>
                 <div class="w100 df-sc">
-                  <div class="df-lc gap4" style="padding-left: 4px;">
+                  <div class="df-lc gap4" style="padding-left: 4px; --fill-op: 0.6;">
                     <input type="file" id="edito-upset" accept=".json" style="display: none;">
-                    <label for="edito-upset" data-tips="auto" data-tips-x="center" data-tips-y="top"
-                    style="--tips-text:'导入'; --tips-text-en:'Import';">
+                    <label for="edito-upset" class="pos-r" data-tips="auto" data-tips-x="center" data-tips-y="top"
+                    data-tips-text="导入" data-tips-text-en="Import">
                      <div data-btn="icon" data-editor-upset>
-                      <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-opacity="0.6" fill="var(--mainColor)" d="M4 15H16V13H19V19H1V13H4V15ZM8 3.04688C12.1429 3.43349 14 6.24465 14 9.43945V13L13.8936 12.792C12.5735 10.2138 11.4251 8.2507 8 7.93945V12L2 6L8 0V3.04688Z"/>
-                      </svg> 
+                      <btn-import></btn-import>
                      </div>
                     </label>
                     <input type="checkbox" id="editor-inputset" onchange="showNext(this,'data-editor-setcode','flex');showNext(this,'data-editor-setvalue','flex',true)">
-                    <label for="editor-inputset" data-tips="auto" data-tips-x="center" data-tips-y="top"
-                    style="--tips-text:'代码'; --tips-text-en:'Code';">
+                    <label for="editor-inputset" class="pos-r" data-tips="auto" data-tips-x="center" data-tips-y="top"
+                    data-tips-text="代码" data-tips-text-en="Code">
                       <div data-btn="icon" data-editor-inputset>
-                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path fill-opacity="0.6" fill="var(--mainColor)" d="M19 19H1V15H19V19ZM9.78516 13.6963H6.78027L10.2148 0.759766H13.2197L9.78516 13.6963ZM3.47754 7.64453L6.3252 12.2285H2.78027L0 7.64453L2.78027 2.22852H6L3.47754 7.64453ZM20 7.64453L17.2197 12.2285H13.6748L16.5225 7.64453L14 2.22852H17.2197L20 7.64453Z"/>
-                        </svg>
+                        <btn-code></btn-code>
                       </div>
                     </label>
-                    <div data-tips="auto" data-tips-x="center" data-tips-y="top"
-                    style="--tips-text:'导出'; --tips-text-en:'Export';">
+                    <div class="pos-r" data-tips="auto" data-tips-x="center" data-tips-y="top"
+                    data-tips-text="导出" data-tips-text-en="Export">
                       <div data-btn="icon" data-editor-downset>
-                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path fill-opacity="0.6" fill="var(--mainColor)" d="M4 15H16V13H19V19H1V13H4V15ZM12 8H16L10 14L4 8H8V1H12V8Z"/>
-                        </svg>  
+                        <btn-down></btn-down>
                       </div>
                     </div>
                   </div>
@@ -660,31 +583,17 @@
             </div>
             <div data-editor-side class="pos-a df-ffc">
               <input type="checkbox" id="fulleditor">
-              <label for="fulleditor" data-btn  class="df-cc">
-                <svg width="80%" height="80%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="var(--mainColor)" d="M10.8219 8.1537L16.2146 2.76098L12.6399 2.76162C12.2562 2.76162 11.9447 2.45006 11.9447 2.06643C11.9447 1.68279 12.2562 1.37123 12.6399 1.37123L17.8915 1.37187C18.2752 1.37187 18.5861 1.68279 18.5861 2.06643L18.5867 7.31806C18.5867 7.7017 18.2752 8.01326 17.8915 8.01326C17.5079 8.01326 17.1963 7.7017 17.1963 7.31806L17.197 3.74334L11.8042 9.13605C11.533 9.40732 11.0932 9.40732 10.8219 9.13605C10.5506 8.86478 10.5506 8.42497 10.8219 8.1537Z"></path>
-                  <path fill="var(--mainColor)" d="M11.796 10.8138L17.1887 16.2066L17.1881 12.6318C17.1881 12.2482 17.4996 11.9366 17.8833 11.9366C18.2669 11.9366 18.5785 12.2482 18.5785 12.6318L18.5778 17.8835C18.5778 18.2671 18.2669 18.578 17.8833 18.578L12.6316 18.5787C12.248 18.5787 11.9364 18.2671 11.9364 17.8835C11.9364 17.4998 12.248 17.1883 12.6316 17.1883L16.2064 17.1889L10.8137 11.7962C10.5424 11.5249 10.5424 11.0851 10.8137 10.8138C11.0849 10.5426 11.5247 10.5426 11.796 10.8138Z"></path>
-                  <path fill="var(--mainColor)" d="M9.13636 11.796L3.74364 17.1887L7.31837 17.1881C7.702 17.1881 8.01356 17.4996 8.01356 17.8833C8.01356 18.2669 7.702 18.5785 7.31837 18.5785L2.06673 18.5778C1.6831 18.5778 1.37218 18.2669 1.37218 17.8833L1.37154 12.6316C1.37154 12.248 1.6831 11.9364 2.06673 11.9364C2.45037 11.9364 2.76193 12.248 2.76193 12.6316L2.76129 16.2064L8.15401 10.8137C8.42527 10.5424 8.86509 10.5424 9.13636 10.8137C9.40763 11.0849 9.40763 11.5247 9.13636 11.796Z"></path>
-                  <path fill="var(--mainColor)" d="M8.162 9.13587L2.76928 3.74315L2.76992 7.31788C2.76992 7.70152 2.45836 8.01308 2.07473 8.01308C1.69109 8.01308 1.37953 7.70152 1.37953 7.31788L1.38017 2.06624C1.38017 1.68261 1.69109 1.37169 2.07473 1.37169L7.32636 1.37105C7.71 1.37105 8.02156 1.68261 8.02156 2.06625C8.02156 2.44988 7.71 2.76144 7.32636 2.76144L3.75164 2.7608L9.14435 8.15352C9.41562 8.42479 9.41562 8.8646 9.14435 9.13587C8.87308 9.40714 8.43327 9.40714 8.162 9.13587Z"></path>
-                </svg>          
+              <label for="fulleditor" data-btn  class="df-cc wh-20 bod-r4 op6">
+                <btn-full></btn-full>          
               </label>
-              <div data-editor-clear data-btn class="df-cc">
-                <svg width="80%" height="80%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke="var(--mainColor)" d="M2 4.27539H12" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path stroke="var(--mainColor)" d="M10 2.5V1.5H4V2.5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path stroke="var(--mainColor)" d="M11 4.27539L9.85714 12.2754H4.14286L3 4.27539" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path stroke="var(--mainColor)" d="M6 6.27539V10.2754" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path stroke="var(--mainColor)" d="M8 6.27539V10.2754" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
+              <div data-editor-clear data-btn class="df-cc wh-20 bod-r4 op6">
+                <btn-del></btn-del>
               </div>
               <input id="data-editor-setbg" type="checkbox" onchange="showNext(this,'data-color-mix','flex')">
-              <label for="data-editor-setbg" data-editor-bg class="df-cc">
-                <svg  width="80%" height="80%" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="var(--mainColor)" d="M810.666667 85.333333H213.333333C140.8 85.333333 85.333333 140.8 85.333333 213.333333v597.333334c0 72.533333 55.466667 128 128 128h597.333334c72.533333 0 128-55.466667 128-128V213.333333c0-72.533333-55.466667-128-128-128z m-281.6 85.333334L170.666667 499.2V401.066667L401.066667 170.666667h128zM170.666667 755.2v-136.533333L657.066667 170.666667h136.533333L170.666667 755.2zM213.333333 170.666667h68.266667L170.666667 281.6V213.333333c0-25.6 17.066667-42.666667 42.666666-42.666666z m-17.066666 678.4L853.333333 230.4v136.533333L366.933333 853.333333H213.333333c-8.533333 0-12.8 0-17.066666-4.266666zM810.666667 853.333333h-324.266667l366.933333-366.933333V810.666667c0 25.6-17.066667 42.666667-42.666666 42.666666z">
-                  </path>
-                </svg>
+              <label for="data-editor-setbg" data-editor-bg class="df-cc pad2 bsb pointer wh-20 bod-r4 op6">
+                <btn-setbg></btn-setbg>
               </label>
-              <div data-color-mix class="df-rc" style="display: none; width: 20px; height: 20px;">
+              <div data-color-mix class="df-rc wh-20" style="display: none;">
                 <div data-color 
                 data-color-hex="#888888" data-color-rgb="rgb(136,136,136)"
                 data-color-hsl="hsl(0,0%,53%)" data-color-hsv="hsv(0,0%,53%)"
@@ -693,12 +602,10 @@
                 class="df-rc">
                   <input id="colorvalue-1" class="fl1" type="text" data-input="hex" value="#888888" >
                   <div data-input="colortype" data-colortype-mode="hex" class="colortype"></div>
-                  <div data-editor-bg data-input="colorpick" data-btn class="df-cc">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="100%" height="100%" viewBox="0 0 20 20">
-                      <rect x="3" y="3" width="14" height="14" rx="2" fill="var(--input-color,#888)"></rect>
-                    </svg>
+                  <div data-editor-bg data-input="colorpick" data-btn class="df-cc pad4 pointer wh-20 bod-r4 op6">
+                    <div class="wh-12 fl0 bod-r2" style="background: var(--input-color,#888);"></div>
                   </div>
-                  <card-colorpick></card-colorpick>
+                  <card-colorpick style="top: 100%"></card-colorpick>
                 </div>
               </div>
               
@@ -719,13 +626,10 @@
           </div>
           <div data-variable-type class="w100 df-lc">
             <div class="fl1 df-lc upload-set gap6">
-              <div class="df-lc gap4"
+              <div class="df-lc gap4 pos-r"
               data-tips="auto" data-tips-x="left" data-tips-y="top"
-              style="--tips-text:'数据类型'; --tips-text-en:'Sheet type';">
-                <svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="var(--mainColor)" fill-rule="evenodd" clip-rule="evenodd" d="M7.89746 2.57129C7.3268 3.58479 7 4.75402 7 6C7 6.54045 7.06376 7.06601 7.17969 7.57129H3V12.0713H9.5V11.3604C9.81125 11.6219 10.146 11.8557 10.5 12.0605V12.0713H10.5176C11.5434 12.661 12.7318 13 14 13C15.4877 13 16.866 12.5345 18 11.7432V16.5713L17.9893 16.7754C17.887 17.7841 17.0357 18.5713 16 18.5713H4C2.96435 18.5713 2.113 17.7841 2.01074 16.7754L2 16.5713V4.57129C2.00016 3.46686 2.89553 2.57129 4 2.57129H7.89746ZM3 16.5713C3 17.1236 3.44772 17.5713 4 17.5713H9.5V13.0713H3V16.5713ZM10.5 17.5713H16C16.5523 17.5713 17 17.1236 17 16.5713V13.0713H10.5V17.5713Z"/>
-                  <path fill="var(--mainColor)" fill-rule="evenodd" clip-rule="evenodd" d="M14 0C17.3137 0 20 2.68629 20 6C20 9.31371 17.3137 12 14 12C10.6863 12 8 9.31371 8 6C8 2.68629 10.6863 0 14 0ZM13.2246 8.71582V10.3145H14.8828V8.71582H13.2246ZM13.9941 1.68555C12.6002 1.68555 11.4709 2.59895 11.4707 4.08887H13.0322C13.0324 3.53626 13.3574 3.0918 13.9941 3.0918C14.5948 3.09191 14.9677 3.51247 14.9678 4.07715C14.9678 4.34154 14.8114 4.63044 14.6191 4.88281L13.7295 6.02441C13.4171 6.43292 13.2725 6.75774 13.2725 7.27441V7.63477H14.835V7.38184C14.8351 7.17761 14.9317 6.92569 15.0518 6.76953L15.9404 5.5918C16.2769 5.14715 16.5293 4.68975 16.5293 4.08887C16.5291 2.56299 15.3519 1.68565 13.9941 1.68555Z"/>
-                </svg>
+              data-tips-text="数据类型" data-tips-text-en="Sheet type">
+                <tab-sheettype class="wh-22"></tab-sheettype>
                 ▶                
               </div>
               <div class="df-lc data-scroll ovx noscrollbar gap6" data-scroll data-radio-value="style">
@@ -738,10 +642,7 @@
                 </div>
                 <div class="fl0 df-lc" data-radio data-radio-data="variable" data-radio-main="false">
                   <div data-variable-chk>
-                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill="var(--mainColor)" d="M18.6963 14.9325L18.9217 15.4821C18.7361 15.7539 18.464 16.0317 18.1055 16.3154C17.7531 16.599 17.3748 16.8384 16.9705 17.0334C16.5722 17.2284 16.2061 17.3259 15.8721 17.3259C15.7203 17.3259 15.5913 17.2934 15.4853 17.2284C15.3778 17.1693 15.2906 17.0629 15.2236 16.9093L13.6839 13.4787C13.4954 13.6856 13.2576 13.9338 12.9706 14.2233C12.6836 14.5129 12.4167 14.8202 12.1699 15.1452C11.9306 15.4644 11.774 15.7805 11.7 16.0938C11.6539 16.2888 11.6515 16.4661 11.6928 16.6256C11.3365 16.797 11.0013 16.9566 10.6871 17.1043C10.3729 17.2521 10.0731 17.3259 9.78766 17.3259C9.41725 17.3259 9.27601 17.1398 9.36395 16.7675C9.43932 16.4483 9.67742 16.0701 10.0783 15.6328C10.4852 15.1955 10.9787 14.7257 11.5588 14.2233C12.145 13.721 12.7373 13.2187 13.3357 12.7164L11.9546 9.57831L10.4188 10.4116L10.1955 9.85311C10.2692 9.74673 10.4283 9.58717 10.6729 9.37442C10.9235 9.16167 11.212 8.94301 11.5383 8.71845C11.872 8.48797 12.2035 8.29295 12.5327 8.13339C12.8679 7.97382 13.157 7.89404 13.3998 7.89404C13.6002 7.89404 13.7416 7.97678 13.824 8.14225C14.1141 8.73913 14.3779 9.30646 14.6152 9.84424C14.8539 10.3761 15.0823 10.8873 15.3004 11.3778C15.8049 10.8873 16.1696 10.5002 16.3945 10.2166C16.6268 9.92698 16.7787 9.70832 16.85 9.56058C16.9227 9.40693 16.9682 9.29169 16.9863 9.21486C17.0212 9.06712 17.03 8.94006 17.0126 8.83369C16.9952 8.72731 16.9804 8.63571 16.9682 8.55888C17.451 8.34023 17.8182 8.18657 18.0699 8.09793C18.329 8.00337 18.5153 7.94723 18.6288 7.9295C18.7498 7.90586 18.8406 7.89404 18.9014 7.89404C19.2475 7.89404 19.3738 8.09202 19.2803 8.48797C19.2035 8.813 18.9735 9.18236 18.5904 9.59604C18.2073 10.0097 17.7509 10.4382 17.2212 10.8814C16.6928 11.3187 16.1642 11.7442 15.6354 12.1579L17.1613 15.8012L18.6963 14.9325Z"/>
-                      <path fill="var(--mainColor)" d="M9.21571 6.44182L7.11722 15.3266C6.86854 16.3795 6.4285 17.245 5.79708 17.9233C5.17077 18.608 4.45035 19.115 3.63583 19.4444C2.83972 19.7664 2.1347 19.7328 1.37649 19.6673C1.07065 19.6415 0.804865 19.5865 0.579128 19.5026C0.346753 19.4186 0.250398 19.2926 0.290065 19.1247C0.299218 19.086 0.326223 19.0278 0.371078 18.9503L1.37599 17.4776C1.82495 17.6843 2.26956 17.8813 2.70982 18.0686C3.73148 18.5033 4.04851 18.19 4.44744 16.809C4.59146 16.3117 4.71992 15.824 4.83282 15.346L6.91597 6.44182H4.54654L4.64952 6.00581C4.71818 5.71514 4.82776 5.51813 4.97827 5.41478C5.13695 5.30497 5.35898 5.25007 5.64438 5.25007H7.19745L7.34848 4.6106C7.59258 3.5771 8.00177 2.74385 8.57605 2.11084C9.15034 1.47782 9.81361 1.01598 10.5659 0.725311C11.3248 0.434641 12.0925 0.289307 12.869 0.289307C12.9951 0.289307 13.1728 0.295766 13.4021 0.308685C13.638 0.321603 13.8726 0.3539 14.1059 0.405575C14.3475 0.45079 14.5423 0.525072 14.6905 0.628421C14.8401 0.725311 14.8952 0.857727 14.8555 1.02567C14.8387 1.09672 14.7842 1.18715 14.6919 1.29696L13.6485 2.59529C13.2133 2.33045 12.8066 2.085 12.4286 1.85892C12.0506 1.63285 11.6924 1.51981 11.3539 1.51981C10.9092 1.51981 10.5834 1.73297 10.3765 2.15928C10.1778 2.57914 9.98767 3.1734 9.80612 3.94206L9.49719 5.25007H12.3544L12.256 5.6667C12.1889 5.95091 12.0752 6.15115 11.915 6.26741C11.7615 6.38368 11.542 6.44182 11.2566 6.44182H9.21571Z"/>
-                    </svg>                  
+                    <btn-variable></btn-variable>                 
                   </div>
                   <div data-any="vw240" data-variable-chk-name data-en-text="Variable">变量</div>
                   <div data-any="vw300" data-en-text="&nbsp;Sheet">表管理</div>          
@@ -749,20 +650,10 @@
               </div>
             </div>
             <div class="upload-set">
-              <div data-variable-relayout
+              <div data-variable-relayout class="pos-r wh-22"
               data-tips="auto" data-tips-x="right" data-tips-y="top"
-              style="--tips-text:'整理相关组件和表格'; --tips-text-en:'Organize related elements';">
-                <svg data-btn="icon" width="22" height="22" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect fill="var(--mainColor)" x="3" y="3" width="3" height="3"></rect>
-                  <rect fill="var(--mainColor)" x="9" y="3" width="3" height="3"></rect>
-                  <rect fill="var(--mainColor)" x="15" y="3" width="3" height="3"></rect>
-                  <rect fill="var(--mainColor)" x="3" y="9" width="3" height="3"></rect>
-                  <rect fill="var(--mainColor)" x="9" y="9" width="3" height="3"></rect>
-                  <rect fill="var(--mainColor)" x="15" y="9" width="3" height="3"></rect>
-                  <rect fill="var(--mainColor)" x="3" y="15" width="3" height="3"></rect>
-                  <rect fill="var(--mainColor)" x="9" y="15" width="3" height="3"></rect>
-                  <rect fill="var(--mainColor)" x="15" y="15" width="3" height="3"></rect>
-                </svg>
+              data-tips-text="整理相关组件和表格" data-tips-text-en="Organize related elements">
+                <btn-relayout></btn-relayout>
               </div>
             </div>
           </div>
@@ -776,10 +667,8 @@
                 </div>
                 <div data-variable-has class="df-lc">
                   <div data-variable-style data-en-text="Had variable-set" >已检测到变量</div>
-                  <div data-variable-has-icon>
-                    <svg width="100%" height="100%" viewBox="0 0 14 14">
-                      <path stroke="var(--mainColor)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                    </svg>
+                  <div data-variable-has-icon style="--bod: transparent; --check: var(--mainColor);">
+                    <btn-check-tick></btn-check-tick>
                   </div>
                 </div>
               </div>
@@ -790,21 +679,16 @@
                 </div>
                 <div data-variable-has class="df-lc">
                   <div data-variable-style data-en-text="Had local-variable sheet" >已检测到变量表</div>
-                  <div data-variable-has-icon>
-                    <svg width="100%" height="100%" viewBox="0 0 14 14">
-                      <path stroke="var(--mainColor)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                    </svg>
+                  <div data-variable-has-icon style="--bod: transparent; --check: var(--mainColor);">
+                    <btn-check-tick></btn-check-tick>
                   </div>
                 </div>
               </div>
 
-              <div data-variable-refresh="variable" class="df-cc fl0"
-              data-tips="auto" data-tips-x="right" data-tips-y="top" style="position: absolute; --tips-text: '刷新'; --tips-text-en: 'Refresh';">
+              <div data-variable-refresh="variable" class="df-cc fl0 pos-a"
+              data-tips="auto" data-tips-x="right" data-tips-y="top" data-tips-text="刷新" data-tips-text-en="Refresh">
                 <div data-btn>
-                  <svg width="100%" height="100%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke="var(--mainColor)" d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <path stroke="var(--mainColor)" d="M2.99911 2.18428L3.20218 4.65075L5.66323 4.49707" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                  </svg>
+                  <btn-reup></btn-reup>
                 </div>
               </div>
             </div>
@@ -851,10 +735,8 @@
                 </div>
                 <div data-variable-has class="df-lc">
                   <div data-variable-style data-en-text="Had style-set" >已检测到样式集</div>
-                  <div data-variable-has-icon>
-                    <svg width="100%" height="100%" viewBox="0 0 14 14">
-                      <path stroke="var(--mainColor)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                    </svg>
+                  <div data-variable-has-icon style="--bod: transparent; --check: var(--mainColor);">
+                    <btn-check-tick></btn-check-tick>
                   </div>
                 </div>
               </div>
@@ -865,20 +747,15 @@
                 </div>
                 <div data-variable-has class="df-lc">
                   <div data-variable-sheet  data-en-text="Had local-style sheet">已检测到管理表</div>
-                  <div data-variable-has-icon>
-                    <svg width="100%" height="100%" viewBox="0 0 14 14">
-                      <path stroke="var(--mainColor)" d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                    </svg>
+                  <div data-variable-has-icon style="--bod: transparent; --check: var(--mainColor);">
+                    <btn-check-tick></btn-check-tick>
                   </div>
                 </div>
               </div>
-              <div data-variable-refresh="style" class="df-cc fl0"
-              data-tips="auto" data-tips-x="right" data-tips-y="top" style="position: absolute; --tips-text: '刷新'; --tips-text-en: 'Refresh';">
+              <div data-variable-refresh="style" class="df-cc fl0 pos-a"
+              data-tips="auto" data-tips-x="right" data-tips-y="top" data-tips-text="刷新" data-tips-text-en="Refresh">
                 <div data-btn>
-                  <svg width="100%" height="100%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke="var(--mainColor)" d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <path stroke="var(--mainColor)" d="M2.99911 2.18428L3.20218 4.65075L5.66323 4.49707" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                  </svg>
+                  <btn-reup></btn-reup>
                 </div>
               </div>
             </div>
@@ -903,24 +780,24 @@
                   </div>
                 </div>
                 <div class="df-lc gap4">
-                  <div data-linkstyle-all="reapply" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
-                  style="--tips-text: '全部重链'; --tips-text-en: 'Relink all';">
+                  <div class="pos-r" data-linkstyle-all="reapply" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
+                  data-tips-text="全部重链" data-tips-text-en="Relink all">
                     <div data-btn="icon">
                       <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-1)"/>
                       </svg>
                     </div>
                   </div>
-                  <div data-linkstyle-all="create" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
-                  style="--tips-text: '全部创建'; --tips-text-en: 'Create all';">
+                  <div class="pos-r" data-linkstyle-all="create" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
+                  data-tips-text="全部创建" data-tips-text="Create all">
                     <div data-btn="icon">
                       <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-2)"/>
                       </svg>
                     </div>
                   </div>
-                  <div data-linkstyle-all="override" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
-                  style="--tips-text: '全部覆盖'; --tips-text-en: 'Override all';">
+                  <div class="pos-r" data-linkstyle-all="override" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
+                  data-tips-text="全部覆盖" data-tips-text="Override all">
                     <div data-btn="icon">
                       <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-3)"/>
@@ -985,18 +862,23 @@
               <div class="df-lc gap4 mar-0a" style="max-width: 100%;">
                 <div class="df-lc pos-r upload-set gap4" style="max-width: calc(100% - 44px); height: 40px;">
                   <input id="chk-tablestyle" checked type="checkbox" >
-                  <label for="chk-tablestyle" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;  width: 22px; height: 22px;
-                  --tips-text:'按预设样式生成组件/修改表格';  --tips-text-en:'Create/change from the preset style';">
-                    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill="var(--mainColor)" d="M7.96875 7.57129H3V12.0713H6.61914L6.50391 13.0713H3V16.5713C3 17.1236 3.44772 17.5713 4 17.5713H9.5V15.4512L10.5 14.5693V17.5713H16C16.5523 17.5713 17 17.1236 17 16.5713V13.0713H12.1982L12.5205 12.7871L13.332 12.0713H17V7.57129H15.2656L17.5137 3.26758C17.8157 3.61783 17.9999 4.07254 18 4.57129V16.5713L17.9893 16.7754C17.887 17.7841 17.0357 18.5713 16 18.5713H4C2.96435 18.5713 2.113 17.7841 2.01074 16.7754L2 16.5713V4.57129C2.00016 3.46686 2.89553 2.57129 4 2.57129H10.583L7.96875 7.57129Z"/>
-                      <path fill="var(--mainColor)" d="M11.8598 12.0372L8.12642 15.3311C7.78273 15.6343 7.24651 15.3537 7.29927 14.8985L7.87154 9.95317L11.8598 12.0372ZM12.7329 0.616255C12.9887 0.127036 13.5931 -0.0621097 14.0825 0.193403L16.269 1.33598C16.7583 1.59183 16.9475 2.19621 16.6919 2.68559L12.4702 10.7618L8.51216 8.69243L12.7329 0.616255Z"/>
-                    </svg>                  
+                  <label for="chk-tablestyle" data-tips="auto" class="fl0 pos-r wh-22" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                  data-tips-text="按预设样式生成组件/修改表格" data-tips-text-en="Create/change from the preset style">
+                    <tab-tablestyle></tab-tablestyle>                 
                   </label>
                   <div data-tablestyle-box class="df-lc gap4" style="overflow: auto;">
                     ▶
-                    <div class="noscrollbar" data-scroll>
-                      <div data-tablestyle-set class="df-lc" data-radio-value="1">
-                        <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="true">
+                    <div class="noscrollbar df-lc" data-scroll>
+                      <div data-tablestyle-set="fill" class="df-lc" data-radio-value="2">
+                        <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="false">
+                          <div data-tablestyle-chk>
+                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path fill="var(--mainColor)" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V7H3V16Z"/>
+                            </svg>
+                          </div>
+                          <div data-any="vw360" data-tablestyle-name data-en-text="No strokes">全填充</div>         
+                        </div>
+                        <div class="fl0 df-lc" data-radio data-radio-data="2" data-radio-main="true">
                           <div data-tablestyle-chk>
                             <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path fill="var(--mainColor)" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 14V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V14H3ZM3 10H17V7H3V10Z"/>
@@ -1004,7 +886,7 @@
                           </div>
                           <div data-any="vw360" data-tablestyle-name data-en-text="Row Space">横间隔</div>         
                         </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="2" data-radio-main="false">
+                        <div class="fl0 df-lc" data-radio data-radio-data="3" data-radio-main="false">
                           <div data-tablestyle-chk>
                             <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C3.86182 18 3.72697 17.9857 3.59668 17.959C3.46664 17.9324 3.34118 17.8933 3.22168 17.8428C2.50378 17.5392 2 16.8285 2 16V4C2 3.17153 2.50378 2.46081 3.22168 2.15723C3.34118 2.10669 3.46664 2.06765 3.59668 2.04102C3.72697 2.01433 3.86182 2 4 2H16ZM13.7832 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H13.7832V17ZM6.34766 17H9.43555V3H6.34766V17Z"/>
@@ -1012,45 +894,26 @@
                           </div>
                           <div data-any="vw360" data-tablestyle-name data-en-text="Column Space">竖间隔</div>         
                         </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="3" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--mainColor)" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V7H3V16Z"/>
-                            </svg>
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="No strokes">无描边</div>         
-                        </div>
                         <div class="fl0 df-lc" data-radio data-radio-data="4" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 12.5V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V12.5H3ZM3 11.5H17V7H3V11.5Z"/>
-                            </svg> 
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Row strokes">仅横线</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="5" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V7H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V7H3V16Z"/>
-                            </svg> 
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Column strokes">仅竖线</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="6" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V12.5H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V12.5H3V16ZM10.5 11.5H17V7H10.5V11.5ZM3 11.5H9.5V7H3V11.5Z"/>
-                            </svg>   
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="All strokes">全描边</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="7" data-radio-main="false">
                           <div data-tablestyle-chk>
                             <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
                             </svg>
                           </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="No strokes 2">无描边 2</div>         
+                          <div data-any="vw360" data-tablestyle-name data-en-text="No Fill">无填充</div>         
+                        </div>
+                      </div>
+                    </div>
+                    <div class="fl0" style="width: 1px; height: 30px; margin: 0 2px; background: var(--mainColor);"></div>
+                    <div class="noscrollbar df-lc" data-scroll>
+                      <div data-tablestyle-set="bod" class="df-lc" data-radio-value="1">
+                        <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="true">
+                          <div data-tablestyle-chk>
+                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"/>
+                            </svg>  
+                          </div>
+                          <div data-any="vw360" data-tablestyle-name data-en-text="All Strokes">全描边</div>         
                         </div>
                         <div class="fl0 df-lc" data-radio data-radio-data="8" data-radio-main="false">
                           <div data-tablestyle-chk>
@@ -1058,7 +921,7 @@
                               <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 13V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V13H3ZM3 12H17V8H3V12ZM4 3C3.44772 3 3 3.44772 3 4V7H17V4C17 3.44772 16.5523 3 16 3H4Z"/>
                             </svg>   
                           </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Row strokes 2">仅横线 2</div>         
+                          <div data-any="vw360" data-tablestyle-name data-en-text="Row Strokes">仅横线</div>         
                         </div>
                         <div class="fl0 df-lc" data-radio data-radio-data="9" data-radio-main="false">
                           <div data-tablestyle-chk>
@@ -1066,15 +929,15 @@
                               <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H9.5V3H4ZM10.5 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H10.5V17Z"/>
                             </svg> 
                           </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Column strokes 2">仅竖线 2</div>         
+                          <div data-any="vw360" data-tablestyle-name data-en-text="Column Strokes">仅竖线</div>         
                         </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="10" data-radio-main="false">
+                        <div class="fl0 df-lc" data-radio data-radio-data="4" data-radio-main="false">
                           <div data-tablestyle-chk>
                             <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"/>
-                            </svg>  
+                              <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                            </svg>
                           </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="All strokes 2">全描边 2</div>         
+                          <div data-any="vw360" data-tablestyle-name data-en-text="No Strokes">无描边</div>         
                         </div>
                       </div>
                     </div>
@@ -1082,8 +945,8 @@
                 </div>
                 <div class="df-lc pos-r upload-set gap4" style="max-width: calc(100% - 44px);">
                   <input id="chk-selectcomp" type="checkbox" checked >
-                  <label for="chk-selectcomp" data-tips="auto" class="fl0" data-tips-y="top" data-tips-x="right" style="--tips-w: 8ch;  width: 22px; height: 22px;
-                  --tips-text:'以所选对象为组件';  --tips-text-en:'Create from the selected node';">
+                  <label for="chk-selectcomp" data-tips="auto" class="fl0 pos-r wh-22" data-tips-y="top" data-tips-x="right" style="--tips-w: 8ch;"
+                  data-tips-text="以所选对象为组件" data-tips-text-en="Create from the selected node">
                     <btn-getbyselect></btn-getbyselect>                  
                   </label>
                   <div data-selectcomp-box="false" class="df-lc gap4" style="display: none; overflow: auto;">
@@ -1113,17 +976,7 @@
               <div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
                 <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
                 <label for="table-more" class="wh100 df-cc btn-more pad4">
-                  <svg data-icon-more width="100%" height="100%" viewBox="0 0 20 20">
-                    <g data-icon-more-path="1">
-                      <path fill="none" d="M18 0L0 0"></path>
-                    </g>
-                    <g data-icon-more-path="2">
-                      <path fill="none" d="M18 0L0 0"></path>
-                    </g>
-                    <g data-icon-more-path="3">
-                      <path fill="none" d="M18 0L0 0"></path>
-                    </g>
-                  </svg>
+                  <btn-more></btn-more>
                 </label>
               </div>
             </div>
@@ -1213,13 +1066,9 @@
             <!--更多设置-->
             <div data-tablearea-moreset class="w100 df-lc gap4" style="flex-wrap: wrap; margin: 4px 0;">
               <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 120px;">
-                <div data-tips="auto" class="fl0 df-cc" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch; 
-                  --tips-text:'设置换行转义符, 用于兼容需要换行的数据';  --tips-text-en:'Set a character to represent line feed'; width: 20px; height: 20px;">
-                  <svg width="120%" height="120%" viewBox="0 0 20 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-width="0.25" stroke="var(--mainColor)" fill="var(--mainColor)" d="M15.0417 9.94629C15.0416 11.6031 13.6985 12.9462 12.0417 12.9463H8.29461V13.999C8.29455 14.4246 7.79631 14.6557 7.47137 14.3809L4.57976 11.9346C4.10782 11.5352 4.10788 10.8067 4.57976 10.4072L7.47137 7.96094C7.79633 7.68597 8.29461 7.91709 8.29461 8.34277V9.39551H11.4909V5.13379H15.0417V9.94629Z"/>
-                    <rect stroke="var(--mainColor)" x="2" y="2" width="16" height="16" rx="2"/>
-                    <rect fill="var(--mainColor)" x="2" y="21" width="16" height="2" rx="1"/>
-                  </svg>       
+                <div data-tips="auto" class="fl0 df-cc pos-r wh-20" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                  data-tips-text="设置换行转义符, 用于兼容需要换行的数据" data-tips-text-en="Set a character to represent line feed">
+                  <input-regexpenter></input-regexpenter>      
                 </div>
                 <input id="input-linefeed" data-input class="nobod fl1" type="text" 
                 value="[enter]"> 
@@ -1229,13 +1078,9 @@
                 </div>  
               </div>
               <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 120px;">
-                <div data-tips="auto" class="fl0 df-cc" data-tips-y="top" data-tips-x="center" style="--tips-w: 8ch; 
-                  --tips-text:'设置空数据占位符, 可避免潜在的错误';  --tips-text-en:'Set a character to replace null data'; width: 20px; height: 20px;">
-                  <svg width="120%" height="120%" viewBox="0 0 20 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-width="0.25" stroke="var(--mainColor)" fill="var(--mainColor)" d="M14.4007 5.40071C15.0952 6.09516 15.0952 7.22121 14.4007 7.91564L12.5149 9.80149L14.4007 11.6873C15.0951 12.3817 15.0951 13.5078 14.4007 14.2023C13.7063 14.8967 12.5803 14.8967 11.8858 14.2023L9.99997 12.3164L8.11413 14.2023C7.41969 14.8967 6.29365 14.8967 5.5992 14.2023C4.90476 13.5078 4.90476 12.3818 5.5992 11.6873L7.48505 9.80149L5.5992 7.91564C4.90476 7.2212 4.90476 6.09516 5.5992 5.40071C6.29366 4.70641 7.41973 4.70632 8.11413 5.40071L9.99997 7.28656L11.8858 5.40071C12.5803 4.70627 13.7063 4.70627 14.4007 5.40071Z"/>
-                    <rect stroke="var(--mainColor)" x="2" y="2" width="16" height="16" rx="2"/>
-                    <rect fill="var(--mainColor)" x="2" y="21" width="16" height="2" rx="1"/>
-                  </svg>       
+                <div data-tips="auto" class="fl0 df-cc pos-r wh-20" data-tips-y="top" data-tips-x="center" style="--tips-w: 8ch; "
+                  data-tips-text="设置空数据占位符, 可避免潜在的错误" data-tips-text-en="Set a character to replace null data">
+                  <input-regexpnull></input-regexpnull>       
                 </div>
                 <input id="input-nulldata" data-input class="nobod fl1" type="text"
                 value="--">  
@@ -1303,10 +1148,7 @@
             <div data-skilltype-box class="df-lc fl0" data-radio-value="1" >
               <div data-radio data-radio-data="1" data-radio-main="true" class="df-cc">
                 <div data-skilltype-icon>
-                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="var(--mainColor)" d="M9.10133 5.24013C9.4668 4.4921 10.5329 4.4921 10.8983 5.24013L11.9152 7.32142L14.2089 7.64537C15.0332 7.76179 15.3626 8.77567 14.7642 9.3544L13.099 10.9647L13.4996 13.2462C13.6437 14.0661 12.7812 14.6928 12.0458 14.3024L9.99983 13.2163L7.95381 14.3024C7.21847 14.6928 6.35601 14.0661 6.50002 13.2462L6.9007 10.9647L5.23551 9.3544C4.63703 8.77567 4.96646 7.76179 5.79081 7.64537L8.08446 7.32142L9.10133 5.24013Z"/>
-                    <rect stroke="var(--mainColor)" x="2.5" y="2.5" width="15" height="15" rx="2"/>
-                  </svg>           
+                  <skill-star></skill-star>          
                 </div>
                 <div data-skilltype-name data-btn-name data-any="vw300"
                 data-skillmodule-for="Useful & Starts" data-en-text="Start">
@@ -1316,17 +1158,7 @@
               </div>
               <div data-radio data-radio-data="2" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
-                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="var(--mainColor)" d="M7 7H2V2H7V7ZM3 3V6H6V3H3Z"/>
-                    <rect fill="var(--mainColor)" x="6" y="4" width="6" height="1" rx="0.5"/>
-                    <rect fill="var(--mainColor)" x="4" y="6" width="1" height="6" rx="0.5"/>
-                    <path fill="var(--mainColor)" d="M3 15C3 14.4477 3.44772 14 4 14H6C6.55228 14 7 14.4477 7 15V17C7 17.5523 6.55228 18 6 18H4C3.44772 18 3 17.5523 3 17V15Z"/>
-                    <path fill="var(--mainColor)" d="M8.5 15C8.5 14.4477 8.94772 14 9.5 14H11.5C12.0523 14 12.5 14.4477 12.5 15V17C12.5 17.5523 12.0523 18 11.5 18H9.5C8.94772 18 8.5 17.5523 8.5 17V15Z"/>
-                    <path fill="var(--mainColor)" d="M8.5 9.5C8.5 8.94772 8.94772 8.5 9.5 8.5H11.5C12.0523 8.5 12.5 8.94772 12.5 9.5V11.5C12.5 12.0523 12.0523 12.5 11.5 12.5H9.5C8.94772 12.5 8.5 12.0523 8.5 11.5V9.5Z"/>
-                    <rect fill="var(--mainColor)" x="14" y="14" width="4" height="4" rx="1"/>
-                    <path fill="var(--mainColor)" d="M14 9.5C14 8.94772 14.4477 8.5 15 8.5H17C17.5523 8.5 18 8.94772 18 9.5V11.5C18 12.0523 17.5523 12.5 17 12.5H15C14.4477 12.5 14 12.0523 14 11.5V9.5Z"/>
-                    <path fill="var(--mainColor)" d="M14 4C14 3.44772 14.4477 3 15 3H17C17.5523 3 18 3.44772 18 4V6C18 6.55228 17.5523 7 17 7H15C14.4477 7 14 6.55228 14 6V4Z"/>
-                  </svg>              
+                  <skill-pixel></skill-pixel>            
                 </div>
                 <div data-skilltype-name data-btn-name data-any="vw300"
                 data-skillmodule-for="Pixel & Transform" data-en-text="Pixel">
@@ -1336,15 +1168,7 @@
               </div>
               <div data-radio data-radio-data="3" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
-                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="var(--mainColor)" d="M9 2L8.99992 4.81319H8.02803L7.94126 3.8956H6.19353L6.19361 8.41026L7.13657 8.5641V10H3.66841V8.5641L4.73222 8.41026L4.73214 3.8956H3.05867L2.97767 4.81319H2L2.00008 2H9Z"/>
-                    <path fill="var(--mainColor)" d="M2 13C2 11.8954 2.89543 11 4 11H8C9.10457 11 10 11.8954 10 13V17C10 18.1046 9.10457 19 8 19H4C2.89543 19 2 18.1046 2 17V13Z"/>
-                    <path fill="var(--mainColor)" d="M11.7126 4.04181C11.8915 3.86285 12.1817 3.86285 12.3607 4.04181L13.7493 5.43044C13.9282 5.6094 13.9282 5.89954 13.7493 6.0785L12.3607 7.46713C12.1817 7.64609 11.8915 7.64609 11.7126 7.46713L10.324 6.0785C10.145 5.89954 10.145 5.6094 10.324 5.43044L11.7126 4.04181Z"/>
-                    <path fill="var(--mainColor)" d="M14.2585 1.49591C14.4374 1.31695 14.7276 1.31695 14.9066 1.49591L16.2952 2.88454C16.4741 3.0635 16.4741 3.35365 16.2952 3.5326L14.9066 4.92124C14.7276 5.10019 14.4374 5.10019 14.2585 4.92123L12.8699 3.5326C12.6909 3.35365 12.6909 3.0635 12.8699 2.88454L14.2585 1.49591Z"/>
-                    <rect fill="var(--mainColor)" x="14.5825" y="6.26343" width="2.88032" height="2.88032" rx="0.458252" transform="rotate(45 14.5825 6.26343)"/>
-                    <path fill="var(--mainColor)" d="M16.8044 4.04181C16.9833 3.86285 17.2735 3.86285 17.4525 4.04181L18.8411 5.43044C19.02 5.6094 19.02 5.89954 18.8411 6.0785L17.4525 7.46713C17.2735 7.64609 16.9833 7.64609 16.8044 7.46713L15.4158 6.0785C15.2368 5.89954 15.2368 5.6094 15.4158 5.43044L16.8044 4.04181Z"/>
-                    <path stroke="var(--mainColor)"  stroke-linecap="round" stroke-dasharray="2 2" d="M11.5 13.5C11.5 12.3954 12.3954 11.5 13.5 11.5H16.5C17.6046 11.5 18.5 12.3954 18.5 13.5V16.5C18.5 17.6046 17.6046 18.5 16.5 18.5H13.5C12.3954 18.5 11.5 17.6046 11.5 16.5V13.5Z"/>
-                  </svg>                                   
+                  <skill-layer></skill-layer>                                   
                 </div>
                 <div data-skilltype-name data-btn-name data-any="vw300"
                 data-skillmodule-for="Text & Layer" data-en-text="Layer">
@@ -1354,16 +1178,7 @@
               </div>
               <div data-radio data-radio-data="4" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
-                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="var(--mainColor)" d="M12.5 7H7.5V2H12.5V7ZM8.5 3V6H11.5V3H8.5Z"/>
-                    <rect fill="var(--mainColor)" x="1" y="3" width="3" height="3"/>
-                    <rect fill="var(--mainColor)" x="16" y="3" width="3" height="3"/>
-                    <rect fill="var(--mainColor)" x="12" y="4" width="4" height="1"/>
-                    <rect fill="var(--mainColor)" x="4" y="4" width="4" height="1"/>
-                    <path stroke="var(--mainColor)" stroke-linecap="round" d="M17 10C17 7.59975 15.0191 5.57184 12 5M3 10C3 7.58397 4.95063 5.55643 8 5"/>
-                    <circle stroke="var(--mainColor)" cx="8.5" cy="10.5" r="1.5"/>
-                    <path fill="var(--mainColor)" d="M4.63324 12.8363L4.94986 12.4494L4.94986 12.4494L4.63324 12.8363ZM11.1597 13.6771L11.4886 14.0537L11.5013 14.0426L11.5132 14.0307L11.1597 13.6771ZM12.5 13.6103L12.8271 13.2319L12.8166 13.2233L12.5 13.6103ZM17.5 13.5731C17.5 13.2969 17.2761 13.0731 17 13.0731C16.7239 13.0731 16.5 13.2969 16.5 13.5731H17.5ZM16.5 12C16.5 12.2761 16.7239 12.5 17 12.5C17.2761 12.5 17.5 12.2761 17.5 12H16.5ZM17.5 11.5C17.5 11.2239 17.2761 11 17 11C16.7239 11 16.5 11.2239 16.5 11.5H17.5ZM7.19138 14.9294L6.87476 15.3163L7.19138 14.9294ZM4.63324 12.8363L4.31662 13.2233L6.87476 15.3163L7.19138 14.9294L7.508 14.5424L4.94986 12.4494L4.63324 12.8363ZM9.77349 14.8878L10.1024 15.2644L11.4886 14.0537L11.1597 13.6771L10.8307 13.3006L9.44458 14.5112L9.77349 14.8878ZM12.5 13.6103L12.173 13.9886L16.673 17.8783L17 17.5001L17.327 17.1218L12.827 13.232L12.5 13.6103ZM11.1597 13.6771L11.5132 14.0307C11.6948 13.8491 11.9846 13.8346 12.1834 13.9973L12.5 13.6103L12.8166 13.2233C12.2202 12.7353 11.351 12.7787 10.8061 13.3236L11.1597 13.6771ZM3 13.6103H3.5C3.5 13.1885 3.99015 12.9562 4.31662 13.2233L4.63324 12.8363L4.94986 12.4494C3.97046 11.648 2.5 12.3449 2.5 13.6103H3ZM4 18.0001V18.5001H16V18.0001V17.5001H4V18.0001ZM17 17.0001H17.5V13.5731H17H16.5V17.0001H17ZM16 18.0001V18.5001C16.8284 18.5001 17.5 17.8285 17.5 17.0001H17H16.5C16.5 17.2762 16.2761 17.5001 16 17.5001V18.0001ZM3 17.0001H2.5C2.5 17.8285 3.17157 18.5001 4 18.5001V18.0001V17.5001C3.72386 17.5001 3.5 17.2762 3.5 17.0001H3ZM3 17.0001H3.5V13.6103H3H2.5V17.0001H3ZM17 12H17.5V11.5H17H16.5V12H17ZM7.19138 14.9294L6.87476 15.3163C7.81915 16.089 9.18336 16.0671 10.1024 15.2644L9.77349 14.8878L9.44458 14.5112C8.89316 14.9928 8.07463 15.006 7.508 14.5424L7.19138 14.9294Z"/>
-                  </svg>                  
+                  <skill-vector></skill-vector>                
                 </div>
                 <div data-skilltype-name data-btn-name data-any="vw300"
                 data-skillmodule-for="Vector & Generate" data-en-text="Vector">
@@ -1373,15 +1188,7 @@
               </div>
               <div data-radio data-radio-data="5" data-radio-main="false" class="df-cc">
                 <div data-skilltype-icon>
-                  <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="var(--mainColor)" d="M7.53784 8.53784C7.53784 7.98556 7.98556 7.53784 8.53784 7.53784H11.4618C12.0141 7.53784 12.4618 7.98556 12.4618 8.53784V11.4618C12.4618 12.0141 12.0141 12.4618 11.4618 12.4618H8.53784C7.98556 12.4618 7.53784 12.0141 7.53784 11.4618V8.53784Z"/>
-                    <path stroke="var(--mainColor)" d="M17.5 8.125V7C17.5 4.51472 15.4853 2.5 13 2.5H11.875M17.5 11.875V13C17.5 15.4853 15.4853 17.5 13 17.5H11.875M2.5 11.875V13C2.5 15.4853 4.51472 17.5 7 17.5H8.125M2.5 8.125V7C2.5 4.51472 4.51472 2.5 7 2.5H8.125"/>
-                    <path stroke="var(--mainColor)" d="M5.65112 7.65112C5.65112 6.54655 6.54655 5.65112 7.65112 5.65112H12.3489C13.4535 5.65112 14.3489 6.54655 14.3489 7.65112V12.3489C14.3489 13.4535 13.4535 14.3489 12.3489 14.3489H7.65112C6.54655 14.3489 5.65112 13.4535 5.65112 12.3489V7.65112Z" stroke-dasharray="2.14 2.14"/>
-                    <circle stroke="var(--mainColor)" cx="10" cy="2.5" r="1.5"/>
-                    <circle stroke="var(--mainColor)" cx="10" cy="17.5" r="1.5"/>
-                    <circle stroke="var(--mainColor)" cx="2.5" cy="10" r="1.5"/>
-                    <circle stroke="var(--mainColor)" cx="17.5" cy="10" r="1.5"/>
-                  </svg>                  
+                  <skill-style></skill-style>                 
                 </div>
                 <div data-skilltype-name data-btn-name data-any="vw300"
                 data-skillmodule-for="Style & Prototype" data-en-text="Style">
@@ -1938,18 +1745,16 @@
       <!--自动填充tab-->
     </div>
     <div data-mainset-bottom class="df-lc gap4 mar-l2">
-      <div id="btn-theme-2">
+      <div id="btn-theme-2" class="pad2 bod-r4 bsb">
         <input id="theme-2" data-theme-check type="checkbox" checked>
-        <label for="theme-2" class="btn-theme" style="position: relative;">
+        <label for="theme-2" class="btn-theme pos-r">
           <btn-theme></btn-theme>
         </label>
       </div>
       <input id="language-2" data-language-check type="checkbox" checked/>
-      <label for="language-2" class="switch pos-a" style="--swi-h:18px; --swi-r:6px; --swi-af:var(--mainColor);">
-        <div class="pos-a" data-swi-icon style="top:3px; left: 2px; width: 11px; height: 11px; z-index: 2;">
-          <svg class="mar-a0" style="--mar-lr:1px;" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 22">
-            <path fill="var(--boxBod)" d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"></path>
-          </svg>
+      <label for="language-2" class="switch pos-a font-s12">
+        <div class="pos-a" data-swi-icon>
+          <btn-lang></btn-lang>
         </div>
       </label>
     </div>

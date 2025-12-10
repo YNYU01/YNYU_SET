@@ -74,76 +74,76 @@ function getUserSelect(node){
 
 const COMPS_TIPS = {
   "HTML_main":[
-    "'包含css、js引入示例，以及必要的版权声明'",
-    "'Includes CSS, JS import examples, and necessary copyright notices'"
+    "包含css、js引入示例，以及必要的版权声明",
+    "Includes CSS, JS import examples, and necessary copyright notices"
   ],
   "JS_main":[
-    "'包含复合组件传递关键参数要用到的函数示例，以及必要的版权声明'",
-    "'Examples of functions used to pass key parameters through composite components, and necessary copyright notices'"
+    "包含复合组件传递关键参数要用到的函数示例，以及必要的版权声明",
+    "Examples of functions used to pass key parameters through composite components, and necessary copyright notices"
   ],
   "TV":[
-    "'用于需要滚动的公告类元素，可设置data-TV的布尔值，控制是否触发滚动'",
-    "'Used for announcement elements that require scrolling, the boolean value of \"data-TV\" can be set to control whether scrolling is triggered'"
+    "用于需要滚动的公告类元素，可设置data-TV的布尔值，控制是否触发滚动",
+    "Used for announcement elements that require scrolling, the boolean value of \"data-TV\" can be set to control whether scrolling is triggered"
   ],
   "radio":[
-    "'单选切换，可自行丰富样式，建议通过监听自定义属性值变化触发函数'",
-    "'Single choice switching allows for customizable styles. It is recommended to trigger functions by monitoring changes in custom attribute values'"
+    "单选切换，可自行丰富样式，建议通过监听自定义属性值变化触发函数",
+    "Single choice switching allows for customizable styles. It is recommended to trigger functions by monitoring changes in custom attribute values"
   ],
   "select":[
-    "'结构与原生下拉组件类似，主要为了支持移动端显示,以及延展为详情展开等'",
-    "'The structure is similar to the native select component, mainly to support mobile display and extend to expand details'"
+    "结构与原生下拉组件类似，主要为了支持移动端显示,以及延展为详情展开等",
+    "The structure is similar to the native select component, mainly to support mobile display and extend to expand details"
   ],
   "tabs":[
-    "'通过页面数量生成导航标签，可自行丰富样式，注意tab栏和page的相关自定义属性值要匹配'",
-    "'By generating navigation tags based on the number of pages, you can enrich the style by yourself, and pay attention to matching the custom attribute values of the tab and page'"
+    "通过页面数量生成导航标签，可自行丰富样式，注意tab栏和page的相关自定义属性值要匹配",
+    "By generating navigation tags based on the number of pages, you can enrich the style by yourself, and pay attention to matching the custom attribute values of the tab and page"
   ],
   "theme":[
-    "'通过css变量和自定义属性控制颜色变化，实现亮暗主题'",
-    "'Control color changes through CSS variables and custom properties to achieve bright and dark themes'"
+    "通过css变量和自定义属性控制颜色变化，实现亮暗主题",
+    "Control color changes through CSS variables and custom properties to achieve bright and dark themes"
   ],
   "check":[
-    "'基于原生checkbox，可借助自定义属性的布尔值变化丰富选中/未选中的样式'",
-    "'Based on the native checkbox component, the Boolean value changes of custom attributes can be used to enrich the selected/unselected styles'"
+    "基于原生checkbox，可借助自定义属性的布尔值变化丰富选中/未选中的样式",
+    "Based on the native checkbox component, the Boolean value changes of custom attributes can be used to enrich the selected/unselected styles"
   ],
   "switch":[
-    "'基于原生checkbox，可通过CSS变量控制大小和圆角，可自行绑定事件'",
-    "'Based on the native checkbox, CSS variables can be used to control size and rounded corners, and events can be bound by youself'"
+    "基于原生checkbox，可通过CSS变量控制大小和圆角，可自行绑定事件",
+    "Based on the native checkbox, CSS variables can be used to control size and rounded corners, and events can be bound by youself"
   ],
   "input-range-int":[
-    "'基于原生滑块，绑定一个输入框，添加事件绑定可能会冲突，建议通过监听自定义属性值触发函数'",
-    "'Based on the native slider, an input box has been bound, so adding event binding may cause conflicts. It is recommended to trigger the function by listening to custom attribute values'"
+    "基于原生滑块，绑定一个输入框，添加事件绑定可能会冲突，建议通过监听自定义属性值触发函数",
+    "Based on the native slider, an input box has been bound, so adding event binding may cause conflicts. It is recommended to trigger the function by listening to custom attribute values"
   ],
   "input-color":[
-    "'带系统吸色器（兼容才会显示）、纯CSS取色盘（支持HSV、HSL）、可切换HEX/RGB两种输入方式，绑定较复杂，建议通过监听自定义属性值触发函数'",
-    "'Equipped with a system color absorber (displayed only if compatible), a pure CSS color palette (supporting HSV, HSL), and switchable HEX/RGB input methods, it is recommended to trigger the function by listening to custom attribute values'"
+    "带系统吸色器（兼容才会显示）、纯CSS取色盘（支持HSV、HSL）、可切换HEX/RGB两种输入方式，绑定较复杂，建议通过监听自定义属性值触发函数",
+    "Equipped with a system color absorber (displayed only if compatible), a pure CSS color palette (supporting HSV, HSL), and switchable HEX/RGB input methods, it is recommended to trigger the function by listening to custom attribute values"
   ],
   "input-text":[
-    "'原生输入框，仅统一了样式，如有需要可自行添加清空按钮'",
-    "'Native input box, only unified style, if necessary, you can add a clear button by yourself'"
+    "原生输入框，仅统一了样式，如有需要可自行添加清空按钮",
+    "Native input box, only unified style, if necessary, you can add a clear button by yourself"
   ],
   "input-text-must":[
-    "'原生输入框，统一样式基础上绑定兜底数据，建议通过监听自定义属性值变化触发函数'",
-    "'Native input box, based on a unified style, bound with fallback data. It is recommended to trigger the function by listening to changes in custom attribute values'"
+    "原生输入框，统一样式基础上绑定兜底数据，建议通过监听自定义属性值变化触发函数",
+    "Native input box, based on a unified style, bound with fallback data. It is recommended to trigger the function by listening to changes in custom attribute values"
   ],
   "input-text-max":[
-    "'原生输入框，统一样式基础上绑定显示字数要求，建议通过监听自定义属性值变化触发函数'",
-    "'Native input box, with a unified style and bound display word count requirements. It is recommended to trigger the function by listening to changes in custom attribute values'"
+    "原生输入框，统一样式基础上绑定显示字数要求，建议通过监听自定义属性值变化触发函数",
+    "Native input box, with a unified style and bound display word count requirements. It is recommended to trigger the function by listening to changes in custom attribute values"
   ],
   "textarea":[
-    "'原生文本框，统一样式基础上绑定清空按钮，建议输入完成后通过按钮获取值来进行下一步函数'",
-    "'Native text box, bound with a clear button based on a unified style. It is recommended to obtain the value through the button after inputting to proceed to the next function'"
+    "原生文本框，统一样式基础上绑定清空按钮，建议输入完成后通过按钮获取值来进行下一步函数",
+    "Native text box, bound with a clear button based on a unified style. It is recommended to obtain the value through the button after inputting to proceed to the next function"
   ],
   "textarea-eg":[
-    "'原生文本框，统一样式基础上绑定清空按钮和输入说明，建议输入完成后通过按钮获取值来进行下一步函数'",
-    "'Native text box, with a unified style, bound with a clear button and input instructions. It is recommended to obtain the value through the button after inputting to proceed to the next function'"
+    "原生文本框，统一样式基础上绑定清空按钮和输入说明，建议输入完成后通过按钮获取值来进行下一步函数",
+    "Native text box, with a unified style, bound with a clear button and input instructions. It is recommended to obtain the value through the button after inputting to proceed to the next function"
   ],
   "turnto":[
-    "'图标+悬停才显示文字型按钮，本示例的图标专用于跳转'",
-    "'Icon+hover to display text buttons. The icon in this example is specifically designed for jumping'"
+    "图标+悬停才显示文字型按钮，本示例的图标专用于跳转",
+    "Icon+hover to display text buttons. The icon in this example is specifically designed for jumping"
   ],
   "back":[
-    "'图标+悬停才显示文字型按钮，本示例的图标专用于返回'",
-    "'Icon+hover to display text buttons, the icon in this example is dedicated to returning'"
+    "图标+悬停才显示文字型按钮，本示例的图标专用于返回",
+    "Icon+hover to display text buttons, the icon in this example is dedicated to returning"
   ],
 }
 
@@ -245,8 +245,8 @@ function initTips() {
     const key = node.getAttribute('data-copy');
     
     if(COMPS_TIPS[key] && infoTips){
-      infoTips.style.setProperty('--tips-text',COMPS_TIPS[key][0]);
-      infoTips.style.setProperty('--tips-text-en',COMPS_TIPS[key][1]);
+      infoTips.setAttribute('data-tips-text',COMPS_TIPS[key][0]);
+      infoTips.setAttribute('data-tips-text-en',COMPS_TIPS[key][1]);
     }
   });
 }
@@ -323,8 +323,8 @@ const copyObserver = new MutationObserver((mutations) => {
           // 初始化提示文本
           const infoTips = copyNode.querySelector('[data-tips]');
           if(COMPS_TIPS[key] && infoTips){
-            infoTips.style.setProperty('--tips-text',COMPS_TIPS[key][0]);
-            infoTips.style.setProperty('--tips-text-en',COMPS_TIPS[key][1]);
+            infoTips.setAttribute('data-tips-text',COMPS_TIPS[key][0]);
+            infoTips.setAttribute('data-tips-text-en',COMPS_TIPS[key][1]);
           }
         });
       }

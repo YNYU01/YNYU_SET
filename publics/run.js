@@ -59,7 +59,7 @@ var storageMix = {
   }
 };
 
-if(!ISLOCAL){
+if(!ISLOCAL && !PLUGINAPP){
   if(storageMix.get('userTheme') == 'light'){
     ROOT.setAttribute("data-theme","light");
   }else if(storageMix.get('userTheme') == 'dark'){

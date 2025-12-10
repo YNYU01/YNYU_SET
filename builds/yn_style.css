@@ -556,6 +556,46 @@ input[type="range"] {
   height: 100%;
 }
 
+.wh-12{
+  width: 12px;
+  height: 12px;
+}
+
+.wh-14{
+  width: 14px;
+  height: 14px;
+}
+
+.wh-16{
+  width: 16px;
+  height: 16px;
+}
+
+.wh-20{
+  width: 20px;
+  height: 20px;
+}
+
+.wh-22{
+  width: 22px;
+  height: 22px;
+}
+
+.wh-26{
+  width: 26px;
+  height: 26px;
+}
+
+.wh-30{
+  width: 30px;
+  height: 30px;
+}
+
+.wh-40{
+  width: 40px;
+  height: 40px;
+}
+
 .pos-r{
   position: relative;
 }
@@ -657,6 +697,10 @@ input[type="range"] {
 
 .bod-r20{
   border-radius: 20px;
+}
+
+.pointer{
+  cursor: var(--pointer,pointer);
 }
 
 [data-scroll]{
@@ -768,6 +812,14 @@ input[type="checkbox"]:checked+.switch::after{
 
 input[type="checkbox"]:checked+.switch::before {
   left: 2px;
+}
+
+.switch [data-swi-icon]{
+  transition:transform 0.2s ease-out;
+  }
+  
+input[type="checkbox"]:checked+.switch [data-swi-icon]{
+  transform: translateX(var(--swi-h,18px));
 }
 
 .check{
@@ -984,12 +1036,48 @@ input[type="checkbox"]:checked+.btn-show .path2 {
   transform: translateX(6px) translateY(-6px);
 }
 
+
+
+btn-more svg{
+  transition: transform 0.4s;
+}
+
+input[type="checkbox"]:checked + label btn-more svg{
+  transform: rotate(90deg);
+}
+
+btn-more [data-path]{
+  stroke: var(--mainColor);
+  stroke-width: 2;
+  transition: transform 0.2s;
+}
+
+[data-path="1"]{
+  transform: matrix(1,0,0,1,1,4);
+}
+[data-path="2"]{
+  transform: matrix(1,0,0,1,1,10);
+}
+[data-path="3"]{
+  transform: matrix(1,0,0,1,1,16);
+}
+
+input[type="checkbox"]:checked + label [data-path="1"]{
+  transform: matrix(0.7,0.7,-0.7,0.7,3.64,3.64);
+}
+input[type="checkbox"]:checked + label [data-path="2"]{
+  transform: matrix(0.1,0,0,1,10,10);
+}
+input[type="checkbox"]:checked + label [data-path="3"]{
+  transform: matrix(0.7,-0.7,0.7,0.7,3.64,16.37);
+}
+
+
 [data-check-checked="false"]{
   opacity: 0.6;
 }
 
 [data-tips]{
-  position: relative;
   --tips-df:none;
   flex: 0 0 auto;
   z-index: 2;
@@ -997,7 +1085,7 @@ input[type="checkbox"]:checked+.btn-show .path2 {
 }
 
 [data-tips]::after{
-  content: var(--tips-text,'说明文案文案');
+  content: attr(data-tips-text,'说明文案文案');
   font-size: 12px;
   color: #ffffff;
   position: absolute;
@@ -1010,6 +1098,10 @@ input[type="checkbox"]:checked+.btn-show .path2 {
   animation: boxUp 0.2s;
   white-space: nowrap;
   z-index: 200;
+}
+
+[data-language="En"] [data-tips]::after{
+  content: attr(data-tips-text-en,'something there');
 }
 
 [data-tips]:hover{

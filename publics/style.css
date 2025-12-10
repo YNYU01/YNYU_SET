@@ -355,10 +355,6 @@ html{
   --start-box: 200px;
 }
 
-[data-language="En"] [data-tips]::after{
-  content: var(--tips-text-en,'something there');
-}
-
 [data-language="Zh"]{
   --banner-dark:url('../VI/banner_top_zh_dark.jpg');
   --banner-light:url('../VI/banner_top_zh_light.jpg');
@@ -869,41 +865,6 @@ input[type="checkbox"]:checked + label + [data-doc-radiobox]{
   background: rgba(0, 0, 0, 0.8);
   padding: 4px 8px;
   border-radius: 8px;
-}
-
-
-[data-icon-more]{
-  transition: transform 0.4s;
-}
-
-input[type="checkbox"]:checked + label [data-icon-more]{
-  transform: rotate(90deg);
-}
-
-[data-icon-more-path]{
-  stroke: var(--mainColor);
-  stroke-width: 2;
-  transition: transform 0.2s;
-}
-
-[data-icon-more-path="1"]{
-  transform: matrix(1,0,0,1,1,4);
-}
-[data-icon-more-path="2"]{
-  transform: matrix(1,0,0,1,1,10);
-}
-[data-icon-more-path="3"]{
-  transform: matrix(1,0,0,1,1,16);
-}
-
-input[type="checkbox"]:checked + label [data-icon-more-path="1"]{
-  transform: matrix(0.7,0.7,-0.7,0.7,3.64,3.64);
-}
-input[type="checkbox"]:checked + label [data-icon-more-path="2"]{
-  transform: matrix(0.1,0,0,1,10,10);
-}
-input[type="checkbox"]:checked + label [data-icon-more-path="3"]{
-  transform: matrix(0.7,-0.7,0.7,0.7,3.64,16.37);
 }
 
 .switch [data-swi-icon]{
@@ -2853,16 +2814,16 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
     --text:var(--turnto-text-en);
   }
 
-  [data-language="Zh"] [data-back="home"],
-  [data-language="Zh"] [data-turnto="fontstyle"]{
+  [data-language="Zh"] [data-back],
+  [data-language="Zh"] [data-turnto]{
     padding:0 1ch;
     width: fit-content;
     line-height: 1.5em;
     font-weight: 700;
     --text:var(--back-text,var(--turnto-text));
   }
-  [data-language="En"] [data-back="home"],
-  [data-language="En"] [data-turnto="fontstyle"]
+  [data-language="En"] [data-back],
+  [data-language="En"] [data-turnto]
   {
     padding:0 1ch;
     width: fit-content;

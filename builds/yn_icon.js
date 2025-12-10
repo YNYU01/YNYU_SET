@@ -30,6 +30,7 @@ function pathS(fill,stroke,strokeWidth,strokeLinecap,strokeLinejoin){
     }else{
       fill = `fill="${fill}"`;
     }
+    fill = fill + ' fill-opacity="var(--fill-op,1)"';
   }else{
     fill = 'fill="none"';
   }
@@ -43,6 +44,7 @@ function pathS(fill,stroke,strokeWidth,strokeLinecap,strokeLinejoin){
     }else{
       stroke = `stroke="${stroke}"`;
     }
+    stroke = stroke + ' stroke-opacity="var(--bod-op,1)"';
   }else{
     stroke = '';
   }
@@ -126,11 +128,13 @@ class btnlang extends HTMLElement {
     this.innerHTML = `
     ${icon(22)}
       <rect ${rectS(22,22,0,0,6)} ${pathS('auto')}/>
-        <circle ${circleS(11,11,9)} ${pathS(null,'var(--bod,var(--boxBak))','1.7')}/>
-        <path ${pathS(null,'var(--bod,var(--boxBak))','1.7')} d="M11.9358 19.71C9.42543 19.71 7.39038 15.8104 7.39038 11C7.39038 6.18962 9.42543 2.29004 11.9358 2.29004"/>
-        <path ${pathS(null,'var(--bod,var(--boxBak))','1.7')} d="M10.1006 19.71C12.6109 19.71 14.646 15.8104 14.646 11C14.646 6.18962 12.6109 2.29004 10.1006 2.29004"/>
-        <path ${pathS(null,'var(--bod,var(--boxBak))','1.7')} d="M2.63794 8.10303H19.2913"/>
-        <path ${pathS(null,'var(--bod,var(--boxBak))','1.7')} d="M2.63794 14.0339H19.2913"/>
+      <g transform="scale(0.9)" transform-origin="11 11">
+        <circle ${circleS(11,11,9)} ${pathS(null,'var(--bod,var(--boxBak))','1.5')}/>
+        <path ${pathS(null,'var(--bod,var(--boxBak))','1.5')} d="M11.9358 19.71C9.42543 19.71 7.39038 15.8104 7.39038 11C7.39038 6.18962 9.42543 2.29004 11.9358 2.29004"/>
+        <path ${pathS(null,'var(--bod,var(--boxBak))','1.5')} d="M10.1006 19.71C12.6109 19.71 14.646 15.8104 14.646 11C14.646 6.18962 12.6109 2.29004 10.1006 2.29004"/>
+        <path ${pathS(null,'var(--bod,var(--boxBak))','1.5')} d="M2.63794 8.10303H19.2913"/>
+        <path ${pathS(null,'var(--bod,var(--boxBak))','1.5')} d="M2.63794 14.0339H19.2913"/>
+      </g>
       </svg>
     `;
   }
@@ -822,11 +826,83 @@ class btngoto extends HTMLElement {
   constructor() {
     super();
     this.innerHTML = `
-    <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
-      <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"></path>
+    ${svgS('0 0 23 23','100%','100%','transform:rotate(var(--arrow-ro,0))')}
+      <path ${pathS(null,'auto','var(--arrow-w)','round')} d="M2.71411 11.3821H20.7141"/>
+      <path ${pathS(null,'auto','var(--arrow-w)','round','round')} d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821"/>
     </svg>
     `;
   }
 };
 customElements.define('btn-goto', btngoto);
+
+class btngotomini extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    ${svgS('0 0 23 23','100%','100%','transform:rotate(var(--arrow-ro,0))')}
+      <path ${pathS(null,'auto','var(--arrow-w)','round')} d="M2.71387 11.3821H19.7139"/>
+      <path ${pathS(null,'auto','var(--arrow-w)','round','round')} d="M14.7715 5.45312L20.7143 11.382L14.7715 17.3108"/>
+    </svg>
+    `;
+  }
+};
+customElements.define('btn-goto-mini', btngotomini);
+
+class btnmore extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    ${svgS('0 0 20 20','100%','100%')}
+          <g data-path="1" >
+            <path fill="none" d="M18 0L0 0"></path>
+          </g>
+          <g data-path="2">
+            <path fill="none" d="M18 0L0 0"></path>
+          </g>
+          <g data-path="3">
+            <path fill="none" d="M18 0L0 0"></path>
+          </g>
+        </svg>
+    `;
+  }
+};
+customElements.define('btn-more', btnmore);
+
+class btnadd extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    ${icon(20)}
+      <rect ${rectS(20,2,0,9)} ${pathS('auto')}></rect>
+      <rect ${rectS(2,20,9,0)} ${pathS('auto')}></rect>
+    </svg>
+    `;
+  }
+};
+customElements.define('btn-add', btnadd);
+
+class btnsetbg extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    ${icon(1024)}
+      <path ${pathS('auto')} d="M810.666667 85.333333H213.333333C140.8 85.333333 85.333333 140.8 85.333333 213.333333v597.333334c0 72.533333 55.466667 128 128 128h597.333334c72.533333 0 128-55.466667 128-128V213.333333c0-72.533333-55.466667-128-128-128z m-281.6 85.333334L170.666667 499.2V401.066667L401.066667 170.666667h128zM170.666667 755.2v-136.533333L657.066667 170.666667h136.533333L170.666667 755.2zM213.333333 170.666667h68.266667L170.666667 281.6V213.333333c0-25.6 17.066667-42.666667 42.666666-42.666666z m-17.066666 678.4L853.333333 230.4v136.533333L366.933333 853.333333H213.333333c-8.533333 0-12.8 0-17.066666-4.266666zM810.666667 853.333333h-324.266667l366.933333-366.933333V810.666667c0 25.6-17.066667 42.666667-42.666666 42.666666z">
+      </path>
+    </svg>
+    `;
+  }
+};
+customElements.define('btn-setbg', btnsetbg);
+
+class btnlogin extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    ${icon(20)}
+      <path ${pathS('auto')} d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10Z"/>
+      <path ${pathS('auto')} d="M10 12C5.58172 12 2 13.7909 2 16V20H18V16C18 13.7909 14.4183 12 10 12Z"/>
+    </svg>
+    `;
+  }
+};
+customElements.define('btn-login', btnlogin);
