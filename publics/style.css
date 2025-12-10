@@ -1947,6 +1947,11 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   }
 }
 
+[data-rectbg],[data-rectbg-copy]{
+  transform: translate(calc(var(--rectbg-x, 0) * 1px), calc(var(--rectbg-y, 0) * 1px));
+}
+
+
 [data-rect-all]{
   opacity: 0.8;
 }

@@ -466,7 +466,7 @@ class btnlistease extends HTMLElement {
 };
 customElements.define('btn-listease', btnlistease);
 
-class btnexportimg extends HTMLElement {
+class exportimg extends HTMLElement {
   constructor() {
     super();
     this.innerHTML = `
@@ -479,9 +479,9 @@ class btnexportimg extends HTMLElement {
     `;
   }
 };
-customElements.define('btn-export-img', btnexportimg);
+customElements.define('export-img', exportimg);
 
-class btnexportzy extends HTMLElement {
+class exportzy extends HTMLElement {
   constructor() {
     super();
     this.innerHTML = `
@@ -493,9 +493,9 @@ class btnexportzy extends HTMLElement {
     `;
   }
 };
-customElements.define('btn-export-zy', btnexportzy);
+customElements.define('export-zy', exportzy);
 
-class btnexporttext extends HTMLElement {
+class exporttext extends HTMLElement {
   constructor() {
     super();
     this.innerHTML = `
@@ -507,7 +507,7 @@ class btnexporttext extends HTMLElement {
     `;
   }
 };
-customElements.define('btn-export-text', btnexporttext);
+customElements.define('export-text', exporttext);
 
 class btnfull extends HTMLElement {
   constructor() {
@@ -730,3 +730,103 @@ class inputnamerule extends HTMLElement {
   }
 };
 customElements.define('input-namerule', inputnamerule);
+
+class tabsheettype extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="var(--mainColor)" fill-rule="evenodd" clip-rule="evenodd" d="M7.89746 2.57129C7.3268 3.58479 7 4.75402 7 6C7 6.54045 7.06376 7.06601 7.17969 7.57129H3V12.0713H9.5V11.3604C9.81125 11.6219 10.146 11.8557 10.5 12.0605V12.0713H10.5176C11.5434 12.661 12.7318 13 14 13C15.4877 13 16.866 12.5345 18 11.7432V16.5713L17.9893 16.7754C17.887 17.7841 17.0357 18.5713 16 18.5713H4C2.96435 18.5713 2.113 17.7841 2.01074 16.7754L2 16.5713V4.57129C2.00016 3.46686 2.89553 2.57129 4 2.57129H7.89746ZM3 16.5713C3 17.1236 3.44772 17.5713 4 17.5713H9.5V13.0713H3V16.5713ZM10.5 17.5713H16C16.5523 17.5713 17 17.1236 17 16.5713V13.0713H10.5V17.5713Z"></path>
+      <path fill="var(--mainColor)" fill-rule="evenodd" clip-rule="evenodd" d="M14 0C17.3137 0 20 2.68629 20 6C20 9.31371 17.3137 12 14 12C10.6863 12 8 9.31371 8 6C8 2.68629 10.6863 0 14 0ZM13.2246 8.71582V10.3145H14.8828V8.71582H13.2246ZM13.9941 1.68555C12.6002 1.68555 11.4709 2.59895 11.4707 4.08887H13.0322C13.0324 3.53626 13.3574 3.0918 13.9941 3.0918C14.5948 3.09191 14.9677 3.51247 14.9678 4.07715C14.9678 4.34154 14.8114 4.63044 14.6191 4.88281L13.7295 6.02441C13.4171 6.43292 13.2725 6.75774 13.2725 7.27441V7.63477H14.835V7.38184C14.8351 7.17761 14.9317 6.92569 15.0518 6.76953L15.9404 5.5918C16.2769 5.14715 16.5293 4.68975 16.5293 4.08887C16.5291 2.56299 15.3519 1.68565 13.9941 1.68555Z"></path>
+    </svg>
+      `;
+  }
+};
+customElements.define('tab-sheettype', tabsheettype);
+
+class tabtablestyle extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="var(--mainColor)" d="M7.96875 7.57129H3V12.0713H6.61914L6.50391 13.0713H3V16.5713C3 17.1236 3.44772 17.5713 4 17.5713H9.5V15.4512L10.5 14.5693V17.5713H16C16.5523 17.5713 17 17.1236 17 16.5713V13.0713H12.1982L12.5205 12.7871L13.332 12.0713H17V7.57129H15.2656L17.5137 3.26758C17.8157 3.61783 17.9999 4.07254 18 4.57129V16.5713L17.9893 16.7754C17.887 17.7841 17.0357 18.5713 16 18.5713H4C2.96435 18.5713 2.113 17.7841 2.01074 16.7754L2 16.5713V4.57129C2.00016 3.46686 2.89553 2.57129 4 2.57129H10.583L7.96875 7.57129Z"></path>
+      <path fill="var(--mainColor)" d="M11.8598 12.0372L8.12642 15.3311C7.78273 15.6343 7.24651 15.3537 7.29927 14.8985L7.87154 9.95317L11.8598 12.0372ZM12.7329 0.616255C12.9887 0.127036 13.5931 -0.0621097 14.0825 0.193403L16.269 1.33598C16.7583 1.59183 16.9475 2.19621 16.6919 2.68559L12.4702 10.7618L8.51216 8.69243L12.7329 0.616255Z"></path>
+    </svg>
+      `;
+  }
+};
+customElements.define('tab-tablestyle', tabtablestyle);
+
+class btnvariable extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="var(--mainColor)" d="M18.6963 14.9325L18.9217 15.4821C18.7361 15.7539 18.464 16.0317 18.1055 16.3154C17.7531 16.599 17.3748 16.8384 16.9705 17.0334C16.5722 17.2284 16.2061 17.3259 15.8721 17.3259C15.7203 17.3259 15.5913 17.2934 15.4853 17.2284C15.3778 17.1693 15.2906 17.0629 15.2236 16.9093L13.6839 13.4787C13.4954 13.6856 13.2576 13.9338 12.9706 14.2233C12.6836 14.5129 12.4167 14.8202 12.1699 15.1452C11.9306 15.4644 11.774 15.7805 11.7 16.0938C11.6539 16.2888 11.6515 16.4661 11.6928 16.6256C11.3365 16.797 11.0013 16.9566 10.6871 17.1043C10.3729 17.2521 10.0731 17.3259 9.78766 17.3259C9.41725 17.3259 9.27601 17.1398 9.36395 16.7675C9.43932 16.4483 9.67742 16.0701 10.0783 15.6328C10.4852 15.1955 10.9787 14.7257 11.5588 14.2233C12.145 13.721 12.7373 13.2187 13.3357 12.7164L11.9546 9.57831L10.4188 10.4116L10.1955 9.85311C10.2692 9.74673 10.4283 9.58717 10.6729 9.37442C10.9235 9.16167 11.212 8.94301 11.5383 8.71845C11.872 8.48797 12.2035 8.29295 12.5327 8.13339C12.8679 7.97382 13.157 7.89404 13.3998 7.89404C13.6002 7.89404 13.7416 7.97678 13.824 8.14225C14.1141 8.73913 14.3779 9.30646 14.6152 9.84424C14.8539 10.3761 15.0823 10.8873 15.3004 11.3778C15.8049 10.8873 16.1696 10.5002 16.3945 10.2166C16.6268 9.92698 16.7787 9.70832 16.85 9.56058C16.9227 9.40693 16.9682 9.29169 16.9863 9.21486C17.0212 9.06712 17.03 8.94006 17.0126 8.83369C16.9952 8.72731 16.9804 8.63571 16.9682 8.55888C17.451 8.34023 17.8182 8.18657 18.0699 8.09793C18.329 8.00337 18.5153 7.94723 18.6288 7.9295C18.7498 7.90586 18.8406 7.89404 18.9014 7.89404C19.2475 7.89404 19.3738 8.09202 19.2803 8.48797C19.2035 8.813 18.9735 9.18236 18.5904 9.59604C18.2073 10.0097 17.7509 10.4382 17.2212 10.8814C16.6928 11.3187 16.1642 11.7442 15.6354 12.1579L17.1613 15.8012L18.6963 14.9325Z"></path>
+      <path fill="var(--mainColor)" d="M9.21571 6.44182L7.11722 15.3266C6.86854 16.3795 6.4285 17.245 5.79708 17.9233C5.17077 18.608 4.45035 19.115 3.63583 19.4444C2.83972 19.7664 2.1347 19.7328 1.37649 19.6673C1.07065 19.6415 0.804865 19.5865 0.579128 19.5026C0.346753 19.4186 0.250398 19.2926 0.290065 19.1247C0.299218 19.086 0.326223 19.0278 0.371078 18.9503L1.37599 17.4776C1.82495 17.6843 2.26956 17.8813 2.70982 18.0686C3.73148 18.5033 4.04851 18.19 4.44744 16.809C4.59146 16.3117 4.71992 15.824 4.83282 15.346L6.91597 6.44182H4.54654L4.64952 6.00581C4.71818 5.71514 4.82776 5.51813 4.97827 5.41478C5.13695 5.30497 5.35898 5.25007 5.64438 5.25007H7.19745L7.34848 4.6106C7.59258 3.5771 8.00177 2.74385 8.57605 2.11084C9.15034 1.47782 9.81361 1.01598 10.5659 0.725311C11.3248 0.434641 12.0925 0.289307 12.869 0.289307C12.9951 0.289307 13.1728 0.295766 13.4021 0.308685C13.638 0.321603 13.8726 0.3539 14.1059 0.405575C14.3475 0.45079 14.5423 0.525072 14.6905 0.628421C14.8401 0.725311 14.8952 0.857727 14.8555 1.02567C14.8387 1.09672 14.7842 1.18715 14.6919 1.29696L13.6485 2.59529C13.2133 2.33045 12.8066 2.085 12.4286 1.85892C12.0506 1.63285 11.6924 1.51981 11.3539 1.51981C10.9092 1.51981 10.5834 1.73297 10.3765 2.15928C10.1778 2.57914 9.98767 3.1734 9.80612 3.94206L9.49719 5.25007H12.3544L12.256 5.6667C12.1889 5.95091 12.0752 6.15115 11.915 6.26741C11.7615 6.38368 11.542 6.44182 11.2566 6.44182H9.21571Z"></path>
+    </svg>
+      `;
+  }
+};
+customElements.define('btn-variable', btnvariable);
+
+class btnrelayout extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="100%" height="100%" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect fill="var(--mainColor)" x="3" y="3" width="3" height="3"></rect>
+      <rect fill="var(--mainColor)" x="9" y="3" width="3" height="3"></rect>
+      <rect fill="var(--mainColor)" x="15" y="3" width="3" height="3"></rect>
+      <rect fill="var(--mainColor)" x="3" y="9" width="3" height="3"></rect>
+      <rect fill="var(--mainColor)" x="9" y="9" width="3" height="3"></rect>
+      <rect fill="var(--mainColor)" x="15" y="9" width="3" height="3"></rect>
+      <rect fill="var(--mainColor)" x="3" y="15" width="3" height="3"></rect>
+      <rect fill="var(--mainColor)" x="9" y="15" width="3" height="3"></rect>
+      <rect fill="var(--mainColor)" x="15" y="15" width="3" height="3"></rect>
+    </svg>
+      `;
+  }
+};
+customElements.define('btn-relayout', btnrelayout);
+
+class inputregexpenter extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="100%" height="100%" viewBox="0 0 20 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-width="0.25" stroke="var(--mainColor)" fill="var(--mainColor)" d="M15.0417 9.94629C15.0416 11.6031 13.6985 12.9462 12.0417 12.9463H8.29461V13.999C8.29455 14.4246 7.79631 14.6557 7.47137 14.3809L4.57976 11.9346C4.10782 11.5352 4.10788 10.8067 4.57976 10.4072L7.47137 7.96094C7.79633 7.68597 8.29461 7.91709 8.29461 8.34277V9.39551H11.4909V5.13379H15.0417V9.94629Z"></path>
+      <rect stroke="var(--mainColor)" x="2" y="2" width="16" height="16" rx="2"></rect>
+      <rect fill="var(--mainColor)" x="2" y="21" width="16" height="2" rx="1"></rect>
+    </svg>
+  `;
+  }
+};
+customElements.define('input-regexpenter', inputregexpenter);
+
+class inputregexpnull extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="100%" height="100%" viewBox="0 0 20 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-width="0.25" stroke="var(--mainColor)" fill="var(--mainColor)" d="M14.4007 5.40071C15.0952 6.09516 15.0952 7.22121 14.4007 7.91564L12.5149 9.80149L14.4007 11.6873C15.0951 12.3817 15.0951 13.5078 14.4007 14.2023C13.7063 14.8967 12.5803 14.8967 11.8858 14.2023L9.99997 12.3164L8.11413 14.2023C7.41969 14.8967 6.29365 14.8967 5.5992 14.2023C4.90476 13.5078 4.90476 12.3818 5.5992 11.6873L7.48505 9.80149L5.5992 7.91564C4.90476 7.2212 4.90476 6.09516 5.5992 5.40071C6.29366 4.70641 7.41973 4.70632 8.11413 5.40071L9.99997 7.28656L11.8858 5.40071C12.5803 4.70627 13.7063 4.70627 14.4007 5.40071Z"></path>
+      <rect stroke="var(--mainColor)" x="2" y="2" width="16" height="16" rx="2"></rect>
+      <rect fill="var(--mainColor)" x="2" y="21" width="16" height="2" rx="1"></rect>
+    </svg>
+    `;
+  }
+};
+customElements.define('input-regexpnull', inputregexpnull);
+
+class btngoto extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.71411 11.3821H20.7141" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
+      <path d="M12.3421 2.38208L20.7141 11.3821L12.3421 20.3821" stroke="var(--mainColor)" stroke-width="var(--arrow-w)" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    `;
+  }
+};
+customElements.define('btn-goto', btngoto);

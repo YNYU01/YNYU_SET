@@ -333,3 +333,31 @@ function getUserTab(node){
     localStorage.setItem('homepageTabPick',tabPick);
   }
 }
+
+document.addEventListener('mousemove',(event)=>{
+  if(!ISMOBILE){
+    let rectBg = document.querySelector('[data-rectbg]');
+    if(rectBg){
+      rectBg.style.setProperty('--rectbg-x', (event.clientX - window.innerWidth/2) * -0.2);
+      rectBg.style.setProperty('--rectbg-y', (event.clientY - window.innerHeight/2) * -0.2);
+    }
+    let copy = document.querySelector('[data-rectbg-copy]');
+    if(copy){
+      copy.style.setProperty('--rectbg-x', (event.clientX - window.innerWidth/2) * -0.08);
+      copy.style.setProperty('--rectbg-y', (event.clientY - window.innerHeight/2) * -0.08);
+    }
+  }
+});
+
+document.addEventListener('mouseleave',(event)=>{
+  let rectBg = document.querySelector('[data-rectbg]');
+  if(rectBg){
+    rectBg.style.setProperty('--rectbg-x', 0);
+    rectBg.style.setProperty('--rectbg-y', 0);
+  }
+  let copy = document.querySelector('[data-rectbg-copy]');
+  if(copy){
+    copy.style.setProperty('--rectbg-x', 0);
+    copy.style.setProperty('--rectbg-y', 0);
+  }
+});

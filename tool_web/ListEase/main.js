@@ -713,7 +713,7 @@ class ZY_NODE {
 
       let label = document.createElement('label');
       label.setAttribute('for',input.id);
-      label.className = 'show-next';
+      label.className = 'pos-r show-next';
       this.addDiffLanguage(label,list.modsec,null,true);
       //this.flowNodesBox.appendChild(label);
       listfrag.appendChild(label);
