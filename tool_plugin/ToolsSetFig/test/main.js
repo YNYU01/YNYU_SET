@@ -118,7 +118,8 @@ const DOM = (() => {
     createAnyBtn: () => query('[data-create-any]'),
     exportAnyBtn: () => query('[data-export-any]'),
     createTableBtn: () => query('[data-create-table]'),
-    tableStyleSet: () => query('[data-tablestyle-set]'),
+    tableStyleSetFill: () => query('[data-tablestyle-set="fill"]'),
+    tableStyleSetBod: () => query('[data-tablestyle-set="bod"]'),
     styleTosheet: () => query('[data-en-text="Style To Sheet"]'),
     sheetTostyle: () => query('[data-en-text="Sheet To Style"]'),
     btnLinkstyle: () => query('[data-linkstyle-add]'),
@@ -2482,11 +2483,41 @@ DOM.createTableBtn.addEventListener('click',()=>{
   let comp2 = getElementMix('data-selectcomp-2').textContent;
   comp1 = comp1 == 'none' ? null : comp1;
   comp2 = comp2 == 'none' ? null : comp2;
-  let styleId = DOM.tableStyleSet.getAttribute('data-radio-value') - 1;
+  let styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
+  let styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
+  
+  let fill = 1;
+  let bod = [1,1,1,1];
+  switch(styleFillId){
+    case '2':
+      fill = 'rowSpace';
+    break;
+    case '3':
+      fill = 'columnSpace';
+    break;
+    case '4':
+      fill = '0';
+    break;
+  };
+  switch(styleBodId){
+    case '2':
+      bod = [1,0,1,0];
+      break;
+    case '3':
+      bod = [0,1,0,1];
+      break;
+    case '4':
+      bod = [0,0,0,0];
+      break;
+  }
+  let styleAll = {
+    td:[...bod,fill],
+    th:[...bod,1]
+  };
   if(getElementMix('chk-tablestyle').checked){
-    toolMessage([[tableStyle[styleId]],'creTable'],PLUGINAPP);
+    toolMessage([[styleAll],'creTable'],PLUGINAPP);
   }else{
-    toolMessage([[tableStyle[styleId],comp1,comp2],'creTable'],PLUGINAPP);
+    toolMessage([[styleAll,comp1,comp2],'creTable'],PLUGINAPP);
   };
 });
 //上传|拖拽|输入 的规则说明
@@ -2979,7 +3010,7 @@ const qrcodeGridController = new QRCodeGridController(
 function reSelectComp(info){//判断是否选中表格组件
   //console.log(info)
   if(info[0] || info[1] || info[2]){
-    chkSelectcomp.checked = true;
+    DOM.chkSelectcomp.checked = true;
     getElementMix('chk-tablestyle').checked = false;
     getElementMix('for="chk-selectcomp"').setAttribute('data-tips-x','left');
     getElementMix('chk-tablestyle').parentNode.style.pointerEvents = 'none';

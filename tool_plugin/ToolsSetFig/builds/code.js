@@ -793,7 +793,7 @@ figma.ui.onmessage = async (message) => {
     };
     //从预设或组件创建表格
     if ( type == "creTable"){
-        //console.log(info)
+        console.log(info)
         let a = figma.currentPage;
         let b = getSelectionMix();
         let th,td;

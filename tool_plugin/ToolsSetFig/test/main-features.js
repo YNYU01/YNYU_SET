@@ -156,11 +156,39 @@ function sendTable(type){
 
 // 表单页 > 应用预设样式-随机主题
 function applyTableStyleStrategy(){
-  const styleId = DOM.tableStyleSet?.getAttribute('data-radio-value') - 1;
-  if (styleId >= 0 && tableStyle && tableStyle[styleId]) {
-    toolMessage([[tableStyle[styleId],'style'],'reTable'],PLUGINAPP);
-  } else {
-    console.warn('applyTableStyleStrategy: Invalid styleId or tableStyle');
+  let styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
+  let styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
+  
+  let fill = 1;
+  let bod = [1,1,1,1];
+  switch(styleFillId){
+    case '2':
+      fill = 'rowSpace';
+    break;
+    case '3':
+      fill = 'columnSpace';
+    break;
+    case '4':
+      fill = '0';
+    break;
+  };
+  switch(styleBodId){
+    case '2':
+      bod = [1,0,1,0];
+      break;
+    case '3':
+      bod = [0,1,0,1];
+      break;
+    case '4':
+      bod = [0,0,0,0];
+      break;
+  }
+  let styleAll = {
+    td:[...bod,fill],
+    th:[...bod,1]
+  };
+  if(getElementMix('chk-tablestyle').checked){
+    toolMessage([[styleAll,'style'],'reTable'],PLUGINAPP);
   }
 };
 
