@@ -1300,21 +1300,23 @@ window.addEventListener('load', () => {
     //console.log('该浏览器支持吸色管')
   };
 
-  if(storageMix.get('userTheme') == 'light'){
-    setTheme(true,false);
-  } else if(storageMix.get('userTheme') == 'dark'){
-    setTheme(false,false);
-  } else {
-    setTheme(true,false);
-  };
+  if(ISLOCAL && PLUGINAPP){
+    if(storageMix.get('userTheme') == 'light'){
+      setTheme(true,false);
+    } else if(storageMix.get('userTheme') == 'dark'){
+      setTheme(false,false);
+    } else {
+      setTheme(true,false);
+    };
 
-  if(storageMix.get('userLanguage') == 'En'){
-    setLanguage(false);
-  } else if(storageMix.get('userLanguage') == 'Zh'){
-    setLanguage(true);
-  } else {
-    setLanguage(false);
-  };
+    if(storageMix.get('userLanguage') == 'En'){
+      setLanguage(false);
+    } else if(storageMix.get('userLanguage') == 'Zh'){
+      setLanguage(true);
+    } else {
+      setLanguage(false);
+    };
+  }
 });
 
 
