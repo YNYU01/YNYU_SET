@@ -24,9 +24,7 @@ if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 7
 }
 
 let ISLOCAL = false;
-if (window.location.protocol === 'file:' || 
-    window.location.origin === 'null' ||
-    !window.location.origin) {
+if (window.location.protocol === 'file:' || window.location.hostname === 'localhost'){
   ISLOCAL = true;
 };
 
@@ -98,6 +96,42 @@ if(QUERY_PARAMS){
 //console.log(getUnicode(COPYRIGHT_ZH))
 
 let USER_VISITOR = null;
+
+/*
+if(!ISLOCAL){
+fetch('https://ipapi.co/json/')
+  .then(async (response) => response.json())
+  .then(data => {
+      USER_VISITOR = data;
+      const country = data.country_name;
+      const countryCode = data.country_code;
+      if(countryCode !== "CN"){
+        let links = document.querySelectorAll('link');
+        let scripts = document.querySelectorAll('script');
+  
+        links.forEach(item => {
+          let oldHref = item.getAttribute('href');
+          if(oldHref && !oldHref.includes('ynyuset.cn')){
+            // 只替换域名中的 .cn，但排除 ynyuset.cn
+            item.setAttribute('href',oldHref.replace(/(https?:\/\/[^\/]+)\.cn(\/|$)/g, '$1$2'));
+          }
+        });
+        scripts.forEach(item => {
+          let oldSrc = item.getAttribute('src');
+          if(oldSrc && !oldSrc.includes('ynyuset.cn')){
+            // 只替换域名中的 .cn，但排除 ynyuset.cn
+            item.setAttribute('src',oldSrc.replace(/(https?:\/\/[^\/]+)\.cn(\/|$)/g, '$1$2'));
+          };
+        });
+
+        console.log(`访问者国家/地区：${country} (${countryCode}),已切换对应资源链接`)
+      }
+  })
+  .catch(e => {
+    console.log(e)
+  });
+}
+  */
 
 // 获取用户位置信息的函数
 function fetchUserLocation() {
