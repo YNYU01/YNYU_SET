@@ -59,13 +59,14 @@ var storageMix = {
   }
 };
 
-if(!ISLOCAL && !PLUGINAPP){
+if(!PLUGINAPP){
   if(storageMix.get('userTheme') == 'light'){
     ROOT.setAttribute("data-theme","light");
   }else if(storageMix.get('userTheme') == 'dark'){
     ROOT.setAttribute("data-theme","dark");
   }else{
     ROOT.setAttribute("data-theme","light");
+    storageMix.set('userTheme','light');
   };
 
   if(storageMix.get('userLanguage') == 'En'){
@@ -75,19 +76,20 @@ if(!ISLOCAL && !PLUGINAPP){
   }else{
     ROOT.setAttribute("data-language","En");
     storageMix.set('userLanguage','En');
-    console.log('userLanguage not set, set to En');
+    //console.log('userLanguage not set, set to En');
   };
+}
 
-  let QUERY_PARAMS = getQueryParams();
-  if(QUERY_PARAMS){
-    if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
-      ROOT.setAttribute('data-language','Zh');
-      storageMix.set('userLanguage','Zh');
-    }else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
-      ROOT.setAttribute('data-language','En');
-      storageMix.set('userLanguage','En');
-      console.log('QUERY_PARAMS: lan=en, set to En');
-    }
+
+let QUERY_PARAMS = getQueryParams();
+if(QUERY_PARAMS){
+  if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
+    ROOT.setAttribute('data-language','Zh');
+    storageMix.set('userLanguage','Zh');
+  }else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
+    ROOT.setAttribute('data-language','En');
+    storageMix.set('userLanguage','En');
+    //console.log('QUERY_PARAMS: lan=en, set to En');
   }
 }
 
