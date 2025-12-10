@@ -96,8 +96,7 @@ if(QUERY_PARAMS){
 //console.log(getUnicode(COPYRIGHT_ZH))
 
 let USER_VISITOR = null;
-if(!ISLOCAL){
-  fetch('https://ipapi.co/json/')
+fetch('https://ipapi.co/json/')
   .then(async (response) => response.json())
   .then(data => {
       USER_VISITOR = data;
@@ -128,7 +127,6 @@ if(!ISLOCAL){
   .catch(e => {
     console.log(e)
   });
-}
 
 //setTimeout(()=>{console.log(USER_VISITOR)},500)
 
