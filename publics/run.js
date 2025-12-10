@@ -24,10 +24,7 @@ if(MOBILE_KEYS.test(navigator.userAgent.toLowerCase()) || window.innerWidth <= 7
 }
 
 let ISLOCAL = false;
-// 更严格地检测本地环境：file:// 协议、localhost、127.0.0.1、或 origin 为 null
 if (window.location.protocol === 'file:' || 
-    window.location.hostname === 'localhost' || 
-    window.location.hostname === '127.0.0.1' ||
     window.location.origin === 'null' ||
     !window.location.origin) {
   ISLOCAL = true;
