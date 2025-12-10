@@ -135,11 +135,6 @@ fetch('https://ipapi.co/json/')
 
 // 获取用户位置信息的函数
 function fetchUserLocation() {
-  // 双重检查：确保不是本地环境且 origin 有效
-  if (ISLOCAL || !window.location.origin || window.location.origin === 'null') {
-    return;
-  }
-
   // 使用 AbortController 实现超时控制（兼容性更好）
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
