@@ -37,6 +37,7 @@ let GETCOLOR = null;
 let TIPS_TIMES = [];
 let USER_KEYING = false;
 let COMPS = ['btn-theme','btn-close','btn-copy','btn-show','btn-info','btn-check','btn-color','btn-getcolor','card-colorpick'];
+let SCROLL_DRAGGING = new WeakMap(); // 跟踪每个节点的拖拽状态
 
 let TV = document.querySelectorAll('[data-TV]');
 let TV_MOVE = false;
@@ -460,23 +461,27 @@ function COMP_MAIN(){
     radio.setAttribute('data-radio-value', data);
     
     // 处理滚动定位
-    if (item.parentNode.parentNode && item.parentNode.parentNode.getAttribute('data-scroll') !== null) {
-      const allradio = Array.from(item.parentNode.querySelectorAll('[data-radio-data]'));
-      const index = allradio.indexOf(item);
-      const inline = index > allradio.length / 2 ? 'nearest' : 'center';
-      item.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: inline,
-      });
-      if (index > allradio.length / 2 && item.nextElementSibling) {
-        item.nextElementSibling.scrollIntoView({
+    let parentNode = item.parentNode.parentNode;
+    if(parentNode){
+      let scroll = parentNode.getAttribute('data-scroll');
+      if (scroll !== null && scroll !== 'false') {
+        const allradio = Array.from(item.parentNode.querySelectorAll('[data-radio-data]'));
+        const index = allradio.indexOf(item);
+        const inline = index > allradio.length / 2 ? 'nearest' : 'center';
+        item.scrollIntoView({
           behavior: 'smooth',
           block: 'center',
-          inline: 'nearest',
+          inline: inline,
         });
+        if (index > allradio.length / 2 && item.nextElementSibling) {
+          item.nextElementSibling.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest',
+          });
+        }
       }
-    }
+    };
   });
 
   // 13. 重置按钮 - 使用事件委托
@@ -1398,7 +1403,8 @@ TAB_AUTO.forEach((item) => {
         }
         items.setAttribute('data-page-main','true');
         items.parentNode.setAttribute('data-tab-pick',keyid);
-        if(input.parentNode.getAttribute('data-scroll') !== null){
+        let scroll = input.parentNode.getAttribute('data-scroll');
+        if(scroll !== null && scroll !== 'false'){
           let allinput = Array.from(input.parentNode.querySelectorAll('input'));
           let index = allinput.indexOf(input);
           let inline = index >= allinput.length/2 ? 'nearest' : 'center';
@@ -2244,19 +2250,51 @@ scrollNode.forEach(item =>{
 function scrollX(node){
   let nodeScroll = false;
   let nodeStartX,nodeScrollLeft;
+  let hasDragged = false; // 标记是否发生了拖拽
+  const DRAG_THRESHOLD = 5; // 拖拽阈值，超过此距离才认为是拖拽
+  
   node.addEventListener('mousedown',(event)=>{
     nodeScroll = true;
+    hasDragged = false;
     nodeStartX = event.clientX;
-    nodeScrollLeft = node.scrollLeft;  
-    document.addEventListener('mousemove',(e)=>{
+    nodeScrollLeft = node.scrollLeft;
+    SCROLL_DRAGGING.set(node, false); // 初始化拖拽状态
+    
+    const handleMouseMove = (e)=>{
       if(nodeScroll){
         let move = e.clientX - nodeStartX;
+        // 如果移动距离超过阈值，标记为拖拽
+        if(Math.abs(move) > DRAG_THRESHOLD){
+          hasDragged = true;
+          SCROLL_DRAGGING.set(node, true);
+        }
         node.scrollLeft = nodeScrollLeft - move;
       }
-    });
-    document.addEventListener('mouseup',()=>{
+    };
+    
+    const handleMouseUp = ()=>{
+      if(hasDragged){
+        // 如果发生了拖拽，阻止点击事件
+        const handleClick = (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          node.removeEventListener('click', handleClick, true);
+        };
+        // 使用捕获阶段监听，确保在子元素点击事件之前执行
+        node.addEventListener('click', handleClick, true);
+        // 短暂延迟后移除监听器，避免影响后续点击
+        setTimeout(()=>{
+          node.removeEventListener('click', handleClick, true);
+          SCROLL_DRAGGING.set(node, false);
+        }, 100);
+      }
       nodeScroll = false;
-    })
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
   });
 }
 
