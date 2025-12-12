@@ -1,10 +1,9 @@
 <html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
-let PULGIN_LOCAL = true;
 let ISWORK_TIME = true;
 let userSkillStar = [];
 
@@ -22,14 +21,30 @@ window.addEventListener('message',(message)=>{
     if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
       info = JSON.parse(info);
     }
+
+    if (Array.isArray(messages) && messages.length === 2 && typeof messages[1] === 'string') {
+      const [data, key] = messages;
+
+      if (key === 'userTheme' && data !== null && data !== undefined) {
+        data == 'light' ? setTheme(true) : setTheme(false);
+        console.log('userTheme:', data);
+        return;
+      } else if (key === 'userLanguage' && data !== null && data !== undefined) {
+        data == 'Zh' ? setLanguage(true) : setLanguage(false);
+        return;
+      }
+
+      if (key === 'tabPick' || key === 'userSkillStar' || key === 'toolsSetFig_user' || key === 'toolsSetFig_users') {
+
+        type = key;
+        info = data;
+      } else {
+
+        return;
+      }
+    }
+
     switch (type){
-      case 'userTheme':
-        info == 'light' ? setTheme(true) : setTheme(false);
-        console.log('userTheme:',info);
-      break
-      case 'userLanguage':
-        info == 'Zh' ? setLanguage(true) : setLanguage(false);
-      break
       case 'userResize': reRootSize(info);break
     };
     if(ISWORK_TIME && info){
@@ -62,7 +77,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -4468,21 +4483,21 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -4950,7 +4965,7 @@ function revokeImageObjectURL(url){
 
 window.addEventListener('load',()=>{
   let time = getTime('HH')[0];
-  if(time*1 > 20 && !PULGIN_LOCAL){
+  if(time*1 > 20 && IS_PLUGIN_ENV){
     nullPage();
     ISWORK_TIME = false;
     addToUserTips('worktime');
@@ -4994,9 +5009,30 @@ getElementMix('language-1')?.addEventListener('change',()=>{
   }
 });
 
-if(window.location.host === '127.0.0.1:5500'){
-  storageMix.get('userTheme') == 'light' ? setTheme(true) : setTheme(false);
-  storageMix.get('userLanguage') == 'Zh' ? setLanguage(true) : setLanguage(false);
+if(QUERY_PARAMS){
+  if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'light'){
+    ROOT.setAttribute('data-theme','light');
+    storageMix.set('userTheme','light');
+  }else if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'dark'){
+    ROOT.setAttribute('data-theme','dark');
+    storageMix.set('userTheme','dark');
+  }
+  if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
+    ROOT.setAttribute('data-language','Zh');
+    storageMix.set('userLanguage','Zh');
+  }else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
+    ROOT.setAttribute('data-language','En');
+    storageMix.set('userLanguage','En');
+  }
+}
+
+const userTheme = storageMix.get('userTheme');
+const userLanguage = storageMix.get('userLanguage');
+if(userTheme){
+  userTheme == 'light' ? setTheme(true) : setTheme(false);
+}
+if(userLanguage){
+  userLanguage == 'Zh' ? setLanguage(true) : setLanguage(false);
 }
 
 window.addEventListener('resize',debounce(()=>{

@@ -21,24 +21,28 @@ window.addEventListener('message',(message)=>{
     // 这是 storageMix 的异步返回，需要更新 UI
     if (Array.isArray(messages) && messages.length === 2 && typeof messages[1] === 'string') {
       const [data, key] = messages;
-      // storageMix 内部已经更新了缓存，这里只需要更新 UI
-      if (key === 'userTheme' && data !== null && data !== undefined) {
-        data == 'light' ? setTheme(true) : setTheme(false);
-        console.log('userTheme:', data);
+      if (key === 'userTheme') {
+        if (data !== null && data !== undefined) {
+          data == 'light' ? setTheme(true) : setTheme(false);
+          console.log('userTheme:', data);
+        } else {
+          // 异步返回 null，说明存储中确实没有值，设置默认值
+          setTheme(true);
+        }
         return; // 处理完就返回，不继续处理
-      } else if (key === 'userLanguage' && data !== null && data !== undefined) {
-        data == 'Zh' ? setLanguage(true) : setLanguage(false);
+      } else if (key === 'userLanguage') {
+        if (data !== null && data !== undefined) {
+          data == 'Zh' ? setLanguage(true) : setLanguage(false);
+        } else {
+          // 异步返回 null，说明存储中确实没有值，设置默认值
+          setLanguage(false);
+        }
         return; // 处理完就返回，不继续处理
       }
-      // 其他 getlocal 返回的键，storageMix 已经处理了缓存，这里不需要额外处理
-      // 但如果是业务相关的键（如 tabPick, userSkillStar 等），需要继续处理
       if (key === 'tabPick' || key === 'userSkillStar' || key === 'toolsSetFig_user' || key === 'toolsSetFig_users') {
-        // 这些键需要业务处理，继续执行下面的 switch 逻辑
-        // 但需要将 key 作为 type，data 作为 info
         type = key;
         info = data;
       } else {
-        // 其他键已经由 storageMix 处理，不需要额外处理
         return;
       }
     }

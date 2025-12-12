@@ -383,9 +383,17 @@ const userTheme = storageMix.get('userTheme');
 const userLanguage = storageMix.get('userLanguage');
 if(userTheme){
   userTheme == 'light' ? setTheme(true) : setTheme(false);
+}else if(!IS_PLUGIN_ENV){
+  // 非插件环境下，如果存储中没有值，设置默认值
+  // 插件环境下不设置默认值，等待异步返回（由run.js处理，如果异步返回null则设置默认值）
+  setTheme(true);
 }
 if(userLanguage){
   userLanguage == 'Zh' ? setLanguage(true) : setLanguage(false);
+}else if(!IS_PLUGIN_ENV){
+  // 非插件环境下，如果存储中没有值，设置默认值
+  // 插件环境下不设置默认值，等待异步返回（由run.js处理，如果异步返回null则设置默认值）
+  setLanguage(false);
 }
 
 
