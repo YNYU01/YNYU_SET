@@ -1,8 +1,7 @@
 <html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let PULGIN_LOCAL = true;
@@ -63,7 +62,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1470,6 +1469,7 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   background: inherit;
   top: -4px;
   right: 6px;
+  z-index: -1;
 }
 
 [data-tablestyle-name],[data-exporttype-name]{
@@ -1899,18 +1899,18 @@ input[type="checkbox"]:checked ~ [data-tablestyle-box]{
   position: relative;
   min-width: 200px;
   border-radius: 4px;
+  border: 1px solid transparent;
+  border-top-width: 3px;
   background: rgba(230, 230, 230, 1);
   padding: 8px;
   white-space: normal;
 }
 
-[data-skill-sec]:hover{
-  
-  filter: 
-  drop-shadow(0 1px 0 var(--skill-col,var(--boxBod)))
-  drop-shadow(1px 0 0 var(--skill-col,var(--boxBod)))
-  drop-shadow(0 -3px 0 var(--skill-col,var(--boxBod)))
-  drop-shadow(-1px 0 0 var(--skill-col,var(--boxBod)));
+[data-skill-sec]:hover,
+[data-skill-sec]:hover[data-tableset-more]::after
+{
+  border: 1px solid var(--skill-col,var(--boxBod));
+  border-top-width: 3px;
   
 }
 
@@ -2164,6 +2164,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
 [data-skill-gap]{
   font-size: 10px;
   opacity: 0.6;
+  text-align: center;
 }
 
 [data-clip-view]{
@@ -2387,7 +2388,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   }
 }
 
-@media (min-width:470px) {
+@media (min-width:500px) {
   [data-transform-center-module]{
     max-width: 72px;
   }
@@ -2631,7 +2632,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
           <div data-btn="main" data-btn-show-register class="df-cc fl1 op6" data-en-text="SIGN UP →">注册 →</div>
         </div>
         <div class="df-cc font-s10 op6" style="margin-top: 8px; white-space: normal;">
-          <span data-en-text="*This plugin does't collect any data related to the current file, only for feedback and premium plan">*插件不收集任何与当前文件有关的数据，仅用于提交反馈和付费计划</span>
+          <span data-en-text="*This plugin does't collect any data related to the current file, only for feedback and premium plan">*插件不收集任何与当前文件有关的数据, 仅用于提交反馈和付费计划</span>
         </div>
       </div>
       <!-- 注册表单 -->
@@ -3821,7 +3822,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <!--figma不支持拉伸变形，要么斜切+记录原始宽高来缩放，要么修改剪切板信息来实现拉伸-->
+                  <!--figma不支持拉伸变形, 要么斜切+记录原始宽高来缩放, 要么修改剪切板信息来实现拉伸-->
                   <!--input type="checkbox" id="skewscale-view-pick">
                   <label for="skewscale-view-pick" class="df-ffc df-cc bod-d gap4 pad2 mar-b4" style="display: flex;">
                     <span class="tip1" data-en-text="Edit directly or Ctrl+C copy the layer, then click here~">直接编辑, 或Ctrl+C复制图层, 然后点击此处~</span>
@@ -3863,7 +3864,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     <span data-skill-gap>
                       <span>----</span>
                       <span data-any="vw240"
-                      data-en-text="Mark initial width and height for scale calculation, not real transform">
+                      data-en-text="Resize by scale-mark to simulate transform">
                         标记初始宽高计算缩放, 非真实变形
                       </span>
                       <span>----</span>
@@ -3894,7 +3895,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Reset Scale Mark">清除缩放标记</div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="New Scale Mark">新缩放标记</div>
                     <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="All Reset">重置全部</div>
                   </div>
                 </div>
@@ -3980,6 +3981,11 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 <div class="fl1"  data-skill-sec="SplitText">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
+                  </div>
+                  <div class="df-ffc bod-d gap4 pad4 mar-b4" >
+                    <div class="font-s10 op6" data-en-text="All different style parameters, even automatic line wrapping, will be used as split conditions">
+                      所有不一样的样式参数, 甚至自动换行, 都会作为拆分条件
+                    </div>
                   </div>
                   <div class="df-sc" data-skill-line>
                     <div class="df-cc" data-btn="skill-main" data-en-text="Split By SVG">按SVG拆分</div>
@@ -4068,6 +4074,27 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Merge Order">
+                      合并顺序
+                    </div>
+                    <div data-radio-value="1" class="df-lc fl1 gap4">
+                      <div data-radio data-radio-main="true" data-radio-data="1" class="df-cc" 
+                      data-en-text="Z-Index">
+                        按图层顺序
+                      </div>
+                      <div data-radio data-radio-main="false" data-radio-data="2" class="df-cc" 
+                      data-en-text="T-B-L-R">
+                        按上下左右
+                      </div>
+                    </div>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Merge Keep Style">保留样式合并</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Merge Character">快速合并</div>  
+                    </div>
+                  </div>
                 </div>
                 <div class="fl1"  data-skill-sec="LayersLayout">
                   <div data-skill-star="false">
@@ -4115,7 +4142,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Split Path">拆分路径</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Stroke To Shapes">描边转堆叠层</div>
+                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Break Apart Path">拆分复合路径</div>
                     </div>
                   </div>
                 </div>
@@ -4269,21 +4297,21 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/other/qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1e8af232acd2aafe8b4cdbebab62d60f32d1d427/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -7355,22 +7383,6 @@ function viewPage(name){
   tab.dispatchEvent(inputEvent);
 };
 
-document.addEventListener('paste', async (e) => {
-    if(!DOM.skewscaleViewPick.checked) return;
-
-    e.preventDefault();
-    console.log(e.clipboardData);
-    console.log(e.clipboardData.types);
-    if(e.clipboardData.types.includes('text/html')){
-        const html = e.clipboardData.getData('text/html');
-        console.log(html);
-    }
-    if(e.clipboardData.types.includes('text/plain')){
-        const text = e.clipboardData.getData('text/plain');
-        console.log(text);
-    }
-
-});
 
 getUserMix.register('tab', getUserTab);
 getUserMix.register('color', getUserColor);

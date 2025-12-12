@@ -83,6 +83,9 @@ const DOM = (() => {
     uniformS: () => getById('uniform-set-s'),
     uniformW: () => getById('uniform-set-w'),
     uniformH: () => getById('uniform-set-h'),
+    qrcodeFile: () => getById('input-qrcode-file'),
+    qrcodeGridView: () => getById('input-qrcode-grid-view'),
+    qrcodeRe: () => query('[data-qrcode-re]'),
     
     // 技能相关
     skillSearchInput: () => getById('skillsearch'),
@@ -356,6 +359,11 @@ getElementMix('language-1')?.addEventListener('change',()=>{
     DOM.templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
   }
 });
+
+if(window.location.host === '127.0.0.1:5500'){
+  storageMix.get('userTheme') == 'light' ? setTheme(true) : setTheme(false);
+  storageMix.get('userLanguage') == 'Zh' ? setLanguage(true) : setLanguage(false);
+}
 
 // 窗口大小调整事件
 window.addEventListener('resize',/*防抖*/debounce(()=>{
@@ -2998,6 +3006,50 @@ class QRCodeGridController {
   }
 }
 
+// QRCode 初始化 - 确保在DOM加载后执行
+var qrcodeObj = null;
+
+function initQRCode() {
+  const qrcodeElement = getElementMix('data-qrcode-ruslt="default"');
+  if (!qrcodeElement) {
+    console.warn('QRCode: 找不到 id="qrcode" 的元素');
+    return;
+  }
+  
+  qrcodeObj = new QRCode(qrcodeElement, {
+    width : 100,
+    height : 100,
+    useSVG: true
+  });
+  
+  // 初始化后立即生成二维码（如果有输入值）
+  makeCode();
+  
+  // 添加事件监听器
+  if (DOM.qrcodeRe) {
+    DOM.qrcodeRe.addEventListener('click', makeCode);
+  }
+}
+
+function makeCode () {		
+  if (!qrcodeObj) return;
+  
+  let elText = document.getElementById("input-qrcode-data");
+  if (!elText) return;
+  
+  // 如果没有输入值，使用默认值
+  const value = elText.value || "https://www.google.com";
+  qrcodeObj.makeCode(value);
+}
+
+// 确保DOM加载后再初始化
+if(document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initQRCode);
+} else {
+  // DOM已经加载完成，直接初始化
+  initQRCode();
+}
+
 // 创建实例
 const qrcodeGridController = new QRCodeGridController(
   '[data-qrcode-grid]',
@@ -3005,6 +3057,47 @@ const qrcodeGridController = new QRCodeGridController(
   '[data-qrcode-view-box]'
 );
 
+DOM.qrcodeFile.addEventListener('change',(e)=>{
+  let file = e.target.files[0];
+  DOM.qrcodeFile.nextElementSibling.setAttribute('data-fileinput','true');
+  let filenameBox = DOM.qrcodeFile.nextElementSibling.querySelector('[data-fileinput-filename]');
+  //log(file.name);
+  filenameBox.textContent = file.name;
+  let imgView = getElementMix('data-qrcode-view');
+  imgView.innerHTML = '';
+  let reader = new FileReader();
+  //let smplOrCmplx = getElementMix('data-qrcode-set').getAttribute('data-radio-value');
+  reader.onload = (e)=>{
+    let img = new Image();
+    img.src = e.target.result;
+    imgView.appendChild(img);
+    if(img.width > img.height){
+      img.style.width = '100%';
+      img.style.height = 'auto';
+    }else{
+      img.style.width = 'auto';
+      img.style.height = '100%';
+    };
+    /*
+    if(smplOrCmplx == 'CMPLX'){
+      img.style.filter = 'brightness(0.8) grayscale(1) contrast(3)';
+    }
+      */
+  };
+  reader.readAsDataURL(file);
+});
+
+DOM.qrcodeGridView.addEventListener('change',(e)=>{
+  let checked = e.target.checked;
+  let grid = getElementMix('data-qrcode-grid');
+  if(checked){
+    grid.classList.remove('qrcode-grid');
+    grid.classList.add('qrcode-grid-bod');
+  }else{
+    grid.classList.remove('qrcode-grid-bod');
+    grid.classList.add('qrcode-grid');
+  }
+});
 
 //处理回传的选中对象的数据
 function reSelectComp(info){//判断是否选中表格组件
@@ -3067,25 +3160,6 @@ function viewPage(name){
 
 
 //=========== 监听函数 ===========
-
-
-// 监听粘贴事件
-document.addEventListener('paste', async (e) => {
-    if(!DOM.skewscaleViewPick.checked) return;
-    
-    e.preventDefault();
-    console.log(e.clipboardData);
-    console.log(e.clipboardData.types);
-    if(e.clipboardData.types.includes('text/html')){
-        const html = e.clipboardData.getData('text/html');
-        console.log(html);
-    }
-    if(e.clipboardData.types.includes('text/plain')){
-        const text = e.clipboardData.getData('text/plain');
-        console.log(text);
-    }
-
-});
 
 /* ---钩子--- */
 /*监听组件的自定义属性值, 变化时触发函数, 用于已经绑定事件用于自身的组件, 如颜色选择器、滑块输入框组合、为空自动填充文案的输入框、导航tab、下拉选项等*/
@@ -3150,6 +3224,12 @@ function getUserNumber(node){
   if(node.getAttribute('data-scaleset-y') !== null){
     node.parentNode.parentNode.parentNode.style.setProperty('--scaleY',number)
     sendTransform();
+  };
+  if(node.getAttribute('data-qrcode-brightness') !== null){
+    getElementMix('data-qrcode-view').style.setProperty('--brightness',number/100);
+  };
+  if(node.getAttribute('data-qrcode-contrast') !== null){
+    getElementMix('data-qrcode-view').style.setProperty('--contrast',number/100);
   };
 };
 
@@ -3276,6 +3356,16 @@ function getUserRadio(node){
       }else{
         vars.style.display = 'none';
         styles.style.display = 'flex';
+      };
+    };
+
+    if(node.getAttribute('data-qrcode-set') !== null){
+      getElementMix('data-qrcode-view').setAttribute('data-qrcode-view-mode',userRadio);
+      let viewset = getElementMix('data-qrcode-view-set');
+      if(userRadio == 'CMPLX'){
+        viewset.style.display = 'flex';
+      }else{
+        viewset.style.display = 'none';
       };
     };
   };

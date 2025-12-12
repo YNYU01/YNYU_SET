@@ -1284,13 +1284,13 @@ figma.ui.onmessage = async (message) => {
         });
     };
     //保留伸缩重置
-    if( type == 'Keep Scale Reset'){
+    if( type == 'New Scale Mark'){
         let b = getSelectionMix();
         b.forEach(item => {
             if(item.type == 'TEXT'){
                 return;
             };
-            console.log(item.width,item.height)
+            //console.log(item.width,item.height)
             item.setPluginData('oldWH',JSON.stringify([item.width,item.height]));
 
             let scaleX = item.relativeTransform[0][0];
@@ -1969,7 +1969,7 @@ figma.ui.onmessage = async (message) => {
         a.selection = selects;
     };
     //拆分路径
-    if ( type == 'Split Path'){
+    if ( type == 'Break Apart Path'){
         let a = figma.currentPage;
         let b = getSelectionMix();
         let vectors = b.filter(item => item.type == 'VECTOR');
@@ -3860,7 +3860,7 @@ function addAsAbsolute(parent,absoluteNode,position){
  * @param {string} TBLR - TBLR,各轴约束简写
  * @param {boolean} isFill - 是则撑满，否则居中
  */
-function addConstraints(parent,constraintNode,TBLR){
+function addConstraints(parent,constraintNode,TBLR,isFill = false){
     if(parent){
         parent.appendChild(constraintNode);
     };
@@ -3872,7 +3872,7 @@ function addConstraints(parent,constraintNode,TBLR){
                 V = 'MIN';
             ;break
             case 'C':
-                V = 'CENTER';
+                V = isFill ? 'STRETCH' : 'CENTER' ;
             ;break
             case 'B':
                 V = 'MAX';
@@ -3883,7 +3883,7 @@ function addConstraints(parent,constraintNode,TBLR){
                 H = 'MIN';
             ;break
             case 'C':
-                H = 'CENTER';
+                H = isFill ? 'STRETCH' : 'CENTER' ;
             ;break
             case 'R':
                 H = 'MAX';
@@ -4333,6 +4333,7 @@ function creAutoClip(clips,clipsbox,image,comp){
                 }
             ];
         };
+        //如果作为组件
         if(comp){
             clipnode = figma.createFrame();
             clipnode.resize(clip.w,clip.h);

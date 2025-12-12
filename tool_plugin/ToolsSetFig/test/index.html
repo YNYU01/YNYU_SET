@@ -1,7 +1,6 @@
 <html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), display-capture=(), clipboard-read=*, clipboard-write=*">
   <script src="../../../publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script src="run.js"></script>
@@ -121,11 +120,11 @@
         </div>
         <div data-login-error class="font-s12" style="display: none; color: var(--code7); padding: 4px 8px;"></div>
         <div class="df-sc gap8">
-          <div data-btn="main" data-btn-login class="df-cc" style="flex: 1;" data-en-text="LOG IN">登录</div>
+          <div data-btn="main" data-btn-login class="df-cc fl1" data-en-text="LOG IN">登录</div>
           <div data-btn="main" data-btn-show-register class="df-cc fl1 op6" data-en-text="SIGN UP →">注册 →</div>
         </div>
         <div class="df-cc font-s10 op6" style="margin-top: 8px; white-space: normal;">
-          <span data-en-text="*This plugin does't collect any data related to the current file, only for feedback and premium plan">*插件不收集任何与当前文件有关的数据，仅用于提交反馈和付费计划</span>
+          <span data-en-text="*This plugin does't collect any data related to the current file, only for feedback and premium plan">*插件不收集任何与当前文件有关的数据, 仅用于提交反馈和付费计划</span>
         </div>
       </div>
       <!-- 注册表单 -->
@@ -486,7 +485,7 @@
               <div class="df-lc gap4">
                 <div data-en-text="All">全选</div>
                 <input id="exportset-pickall" type="checkbox"/>
-                <label for="exportset-pickall" class="check gap4" style="width: 16px; height: 16px;">
+                <label for="exportset-pickall" class="check gap4 wh-16">
                   <btn-check-tick></btn-check-tick>
                 </label>
               </div>
@@ -1315,7 +1314,7 @@
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <!--figma不支持拉伸变形，要么斜切+记录原始宽高来缩放，要么修改剪切板信息来实现拉伸-->
+                  <!--figma不支持拉伸变形, 要么斜切+记录原始宽高来缩放, 要么修改剪切板信息来实现拉伸-->
                   <!--input type="checkbox" id="skewscale-view-pick">
                   <label for="skewscale-view-pick" class="df-ffc df-cc bod-d gap4 pad2 mar-b4" style="display: flex;">
                     <span class="tip1" data-en-text="Edit directly or Ctrl+C copy the layer, then click here~">直接编辑, 或Ctrl+C复制图层, 然后点击此处~</span>
@@ -1331,10 +1330,10 @@
                   </div-->
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Skew X">左右倾斜</div>
-                    <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
+                    <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1">
                       <input data-input="range" type="range" min="-80" max="80" value="0">
                       <input data-input="value" data-input-must="-80,80" data-input-type="int" 
-                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="0">
+                      type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="0">
                       <div class="df-cc" data-input-unit>°</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -1343,10 +1342,10 @@
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Skew Y">上下倾斜</div>
-                    <div data-skewset-y data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
+                    <div data-skewset-y data-number data-number-value="0" class="df-lc fl1">
                       <input data-input="range" type="range" min="-80" max="80" value="0">
                       <input data-input="value" data-input-must="-80,80" data-input-type="int" 
-                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="0">
+                      type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="0">
                       <div class="df-cc" data-input-unit>°</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -1357,7 +1356,7 @@
                     <span data-skill-gap>
                       <span>----</span>
                       <span data-any="vw240"
-                      data-en-text="Mark initial width and height for scale calculation, not real transform">
+                      data-en-text="Resize by scale-mark to simulate transform">
                         标记初始宽高计算缩放, 非真实变形
                       </span>
                       <span>----</span>
@@ -1365,10 +1364,10 @@
                   </div>
                   <div class="df-lc" data-skill-line="">
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右缩放</div>
-                    <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
+                    <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1">
                       <input data-input="range" type="range" min="1" max="200" value="100">
                       <input data-input="value" data-input-must="1,200" data-input-type="int" 
-                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="100">
+                      type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="100">
                       <div class="df-cc" data-input-unit>%</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -1377,10 +1376,10 @@
                   </div>
                   <div class="df-lc" data-skill-line="">
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale Y">上下缩放</div>
-                    <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
+                    <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1">
                       <input data-input="range" type="range" min="1" max="200" value="100">
                       <input data-input="value" data-input-must="1,200" data-input-type="int" 
-                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="100">
+                      type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="100">
                       <div class="df-cc" data-input-unit>%</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -1388,7 +1387,7 @@
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Reset Scale Mark">清除缩放标记</div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="New Scale Mark">新缩放标记</div>
                     <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="All Reset">重置全部</div>
                   </div>
                 </div>
@@ -1474,6 +1473,11 @@
                 <div class="fl1"  data-skill-sec="SplitText">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
+                  </div>
+                  <div class="df-ffc bod-d gap4 pad4 mar-b4" >
+                    <div class="font-s10 op6" data-en-text="All different style parameters, even automatic line wrapping, will be used as split conditions">
+                      所有不一样的样式参数, 甚至自动换行, 都会作为拆分条件
+                    </div>
                   </div>
                   <div class="df-sc" data-skill-line>
                     <div class="df-cc" data-btn="skill-main" data-en-text="Split By SVG">按SVG拆分</div>
@@ -1562,6 +1566,27 @@
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Merge Order">
+                      合并顺序
+                    </div>
+                    <div data-radio-value="1" class="df-lc fl1 gap4">
+                      <div data-radio data-radio-main="true" data-radio-data="1" class="df-cc" 
+                      data-en-text="Z-Index">
+                        按图层顺序
+                      </div>
+                      <div data-radio data-radio-main="false" data-radio-data="2" class="df-cc" 
+                      data-en-text="T-B-L-R">
+                        按上下左右
+                      </div>
+                    </div>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Merge Keep Style">保留样式合并</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Merge Character">快速合并</div>  
+                    </div>
+                  </div>
                 </div>
                 <div class="fl1"  data-skill-sec="LayersLayout">
                   <div data-skill-star="false">
@@ -1609,7 +1634,8 @@
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Split Path">拆分路径</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Stroke To Shapes">描边转堆叠层</div>
+                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Break Apart Path">拆分复合路径</div>
                     </div>
                   </div>
                 </div>
@@ -1624,14 +1650,119 @@
                     </div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec>
+                <div class="fl1"  data-skill-sec="QRcodeToSVG">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text></div>
+                      <input type="file" id="input-qrcode-file" accept="image/*" style="display: none;">
+                      <label for="input-qrcode-file"  data-fileinput="false" data-btn="skill-main" class="h100 df-cc font-12">
+                        <div data-fileinput-text data-en-text="Up Local QR"> 上传本地 </div>
+                        <div data-fileinput-filename></div>
+                        <div class="df-cc pos-a op6 mar-a0" style="width: 2ch; right: 0.5ch;">
+                          <btn-add></btn-add>
+                        </div>
+                      </label>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Up QR Layer">上传所选</div>
+                  </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Grid of QR">网格数</div>
+                    <div class="wh14 df-cc">
+                      <input type="checkbox" id="input-qrcode-grid-view">
+                      <label for="input-qrcode-grid-view"  data-qrcode-grid-view class="wh-14 check bod-r4 pos-r">
+                        <btn-view></btn-view>
+                      </label>
                     </div>
+                    <div data-qrcode-grid-num class="df-lc fl1" data-int-value="25" >
+                      <input id="input-qrcode-grid" type="text" value="25" data-input="" data-input-type="int" data-input-must="10,144" style="text-align: center;">
+                      <div class="df-cc" data-input-unit="">▚</div>
+                    </div>
+                    <div data-qrcode-set class="df-lc fl1 gap4" data-radio-value="SMPL" style="min-width:80px;">
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="SMPL" data-en-text="SMPL">简单</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="CMPLX" data-en-text="CMPLX">复杂</div>
+                    </div>
+                  </div>
+                  <div class="bod-d df-ffc gap4 pad4 mar-b4" data-qrcode-view-set style="display: none;">
+                    <div class="df-lc gap4 pad2">
+                      <div data-any="vw240" data-skill-btnname data-en-text="Brightness">亮度</div>
+                      <div data-qrcode-brightness data-number data-number-value="100" class="df-lc fl1">
+                        <input data-input="range" type="range" min="10" max="200" value="100">
+                        <input data-input="value" data-input-must="10,200" data-input-type="int" 
+                        type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="100">
+                        <div class="df-cc" data-input-unit>%</div>
+                        <div data-input-reset data-btn="reset">
+                          <btn-reset></btn-reset>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="df-lc gap4 pad2">
+                      <div data-any="vw240" data-skill-btnname data-en-text="Contrast">对比度</div>
+                      <div data-qrcode-contrast data-number data-number-value="100" class="df-lc fl1">
+                        <input data-input="range" type="range" min="10" max="999" value="300">
+                        <input data-input="value" data-input-must="10,999" data-input-type="int" 
+                        type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="300">
+                        <div class="df-cc" data-input-unit>%</div>
+                        <div data-input-reset data-btn="reset">
+                          <btn-reset></btn-reset>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div data-selects-must data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
+                    <div class="wh100 bsb pos-a pad10 df-cc" style="top: 0; left: 0; z-index: 1;">
+                      <div data-qrcode-grid class="w100 pos-r bsb qrcode-grid">
+                        <div data-qrcode-grid-resize="true" class="fl0 bsb pos-a"></div>
+                      </div>
+                    </div>
+                    <div class="wh100 df-cc mar-0a" data-qrcode-view data-qrcode-view-mode="SMPL">
+                    <!--二维码-->
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line data-selects-must="false">
+                    <div data-any="vw240" data-skill-btnname data-en-text="Custom">自定义</div>
+                    <input type="checkbox" id="input-qrcode-convert">
+                    <label for="input-qrcode-convert" data-qrcode-convert data-tips="auto" data-tips-x="right" data-tips-y="top"
+                    data-tips-text="切换为使用数据生成" data-tips-text-en="Switch to convert by custom data"
+                    class="df-cc fl0 wh-20 bsb bod-r4 pos-r" >
+                      <btn-change></btn-change>
+                    </label>
+                    <input type="text" id="input-qrcode-data" placeholder="https://www.google.com">
+
+                  </div>
+                  <div data-skill-more  class="df-lc pos-r bod-d pad10 gap10 bsb mar-b4">
+                    <div class="df-ffc gap4 fl1">
+                      <div class="df-lc gap4">
+                        <input type="checkbox" id="check-qrcode-default" checked>
+                        <label for="check-qrcode-default" class="wh-14 check op6">
+                          <btn-check></btn-check>
+                        </label>
+                        <div data-en-text="Default">默认</div>
+                      </div>
+                      <div data-qrcode-ruslt="default" class="bsb">
+                        <!--矢量二维码预览-->
+                        
+                      </div>
+                    </div>
+                    <div class="df-ffc gap4 fl1">
+                      <div class="df-lc gap4">
+                        <input type="checkbox" id="check-qrcode-withlogo">
+                        <label for="check-qrcode-withlogo" class="wh-14 check op6">
+                          <btn-check></btn-check>
+                        </label>
+                        <div data-en-text="With logo">带图标</div>
+                      </div>
+                      <div data-qrcode-ruslt="withlogo" class="bsb">
+                        <!--矢量二维码预览（带图标）-->
+                      </div>
+                    </div>
+                    <div data-qrcode-re data-btn class="wh-16 pos-a bod-r4 bsb">
+                      <btn-reup></btn-reup>
+                    </div>
+                  </div>
+                  <div class="df-cc" data-skill-more data-selects-must="false">
+                    <div class="df-cc" data-btn="skill-main" data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -1677,40 +1808,6 @@
                       <div class="df-cc" data-btn="skill-main" data-en-text="Code Example">代码示例</div>
                       <div class="df-cc" data-btn-dblclick  data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
                     </div>
-                  </div>
-                </div>
-                <div class="fl1"  data-skill-sec="QRcodeToSVG">
-                  <div data-skill-star="false">
-                    <btn-star></btn-star>
-                  </div>
-                  <div data-selects-must data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
-                    <div class="wh100 bsb pos-a pad10 df-cc" style="top: 0; left: 0;">
-                      <div data-qrcode-grid class="w100 pos-r bsb">
-                        <div data-qrcode-grid-resize="true" class="fl0 bsb pos-a"></div>
-                      </div>
-                    </div>
-                    <div class="w100 df-cc mar-0a" data-qrcode-view >
-                    <!--二维码-->
-                    </div>
-                  </div>
-                  <div class="df-lc" data-skill-line>
-                    <div data-any="vw240" data-skill-btnname data-en-text="Grid of QR">网格数</div>
-                    <div data-qrcode-grid-num class="df-lc fl1" data-int-value="21" >
-                      <input id="input-qrcode-grid" type="text" value="21" data-input="" data-input-type="int" data-input-must="10,60" style="text-align: center;">
-                      <div class="df-cc" data-input-unit="">▚</div>
-                    </div>
-                    <div data-qrcode-set class="df-lc fl1 gap4" data-radio-value="SMPL" style="min-width:80px;">
-                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="SMPL" data-en-text="SMPL">简单</div>
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="CMPLX" data-en-text="CMPLX">复杂</div>
-                    </div>
-                  </div>
-                  <div class="df-lc" data-skill-line data-selects-must="false">
-                    <div data-any="vw240" data-skill-btnname data-en-text="Code">数据</div>
-                    <input type="text" id="input-qrcode-data" value="https://www.google.com">
-                  </div>
-                  <div class="df-cc" data-skill-line data-selects-must="false">
-                    <div class="df-cc" data-btn="skill-main" data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
-                    <div class="df-cc" data-btn="skill-main" data-selects-must data-en-text="Convert to SVG">转为矢量网格</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -1774,7 +1871,7 @@
   <script src="../../../publics/other/FileSaver.min.js"></script>
   <script src="../../../publics/other/jszip.js"></script>
   <script src="../../../publics/other/marked.umd.js"></script>
-  <script src="../../../publics/other/qrcode.min.js"></script>
+  <script src="../../../publics/other/qrcode.js"></script>
   <script src="../../../publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
   <script src="../../../publics/other/supabase-js@2.js"></script>
