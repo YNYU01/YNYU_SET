@@ -1,4 +1,3 @@
-let PULGIN_LOCAL = true;
 let ISWORK_TIME = true;
 let userSkillStar = [];
 
@@ -17,14 +16,34 @@ window.addEventListener('message',(message)=>{
     if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
       info = JSON.parse(info);
     }
+    
+    // 处理 getlocal 返回的消息格式: [data, key]
+    // 这是 storageMix 的异步返回，需要更新 UI
+    if (Array.isArray(messages) && messages.length === 2 && typeof messages[1] === 'string') {
+      const [data, key] = messages;
+      // storageMix 内部已经更新了缓存，这里只需要更新 UI
+      if (key === 'userTheme' && data !== null && data !== undefined) {
+        data == 'light' ? setTheme(true) : setTheme(false);
+        console.log('userTheme:', data);
+        return; // 处理完就返回，不继续处理
+      } else if (key === 'userLanguage' && data !== null && data !== undefined) {
+        data == 'Zh' ? setLanguage(true) : setLanguage(false);
+        return; // 处理完就返回，不继续处理
+      }
+      // 其他 getlocal 返回的键，storageMix 已经处理了缓存，这里不需要额外处理
+      // 但如果是业务相关的键（如 tabPick, userSkillStar 等），需要继续处理
+      if (key === 'tabPick' || key === 'userSkillStar' || key === 'toolsSetFig_user' || key === 'toolsSetFig_users') {
+        // 这些键需要业务处理，继续执行下面的 switch 逻辑
+        // 但需要将 key 作为 type，data 作为 info
+        type = key;
+        info = data;
+      } else {
+        // 其他键已经由 storageMix 处理，不需要额外处理
+        return;
+      }
+    }
+    
     switch (type){
-      case 'userTheme':
-        info == 'light' ? setTheme(true) : setTheme(false);
-        console.log('userTheme:',info);
-      break
-      case 'userLanguage':
-        info == 'Zh' ? setLanguage(true) : setLanguage(false);
-      break
       case 'userResize': reRootSize(info);break
     };
     if(ISWORK_TIME && info){

@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let PULGIN_LOCAL = true;
@@ -62,7 +62,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -688,6 +688,37 @@ input[type="checkbox"]:checked + .tab-top{
   border-radius: 2px;
 }
 
+[data-fileinput="true"]::after{
+  content: '口';
+  color: transparent;
+  line-height: 1.5;
+}
+
+[data-language="En"] [data-fileinput="true"]::after{
+  content: 'QR';
+}
+
+[data-fileinput="false"] [data-fileinput-filename],
+[data-fileinput="true"] [data-fileinput-text]{
+  display: none;
+}
+
+[data-fileinput-filename]{
+  padding-left: 1ch;
+  max-width: 18ch;
+  box-sizing: border-box;
+  transform: skewX(-8deg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 300px) and (max-width: 490px) {
+  [data-fileinput-filename] {
+    max-width: calc(50vw - 50px);
+  }
+}
+
 
 [data-btn]{
   max-width: 580px;
@@ -695,7 +726,6 @@ input[type="checkbox"]:checked + .tab-top{
   border: 1px solid var(--boxBod);
   box-sizing: border-box;
   cursor: var(--pointer,pointer);
-  position: relative;
 }
 
 [data-btn]:hover{
@@ -733,6 +763,10 @@ input[type="checkbox"]:checked + .tab-top{
 
 [data-btn-important="skill"]:hover{
   border-color: var(--themeColor);
+}
+
+[data-btn-dblclick]{
+  position: relative;
 }
 
 [data-btn-dblclick]::after{
@@ -910,10 +944,33 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: var(--themeColor);
 }
 
+[data-qrcode-view-mode="CMPLX"]{
+  filter: brightness(var(--brightness,1)) grayscale(1) contrast(var(--contrast,3));
+}
+
 [data-qrcode-view-box],[data-skewscale-view-box]{
   aspect-ratio: 1/1;
   --ratio: 2;
   border: 1px solid var(--boxBod);
+}
+
+[data-qrcode-grid-view]{
+  border: 1px solid var(--boxBod);
+}
+
+input[type="checkbox"]:checked + [data-qrcode-grid-view] svg{
+  opacity: 0.5;
+}
+
+input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -10%;
+  width: 120%;
+  height: 1px;
+  background: var(--boxBod);
+  transform: rotate(45deg);
 }
 
 [data-qrcode-grid]{
@@ -921,16 +978,23 @@ input[type="checkbox"]:checked + .btn-moreset{
   --grid: 25;
   --grid-w: calc(100% / var(--grid));
   --col: var(--themeColor);
-  border: 1px solid var(--themeColor);
-  border-left-width: 2px;
-  border-bottom-width: 2px;
   border-radius: 2px;
-  background: linear-gradient(to left,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat,
-  linear-gradient(to bottom,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat;
   box-shadow: 0 0 0 999px rgba(0,0,0,0.5);
   position: absolute;
   cursor: move;
   user-select: none;
+}
+
+.qrcode-grid{
+  border: 1px solid var(--themeColor);
+  border-left-width: 2px;
+  border-bottom-width: 2px;
+  background: linear-gradient(to left,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat,
+  linear-gradient(to bottom,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat;
+}
+
+.qrcode-grid-bod{
+  border: 2px solid var(--themeColor);
 }
 
 [data-qrcode-grid]:active{
@@ -960,6 +1024,42 @@ input[type="checkbox"]:checked + .btn-moreset{
   top: 0;
   left: 0;
   transform: translate(-50%,-50%);
+}
+
+[data-qrcode-ruslt]{
+  aspect-ratio: 1/1;
+  width: 100%;
+  height: 100%;
+  border: 4px solid var(--boxBod);
+}
+
+[data-qrcode-convert]{
+  border: 1px solid var(--boxBod);
+  --bod:transparent;
+  order: 2;
+}
+
+input[type="checkbox"]:checked + [data-qrcode-convert]{
+  border: 1px solid var(--themeColor);
+  background: var(--themeColor);
+  --fill: #2e2e2e;
+}
+
+[data-qrcode-convert] + input[type="text"]{
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+
+input[type="checkbox"]:checked + [data-qrcode-convert] + input[type="text"]{
+  opacity: 1;
+  pointer-events: all;
+}
+
+[data-qrcode-re]{
+  padding: 1px;
+  top: 4px;
+  right: 4px;
 }
 
 
@@ -2628,7 +2728,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
         </div>
         <div data-login-error class="font-s12" style="display: none; color: var(--code7); padding: 4px 8px;"></div>
         <div class="df-sc gap8">
-          <div data-btn="main" data-btn-login class="df-cc" style="flex: 1;" data-en-text="LOG IN">登录</div>
+          <div data-btn="main" data-btn-login class="df-cc fl1" data-en-text="LOG IN">登录</div>
           <div data-btn="main" data-btn-show-register class="df-cc fl1 op6" data-en-text="SIGN UP →">注册 →</div>
         </div>
         <div class="df-cc font-s10 op6" style="margin-top: 8px; white-space: normal;">
@@ -2993,7 +3093,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
               <div class="df-lc gap4">
                 <div data-en-text="All">全选</div>
                 <input id="exportset-pickall" type="checkbox"/>
-                <label for="exportset-pickall" class="check gap4" style="width: 16px; height: 16px;">
+                <label for="exportset-pickall" class="check gap4 wh-16">
                   <btn-check-tick></btn-check-tick>
                 </label>
               </div>
@@ -3838,10 +3938,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div-->
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Skew X">左右倾斜</div>
-                    <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
+                    <div data-skewset-x  data-number data-number-value="0" class="df-lc fl1">
                       <input data-input="range" type="range" min="-80" max="80" value="0">
                       <input data-input="value" data-input-must="-80,80" data-input-type="int" 
-                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="0">
+                      type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="0">
                       <div class="df-cc" data-input-unit>°</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -3850,10 +3950,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Skew Y">上下倾斜</div>
-                    <div data-skewset-y data-number data-number-value="0" class="df-lc fl1" style="flex: 1;">
+                    <div data-skewset-y data-number data-number-value="0" class="df-lc fl1">
                       <input data-input="range" type="range" min="-80" max="80" value="0">
                       <input data-input="value" data-input-must="-80,80" data-input-type="int" 
-                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="0">
+                      type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="0">
                       <div class="df-cc" data-input-unit>°</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -3872,10 +3972,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-lc" data-skill-line="">
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右缩放</div>
-                    <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
+                    <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1">
                       <input data-input="range" type="range" min="1" max="200" value="100">
                       <input data-input="value" data-input-must="1,200" data-input-type="int" 
-                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="100">
+                      type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="100">
                       <div class="df-cc" data-input-unit>%</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -3884,10 +3984,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-lc" data-skill-line="">
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale Y">上下缩放</div>
-                    <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1" style="flex: 1;">
+                    <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1">
                       <input data-input="range" type="range" min="1" max="200" value="100">
                       <input data-input="value" data-input-must="1,200" data-input-type="int" 
-                      type="text" class="txt-c fl0 mar-l4" style="width: 30px;" value="100">
+                      type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="100">
                       <div class="df-cc" data-input-unit>%</div>
                       <div data-input-reset data-btn="reset">
                         <btn-reset></btn-reset>
@@ -4158,14 +4258,119 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec>
+                <div class="fl1"  data-skill-sec="QRcodeToSVG">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text></div>
+                      <input type="file" id="input-qrcode-file" accept="image/*" style="display: none;">
+                      <label for="input-qrcode-file"  data-fileinput="false" data-btn="skill-main" class="h100 df-cc font-12">
+                        <div data-fileinput-text data-en-text="Up Local QR"> 上传本地 </div>
+                        <div data-fileinput-filename></div>
+                        <div class="df-cc pos-a op6 mar-a0" style="width: 2ch; right: 0.5ch;">
+                          <btn-add></btn-add>
+                        </div>
+                      </label>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Up QR Layer">上传所选</div>
+                  </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Grid of QR">网格数</div>
+                    <div class="wh14 df-cc">
+                      <input type="checkbox" id="input-qrcode-grid-view">
+                      <label for="input-qrcode-grid-view"  data-qrcode-grid-view class="wh-14 check bod-r4 pos-r">
+                        <btn-view></btn-view>
+                      </label>
                     </div>
+                    <div data-qrcode-grid-num class="df-lc fl1" data-int-value="25" >
+                      <input id="input-qrcode-grid" type="text" value="25" data-input="" data-input-type="int" data-input-must="10,144" style="text-align: center;">
+                      <div class="df-cc" data-input-unit="">▚</div>
+                    </div>
+                    <div data-qrcode-set class="df-lc fl1 gap4" data-radio-value="SMPL" style="min-width:80px;">
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="SMPL" data-en-text="SMPL">简单</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="CMPLX" data-en-text="CMPLX">复杂</div>
+                    </div>
+                  </div>
+                  <div class="bod-d df-ffc gap4 pad4 mar-b4" data-qrcode-view-set style="display: none;">
+                    <div class="df-lc gap4 pad2">
+                      <div data-any="vw240" data-skill-btnname data-en-text="Brightness">亮度</div>
+                      <div data-qrcode-brightness data-number data-number-value="100" class="df-lc fl1">
+                        <input data-input="range" type="range" min="10" max="200" value="100">
+                        <input data-input="value" data-input-must="10,200" data-input-type="int" 
+                        type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="100">
+                        <div class="df-cc" data-input-unit>%</div>
+                        <div data-input-reset data-btn="reset">
+                          <btn-reset></btn-reset>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="df-lc gap4 pad2">
+                      <div data-any="vw240" data-skill-btnname data-en-text="Contrast">对比度</div>
+                      <div data-qrcode-contrast data-number data-number-value="100" class="df-lc fl1">
+                        <input data-input="range" type="range" min="10" max="999" value="300">
+                        <input data-input="value" data-input-must="10,999" data-input-type="int" 
+                        type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="300">
+                        <div class="df-cc" data-input-unit>%</div>
+                        <div data-input-reset data-btn="reset">
+                          <btn-reset></btn-reset>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div data-selects-must data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
+                    <div class="wh100 bsb pos-a pad10 df-cc" style="top: 0; left: 0; z-index: 1;">
+                      <div data-qrcode-grid class="w100 pos-r bsb qrcode-grid">
+                        <div data-qrcode-grid-resize="true" class="fl0 bsb pos-a"></div>
+                      </div>
+                    </div>
+                    <div class="wh100 df-cc mar-0a" data-qrcode-view data-qrcode-view-mode="SMPL">
+                    <!--二维码-->
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line data-selects-must="false">
+                    <div data-any="vw240" data-skill-btnname data-en-text="Custom">自定义</div>
+                    <input type="checkbox" id="input-qrcode-convert">
+                    <label for="input-qrcode-convert" data-qrcode-convert data-tips="auto" data-tips-x="right" data-tips-y="top"
+                    data-tips-text="切换为使用数据生成" data-tips-text-en="Switch to convert by custom data"
+                    class="df-cc fl0 wh-20 bsb bod-r4 pos-r" >
+                      <btn-change></btn-change>
+                    </label>
+                    <input type="text" id="input-qrcode-data" placeholder="https://www.google.com">
+
+                  </div>
+                  <div data-skill-more  class="df-lc pos-r bod-d pad10 gap10 bsb mar-b4">
+                    <div class="df-ffc gap4 fl1">
+                      <div class="df-lc gap4">
+                        <input type="checkbox" id="check-qrcode-default" checked>
+                        <label for="check-qrcode-default" class="wh-14 check op6">
+                          <btn-check></btn-check>
+                        </label>
+                        <div data-en-text="Default">默认</div>
+                      </div>
+                      <div data-qrcode-ruslt="default" class="bsb">
+                        <!--矢量二维码预览-->
+                        
+                      </div>
+                    </div>
+                    <div class="df-ffc gap4 fl1">
+                      <div class="df-lc gap4">
+                        <input type="checkbox" id="check-qrcode-withlogo">
+                        <label for="check-qrcode-withlogo" class="wh-14 check op6">
+                          <btn-check></btn-check>
+                        </label>
+                        <div data-en-text="With logo">带图标</div>
+                      </div>
+                      <div data-qrcode-ruslt="withlogo" class="bsb">
+                        <!--矢量二维码预览（带图标）-->
+                      </div>
+                    </div>
+                    <div data-qrcode-re data-btn class="wh-16 pos-a bod-r4 bsb">
+                      <btn-reup></btn-reup>
+                    </div>
+                  </div>
+                  <div class="df-cc" data-skill-more data-selects-must="false">
+                    <div class="df-cc" data-btn="skill-main" data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -4211,40 +4416,6 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       <div class="df-cc" data-btn="skill-main" data-en-text="Code Example">代码示例</div>
                       <div class="df-cc" data-btn-dblclick  data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
                     </div>
-                  </div>
-                </div>
-                <div class="fl1"  data-skill-sec="QRcodeToSVG">
-                  <div data-skill-star="false">
-                    <btn-star></btn-star>
-                  </div>
-                  <div data-selects-must data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
-                    <div class="wh100 bsb pos-a pad10 df-cc" style="top: 0; left: 0;">
-                      <div data-qrcode-grid class="w100 pos-r bsb">
-                        <div data-qrcode-grid-resize="true" class="fl0 bsb pos-a"></div>
-                      </div>
-                    </div>
-                    <div class="w100 df-cc mar-0a" data-qrcode-view >
-                    <!--二维码-->
-                    </div>
-                  </div>
-                  <div class="df-lc" data-skill-line>
-                    <div data-any="vw240" data-skill-btnname data-en-text="Grid of QR">网格数</div>
-                    <div data-qrcode-grid-num class="df-lc fl1" data-int-value="21" >
-                      <input id="input-qrcode-grid" type="text" value="21" data-input="" data-input-type="int" data-input-must="10,60" style="text-align: center;">
-                      <div class="df-cc" data-input-unit="">▚</div>
-                    </div>
-                    <div data-qrcode-set class="df-lc fl1 gap4" data-radio-value="SMPL" style="min-width:80px;">
-                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="SMPL" data-en-text="SMPL">简单</div>
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="CMPLX" data-en-text="CMPLX">复杂</div>
-                    </div>
-                  </div>
-                  <div class="df-lc" data-skill-line data-selects-must="false">
-                    <div data-any="vw240" data-skill-btnname data-en-text="Code">数据</div>
-                    <input type="text" id="input-qrcode-data" value="https://www.google.com">
-                  </div>
-                  <div class="df-cc" data-skill-line data-selects-must="false">
-                    <div class="df-cc" data-btn="skill-main" data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
-                    <div class="df-cc" data-btn="skill-main" data-selects-must data-en-text="Convert to SVG">转为矢量网格</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -4297,21 +4468,21 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@bcca0b4e71c637317a48df9ce6e7a9d8937a6998/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@666faf0a525569adace2d3fc1135e785d154ca0c/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -4584,6 +4755,9 @@ const DOM = (() => {
     uniformS: () => getById('uniform-set-s'),
     uniformW: () => getById('uniform-set-w'),
     uniformH: () => getById('uniform-set-h'),
+    qrcodeFile: () => getById('input-qrcode-file'),
+    qrcodeGridView: () => getById('input-qrcode-grid-view'),
+    qrcodeRe: () => query('[data-qrcode-re]'),
 
     skillSearchInput: () => getById('skillsearch'),
     skillTypeBox: () => query('[data-skilltype-box]'),
@@ -4819,6 +4993,11 @@ getElementMix('language-1')?.addEventListener('change',()=>{
     DOM.templateBtn.setAttribute('href',`${hrefTemplate}?lan=${ROOT.getAttribute('data-language')}`);
   }
 });
+
+if(window.location.host === '127.0.0.1:5500'){
+  storageMix.get('userTheme') == 'light' ? setTheme(true) : setTheme(false);
+  storageMix.get('userLanguage') == 'Zh' ? setLanguage(true) : setLanguage(false);
+}
 
 window.addEventListener('resize',debounce(()=>{
   if(window.innerWidth < 300){
@@ -7323,11 +7502,88 @@ class QRCodeGridController {
   }
 }
 
+var qrcodeObj = null;
+
+function initQRCode() {
+  const qrcodeElement = getElementMix('data-qrcode-ruslt="default"');
+  if (!qrcodeElement) {
+    console.warn('QRCode: 找不到 id="qrcode" 的元素');
+    return;
+  }
+
+  qrcodeObj = new QRCode(qrcodeElement, {
+    width : 100,
+    height : 100,
+    useSVG: true
+  });
+
+  makeCode();
+
+  if (DOM.qrcodeRe) {
+    DOM.qrcodeRe.addEventListener('click', makeCode);
+  }
+}
+
+function makeCode () {
+  if (!qrcodeObj) return;
+
+  let elText = document.getElementById("input-qrcode-data");
+  if (!elText) return;
+
+  const value = elText.value || "https://www.google.com";
+  qrcodeObj.makeCode(value);
+}
+
+if(document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initQRCode);
+} else {
+
+  initQRCode();
+}
+
 const qrcodeGridController = new QRCodeGridController(
   '[data-qrcode-grid]',
   '[data-qrcode-grid-resize]',
   '[data-qrcode-view-box]'
 );
+
+DOM.qrcodeFile.addEventListener('change',(e)=>{
+  let file = e.target.files[0];
+  DOM.qrcodeFile.nextElementSibling.setAttribute('data-fileinput','true');
+  let filenameBox = DOM.qrcodeFile.nextElementSibling.querySelector('[data-fileinput-filename]');
+
+  filenameBox.textContent = file.name;
+  let imgView = getElementMix('data-qrcode-view');
+  imgView.innerHTML = '';
+  let reader = new FileReader();
+
+  reader.onload = (e)=>{
+    let img = new Image();
+    img.src = e.target.result;
+    imgView.appendChild(img);
+    if(img.width > img.height){
+      img.style.width = '100%';
+      img.style.height = 'auto';
+    }else{
+      img.style.width = 'auto';
+      img.style.height = '100%';
+    };
+
+  };
+  reader.readAsDataURL(file);
+});
+
+DOM.qrcodeGridView.addEventListener('change',(e)=>{
+  let checked = e.target.checked;
+  let grid = getElementMix('data-qrcode-grid');
+  if(checked){
+    grid.classList.remove('qrcode-grid');
+    grid.classList.add('qrcode-grid-bod');
+  }else{
+    grid.classList.remove('qrcode-grid-bod');
+    grid.classList.add('qrcode-grid');
+  }
+});
 
 function reSelectComp(info){
 
@@ -7382,7 +7638,6 @@ function viewPage(name){
   let inputEvent = new Event('change',{bubbles:true});
   tab.dispatchEvent(inputEvent);
 };
-
 
 getUserMix.register('tab', getUserTab);
 getUserMix.register('color', getUserColor);
@@ -7439,6 +7694,12 @@ function getUserNumber(node){
   if(node.getAttribute('data-scaleset-y') !== null){
     node.parentNode.parentNode.parentNode.style.setProperty('--scaleY',number)
     sendTransform();
+  };
+  if(node.getAttribute('data-qrcode-brightness') !== null){
+    getElementMix('data-qrcode-view').style.setProperty('--brightness',number/100);
+  };
+  if(node.getAttribute('data-qrcode-contrast') !== null){
+    getElementMix('data-qrcode-view').style.setProperty('--contrast',number/100);
   };
 };
 
@@ -7565,6 +7826,16 @@ function getUserRadio(node){
       }else{
         vars.style.display = 'none';
         styles.style.display = 'flex';
+      };
+    };
+
+    if(node.getAttribute('data-qrcode-set') !== null){
+      getElementMix('data-qrcode-view').setAttribute('data-qrcode-view-mode',userRadio);
+      let viewset = getElementMix('data-qrcode-view-set');
+      if(userRadio == 'CMPLX'){
+        viewset.style.display = 'flex';
+      }else{
+        viewset.style.display = 'none';
       };
     };
   };

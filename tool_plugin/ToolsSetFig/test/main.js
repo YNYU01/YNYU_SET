@@ -313,7 +313,7 @@ function revokeImageObjectURL(url){
 // 窗口加载事件
 window.addEventListener('load',()=>{
   let time = getTime('HH')[0];
-  if(time*1 > 20 && !PULGIN_LOCAL){
+  if(time*1 > 20 && IS_PLUGIN_ENV){
     nullPage();
     ISWORK_TIME = false;
     addToUserTips('worktime');
@@ -360,6 +360,7 @@ getElementMix('language-1')?.addEventListener('change',()=>{
   }
 });
 
+//链路参数优先级高于存储值
 if(QUERY_PARAMS){
   if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'light'){
     ROOT.setAttribute('data-theme','light');
@@ -367,14 +368,27 @@ if(QUERY_PARAMS){
   }else if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'dark'){
     ROOT.setAttribute('data-theme','dark');
     storageMix.set('userTheme','dark');
-    
+  }
+  if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
+    ROOT.setAttribute('data-language','Zh');
+    storageMix.set('userLanguage','Zh');
+  }else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
+    ROOT.setAttribute('data-language','En');
+    storageMix.set('userLanguage','En');
   }
 }
 
-if(window.location.host === '127.0.0.1:5500' || !ISLOCAL){
-  storageMix.get('userTheme') == 'light' ? setTheme(true) : setTheme(false);
-  storageMix.get('userLanguage') == 'Zh' ? setLanguage(true) : setLanguage(false);
+//run.js初始化+链路参数处理后，此处等于滞后触发setTheme和setLanguage做兜底
+const userTheme = storageMix.get('userTheme');
+const userLanguage = storageMix.get('userLanguage');
+if(userTheme){
+  userTheme == 'light' ? setTheme(true) : setTheme(false);
 }
+if(userLanguage){
+  userLanguage == 'Zh' ? setLanguage(true) : setLanguage(false);
+}
+
+
 
 // 窗口大小调整事件
 window.addEventListener('resize',/*防抖*/debounce(()=>{

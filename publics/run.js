@@ -30,35 +30,182 @@ if (window.location.protocol === 'file:' || window.location.hostname === 'localh
 
 let PLUGINAPP = ROOT.getAttribute('data-plugin');
 
+let IS_PLUGIN_ENV = false;
+//插件也要兼容非插件的其他生产环境
+if (PLUGINAPP && !ISLOCAL) {
+  const hostname = window.location.hostname;
+  const protocol = window.location.protocol;
+  
+  const isStandardWebDomain = hostname && 
+    (hostname.includes('.') || hostname === '127.0.0.1' || /^\d+\.\d+\.\d+\.\d+$/.test(hostname));
+  
+  // 如果是标准 Web 域名，则不是插件环境；否则是插件环境
+  if ((protocol === 'http:' || protocol === 'https:') && isStandardWebDomain) {
+    IS_PLUGIN_ENV = false; // 标准 Web 环境，使用 localStorage
+  } else {
+    IS_PLUGIN_ENV = true; // 插件环境（可能是 Figma、MasterGo 等），使用插件存储 API
+  }
+}
+
 /**
  * 使localStorage兼容浏览器/插件环境
  */
-var storageMix = {
-  get: (key)=>{
-    if(PLUGINAPP && !ISLOCAL){
-      if(typeof toolMessage === 'function'){
-        toolMessage([key,'getlocal'],PLUGINAPP);
-      };
-    } else {
-      return window.localStorage.getItem(key);
-    }
-  },
-  set: (key,value)=>{
-    if(PLUGINAPP && !ISLOCAL){
-      try {
-        if(typeof toolMessage === 'function'){
-          toolMessage([[key,value],'setlocal'],PLUGINAPP);
+var storageMix = (function() {
+  // 插件环境下的内存缓存
+  const pluginCache = new Map();
+  // 待处理的异步请求回调
+  const pendingRequests = new Map();
+  // 是否已初始化消息监听
+  let messageListenerInitialized = false;
+  
+  // 初始化插件消息监听（仅插件环境）
+  function initPluginMessageListener() {
+    if (messageListenerInitialized || !IS_PLUGIN_ENV) return;
+    
+    window.addEventListener('message', (message) => {
+      // 检查是否是插件返回的存储数据
+      // 消息格式可能是: {pluginMessage: [data, key]} 或 {pluginMessage: {pluginMessage: [data, key]}}
+      if (message.data && message.data.pluginMessage) {
+        let pluginMsg = message.data.pluginMessage;
+        
+        // 处理双重包装的情况
+        if (pluginMsg && pluginMsg.pluginMessage) {
+          pluginMsg = pluginMsg.pluginMessage;
         }
-      } catch(e) {
-        // toolMessage 未定义或调用失败时静默处理
-        console.warn('toolMessage not available:', e);
-      };
-    } else {
-      window.localStorage.setItem(key,value);
-    };
+        
+        // 检查是否是 getlocal 的返回格式: [data, key]
+        // 其中 data 是存储的值，key 是存储的键名
+        if (Array.isArray(pluginMsg) && pluginMsg.length === 2 && typeof pluginMsg[1] === 'string') {
+          const [data, key] = pluginMsg;
+          // 更新缓存
+          pluginCache.set(key, data);
+          // 触发等待的回调
+          if (pendingRequests.has(key)) {
+            const callbacks = pendingRequests.get(key);
+            callbacks.forEach(cb => {
+              if (typeof cb === 'function') {
+                cb(data);
+              }
+            });
+            pendingRequests.delete(key);
+          }
+        }
+      }
+    });
+    
+    messageListenerInitialized = true;
   }
-};
+  
+  return {
+    get: (key) => {
+      // 非插件环境（文件协议、本地服务器、HTTP/HTTPS）：直接使用 localStorage
+      if (!IS_PLUGIN_ENV) {
+        try {
+          return window.localStorage.getItem(key);
+        } catch(e) {
+          console.warn('localStorage.getItem failed:', e);
+          return null;
+        }
+      }
+      
+      // 插件环境：先检查缓存，如果没有则请求并返回 null（异步）
+      initPluginMessageListener();
+      
+      // 如果缓存中有，直接返回
+      if (pluginCache.has(key)) {
+        return pluginCache.get(key);
+      }
+      
+      // 缓存中没有，发送请求（异步，不等待结果）
+      if (typeof toolMessage === 'function') {
+        toolMessage([key, 'getlocal'], PLUGINAPP);
+      }
+      
+      // 返回 null，实际值会通过 message 事件异步更新到缓存
+      return null;
+    },
+    
+    set: (key, value) => {
+      // 非插件环境（文件协议、本地服务器、HTTP/HTTPS）：直接使用 localStorage
+      if (!IS_PLUGIN_ENV) {
+        try {
+          window.localStorage.setItem(key, value);
+          return true;
+        } catch(e) {
+          console.warn('localStorage.setItem failed:', e);
+          return false;
+        }
+      }
+      
+      // 插件环境：更新缓存并发送请求
+      initPluginMessageListener();
+      
+      // 立即更新缓存（乐观更新）
+      pluginCache.set(key, value);
+      
+      // 发送异步请求
+      try {
+        if (typeof toolMessage === 'function') {
+          toolMessage([[key, value], 'setlocal'], PLUGINAPP);
+        }
+        return true;
+      } catch(e) {
+        console.warn('toolMessage not available:', e);
+        return false;
+      }
+    },
+    
+    // 异步获取（仅插件环境，用于需要等待结果的场景）
+    getAsync: (key, callback) => {
+      if (!IS_PLUGIN_ENV) {
+        // 非插件环境，同步返回
+        const value = window.localStorage.getItem(key);
+        if (callback) callback(value);
+        return Promise.resolve(value);
+      }
+      
+      initPluginMessageListener();
+      
+      // 如果缓存中有，立即返回
+      if (pluginCache.has(key)) {
+        const value = pluginCache.get(key);
+        if (callback) callback(value);
+        return Promise.resolve(value);
+      }
+      
+      // 缓存中没有，注册回调并发送请求
+      if (!pendingRequests.has(key)) {
+        pendingRequests.set(key, []);
+      }
+      pendingRequests.get(key).push(callback);
+      
+      // 发送请求
+      if (typeof toolMessage === 'function') {
+        toolMessage([key, 'getlocal'], PLUGINAPP);
+      }
+      
+      // 返回 Promise
+      return new Promise((resolve) => {
+        if (!pendingRequests.has(key)) {
+          pendingRequests.set(key, []);
+        }
+        pendingRequests.get(key).push((value) => {
+          resolve(value);
+        });
+      });
+    },
+    
+    // 清除缓存（用于调试或重置）
+    clearCache: () => {
+      pluginCache.clear();
+      pendingRequests.clear();
+    }
+  };
+})();
 
+let QUERY_PARAMS = getQueryParams();
+
+//非插件环境初始化,实际由yn_comp.js/插件的main.js触发setTheme和setLanguage
 if(!PLUGINAPP){
   if(storageMix.get('userTheme') == 'light'){
     ROOT.setAttribute("data-theme","light");
@@ -78,60 +225,32 @@ if(!PLUGINAPP){
     storageMix.set('userLanguage','En');
     //console.log('userLanguage not set, set to En');
   };
-}
 
-
-let QUERY_PARAMS = getQueryParams();
-if(QUERY_PARAMS){
-  if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
-    ROOT.setAttribute('data-language','Zh');
-    storageMix.set('userLanguage','Zh');
-  }else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
-    ROOT.setAttribute('data-language','En');
-    storageMix.set('userLanguage','En');
-    //console.log('QUERY_PARAMS: lan=en, set to En');
+  //链路参数优先级高于存储值
+  if(QUERY_PARAMS){
+    if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
+      ROOT.setAttribute('data-language','Zh');
+      storageMix.set('userLanguage','Zh');
+    }else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
+      ROOT.setAttribute('data-language','En');
+      storageMix.set('userLanguage','En');
+    }
+    if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'light'){
+      ROOT.setAttribute('data-theme','light');
+      storageMix.set('userTheme','light');
+    }else if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'dark'){
+      ROOT.setAttribute('data-theme','dark');
+      storageMix.set('userTheme','dark');
+    }
   }
 }
+
+
+
 
 //console.log(getUnicode(COPYRIGHT_ZH))
 
 let USER_VISITOR = null;
-
-/*
-if(!ISLOCAL){
-fetch('https://ipapi.co/json/')
-  .then(async (response) => response.json())
-  .then(data => {
-      USER_VISITOR = data;
-      const country = data.country_name;
-      const countryCode = data.country_code;
-      if(countryCode !== "CN"){
-        let links = document.querySelectorAll('link');
-        let scripts = document.querySelectorAll('script');
-  
-        links.forEach(item => {
-          let oldHref = item.getAttribute('href');
-          if(oldHref && !oldHref.includes('ynyuset.cn')){
-            // 只替换域名中的 .cn，但排除 ynyuset.cn
-            item.setAttribute('href',oldHref.replace(/(https?:\/\/[^\/]+)\.cn(\/|$)/g, '$1$2'));
-          }
-        });
-        scripts.forEach(item => {
-          let oldSrc = item.getAttribute('src');
-          if(oldSrc && !oldSrc.includes('ynyuset.cn')){
-            // 只替换域名中的 .cn，但排除 ynyuset.cn
-            item.setAttribute('src',oldSrc.replace(/(https?:\/\/[^\/]+)\.cn(\/|$)/g, '$1$2'));
-          };
-        });
-
-        console.log(`访问者国家/地区：${country} (${countryCode}),已切换对应资源链接`)
-      }
-  })
-  .catch(e => {
-    console.log(e)
-  });
-}
-  */
 
 // 获取用户位置信息的函数
 function fetchUserLocation() {
