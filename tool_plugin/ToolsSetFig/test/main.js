@@ -360,6 +360,17 @@ getElementMix('language-1')?.addEventListener('change',()=>{
   }
 });
 
+if(QUERY_PARAMS){
+  if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'light'){
+    ROOT.setAttribute('data-theme','light');
+    storageMix.set('userTheme','light');
+  }else if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'dark'){
+    ROOT.setAttribute('data-theme','dark');
+    storageMix.set('userTheme','dark');
+    
+  }
+}
+
 if(window.location.host === '127.0.0.1:5500' || !ISLOCAL){
   storageMix.get('userTheme') == 'light' ? setTheme(true) : setTheme(false);
   storageMix.get('userLanguage') == 'Zh' ? setLanguage(true) : setLanguage(false);
