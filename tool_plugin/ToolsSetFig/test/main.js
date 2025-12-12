@@ -360,7 +360,7 @@ getElementMix('language-1')?.addEventListener('change',()=>{
   }
 });
 
-if(window.location.host === '127.0.0.1:5500'){
+if(window.location.host === '127.0.0.1:5500' || !ISLOCAL){
   storageMix.get('userTheme') == 'light' ? setTheme(true) : setTheme(false);
   storageMix.get('userLanguage') == 'Zh' ? setLanguage(true) : setLanguage(false);
 }
