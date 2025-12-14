@@ -906,3 +906,17 @@ class btnlogin extends HTMLElement {
   }
 };
 customElements.define('btn-login', btnlogin);
+
+class btnscan extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+    ${icon(20)}
+      <path ${pathS(null,'auto','var(--arrow-w,2)')} d="M0 10H20"/>
+      <path ${pathS(null,'auto','var(--arrow-w,2)')} d="M2 13V15C2 16.6569 3.34315 18 5 18H8M18 13V15C18 16.6569 16.6569 18 15 18H12"/>
+      <path ${pathS(null,'auto','var(--arrow-w,2)')} d="M18 7V5C18 3.34315 16.6569 2 15 2H12M2 7V5C2 3.34315 3.34315 2 5 2H8"/>
+    </svg>
+      `;
+  }
+};
+customElements.define('btn-scan', btnscan);

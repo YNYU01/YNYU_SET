@@ -86,6 +86,7 @@ const DOM = (() => {
     qrcodeFile: () => getById('input-qrcode-file'),
     qrcodeGridView: () => getById('input-qrcode-grid-view'),
     qrcodeRe: () => query('[data-qrcode-re]'),
+    qrcodeConvert: () => query('[data-qrcode-convert]'),
     
     // 技能相关
     skillSearchInput: () => getById('skillsearch'),
@@ -313,12 +314,14 @@ function revokeImageObjectURL(url){
 // 窗口加载事件
 window.addEventListener('load',()=>{
   let time = getTime('HH')[0];
+  /*
   if(time*1 > 20 && IS_PLUGIN_ENV){
     nullPage();
     ISWORK_TIME = false;
     addToUserTips('worktime');
     return;
   };
+  */
   setTimeout(() => {
     /*clear*/
     let tabs = ['create','export','editor','variable','sheet','more tools']
@@ -2634,6 +2637,7 @@ DOM.skillStar.forEach(item =>{
   });
 });
 function moveSkillStar(stars){
+  if(stars.length == 0) return;
   stars.forEach(item => {
     let skillNode = document.querySelector(`[data-skill-sec="${item}"]`);
     if(skillNode){
@@ -3043,9 +3047,8 @@ class QRCodeGridController {
 var qrcodeObj = null;
 
 function initQRCode() {
-  const qrcodeElement = getElementMix('data-qrcode-ruslt="default"');
+  const qrcodeElement = getElementMix('data-qrcode-ruslt="data"');
   if (!qrcodeElement) {
-    console.warn('QRCode: 找不到 id="qrcode" 的元素');
     return;
   }
   
@@ -3060,7 +3063,13 @@ function initQRCode() {
   
   // 添加事件监听器
   if (DOM.qrcodeRe) {
-    DOM.qrcodeRe.addEventListener('click', makeCode);
+    // 刷新模式：如果有图片则识别，然后根据输入框的值生成二维码
+    DOM.qrcodeRe.addEventListener('click', async () => {
+      // 先尝试识别图片中的二维码（如果有图片）
+      await convertImageToQRCode(null, 'refresh');
+      // 无论识别成功与否，都根据输入框的值生成二维码
+      makeCode();
+    });
   }
 }
 
@@ -3090,19 +3099,616 @@ const qrcodeGridController = new QRCodeGridController(
   '[data-qrcode-view-box]'
 );
 
-DOM.qrcodeFile.addEventListener('change',(e)=>{
+/**
+ * 将图片转换为像素网格（未识别到二维码时使用）
+ * 从 data-qrcode-grid 计算裁切区域，进行二值化并生成 SVG
+ * @param {HTMLImageElement} img - 图片元素
+ * @param {HTMLElement} imgView - [data-qrcode-view] 容器元素
+ * @returns {Promise<boolean>} 是否成功
+ */
+async function convertImageToPixelGrid(img, imgView){
+  //console.log('convertImageToPixelGrid: 函数开始执行', {img, imgView});
+  try{
+    // 获取相关元素
+    let viewBox = getElementMix('data-qrcode-view-box');
+    let grid = getElementMix('data-qrcode-grid');
+    let gridNumInput = document.getElementById('input-qrcode-grid');
+    let imageResult = getElementMix('data-qrcode-ruslt="image"');
+    
+    if(!viewBox || !grid || !gridNumInput || !imageResult){
+      console.log('convertImageToPixelGrid: 缺少必要元素', {
+        viewBox: !!viewBox,
+        grid: !!grid,
+        gridNumInput: !!gridNumInput,
+        imageResult: !!imageResult
+      });
+      // 尝试用备用方法查找元素
+      if(!viewBox) viewBox = document.querySelector('[data-qrcode-view-box]');
+      if(!grid) grid = document.querySelector('[data-qrcode-grid]');
+      if(!gridNumInput) gridNumInput = document.getElementById('input-qrcode-grid');
+      if(!imageResult) imageResult = document.querySelector('[data-qrcode-ruslt="image"]');
+      
+      if(!viewBox || !grid || !gridNumInput || !imageResult){
+        console.log('convertImageToPixelGrid: 备用查找也失败');
+        return false;
+      }
+      console.log('convertImageToPixelGrid: 使用备用方法找到了元素');
+    }
+    
+    // 获取网格数
+    let gridNum = parseInt(gridNumInput.value) || 25;
+    if(gridNum < 10 || gridNum > 144) gridNum = 25;
+    
+    // 获取 viewBox 和 grid 的位置和尺寸
+    let viewBoxRect = viewBox.getBoundingClientRect();
+    let gridRect = grid.getBoundingClientRect();
+    
+    // 计算 grid 相对于 viewBox 的位置
+    let gridLeft = gridRect.left - viewBoxRect.left;
+    let gridTop = gridRect.top - viewBoxRect.top;
+    let gridWidth = gridRect.width;
+    let gridHeight = gridRect.height;
+    
+    // 确保是正方形（使用较小的边）
+    let gridSize = Math.min(gridWidth, gridHeight);
+    
+    // 获取图片的实际显示位置和尺寸
+    let imgDisplayRect = img.getBoundingClientRect();
+    let imgLeft = imgDisplayRect.left - viewBoxRect.left;
+    let imgTop = imgDisplayRect.top - viewBoxRect.top;
+    let imgWidth = imgDisplayRect.width;
+    let imgHeight = imgDisplayRect.height;
+    
+    // 计算图片中心点（相对于 viewBox）
+    let imgCenterX = imgLeft + imgWidth / 2;
+    let imgCenterY = imgTop + imgHeight / 2;
+    
+    // 计算 grid 中心点（相对于 viewBox）
+    let gridCenterX = gridLeft + gridSize / 2;
+    let gridCenterY = gridTop + gridSize / 2;
+    
+    // 计算 grid 相对于图片中心点的偏移
+    let offsetX = gridCenterX - imgCenterX;
+    let offsetY = gridCenterY - imgCenterY;
+    
+    // 计算裁切区域（grid 相对于图片的位置）
+    // 图片中心点在图片的 (imgWidth/2, imgHeight/2)
+    // grid 中心点相对于图片中心的偏移是 (offsetX, offsetY)
+    // 所以 grid 左上角相对于图片左上角的位置是：
+    let cropX = imgWidth / 2 + offsetX - gridSize / 2;
+    let cropY = imgHeight / 2 + offsetY - gridSize / 2;
+    let cropSize = gridSize;
+    
+    // 确保裁切区域在图片范围内（超出部分保持透明）
+    if(cropX < 0) cropX = 0;
+    if(cropY < 0) cropY = 0;
+    if(cropX + cropSize > imgWidth) cropSize = imgWidth - cropX;
+    if(cropY + cropSize > imgHeight) cropSize = imgHeight - cropY;
+    
+    // 确保裁切尺寸有效
+    if(cropSize <= 0){
+      console.log('convertImageToPixelGrid: 裁切尺寸无效', {
+        cropX, cropY, cropSize,
+        imgWidth, imgHeight, gridSize,
+        offsetX, offsetY, imgCenterX, imgCenterY, gridCenterX, gridCenterY
+      });
+      return false;
+    }
+    
+    // 获取图片数据（如果是 EDIT 模式，使用 DomToImagedata 以保留滤镜效果）
+    let imageData;
+    let viewMode = imgView.getAttribute('data-qrcode-view-mode');
+    
+    if(viewMode === 'EDIT'){
+      // EDIT 模式：传入的是 imgView（正方形容器），grid 的大小和位置直接就是裁切的大小和位置
+      if(typeof tool === 'undefined' || !tool.DomToImagedata){
+        console.error('tool.DomToImagedata 未定义');
+        return false;
+      }
+      
+      try{
+        // 直接使用 DomToImagedata 获取 imgView 的数据
+        let imgDataResult = await tool.DomToImagedata(imgView, {scale: 1});
+        
+        if(imgDataResult && imgDataResult.u8a && imgDataResult.width && imgDataResult.height){
+          // 创建临时 canvas 来解码图片数据
+          let tempCanvas = document.createElement('canvas');
+          let tempCtx = tempCanvas.getContext('2d');
+          let tempImg = new Image();
+          let blobUrl = URL.createObjectURL(new Blob([imgDataResult.u8a], {type: 'image/png'}));
+          
+          await new Promise((resolve, reject) => {
+            tempImg.onload = resolve;
+            tempImg.onerror = reject;
+            tempImg.src = blobUrl;
+          });
+          
+          tempCanvas.width = imgDataResult.width;
+          tempCanvas.height = imgDataResult.height;
+          tempCtx.drawImage(tempImg, 0, 0);
+          
+          // EDIT 模式：grid 的位置直接就是裁切位置，不需要换算
+          // 因为 imgView 是正方形，grid 也在 viewBox 中，位置已经对齐
+          // 计算 grid 相对于 imgView 的像素位置（都是相对于 viewBox 的，所以比例相同）
+          let viewBoxSize = Math.min(viewBoxRect.width, viewBoxRect.height);
+          let scale = imgDataResult.width / viewBoxSize; // imgView 的实际尺寸 / 显示尺寸
+          
+          let actualCropX = Math.floor(gridLeft * scale);
+          let actualCropY = Math.floor(gridTop * scale);
+          let actualCropSize = Math.floor(gridSize * scale);
+          
+          // 确保不超出边界
+          actualCropX = Math.max(0, Math.min(actualCropX, imgDataResult.width - 1));
+          actualCropY = Math.max(0, Math.min(actualCropY, imgDataResult.height - 1));
+          actualCropSize = Math.min(actualCropSize, imgDataResult.width - actualCropX);
+          actualCropSize = Math.min(actualCropSize, imgDataResult.height - actualCropY);
+          
+          imageData = tempCtx.getImageData(actualCropX, actualCropY, actualCropSize, actualCropSize);
+          
+          URL.revokeObjectURL(blobUrl);
+        }else{
+          return false;
+        }
+      }catch(err){
+        console.error('DomToImagedata 失败:', err);
+        return false;
+      }
+    }else{
+      // 非 EDIT 模式：直接从 img 获取数据
+      let canvas = document.createElement('canvas');
+      let ctx = canvas.getContext('2d');
+      
+      await new Promise((resolve, reject) => {
+        if(img.complete){
+          resolve();
+        }else{
+          img.onload = resolve;
+          img.onerror = reject;
+        }
+      });
+      
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      ctx.drawImage(img, 0, 0);
+      
+      // 计算实际的裁切区域（需要考虑图片缩放）
+      let scaleX = canvas.width / imgWidth;
+      let scaleY = canvas.height / imgHeight;
+      let actualCropX = Math.floor(cropX * scaleX);
+      let actualCropY = Math.floor(cropY * scaleY);
+      let actualCropSize = Math.floor(cropSize * Math.min(scaleX, scaleY));
+      
+      // 裁切图片（确保不超出边界）
+      actualCropX = Math.max(0, Math.min(actualCropX, canvas.width - 1));
+      actualCropY = Math.max(0, Math.min(actualCropY, canvas.height - 1));
+      actualCropSize = Math.min(actualCropSize, canvas.width - actualCropX);
+      actualCropSize = Math.min(actualCropSize, canvas.height - actualCropY);
+      
+      imageData = ctx.getImageData(actualCropX, actualCropY, actualCropSize, actualCropSize);
+    }
+    
+    // 二值化处理并生成模块矩阵
+    // 使用特殊值：0=白色/透明, 1=黑色, 2=透明（明确标记）
+    let dimension = gridNum;
+    let moduleMatrix = {
+      width: dimension,
+      height: dimension,
+      data: new Uint8ClampedArray(dimension * dimension),
+      get: function(x, y) {
+        if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+          return false;
+        }
+        let value = this.data[y * this.width + x];
+        // 返回 false（白色/透明）或 true（黑色），值 2 表示透明
+        return value === 1;
+      },
+      isTransparent: function(x, y) {
+        if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+          return false;
+        }
+        return this.data[y * this.width + x] === 2;
+      }
+    };
+    
+    // 计算阈值（使用 Otsu 算法或简单平均）
+    let totalGray = 0;
+    let pixelCount = 0;
+    for (let i = 0; i < imageData.data.length; i += 4) {
+      let alpha = imageData.data[i + 3];
+      // 只计算非透明像素的灰度
+      if (alpha > 10) { // alpha 阈值，避免几乎透明的像素影响阈值计算
+        let gray = 0.2126 * imageData.data[i] + 
+                   0.7152 * imageData.data[i + 1] + 
+                   0.0722 * imageData.data[i + 2];
+        totalGray += gray;
+        pixelCount++;
+      }
+    }
+    let threshold = pixelCount > 0 ? totalGray / pixelCount : 128;
+    
+    // 将图片数据转换为模块矩阵
+    let imgSize = Math.min(imageData.width, imageData.height);
+    let moduleSize = imgSize / dimension;
+    
+    for (let y = 0; y < dimension; y++) {
+      for (let x = 0; x < dimension; x++) {
+        // 计算该模块在图片中的像素范围
+        let startX = Math.floor(x * moduleSize);
+        let endX = Math.floor((x + 1) * moduleSize);
+        let startY = Math.floor(y * moduleSize);
+        let endY = Math.floor((y + 1) * moduleSize);
+        
+        // 采样该模块区域内的像素点，计算平均灰度值
+        let sumGray = 0;
+        let count = 0;
+        
+        let sumAlpha = 0;
+        for (let py = startY; py < endY && py < imageData.height; py++) {
+          for (let px = startX; px < endX && px < imageData.width; px++) {
+            let idx = (py * imageData.width + px) * 4;
+            if (idx < imageData.data.length) {
+              let alpha = imageData.data[idx + 3];
+              sumAlpha += alpha;
+              
+              // 只计算非透明像素的灰度
+              if (alpha > 10) {
+                let gray = 0.2126 * imageData.data[idx] + 
+                           0.7152 * imageData.data[idx + 1] + 
+                           0.0722 * imageData.data[idx + 2];
+                sumGray += gray;
+                count++;
+              }
+            }
+          }
+        }
+        
+        // 计算平均 alpha 值
+        let avgAlpha = sumAlpha / (moduleSize * moduleSize);
+        
+        // 如果平均 alpha 值很低（透明），标记为透明
+        if (avgAlpha < 128) {
+          moduleMatrix.data[y * dimension + x] = 2; // 透明
+        } else if (count > 0) {
+          // 根据平均灰度值决定黑白
+          let avgGray = sumGray / count;
+          moduleMatrix.data[y * dimension + x] = avgGray < threshold ? 1 : 0; // 1=黑色, 0=白色
+        } else {
+          // 如果无法采样，设为透明
+          moduleMatrix.data[y * dimension + x] = 2; // 透明
+        }
+      }
+    }
+    
+    // 生成 SVG（普通像素格子不遵循反色原则，直接按图片实际颜色生成，并处理透明区域）
+    // jsQRCorrect.matrixToSVG 可能不支持透明，所以手动生成
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${dimension} ${dimension}" width="100%" height="100%">`;
+    svg += `<defs>`;
+    svg += `<rect id="cell-fill" fill="#000000" width="1" height="1"/>`;
+    svg += `<rect id="cell-bg" fill="#ffffff" width="1" height="1"/>`;
+    svg += `<rect id="cell-transparent" fill="transparent" width="1" height="1"/>`;
+    svg += `</defs>`;
+    
+    for (let y = 0; y < dimension; y++) {
+      for (let x = 0; x < dimension; x++) {
+        let templateId;
+        if (moduleMatrix.isTransparent(x, y)) {
+          templateId = 'cell-transparent';
+        } else {
+          let isFill = moduleMatrix.get(x, y);
+          templateId = isFill ? 'cell-fill' : 'cell-bg';
+        }
+        svg += `<use xlink:href="#${templateId}" x="${x}" y="${y}"/>`;
+      }
+    }
+    
+    svg += '</svg>';
+    imageResult.innerHTML = svg;
+    return true;
+  }catch(err){
+    console.error('像素网格转换失败:', err);
+    console.error('错误堆栈:', err.stack);
+    return false;
+  }
+}
+
+/**
+ * 将图片转换为二维码（独立功能函数）
+ * 包括：硬编码定位区域、单位量识别数据区域、修改对应行列的黑白
+ * 用于刷新矢量二维码
+ * @param {HTMLImageElement} img - 要转换的图片元素（可选，如果不提供则从 [data-qrcode-view] 中获取）
+ * @param {string} triggerType - 触发类型: 'upload'（上传文件，未识别到生成像素）| 'scan'（扫描，未识别到不生成）| 'refresh'（刷新，未识别到生成像素）
+ * @returns {Promise<boolean>} 是否成功
+ */
+async function convertImageToQRCode(img = null, triggerType = 'upload'){
+  // 检查 jsQRCorrect 是否可用
+  if(typeof jsQRCorrect === 'undefined'){
+    console.error('jsQRCorrect 未加载，请确保已引入 jsQR_correct.js');
+    tipsAll(['识别失败：缺少必要的库','Recognition failed: Missing library'], 3000);
+    return false;
+  }
+  
+  // 获取图片元素和视图模式
+  let imgView = getElementMix('data-qrcode-view');
+  let viewMode = imgView.getAttribute('data-qrcode-view-mode') || 'AUTO';
+  
+  if(!img){
+    img = imgView.querySelector('img');
+  }
+  if(!img || !img.src){
+    // 刷新模式：如果没有图片/数据，静默返回（不提示）
+    if(triggerType === 'refresh'){
+      return false;
+    }
+    // 其他模式：提示需要先上传图片
+    tipsAll(['请先上传二维码图片','Please upload a QR code image first'], 3000);
+    return false;
+  }
+  
+  // 获取目标元素
+  let imageResult = getElementMix('data-qrcode-ruslt="image"');
+  let inputData = document.getElementById("input-qrcode-data");
+  
+  try{
+    let imageData;
+    let correctResult;
+    
+    // 根据模式获取图像数据
+    if(viewMode === 'EDIT'){
+      // 编辑模式：传入 img 的父容器（带滤镜）到 domtoimgdata，按裁剪框裁剪
+      if(typeof tool === 'undefined' || !tool.DomToImagedata){
+        console.error('tool.DomToImagedata 未定义');
+        tipsAll(['缺少必要的工具库','Missing required library'], 3000);
+        return false;
+      }
+      
+      // 获取 grid 的裁剪区域
+      let viewBox = getElementMix('data-qrcode-view-box');
+      let grid = getElementMix('data-qrcode-grid');
+      if(!viewBox || !grid){
+        tipsAll(['缺少必要的元素','Missing required elements'], 3000);
+        return false;
+      }
+      
+      let viewBoxRect = viewBox.getBoundingClientRect();
+      let gridRect = grid.getBoundingClientRect();
+      let gridLeft = gridRect.left - viewBoxRect.left;
+      let gridTop = gridRect.top - viewBoxRect.top;
+      let gridSize = Math.min(gridRect.width, gridRect.height);
+      let viewBoxSize = Math.min(viewBoxRect.width, viewBoxRect.height);
+      
+      // 计算 domScale，确保截图区域至少有 256*256 像素
+      // 例如：如果截图区域是 25.6*25.6，domScale 需要设置为 10 (25.6 * 10 = 256)
+      let domScale = Math.ceil(256 / gridSize);
+      
+      // 使用 DomToImagedata 获取带滤镜的图片数据
+      let imgDataResult = await tool.DomToImagedata(imgView, {scale: domScale});
+      if(!imgDataResult || !imgDataResult.u8a || !imgDataResult.width || !imgDataResult.height){
+        tipsAll(['获取图片数据失败','Failed to get image data'], 3000);
+        return false;
+      }
+      
+      // 创建临时 canvas 来解码图片数据
+      let tempCanvas = document.createElement('canvas');
+      let tempCtx = tempCanvas.getContext('2d');
+      let tempImg = new Image();
+      let blobUrl = URL.createObjectURL(new Blob([imgDataResult.u8a], {type: 'image/png'}));
+      
+      await new Promise((resolve, reject) => {
+        tempImg.onload = resolve;
+        tempImg.onerror = reject;
+        tempImg.src = blobUrl;
+      });
+      
+      tempCanvas.width = imgDataResult.width;
+      tempCanvas.height = imgDataResult.height;
+      tempCtx.drawImage(tempImg, 0, 0);
+      
+      // 按裁剪框裁剪
+      let scale = imgDataResult.width / viewBoxSize;
+      let actualCropX = Math.floor(gridLeft * scale);
+      let actualCropY = Math.floor(gridTop * scale);
+      let actualCropSize = Math.floor(gridSize * scale);
+      
+      actualCropX = Math.max(0, Math.min(actualCropX, imgDataResult.width - 1));
+      actualCropY = Math.max(0, Math.min(actualCropY, imgDataResult.height - 1));
+      actualCropSize = Math.min(actualCropSize, imgDataResult.width - actualCropX);
+      actualCropSize = Math.min(actualCropSize, imgDataResult.height - actualCropY);
+      
+      imageData = tempCtx.getImageData(actualCropX, actualCropY, actualCropSize, actualCropSize);
+      URL.revokeObjectURL(blobUrl);
+      
+      // 使用 jsQRCorrect 识别二维码
+      correctResult = jsQRCorrect(imageData.data, imageData.width, imageData.height);
+    }else{
+      // 自动模式：传入 img 给二维码识别
+      let canvas = document.createElement('canvas');
+      let ctx = canvas.getContext('2d');
+      
+      // 等待图片加载完成
+      await new Promise((resolve, reject) => {
+        if(img.complete){
+          resolve();
+        }else{
+          img.onload = resolve;
+          img.onerror = reject;
+        }
+      });
+      
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      ctx.drawImage(img, 0, 0);
+      
+      // 获取图像数据
+      imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      
+      // 使用 jsQRCorrect 自动识别和矫正二维码
+      correctResult = jsQRCorrect(imageData.data, imageData.width, imageData.height);
+    }
+    
+    if(correctResult.success){
+      // 识别成功：生成 SVG 到 [data-qrcode-ruslt="image"]
+      try{
+        let svg = jsQRCorrect.matrixToSVG(correctResult.matrix, {
+          cellSize: 10,
+          fillColor: '#000000',
+          backgroundColor: '#ffffff'
+        });
+        imageResult.innerHTML = svg;
+      }catch(err){
+        console.error('生成 SVG 失败:', err);
+        tipsAll(['生成 SVG 失败','Failed to generate SVG'], 3000);
+        return false;
+      }
+      
+      // 更新行列数到 input-qrcode-grid 并触发 input 事件
+      let gridInput = document.getElementById('input-qrcode-grid');
+      if(gridInput && correctResult.dimension){
+        // 更新 input 的值
+        gridInput.value = correctResult.dimension;
+        
+        // 更新父元素的 data-int-value 属性（getUserMix 系统需要这个）
+        let parentNode = gridInput.closest('[data-qrcode-grid-num]');
+        if(parentNode){
+          parentNode.setAttribute('data-int-value', correctResult.dimension);
+        }
+        
+        // 触发 input 事件以更新网格（使用 InputEvent 更符合实际输入）
+        let inputEvent = new InputEvent('input', {
+          bubbles: true,
+          cancelable: true,
+          inputType: 'insertText',
+          data: String(correctResult.dimension)
+        });
+        gridInput.dispatchEvent(inputEvent);
+        
+        // 也触发 change 事件以确保所有监听器都被触发
+        gridInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      
+      // 设置 data-qrcode-grid 的大小为父容器的固定宽度（避免与编辑裁剪框大小冲突）
+      // 高度通过 CSS 的 aspect-ratio: 1/1 自动保持
+      let grid = getElementMix('data-qrcode-grid');
+      if(grid && grid.parentElement){
+        let parentRect = grid.parentElement.getBoundingClientRect();
+        if(parentRect.width > 0 && parentRect.height > 0){
+          // 使用较小的边作为正方形边长，保持1:1比例
+          let size = Math.min(parentRect.width, parentRect.height);
+          grid.style.width = size + 'px';
+          // 不设置高度，让 CSS 的 aspect-ratio: 1/1 自动保持
+          // 居中显示
+          grid.style.left = ((parentRect.width - size) / 2) + 'px';
+          grid.style.top = ((parentRect.height - size) / 2) + 'px';
+        }
+      }
+      
+      // 使用 jsQR 解码二维码内容
+      let decodeResult = jsQR(imageData.data, imageData.width, imageData.height);
+      if(decodeResult && decodeResult.data){
+        // 更新输入框，触发 makeCode 更新 [data-qrcode-ruslt="data"]
+        if(inputData){
+          inputData.value = decodeResult.data;
+          // 触发 input 事件以更新矢量二维码
+          inputData.dispatchEvent(new Event('input', { bubbles: true }));
+          makeCode();
+        }
+      }
+      
+      // 显示原图裁剪区域（保持原分辨率）- 仅自动模式
+      // 注意：如果进行了镜像翻转，correctResult.croppedImage 应该是翻转后的图像
+      if(viewMode === 'AUTO' && correctResult.croppedImage){
+        // 清空之前的图片
+        imgView.innerHTML = '';
+        let croppedCanvas = document.createElement('canvas');
+        croppedCanvas.width = correctResult.croppedImage.width;
+        croppedCanvas.height = correctResult.croppedImage.height;
+        let ctx = croppedCanvas.getContext('2d');
+        ctx.putImageData(correctResult.croppedImage, 0, 0);
+        
+        // 将裁剪后的图像显示在预览区域
+        let croppedImg = new Image();
+        croppedImg.onload = function(){
+          if(croppedImg.width > croppedImg.height){
+            croppedImg.style.width = '100%';
+            croppedImg.style.height = 'auto';
+          }else{
+            croppedImg.style.width = 'auto';
+            croppedImg.style.height = '100%';
+          }
+        };
+        croppedImg.src = croppedCanvas.toDataURL('image/png');
+        imgView.appendChild(croppedImg);
+      }
+      // 编辑模式不需要返回矫正图，保持原图显示
+      
+      tipsAll(['识别成功','Recognition successful'], 2000);
+      return true;
+    }else{
+      // 识别失败：根据触发类型决定是否生成像素网格
+      if(triggerType === 'scan'){
+        // 扫描模式：只提示，不生成任何内容
+        tipsAll(['识别失败：' + (correctResult.error || '未检测到二维码'), 
+                 'Recognition failed: ' + (correctResult.error || 'No QR code detected')], 3000);
+        return false;
+      }else{
+        // 上传文件或刷新：尝试生成像素网格
+        let gridResult = await convertImageToPixelGrid(img, imgView);
+        if(gridResult){
+          tipsAll(['未检测到二维码，已生成像素网格','No QR code detected, pixel grid generated'], 2000);
+          return true;
+        }else{
+          // 如果像素化也失败，显示原图
+          if(viewMode === 'AUTO'){
+            imgView.innerHTML = '';
+            let displayImg = img.cloneNode(true);
+            if(displayImg.width > displayImg.height){
+              displayImg.style.width = '100%';
+              displayImg.style.height = 'auto';
+            }else{
+              displayImg.style.width = 'auto';
+              displayImg.style.height = '100%';
+            }
+            imgView.appendChild(displayImg);
+          }
+          
+          tipsAll(['识别失败：' + (correctResult.error || '未检测到二维码'), 
+                   'Recognition failed: ' + (correctResult.error || 'No QR code detected')], 3000);
+          return false;
+        }
+      }
+    }
+  }catch(err){
+    console.error('图片转二维码失败:', err);
+    tipsAll(['处理失败','Processing failed'], 3000);
+    return false;
+  }
+}
+
+DOM.qrcodeFile.addEventListener('change',async(e)=>{
   let file = e.target.files[0];
+  if(!file) return;
+  
   DOM.qrcodeFile.nextElementSibling.setAttribute('data-fileinput','true');
   let filenameBox = DOM.qrcodeFile.nextElementSibling.querySelector('[data-fileinput-filename]');
-  //log(file.name);
   filenameBox.textContent = file.name;
+  
   let imgView = getElementMix('data-qrcode-view');
+  let imageResult = getElementMix('data-qrcode-ruslt="image"');
+  
   imgView.innerHTML = '';
+  imageResult.innerHTML = '';
+  
   let reader = new FileReader();
-  //let smplOrCmplx = getElementMix('data-qrcode-set').getAttribute('data-radio-value');
-  reader.onload = (e)=>{
+  reader.onload = async(e)=>{
     let img = new Image();
     img.src = e.target.result;
+    
+    // 等待图片加载完成
+    await new Promise((resolve) => {
+      img.onload = resolve;
+      if(img.complete) resolve();
+    });
+    
+    // 先显示图片
     imgView.appendChild(img);
     if(img.width > img.height){
       img.style.width = '100%';
@@ -3110,12 +3716,10 @@ DOM.qrcodeFile.addEventListener('change',(e)=>{
     }else{
       img.style.width = 'auto';
       img.style.height = '100%';
-    };
-    /*
-    if(smplOrCmplx == 'CMPLX'){
-      img.style.filter = 'brightness(0.8) grayscale(1) contrast(3)';
     }
-      */
+    
+    // 调用独立的转换函数（上传文件触发，未识别到生成像素）
+    await convertImageToQRCode(img, 'upload');
   };
   reader.readAsDataURL(file);
 });
@@ -3130,6 +3734,27 @@ DOM.qrcodeGridView.addEventListener('change',(e)=>{
     grid.classList.remove('qrcode-grid-bod');
     grid.classList.add('qrcode-grid');
   }
+});
+
+// 手动扫描图片识别二维码
+DOM.qrcodeConvert.addEventListener('click',async()=>{
+  try{
+    // 扫描模式：未识别到只提示，不生成像素
+    let success = await convertImageToQRCode(null, 'scan');
+  } catch (e){
+    console.error('扫描二维码失败:', e);
+    tipsAll(['扫描失败','Scan failed'], 2000);
+  }
+});
+
+getElementMix('data-qrcode-clear').addEventListener('click',()=>{
+  DOM.qrcodeFile.value = '';
+  DOM.qrcodeFile.nextElementSibling.setAttribute('data-fileinput','false');
+  DOM.qrcodeFile.nextElementSibling.querySelector('[data-fileinput-filename]').textContent = '';
+  let imgView = getElementMix('data-qrcode-view');
+  imgView.innerHTML = '';
+  let imageResult = getElementMix('data-qrcode-ruslt="image"');
+  imageResult.innerHTML = '';
 });
 
 //处理回传的选中对象的数据
@@ -3264,6 +3889,24 @@ function getUserNumber(node){
   if(node.getAttribute('data-qrcode-contrast') !== null){
     getElementMix('data-qrcode-view').style.setProperty('--contrast',number/100);
   };
+  if(node.getAttribute('data-qrcode-invert') !== null){
+    getElementMix('data-qrcode-view').style.setProperty('--invert',number/100);
+  };
+  if(node.getAttribute('data-qrcode-sharpen') !== null){
+    const convolve = document.getElementById('convolve');
+    const intensity = number / 100; // 0-1
+    const centerValue = 1 + (5 - 1) * intensity; // 1 -> 5
+    const edgeValue = 0 + (-1 - 0) * intensity; // 0 -> -1
+    const matrix = [
+      0, edgeValue, 0,
+      edgeValue, centerValue, edgeValue,
+      0, edgeValue, 0
+    ];
+    const matrixSum = centerValue + 4 * edgeValue;
+    const divisor = matrixSum || 1; // 避免除零
+    convolve.setAttribute('kernelMatrix', matrix.join(' '));
+    convolve.setAttribute('divisor', divisor);
+  }
 };
 
 function getUserText(node){
@@ -3395,7 +4038,7 @@ function getUserRadio(node){
     if(node.getAttribute('data-qrcode-set') !== null){
       getElementMix('data-qrcode-view').setAttribute('data-qrcode-view-mode',userRadio);
       let viewset = getElementMix('data-qrcode-view-set');
-      if(userRadio == 'CMPLX'){
+      if(userRadio == 'EDIT'){
         viewset.style.display = 'flex';
       }else{
         viewset.style.display = 'none';

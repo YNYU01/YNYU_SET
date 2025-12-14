@@ -1655,19 +1655,19 @@
                     <btn-star></btn-star>
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
-                    <div class="df-lc w100" data-skill-more>
+                    <div class="df-lc w100" data-skill-more data-selects-must="false">
                       <input type="file" id="input-qrcode-file" accept="image/*" style="display: none;">
-                      <label for="input-qrcode-file"  data-fileinput="false" data-btn="skill-main" class="h100 df-cc font-12">
+                      <label for="input-qrcode-file"  data-fileinput="false" data-btn="skill-main" class="h100 df-cc font-12 pos-r">
                         <div data-fileinput-text data-en-text="Up Local QR"> 上传本地 </div>
                         <div data-fileinput-filename></div>
                         <div class="df-cc pos-a op6 mar-a0" style="width: 2ch; right: 0.5ch;">
                           <btn-add></btn-add>
                         </div>
                       </label>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Up QR Layer">上传所选</div>
+                      <div class="df-cc" data-btn="skill-main" data-selects-must data-en-text="Up QR Layer">上传所选</div>
                   </div>
                   </div>
-                  <div class="df-lc" data-skill-line>
+                  <div class="df-lc" data-skill-line data-selects-must="false">
                     <div data-any="vw240" data-skill-btnname data-en-text="Grid of QR">网格数</div>
                     <div class="wh14 df-cc">
                       <input type="checkbox" id="input-qrcode-grid-view">
@@ -1679,12 +1679,24 @@
                       <input id="input-qrcode-grid" type="text" value="25" data-input="" data-input-type="int" data-input-must="10,144" style="text-align: center;">
                       <div class="df-cc" data-input-unit="">▚</div>
                     </div>
-                    <div data-qrcode-set class="df-lc fl1 gap4" data-radio-value="SMPL" style="min-width:80px;">
-                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="SMPL" data-en-text="SMPL">简单</div>
-                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="CMPLX" data-en-text="CMPLX">复杂</div>
+                    <div data-qrcode-set class="df-lc fl1 gap4" data-radio-value="AUTO" style="min-width:80px;">
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="AUTO" data-en-text="AUTO">自动</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="EDIT" data-en-text="EDIT">编辑</div>
                     </div>
                   </div>
                   <div class="bod-d df-ffc gap4 pad4 mar-b4" data-qrcode-view-set style="display: none;">
+                    <div class="df-lc gap4 pad2">
+                      <div data-any="vw240" data-skill-btnname data-en-text="Sharpen">锐化</div>
+                      <div data-qrcode-sharpen data-number data-number-value="0" class="df-lc fl1">
+                        <input data-input="range" type="range" min="0" max="100" value="0">
+                        <input data-input="value" data-input-must="0,100" data-input-type="int" 
+                        type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="0">
+                        <div class="df-cc" data-input-unit>%</div>
+                        <div data-input-reset data-btn="reset">
+                          <btn-reset></btn-reset>
+                        </div>
+                      </div>
+                    </div>
                     <div class="df-lc gap4 pad2">
                       <div data-any="vw240" data-skill-btnname data-en-text="Brightness">亮度</div>
                       <div data-qrcode-brightness data-number data-number-value="100" class="df-lc fl1">
@@ -1709,52 +1721,65 @@
                         </div>
                       </div>
                     </div>
+                    <div class="df-lc gap4 pad2">
+                      <div data-any="vw240" data-skill-btnname data-en-text="Invert">反转色</div>
+                      <div data-qrcode-invert data-number data-number-value="0" class="df-lc fl1">
+                        <input data-input="range" type="range" min="0" max="100" value="0">
+                        <input data-input="value" data-input-must="0,100" data-input-type="int" 
+                        type="text" class="txt-c mar-l4" style="width: 30px; flex: 0 0 auto;" value="0">
+                        <div class="df-cc" data-input-unit>%</div>
+                        <div data-input-reset data-btn="reset">
+                          <btn-reset></btn-reset>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div data-selects-must data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
+                  <div data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
                     <div class="wh100 bsb pos-a pad10 df-cc" style="top: 0; left: 0; z-index: 1;">
                       <div data-qrcode-grid class="w100 pos-r bsb qrcode-grid">
                         <div data-qrcode-grid-resize="true" class="fl0 bsb pos-a"></div>
                       </div>
+                      <div data-qrcode-clear data-btn="reset" class="df-cc pos-a " style="right: 4px; top: 4px; background: var(--boxBak); --bod-op: 0.5; --fill-op: 0.5;">
+                        <btn-reset></btn-reset>
+                      </div>
                     </div>
-                    <div class="wh100 df-cc mar-0a" data-qrcode-view data-qrcode-view-mode="SMPL">
+                    <div class="wh100 df-cc mar-0a" data-qrcode-view data-qrcode-view-mode="AUTO">
                     <!--二维码-->
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line data-selects-must="false">
                     <div data-any="vw240" data-skill-btnname data-en-text="Custom">自定义</div>
-                    <input type="checkbox" id="input-qrcode-convert">
-                    <label for="input-qrcode-convert" data-qrcode-convert data-tips="auto" data-tips-x="right" data-tips-y="top"
-                    data-tips-text="切换为使用数据生成" data-tips-text-en="Switch to convert by custom data"
-                    class="df-cc fl0 wh-20 bsb bod-r4 pos-r" >
-                      <btn-change></btn-change>
-                    </label>
                     <input type="text" id="input-qrcode-data" placeholder="https://www.google.com">
-
+                    <div data-btn data-qrcode-convert data-tips="auto" data-tips-x="right" data-tips-y="top"
+                    data-tips-text="解析图片" data-tips-text-en="Parse image"
+                    class="df-cc fl0 wh-20 bsb bod-r4 pos-r pad2" >
+                      <btn-scan></btn-scan>
+                    </div>
                   </div>
                   <div data-skill-more  class="df-lc pos-r bod-d pad10 gap10 bsb mar-b4">
                     <div class="df-ffc gap4 fl1">
                       <div class="df-lc gap4">
-                        <input type="checkbox" id="check-qrcode-default" checked>
-                        <label for="check-qrcode-default" class="wh-14 check op6">
+                        <input type="checkbox" id="check-qrcode-image" checked>
+                        <label for="check-qrcode-image" class="wh-14 check op6">
                           <btn-check></btn-check>
                         </label>
-                        <div data-en-text="Default">默认</div>
+                        <div data-en-text="By Image">图片生成</div>
                       </div>
-                      <div data-qrcode-ruslt="default" class="bsb">
-                        <!--矢量二维码预览-->
+                      <div data-qrcode-ruslt="image" class="bsb">
+                        <!--矢量二维码预览（图片生成）-->
                         
                       </div>
                     </div>
                     <div class="df-ffc gap4 fl1">
                       <div class="df-lc gap4">
-                        <input type="checkbox" id="check-qrcode-withlogo">
-                        <label for="check-qrcode-withlogo" class="wh-14 check op6">
+                        <input type="checkbox" id="check-qrcode-data" checked>
+                        <label for="check-qrcode-data" class="wh-14 check op6">
                           <btn-check></btn-check>
                         </label>
-                        <div data-en-text="With logo">带图标</div>
+                        <div data-en-text="By Data">数据生成</div>
                       </div>
-                      <div data-qrcode-ruslt="withlogo" class="bsb">
-                        <!--矢量二维码预览（带图标）-->
+                      <div data-qrcode-ruslt="data" class="bsb">
+                        <!--矢量二维码预览（解析生成）-->
                       </div>
                     </div>
                     <div data-qrcode-re data-btn class="wh-16 pos-a bod-r4 bsb">
@@ -1859,6 +1884,18 @@
   </div>
   <!--插件端调整大小-->
   <div data-resize-window></div>
+  <!--滤镜-->
+  <svg width="0" height="0">
+    <defs>
+      <filter id="sharpenFilter">
+        <feConvolveMatrix id="convolve" 
+          kernelMatrix="0 0 0 0 1 0 0 0 0" 
+          divisor="1"
+          order="3" 
+          preserveAlpha="true" />
+      </filter>
+    </defs>
+  </svg>
   
   <script src="../../../builds/yn_icon.js"></script>
   <script src="../../../builds/yn_comp.js"></script>
@@ -1872,6 +1909,8 @@
   <script src="../../../publics/other/jszip.js"></script>
   <script src="../../../publics/other/marked.umd.js"></script>
   <script src="../../../publics/other/qrcode.js"></script>
+  <script src="../../../publics/other/jsQR.js"></script>
+  <script src="../../../publics/other/jsQR_correct.js"></script>
   <script src="../../../publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
   <script src="../../../publics/other/supabase-js@2.js"></script>

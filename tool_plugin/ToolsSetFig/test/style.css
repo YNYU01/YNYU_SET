@@ -877,8 +877,13 @@ input[type="checkbox"]:checked + .btn-moreset{
   background: var(--themeColor);
 }
 
-[data-qrcode-view-mode="CMPLX"]{
-  filter: brightness(var(--brightness,1)) grayscale(1) contrast(var(--contrast,3));
+[data-qrcode-view-mode="EDIT"]{
+  filter: 
+  grayscale(1)
+  invert(var(--invert,0))
+  brightness(var(--brightness,1))
+  contrast(var(--contrast,3))
+  url('#sharpenFilter');
 }
 
 [data-qrcode-view-box],[data-skewscale-view-box]{
@@ -918,16 +923,49 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
   user-select: none;
 }
 
-.qrcode-grid{
-  border: 1px solid var(--themeColor);
-  border-left-width: 2px;
-  border-bottom-width: 2px;
-  background: linear-gradient(to left,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat,
-  linear-gradient(to bottom,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat;
+[data-qrcode-grid]::after{
+  content: '';
+  position: absolute;
+  display: var(--scan-ds,none);
+  top: 0;
+  left: -20%;
+  width: 140%;
+  height: 3px;
+  background: linear-gradient(to right,transparent 4%,var(--themeColor) 50%,transparent 96%);
+  animation: scanLine var(--scan-time,5s) linear infinite;/*36px/1s*/
 }
 
-.qrcode-grid-bod{
+@keyframes scanLine {
+  to{
+    top: 100%;
+  }
+}
+
+.qrcode-grid{
   border: 2px solid var(--themeColor);
+  box-sizing: border-box;
+}
+.qrcode-grid:before{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to left,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat,
+  linear-gradient(to bottom,var(--col) 1px,transparent 1px) 0 0/var(--grid-w) var(--grid-w) repeat;
+  opacity: 0.6;
+}
+
+.qrcode-grid-bod:before{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--themeColor);
+  box-sizing: border-box;
 }
 
 [data-qrcode-grid]:active{
@@ -968,26 +1006,8 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
 
 [data-qrcode-convert]{
   border: 1px solid var(--boxBod);
-  --bod:transparent;
-  order: 2;
 }
 
-input[type="checkbox"]:checked + [data-qrcode-convert]{
-  border: 1px solid var(--themeColor);
-  background: var(--themeColor);
-  --fill: #2e2e2e;
-}
-
-[data-qrcode-convert] + input[type="text"]{
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-
-input[type="checkbox"]:checked + [data-qrcode-convert] + input[type="text"]{
-  opacity: 1;
-  pointer-events: all;
-}
 
 [data-qrcode-re]{
   padding: 1px;

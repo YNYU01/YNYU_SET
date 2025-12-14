@@ -2,8 +2,35 @@ let ISWORK_TIME = true;
 let userSkillStar = [];
 
 //========== 初始化插件界面偏好(可滞后) ==========
-toolMessage(['tabPick','getlocal'],PLUGINAPP);
-toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
+// 非插件环境：直接从storageMix同步获取（延迟到window.load确保函数已定义）
+if (!IS_PLUGIN_ENV) {
+  // 使用window.load事件确保所有脚本已加载
+  window.addEventListener('load', () => {
+    // 初始化tabPick
+    const savedTabPick = storageMix.get('tabPick');
+    if (savedTabPick && typeof viewPage === 'function') {
+      viewPage(savedTabPick);
+    }
+    
+    // 初始化userSkillStar
+    const savedUserSkillStar = storageMix.get('userSkillStar');
+    if (savedUserSkillStar) {
+      try {
+        userSkillStar = JSON.parse(savedUserSkillStar);
+        if (Array.isArray(userSkillStar) && userSkillStar.length > 0 && typeof moveSkillStar === 'function') {
+          moveSkillStar(userSkillStar);
+        }
+      } catch(e) {
+        console.warn('Failed to parse userSkillStar:', e);
+        userSkillStar = [];
+      }
+    }
+  });
+} else {
+  // 插件环境：异步获取
+  toolMessage(['tabPick','getlocal'],PLUGINAPP);
+  toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
+}
 toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
 toolMessage(['toolsSetFig_users','getlocal'],PLUGINAPP);
  
@@ -16,44 +43,15 @@ window.addEventListener('message',(message)=>{
     if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
       info = JSON.parse(info);
     }
-    
-    // 处理 getlocal 返回的消息格式: [data, key]
-    // 这是 storageMix 的异步返回，需要更新 UI
-    if (Array.isArray(messages) && messages.length === 2 && typeof messages[1] === 'string') {
-      const [data, key] = messages;
-      if (key === 'userTheme') {
-        if (data !== null && data !== undefined) {
-          data == 'light' ? setTheme(true) : setTheme(false);
-          console.log('userTheme:', data);
-        } else {
-          // 异步返回 null，说明存储中确实没有值，设置默认值
-          setTheme(true);
-        }
-        return; // 处理完就返回，不继续处理
-      } else if (key === 'userLanguage') {
-        if (data !== null && data !== undefined) {
-          data == 'Zh' ? setLanguage(true) : setLanguage(false);
-        } else {
-          // 异步返回 null，说明存储中确实没有值，设置默认值
-          setLanguage(false);
-        }
-        return; // 处理完就返回，不继续处理
-      }
-      if (key === 'tabPick' || key === 'userSkillStar' || key === 'toolsSetFig_user' || key === 'toolsSetFig_users') {
-        type = key;
-        info = data;
-      } else {
-        return;
-      }
-    }
-    
     switch (type){
+      case 'userTheme': info == 'light' ? setTheme(true) : setTheme(false);break
+      case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
       case 'userResize': reRootSize(info);break
     };
     if(ISWORK_TIME && info){
       switch (type){
         case 'tabPick': viewPage(info);break
-        case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
+        case 'userSkillStar':userSkillStar = info || []; moveSkillStar(userSkillStar);break
         case 'toolsSetFig_user': 
           if(typeof AuthManager !== 'undefined') {
             AuthManager.setCurrentUser(info);

@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -21,36 +21,15 @@ window.addEventListener('message',(message)=>{
     if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
       info = JSON.parse(info);
     }
-
-    if (Array.isArray(messages) && messages.length === 2 && typeof messages[1] === 'string') {
-      const [data, key] = messages;
-
-      if (key === 'userTheme' && data !== null && data !== undefined) {
-        data == 'light' ? setTheme(true) : setTheme(false);
-        console.log('userTheme:', data);
-        return;
-      } else if (key === 'userLanguage' && data !== null && data !== undefined) {
-        data == 'Zh' ? setLanguage(true) : setLanguage(false);
-        return;
-      }
-
-      if (key === 'tabPick' || key === 'userSkillStar' || key === 'toolsSetFig_user' || key === 'toolsSetFig_users') {
-
-        type = key;
-        info = data;
-      } else {
-
-        return;
-      }
-    }
-
     switch (type){
+      case 'userTheme': info == 'light' ? setTheme(true) : setTheme(false);break
+      case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
       case 'userResize': reRootSize(info);break
     };
     if(ISWORK_TIME && info){
       switch (type){
         case 'tabPick': viewPage(info);break
-        case 'userSkillStar': userSkillStar = info || []; moveSkillStar(userSkillStar);break
+        case 'userSkillStar':userSkillStar = info || []; moveSkillStar(userSkillStar);break
         case 'toolsSetFig_user':
           if(typeof AuthManager !== 'undefined') {
             AuthManager.setCurrentUser(info);
@@ -77,7 +56,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -4278,19 +4257,19 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     <btn-star></btn-star>
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
-                    <div class="df-lc w100" data-skill-more>
+                    <div class="df-lc w100" data-skill-more data-selects-must="false">
                       <input type="file" id="input-qrcode-file" accept="image/*" style="display: none;">
-                      <label for="input-qrcode-file"  data-fileinput="false" data-btn="skill-main" class="h100 df-cc font-12">
+                      <label for="input-qrcode-file"  data-fileinput="false" data-btn="skill-main" class="h100 df-cc font-12 pos-r">
                         <div data-fileinput-text data-en-text="Up Local QR"> 上传本地 </div>
                         <div data-fileinput-filename></div>
                         <div class="df-cc pos-a op6 mar-a0" style="width: 2ch; right: 0.5ch;">
                           <btn-add></btn-add>
                         </div>
                       </label>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Up QR Layer">上传所选</div>
+                      <div class="df-cc" data-btn="skill-main" data-selects-must data-en-text="Up QR Layer">上传所选</div>
                   </div>
                   </div>
-                  <div class="df-lc" data-skill-line>
+                  <div class="df-lc" data-skill-line data-selects-must="false">
                     <div data-any="vw240" data-skill-btnname data-en-text="Grid of QR">网格数</div>
                     <div class="wh14 df-cc">
                       <input type="checkbox" id="input-qrcode-grid-view">
@@ -4333,7 +4312,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       </div>
                     </div>
                   </div>
-                  <div data-selects-must data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
+                  <div data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
                     <div class="wh100 bsb pos-a pad10 df-cc" style="top: 0; left: 0; z-index: 1;">
                       <div data-qrcode-grid class="w100 pos-r bsb qrcode-grid">
                         <div data-qrcode-grid-resize="true" class="fl0 bsb pos-a"></div>
@@ -4483,21 +4462,21 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   <!--插件端调整大小-->
   <div data-resize-window></div>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1ba7ffea2763de1903f4a1bbb507894b0fecba1b/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5db612154b000faf5389252fe090e3bee8a44da2/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -4965,12 +4944,7 @@ function revokeImageObjectURL(url){
 
 window.addEventListener('load',()=>{
   let time = getTime('HH')[0];
-  if(time*1 > 20 && IS_PLUGIN_ENV){
-    nullPage();
-    ISWORK_TIME = false;
-    addToUserTips('worktime');
-    return;
-  };
+
   setTimeout(() => {
 
 ;
@@ -5030,9 +5004,15 @@ const userTheme = storageMix.get('userTheme');
 const userLanguage = storageMix.get('userLanguage');
 if(userTheme){
   userTheme == 'light' ? setTheme(true) : setTheme(false);
+}else if(!IS_PLUGIN_ENV){
+
+  setTheme(true);
 }
 if(userLanguage){
   userLanguage == 'Zh' ? setLanguage(true) : setLanguage(false);
+}else if(!IS_PLUGIN_ENV){
+
+  setLanguage(false);
 }
 
 window.addEventListener('resize',debounce(()=>{
@@ -7174,6 +7154,7 @@ DOM.skillStar.forEach(item =>{
   });
 });
 function moveSkillStar(stars){
+  if(stars.length == 0) return;
   stars.forEach(item => {
     let skillNode = document.querySelector(`[data-skill-sec="${item}"]`);
     if(skillNode){

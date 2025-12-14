@@ -92,6 +92,7 @@ figma.ui.onmessage = async (message) => {
         figma.clientStorage.getAsync(info)
         .then (data => {
             postmessage([data,info]);
+            //console.log('getlocal:',data,info);
         })
         .catch (error => {
         })
