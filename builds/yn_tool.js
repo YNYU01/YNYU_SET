@@ -2550,49 +2550,441 @@ Object.assign(TOOL_JS.prototype, {
   },
 
   /**
-   * 遍历元素（含子元素）的所有图片相关的值，转为base64 url
-   * @param {HTMLElement|Array<HTMLElement>} elements - 要遍历的DOM元素或元素数组
-   * @param {Function} callback - 转换完成后的回调函数（可选）
-   * @returns {Promise<void>}
+   * 像素格子生成&解析器
+   * 支持从图片生成像素格子和从数据生成二维码
+   * 
+   * 数据结构：
+   * {
+   *   type: 'binary' | 'RGBA',
+   *   row: number,
+   *   column: number,
+   *   matrix: [0/1 | {r, g, b, a}],
+   *   isQr: boolean
+   * }
    */
+
   /**
-   * 获取图片的像素数据（ImageData）
-   * @param {HTMLImageElement} imgElement - 图片元素
-   * @returns {Promise<ImageData>} 像素数据
+   * 从图片数据生成像素格子
+   * @param {ImageData} imageData - 图片像素数据
+   * @param {number|Object} gridNum - 网格数量（单位量）
+   *   如果是数字：表示行列数相同（正方形网格，如25表示25x25）
+   *   如果是对象：[row, column]表示行列数不同
+   * @param {Object} options - 选项
+   * @param {string} options.mode - 'binary' | 'RGBA'，默认 'binary'
+   * @param {boolean} options.detectQR - 是否检测二维码，默认 true
+   * @param {number} options.threshold - 二值化阈值（0-255），默认自动计算
+   * @returns {Object} 像素格子数据对象
    */
-  async GetImagePixels(imgElement) {
-    return new Promise((resolve, reject) => {
-      try {
-        if (!imgElement.complete || imgElement.naturalWidth === 0) {
-          if (imgElement.complete) {
-            reject(new Error('Image not loaded'));
-            return;
-          }
-          imgElement.onload = () => {
-            this.GetImagePixels(imgElement).then(resolve).catch(reject);
-          };
-          imgElement.onerror = () => reject(new Error('Image load error'));
-          return;
+  PixelGridFromImageData(imageData, gridNum, options = {}) {
+    const {
+      mode = 'binary',
+      detectQR = true,
+      threshold = null
+    } = options;
+
+    // 解析网格数量参数
+    let row, column;
+    if (typeof gridNum === 'number') {
+      row = gridNum;
+      column = gridNum; // 正方形网格
+    } else if (gridNum && Array.isArray(gridNum)) {
+      [row,column] = gridNum;
+    } else {
+      throw new Error('gridNum must be a number or an array with [row, column]');
+    }
+
+    // 计算每个模块的尺寸（使用不同的缩放比例处理非正方形）
+    const moduleSizeX = imageData.width / column;
+    const moduleSizeY = imageData.height / row;
+
+    // 计算阈值（如果是binary模式且未提供阈值）
+    let actualThreshold = threshold;
+    if (mode === 'binary' && actualThreshold === null) {
+      let totalGray = 0;
+      let pixelCount = 0;
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        const alpha = imageData.data[i + 3];
+        if (alpha > 10) {
+          const gray = 0.2126 * imageData.data[i] + 
+                      0.7152 * imageData.data[i + 1] + 
+                      0.0722 * imageData.data[i + 2];
+          totalGray += gray;
+          pixelCount++;
         }
-        
-        const canvas = document.createElement('canvas');
-        canvas.width = imgElement.naturalWidth || imgElement.width;
-        canvas.height = imgElement.naturalHeight || imgElement.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(imgElement, 0, 0);
-        
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        
-        // 清理 canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        canvas.width = 0;
-        canvas.height = 0;
-        
-        resolve(imageData);
-      } catch (error) {
-        reject(error);
       }
-    });
+      actualThreshold = pixelCount > 0 ? totalGray / pixelCount : 128;
+    }
+
+    // 生成矩阵
+    const matrix = [];
+    let isQr = false;
+
+    // 采样并转换
+    for (let y = 0; y < row; y++) {
+      for (let x = 0; x < column; x++) {
+        const startX = Math.floor(x * moduleSizeX);
+        const endX = Math.floor((x + 1) * moduleSizeX);
+        const startY = Math.floor(y * moduleSizeY);
+        const endY = Math.floor((y + 1) * moduleSizeY);
+
+        if (mode === 'binary') {
+          // 二值化模式
+          let sumGray = 0;
+          let count = 0;
+          let sumAlpha = 0;
+
+            for (let py = startY; py < endY && py < imageData.height; py++) {
+            for (let px = startX; px < endX && px < imageData.width; px++) {
+              const idx = (py * imageData.width + px) * 4;
+              if (idx < imageData.data.length) {
+                const alpha = imageData.data[idx + 3];
+                sumAlpha += alpha;
+
+                if (alpha > 10) {
+                  const gray = 0.2126 * imageData.data[idx] + 
+                              0.7152 * imageData.data[idx + 1] + 
+                              0.0722 * imageData.data[idx + 2];
+                  sumGray += gray;
+                  count++;
+                }
+              }
+            }
+          }
+
+          const moduleArea = (endX - startX) * (endY - startY);
+          const avgAlpha = moduleArea > 0 ? sumAlpha / moduleArea : 0;
+          if (avgAlpha < 128) {
+            matrix.push(null); // 透明标记（可选，根据需求可以返回其他值）
+          } else if (count > 0) {
+            const avgGray = sumGray / count;
+            matrix.push(avgGray < actualThreshold ? 1 : 0);
+          } else {
+            matrix.push(0);
+          }
+        } else {
+          // RGBA模式
+          let sumR = 0, sumG = 0, sumB = 0, sumA = 0;
+          let count = 0;
+
+          for (let py = startY; py < endY && py < imageData.height; py++) {
+            for (let px = startX; px < endX && px < imageData.width; px++) {
+              const idx = (py * imageData.width + px) * 4;
+              if (idx < imageData.data.length) {
+                sumR += imageData.data[idx];
+                sumG += imageData.data[idx + 1];
+                sumB += imageData.data[idx + 2];
+                sumA += imageData.data[idx + 3];
+                count++;
+              }
+            }
+          }
+
+          if (count > 0) {
+            matrix.push({
+              r: Math.round(sumR / count),
+              g: Math.round(sumG / count),
+              b: Math.round(sumB / count),
+              a: Math.round(sumA / count)
+            });
+          } else {
+            matrix.push({ r: 0, g: 0, b: 0, a: 0 });
+          }
+        }
+      }
+    }
+
+    // 检测是否为二维码（通过定位区模式）
+    // 二维码必须是正方形，所以只有当 row === column 时才检测
+    if (detectQR && mode === 'binary' && row === column) {
+      isQr = this._detectQRCodePattern(matrix, row, column);
+    }
+
+    return {
+      type: mode,
+      row: row,
+      column: column,
+      matrix: matrix,
+      isQr: isQr
+    };
+  },
+
+  /**
+   * 从数据生成二维码像素格子
+   * 需要硬编码定位区
+   * @param {string} data - 要编码的数据
+   * @param {Object} options - 选项
+   * @param {Function} options.qrCodeGenerator - 二维码生成函数，接收data和options，返回矩阵对象
+   * @param {Object} options.qrCodeOptions - 传递给二维码生成器的选项
+   * @returns {Object} 像素格子数据对象（type: 'binary'）
+   * 
+   * @example
+   * // 使用QRCode库（需要先引入）
+   * const gridData = tool.PixelGridFromQRCode('Hello', {
+   *   qrCodeGenerator: (data, opts) => {
+   *     const qr = new QRCode({ text: data, ...opts });
+   *     return {
+   *       moduleCount: qr._htOption.width,
+   *       isDark: (x, y) => qr._oQRCode.isDark(y, x)
+   *     };
+   *   }
+   * });
+   */
+  PixelGridFromQRCode(data, options = {}) {
+    const {
+      qrCodeGenerator = null,
+      qrCodeOptions = {}
+    } = options;
+
+    // 如果没有提供生成器，尝试使用全局QRCode
+    let qrMatrix = null;
+    let moduleCount = 0;
+
+    if (qrCodeGenerator && typeof qrCodeGenerator === 'function') {
+      // 使用自定义生成器
+      qrMatrix = qrCodeGenerator(data, qrCodeOptions);
+      moduleCount = qrMatrix.moduleCount || qrMatrix.width || qrMatrix.dimension;
+    } else if (typeof QRCode !== 'undefined') {
+      // 尝试使用全局QRCode库（兼容不同的QRCode库）
+      try {
+        // 方式1：new QRCode() 构造函数
+        if (typeof QRCode === 'function' && QRCode.prototype) {
+          const tempDiv = document.createElement('div');
+          const qr = new QRCode(tempDiv, {
+            text: data,
+            width: 256,
+            height: 256,
+            ...qrCodeOptions
+          });
+          
+          // 尝试获取矩阵
+          if (qr._oQRCode) {
+            moduleCount = qr._oQRCode.getModuleCount();
+            qrMatrix = {
+              isDark: (x, y) => qr._oQRCode.isDark(y, x)
+            };
+          }
+        }
+      } catch (e) {
+        throw new Error('QRCode library found but failed to generate matrix: ' + e.message);
+      }
+
+      if (!qrMatrix) {
+        throw new Error('QRCode library found but cannot extract matrix. Please provide qrCodeGenerator function.');
+      }
+    } else {
+      throw new Error('QRCode library not found and no qrCodeGenerator provided. Please include qrcode.js or provide a custom generator.');
+    }
+
+    // 提取模块数据
+    const matrix = [];
+    for (let y = 0; y < moduleCount; y++) {
+      for (let x = 0; x < moduleCount; x++) {
+        const isDark = qrMatrix.isDark(x, y);
+        matrix.push(isDark ? 1 : 0);
+      }
+    }
+
+    return {
+      type: 'binary',
+      row: moduleCount,
+      column: moduleCount,
+      matrix: matrix,
+      isQr: true
+    };
+  },
+
+  /**
+   * 将像素格子数据转换为SVG
+   * 支持use元素和硬编码定位区（二维码），定位区支持圆角联动
+   * @param {Object} gridData - 像素格子数据对象
+   * @param {Object} options - 选项
+   * @param {string} options.fillColor - 填充色，默认 '#000000'
+   * @param {string} options.bgColor - 背景色，默认 '#ffffff'
+   * @param {boolean} options.useHardcodedFinder - 是否使用硬编码定位区（二维码），默认 true
+   * @param {number} options.finderRadius - 定位区圆角值（单位量），默认 0。3x3中心块的圆角，外围会根据此值联动
+   * @returns {string} SVG字符串
+   */
+  PixelGridToSVG(gridData, options = {}) {
+    const {
+      fillColor = '#000000',
+      bgColor = '#ffffff',
+      useHardcodedFinder = true,
+      finderRadius = 0, // 定位区圆角值（单位量），0表示无圆角
+    } = options;
+
+    const { type, row, column, matrix, isQr } = gridData;
+    // 二维码必须是正方形，但普通像素格子可以是非正方形
+    const isSquare = row === column;
+
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${column} ${row}" width="100%" height="100%">`;
+    svg += `<defs>`;
+
+    if (type === 'binary') {
+      // rect模板：黑白
+      svg += `<rect id="cell-fill" fill="${fillColor}" width="1" height="1"/>`;
+      svg += `<rect id="cell-bg" fill="${bgColor}" width="1" height="1"/>`;
+      
+      // 二维码定位区模板（硬编码，只有正方形时才使用）
+      // 定位区结构：7x7黑色底，5x5白色块，3x3黑色块，支持圆角联动
+      // 圆角联动规则：以3x3中心块为基准，圆角按比例缩放
+      // 例如：3x3圆角为10（单位量），则5x5圆角为10*(5/3)=16.67，7x7圆角为10*(7/3)=23.33
+      // 注意：SVG的rx属性不支持calc()，所以圆角值需要在生成时计算
+      if (isQr && useHardcodedFinder && isSquare) {
+        const dimension = row; // 二维码必须是正方形
+        
+        // 圆角计算（按比例联动）
+        // 3x3中心块：基准圆角
+        // 5x5白色块：基准圆角 * (5/3)
+        // 7x7黑色底：基准圆角 * (7/3)
+        const rx3 = finderRadius; // 3x3中心块圆角（单位量）
+        const rx5 = finderRadius * (5/3); // 5x5白色块圆角
+        const rx7 = finderRadius * (7/3); // 7x7黑色底圆角
+        
+        // 通用定位区模板（所有定位区共用同一个模板）
+        svg += `<g id="finder-pattern">`;
+        // 7x7黑色底
+        svg += `<rect data-qr-finderout x="0" y="0" width="7" height="7" fill="${fillColor}"${rx7 > 0 ? ` rx="${rx7}"` : ''}/>`;
+        // 5x5白色块
+        svg += `<rect data-qr-findermid x="1" y="1" width="5" height="5" fill="${bgColor}"${rx5 > 0 ? ` rx="${rx5}"` : ''}/>`;
+        // 3x3黑色块（中心块，基准圆角）
+        svg += `<rect data-qr-finderin x="2" y="2" width="3" height="3" fill="${fillColor}"${rx3 > 0 ? ` rx="${rx3}"` : ''}/>`;
+        svg += `</g>`;
+      }
+      
+      svg += `</defs>`;
+
+      // 二维码定位区坐标（硬编码，只有正方形时才使用）
+      if (isQr && useHardcodedFinder && isSquare) {
+        const dimension = row; // 二维码必须是正方形
+        const finderPatterns = [
+          { x: 0, y: 0 },                    // 左上
+          { x: dimension - 7, y: 0 },        // 右上
+          { x: 0, y: dimension - 7 }         // 左下
+        ];
+
+        svg += `<rect data-qr-bg fill="${bgColor}" width="${column}" height=" ${row}"/>`;
+        // 先绘制定位区（二维码），使用同一个模板
+        finderPatterns.forEach(pattern => {
+          svg += `<use xlink:href="#finder-pattern" x="${pattern.x}" y="${pattern.y}"/>`;
+        });
+      }
+      svg += '<g data-qr-cells>';
+      // 绘制数据区域（使用use元素）
+      for (let y = 0; y < row; y++) {
+        for (let x = 0; x < column; x++) {
+          const index = y * column + x; // 使用 column
+          const value = matrix[index];
+
+          // 跳过定位区（二维码，只有正方形时才有定位区）
+          if (isQr && useHardcodedFinder && isSquare) {
+            const dimension = row;
+            const inTopLeft = x < 7 && y < 7;
+            const inTopRight = x >= dimension - 7 && y < 7;
+            const inBottomLeft = x < 7 && y >= dimension - 7;
+            if (inTopLeft || inTopRight || inBottomLeft) {
+              continue; // 跳过定位区
+            }
+          }
+
+          // 跳过透明区域（null值）
+          if (value === null || value === undefined) {
+            continue;
+          }
+
+          const templateId = value === 1 ? 'cell-fill' : 'cell-bg';
+          
+          // 如果是黑色填充块且需要缩放，应用以中心为缩放点的变换
+          // SVG transform 从右到左执行：
+          // 1. translate(-0.5, -0.5) - 将 rect 从 (0,0) 移动到 (-0.5, -0.5)，使 rect 中心在原点
+          // 2. scale(s) - 以原点为中心缩放
+          // 3. translate(0.5, 0.5) - 移回，使 rect 中心回到 (0.5, 0.5)
+          // 最终 rect 中心仍在 (0.5, 0.5)，但尺寸按比例缩放
+          if (value === 1) {
+            svg += `<use data-qr-cell xlink:href="#${templateId}" x="${x}" y="${y}"/>`;
+          } else {
+            svg += `<use data-qr-cell xlink:href="#${templateId}" x="${x}" y="${y}"/>`;
+          }
+        }
+      }
+      svg += '</g>';
+    } else {
+      // RGBA模式：彩色块直接使用rect，不用use
+      svg += `</defs>`;
+      
+      for (let y = 0; y < row; y++) {
+        for (let x = 0; x < column; x++) {
+          const index = y * column + x; // 使用 column
+          const pixel = matrix[index];
+          
+          if (pixel && pixel.a > 0) {
+            const color = `rgb(${pixel.r}, ${pixel.g}, ${pixel.b})`;
+            const opacity = pixel.a / 255;
+            svg += `<rect x="${x}" y="${y}" width="1" height="1" fill="${color}" opacity="${opacity}"/>`;
+          }
+        }
+      }
+    }
+
+    svg += '</svg>';
+    return svg;
+  },
+
+  /**
+   * 检测是否为二维码模式（通过定位区）
+   * @private
+   * @param {Array} matrix - 矩阵数据
+   * @param {number} row - 行数
+   * @param {number} column - 列数（二维码必须是正方形，但为了通用性保留参数）
+   * @returns {boolean} 是否为二维码
+   */
+  _detectQRCodePattern(matrix, row, column) {
+    const dimension = row; // 二维码必须是正方形
+    if (row !== column) return false; // 非正方形肯定不是二维码
+    // 检查三个定位区是否存在
+    // 定位区特征：7x7的固定模式
+    // 外框7x7全黑，内框5x5全白，中心3x3全黑
+    
+    const finderPattern = [
+      [1, 1, 1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 0, 1],
+      [1, 0, 1, 1, 1, 0, 1],
+      [1, 0, 1, 1, 1, 0, 1],
+      [1, 0, 1, 1, 1, 0, 1],
+      [1, 0, 0, 0, 0, 0, 1],
+      [1, 1, 1, 1, 1, 1, 1]
+    ];
+
+    // 检查定位区（允许一定的容错）
+    const checkFinder = (startX, startY) => {
+      if (startX + 7 > column || startY + 7 > row) return false;
+      let matchCount = 0;
+      let totalCount = 0;
+      for (let y = 0; y < 7; y++) {
+        for (let x = 0; x < 7; x++) {
+          const index = (startY + y) * column + (startX + x); // 使用 column
+          if (index >= 0 && index < matrix.length) {
+            const expected = finderPattern[y][x];
+            const actual = matrix[index];
+            totalCount++;
+            // 匹配判断：值相等，或实际值为null且期望值为0（透明视为白色）
+            if (actual === expected || (actual === null && expected === 0)) {
+              matchCount++;
+            }
+          }
+        }
+      }
+      // 允许一定的误差（75%匹配度，因为可能受到图像质量影响）
+      return totalCount > 0 && matchCount >= totalCount * 0.75;
+    };
+
+    // 检查三个定位区（至少检测到两个就算成功，因为可能被裁剪）
+    const hasTopLeft = checkFinder(0, 0);
+    const hasTopRight = column >= 7 ? checkFinder(column - 7, 0) : false;
+    const hasBottomLeft = row >= 7 ? checkFinder(0, row - 7) : false;
+
+    // 至少需要检测到两个定位区（考虑到可能被裁剪的情况）
+    const foundCount = [hasTopLeft, hasTopRight, hasBottomLeft].filter(Boolean).length;
+    return foundCount >= 2;
   }
 
 });

@@ -22,7 +22,8 @@ const SKILL_STRATEGIES = {
   'Select Block': () => sendTablePick('block'),
   'Select Inline': () => sendTablePick('inline'),
   'Up Export-set': () => upSelect('exportset'),
-  'Up Default': () => upSelect('default')
+  'Up Default': () => upSelect('default'),
+  'Create New QRcode': () => createNewQRcode()
 };
 
 // 带数据通信的双击功能映射
@@ -260,3 +261,21 @@ function upSelect(type){
   toolMessage([[types[exporttype - 1],type],'upSelect'],PLUGINAPP);
 };
 
+// 更多功能 > 生成新二维码
+function createNewQRcode(){
+  let data = [];
+  let chk1 = DOM.checkQrcodeImage.checked;
+  let chk2 = DOM.checkQrcodeData.checked;
+  let svg1 = DOM.qrcodeImageResult.innerHTML;
+  let svg2 = DOM.qrcodeDataResult.innerHTML;
+  if(svg1 !== '' && svg1.includes('svg') && chk1){
+    data.push({type:'image',svg:svg1});
+  }
+  if(svg2 !== '' && svg2.includes('svg') && chk2){
+    data.push({type:'data',svg:svg2});
+  }
+  if(data.length === 0){
+    return;
+  }
+  toolMessage([data,'createNewQRcode'],PLUGINAPP);
+};

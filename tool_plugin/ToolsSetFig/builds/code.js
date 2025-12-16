@@ -2091,6 +2091,13 @@ figma.ui.onmessage = async (message) => {
             b[i].visible = false
         };
     };
+    //生成新二维码
+    if( type == 'createNewQRcode'){
+        info.forEach(item => {
+            let qrcode = figma.createNodeFromSvg(item);
+            qrcode.name = item.type == 'data' ? '@pixel:Qrcode' : '@pixel';
+        });
+    }
     
 };
 
