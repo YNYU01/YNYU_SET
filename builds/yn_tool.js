@@ -2794,6 +2794,92 @@ Object.assign(TOOL_JS.prototype, {
   },
 
   /**
+   * 识别二维码（封装 jsQRCorrect）
+   * @param {ImageData|Uint8ClampedArray} imageData - 图片数据或 ImageData.data
+   * @param {number} width - 图片宽度（如果 imageData 是 ImageData 对象则不需要）
+   * @param {number} height - 图片高度（如果 imageData 是 ImageData 对象则不需要）
+   * @returns {Object} 识别结果 {success, matrix, dimension, croppedImage, error}
+   */
+  RecognizeQRCode(imageData, width, height) {
+    if (typeof jsQRCorrect === 'undefined') {
+      throw new Error('jsQRCorrect library not found. Please include jsQR_correct.js');
+    }
+
+    // 如果传入的是 ImageData 对象，提取 data、width、height
+    if (imageData && imageData.data) {
+      return jsQRCorrect(imageData.data, imageData.width, imageData.height);
+    }
+
+    // 否则使用传入的参数
+    if (!width || !height) {
+      throw new Error('width and height are required when imageData is not an ImageData object');
+    }
+
+    return jsQRCorrect(imageData, width, height);
+  },
+
+  /**
+   * 解码二维码内容（封装 jsQR）
+   * @param {ImageData|Uint8ClampedArray} imageData - 图片数据或 ImageData.data
+   * @param {number} width - 图片宽度（如果 imageData 是 ImageData 对象则不需要）
+   * @param {number} height - 图片高度（如果 imageData 是 ImageData 对象则不需要）
+   * @returns {Object|null} 解码结果 {data, location} 或 null
+   */
+  DecodeQRCode(imageData, width, height) {
+    if (typeof jsQR === 'undefined') {
+      return null;
+    }
+
+    // 如果传入的是 ImageData 对象，提取 data、width、height
+    if (imageData && imageData.data) {
+      return jsQR(imageData.data, imageData.width, imageData.height);
+    }
+
+    // 否则使用传入的参数
+    if (!width || !height) {
+      return null;
+    }
+
+    return jsQR(imageData, width, height);
+  },
+
+  /**
+   * 从二维码识别结果转换为像素格子数据格式（封装 convertQRResultToGridData）
+   * @param {Object} correctResult - jsQRCorrect 的识别结果
+   * @returns {Object} 像素格子数据对象 {type, row, column, matrix, isQr}
+   */
+  PixelGridFromQRResult(correctResult) {
+    if(!correctResult.success || !correctResult.matrix || !correctResult.dimension){
+      throw new Error('Invalid QR code recognition result');
+    }
+    
+    const dimension = correctResult.dimension;
+    const matrix = [];
+    const bitMatrix = correctResult.matrix;
+    
+    // BitMatrix 有 get(x, y) 方法，返回 boolean（true=黑色，false=白色）
+    if(typeof bitMatrix.get === 'function'){
+      // 按行优先顺序转换为一维数组
+      for(let y = 0; y < dimension; y++){
+        for(let x = 0; x < dimension; x++){
+          // get(x, y) 返回 true 表示黑色(1)，false 表示白色(0)
+          matrix.push(bitMatrix.get(x, y) ? 1 : 0);
+        }
+      }
+    }else{
+      throw new Error('BitMatrix object must have get(x, y) method');
+    }
+    
+    return {
+      type: 'binary',
+      row: dimension,
+      column: dimension,
+      matrix: matrix,
+      isQr: true
+    };
+  },
+
+  /**
    * 将像素格子数据转换为SVG
    * 支持use元素和硬编码定位区（二维码），定位区支持圆角联动
    * @param {Object} gridData - 像素格子数据对象

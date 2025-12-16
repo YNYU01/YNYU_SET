@@ -215,6 +215,11 @@ const State = (() => {
     zyType: [],
     tableTitleMust: [],
     frameNmaeSelect: [],
+
+    // 二维码 / 像素栅格数据（固定两个槽位）
+    // [0]：图片生成的像素栅格（PixelGridFromImageData）或为空
+    // [1]：二维码文本生成 / 识别得到的像素栅格（PixelGridFromQRCode 或 convertQRResultToGridData）
+    qrcodePixelGrid: [null, null],
   };
   
   return {
@@ -3249,22 +3254,13 @@ class CropBoxController {
   }
 }
 
-// QRCode 初始化 - 确保在DOM加载后执行
-var qrcodeObj = null;
-
 function initQRCode() {
   const qrcodeElement = DOM.qrcodeDataResult;
   if (!qrcodeElement) {
     return;
   }
-  
-  qrcodeObj = new QRCode(qrcodeElement, {
-    width : 100,
-    height : 100,
-    useSVG: true
-  });
-  
-  // 初始化后立即生成二维码（如果有输入值）
+
+  // 初始化后立即生成二维码（如果有输入值），使用 PixelGridFromQRCode + PixelGridToSVG 流程
   makeCode();
   
   // 添加事件监听器
@@ -3280,14 +3276,50 @@ function initQRCode() {
 }
 
 function makeCode () {		
-  if (!qrcodeObj) return;
-  
+  const dataResult = DOM.qrcodeDataResult;
+  if (!dataResult) return;
+
   let elText = document.getElementById("input-qrcode-data");
   if (!elText) return;
   
   // 如果没有输入值，使用默认值
   const value = elText.value || "https://www.google.com";
-  qrcodeObj.makeCode(value);
+  
+  // 统一使用 tool.PixelGridFromQRCode -> tool.PixelGridToSVG 生成矢量二维码
+  if (!tool || !tool.PixelGridFromQRCode || !tool.PixelGridToSVG) {
+    console.error('makeCode: tool.PixelGridFromQRCode 或 tool.PixelGridToSVG 未定义');
+    return;
+  }
+
+  try {
+    // 从文本生成像素格子数据
+    const gridData = tool.PixelGridFromQRCode(value, {
+      qrCodeOptions: {
+        width: 256,
+        height: 256
+      }
+    });
+    
+    // 记录像素栅格数据到槽位 [1]：二维码文本生成的像素栅格
+    if (typeof State !== 'undefined') {
+      const slots = State.get('qrcodePixelGrid') || [null, null];
+      slots[1] = gridData;
+      State.set('qrcodePixelGrid', slots);
+    }
+
+    // 使用统一的 PixelGridToSVG 生成 SVG（方便后续定制样式）
+    const svg = tool.PixelGridToSVG(gridData, {
+      fillColor: '#000000',
+      bgColor: '#ffffff',
+      useHardcodedFinder: true,
+      finderRadius: 0
+    });
+
+    dataResult.innerHTML = svg;
+  } catch (err) {
+    console.error('makeCode: 生成二维码失败', err);
+    tipsAll(['生成二维码失败','Failed to generate QR code'], 3000);
+  }
 }
 
 // 确保DOM加载后再初始化
@@ -3529,41 +3561,6 @@ async function getCenterSquareCropRegion(img) {
   };
 }
 
-/**
- * 将 jsQRCorrect 的识别结果转换为像素格子数据格式
- * @param {Object} correctResult - jsQRCorrect 的识别结果
- * @returns {Object} 像素格子数据对象 {type, row, column, matrix, isQr}
- */
-function convertQRResultToGridData(correctResult) {
-  if(!correctResult.success || !correctResult.matrix || !correctResult.dimension){
-    throw new Error('Invalid QR code recognition result');
-  }
-  
-  const dimension = correctResult.dimension;
-  const matrix = [];
-  const bitMatrix = correctResult.matrix;
-  
-  // BitMatrix 有 get(x, y) 方法，返回 boolean（true=黑色，false=白色）
-  if(typeof bitMatrix.get === 'function'){
-    // 按行优先顺序转换为一维数组
-    for(let y = 0; y < dimension; y++){
-      for(let x = 0; x < dimension; x++){
-        // get(x, y) 返回 true 表示黑色(1)，false 表示白色(0)
-        matrix.push(bitMatrix.get(x, y) ? 1 : 0);
-      }
-    }
-  }else{
-    throw new Error('BitMatrix object must have get(x, y) method');
-  }
-  
-  return {
-    type: 'binary',
-    row: dimension,
-    column: dimension,
-    matrix: matrix,
-    isQr: true
-  };
-}
 
 /**
  * 将图片转换为像素网格（未识别到二维码时使用）
@@ -3625,11 +3622,18 @@ async function convertImageToPixelGrid(img, imgView){
       imageData = await getImageDataFromImg(img, cropRegion);
     }
     
-    // 使用 tool.PixelGridFromImageData 生成像素格子数据
+    // 使用 tool.PixelGridFromImageData 生成像素格子数据（图片来源 -> 槽位 0）
     const gridData = tool.PixelGridFromImageData(imageData, gridNum, {
       mode: 'binary',
       detectQR: false // 普通像素网格不需要检测二维码
     });
+
+    // 记录到槽位 [0]：图片生成的像素栅格
+    if(typeof State !== 'undefined'){
+      const slots = State.get('qrcodePixelGrid') || [null, null];
+      slots[0] = gridData;
+      State.set('qrcodePixelGrid', slots);
+    }
     
     // 使用 tool.PixelGridToSVG 生成 SVG
     const svg = tool.PixelGridToSVG(gridData, {
@@ -3656,10 +3660,10 @@ async function convertImageToPixelGrid(img, imgView){
  * @returns {Promise<boolean>} 是否成功
  */
 async function convertImageToQRCode(img = null, triggerType = 'upload'){
-  // 检查 jsQRCorrect 是否可用
-  if(typeof jsQRCorrect === 'undefined'){
-    console.error('jsQRCorrect 未加载，请确保已引入 jsQR_correct.js');
-    tipsAll(['识别失败：缺少必要的库','Recognition failed: Missing library'], 3000);
+  // 检查 tool 是否可用
+  if(typeof tool === 'undefined' || !tool.RecognizeQRCode || !tool.PixelGridFromImageData || !tool.PixelGridToSVG || !tool.PixelGridFromQRResult){
+    console.error('tool 相关方法未定义');
+    tipsAll(['缺少必要的工具库','Missing required library'], 3000);
     return false;
   }
   
@@ -3721,8 +3725,8 @@ async function convertImageToQRCode(img = null, triggerType = 'upload'){
         return false;
       }
       
-      // 使用 jsQRCorrect 识别二维码
-      correctResult = jsQRCorrect(imageData.data, imageData.width, imageData.height);
+      // 使用 tool.RecognizeQRCode 识别二维码
+      correctResult = tool.RecognizeQRCode(imageData);
     }else{
       // AUTO 模式：如果当前显示的是矫正图，使用保存的原始图片
       let imageToUse = img;
@@ -3735,15 +3739,8 @@ async function convertImageToQRCode(img = null, triggerType = 'upload'){
       // 获取整张图片的数据（不裁剪）
       imageData = await getImageDataFromImg(imageToUse);
       
-      // 使用 jsQRCorrect 自动识别和矫正二维码
-      correctResult = jsQRCorrect(imageData.data, imageData.width, imageData.height);
-    }
-    
-    // 检查 tool 是否可用
-    if(typeof tool === 'undefined' || !tool.PixelGridFromImageData || !tool.PixelGridToSVG){
-      console.error('tool.PixelGridFromImageData 或 tool.PixelGridToSVG 未定义');
-      tipsAll(['缺少必要的工具库','Missing required library'], 3000);
-      return false;
+      // 使用 tool.RecognizeQRCode 自动识别和矫正二维码
+      correctResult = tool.RecognizeQRCode(imageData);
     }
     
     let gridData;
@@ -3751,7 +3748,7 @@ async function convertImageToQRCode(img = null, triggerType = 'upload'){
     if(correctResult.success){
       // 识别成功：从 correctResult 转换像素格子数据
       try{
-        gridData = convertQRResultToGridData(correctResult);
+        gridData = tool.PixelGridFromQRResult(correctResult);
       }catch(err){
         console.error('转换二维码结果失败:', err);
         tipsAll(['处理识别结果失败','Failed to process recognition result'], 3000);
@@ -3766,7 +3763,7 @@ async function convertImageToQRCode(img = null, triggerType = 'upload'){
         return false;
       }
       
-      // 上传文件或刷新：使用 PixelGridFromImageData 生成像素网格
+      // 上传文件或刷新：使用 PixelGridFromImageData 生成像素网格（图片来源）
       try{
         const gridNumInput = DOM.qrcodeGridNum;
         let gridNum = gridNumInput ? (parseInt(gridNumInput.value) || 25) : 25;
@@ -3798,6 +3795,18 @@ async function convertImageToQRCode(img = null, triggerType = 'upload'){
       }
     }
     
+    // 统一记录像素栅格数据到对应槽位：
+    // 成功识别二维码 -> 槽位 [1]；识别失败但生成了普通像素网格 -> 槽位 [0]
+    if(typeof State !== 'undefined'){
+      const slots = State.get('qrcodePixelGrid') || [null, null];
+      if (correctResult.success) {
+        slots[1] = gridData;
+      } else {
+        slots[0] = gridData;
+      }
+      State.set('qrcodePixelGrid', slots);
+    }
+
     // 使用 tool.PixelGridToSVG 生成 SVG（统一处理二维码和像素网格）
     try{
       const svg = tool.PixelGridToSVG(gridData, {
@@ -3847,9 +3856,9 @@ async function convertImageToQRCode(img = null, triggerType = 'upload'){
         }
       }
       
-      // 使用 jsQR 解码二维码内容
-      if(typeof jsQR !== 'undefined'){
-        const decodeResult = jsQR(imageData.data, imageData.width, imageData.height);
+      // 使用 tool.DecodeQRCode 解码二维码内容
+      if(tool.DecodeQRCode){
+        const decodeResult = tool.DecodeQRCode(imageData);
         if(decodeResult && decodeResult.data && inputData){
           inputData.value = decodeResult.data;
           inputData.dispatchEvent(new Event('input', { bubbles: true }));

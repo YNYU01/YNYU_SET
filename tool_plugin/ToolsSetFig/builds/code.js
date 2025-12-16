@@ -2093,10 +2093,21 @@ figma.ui.onmessage = async (message) => {
     };
     //生成新二维码
     if( type == 'createNewQRcode'){
+        let selects = [];
         info.forEach(item => {
-            let qrcode = figma.createNodeFromSvg(item);
+            let qrcode = figma.createNodeFromSvg(item.svg);
             qrcode.name = item.type == 'data' ? '@pixel:Qrcode' : '@pixel';
+            qrcode.x = figma.viewport.center.x - qrcode.width/2;
+            qrcode.y = figma.viewport.center.y - qrcode.height/2;
+            selects.push(qrcode);
         });
+        figma.currentPage.selection = selects;
+        figma.viewport.scrollAndZoomIntoView(selects);
+        figma.viewport.zoom = figma.viewport.zoom * 0.6;
+    }
+    //生成新二维码组件
+    if( type == 'createNewQRcodeComp'){
+        console.log(info)
     }
     
 };
