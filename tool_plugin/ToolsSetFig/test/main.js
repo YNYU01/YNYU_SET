@@ -3795,15 +3795,10 @@ async function convertImageToQRCode(img = null, triggerType = 'upload'){
       }
     }
     
-    // 统一记录像素栅格数据到对应槽位：
-    // 成功识别二维码 -> 槽位 [1]；识别失败但生成了普通像素网格 -> 槽位 [0]
+    // 统一记录像素栅格数据到槽位 [0]：图片识别生成的二维码或像素网格（无论识别成功还是失败）
     if(typeof State !== 'undefined'){
       const slots = State.get('qrcodePixelGrid') || [null, null];
-      if (correctResult.success) {
-        slots[1] = gridData;
-      } else {
-        slots[0] = gridData;
-      }
+      slots[0] = gridData;
       State.set('qrcodePixelGrid', slots);
     }
 

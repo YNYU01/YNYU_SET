@@ -2107,7 +2107,54 @@ figma.ui.onmessage = async (message) => {
     }
     //生成新二维码组件
     if( type == 'createNewQRcodeComp'){
-        console.log(info)
+        //console.log(info)
+        let selects = [];
+        //二维码组件
+        let fill = toRGB('#000000',true);
+        let bg = toRGB('#ffffff',true);
+        let [x,y] = [figma.viewport.center.x - 100,figma.viewport.center.y - 100];
+        let cellFillBox = addFrame([10,10,x + 80,y,'@cell:fill',[]]);
+        let cellFill = figma.createRectangle();
+        cellFill.resize(10,10);
+        cellFill.fills = [fill];
+        cellFillBox.appendChild(cellFill);
+        addAutoLayout(cellFillBox,['H','CC',0,[0,0]]);
+        let cellFillComp = figma.createComponentFromNode(cellFillBox);
+        selects.push(cellFillComp);
+        let cellBgBox = addFrame([10,10,x + 100,y,'@cell:bg',[]]);
+        let cellBg = figma.createRectangle();
+        cellBg.resize(10,10);
+        cellBg.fills = [bg];
+        cellBgBox.appendChild(cellBg);
+        addAutoLayout(cellBgBox,['H','CC',0,[0,0]]);
+        let cellBgComp = figma.createComponentFromNode(cellBgBox);
+        selects.push(cellBgComp);
+        let qrFinderBox = addFrame([70,70,x,y,'@finder:mix',[]]);
+        let qrFinder = figma.createRectangle();
+        qrFinder.name = '#finder.radius';
+        qrFinder.x = x - 80;
+        qrFinder.y = y;
+        qrFinder.resize(70,70);
+        qrFinder.fills = [fill];
+        let finderComp = figma.createComponentFromNode(qrFinder);
+        finderComp.name = '@finder';
+        selects.push(finderComp);
+        let finderCenter = finderComp.createInstance();
+        finderCenter.children[0].name = '#finder-center.radius';
+        finderCenter.rescale(3/7);
+        let finderGap = finderComp.createInstance();
+        finderGap.rescale(5/7);
+        finderGap.children[0].name = '#finder-gap.radius';
+        finderGap.children[0].fills = [bg];
+        qrFinderBox.appendChild(finderComp.createInstance());
+        addAutoLayout(qrFinderBox,['H','CC',0,[0,0]],[true,true,true,true]);
+        addAsAbsolute(qrFinderBox,finderGap,'CC');
+        addAsAbsolute(qrFinderBox,finderCenter,'CC');
+        let qrFinderComp = figma.createComponentFromNode(qrFinderBox);
+        selects.push(qrFinderComp);
+        figma.currentPage.selection = selects;
+        figma.viewport.scrollAndZoomIntoView(selects);
+        figma.viewport.zoom = figma.viewport.zoom * 0.6;
     }
     
 };

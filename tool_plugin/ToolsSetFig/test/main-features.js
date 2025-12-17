@@ -23,7 +23,7 @@ const SKILL_STRATEGIES = {
   'Select Inline': () => sendTablePick('inline'),
   'Up Export-set': () => upSelect('exportset'),
   'Up Default': () => upSelect('default'),
-  'Create New QRcode': () => createNewQRcode()
+  'Create New QRcode': () => createNewQRcode(true)
 };
 
 // 带数据通信的双击功能映射
@@ -31,7 +31,7 @@ const SKILL_DBLCLICK_STRATEGIES = {
   // 示例：如果有特定双击处理，可以在这里添加
   // 'Pixel As Copy': () => sendPixelDoubleClick('Pixel As Copy'),
   // 'Mapping Names': () => sendTableDoubleClick('mapName'),
-  'Create New QRcode': () => createNewQRcode(true)
+  'Create New QRcode': () => createNewQRcode()
 };
 /**
  * 通过data-skill-click/dblclick属性（收集进DOM.skillBtnMain）,为按钮添加点击即执行的功能，单击和双击事件分开处理
@@ -270,7 +270,7 @@ function createNewQRcode(isComp){
   //是否是组件化生成
   if(isComp){
     // PixelGridFromImageData / QR 识别 / 文本生成 返回的像素栅格数据（固定两个槽位）
-    // data[0]：图片生成的像素栅格或为空
+    // data[0]：图片生成的像素栅格
     // data[1]：初始化二维码示例 / 后续 qrcode 文本生成 / 识别得到的像素栅格
     let gridData = null;
     try{
@@ -280,15 +280,15 @@ function createNewQRcode(isComp){
     }catch(e){
       console.warn('createNewQRcode: 访问 State 失败', e);
     }
-
-    // 没有任何可用的栅格数据则直接返回（由主线程决定是否需要提示）
-    if(!gridData || (!gridData[0] && !gridData[1])){
-      console.warn('createNewQRcode: 尚未生成像素栅格数据，无法进行组件化创建');
+    if(gridData[0] && chk1){
+      data.push(gridData[0]);
+    }
+    if(gridData[1] && chk2){
+      data.push(gridData[1]);
+    }
+    if(data.length === 0){
       return;
     }
-
-    // 将栅格数据发送到插件主线程，用于定制化设计
-    data = gridData;
     toolMessage([data,'createNewQRcodeComp'],PLUGINAPP);
 
   }else{

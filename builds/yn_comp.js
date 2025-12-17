@@ -1304,6 +1304,39 @@ window.addEventListener('load', () => {
     GETCOLOR = new EyeDropper()
     //console.log('该浏览器支持吸色管')
   };
+  //部分主题变化无法通过css变量控制，需等页面加载完成后设置，插件环境通过message监听，此处不做考虑
+  if(!PLUGINAPP){
+    let lan = ROOT.getAttribute('data-language');
+    let theme = ROOT.getAttribute('data-theme');
+
+    if(lan && theme){
+      if(lan){
+        setLanguage(lan == 'Zh' ? true : false,false);
+      };
+      if(theme){
+        ROOT.setAttribute('data-theme',theme);
+        storageMix.set('userTheme',theme);
+      };
+    }else{ 
+      return;
+    };
+
+    if(!QUERY_PARAMS) return;
+    if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
+      ROOT.setAttribute('data-language','Zh');
+      storageMix.set('userLanguage','Zh');
+    }else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
+      ROOT.setAttribute('data-language','En');
+      storageMix.set('userLanguage','En');
+    };
+    if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'light'){
+      ROOT.setAttribute('data-theme','light');
+      storageMix.set('userTheme','light');
+    }else if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'dark'){
+      ROOT.setAttribute('data-theme','dark');
+      storageMix.set('userTheme','dark');
+    };
+  };
 
 });
 
@@ -1322,7 +1355,7 @@ LANGUAGE_SWITCH.forEach(item => {
       setLanguage(true,true);
     }else{
       setLanguage(false,true);
-    }
+    };
   });
 });
 
