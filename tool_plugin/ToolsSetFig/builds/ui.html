@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -81,7 +81,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -3354,7 +3354,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 <div class="df-lc gap8">
                   <div data-variables-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
-                    <div class="pos-a" style="top: 0; left: 18px;"
+                    <div class="pos-a" style="top: 4px; left: 20px;"
                     data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
@@ -3421,7 +3421,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 <div class="df-lc gap8">
                   <div data-linkstyle-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
-                    <div class="pos-a" style="top: 0; left: 18px;"
+                    <div class="pos-a" style="top: 4px; left: 20px;"
                     data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
@@ -3453,7 +3453,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 </div>
               </div>
               <div data-manage-linkstyle-list class="wh100 df-ffc ovy noscrollbar">
-
+                <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
               </div>
               <!--清空-->
               <div data-linkstyle-clear class="pos-a" style="right: 4px; top:28px; width: 12px; height: 12px;">
@@ -3472,16 +3472,13 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 <div class="df-lc gap8">
                   <div data-selectstyle-add data-btn="icon" data-selects-must>
                     <btn-getbyselect></btn-getbyselect> 
-                    <div class="pos-a" style="top: 0; left: 18px;"
+                    <div class="pos-a" style="top: 4px; left: 20px;"
                     data-en-text="Traverse selection" >扫描所选</div>                                  
                   </div>
                 </div>
-                <div class="df-lc gap4">
-
-                </div>
               </div>
               <div data-manage-selectstyle-list class="wh100 df-ffc ovy noscrollbar">
-
+                <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
               </div>
               <!--清空-->
               <div data-selectstyle-clear class="pos-a" style="right: 4px; top:28px; width: 12px; height: 12px;">
@@ -4217,14 +4214,18 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     <div data-any="vw240" data-skill-btnname data-en-text="Merge Order">
                       合并顺序
                     </div>
-                    <div data-radio-value="1" class="df-lc fl1 gap4">
+                    <div data-merge-order data-radio-value="1" class="df-lc fl1 gap4">
                       <div data-radio data-radio-main="true" data-radio-data="1" class="df-cc" 
                       data-en-text="Z-Index">
-                        按图层顺序
+                        图层顺序
                       </div>
                       <div data-radio data-radio-main="false" data-radio-data="2" class="df-cc" 
-                      data-en-text="T-B-L-R">
-                        按上下左右
+                      data-en-text="L-R-T-B">
+                        上下左右
+                      </div>
+                      <div data-radio data-radio-main="false" data-radio-data="3" class="df-cc" 
+                      data-en-text="Line Block">
+                        视觉行块
                       </div>
                     </div>
                   </div>
@@ -4444,9 +4445,9 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div class="df-lc" data-skill-line>
-                    <div data-any="vw240" data-skill-btnname data-en-text="Mum & Width">描边数量和粗细</div>
-                    <div data-shadow-stroke-num class="df-lc pos-r fl1 gap4" data-select data-select-close data-select-value="x4" style="--op-pad-l: 1ch;">
+                  <div class="df-lc" data-skill-line data-selects-must="false">
+                    <div data-any="vw240" data-skill-btnname data-en-text="Precision & Width">描边精度和粗细</div>
+                    <!--div data-shadow-stroke-num class="df-lc pos-r fl1 gap4" data-select data-select-close data-select-value="x4" style="--op-pad-l: 1ch;">
                       <input id="select-value-3" type="text" data-select-input readonly value="x4">
                       <input id="select-show-3" data-select-pick type="checkbox">
                       <label for="select-show-3" class="show-next wh100 pos-a" style="top:0; right: 0;"></label>
@@ -4455,13 +4456,17 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                         <div data-option="option" data-option-main="false" data-option-value="x8">x8</div>
                         <div data-option="option" data-option-main="false" data-option-value="x12">x12</div>
                       </div>
+                    </div-->
+                    <div class="df-lc fl1" >
+                      <input id="input-shadow-stroke-num" type="text" value="4" data-input="" data-input-type="int" data-input-must="3,36" style=" text-align: center;">
+                      <div class="df-cc" data-input-unit="">x</div>
                     </div>
                     <div class="df-lc fl1" >
-                      <input id="input-shadow-stroke-width" type="text" value="1" data-input="" data-input-type="int" data-input-must="1,10000" style=" text-align: center;">
+                      <input id="input-shadow-stroke-width" type="text" value="1" data-input="" data-input-type="float" data-input-must="0,10000" style=" text-align: center;">
                       <div class="df-cc" data-input-unit="">px</div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line>
+                  <div class="df-lc" data-skill-line data-selects-must="false">
                     <div data-any="vw240" data-skill-btnname data-en-text="Color">描边颜色</div>
                     <div data-shadow-stroke-color data-color data-color-hex="#888888" 
                       data-color-rgb="rgb(136,136,136)" data-color-hsl="hsl(0,0%,53%)" 
@@ -4475,10 +4480,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                         <card-colorpick></card-colorpick>
                     </div>
                   </div>
-                  <div class="df-ffc df-cc" data-skill-line>
+                  <div class="df-ffc df-cc" data-skill-line data-selects-must="false">
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Code Example">代码示例</div>
-                      <div class="df-cc" data-btn-dblclick  data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Shadow-stroke Css">代码示例</div>
+                      <div class="df-cc" data-btn-dblclick data-selects-must data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
                     </div>
                   </div>
                 </div>
@@ -4544,23 +4549,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/other/jsQR_correct.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/other/jsQR_correct.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5b939f23b6835432cf52d28d625fb32d11f86f1b/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e13c10a82cffe5b3ae51c019977b397a6d200172/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -4846,6 +4851,10 @@ const DOM = (() => {
     qrcodeDataInput: () => getById('input-qrcode-data'),
     checkQrcodeImage: () => getById('check-qrcode-image'),
     checkQrcodeData: () => getById('check-qrcode-data'),
+    shadowStrokeColor: () => query('[data-shadow-stroke-color]'),
+    shadowStrokeNum: () => getById('input-shadow-stroke-num'),
+    shadowStrokeWidth: () => getById('input-shadow-stroke-width'),
+    mergeOrder: () => query('[data-merge-order]'),
 
     skillSearchInput: () => getById('skillsearch'),
     skillTypeBox: () => query('[data-skilltype-box]'),
@@ -8732,12 +8741,17 @@ const SKILL_STRATEGIES = {
   'Select Inline': () => sendTablePick('inline'),
   'Up Export-set': () => upSelect('exportset'),
   'Up Default': () => upSelect('default'),
-  'Create New QRcode': () => createNewQRcode(true)
+  'Create New QRcode': () => createNewQRcode(true),
+  'Shadow-stroke Css': () => createShadowStroke('css'),
+  'Add Shadow-stroke': () => createShadowStroke('reset'),
+  'Merge Character': () => mergeText('character'),
+  'Merge Keep Style': () => mergeText('all'),
 };
 
 const SKILL_DBLCLICK_STRATEGIES = {
 
-  'Create New QRcode': () => createNewQRcode()
+  'Create New QRcode': () => createNewQRcode(),
+  'Add Shadow-stroke': () => createShadowStroke('add')
 };
 
 DOM.skillBtnMain.forEach(btn => {
@@ -8990,6 +9004,17 @@ function createNewQRcode(isComp){
 
 };
 
+function createShadowStroke(type){
+  let color = DOM.shadowStrokeColor.getAttribute('data-color-hex');
+  let num = DOM.shadowStrokeNum.value*1;
+  let width = DOM.shadowStrokeWidth.value*1;
+  toolMessage([{type:type,color:color,num:num,width:width},'createShadowStroke'],PLUGINAPP);
+};
+
+function mergeText(type){
+  let order =  DOM.mergeOrder.getAttribute('data-radio-value');
+  toolMessage([[type,order],'mergeText'],PLUGINAPP);
+};
 
   
 

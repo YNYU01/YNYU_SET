@@ -96,6 +96,10 @@ const DOM = (() => {
     qrcodeDataInput: () => getById('input-qrcode-data'),
     checkQrcodeImage: () => getById('check-qrcode-image'),
     checkQrcodeData: () => getById('check-qrcode-data'),
+    shadowStrokeColor: () => query('[data-shadow-stroke-color]'),
+    shadowStrokeNum: () => getById('input-shadow-stroke-num'),//query('[data-shadow-stroke-num]')
+    shadowStrokeWidth: () => getById('input-shadow-stroke-width'),
+    mergeOrder: () => query('[data-merge-order]'),
     
     // 技能相关
     skillSearchInput: () => getById('skillsearch'),

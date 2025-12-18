@@ -1748,7 +1748,95 @@ figma.ui.onmessage = async (message) => {
         });
         figma.currentPage.selection = selects;
         return;
-    }
+    };
+    //合并文本
+    if ( type == "mergeText"){
+        //console.log(info)
+        let b = getSelectionMix();
+        let texts = b.filter(item => item.type == 'TEXT');
+        if(texts.length == 0) return;
+        let [mergeType,mergeOrder] = info;
+        let characters,textsFinal;
+        if(mergeOrder == '2'){
+            let lines = toSameLine(texts);
+            characters = lines.map(line => line.map(item => item.characters).join(''));
+            console.log(lines)
+            textsFinal = lines;
+        } else {
+            characters = texts.map(item => item.characters);
+            textsFinal = texts.map(item => [item]);
+        };
+        //先生成文本，再按需还原样式
+        await figma.loadFontAsync({family:'Inter',style:'Regular'});
+        let newText = await addText([{family:'Inter',style:'Regular'},characters.join('\n'),16,[toRGB('#d6d6d6',true)]]);
+
+        if (mergeType == 'all') {
+            try{
+                //需加载全部涉及的字体
+                let fonts = texts.map(item => item.getStyledTextSegments(['fontName']).map(item => item.fontName));
+                fonts = [...new Set(fonts.map(item => JSON.stringify(item)))];
+                fonts = fonts.map(item => JSON.parse(item)).flat();
+                //console.log(fonts)
+                let promises = fonts.map(item => figma.loadFontAsync(item));
+                await Promise.all(promises);
+
+                //'fontSize' | 'fontName' | 'fontWeight' | 'fontStyle' | 'textDecoration' | 'textDecorationStyle' | 'textDecorationSkipInk' | 'textDecorationOffset' | 'textDecorationThickness' | 'textDecorationColor' | 'textCase' | 'lineHeight' | 'letterSpacing' | 'fills' | 'textStyleId' | 'fillStyleId' | 'listOptions' | 'indentation' | 'hyperlink' | 'openTypeFeatures' | 'boundVariables' | 'textStyleOverrides' | 'paragraphSpacing' | 'listSpacing' | 'paragraphIndent'
+                console.log(textsFinal);
+                // 保持与 lines 相同的按行结构，方便后续基于行的逻辑处理
+                // characters 是通过 characters.join('\n') 拼接出来的，需要考虑换行带来的全局偏移
+                let lineOffsets = [];
+                let accLen = 0;
+                characters.forEach((lineStr, index) => {
+                    lineOffsets.push(accLen);
+                    // 除最后一行外，每一行后面都会多一个 '\n'
+                    accLen += lineStr.length + (index < characters.length - 1 ? 1 : 0);
+                });
+
+                // stylesByLine: [ 行 ][ 行内 textNode ][ 段落样式 ]
+                let stylesByLine = textsFinal.map((lineTexts, lineIndex) => {
+                    let lineBase = lineOffsets[lineIndex] || 0;
+                    let cursorInLine = 0;
+                    return lineTexts.map(textNode => {
+                        let segs = textNode.getStyledTextSegments(['fontName','fontSize','fills','fillStyleId','textStyleId']);
+                        // 把每个 segment 的 start/end 转成在合并后整体字符串里的绝对位置
+                        let adjusted = segs.map(seg => {
+                            return Object.assign({}, seg, {
+                                start: lineBase + cursorInLine + seg.start,
+                                end: lineBase + cursorInLine + seg.end
+                            });
+                        });
+                        cursorInLine += textNode.characters.length;
+                        return adjusted;
+                    });
+                });
+
+                // 如果后面需要按行判断换行等逻辑，可以直接使用 stylesByLine
+                // 应用样式到新文本时再拍平成一维数组
+                let styles = stylesByLine.flat(2);
+                console.log(stylesByLine, styles);
+                styles.forEach(item => {
+                    if(item.fontName) newText.setRangeFontName(item.start,item.end,item.fontName);
+                    if(item.fontSize) newText.setRangeFontSize(item.start,item.end,item.fontSize);
+                    if(item.fills) newText.setRangeFills(item.start,item.end,item.fills);
+                    if(item.fillStyleId) newText.setRangeFillStyleIdAsync(item.start,item.end,item.fillStyleId);
+                    if(item.textStyleId) newText.setRangeTextStyleIdAsync(item.start,item.end,item.textStyleId);
+                });
+            } catch(error){
+                console.error(error);
+            }
+
+        }
+        if(newText){
+            let group = figma.group(texts,texts[0].parent,texts[0].parent.children.findIndex(item => item.id == texts[0].id))
+            group.name = '@merge:character';
+            let group2 = figma.group(texts,group)
+            group2.visible = false;
+            newText.x = group.x;
+            newText.y = group.y;
+            group.appendChild(newText);       
+            figma.currentPage.selection = [group]; 
+        }
+    };
     //自动排列
     if ( type == 'Arrange By Ratio'){
         if(info){
@@ -2092,7 +2180,7 @@ figma.ui.onmessage = async (message) => {
         };
     };
     //生成新二维码
-    if( type == 'createNewQRcode'){
+    if( type == "createNewQRcode"){
         let selects = [];
         info.forEach(item => {
             let qrcode = figma.createNodeFromSvg(item.svg);
@@ -2104,9 +2192,9 @@ figma.ui.onmessage = async (message) => {
         figma.currentPage.selection = selects;
         figma.viewport.scrollAndZoomIntoView(selects);
         figma.viewport.zoom = figma.viewport.zoom * 0.6;
-    }
+    };
     //生成新二维码组件
-    if( type == 'createNewQRcodeComp'){
+    if( type == "createNewQRcodeComp"){
         //console.log(info)
         let selects = [];
         //二维码组件
@@ -2155,8 +2243,127 @@ figma.ui.onmessage = async (message) => {
         figma.currentPage.selection = selects;
         figma.viewport.scrollAndZoomIntoView(selects);
         figma.viewport.zoom = figma.viewport.zoom * 0.6;
-    }
-    
+    };
+    //生成伪描边
+    if( type == "createShadowStroke"){
+        let b = getSelectionMix();
+        let [x,y] = [figma.viewport.center.x - 100,figma.viewport.center.y - 100];
+        //console.log(info)
+        let [shadowType,color,num,width] = [info.type,info.color,info.num || 8,info.width];
+        let originalNum = parseInt(num) || 8;
+        let lan = await figma.clientStorage.getAsync('userLanguage');
+        // 如果数量大于8且不是css模式，提示并强制使用css模式
+        if(originalNum > 8 && shadowType !== 'css'){
+            if(lan == 'Zh'){
+                figma.notify(`Figma限制同类效果数量，大于8时无法生效，已自动生成CSS示例`, {timeout: 3000});
+            } else {
+                figma.notify(`Figma limits the number of effects, if same type of effects is greater than 8, it will not take effect, and the CSS example has been automatically generated`, {timeout: 3000});
+            }
+            shadowType = 'css';
+        }
+        num = shadowType === 'css' ? Math.max(originalNum, 1) : Math.min(Math.max(originalNum, 1), 8); // css模式不限制，其他模式限制1-8
+        //投影的x,y模拟描边粗细
+        const genDropShadows = (n,createType = 'css') => {
+            const arr = Array.from({length: n}, (_, i) => {
+                const angle = (i * 2 * Math.PI) / n;
+                const x = Math.sin(angle), y = Math.cos(angle);
+                const fmt = (v) => Math.abs(v) < 1e-6 ? '0' : Math.abs(v - 1) < 1e-6 ? 'var(--bod-w)' : Math.abs(v + 1) < 1e-6 ? 'calc(-1 * var(--bod-w))' : `calc(${v.toFixed(4)} * var(--bod-w))`;
+                if(createType == 'css'){
+                    return `drop-shadow(${fmt(x)} ${fmt(y)} 0 var(--col))`;
+                } else {
+                    let colors = toRGB(color,true).color;
+                    colors.a = 1;
+                    return {
+                        type: 'DROP_SHADOW',
+                        color: colors,
+                        offset: {x:x*width,y:y*width},
+                        visible: true,
+                        blendMode: 'NORMAL',
+                        spread: 0,
+                        radius: 0,
+                        showShadowBehindNode: false,
+                    };
+                }
+            });
+            return createType == 'css' ? arr.join('\n    ') : arr;
+        };
+
+        switch (shadowType) {
+            case 'css':
+                let tipsEn = `/*alculate the [x,y] of drop-shadows according to the specified precision and width to simulate stroke effect*/`;
+                let tipsZh = `/*按指定精度数和宽度计算投影的[x,y]，确保投影均匀分布以模拟描边效果*/`;
+                let fontNameTipsZh = {family:'Inter',style:'Regular'};
+                let isLoadFontTipsZh = false;
+                try {
+                    await figma.loadFontAsync(fontNameTipsZh);
+                    isLoadFontTipsZh = true;
+                } catch (error) {
+                    isLoadFontTipsZh = false;
+                }
+                let tips = tipsEn;
+                if(lan == 'Zh' && isLoadFontTipsZh){
+                    tips = tipsZh;
+                }
+                let css = `\n${tips}\n\n[data-shadow-stroke="${num}"]{\n\t--col: ${color};\n\t--bod-w: ${width}px;\n\tfilter: ${genDropShadows(num)};\n}\n`;
+                //console.log(css)
+                
+                let pre = addFrame([626,100,x,y,'@pre:css',[]]);
+                addAutoLayout(pre,['H','TL',0,[10,20,10,0]]);
+                pre.itemReverseZIndex = true;//前面堆叠在上
+                pre.fills = [toRGB('#272727',true)];
+                [pre.bottomLeftRadius,pre.bottomRightRadius,pre.topLeftRadius,pre.topRightRadius] = [10,10,10,10];
+
+                let mask = addFrame([100,100,null,null,'mask',[]]);
+                addAutoLayout(mask,['V','TL',0,[0,10,0,20]]);
+                mask.strokes = [toRGB('#272727',true)];
+                mask.fills = [toRGB('#27272799',true)];
+                [mask.strokeTopWeight,mask.strokeRightWeight,mask.strokeBottomWeight,mask.strokeLeftWeight] = [0,14,0,0];
+                let numText = await addText([{family:'Roboto Mono',style:'Regular'},css.split('\n').length.toString(),16,[toRGB('#aeaeae',true)]]);
+                numText.autoRename = false;
+                numText.name = '#last-line-num.text';
+                numText.fills = [];
+                mask.appendChild(numText);
+                pre.appendChild(mask);
+
+                let code = await addText([{family:'Roboto Mono',style:'Regular'},css,16,[toRGB('#aeaeae',true)]]);    
+                code.setRangeListOptions(0,css.length,{type: 'ORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
+                code.setRangeFills(1,tips.length + 1,[toRGB('#565656',true)]);
+                if(lan == 'Zh' && isLoadFontTipsZh){
+                    code.setRangeFontName(1,tips.length + 1,fontNameTipsZh);
+                }
+                code.hangingList = true;
+                pre.appendChild(code);
+                code.layoutSizingHorizontal = 'FILL';
+
+                mask.layoutSizingHorizontal = 'HUG';
+                mask.layoutSizingVertical = 'FILL';
+                pre.layoutSizingVertical = 'HUG';
+                figma.currentPage.selection = [pre];
+                figma.viewport.scrollAndZoomIntoView(pre);
+                figma.viewport.zoom = figma.viewport.zoom * 0.6;
+            break
+            case 'add':
+                b.forEach(item => {
+                    let oldEffects = Array.from(item.effects);
+                    let existingDropShadows = oldEffects.filter(e => e.type === 'DROP_SHADOW');
+                    let availableSlots = 8 - existingDropShadows.length;
+                    if(availableSlots > 0){
+                        let newEffects = genDropShadows(Math.min(num, availableSlots),'node');
+                        item.effects = [...oldEffects,...newEffects];
+                    }
+                });
+            break
+            case 'reset':
+                b.forEach(item => {
+                    console.log(num,width)
+                    let oldEffects = Array.from(item.effects).filter(items => items.type !== 'DROP_SHADOW');
+                    let newEffects = genDropShadows(num,'node');
+                    console.log(newEffects)
+                    item.effects = [...oldEffects,...newEffects];
+                });
+            break
+        }
+    };
 };
 
 //==========初始化==========
@@ -4243,6 +4450,33 @@ function sortLRTB(nodes){
         };
     });
 };
+//分析文本是同一行的可能性，将同行的文本放进一个数组
+function toSameLine(nodes){
+    //先按上下左右排好序
+    sortLRTB(nodes);
+    let lines = []; 
+    //y值相差平均高度的1/4可视为同一行
+    const threshold = nodes.reduce((sum, node) => sum + node.height, 0) / nodes.length / 4;
+    for (let i = 0; i < nodes.length; i++) {
+        let node = nodes[i];
+        let added = false;
+        let nodeY = node.absoluteBoundingBox.y;
+        // 查找是否可以放入已有的某一行（与该行第一个元素y相近则视为同一行）
+        for (let j = 0; j < lines.length; j++) {
+            let refNode = lines[j][0];
+            let refY = refNode.absoluteBoundingBox.y;
+            if (Math.abs(nodeY - refY) < threshold) {
+                lines[j].push(node);
+                added = true;
+                break;
+            }
+        }
+        if (!added) {
+            lines.push([node]);
+        }
+    }
+    return lines;
+};
 //添加网格参考线用于设置裁切拉伸范围
 /**
  * @param {Array} info -[type,xy,wh]
@@ -4667,6 +4901,7 @@ const BASIC_PROPS = [
     "name",//名称
     "numberOfFixedChildren",//固定子元素数量
     "opacity",//透明度
+    "offset",//偏移
     "paddingBottom",//下内边距
     "paddingLeft",//左内边距
     "paddingRight",//右内边距

@@ -1847,61 +1847,59 @@ function setTheme(isLight,istips){
 }
 
 function setLanguage(isZh,istips){
-  if(isZh){
-    ROOT.setAttribute("data-language","Zh");
-    LANGUAGE_SWITCH.forEach(item => {
-      item.checked = true;
-      item.parentNode.style.setProperty('--swi-text',`'Zh'`);
-    });
-    storageMix.set('userLanguage','Zh');
-    if(istips){
-      tipsAll('已切换为中文',2000,3);
-    }
-    let texts = document.querySelectorAll('[data-zh-text]');
-    texts.forEach(item => {
-      item.innerHTML = item.getAttribute('data-zh-text');
-    });
+  // 语言配置
+  const langConfig = {
+    lang: isZh ? 'Zh' : 'En',
+    checked: isZh,
+    switchText: isZh ? "'Zh'" : "'En'",
+    tipText: isZh ? '已切换为中文' : 'Change to English',
+    attrPrefix: isZh ? 'zh' : 'en'
+  };
 
-    let inputs = document.querySelectorAll('[data-zh-input]');
-    inputs.forEach(item => {
-      item.value = item.getAttribute('data-zh-input');
-    });
-
-    let placeholders = document.querySelectorAll('[data-zh-placeholder]');
-    placeholders.forEach(item => {
-      item.placeholder = item.getAttribute('data-zh-placeholder');
-    });
-
-  }else{
-    ROOT.setAttribute("data-language","En");
-    LANGUAGE_SWITCH.forEach(item => {
-      item.checked = false;
-      item.parentNode.style.setProperty('--swi-text',`'En'`);
-    });
-    storageMix.set('userLanguage','En');
-    if(istips){
-      tipsAll('Change to English',2000,3);
-    }
-
-    let texts = document.querySelectorAll('[data-en-text]');
-    texts.forEach(item => {
-      item.setAttribute('data-zh-text',item.innerHTML);
-      item.innerHTML = item.getAttribute('data-en-text');
-    });
-
-    let inputs = document.querySelectorAll('[data-en-input]');
-    inputs.forEach(item => {
-      item.setAttribute('data-zh-input',item.value);
-      item.value = item.getAttribute('data-en-input');
-    });
-
-    let placeholders = document.querySelectorAll('[data-en-placeholder]');
-    placeholders.forEach(item => {
-      let placeholder = item.placeholder;
-      item.setAttribute('data-zh-placeholder',placeholder);
-      item.placeholder = item.getAttribute('data-en-placeholder');
-    });
+  // 设置语言状态
+  ROOT.setAttribute("data-language", langConfig.lang);
+  LANGUAGE_SWITCH.forEach(item => {
+    item.checked = langConfig.checked;
+    item.parentNode.style.setProperty('--swi-text', langConfig.switchText);
+  });
+  storageMix.set('userLanguage', langConfig.lang);
+  
+  // 显示提示
+  if(istips){
+    tipsAll(langConfig.tipText, 2000, 3);
   }
+
+  // 更新文本内容
+  if(isZh){
+    // 切换到中文：直接使用 data-zh-* 属性
+    updateLangContent('[data-zh-text]', 'data-zh-text', 'innerHTML');
+    updateLangContent('[data-zh-input]', 'data-zh-input', 'value');
+    updateLangContent('[data-zh-placeholder]', 'data-zh-placeholder', 'placeholder');
+  }else{
+    // 切换到英文：先保存中文值（如果不存在），再使用 data-en-* 属性
+    updateLangContentToEn('[data-en-text]', 'data-zh-text', 'data-en-text', 'innerHTML');
+    updateLangContentToEn('[data-en-input]', 'data-zh-input', 'data-en-input', 'value');
+    updateLangContentToEn('[data-en-placeholder]', 'data-zh-placeholder', 'data-en-placeholder', 'placeholder');
+  }
+}
+
+// 更新语言内容（中文模式：直接使用属性值）
+function updateLangContent(selector, attrName, propName){
+  document.querySelectorAll(selector).forEach(item => {
+    item[propName] = item.getAttribute(attrName);
+  });
+}
+
+// 更新语言内容（英文模式：先保存中文值，再使用英文值）
+function updateLangContentToEn(selector, zhAttrName, enAttrName, propName){
+  document.querySelectorAll(selector).forEach(item => {
+    // 只有当中文属性不存在时才设置，避免覆盖 HTML 中已预设的双语属性
+    if(!item.hasAttribute(zhAttrName)){
+      const currentValue = propName === 'placeholder' ? item.placeholder : item[propName];
+      item.setAttribute(zhAttrName, currentValue);
+    }
+    item[propName] = item.getAttribute(enAttrName);
+  });
 }
 
 /**

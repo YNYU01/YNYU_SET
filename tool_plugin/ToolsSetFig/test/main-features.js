@@ -23,7 +23,11 @@ const SKILL_STRATEGIES = {
   'Select Inline': () => sendTablePick('inline'),
   'Up Export-set': () => upSelect('exportset'),
   'Up Default': () => upSelect('default'),
-  'Create New QRcode': () => createNewQRcode(true)
+  'Create New QRcode': () => createNewQRcode(true),
+  'Shadow-stroke Css': () => createShadowStroke('css'),
+  'Add Shadow-stroke': () => createShadowStroke('reset'),
+  'Merge Character': () => mergeText('character'),
+  'Merge Keep Style': () => mergeText('all'),
 };
 
 // 带数据通信的双击功能映射
@@ -31,7 +35,8 @@ const SKILL_DBLCLICK_STRATEGIES = {
   // 示例：如果有特定双击处理，可以在这里添加
   // 'Pixel As Copy': () => sendPixelDoubleClick('Pixel As Copy'),
   // 'Mapping Names': () => sendTableDoubleClick('mapName'),
-  'Create New QRcode': () => createNewQRcode()
+  'Create New QRcode': () => createNewQRcode(),
+  'Add Shadow-stroke': () => createShadowStroke('add')
 };
 /**
  * 通过data-skill-click/dblclick属性（收集进DOM.skillBtnMain）,为按钮添加点击即执行的功能，单击和双击事件分开处理
@@ -310,4 +315,18 @@ function createNewQRcode(isComp){
     toolMessage([data,'createNewQRcode'],PLUGINAPP);
   }
   
+};
+
+// 更多功能 > 生成伪描边
+function createShadowStroke(type){
+  let color = DOM.shadowStrokeColor.getAttribute('data-color-hex');
+  let num = DOM.shadowStrokeNum.value*1;//.getAttribute('data-select-value').split('x')[1]*1;
+  let width = DOM.shadowStrokeWidth.value*1;
+  toolMessage([{type:type,color:color,num:num,width:width},'createShadowStroke'],PLUGINAPP);
+};
+
+// 更多功能 > 合并文本
+function mergeText(type){
+  let order =  DOM.mergeOrder.getAttribute('data-radio-value');
+  toolMessage([[type,order],'mergeText'],PLUGINAPP);
 };

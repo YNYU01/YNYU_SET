@@ -1567,14 +1567,18 @@
                     <div data-any="vw240" data-skill-btnname data-en-text="Merge Order">
                       合并顺序
                     </div>
-                    <div data-radio-value="1" class="df-lc fl1 gap4">
+                    <div data-merge-order data-radio-value="1" class="df-lc fl1 gap4">
                       <div data-radio data-radio-main="true" data-radio-data="1" class="df-cc" 
                       data-en-text="Z-Index">
-                        按图层顺序
+                        图层顺序
                       </div>
                       <div data-radio data-radio-main="false" data-radio-data="2" class="df-cc" 
-                      data-en-text="T-B-L-R">
-                        按上下左右
+                      data-en-text="L-R-T-B">
+                        上下左右
+                      </div>
+                      <div data-radio data-radio-main="false" data-radio-data="3" class="df-cc" 
+                      data-en-text="Line Block">
+                        视觉行块
                       </div>
                     </div>
                   </div>
@@ -1794,9 +1798,9 @@
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div class="df-lc" data-skill-line>
-                    <div data-any="vw240" data-skill-btnname data-en-text="Mum & Width">描边数量和粗细</div>
-                    <div data-shadow-stroke-num class="df-lc pos-r fl1 gap4" data-select data-select-close data-select-value="x4" style="--op-pad-l: 1ch;">
+                  <div class="df-lc" data-skill-line data-selects-must="false">
+                    <div data-any="vw240" data-skill-btnname data-en-text="Precision & Width">描边精度和粗细</div>
+                    <!--div data-shadow-stroke-num class="df-lc pos-r fl1 gap4" data-select data-select-close data-select-value="x4" style="--op-pad-l: 1ch;">
                       <input id="select-value-3" type="text" data-select-input readonly value="x4">
                       <input id="select-show-3" data-select-pick type="checkbox">
                       <label for="select-show-3" class="show-next wh100 pos-a" style="top:0; right: 0;"></label>
@@ -1805,13 +1809,17 @@
                         <div data-option="option" data-option-main="false" data-option-value="x8">x8</div>
                         <div data-option="option" data-option-main="false" data-option-value="x12">x12</div>
                       </div>
+                    </div-->
+                    <div class="df-lc fl1" >
+                      <input id="input-shadow-stroke-num" type="text" value="4" data-input="" data-input-type="int" data-input-must="3,36" style=" text-align: center;">
+                      <div class="df-cc" data-input-unit="">x</div>
                     </div>
                     <div class="df-lc fl1" >
-                      <input id="input-shadow-stroke-width" type="text" value="1" data-input="" data-input-type="int" data-input-must="1,10000" style=" text-align: center;">
+                      <input id="input-shadow-stroke-width" type="text" value="1" data-input="" data-input-type="float" data-input-must="0,10000" style=" text-align: center;">
                       <div class="df-cc" data-input-unit="">px</div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line>
+                  <div class="df-lc" data-skill-line data-selects-must="false">
                     <div data-any="vw240" data-skill-btnname data-en-text="Color">描边颜色</div>
                     <div data-shadow-stroke-color data-color data-color-hex="#888888" 
                       data-color-rgb="rgb(136,136,136)" data-color-hsl="hsl(0,0%,53%)" 
@@ -1825,10 +1833,10 @@
                         <card-colorpick></card-colorpick>
                     </div>
                   </div>
-                  <div class="df-ffc df-cc" data-skill-line>
+                  <div class="df-ffc df-cc" data-skill-line data-selects-must="false">
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Code Example">代码示例</div>
-                      <div class="df-cc" data-btn-dblclick  data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Shadow-stroke Css">代码示例</div>
+                      <div class="df-cc" data-btn-dblclick data-selects-must data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
                     </div>
                   </div>
                 </div>
