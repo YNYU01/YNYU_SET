@@ -294,6 +294,7 @@ function createNewQRcode(isComp){
     if(data.length === 0){
       return;
     }
+    console.log(data)
     toolMessage([data,'createNewQRcodeComp'],PLUGINAPP);
 
   }else{

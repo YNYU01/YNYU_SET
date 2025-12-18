@@ -2629,17 +2629,16 @@ Object.assign(TOOL_JS.prototype, {
 
         if (mode === 'binary') {
           // 二值化模式
+          // 计算均值时忽略透明区域（只统计非透明像素）
           let sumGray = 0;
           let count = 0;
-          let sumAlpha = 0;
 
-            for (let py = startY; py < endY && py < imageData.height; py++) {
+          for (let py = startY; py < endY && py < imageData.height; py++) {
             for (let px = startX; px < endX && px < imageData.width; px++) {
               const idx = (py * imageData.width + px) * 4;
               if (idx < imageData.data.length) {
                 const alpha = imageData.data[idx + 3];
-                sumAlpha += alpha;
-
+                // 只统计非透明像素（alpha > 10）用于计算均值
                 if (alpha > 10) {
                   const gray = 0.2126 * imageData.data[idx] + 
                               0.7152 * imageData.data[idx + 1] + 
@@ -2651,18 +2650,17 @@ Object.assign(TOOL_JS.prototype, {
             }
           }
 
-          const moduleArea = (endX - startX) * (endY - startY);
-          const avgAlpha = moduleArea > 0 ? sumAlpha / moduleArea : 0;
-          if (avgAlpha < 128) {
-            matrix.push(null); // 透明标记（可选，根据需求可以返回其他值）
-          } else if (count > 0) {
+          // 如果有非透明像素，根据灰度值进行二值化
+          if (count > 0) {
             const avgGray = sumGray / count;
             matrix.push(avgGray < actualThreshold ? 1 : 0);
           } else {
-            matrix.push(0);
+            // 如果区域完全透明，记录为null
+            matrix.push(null);
           }
         } else {
           // RGBA模式
+          // 计算均值时忽略透明区域（只统计非透明像素）
           let sumR = 0, sumG = 0, sumB = 0, sumA = 0;
           let count = 0;
 
@@ -2670,16 +2668,21 @@ Object.assign(TOOL_JS.prototype, {
             for (let px = startX; px < endX && px < imageData.width; px++) {
               const idx = (py * imageData.width + px) * 4;
               if (idx < imageData.data.length) {
-                sumR += imageData.data[idx];
-                sumG += imageData.data[idx + 1];
-                sumB += imageData.data[idx + 2];
-                sumA += imageData.data[idx + 3];
-                count++;
+                const alpha = imageData.data[idx + 3];
+                // 只统计非透明像素（alpha > 10）用于计算均值
+                if (alpha > 10) {
+                  sumR += imageData.data[idx];
+                  sumG += imageData.data[idx + 1];
+                  sumB += imageData.data[idx + 2];
+                  sumA += imageData.data[idx + 3];
+                  count++;
+                }
               }
             }
           }
 
           if (count > 0) {
+            // 有非透明像素，计算平均值
             matrix.push({
               r: Math.round(sumR / count),
               g: Math.round(sumG / count),
@@ -2687,6 +2690,7 @@ Object.assign(TOOL_JS.prototype, {
               a: Math.round(sumA / count)
             });
           } else {
+            // 如果区域完全透明（rgba为0），如实记录为 {r: 0, g: 0, b: 0, a: 0}
             matrix.push({ r: 0, g: 0, b: 0, a: 0 });
           }
         }

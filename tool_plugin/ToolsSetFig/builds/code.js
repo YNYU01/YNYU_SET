@@ -131,8 +131,8 @@ figma.ui.onmessage = async (message) => {
             let b = figma.currentPage.selection[0];
             console.log(b);
             //使用深层拷贝函数获取可序列化的JSON数据
-            let nodeData = nodeToJSON(b);
-            console.log(nodeData)//JSON.stringify(nodeData, null, 2));
+            //let nodeData = nodeToJSON(b);
+            //console.log(nodeData)//JSON.stringify(nodeData, null, 2));
             if(b.type == 'TEXT'){
                 //console.log(b.getRangeListOptions(0,b.characters.length));
             };
@@ -1756,13 +1756,31 @@ figma.ui.onmessage = async (message) => {
         let texts = b.filter(item => item.type == 'TEXT');
         if(texts.length == 0) return;
         let [mergeType,mergeOrder] = info;
-        let characters,textsFinal;
+        let characters,textsFinal,newNode;
         if(mergeOrder == '2'){
             let lines = toSameLine(texts);
             characters = lines.map(line => line.map(item => item.characters).join(''));
-            console.log(lines)
+            //console.log(lines)
             textsFinal = lines;
-        } else {
+        } else if(mergeOrder == '3'){
+            let cloneTexts = texts.map(item => item.clone());
+            let allTextNodes = figma.group(cloneTexts,texts[0].parent,texts[0].parent.children.findIndex(item => item.id == texts[0].id))
+            let svgcode = await allTextNodes.exportAsync({
+                format: 'SVG_STRING',
+                svgOutlineText: false,
+                svgIdAttribute: false,
+            })
+            newNode = figma.createNodeFromSvg(svgcode);
+            texts[0].parent.insertChild(texts[0].parent.children.findIndex(item => item.id == texts[0].id),newNode);
+            newNode.x = allTextNodes.x;
+            newNode.y = allTextNodes.y;
+            allTextNodes.remove();
+            let newtexts = newNode.findAll(item => item.type == 'TEXT');
+            let lines = toSameLine(newtexts);
+            characters = lines.map(line => line.map(item => item.characters).join(''));
+            textsFinal = lines;
+        }
+         else {
             characters = texts.map(item => item.characters);
             textsFinal = texts.map(item => [item]);
         };
@@ -1780,10 +1798,6 @@ figma.ui.onmessage = async (message) => {
                 let promises = fonts.map(item => figma.loadFontAsync(item));
                 await Promise.all(promises);
 
-                //'fontSize' | 'fontName' | 'fontWeight' | 'fontStyle' | 'textDecoration' | 'textDecorationStyle' | 'textDecorationSkipInk' | 'textDecorationOffset' | 'textDecorationThickness' | 'textDecorationColor' | 'textCase' | 'lineHeight' | 'letterSpacing' | 'fills' | 'textStyleId' | 'fillStyleId' | 'listOptions' | 'indentation' | 'hyperlink' | 'openTypeFeatures' | 'boundVariables' | 'textStyleOverrides' | 'paragraphSpacing' | 'listSpacing' | 'paragraphIndent'
-                console.log(textsFinal);
-                // 保持与 lines 相同的按行结构，方便后续基于行的逻辑处理
-                // characters 是通过 characters.join('\n') 拼接出来的，需要考虑换行带来的全局偏移
                 let lineOffsets = [];
                 let accLen = 0;
                 characters.forEach((lineStr, index) => {
@@ -1810,10 +1824,9 @@ figma.ui.onmessage = async (message) => {
                     });
                 });
 
-                // 如果后面需要按行判断换行等逻辑，可以直接使用 stylesByLine
                 // 应用样式到新文本时再拍平成一维数组
                 let styles = stylesByLine.flat(2);
-                console.log(stylesByLine, styles);
+                //console.log(stylesByLine, styles);
                 styles.forEach(item => {
                     if(item.fontName) newText.setRangeFontName(item.start,item.end,item.fontName);
                     if(item.fontSize) newText.setRangeFontSize(item.start,item.end,item.fontSize);
@@ -1828,13 +1841,16 @@ figma.ui.onmessage = async (message) => {
         }
         if(newText){
             let group = figma.group(texts,texts[0].parent,texts[0].parent.children.findIndex(item => item.id == texts[0].id))
-            group.name = '@merge:character';
+            group.name = '@merge:' + mergeType;
             let group2 = figma.group(texts,group)
             group2.visible = false;
             newText.x = group.x;
             newText.y = group.y;
             group.appendChild(newText);       
             figma.currentPage.selection = [group]; 
+        }
+        if(newNode){
+            newNode.remove();
         }
     };
     //自动排列
@@ -2195,54 +2211,175 @@ figma.ui.onmessage = async (message) => {
     };
     //生成新二维码组件
     if( type == "createNewQRcodeComp"){
-        //console.log(info)
+        console.log(info)
+        let lan = await figma.clientStorage.getAsync('userLanguage');
+        let tipsEn = `Generating a new QR code component, please wait...`;
+        let tipsZh = `正在生成一个新的二维码组件，请稍候...`;
+        let tips = tipsEn;
+        if(lan == 'Zh'){
+            tips = tipsZh;
+        }
+        let loading = figma.notify(tips, {timeout: 6000});
         let selects = [];
-        //二维码组件
         let fill = toRGB('#000000',true);
         let bg = toRGB('#ffffff',true);
         let [x,y] = [figma.viewport.center.x - 100,figma.viewport.center.y - 100];
-        let cellFillBox = addFrame([10,10,x + 80,y,'@cell:fill',[]]);
-        let cellFill = figma.createRectangle();
-        cellFill.resize(10,10);
-        cellFill.fills = [fill];
-        cellFillBox.appendChild(cellFill);
-        addAutoLayout(cellFillBox,['H','CC',0,[0,0]]);
-        let cellFillComp = figma.createComponentFromNode(cellFillBox);
-        selects.push(cellFillComp);
-        let cellBgBox = addFrame([10,10,x + 100,y,'@cell:bg',[]]);
-        let cellBg = figma.createRectangle();
-        cellBg.resize(10,10);
-        cellBg.fills = [bg];
-        cellBgBox.appendChild(cellBg);
-        addAutoLayout(cellBgBox,['H','CC',0,[0,0]]);
-        let cellBgComp = figma.createComponentFromNode(cellBgBox);
-        selects.push(cellBgComp);
-        let qrFinderBox = addFrame([70,70,x,y,'@finder:mix',[]]);
-        let qrFinder = figma.createRectangle();
-        qrFinder.name = '#finder.radius';
-        qrFinder.x = x - 80;
-        qrFinder.y = y;
-        qrFinder.resize(70,70);
-        qrFinder.fills = [fill];
-        let finderComp = figma.createComponentFromNode(qrFinder);
-        finderComp.name = '@finder';
-        selects.push(finderComp);
-        let finderCenter = finderComp.createInstance();
-        finderCenter.children[0].name = '#finder-center.radius';
-        finderCenter.rescale(3/7);
-        let finderGap = finderComp.createInstance();
-        finderGap.rescale(5/7);
-        finderGap.children[0].name = '#finder-gap.radius';
-        finderGap.children[0].fills = [bg];
-        qrFinderBox.appendChild(finderComp.createInstance());
-        addAutoLayout(qrFinderBox,['H','CC',0,[0,0]],[true,true,true,true]);
-        addAsAbsolute(qrFinderBox,finderGap,'CC');
-        addAsAbsolute(qrFinderBox,finderCenter,'CC');
-        let qrFinderComp = figma.createComponentFromNode(qrFinderBox);
-        selects.push(qrFinderComp);
+        let cellFillComp,cellBgComp,qrFinderComp,allPixels;
+        //只有含二值化数据时，生成二值化数据组件
+        if(info.map(item => item.type).some(item => item == 'binary')){
+            let cellFillBox = addFrame([10,10,x + 80,y,'@cell:fill',[]]);
+            let cellFill = figma.createRectangle();
+            cellFill.resize(10,10);
+            cellFill.fills = [fill];
+            cellFillBox.appendChild(cellFill);
+            addAutoLayout(cellFillBox,['H','CC',0,[0,0]]);
+            cellFillComp = figma.createComponentFromNode(cellFillBox);
+            selects.push(cellFillComp);
+            let cellBgBox = addFrame([10,10,x + 100,y,'@cell:bg',[]]);
+            let cellBg = figma.createRectangle();
+            cellBg.resize(10,10);
+            cellBg.fills = [bg];
+            cellBgBox.appendChild(cellBg);
+            addAutoLayout(cellBgBox,['H','CC',0,[0,0]]);
+            cellBgComp = figma.createComponentFromNode(cellBgBox);
+            selects.push(cellBgComp);
+        };
+
+        if(info.map(item => item.isQr).some(item => item == true)){
+            //只有含二维码的数据时，生成二维码组件
+            let qrFinderBox = addFrame([70,70,x,y,'@finder:mix',[]]);
+            let qrFinder = figma.createRectangle();
+            qrFinder.name = '#finder.radius';
+            qrFinder.x = x - 80;
+            qrFinder.y = y;
+            qrFinder.resize(70,70);
+            qrFinder.fills = [fill];
+            let finderComp = figma.createComponentFromNode(qrFinder);
+            finderComp.name = '@finder';
+            selects.push(finderComp);
+            let finderCenter = finderComp.createInstance();
+            finderCenter.children[0].name = '#finder-center.radius';
+            finderCenter.rescale(3/7);
+            let finderGap = finderComp.createInstance();
+            finderGap.rescale(5/7);
+            finderGap.children[0].name = '#finder-gap.radius';
+            finderGap.children[0].fills = [bg];
+            qrFinderBox.appendChild(finderComp.createInstance());
+            addAutoLayout(qrFinderBox,['H','CC',0,[0,0]],[true,true,true,true]);
+            addAsAbsolute(qrFinderBox,finderGap,'CC');
+            addAsAbsolute(qrFinderBox,finderCenter,'CC');
+            qrFinderComp = figma.createComponentFromNode(qrFinderBox);
+            selects.push(qrFinderComp);
+        };
+        
+        //只有数据大于1时，生成自动布局容器
+        if(info.length > 1){
+            allPixels = addFrame([100,100,x - 80,y + 80,'pixels',[]]);
+            addAutoLayout(allPixels,['H','TL',0,[0,0]],[false,false]);
+            allPixels.strokesIncludedInLayout = true;
+            selects.push(allPixels);
+        };
+        
+        info.forEach(item => {
+            if(item.isQr){
+                let name = item.isQr ? '@pixel:Qrcode' : '@pixel';
+                let qrcode = addFrame([item.column * 10,item.row * 10,null,null,name,[bg]]);    
+                qrcode.strokes = [bg];
+                qrcode.strokeTopWeight = 10;
+                qrcode.strokeRightWeight = 10;
+                qrcode.strokeBottomWeight = 10;
+                qrcode.strokeLeftWeight = 10;
+                qrcode.strokeAlign = 'OUTSIDE';
+                if(info.length > 1){
+                    allPixels.appendChild(qrcode);
+                } else {
+                    selects.push(qrcode);
+                }
+                //先往四个角落放定位区
+                let finder1 = qrFinderComp.createInstance();
+                qrcode.appendChild(finder1);
+                let finder2 = qrFinderComp.createInstance();
+                qrcode.appendChild(finder2);
+                let finder3 = qrFinderComp.createInstance();
+                qrcode.appendChild(finder3);
+                finder1.x = 0;
+                finder1.y = 0;
+                finder2.x = qrcode.width - finder2.width;
+                finder2.y = 0;
+                finder3.x = 0;
+                finder3.y = qrcode.height - finder3.height;
+                //根据matrix生成数据区点阵，根据x,y排除与定位区重叠部分
+                item.matrix.forEach((cell,index) => {
+                    let cellX = index % item.column * 10;
+                    let cellY = Math.floor(index / item.column) * 10;
+                    if(isOverlap(cellX,cellY)){
+                        return;
+                    }
+                    if(cell == 1){
+                        let pixel = cellFillComp.createInstance();
+                        qrcode.appendChild(pixel);
+                        pixel.x = cellX;
+                        pixel.y = cellY;
+                    }else{
+                        let pixel = cellBgComp.createInstance();
+                        qrcode.appendChild(pixel);
+                        pixel.x = cellX;
+                        pixel.y = cellY;
+                    }
+                });
+            }else{
+                let pixelsNode = addFrame([item.column * 10,item.row * 10,null,null,'@pixel',[]]);
+                if(info.length > 1){
+                    allPixels.appendChild(pixelsNode);
+                } else {
+                    selects.push(pixelsNode);
+                }
+                try{
+                    item.matrix.forEach((cell,index) => {
+                        let cellX = index % item.column * 10;
+                        let cellY = Math.floor(index / item.column) * 10;
+
+                        if(item.type == 'binary'){
+                            if(cell == 1){
+                                let pixel = cellFillComp.createInstance();
+                                pixelsNode.appendChild(pixel);
+                                pixel.x = cellX;
+                                pixel.y = cellY;
+                            }else if(cell == 0){
+                                let pixel = cellBgComp.createInstance();
+                                pixelsNode.appendChild(pixel);
+                                pixel.x = cellX;
+                                pixel.y = cellY;
+                            }
+                        } else {
+                            let pixel = figma.createRectangle();
+                            pixel.resize(10,10);
+                            pixel.fills = [{ color:{r:cell.r,g:cell.g,b:cell.b},type:'SOLID',opacity:cell.a }];
+                            pixelsNode.appendChild(pixel);
+                            pixel.x = cellX;
+                            pixel.y = cellY;
+                        }
+                    });
+                } catch(e){
+                    console.log(e)
+                }
+            }
+            
+            
+            //计算是否与定位区重叠
+            function isOverlap(cellX,cellY){
+                const finderSize = 70;
+                if (cellX < finderSize && cellY < finderSize) return true;
+                if (cellX >= (item.column - 7) * 10 && cellY < finderSize) return true;
+                if (cellX < finderSize && cellY >= (item.row - 7) * 10) return true;
+                return false;
+            }
+        });
         figma.currentPage.selection = selects;
         figma.viewport.scrollAndZoomIntoView(selects);
-        figma.viewport.zoom = figma.viewport.zoom * 0.6;
+        loading.cancel();
+        //figma.viewport.zoom = figma.viewport.zoom * 0.6;
+        
     };
     //生成伪描边
     if( type == "createShadowStroke"){
@@ -4835,7 +4972,7 @@ const BASIC_PROPS = [
     "clipsContent",//是否裁剪边界
     "color",//颜色
     "componentProperties",//组件属性
-    "constrainProportions",//约束比例
+    //"constrainProportions",约束比例（被阻止读取，要用"targetAspectRatio"方法，不作为属性存在）
     "componentPropertyDefinitions",//组件属性定义
     "componentPropertyReferences",//组件属性引用
     "constraints",//约束
