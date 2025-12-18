@@ -2195,6 +2195,21 @@ figma.ui.onmessage = async (message) => {
             b[i].visible = false
         };
     };
+    //上传图片到二维码识别
+    if( type == "Up QR Layer"){
+        let b = getSelectionMix();
+        if(b.length == 1){
+            let c = b[0];
+            let [w,h,x,y] = getSafeMain(c);
+            let maxWH = Math.max(w,h);
+            let scale = maxWH >= 1024 ? 1024/maxWH : 1;
+            let info = await c.exportAsync({
+                format: 'PNG',
+                constraint: { type: 'SCALE', value: scale }
+            });
+            postmessage([info,'qrLayerView'])
+        };
+    };
     //生成新二维码
     if( type == "createNewQRcode"){
         let selects = [];
@@ -2211,23 +2226,24 @@ figma.ui.onmessage = async (message) => {
     };
     //生成新二维码组件
     if( type == "createNewQRcodeComp"){
-        console.log(info)
-        let lan = await figma.clientStorage.getAsync('userLanguage');
-        let tipsEn = `Generating a new QR code component, please wait...`;
-        let tipsZh = `正在生成一个新的二维码组件，请稍候...`;
-        let tips = tipsEn;
-        if(lan == 'Zh'){
-            tips = tipsZh;
-        }
-        let loading = figma.notify(tips, {timeout: 6000});
+        //console.log(info)
         let selects = [];
         let fill = toRGB('#000000',true);
         let bg = toRGB('#ffffff',true);
         let [x,y] = [figma.viewport.center.x - 100,figma.viewport.center.y - 100];
         let cellFillComp,cellBgComp,qrFinderComp,allPixels;
+
+        //只有数据大于1时，生成自动布局容器
+        if(info.length > 1){
+            allPixels = addFrame([100,100,x,y + 80,'pixels',[]]);
+            addAutoLayout(allPixels,['H','TL',0,[0,0]],[false,false]);
+            allPixels.strokesIncludedInLayout = true;
+            selects.push(allPixels);
+        };
+
         //只有含二值化数据时，生成二值化数据组件
         if(info.map(item => item.type).some(item => item == 'binary')){
-            let cellFillBox = addFrame([10,10,x + 80,y,'@cell:fill',[]]);
+            let cellFillBox = addFrame([10,10,x,y,'@cell:fill',[]]);
             let cellFill = figma.createRectangle();
             cellFill.resize(10,10);
             cellFill.fills = [fill];
@@ -2235,7 +2251,7 @@ figma.ui.onmessage = async (message) => {
             addAutoLayout(cellFillBox,['H','CC',0,[0,0]]);
             cellFillComp = figma.createComponentFromNode(cellFillBox);
             selects.push(cellFillComp);
-            let cellBgBox = addFrame([10,10,x + 100,y,'@cell:bg',[]]);
+            let cellBgBox = addFrame([10,10,x + 20,y,'@cell:bg',[]]);
             let cellBg = figma.createRectangle();
             cellBg.resize(10,10);
             cellBg.fills = [bg];
@@ -2244,9 +2260,12 @@ figma.ui.onmessage = async (message) => {
             cellBgComp = figma.createComponentFromNode(cellBgBox);
             selects.push(cellBgComp);
         };
-
+        
+        //只有含二维码的数据时，生成二维码组件,同时调整二值化数据组件（如有）和自动布局容器（如有）的位置
         if(info.map(item => item.isQr).some(item => item == true)){
-            //只有含二维码的数据时，生成二维码组件
+            if(cellFillComp) cellFillComp.x += 80;
+            if(cellBgComp) cellBgComp.x += 80;
+            if(allPixels) allPixels.x -= 80;
             let qrFinderBox = addFrame([70,70,x,y,'@finder:mix',[]]);
             let qrFinder = figma.createRectangle();
             qrFinder.name = '#finder.radius';
@@ -2270,20 +2289,12 @@ figma.ui.onmessage = async (message) => {
             addAsAbsolute(qrFinderBox,finderCenter,'CC');
             qrFinderComp = figma.createComponentFromNode(qrFinderBox);
             selects.push(qrFinderComp);
-        };
-        
-        //只有数据大于1时，生成自动布局容器
-        if(info.length > 1){
-            allPixels = addFrame([100,100,x - 80,y + 80,'pixels',[]]);
-            addAutoLayout(allPixels,['H','TL',0,[0,0]],[false,false]);
-            allPixels.strokesIncludedInLayout = true;
-            selects.push(allPixels);
-        };
+        }; 
         
         info.forEach(item => {
             if(item.isQr){
                 let name = item.isQr ? '@pixel:Qrcode' : '@pixel';
-                let qrcode = addFrame([item.column * 10,item.row * 10,null,null,name,[bg]]);    
+                let qrcode = addFrame([item.column * 10,item.row * 10,x,y + 80,name,[bg]]);    
                 qrcode.strokes = [bg];
                 qrcode.strokeTopWeight = 10;
                 qrcode.strokeRightWeight = 10;
@@ -2328,7 +2339,10 @@ figma.ui.onmessage = async (message) => {
                     }
                 });
             }else{
-                let pixelsNode = addFrame([item.column * 10,item.row * 10,null,null,'@pixel',[]]);
+                let pixelsNode = addFrame([item.column * 10,item.row * 10,x,y,'@pixel',[]]);
+                if(item.type == 'binary'){
+                    pixelsNode.y = y + 20;
+                }
                 if(info.length > 1){
                     allPixels.appendChild(pixelsNode);
                 } else {
@@ -2377,7 +2391,6 @@ figma.ui.onmessage = async (message) => {
         });
         figma.currentPage.selection = selects;
         figma.viewport.scrollAndZoomIntoView(selects);
-        loading.cancel();
         //figma.viewport.zoom = figma.viewport.zoom * 0.6;
         
     };

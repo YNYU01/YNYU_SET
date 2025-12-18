@@ -450,6 +450,7 @@ window.addEventListener('message',(message)=>{
         case 'variableInfo': reVariableInfo(info);break
         case 'variableSheetInfo': reVariableSheetInfo(info);break
         case 'editImage': editImage(info);break
+        case 'qrLayerView': addQRLayerView(info);break
       };
     }
   };
@@ -3995,6 +3996,24 @@ getElementMix('data-qrcode-clear').addEventListener('click',()=>{
     delete imgView.dataset.showingCroppedImage;
   }
 });
+
+//处理回传的二维码图片数据
+function addQRLayerView(info){
+  let img = new Image();
+  DOM.qrcodeView.innerHTML = '';
+  img.onload = function(){
+    if(img.width > img.height){
+      img.style.width = '100%';
+      img.style.height = 'auto';
+    }else{
+      img.style.width = 'auto';
+      img.style.height = '100%';
+    }
+    DOM.qrcodeView.appendChild(img);
+    convertImageToQRCode(img, 'upload');
+  };
+  img.src = URL.createObjectURL(new Blob([info],{type:'image/png'}));
+}
 
 //处理回传的选中对象的数据
 function reSelectComp(info){//判断是否选中表格组件
