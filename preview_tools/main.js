@@ -168,11 +168,12 @@ function addToolCard(toolsObj){
     toolbox.setAttribute('data-tool-box',index);
     toolbox.style.animationDelay = index + 's'
 
-    tool3d.addEventListener('mouseleave',()=>{
-      toolbox.style.transform = `rotateY(0deg) rotateX(0deg)`;
-    });
-    tool3d.addEventListener('mousemove',(event)=>{
-      if(!ISMOBILE){
+    //仅在PC端生效
+    if(!ISMOBILE){
+      tool3d.addEventListener('mouseleave',()=>{
+        toolbox.style.transform = `rotateY(0deg) rotateX(0deg)`;
+      });
+      tool3d.addEventListener('mousemove',(event)=>{
         let cardTop = toolbox.querySelector('[data-tool-card]').offsetTop
         let bound = toolbox.getBoundingClientRect();
         let x = bound.left;
@@ -184,9 +185,8 @@ function addToolCard(toolsObj){
         let TB = (yy - (h + cardTop)/2)/h * -20;
         let LR = (xx - w/2)/w * 30;
         toolbox.style.transform = `rotateY(${LR}deg) rotateX(${TB}deg)`;
-      };
-    });
-
+      });
+    };
     let toolicon = document.createElement('div');
     toolicon.setAttribute('data-tool-icon','');
     toolicon.style.setProperty('--tool-icon',tools.icon)
@@ -216,7 +216,7 @@ function addToolCard(toolsObj){
     scrollX(tooltag);
     tooltitle.appendChild(tooltag);
     let toolmore = document.createElement('a');
-    toolmore.className =  'df-cc';
+    toolmore.className =  'df-cc pointer';
     toolmore.setAttribute('data-tool-more','');
     if(tools.url){
       toolmore.setAttribute('href',tools.url);
@@ -227,12 +227,10 @@ function addToolCard(toolsObj){
       toolmore.setAttribute('rel','noopener noreferrer');
     };
     toolmore.innerHTML = `<div data-en-text="MORE">了解更多</div>
-    <div style="width:20px; height:20px; --arrow-w:2; transform:translate(2px,1px) rotate(-45deg);">
-      <svg width="100%" height="100%" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2.71411 11.3821H20.7141" stroke="#000" stroke-width="var(--arrow-w)" stroke-linecap="round"></path>
-        <path d="M13.3421 4.38208L20.7141 11.3821L13.3421 18.3821" stroke="#000" stroke-width="var(--arrow-w)" ></path>
-      </svg>
+    <div class="wh-20" style=" --mainColor:#2e2e2e; --arrow-w:2; --arrow-ro: -45deg;">
+      <btn-goto-mini></btn-goto-mini>
     </div>`;
+    
     tooltitle.appendChild(toolmore);
     toolicard.appendChild(tooltitle);
 
