@@ -28,9 +28,11 @@
   --select-h: 100;
   --w: auto;
   --h: 100%;
+  --bg-mask: 20, 20, 20;
 }
 
 html[data-theme="light"] {
+  --bg-mask: 220, 220, 220;
   --boxGry: #d9d9d9;
   --themeColor: #1cc992;
   --code1: #32a074;
@@ -740,7 +742,7 @@ input[type="checkbox"]:checked + .tab-top{
 }
 
 [data-btn="icon"]{
-  display: block;
+  display: flex;
   padding: 0;
   background: none;
   border: none;
@@ -1483,10 +1485,80 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 }
 
 [data-autobod-tag]{
-  width: 77px;
+  width: min(calc(32%),100%);
+  height: 100px;
+  min-width: 68px;
   background: var(--boxGry);
   border-radius: 6px;
   border: 1px transparent solid;
+  padding: 8px 4px;
+}
+
+[data-autobod-name]{
+  height: 4ch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--mainColor);
+}
+
+[data-autobod-clipgrid] {
+  --check: transparent;
+}
+
+[data-check-checked="true"] [data-autobod-clipgrid] {
+  --check: var(--themeColor);
+  animation: autoBodClip 4s linear infinite;
+  stroke-dashoffset: 100%;
+  stroke-dasharray: 100% 100%;
+}
+
+@keyframes autoBodClip {
+  20% {
+    stroke-dashoffset: 0%;
+  }
+  80% {
+    stroke-dashoffset: 0%;
+  }
+  100% {
+    stroke-dashoffset: -100%;
+  }
+}
+
+[data-autobod-tag][data-check-checked="true"] svg circle {
+  /*--bod: var(--themeColor2);*/
+  animation: autoBodClip 4s linear infinite;
+  stroke-dashoffset: 100%;
+}
+
+[data-autobod-tag][data-autobod-custom]{
+  background: linear-gradient(to top,
+    rgba(var(--bg-mask), 0.5) 0%,
+    rgba(var(--bg-mask), 0.5) 25%,
+    rgba(var(--bg-mask), 0.5) 75%,
+    rgba(var(--bg-mask), 0.5) 100%),
+    linear-gradient(296.5deg,
+    rgba(0, 0, 0, 0) 16.7%,
+    var(--boxGry) 16.7%, var(--boxGry) 33.3%,
+    rgba(0, 0, 0, 0) 33.3%,
+    rgba(0, 0, 0, 0) 50%,
+    var(--boxGry) 50%, var(--boxGry) 66.7%,
+    rgba(0, 0, 0, 0) 66.7%,
+    rgba(0, 0, 0, 0) 83.3%,
+    var(--boxGry) 83.3%) 0 0 / 100px 100px,
+    var(--boxBak);
+  animation: skewliner linear 5s infinite;
+  border: var(--boxGry) 1px solid;
+}
+
+@keyframes skewliner {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100px 0;
+  }
 }
 
 [data-tableset-thtd] label{
