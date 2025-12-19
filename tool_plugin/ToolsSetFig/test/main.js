@@ -2709,9 +2709,20 @@ DOM.pixelScale.addEventListener('change',()=>{
 getElementMix('data-split-tags').querySelectorAll('[type="checkbox"]').forEach(check => {
   check.addEventListener('change',()=>{
     if(check.checked){
-      check.parentNode.parentNode.setAttribute('data-check-checked','true')
+      check.closest('[data-check-checked]').setAttribute('data-check-checked','true')
     }else{
-      check.parentNode.parentNode.setAttribute('data-check-checked','false')
+      check.closest('[data-check-checked]').setAttribute('data-check-checked','false')
+    };
+  });
+});
+
+//拆分文本条件标签选中
+getElementMix('data-autobod-tags').querySelectorAll('[type="checkbox"]').forEach(check => {
+  check.addEventListener('change',()=>{
+    if(check.checked){
+      check.closest('[data-check-checked]').setAttribute('data-check-checked','true')
+    }else{
+      check.closest('[data-check-checked]').setAttribute('data-check-checked','false')
     };
   });
 });

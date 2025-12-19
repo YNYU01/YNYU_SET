@@ -48,6 +48,10 @@ let skillSecInfo = [
     id: 'QRcodeToSVG',
     name: ["二维码矢量化","qrcode to svg"],
   },
+  {
+    id: 'AutoFillBorder',
+    name: ["自适应底框","auto fill border"],
+  },
 ]
 
 let toUserTips = {

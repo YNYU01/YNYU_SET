@@ -1025,6 +1025,10 @@ input[type="checkbox"]:checked + .btn-theme {
   --df-d: none;
 }
 
+.btn-show .path1,
+.btn-show .path2{
+  transition: transform 0.2s;
+}
 
 input[type="checkbox"]:checked+.btn-show .path1 {
   transform: translateY(6px) translateX(-6px);
@@ -1034,14 +1038,23 @@ input[type="checkbox"]:checked+.btn-show .path2 {
   transform: translateX(6px) translateY(-6px);
 }
 
+btn-reup svg:hover{
+  animation: reup 3s linear infinite;
+  transform-origin: 51% 49%;
+}
 
+@keyframes reup {
+  to{
+    transform: rotate(-360deg);
+  }
+}
 
 btn-more svg{
   transition: transform 0.4s;
 }
 
 input[type="checkbox"]:checked + label btn-more svg{
-  transform: rotate(90deg);
+  transform: rotate(135deg);
 }
 
 btn-more [data-path]{
@@ -1051,25 +1064,37 @@ btn-more [data-path]{
 }
 
 [data-path="1"]{
-  transform: matrix(1,0,0,1,1,4);
+  transform: translateY(4px);
+  transform-origin: center;
 }
 [data-path="2"]{
-  transform: matrix(1,0,0,1,1,10);
+  transform: translateY(10.75px);
+  transform-origin: center;
 }
 [data-path="3"]{
-  transform: matrix(1,0,0,1,1,16);
+  transform: translateY(17px);
+  transform-origin: center;
+}
+
+[data-more-mini] [data-path="1"]{
+  transform: translate(-8px, 15px) scale(0.15,1.5);
+}
+[data-more-mini] [data-path="2"]{
+  transform: translateY(15px) scale(0.15,1.5);
+}
+[data-more-mini] [data-path="3"]{
+  transform: translate(8px, 15px) scale(0.15,1.5);
 }
 
 input[type="checkbox"]:checked + label [data-path="1"]{
-  transform: matrix(0.7,0.7,-0.7,0.7,3.64,3.64);
+  transform: translateY(10.75px);
 }
 input[type="checkbox"]:checked + label [data-path="2"]{
-  transform: matrix(0.1,0,0,1,10,10);
+  transform: scale(0);
 }
 input[type="checkbox"]:checked + label [data-path="3"]{
-  transform: matrix(0.7,-0.7,0.7,0.7,3.64,16.37);
+  transform: rotate(90deg) translateY(10.75px);
 }
-
 
 [data-check-checked="false"]{
   opacity: 0.6;

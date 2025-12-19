@@ -971,7 +971,7 @@
               <div class="w100 df-cc" data-btn="skill-main" data-selects-must data-en-text="Apply Preset" style="border-radius: 20px;">应用预设样式</div>    
               <div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
                 <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
-                <label for="table-more" class="wh100 df-cc btn-more pad4">
+                <label for="table-more" data-more-mini class="wh100 df-cc btn-more fl0 pad4">
                   <btn-more></btn-more>
                 </label>
               </div>
@@ -1614,7 +1614,7 @@
                     </div> 
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Clone to Fill">填充到容器</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Absolute & Fill">自适应底框</div>  
+                      <div class="df-cc" data-btn="skill-main" data-en-text="Absolute & Fill">自适应容器</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-btn="skill-main" data-en-text="Heavy Chain">重链组件</div>
@@ -1825,7 +1825,7 @@
                       data-color-rgb="rgb(136,136,136)" data-color-hsl="hsl(0,0%,53%)" 
                       data-color-hsv="hsv(0,0%,53%)" data-colorcard-x="left" 
                       data-colorcard-y="bottom" class="df-lc fl1 pos-r gap4" style="z-index: 1;">
-                        <div data-input="colorpick" style="height:20px; cursor: pointer; border: 1px solid var(--boxBod); border-radius: 5px;">
+                        <div data-input="colorpick" class="wh-20 pointer">
                           <btn-color></btn-color>
                         </div>
                         <input id="colorvalue-2" class="fl1" type="text" data-input="hex" value="#888888">
@@ -1838,6 +1838,82 @@
                       <div class="df-cc" data-btn="skill-main" data-en-text="Shadow-stroke Css">代码示例</div>
                       <div class="df-cc" data-btn-dblclick data-selects-must data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
                     </div>
+                  </div>
+                </div>
+                <div class="fl1"  data-skill-sec="AutoFillBorder">
+                  <div data-skill-star="false">
+                    <btn-star></btn-star>
+                  </div>
+                  <div data-autobod-tags class="df-lc gap4 bod-d pad4 mar-b4" style="flex-wrap: wrap;">
+                    <div data-autobod-tag data-check-checked="true" class="df-ffc pad4 bsb">
+                      <input type="checkbox" id="autobod_chk_0" checked>
+                      <label for="autobod_chk_0" class="df-ffc df-cc gap4">
+                        <div class="wh-40">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                          </svg>
+                        </div>
+                        <div data-en-text="Special chamfer">特殊倒角</div>
+                      </label>
+                    </div>
+                    <div data-autobod-tag data-check-checked="false" class="df-ffc pad4 bsb">
+                      <input type="checkbox" id="autobod_chk_2">
+                      <label for="autobod_chk_2" class="df-ffc df-cc gap4">
+                        <div class="wh-40">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                          </svg>
+                        </div>
+                        <div data-en-text="Complex border">复杂边框</div>
+                      </label>
+                    </div>
+                    <div data-autobod-tag data-check-checked="false" class="df-ffc pad4 bsb">
+                      <input type="checkbox" id="autobod_chk_5">
+                      <label for="autobod_chk_5" class="df-ffc df-cc gap4">
+                        <div class="wh-40">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                          </svg>
+                        </div>
+                        <div data-en-text="Irregular border">异形边框</div>
+                      </label>
+                    </div>
+                    <div data-autobod-tag data-check-checked="false" class="df-ffc pad4 bsb">
+                      <input type="checkbox" id="autobod_chk_3">
+                      <label for="autobod_chk_3" class="df-ffc df-cc gap4">
+                        <div class="wh-40">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                          </svg>
+                        </div>
+                        <div data-en-text="Complex button">复杂按钮</div>
+                      </label>
+                    </div>
+                    <div data-autobod-tag data-check-checked="false" class="df-ffc pad4 bsb">
+                      <input type="checkbox" id="autobod_chk_4">
+                      <label for="autobod_chk_4" class="df-ffc df-cc gap4">
+                        <div class="wh-40">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                          </svg>
+                        </div>
+                        <div data-en-text="Irregular button">异形按钮</div>
+                      </label>
+                    </div>
+                    <div data-autobod-tag class="df-ffc pad4 bsb">
+                      <div class="df-ffc df-cc gap4">
+                        <a href="www.ynyuset.cn/tool_web/SVdG" class="wh-40">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                          </svg>
+                        </a>
+                        <div data-en-text="Custom more">自定义</div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="df-lc" data-skill-line data-selects-must="false">
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Border Example">生成示例</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>

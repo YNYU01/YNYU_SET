@@ -413,22 +413,6 @@ input[type="checkbox"]:checked + .tab-top{
   }
 }
 
-[data-page-name-en="sheet"] [data-path="1"] path{
-  transform: matrix(0.25, 0, 0, 2, -2, 6);
-}
-[data-page-name-en="sheet"] [data-path="2"] path{
-  transform: matrix(0.25, 0, 0, 2, 7, 0);
-}
-[data-page-name-en="sheet"] [data-path="3"] path{
-  transform: matrix(0.25, 0, 0, 2, 16, -6);
-}
-
-[data-page-name-en="sheet"] input[type="checkbox"]:checked + label [data-path="1"] path,
-[data-page-name-en="sheet"] input[type="checkbox"]:checked + label [data-path="2"] path,
-[data-page-name-en="sheet"] input[type="checkbox"]:checked + label [data-path="3"] path{
-  transform: matrix(1,0,0,1,0,0);
-}
-
 [data-language-check] + label{
   --swi-h:18px;
   --swi-r:6px;
@@ -1492,6 +1476,17 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 
 [data-split-tag]{
   height: 16px;
+}
+
+[data-autobod-tag][data-check-checked="true"]{
+  border: 1px var(--boxBod) solid;
+}
+
+[data-autobod-tag]{
+  width: 77px;
+  background: var(--boxGry);
+  border-radius: 6px;
+  border: 1px transparent solid;
 }
 
 [data-tableset-thtd] label{
