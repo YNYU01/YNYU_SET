@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -81,7 +81,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -404,6 +404,7 @@ body{
   bottom: 0;
   padding:0 10px 0 4px;
   box-sizing: border-box;
+  z-index: 10;
 }
 
 #bottom::before{
@@ -434,7 +435,7 @@ input[type="checkbox"]:checked + .tab-top{
 }
 
 [data-page-id="page"]{
- height: calc(100vh - var(--bottom-h) - var(--top-h));
+ height: calc(100dvh - var(--bottom-h) - var(--top-h));
 }
 
 [data-tv-box]{
@@ -1094,7 +1095,7 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
 [data-dailog]{
   display: none;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   z-index: 12;
   gap: 4px;
   white-space: normal;
@@ -1103,7 +1104,7 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
 [data-dailogimg],[data-dailogsearch],[data-dailoglogin]{
   display: none;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   box-sizing: border-box;
   padding: 30px 0 100px 0;
   z-index: 12;
@@ -1314,7 +1315,7 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
   border: 1px solid var(--boxBod);
   background: var(--boxGry);
   padding: 20px;
-  max-height: 90vh;
+  max-height: 90dvh;
   max-width: 400px;
   width: calc(100% - 40px);
   box-sizing: border-box;
@@ -1457,14 +1458,14 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 
 [data-create-mix]{
   max-height: calc(100% - 405px);
-  min-height: 20vh;
+  min-height: 20dvh;
 }
 
 [data-create-tags-box],[data-export-tags-box]{
   
   min-width: 100%;
   max-width: 100%;
-  min-height: 20vh;
+  min-height: 20dvh;
   
 }
 
@@ -1578,6 +1579,10 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   border-radius: 6px;
   border: 1px transparent solid;
   padding: 8px 4px;
+} 
+
+[data-theme="light"] [data-autobod-tag]{
+  background: var(--boxBak);
 }
 
 [data-autobod-name]{
@@ -1846,7 +1851,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   z-index: 20;
   display: none;
   width: 100px;
-  max-height: 50vh;
+  max-height: 50dvh;
   bottom: -140px;
   left: calc(100% - 4px);
 }
@@ -1961,7 +1966,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   box-sizing: border-box;
   border-radius: 4px;
   min-height: 70px;
-  max-height: 80vh;
+  max-height: 80dvh;
   margin: -4px 0 10px 0;
 }
 
@@ -1981,7 +1986,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 
 [data-manage-linkstyle-list]{
   gap: 4px;
-  max-height: 50vh;
+  max-height: 50dvh;
 }
 
 [data-text-mini]{
@@ -3502,7 +3507,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                   <div class="pos-r" data-linkstyle-all="create" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
-                  data-tips-text="全部创建" data-tips-text="Create all">
+                  data-tips-text="全部创建" data-tips-text-en="Create all">
                     <div data-btn="icon">
                       <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-2)"/>
@@ -3510,7 +3515,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                   <div class="pos-r" data-linkstyle-all="override" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
-                  data-tips-text="全部覆盖" data-tips-text="Override all">
+                  data-tips-text="全部覆盖" data-tips-text-en="Override all">
                     <div data-btn="icon">
                       <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-3)"/>
@@ -4559,7 +4564,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     <btn-star></btn-star>
                   </div>
                   <div data-autobod-tags class="df-lc gap4 bod-d pad4 mar-b4" style="flex-wrap: wrap;">
-                    <div data-autobod-tag data-check-checked="true" class="df-ffc bsb">
+                    <div data-autobod-tag data-check-checked="true" class="df-ffc bsb pointer" draggable="true">
                       <input type="checkbox" id="autobod_chk_0" checked>
                       <label for="autobod_chk_0" class="df-ffc df-cc gap4">
                         <div class="wh-60">
@@ -4569,14 +4574,14 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                               <circle stroke="var(--bod,var(--mainColor)" cx="6" cy="34" r="5.25" stroke-width="0.5" stroke-dasharray="1 1"/>
                               <circle stroke="var(--bod,var(--mainColor)" cx="34" cy="6" r="5.25" stroke-width="0.5" stroke-dasharray="1 1"/>
                               <circle stroke="var(--bod,var(--mainColor)" cx="34" cy="34" r="5.25" stroke-width="0.5" stroke-dasharray="1 1"/>
-                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M0 20H40" stroke-width="0.25"/>
-                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M20.0049 0.00488281L20.0049 40.0049" stroke-width="0.25"/>
+                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M0 20H40" stroke-width="0.5"/>
+                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M20.0049 0.00488281L20.0049 40.0049" stroke-width="0.5"/>
                           </svg>
                         </div>
                         <div data-autobod-name data-en-text="Special Cha">特殊倒角</div>
                       </label>
                     </div>
-                    <div data-autobod-tag data-check-checked="false" class="df-ffc bsb">
+                    <div data-autobod-tag data-check-checked="false" class="df-ffc bsb pointer" draggable="true">
                       <input type="checkbox" id="autobod_chk_2">
                       <label for="autobod_chk_2" class="df-ffc df-cc gap4">
                         <div class="wh-60">
@@ -4590,16 +4595,16 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                               <circle stroke="var(--bod,var(--mainColor)" cx="20" cy="6" r="5.25" stroke-width="0.5" stroke-dasharray="1 1"/>
                               <circle stroke="var(--bod,var(--mainColor)" cx="20" cy="34" r="5.25" stroke-width="0.5" stroke-dasharray="1 1"/>
                               <circle stroke="var(--bod,var(--mainColor)" cx="34" cy="20" r="5.25" stroke-width="0.5" stroke-dasharray="1 1"/>
-                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M0 13H40" stroke-width="0.25"/>
-                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M0 28H40" stroke-width="0.25"/>
-                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M13 0.00488281L13 40.0049" stroke-width="0.25"/>
-                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M27 0.00488281L27 40.0049" stroke-width="0.25"/>
+                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M0 13H40" stroke-width="0.5"/>
+                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M0 28H40" stroke-width="0.5"/>
+                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M13 0.00488281L13 40.0049" stroke-width="0.5"/>
+                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M27 0.00488281L27 40.0049" stroke-width="0.5"/>
                           </svg>
                         </div>
                         <div data-autobod-name data-en-text="Complex Bod">复杂边框</div>
                       </label>
                     </div>
-                    <div data-autobod-tag data-check-checked="false" class="df-ffc bsb">
+                    <div data-autobod-tag data-check-checked="false" class="df-ffc bsb pointer" draggable="true">
                       <input type="checkbox" id="autobod_chk_5">
                       <label for="autobod_chk_5" class="df-ffc df-cc gap4">
                         <div class="wh-60">
@@ -4609,15 +4614,15 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                               <circle stroke="var(--bod,var(--mainColor)" cx="17" cy="6" r="2.25" stroke-width="0.5" stroke-dasharray="1 1"/>
                               <circle stroke="var(--bod,var(--mainColor)" cx="22" cy="6" r="1.25" stroke-width="0.5" stroke-dasharray="1 1"/>
                               <circle stroke="var(--bod,var(--mainColor)" cx="28" cy="29" r="10.25" stroke-width="0.5" stroke-dasharray="1 1"/>
-                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M0 15H40" stroke-width="0.25"/>
-                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M13 15L13 40.0049" stroke-width="0.25"/>
-                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M27 0.00488281L27 15" stroke-width="0.25"/>
+                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M0 15H40" stroke-width="0.5"/>
+                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M13 15L13 40.0049" stroke-width="0.5"/>
+                              <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M27 0.00488281L27 15" stroke-width="0.5"/>
                           </svg>
                         </div>
                         <div data-autobod-name data-en-text="Irregular Bod">异形边框</div>
                       </label>
                     </div>
-                    <div data-autobod-tag data-check-checked="false" class="df-ffc bsb">
+                    <div data-autobod-tag data-check-checked="false" class="df-ffc bsb pointer" draggable="true">
                       <input type="checkbox" id="autobod_chk_3">
                       <label for="autobod_chk_3" class="df-ffc df-cc gap4">
                         <div class="wh-60">
@@ -4629,17 +4634,17 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                             <circle stroke="var(--bod,var(--mainColor)" cx="34" cy="27" r="2.25" stroke-width="0.5" stroke-dasharray="1 1"/>
                             <circle stroke="var(--bod,var(--mainColor)" cx="5" cy="20" r="4.25" stroke-width="0.5" stroke-dasharray="1 1"/>
                             <circle stroke="var(--bod,var(--mainColor)" cx="35" cy="20" r="4.25" stroke-width="0.5" stroke-dasharray="1 1"/>
-                            <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M20 0.00488281L20 40.0049" stroke-width="0.25"/>
+                            <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M20 0.00488281L20 40.0049" stroke-width="0.5"/>
                         </svg>
                         </div>
                         <div data-autobod-name data-en-text="Special Btn">特殊按钮</div>
                       </label>
                     </div>
-                    <div data-autobod-tag data-check-checked="false" class="df-ffc bsb">
+                    <div data-autobod-tag data-check-checked="false" class="df-ffc bsb pointer" draggable="true">
                       <input type="checkbox" id="autobod_chk_4">
                       <label for="autobod_chk_4" class="df-ffc df-cc gap4">
                         <div class="wh-60">
-                          <svg width="100%" height="100%" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <svg width="100%" height="100%" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" >
                             <path fill="var(--fill,var(--mainColor))" d="M6.61816 28.9014C7.01579 30.3975 8.37872 31.5 10 31.5H15.0244C15.0081 31.6644 15 31.8313 15 32C15 32.1687 15.0081 32.3356 15.0244 32.5H10C7.84424 32.5 6.04339 30.9839 5.60352 28.96C5.73171 28.9858 5.8642 29 6 29C6.21588 29 6.42339 28.9646 6.61816 28.9014ZM33.3818 28.9014C33.5766 28.9646 33.7841 29 34 29C34.1355 29 34.2676 28.9856 34.3955 28.96C33.9556 30.9838 32.1557 32.5 30 32.5H24.9756C24.9919 32.3356 25 32.1687 25 32C25 31.8313 24.9919 31.6644 24.9756 31.5H30C31.6213 31.5 32.9841 30.3974 33.3818 28.9014ZM6.5 25.0654C6.34001 25.0242 6.17286 25 6 25C5.82714 25 5.65999 25.0242 5.5 25.0654V23.9678C5.84955 23.9242 6.18448 23.8348 6.5 23.707V25.0654ZM33.5 23.707C33.8155 23.8348 34.1505 23.9242 34.5 23.9678V25.0654C34.34 25.0242 34.1729 25 34 25C33.8271 25 33.66 25.0242 33.5 25.0654V23.707ZM34.5 16.0312C34.1505 16.0748 33.8155 16.1643 33.5 16.292V14.9336C33.6601 14.9749 33.8271 15 34 15C34.1729 15 34.3399 14.9749 34.5 14.9336V16.0312ZM6.5 16.292C6.18454 16.1643 5.84947 16.0748 5.5 16.0312V14.9336C5.66006 14.9749 5.82705 15 6 15C6.17295 15 6.33994 14.9749 6.5 14.9336V16.292ZM15.0244 7.5C15.0081 7.66444 15 7.83126 15 8C15 8.16874 15.0081 8.33556 15.0244 8.5H10C8.37898 8.5 7.01513 9.60195 6.61719 11.0977C6.42275 11.0346 6.21544 11 6 11C5.86427 11 5.73166 11.0133 5.60352 11.0391C6.04374 9.01555 7.84457 7.5 10 7.5H15.0244ZM30 7.5C32.1554 7.5 33.9552 9.01566 34.3955 11.0391C34.2677 11.0134 34.1354 11 34 11C33.7842 11 33.5765 11.0344 33.3818 11.0977C32.9838 9.60207 31.6209 8.5 30 8.5H24.9756C24.9919 8.33556 25 8.16874 25 8C25 7.83126 24.9919 7.66444 24.9756 7.5H30Z"/>
                             <circle stroke="var(--bod,var(--mainColor)" cx="6" cy="27" r="2.25" stroke-width="0.5" stroke-dasharray="1 1"/>
                             <circle stroke="var(--bod,var(--mainColor)" cx="34" cy="13" r="2.25" stroke-width="0.5" stroke-dasharray="1 1"/>
@@ -4649,14 +4654,14 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                             <circle stroke="var(--bod,var(--mainColor)" cx="20" cy="8" r="5.25" stroke-width="0.5" stroke-dasharray="1 1"/>
                             <circle stroke="var(--bod,var(--mainColor)" cx="20" cy="32" r="5.25" stroke-width="0.5" stroke-dasharray="1 1"/>
                             <circle stroke="var(--bod,var(--mainColor)" cx="35" cy="20" r="4.25" stroke-width="0.5" stroke-dasharray="1 1"/>
-                            <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M13 0.00488281L13 40.0049" stroke-width="0.25"/>
-                            <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M27 0.00488281L27 40.0049" stroke-width="0.25"/>
+                            <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M13 0.00488281L13 40.0049" stroke-width="0.5"/>
+                            <path data-autobod-clipgrid stroke="var(--check,var(--mainColor)" d="M27 0.00488281L27 40.0049" stroke-width="0.5"/>
                           </svg>
                         </div>
                         <div data-autobod-name data-en-text="Complex Btn">复杂按钮</div>
                       </label>
                     </div>
-                    <div data-autobod-tag data-autobod-custom class="df-ffc bsb">
+                    <div data-autobod-tag data-autobod-custom class="df-ffc bsb" draggable="true">
                       <div class="df-ffc df-cc gap4">
                         <div class="df-cc wh-60">
                           <input type="file" id="autobod_chk_6" accept=".svg" style="display: none;">
@@ -4666,7 +4671,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                             </div>
                           </label>
                         </div>
-                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/tool_web/SVdG/index.html" target="_blank">
+                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/tool_web/SVdG/index.html" target="_blank">
                           <div data-autobod-name data-en-text="Custom >" style="text-decoration: underline;">自定义></div>
                         </a>
                       </div>
@@ -4674,7 +4679,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     
                   </div>
                   <div class="df-lc" data-skill-line data-selects-must="false">
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Border Example">生成示例</div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Border Example( Coming soon~ )">生成示例（敬请期待~）</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -4739,23 +4744,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/other/jsQR_correct.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/jsQR_correct.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20dafe0b3cd0d96dd4c1592f405ff5109b7bf08d/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -5345,6 +5350,8 @@ window.addEventListener('message',(message)=>{
         case 'variableSheetInfo': reVariableSheetInfo(info);break
         case 'editImage': editImage(info);break
         case 'qrLayerView': addQRLayerView(info);break
+        case 'linkStyleInfo': reLinkStyleInfo(info);break
+        case 'styleGroupInfo': reStyleGroupInfo(info);break
       };
     }
   };
@@ -8651,6 +8658,72 @@ function addQRLayerView(info){
     convertImageToQRCode(img, 'upload');
   };
   img.src = URL.createObjectURL(new Blob([info],{type:'image/png'}));
+}
+
+function reLinkStyleInfo(info){
+
+  if(!info || info.length == 0) return;
+  let listBox = DOM.manageLinkstyleList;
+  let lan = ROOT.getAttribute('data-language');
+  listBox.innerHTML = '';
+  for(let data of info){
+    let {name,islink,iscreate,isreset,isname} = data;
+    let tag = document.createElement('div');
+    tag.className = 'df-lc gap4 pad4 bsb w100';
+    tag.setAttribute('data-linkstyle-tag','');
+
+    let title = document.createElement('div');
+    title.setAttribute('data-linkstyle-title','');
+    let colorname = document.createElement('div');
+    colorname.setAttribute('data-linkstyle-colorname','');
+    colorname.textContent = name.split('/')[name.split('/').length - 1];
+    title.appendChild(colorname);
+    let path = document.createElement('div');
+    path.setAttribute('data-linkstyle-path','');
+    path.textContent = name;
+    title.appendChild(path);
+    if(isname){
+      let path2 = document.createElement('div');
+      path2.setAttribute('data-linkstyle-path','maybe');
+      path2.textContent = name;
+      title.appendChild(path2);
+      path.setAttribute('data-linkstyle-path','false');
+    }
+    tag.appendChild(title);
+
+    let btnbox = document.createElement('div');
+    btnbox.setAttribute('data-linkstyle-btnbox','');
+    btnbox.className = 'df-rc gap4';
+    let btn = document.createElement('div');
+    btn.setAttribute('data-linkstyle-btn','relink');
+    btn.setAttribute('data-btn','icon');
+    btn.setAttribute('data-en-text','Relink');
+    btn.setAttribute('data-zh-text','重链');
+    btn.textContent = lan == 'Zh' ? '重链' : 'Relink';
+    btnbox.appendChild(btn);
+    let btn1 = document.createElement('div');
+    btn1.setAttribute('data-linkstyle-btn','create');
+    btn1.setAttribute('data-btn','icon');
+    btn1.setAttribute('data-en-text','Create');
+    btn1.setAttribute('data-zh-text','创建');
+    btn1.textContent = lan == 'Zh' ? '创建' : 'Create';
+    btnbox.appendChild(btn1);
+    let btn2 = document.createElement('div');
+    btn2.setAttribute('data-linkstyle-btn','override');
+    btn2.setAttribute('data-btn','icon');
+    btn2.setAttribute('data-en-text','Override');
+    btn2.setAttribute('data-zh-text','覆盖');
+    btn2.textContent = lan == 'Zh' ? '覆盖' : 'Override';
+    btnbox.appendChild(btn2);
+    tag.appendChild(btnbox);
+
+    listBox.appendChild(tag);
+
+  }
+}
+function reStyleGroupInfo(info){
+  if(!info || info.length == 0) return;
+  let listBox = DOM.manageLinkstyleList
 }
 
 function reSelectComp(info){

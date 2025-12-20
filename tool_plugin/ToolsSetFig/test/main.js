@@ -147,6 +147,9 @@ const DOM = (() => {
     manageLinkstyleList: () => query('[data-manage-linkstyle-list]'),
     manageSelectstyleList: () => query('[data-manage-selectstyle-list]'),
     manageVariablesList: () => query('[data-manage-variables-list]'),
+    linkstyleClear: () => query('[data-linkstyle-clear]'),
+    selectstyleClear: () => query('[data-selectstyle-clear]'),
+    variablesClear: () => query('[data-variables-clear]'),
     
     // 选择信息
     selectInfoBox: () => queryAll('[data-selects-node]'),
@@ -198,6 +201,11 @@ const State = (() => {
     // 选择数据
     selectNodeInfo: [],
     
+    // 回传样式、变量数据
+    linkstyleInfo: [],
+    selectstyleInfo: [],
+    variablesInfo: [],
+
     // 编辑器信息
     editorInfo: {
       preview: '', // u8a
@@ -417,9 +425,7 @@ if(userLanguage){
   setLanguage(false);
 }
 
-
-
-// 窗口大小调整事件
+//========== 窗口大小调整事件 ==========
 window.addEventListener('resize',/*防抖*/debounce(()=>{
   if(window.innerWidth < 300){
     TV_MOVE = true;
@@ -428,6 +434,7 @@ window.addEventListener('resize',/*防抖*/debounce(()=>{
   };
 }, DELAY.DEBOUNCE, true));
 
+//========== 通信处理 ==========
 window.addEventListener('message',(message)=>{
   let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
   if(!isPluginMessge){
@@ -451,6 +458,8 @@ window.addEventListener('message',(message)=>{
         case 'variableSheetInfo': reVariableSheetInfo(info);break
         case 'editImage': editImage(info);break
         case 'qrLayerView': addQRLayerView(info);break
+        case 'linkStyleInfo': reLinkStyleInfo(info);break
+        case 'styleGroupInfo': reStyleGroupInfo(info);break
       };
     }
   };
@@ -2808,6 +2817,21 @@ class CropBoxController {
   
   // 自动调整裁剪框大小为父元素的一定比例
   setGridSizeToRatio() {
+    // 检查元素是否可见，避免在不可见时进行不必要的计算
+    if(!this.grid || !this.parent) {
+      return false;
+    }
+    
+    const gridStyle = window.getComputedStyle(this.grid);
+    if(gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || !this.grid.isConnected) {
+      return false;
+    }
+    
+    const parentStyle = window.getComputedStyle(this.parent);
+    if(parentStyle.display === 'none' || parentStyle.visibility === 'hidden' || !this.parent.isConnected) {
+      return false;
+    }
+    
     const parentRect = this.parent.getBoundingClientRect();
     if(parentRect.width > 0 && parentRect.height > 0) {
       if (this.aspectRatio) {
@@ -2996,8 +3020,23 @@ class CropBoxController {
   centerGrid() {
     if (!this.autoCenter) return false;
     
+    // 检查元素是否可见，避免在不可见时进行不必要的计算
+    if(!this.grid || !this.parent) {
+      return false;
+    }
+    
+    const gridStyle = window.getComputedStyle(this.grid);
+    if(gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || !this.grid.isConnected) {
+      return false;
+    }
+    
+    const parentStyle = window.getComputedStyle(this.parent);
+    if(parentStyle.display === 'none' || parentStyle.visibility === 'hidden' || !this.parent.isConnected) {
+      return false;
+    }
+    
     const parentRect = this.parent.getBoundingClientRect();
-    const computedStyle = window.getComputedStyle(this.grid);
+    const computedStyle = gridStyle;
     const currentWidth = parseFloat(computedStyle.width);
     const currentHeight = parseFloat(computedStyle.height) || currentWidth;
     
@@ -3028,8 +3067,25 @@ class CropBoxController {
       return; // 如果正在拖拽或调整大小，或者禁用自动调整，不自动调整
     }
     
+    // 检查元素是否可见，避免在不可见时进行不必要的计算
+    if(!this.grid || !this.parent) {
+      return;
+    }
+    
+    // 检查裁剪框是否可见（display: none 或不在 DOM 中）
+    const gridStyle = window.getComputedStyle(this.grid);
+    if(gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || !this.grid.isConnected) {
+      return;
+    }
+    
+    // 检查父元素是否可见
+    const parentStyle = window.getComputedStyle(this.parent);
+    if(parentStyle.display === 'none' || parentStyle.visibility === 'hidden' || !this.parent.isConnected) {
+      return;
+    }
+    
     const parentRect = this.parent.getBoundingClientRect();
-    const computedStyle = window.getComputedStyle(this.grid);
+    const computedStyle = gridStyle;
     const currentWidth = parseFloat(computedStyle.width) || 200;
     const currentHeight = parseFloat(computedStyle.height) || currentWidth;
     const currentLeft = parseFloat(computedStyle.left) || 0;
@@ -3163,6 +3219,21 @@ class CropBoxController {
   
   // 初始化裁剪框
   initializeGrid() {
+    // 检查元素是否可见，避免在不可见时进行不必要的计算
+    if(!this.grid || !this.parent) {
+      return;
+    }
+    
+    const gridStyle = window.getComputedStyle(this.grid);
+    if(gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || !this.grid.isConnected) {
+      return;
+    }
+    
+    const parentStyle = window.getComputedStyle(this.parent);
+    if(parentStyle.display === 'none' || parentStyle.visibility === 'hidden' || !this.parent.isConnected) {
+      return;
+    }
+    
     // 先自动调整大小
     const sizeSet = this.setGridSizeToRatio();
     if(sizeSet) {
@@ -3178,6 +3249,21 @@ class CropBoxController {
   
   // 尝试初始化
   tryInitialize() {
+    // 检查元素是否可见，避免在不可见时进行不必要的计算
+    if(!this.grid || !this.parent) {
+      return;
+    }
+    
+    const gridStyle = window.getComputedStyle(this.grid);
+    if(gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || !this.grid.isConnected) {
+      return;
+    }
+    
+    const parentStyle = window.getComputedStyle(this.parent);
+    if(parentStyle.display === 'none' || parentStyle.visibility === 'hidden' || !this.parent.isConnected) {
+      return;
+    }
+    
     const parentRect = this.parent.getBoundingClientRect();
     // 确保父元素有有效尺寸
     if(parentRect.width > 0 && parentRect.height > 0) {
@@ -4025,6 +4111,152 @@ function addQRLayerView(info){
   };
   img.src = URL.createObjectURL(new Blob([info],{type:'image/png'}));
 }
+
+let testLinkStyleInfo = [
+  {
+      "id": "S:4b9bf571af1f3b22c0d3bc9b32fd68c5be3fa2a5,1105:50",
+      "name": "eg2/xxx@set:theme1/color-1",
+      "islink": true,
+      "iscreate": false,
+      "isreset": true,
+  },
+  {
+      "id": "S:bfbf0eccf4b6b0d45c26a5ef360a5a7539f3adb2,1105:51",
+      "name": "eg2/xxx@set:theme1/color2",
+      "islink": true,
+      "iscreate": false,
+      "isreset": false,
+      "isname": "eg/xxx@set:theme1/color2"
+  },
+  {
+      "id": "S:aa05d93b99fcf702dbec30e207d65418ac273c72,1105:52",
+      "name": "eg2/xxx@set:theme1/color3",
+      "islink": true,
+      "iscreate": false,
+      "isreset": false,
+      "isname": "eg/xxx@set:theme1/color3"
+  },
+  {
+      "id": "S:72c6e4e85ddaa9b1547918d5cb5a2b68d2d67432,1105:53",
+      "name": "eg2/xxx@set:theme2/color1",
+      "islink": true,
+      "iscreate": false,
+      "isreset": true,
+      "isname": "eg/xxx@set:theme2/color1"
+  },
+  {
+      "id": "S:05ca69d31477e544cc241842576e51bf0521b706,1105:54",
+      "name": "eg2/xxx@set:theme2/color2",
+      "islink": true,
+      "iscreate": false,
+      "isreset": false,
+      "isname": "eg/xxx@set:theme2/color2"
+  },
+  {
+      "id": "S:3d9df77c1e2a8e31ce0e5f365b0a8a615bb26e57,1105:55",
+      "name": "eg2/xxx@set:theme2/color3",
+      "islink": true,
+      "iscreate": false,
+      "isreset": false,
+      "isname": "eg/xxx@set:theme2/color3"
+  }
+]
+reLinkStyleInfo(testLinkStyleInfo)
+function reLinkStyleInfo(info){
+  //console.log(info)
+  if(!info || info.length == 0) return;
+
+  State.set('linkstyleInfo',info);
+  let listBox = DOM.manageLinkstyleList;
+  let lan = ROOT.getAttribute('data-language');
+  listBox.innerHTML = '';
+  for(let data of info){
+    let {name,islink,iscreate,isreset,isname} = data;
+    let tag = document.createElement('div');
+    tag.className = 'df-sc w100';
+    tag.setAttribute('data-linkstyle-tag','');
+    tag.setAttribute('data-linkstyle-islink',islink);
+    tag.setAttribute('data-linkstyle-iscreate',iscreate);
+    tag.setAttribute('data-linkstyle-isreset',isreset);
+    tag.setAttribute('data-linkstyle-isname',isname ? 'true' : 'false');
+
+    let title = document.createElement('div');
+    title.className = 'df-ffc fl1 h100 gap4 pos-r';
+    title.setAttribute('data-linkstyle-title','');
+
+    let colorname = document.createElement('div');
+    colorname.setAttribute('data-linkstyle-colorname','');
+    colorname.textContent = name.split('/')[name.split('/').length - 1];
+    title.appendChild(colorname);
+
+    let pathBox = document.createElement('div');
+    pathBox.className = 'df-ffc w100 ovx noscrollbar pos-r';
+    pathBox.setAttribute('data-linkstyle-pathbox','');
+
+    let path = document.createElement('div');
+    path.setAttribute('data-linkstyle-path','true');
+    path.textContent = name;
+    pathBox.appendChild(path);
+    if(isname){
+      let path2 = document.createElement('div');
+      path2.setAttribute('data-linkstyle-path','maybe');
+      path2.textContent = isname;
+      pathBox.appendChild(path2);
+      path.setAttribute('data-linkstyle-path','false');
+    };
+
+    title.appendChild(pathBox);
+    tag.appendChild(title);
+
+    let btnbox = document.createElement('div');
+    btnbox.setAttribute('data-linkstyle-btnbox','');
+    btnbox.className = 'df-rc gap4';
+    let btn = document.createElement('div');
+    btn.setAttribute('data-linkstyle-btn','relink');
+    btn.setAttribute('data-btn','icon');
+    btn.setAttribute('data-en-text','Relink');
+    btn.setAttribute('data-zh-text','重链');
+    btn.textContent = lan == 'Zh' ? '重链' : 'Relink';
+    btnbox.appendChild(btn);
+    let btn1 = document.createElement('div');
+    btn1.setAttribute('data-linkstyle-btn','create');
+    btn1.setAttribute('data-btn','icon');
+    btn1.setAttribute('data-en-text','Create');
+    btn1.setAttribute('data-zh-text','创建');
+    btn1.textContent = lan == 'Zh' ? '创建' : 'Create';
+    btnbox.appendChild(btn1);
+    let btn2 = document.createElement('div');
+    btn2.setAttribute('data-linkstyle-btn','reset');
+    btn2.setAttribute('data-btn','icon');
+    btn2.setAttribute('data-en-text','Reset'); 
+    btn2.setAttribute('data-zh-text','覆盖');
+    btn2.textContent = lan == 'Zh' ? '覆盖' : 'Reset';
+    btnbox.appendChild(btn2);
+    tag.appendChild(btnbox);
+
+    listBox.appendChild(tag);
+    
+  }
+}
+function reStyleGroupInfo(info){
+  //console.log(info)
+  if(!info || info.length == 0) return;
+
+  State.set('linkstyleInfo',info);
+  let listBox = DOM.manageSelectstyleList;
+  let lan = ROOT.getAttribute('data-language');
+
+}
+
+DOM.linkstyleClear.addEventListener('click',(e)=>{
+  State.reset('selectstyleInfo');
+  DOM.manageLinkstyleList.innerHTML = '';
+});
+
+DOM.selectstyleClear.addEventListener('click',(e)=>{
+  State.reset('selectstyleInfo');
+  DOM.manageSelectstyleList.innerHTML = '';
+});
 
 //处理回传的选中对象的数据
 function reSelectComp(info){//判断是否选中表格组件

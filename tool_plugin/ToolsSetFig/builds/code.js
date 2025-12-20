@@ -736,6 +736,9 @@ figma.ui.onmessage = async (message) => {
                     if(name1path == name2path){
                         item.islink = true;
                         item.isname = sameLastName.name;
+                        if(JSON.stringify(sameLastName.paints) !== JSON.stringify(item.paint)){
+                            item.isreset = true;
+                        };
                     } else {
                         item.islink = false;
                         item.iscreate = true;
@@ -749,7 +752,7 @@ figma.ui.onmessage = async (message) => {
         unLinkStyle.forEach(item => {
             delete item.paint;
         });
-        //console.log(unLinkStyle)
+        console.log(unLinkStyle)
         postmessage([unLinkStyle,'linkStyleInfo']);
     };
     //管理样式组
@@ -2294,7 +2297,7 @@ figma.ui.onmessage = async (message) => {
         info.forEach(item => {
             if(item.isQr){
                 let name = item.isQr ? '@pixel:Qrcode' : '@pixel';
-                let qrcode = addFrame([item.column * 10,item.row * 10,x,y + 80,name,[bg]]);    
+                let qrcode = addFrame([item.column * 10,item.row * 10,x - 70,y + 90,name,[bg]]);    
                 qrcode.strokes = [bg];
                 qrcode.strokeTopWeight = 10;
                 qrcode.strokeRightWeight = 10;
@@ -4295,7 +4298,10 @@ function addConstraints(parent,constraintNode,TBLR,isFill = false){
                 V = 'MIN';
             ;break
             case 'C':
-                V = isFill ? 'STRETCH' : 'CENTER' ;
+                V = isFill ? 'STRETCH' : 'CENTER' ;//保留，兼容旧逻辑
+            ;break
+            case 'S':
+                V = 'STRETCH';
             ;break
             case 'B':
                 V = 'MAX';
@@ -4306,7 +4312,10 @@ function addConstraints(parent,constraintNode,TBLR,isFill = false){
                 H = 'MIN';
             ;break
             case 'C':
-                H = isFill ? 'STRETCH' : 'CENTER' ;
+                H = isFill ? 'STRETCH' : 'CENTER' ;//保留，兼容旧逻辑
+            ;break
+            case 'S':
+                H = 'STRETCH';
             ;break
             case 'R':
                 H = 'MAX';
@@ -5180,3 +5189,55 @@ function nodeToJSON(node, visited = new WeakSet(), depth = 0, maxDepth = 10, isC
     };
     return result;
 };
+
+//==================== 重构中 ====================
+
+//硬编码创建组件,缓存已创建的组件,避免在多次使用某功能时重复创建，注意调用缓存前判断remove
+class createMix{
+    constructor(){
+        this.comps = {//硬编码数据
+            table:{
+                th:{},
+                td:{},
+                tn:{},
+            },
+            rich:{
+                h1:{},
+                h2:{},
+                h3:{},
+                h4:{},
+                h5:{},
+                h6:{},
+                p:{},
+                blockquote:{},
+                ul:{},
+                ol:{},
+                pre:{},
+            },
+            pixel:{
+                finder:{},
+                finder_mix:{},
+                cell_fill:{},
+                cell_bg:{},
+            }
+        }
+        this.hasCreated = []//缓存已创建的对象
+
+    }
+
+    creComp(name,type){
+        let compInfo = this.comps[this.type][this.name.replace('@','').replace(':','_')]
+        if(compInfo){
+
+        }
+    }
+
+    //==================== 工具函数 ====================
+
+    addFrame(info,cloneNode){
+        let node = figma.createFrame();
+        node.clipsContent = false;
+        setMain(info,node,cloneNode,true);
+        return node;
+    }
+}
