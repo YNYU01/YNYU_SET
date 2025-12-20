@@ -24,7 +24,7 @@
   --mainFontSize-mini:12px;
   --swi-h:18px;
   --swi-r:10px;
-  --txta-mh:50vh;
+  --txta-mh:50dvh;
   --btn-copy-df:flex;
   --colorpick-w:110px;
   --colorcard-top:24px;
@@ -742,7 +742,7 @@ textarea{
   min-width: 100%;
   max-width: 100%;
   min-height: 4ch;
-  max-height: var(--txta-mh,50vh);
+  max-height: var(--txta-mh,50dvh);
   padding: 4px 4px;
   box-sizing: border-box;
 }
@@ -925,7 +925,7 @@ input[type="checkbox"]:checked+.show-next2 {
 
 [data-select-options]{
   box-sizing: border-box;
-  max-height: 30vh;
+  max-height: 30dvh;
   overflow: scroll;
   background: var(--boxBak);
   border: 1px solid var(--boxBod);

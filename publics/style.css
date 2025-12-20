@@ -127,7 +127,7 @@ html{
   --circle-col: rgba(109, 109, 109, 0.356);
   --circle-bak: transparent;
   --circle-gap-num: 80;
-  --circle-size: max(100vw,100vh);
+  --circle-size: max(100vw,100dvh);
   --circle-bod: 4px;/*4*/
   --circle-gap: calc(var(--circle-gap-num) * 1px);;/*20*/
   --circle-gap2: calc(var(--circle-gap) + var(--circle-bod));/*24*/
@@ -537,7 +537,7 @@ input[type="checkbox"]:checked + .tab-top::after{
 [data-dailogsearch]{
   display: none;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   top: 0;
   left: 0;
   box-sizing: border-box;
@@ -894,7 +894,7 @@ input[type="checkbox"]:checked+.switch [data-swi-icon]{
 [data-scroll-round]{
   overflow-y: scroll;
   --scroll-cut: 140px;
-  height: calc(100vh - var(--scroll-cut));
+  height: calc(100dvh - var(--scroll-cut));
   gap: 10px;
   border-radius: 10px;
 }
@@ -1871,7 +1871,7 @@ input[type="checkbox"]:checked + [for="egfont-moreset"]{
   --circle-col: rgba(109, 109, 109, 0.356);
   --circle-bak: var(--boxGry);
   --circle-gap-num: 120;
-  --circle-size: max(100vw,100vh);
+  --circle-size: max(100vw,100dvh);
   --circle-bod: 1px;
   animation: circleMove 2s infinite;
   animation-delay: 1s;
@@ -2032,7 +2032,7 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   background: var(--boxGry);
   height: 160px;
   min-height: 80px;
-  max-height: 50vh;
+  max-height: 50dvh;
   position: relative;
   min-width: 100%;
   max-width: 100%;
@@ -2787,7 +2787,7 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   }
   
   [data-worksname-list]{
-    height: calc(100vh - 80px);
+    height: calc(100dvh - 80px);
     --turnto-w: 40px;
     --arrow-w: 4;
     --svg-h: 60px;
@@ -2864,7 +2864,7 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
   }
 
   [data-scroll-round]{
-    height: calc(100vh - var(--scroll-cut-mb));
+    height: calc(100dvh - var(--scroll-cut-mb));
   }
 
   [data-logograph-move]{

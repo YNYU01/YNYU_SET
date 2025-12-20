@@ -318,6 +318,7 @@ body{
   bottom: 0;
   padding:0 10px 0 4px;
   box-sizing: border-box;
+  z-index: 10;
 }
 
 #bottom::before{
@@ -348,7 +349,7 @@ input[type="checkbox"]:checked + .tab-top{
 }
 
 [data-page-id="page"]{
- height: calc(100vh - var(--bottom-h) - var(--top-h));
+ height: calc(100dvh - var(--bottom-h) - var(--top-h));
 }
 
 [data-tv-box]{
@@ -1008,7 +1009,7 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
 [data-dailog]{
   display: none;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   z-index: 12;
   gap: 4px;
   white-space: normal;
@@ -1017,7 +1018,7 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
 [data-dailogimg],[data-dailogsearch],[data-dailoglogin]{
   display: none;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   box-sizing: border-box;
   padding: 30px 0 100px 0;
   z-index: 12;
@@ -1228,7 +1229,7 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
   border: 1px solid var(--boxBod);
   background: var(--boxGry);
   padding: 20px;
-  max-height: 90vh;
+  max-height: 90dvh;
   max-width: 400px;
   width: calc(100% - 40px);
   box-sizing: border-box;
@@ -1371,15 +1372,15 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 
 [data-create-mix]{
   max-height: calc(100% - 405px);
-  min-height: 20vh;
+  min-height: 20dvh;
 }
 
 [data-create-tags-box],[data-export-tags-box]{
   /*resize: both;*/
   min-width: 100%;
   max-width: 100%;
-  min-height: 20vh;
-  /*max-height: 80vh;*/
+  min-height: 20dvh;
+  /*max-height: 80dvh;*/
 }
 
 [data-create-tags],
@@ -1492,6 +1493,10 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   border-radius: 6px;
   border: 1px transparent solid;
   padding: 8px 4px;
+}
+
+[data-theme="light"] [data-autobod-tag]{
+  background: var(--boxBak);
 }
 
 [data-autobod-name]{
@@ -1760,7 +1765,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   z-index: 20;
   display: none;
   width: 100px;
-  max-height: 50vh;
+  max-height: 50dvh;
   bottom: -140px;
   left: calc(100% - 4px);
 }
@@ -1875,7 +1880,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   box-sizing: border-box;
   border-radius: 4px;
   min-height: 70px;
-  max-height: 80vh;
+  max-height: 80dvh;
   margin: -4px 0 10px 0;
 }
 
@@ -1895,7 +1900,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 
 [data-manage-linkstyle-list]{
   gap: 4px;
-  max-height: 50vh;
+  max-height: 50dvh;
 }
 
 [data-text-mini]{
