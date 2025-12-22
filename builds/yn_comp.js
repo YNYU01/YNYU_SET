@@ -122,7 +122,7 @@ function COMP_MAIN(){
     const input = select.querySelector('[data-select-input]');
     if (input) {
       if(input.getAttribute('data-select-input') == 'textContent'){
-        input.value = select.textContent;
+        input.value = option.textContent;
       } else {
         input.value = optionValue;
         // 更新中英文属性
