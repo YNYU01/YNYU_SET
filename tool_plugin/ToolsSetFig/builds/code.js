@@ -42,6 +42,14 @@ figma.clientStorage.getAsync('userResize')
     postmessage([[UI[0], UI[1]],'userResize']);
 });
 
+let userInfo = figma.currentUser;
+if(userInfo){
+    console.log(userInfo)
+    postmessage([userInfo,'userInfo']);
+} else {
+    postmessage([null,'userInfo']);
+}
+
 
 //let isSendComp = true;
 let TRUES = ['true',true,'1',1,'show','是','有'];
@@ -788,7 +796,7 @@ figma.ui.onmessage = async (message) => {
                 themeStyle.push(item);
             };
         });
-        //console.log(themeStyle)
+        console.log(themeStyle)
         postmessage([themeStyle,'styleGroupInfo']);
     };
     //管理变量组
@@ -2535,6 +2543,7 @@ setTimeout(()=>{
     console.log(`- [YNYU_SET] OPEN DESIGN & SOURCE
 - © 2024-2025 YNYU lvynyu2@gmail.com;`);
     //console.log(localStyles)
+    //console.log(userInfo)
 },50)
 
 sendInfo();

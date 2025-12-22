@@ -205,6 +205,9 @@ const State = (() => {
     linkstyleInfo: [],
     selectstyleInfo: [],
     variablesInfo: [],
+    linkstyleInfoFinal: [],
+    selectstyleInfoFinal: [],
+    variablesInfoFinal: [],
 
     // 编辑器信息
     editorInfo: {
@@ -234,20 +237,64 @@ const State = (() => {
     qrcodePixelGrid: [null, null],
   };
   
+  // 辅助函数：通过路径获取值（支持原型链）
+  function getByPath(obj, path) {
+    if (typeof path !== 'string' || !path.includes('.')) {
+      // 简单key，直接访问（JavaScript本身支持原型链）
+      return obj[path];
+    }
+    // 路径访问，沿着路径查找
+    const keys = path.split('.');
+    let current = obj;
+    for (const k of keys) {
+      if (current == null || current === undefined) {
+        return undefined;
+      }
+      // 使用 in 操作符检查属性是否存在（包括原型链）
+      if (k in current) {
+        current = current[k];
+      } else {
+        return undefined;
+      }
+    }
+    return current;
+  }
+
+  // 辅助函数：通过路径设置值
+  function setByPath(obj, path, value) {
+    if (typeof path !== 'string' || !path.includes('.')) {
+      // 简单key，直接设置
+      obj[path] = value;
+      return;
+    }
+    // 路径访问，需要创建中间对象
+    const keys = path.split('.');
+    const lastKey = keys.pop();
+    let current = obj;
+    for (const k of keys) {
+      if (current[k] == null || typeof current[k] !== 'object') {
+        current[k] = {};
+      }
+      current = current[k];
+    }
+    current[lastKey] = value;
+  }
+
   return {
     get(key) {
-      return state[key];
+      return getByPath(state, key);
     },
     set(key, value) {
-      state[key] = value;
+      setByPath(state, key, value);
     },
     reset(key) {
-      if (Array.isArray(state[key])) {
-        state[key] = [];
-      } else if (typeof state[key] === 'object' && state[key] !== null) {
-        state[key] = {};
+      const target = getByPath(state, key);
+      if (Array.isArray(target)) {
+        setByPath(state, key, []);
+      } else if (typeof target === 'object' && target !== null) {
+        setByPath(state, key, {});
       } else {
-        state[key] = null;
+        setByPath(state, key, null);
       }
     }
   };
@@ -944,7 +991,6 @@ DOM.btnResize.addEventListener('mousedown',(event)=>{
       h = Math.max(h,UI_MINI[1]);
       toolMessage([[w,h],'resize'],PLUGINAPP);
       /*//
-      console.log(w,h)
       ROOT.style.width = w;
       ROOT.style.height = h;
       //*/
@@ -959,6 +1005,15 @@ DOM.btnResize.addEventListener('mousedown',(event)=>{
 });
 //打印所选对象
 document.getElementById('bottom').addEventListener('dblclick',()=>{
+  //仅管理员可用
+  // 首先检查是否登录
+  if(typeof AuthManager === 'undefined' || !AuthManager.currentUser){
+    return;
+  }
+  // 检查是否是管理员
+  if(!AuthManager.currentUser.isAdmin){
+    return;
+  }
   toolMessage(['','getnode'],PLUGINAPP)
 });
 //空内容提醒
@@ -4112,65 +4167,19 @@ function addQRLayerView(info){
   img.src = URL.createObjectURL(new Blob([info],{type:'image/png'}));
 }
 
-let testLinkStyleInfo = [
-  {
-      "id": "S:4b9bf571af1f3b22c0d3bc9b32fd68c5be3fa2a5,1105:50",
-      "name": "eg2/xxx@set:theme1/color-1",
-      "islink": true,
-      "iscreate": false,
-      "isreset": true,
-  },
-  {
-      "id": "S:bfbf0eccf4b6b0d45c26a5ef360a5a7539f3adb2,1105:51",
-      "name": "eg2/xxx@set:theme1/color2",
-      "islink": true,
-      "iscreate": false,
-      "isreset": false,
-      "isname": "eg/xxx@set:theme1/color2"
-  },
-  {
-      "id": "S:aa05d93b99fcf702dbec30e207d65418ac273c72,1105:52",
-      "name": "eg2/xxx@set:theme1/color3",
-      "islink": true,
-      "iscreate": false,
-      "isreset": false,
-      "isname": "eg/xxx@set:theme1/color3"
-  },
-  {
-      "id": "S:72c6e4e85ddaa9b1547918d5cb5a2b68d2d67432,1105:53",
-      "name": "eg2/xxx@set:theme2/color1",
-      "islink": true,
-      "iscreate": false,
-      "isreset": true,
-      "isname": "eg/xxx@set:theme2/color1"
-  },
-  {
-      "id": "S:05ca69d31477e544cc241842576e51bf0521b706,1105:54",
-      "name": "eg2/xxx@set:theme2/color2",
-      "islink": true,
-      "iscreate": false,
-      "isreset": false,
-      "isname": "eg/xxx@set:theme2/color2"
-  },
-  {
-      "id": "S:3d9df77c1e2a8e31ce0e5f365b0a8a615bb26e57,1105:55",
-      "name": "eg2/xxx@set:theme2/color3",
-      "islink": true,
-      "iscreate": false,
-      "isreset": false,
-      "isname": "eg/xxx@set:theme2/color3"
-  }
-]
-reLinkStyleInfo(testLinkStyleInfo)
 function reLinkStyleInfo(info){
   //console.log(info)
   if(!info || info.length == 0) return;
 
   State.set('linkstyleInfo',info);
+  //深拷贝一份写入State，后续可记录修改值，避免修改原始数据
+  let finalInfo = JSON.parse(JSON.stringify(info));
+  State.set('linkstyleInfoFinal',finalInfo);
   let listBox = DOM.manageLinkstyleList;
   let lan = ROOT.getAttribute('data-language');
   listBox.innerHTML = '';
-  for(let data of info){
+  for(let i = 0; i < info.length; i++){
+    let data = info[i]
     let {name,islink,iscreate,isreset,isname} = data;
     let tag = document.createElement('div');
     tag.className = 'df-sc w100';
@@ -4181,31 +4190,100 @@ function reLinkStyleInfo(info){
     tag.setAttribute('data-linkstyle-isname',isname ? 'true' : 'false');
 
     let title = document.createElement('div');
-    title.className = 'df-ffc fl1 h100 gap4 pos-r';
+    title.className = 'df-ffc fl1 h100 gap10 pos-r';
     title.setAttribute('data-linkstyle-title','');
 
     let colorname = document.createElement('div');
     colorname.setAttribute('data-linkstyle-colorname','');
-    colorname.textContent = name.split('/')[name.split('/').length - 1];
+    let names = name.split('/');
+    let setName = '';
+    let lastName = names[names.length - 1];
+    if(names.some(name => name.includes('@set:'))){
+      setName = names.find(name => name.includes('@set:')).replace('@set:','_') + ': ';
+    }
+    colorname.textContent = setName + lastName;
     title.appendChild(colorname);
 
     let pathBox = document.createElement('div');
-    pathBox.className = 'df-ffc w100 ovx noscrollbar pos-r';
+    pathBox.className = 'w100 ovx hasscrollbar pos-r';
     pathBox.setAttribute('data-linkstyle-pathbox','');
+    pathBox.setAttribute('data-scroll','');
+
+    let pathBoxS = document.createElement('div');
+    pathBox.appendChild(pathBoxS);
+
+    let pathS = document.createElement('div');
+    pathS.setAttribute('data-linkstyle-path','true');
+    pathS.className = 'df-lc';
 
     let path = document.createElement('div');
-    path.setAttribute('data-linkstyle-path','true');
     path.textContent = name;
-    pathBox.appendChild(path);
+    pathS.appendChild(path);
+    pathBoxS.appendChild(pathS);
+
+    let pathS2 = document.createElement('div');
+    pathS2.setAttribute('data-linkstyle-path','maybe');
+    pathS2.className = 'df-lc w100';
+    let path2 = document.createElement('input');
+    path2.setAttribute('data-input','');
+    path2.className = 'nobod';
+    path2.type = 'text';
+    path2.setAttribute('data-input-type','text');
+    path2.setAttribute('data-linkstyle-path','maybe');
+    pathS2.appendChild(path2);
+    pathBoxS.appendChild(pathS2);
+
+    path2.addEventListener('change',(e)=>{
+      let value = e.target.value;
+      if(value && value.trim() !== ''){
+        let linkstyleInfoFinal = State.get('linkstyleInfoFinal');
+        if((State.get('linkstyleInfo')[i].isname && value !== isname )|| (!State.get('linkstyleInfo')[i].isname && value !== name)){
+          tipsAll(['已修改样式指向，请确保修改值有效','Path modified, please ensure the modified value is valid'], 3000);
+          tag.setAttribute('data-linkstyle-islink','true');
+          tag.setAttribute('data-linkstyle-iscreate','true');
+          tag.setAttribute('data-linkstyle-isreset','true');
+          tag.setAttribute('data-linkstyle-haschange','true');
+          let newsetName = '';
+          if(value.split('/').some(name => name.includes('@set:'))){
+            newsetName = value.split('/').find(name => name.includes('@set:')).replace('@set:','_') + ': ';
+          }
+          let newLastName = value.split('/')[value.split('/').length - 1];
+          if(newLastName !== lastName || newsetName !== setName){
+            colorname.textContent = newsetName + newLastName;
+          }else{
+            colorname.textContent = setName + lastName;
+          }
+          linkstyleInfoFinal[i].changename = value;
+        }else{
+          tag.setAttribute('data-linkstyle-islink',islink);
+          tag.setAttribute('data-linkstyle-iscreate',iscreate);
+          tag.setAttribute('data-linkstyle-isreset',isreset);
+          tag.setAttribute('data-linkstyle-isname',value);
+          tag.setAttribute('data-linkstyle-haschange','false');
+          colorname.textContent = setName + lastName;
+          linkstyleInfoFinal[i].changename = value;
+          if(value == isname){
+            delete linkstyleInfoFinal[i].changename;
+          }
+        }
+        console.log(State.get('linkstyleInfoFinal'));
+      }
+    });
+
     if(isname){
-      let path2 = document.createElement('div');
-      path2.setAttribute('data-linkstyle-path','maybe');
-      path2.textContent = isname;
-      pathBox.appendChild(path2);
-      path.setAttribute('data-linkstyle-path','false');
-    };
+      path2.setAttribute('data-input-must',isname);
+      path2.value = isname;
+      pathS.setAttribute('data-linkstyle-path','false');
+    }else{
+      path2.setAttribute('data-input-must',name);
+      path2.value = name;
+    }
 
     title.appendChild(pathBox);
+    // 为动态创建的 pathBox 绑定滚动事件
+    if(typeof scrollX === 'function'){
+      scrollX(pathBox);
+    }
     tag.appendChild(title);
 
     let btnbox = document.createElement('div');
@@ -4237,16 +4315,44 @@ function reLinkStyleInfo(info){
     listBox.appendChild(tag);
     
   }
-}
+};
+
+let testStyleGroupInfo = [
+  {
+      "id": "S:62266f76f31778b5593bf69af9be06bb1b8b272b,",
+      "name": "eg/xxx@set:theme1/color1"
+  },
+  {
+      "id": "S:dea68fcec9c7297a015c9e149340348985e0b75a,",
+      "name": "eg/xxx@set:theme1/color2"
+  },
+  {
+      "id": "S:371a69830542868e2c8e5eac5ae666edf8dc3a8b,",
+      "name": "eg/xxx@set:theme1/color3"
+  },
+  {
+      "id": "S:915a43061a59b540c764341214b90d24388ee91e,",
+      "name": "eg/xxx@set:theme2/color1"
+  },
+  {
+      "id": "S:775c1f2b4a72c7c9f1d9a02115d99a0805eb8261,",
+      "name": "eg/xxx@set:theme2/color2"
+  },
+  {
+      "id": "S:cb9ca0527758d7be282a0f28412761f9250e6388,",
+      "name": "eg/xxx@set:theme2/color3"
+  }
+];
+//reStyleGroupInfo(testStyleGroupInfo)
 function reStyleGroupInfo(info){
   //console.log(info)
   if(!info || info.length == 0) return;
 
-  State.set('linkstyleInfo',info);
+  State.set('styleGroupInfo',info);
   let listBox = DOM.manageSelectstyleList;
   let lan = ROOT.getAttribute('data-language');
 
-}
+};
 
 DOM.linkstyleClear.addEventListener('click',(e)=>{
   State.reset('selectstyleInfo');

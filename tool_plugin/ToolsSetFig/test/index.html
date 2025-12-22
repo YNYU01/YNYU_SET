@@ -119,6 +119,7 @@
           <input type="password" id="login-password" placeholder="密码" data-input data-en-placeholder="Password"/>
         </div>
         <div data-login-error class="font-s12" style="display: none; color: var(--code7); padding: 4px 8px;"></div>
+        <div data-resend-email-link class="font-s10 op6" style="display: none; cursor: pointer; text-decoration: underline; padding: 4px 8px;" data-en-text="Resend confirmation email">重新发送确认邮件</div>
         <div class="df-sc gap8">
           <div data-btn="main" data-btn-login class="df-cc fl1" data-en-text="LOG IN">登录</div>
           <div data-btn="main" data-btn-show-register class="df-cc fl1 op6" data-en-text="SIGN UP →">注册 →</div>
@@ -159,7 +160,10 @@
           <div class="df-ffc gap4 fl1">
             <div class="font-s16" style="font-weight: bold;" data-user-display-name>--</div>
             <div class="font-s12 op6" data-user-display-email>--</div>
-            <div class="font-s10 op6" data-en-text="Premium User" data-user-premium style="display: none;">付费用户</div>
+            <div class="df-lc gap4">
+              <div class="font-s10 op6" data-en-text="Premium User" data-user-premium style="display: none;">付费用户</div>
+              <div class="font-s10 op6" data-en-text="Admin User" data-user-admin style="display: none;">管理员</div>
+            </div>
           </div>
         </div>
         <div data-btn="main" data-btn-logout class="df-cc" data-en-text="LOG OUT">退出登录</div>
@@ -175,7 +179,7 @@
           <!-- 用户登录入口 -->
           <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
             <div data-user-name style="display: none;" data-en-text="USER">用户</div>
-            <div data-user-login-text data-en-text="LOG IN">登录</div>
+            <div data-user-login-text data-en-text="LOG IN (Beta)">登录（测试）</div>
             <div class="pad2 mar-l4 wh-16" style=" --fill:#2e2e2e;">
               <btn-login></btn-login>
             </div>
@@ -705,10 +709,10 @@
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-variables class="w100 df-sc">
                 <div class="df-lc gap8">
-                  <div data-variables-add data-btn="icon" data-selects-must>
+                  <div data-variables-add data-btn="icon" data-selects-must class="df-lc gap2">
                     <btn-getbyselect></btn-getbyselect> 
-                    <div class="pos-a" style="top: 4px; left: 20px;"
-                    data-en-text="Traverse selection" >扫描所选</div>                                  
+                    <div data-en-text="Query selection" >扫描所选</div>   
+                    <div data-any="vw240" data-en-text="( Keep items in selection )" class="font-s8 op6" >( 操作时请保持选中 )</div>                                                              
                   </div>
                 </div>
                 <div class="df-lc gap4">
@@ -772,10 +776,10 @@
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-linkstyle class="w100 df-sc">
                 <div class="df-lc gap8">
-                  <div data-linkstyle-add data-btn="icon" data-selects-must>
+                  <div data-linkstyle-add data-btn="icon" data-selects-must class="df-lc gap2">
                     <btn-getbyselect></btn-getbyselect> 
-                    <div class="pos-a" style="top: 4px; left: 20px;"
-                    data-en-text="Traverse selection" >扫描所选</div>                                  
+                    <div data-en-text="Query selection" >扫描所选</div>   
+                    <div data-any="vw240" data-en-text="( Keep items in selection )" class="font-s8 op6" >( 操作时请保持选中 )</div>                               
                   </div>
                 </div>
                 <div class="df-lc gap4">
@@ -823,10 +827,10 @@
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-selectstyle class="w100 df-sc">
                 <div class="df-lc gap8">
-                  <div data-selectstyle-add data-btn="icon" data-selects-must>
+                  <div data-selectstyle-add data-btn="icon" data-selects-must class="df-lc gap2">
                     <btn-getbyselect></btn-getbyselect> 
-                    <div class="pos-a" style="top: 4px; left: 20px;"
-                    data-en-text="Traverse selection" >扫描所选</div>                                  
+                    <div data-en-text="Query selection" >扫描所选</div>   
+                    <div data-any="vw240" data-en-text="( Keep items in selection )" class="font-s8 op6" >( 操作时请保持选中 )</div>                                                              
                   </div>
                 </div>
               </div>

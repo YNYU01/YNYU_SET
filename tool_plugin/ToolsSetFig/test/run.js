@@ -47,15 +47,30 @@ window.addEventListener('message',(message)=>{
       case 'userTheme': info == 'light' ? setTheme(true) : setTheme(false);break
       case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
       case 'userResize': reRootSize(info);break
+      case 'userInfo':
+          // 检查是否为未登录或匿名用户
+          let isLoggedIn = false;
+          if (info && info.name) {
+            const userName = info.name.trim();
+            isLoggedIn = userName !== '' && userName !== 'Anonymous' && userName !== '匿名';
+          }
+          const loginBtn = document.querySelector('[data-user-login-btn]');
+          if (loginBtn) loginBtn.style.display = isLoggedIn ? 'flex' : 'none';
+        break
     };
-    if(ISWORK_TIME && info){
+    if(ISWORK_TIME){
       switch (type){
         case 'tabPick': viewPage(info);break
         case 'userSkillStar':userSkillStar = info || []; moveSkillStar(userSkillStar);break
+        
         case 'toolsSetFig_user': 
           if(typeof AuthManager !== 'undefined') {
             AuthManager.setCurrentUser(info);
             AuthManager.updateUI();
+            // 同步到 State 中的 userInfo
+            if(typeof State !== 'undefined') {
+              State.set('userInfo', info);
+            }
           };
         break
         case 'toolsSetFig_users': 

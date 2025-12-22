@@ -5,7 +5,11 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:toolssetfig:widget": "node tool_plugin/ToolsSetFig/widget-src/build-widget.mjs"
+    "build:codeview": "esbuild tool_plugin/CodeView/widget-src/code.tsx --bundle --outfile=tool_plugin/CodeView/dist/code.js --target=es6",
+    "build:codeview:watch": "esbuild tool_plugin/CodeView/widget-src/code.tsx --bundle --outfile=tool_plugin/CodeView/dist/code.js --target=es6 --watch",
+    "lint:codeview": "eslint --ext .ts,.tsx --ignore-pattern node_modules tool_plugin/CodeView/widget-src",
+    "lint:codeview:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix tool_plugin/CodeView/widget-src",
+    "tsc:codeview": "tsc --noEmit -p tool_plugin/CodeView/widget-src"
   },
   "repository": {
     "type": "git",

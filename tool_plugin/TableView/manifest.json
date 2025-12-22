@@ -1,14 +1,16 @@
 {
-  "name": "YN+ ToolsSet",
-  "id": "1519526178556658548",
+  "name": "TableView",
+  "id": "1584862622370729565",
   "api": "1.0.0",
-  "main": "code.js",
+  "main": "dist/code.js",
   "capabilities": [],
+  "enableProposedApi": false,
   "documentAccess": "dynamic-page",
-  "permissions": ["currentuser"],
   "editorType": [
     "figma"
   ],
+  "containsWidget": true,
+  "widgetApi": "1.0.0",
   "ui": "ui.html",
   "networkAccess": {
     "allowedDomains": [
@@ -17,9 +19,7 @@
       "https://cdnjs.cloudflare.com",
       "https://ipapi.co",
       "https://unpkg.com",
-      "https://*.ynyuset.cn",
-      "https://*.supabase.co",
-      "https://*.supabase.in"
+      "https://*.ynyuset.cn"
     ]
   }
 }

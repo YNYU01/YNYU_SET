@@ -78,15 +78,13 @@ function initSupabaseClient() {
           AUTH_CONFIG.SUPABASE_URL,
           AUTH_CONFIG.SUPABASE_ANON_KEY
         );
-        console.log('Supabase client initialized successfully');
         return true;
       } catch (e) {
         console.error('Failed to initialize Supabase:', e);
         return false;
       }
     } else {
-      console.warn('Supabase SDK not loaded. Check if the script tag is present and loaded correctly.');
-      console.log('typeof supabase:', typeof supabase);
+      console.warn('Supabase SDK not loaded');
       return false;
     }
   }
@@ -121,10 +119,104 @@ function tryInitSupabase() {
 var AuthManager = {
   currentUser: null,
   usersList: [], // 存储所有用户列表（用于验证）
+  refreshTimer: null, // 用户数据刷新定时器
 
   // 设置当前用户
   setCurrentUser(user) {
     this.currentUser = user;
+    // 同步到 State 中的 userInfo（如果 State 已定义）
+    if (typeof State !== 'undefined') {
+      State.set('userInfo', user);
+    }
+    // 如果是 Supabase 环境，后台刷新用户数据以确保数据最新，并启动定时器
+    if (AUTH_CONFIG.USE_SUPABASE && supabaseClient && user && user.id) {
+      this.refreshUserProfile();
+      this.startRefreshTimer();
+    } else {
+      // 如果不是 Supabase 环境或用户不存在，停止定时器
+      this.stopRefreshTimer();
+    }
+  },
+
+  // 刷新用户配置信息（从数据库获取最新数据）
+  async refreshUserProfile() {
+    if (!AUTH_CONFIG.USE_SUPABASE || !supabaseClient || !this.currentUser) {
+      return;
+    }
+
+    try {
+      // 检查是否有有效的 session
+      const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+      if (sessionError || !session?.user || session.user.id !== this.currentUser.id) {
+        // Session 无效，停止定时器
+        this.stopRefreshTimer();
+        return;
+      }
+
+      // 获取最新的用户配置信息
+      const { data: profileData, error: profileError } = await supabaseClient
+        .from('user_profiles')
+        .select('username,is_premium,is_admin')
+        .eq('id', this.currentUser.id)
+        .maybeSingle();
+
+      if (profileError) {
+        console.warn('Failed to refresh user profile:', profileError);
+        return;
+      }
+
+      if (profileData) {
+        // 检查数据是否有变化
+        const updatedUser = {
+          ...this.currentUser,
+          username: profileData.username || this.currentUser.username,
+          isPremium: profileData.is_premium || false,
+          isAdmin: profileData.is_admin || false
+        };
+
+        const hasChanges = 
+          this.currentUser.isPremium !== updatedUser.isPremium ||
+          this.currentUser.isAdmin !== updatedUser.isAdmin ||
+          this.currentUser.username !== updatedUser.username;
+
+        if (hasChanges) {
+          this.currentUser = updatedUser;
+          AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+          // 同步到 State
+          if (typeof State !== 'undefined') {
+            State.set('userInfo', this.currentUser);
+          }
+          // 更新界面
+          this.updateUI();
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to refresh user profile:', e);
+    }
+  },
+
+  // 启动定时刷新（每5分钟轮询一次）
+  startRefreshTimer() {
+    // 先清除已有的定时器
+    this.stopRefreshTimer();
+    
+    // 只在 Supabase 环境下启动定时器
+    if (!AUTH_CONFIG.USE_SUPABASE || !supabaseClient || !this.currentUser) {
+      return;
+    }
+
+    // 每5分钟（300000毫秒）刷新一次用户数据
+    this.refreshTimer = setInterval(() => {
+      this.refreshUserProfile();
+    }, 5 * 60 * 1000); // 5分钟
+  },
+
+  // 停止定时刷新
+  stopRefreshTimer() {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = null;
+    }
   },
 
   // 设置用户列表
@@ -140,41 +232,67 @@ var AuthManager = {
         try {
           const { data: { session }, error } = await supabaseClient.auth.getSession();
           if (!error && session?.user) {
-            // 获取用户配置信息
+            // 先使用缓存快速显示（提升用户体验）
+            const cachedUser = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USER);
+            if (cachedUser && cachedUser.id === session.user.id) {
+              this.currentUser = cachedUser;
+              this.updateUI();
+            }
+
+            // 后台静默更新：获取最新的用户配置信息
             let profile = null;
             try {
               const { data: profileData, error: profileError } = await supabaseClient
                 .from('user_profiles')
-                .select('username,is_premium')  // 移除空格，避免格式问题
+                .select('username,is_premium,is_admin')  // 移除空格，避免格式问题
                 .eq('id', session.user.id)
                 .maybeSingle();  // 使用 maybeSingle() 而不是 single()
               
               if (profileError) {
-                console.warn('Failed to fetch user profile in init:', {
-                  error: profileError,
-                  message: profileError.message,
-                  code: profileError.code
-                });
-                // 如果查询失败，使用默认值
+                console.warn('Failed to fetch user profile in init:', profileError.message);
+                // 如果查询失败，使用缓存数据（如果存在）
+                if (!this.currentUser && cachedUser) {
+                  this.currentUser = cachedUser;
+                  this.updateUI();
+                }
+                return;
               } else if (profileData) {
                 profile = profileData;
-                console.log('User profile fetched in init:', profile);
-              } else {
-                console.log('User profile not found in init, using defaults');
               }
             } catch (e) {
               console.warn('Failed to fetch user profile in init:', e);
-              // 表可能不存在或 RLS 策略限制，忽略错误
+              // 如果查询失败，使用缓存数据（如果存在）
+              if (!this.currentUser && cachedUser) {
+                this.currentUser = cachedUser;
+                this.updateUI();
+              }
+              return;
             }
 
-            this.currentUser = {
+            // 使用数据库中的最新数据更新用户信息
+            const updatedUser = {
               id: session.user.id,
               email: session.user.email,
               username: profile?.username || session.user.email.split('@')[0],
-              isPremium: profile?.is_premium || false
+              isPremium: profile?.is_premium || false,
+              isAdmin: profile?.is_admin || false
             };
+
+            // 检查数据是否有变化，如果有变化则更新界面
+            const hasChanges = !this.currentUser || 
+              this.currentUser.isPremium !== updatedUser.isPremium ||
+              this.currentUser.isAdmin !== updatedUser.isAdmin ||
+              this.currentUser.username !== updatedUser.username;
+
+            this.currentUser = updatedUser;
             AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
-            this.updateUI();
+            
+            // 如果有变化，更新界面
+            if (hasChanges) {
+              this.updateUI();
+            }
+            // 启动定时刷新
+            this.startRefreshTimer();
             return; // Supabase 登录成功，不需要继续
           }
         } catch (e) {
@@ -287,18 +405,12 @@ var AuthManager = {
     if (AUTH_CONFIG.USE_SUPABASE) {
       // 如果客户端未初始化，尝试初始化
       if (!supabaseClient) {
-        console.log('Supabase client not initialized, attempting to initialize...');
         const initResult = tryInitSupabase();
         // 等待一小段时间让初始化完成
         await new Promise(resolve => setTimeout(resolve, 100));
         
         if (!supabaseClient) {
-          console.error('Supabase client initialization failed. Check:', {
-            'SDK loaded': typeof supabase !== 'undefined',
-            'createClient exists': typeof supabase !== 'undefined' && typeof supabase.createClient !== 'undefined',
-            'URL configured': !!AUTH_CONFIG.SUPABASE_URL,
-            'Key configured': !!AUTH_CONFIG.SUPABASE_ANON_KEY
-          });
+          console.error('Supabase client initialization failed');
           return { success: false, error: getAuthText('supabaseNotInitialized') };
         }
       }
@@ -316,13 +428,7 @@ var AuthManager = {
         });
 
         if (error) {
-          // 详细记录错误信息，便于调试
-          console.error('Supabase registration error:', {
-            message: error.message,
-            status: error.status,
-            code: error.code,
-            fullError: error
-          });
+          console.error('Supabase registration error:', error.message);
           
           // 处理错误信息
           let errorMsg = error.message;
@@ -402,15 +508,16 @@ var AuthManager = {
         // 创建用户配置记录（只有在有 session 时才尝试）
         if (session) {
           try {
-            const { data: profileData, error: profileError } = await supabaseClient
-              .from('user_profiles')
-              .insert({
-                id: data.user.id,
-                username: username,
-                is_premium: false
-              })
-              .select()
-              .single();
+              const { data: profileData, error: profileError } = await supabaseClient
+                .from('user_profiles')
+                .insert({
+                  id: data.user.id,
+                  username: username,
+                  is_premium: false,
+                  is_admin: false
+                })
+                .select()
+                .single();
 
             if (profileError) {
               console.error('Failed to create user profile:', profileError);
@@ -430,8 +537,6 @@ var AuthManager = {
               
               // 如果插入失败，可能是 RLS 策略问题，但继续执行
               // 用户配置可能由数据库触发器自动创建
-            } else {
-              console.log('User profile created successfully:', profileData);
             }
           } catch (e) {
             console.error('User profile creation failed:', e);
@@ -439,7 +544,6 @@ var AuthManager = {
           }
         } else {
           // 没有 session，说明需要邮箱确认
-          console.log('User registered but needs email confirmation. Profile will be created after confirmation.');
           // 用户配置应该由数据库触发器自动创建
         }
 
@@ -448,7 +552,8 @@ var AuthManager = {
           id: data.user.id,
           email: data.user.email,
           username: username,
-          isPremium: false
+          isPremium: false,
+          isAdmin: false
         };
 
         // 如果有 session，保存用户信息
@@ -479,7 +584,6 @@ var AuthManager = {
     
     // 清除可能存在的旧数据，确保检查的是最新数据
     const existingUsers = this.getUsersList();
-    console.log('Checking local users list:', existingUsers);
     if (existingUsers && existingUsers.length > 0 && existingUsers.find(u => u.email === email)) {
       return { success: false, error: getAuthText('emailAlreadyRegisteredLocal') };
     }
@@ -491,7 +595,8 @@ var AuthManager = {
       username: username,
       password: this.hashPassword(password),
       createdAt: new Date().toISOString(),
-      isPremium: false
+      isPremium: false,
+      isAdmin: false
     };
 
     existingUsers.push(user);
@@ -515,14 +620,72 @@ var AuthManager = {
     // 如果使用 Supabase
     if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
       try {
+        // 验证邮箱格式
+        if (!email || !email.includes('@') || !email.includes('.')) {
+          return { success: false, error: getAuthText('invalidEmailFormat') || '邮箱格式不正确' };
+        }
+
+        // 验证密码不为空
+        if (!password || password.trim() === '') {
+          return { success: false, error: getAuthText('enterEmailPassword') || '请输入邮箱和密码' };
+        }
+
         // 使用 Supabase 登录
         const { data, error } = await supabaseClient.auth.signInWithPassword({
-          email: email,
+          email: email.trim(),
           password: password
         });
 
         if (error) {
-          return { success: false, error: getAuthText('emailPasswordIncorrect') };
+          // 提供更详细的错误信息
+          console.error('Supabase login error:', {
+            message: error.message,
+            status: error.status,
+            code: error.code
+          });
+
+          // 根据错误类型返回不同的错误信息
+          let errorMessage = getAuthText('emailPasswordIncorrect');
+          
+          // 优先检查错误代码
+          if (error.code === 'email_not_confirmed') {
+            errorMessage = getAuthText('emailNotConfirmed') || '邮箱未确认，请检查邮箱并点击确认链接';
+            // 显示重新发送确认邮件的链接
+            const resendLink = document.querySelector('[data-resend-email-link]');
+            if (resendLink) {
+              resendLink.style.display = 'block';
+              resendLink.onclick = async () => {
+                const emailInput = document.getElementById('login-email');
+                if (emailInput && emailInput.value) {
+                  const result = await AuthManager.resendConfirmationEmail(emailInput.value);
+                  if (result.success) {
+                    AuthManager.showError('login', result.message);
+                    resendLink.style.display = 'none';
+                  } else {
+                    AuthManager.showError('login', result.error);
+                  }
+                }
+              };
+            }
+          } else if (error.code === 'invalid_credentials') {
+            errorMessage = getAuthText('emailPasswordIncorrect') || '邮箱或密码错误，请检查后重试';
+          } else if (error.message) {
+            const errorMsg = error.message.toLowerCase();
+            if (errorMsg.includes('invalid login credentials') || errorMsg.includes('invalid_credentials')) {
+              errorMessage = getAuthText('emailPasswordIncorrect') || '邮箱或密码错误，请检查后重试';
+            } else if (errorMsg.includes('email not confirmed')) {
+              errorMessage = getAuthText('emailNotConfirmed') || '邮箱未确认，请检查邮箱并点击确认链接';
+            } else if (errorMsg.includes('email')) {
+              errorMessage = getAuthText('invalidEmailFormat') || '邮箱格式不正确';
+            } else if (errorMsg.includes('password')) {
+              errorMessage = '密码错误';
+            } else {
+              // 显示原始错误信息（用于调试）
+              errorMessage = error.message || getAuthText('loginFailedRetry') || '登录失败，请重试';
+            }
+          }
+
+          return { success: false, error: errorMessage };
         }
 
         if (!data.user) {
@@ -535,38 +698,31 @@ var AuthManager = {
           // 使用更安全的查询方式，只选择需要的列
           const { data: profileData, error: profileError } = await supabaseClient
             .from('user_profiles')
-            .select('username,is_premium')  // 移除空格，避免格式问题
+            .select('username,is_premium,is_admin')  // 移除空格，避免格式问题
             .eq('id', data.user.id)
             .maybeSingle();  // 使用 maybeSingle() 而不是 single()，如果不存在返回 null 而不是错误
 
           if (profileError) {
-            console.warn('Failed to fetch user profile:', {
-              error: profileError,
-              message: profileError.message,
-              code: profileError.code,
-              details: profileError.details
-            });
+            console.warn('Failed to fetch user profile:', profileError.message);
             // 如果查询失败，使用默认值
           } else if (profileData) {
             profile = profileData;
-            console.log('User profile fetched successfully:', profile);
           } else {
             // 如果 profile 不存在，尝试创建它
-            console.log('User profile not found, attempting to create...');
             try {
               const { data: newProfileData, error: createError } = await supabaseClient
                 .from('user_profiles')
                 .insert({
                   id: data.user.id,
                   username: data.user.email.split('@')[0], // 使用邮箱前缀作为默认用户名
-                  is_premium: false
+                  is_premium: false,
+                  is_admin: false
                 })
                 .select()
                 .maybeSingle();
               
               if (!createError && newProfileData) {
                 profile = newProfileData;
-                console.log('User profile created successfully during login:', profile);
               } else if (createError) {
                 console.warn('Failed to create user profile during login:', createError);
               }
@@ -583,11 +739,15 @@ var AuthManager = {
           id: data.user.id,
           email: data.user.email,
           username: profile?.username || data.user.email.split('@')[0],
-          isPremium: profile?.is_premium || false
+          isPremium: profile?.is_premium || false,
+          isAdmin: profile?.is_admin || false
         };
 
         AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
         this.updateUI();
+        
+        // 启动定时刷新
+        this.startRefreshTimer();
 
         return { success: true, user: this.currentUser };
       } catch (e) {
@@ -627,6 +787,9 @@ var AuthManager = {
       }
     }
     
+    // 停止定时刷新
+    this.stopRefreshTimer();
+    
     this.currentUser = null;
     AuthStorage.remove(AUTH_CONFIG.STORAGE_KEY_USER);
     this.updateUI();
@@ -650,7 +813,6 @@ var AuthManager = {
       }
     }
     this.updateUI();
-    console.log(getAuthText('localCacheCleared'));
   },
 
   // 获取用户列表
@@ -756,6 +918,10 @@ var AuthManager = {
     if (loginEmail) loginEmail.value = '';
     if (loginPassword) loginPassword.value = '';
     this.hideError('login');
+    
+    // 隐藏重新发送确认邮件链接
+    const resendLink = document.querySelector('[data-resend-email-link]');
+    if (resendLink) resendLink.style.display = 'none';
   },
 
   // 显示注册表单
@@ -802,6 +968,7 @@ var AuthManager = {
       const userAvatar = document.querySelector('[data-user-avatar]');
       const userId = document.querySelector('[data-user-id]');
       const userPremium = document.querySelector('[data-user-premium]');
+      const userAdmin = document.querySelector('[data-user-admin]');
       let [username,emailname,useremail] = [this.currentUser.username,this.currentUser.email.split('@')[0],this.currentUser.email];
       //先取后两位
       let iconname = username.slice(-2) || emailname.slice(-2);
@@ -814,6 +981,7 @@ var AuthManager = {
       if (userAvatar) userAvatar.textContent = iconname.toUpperCase();
       if (userId) userId.textContent = this.currentUser.id;
       if (userPremium) userPremium.style.display = this.currentUser.isPremium ? 'block' : 'none';
+      if (userAdmin) userAdmin.style.display = this.currentUser.isAdmin ? 'block' : 'none';
     }
   },
 
@@ -837,6 +1005,43 @@ var AuthManager = {
   // 检查是否为付费用户
   isPremium() {
     return this.currentUser && this.currentUser.isPremium === true;
+  },
+
+  // 重新发送确认邮件
+  async resendConfirmationEmail(email) {
+    if (!AUTH_CONFIG.USE_SUPABASE || !supabaseClient) {
+      return { success: false, error: getAuthText('supabaseNotInitialized') || 'Supabase 未初始化' };
+    }
+
+    if (!email || !email.includes('@')) {
+      return { success: false, error: getAuthText('invalidEmailFormat') || '邮箱格式不正确' };
+    }
+
+    try {
+      const { data, error } = await supabaseClient.auth.resend({
+        type: 'signup',
+        email: email.trim()
+      });
+
+      if (error) {
+        console.error('Resend confirmation email error:', error);
+        return { 
+          success: false, 
+          error: getAuthText('resendConfirmationEmailFailed') || '发送失败，请稍后重试' 
+        };
+      }
+
+      return { 
+        success: true, 
+        message: getAuthText('resendConfirmationEmailSuccess') || '确认邮件已发送，请检查邮箱' 
+      };
+    } catch (e) {
+      console.error('Resend confirmation email failed:', e);
+      return { 
+        success: false, 
+        error: getAuthText('resendConfirmationEmailFailed') || '发送失败，请稍后重试' 
+      };
+    }
   }
 };
 

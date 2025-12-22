@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -59,6 +59,10 @@ window.addEventListener('message',(message)=>{
           if(typeof AuthManager !== 'undefined') {
             AuthManager.setCurrentUser(info);
             AuthManager.updateUI();
+
+            if(typeof State !== 'undefined') {
+              State.set('userInfo', info);
+            }
           };
         break
         case 'toolsSetFig_users':
@@ -81,7 +85,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -133,6 +137,10 @@ html{
 
 * {
   cursor: inherit;
+}
+
+input[type="text"],textarea{
+  cursor: text;
 }
 
 [data-theme="none"] body{
@@ -1445,6 +1453,7 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 }
 .nobod {
   --boxBod: transparent;
+  --bod-focus: transparent;
 }
 
 [data-resize]::-webkit-resizer,
@@ -1980,13 +1989,151 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 [data-manage-selectstyle] [data-btn="icon"],
 [data-manage-variables] [data-btn="icon"]{
   padding: 2px 0;
-  width: 16px;
   height: 16px;
 }
 
-[data-manage-linkstyle-list]{
+[data-manage-linkstyle] [data-btn="icon"] [data-en-text],
+[data-manage-selectstyle] [data-btn="icon"] [data-en-text],
+[data-manage-variables] [data-btn="icon"] [data-en-text]{
+  margin: -0.25ch 0 0 0.25ch;
+}
+
+[data-manage-linkstyle-list],
+[data-manage-selectstyle-list],
+[data-manage-variables-list]{
+  padding: 6px;
+  box-sizing: border-box;
+  gap: 6px;
+  max-height: 60dvh;
+}
+
+[data-linkstyle-tag]{
+  background: var(--boxGry);
   gap: 4px;
-  max-height: 50dvh;
+  padding: 6px 10px 10px 10px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  align-items: end;
+}
+
+[data-linkstyle-haschange="true"] [data-linkstyle-colorname] {
+  color: var(--themeColor);
+}
+
+[data-linkstyle-colorname]{
+  padding-left: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: normal;
+}
+
+[data-linkstyle-colorname]::before{
+  content: '🎨 ';
+  position: absolute;
+  top: 2px;
+  left: -4px;
+  font-size: 10px;
+}
+
+[data-linkstyle-haschange="true"] [data-linkstyle-colorname]::before{
+  content: '✏️ ';
+}
+
+[data-linkstyle-pathbox]{
+  background: var(--boxBak);
+  border-radius: 4px;
+  border: 4px solid var(--boxBak);
+  margin: -4px 0 0 -4px;
+}
+
+[data-theme="light"] [data-linkstyle-pathbox]{
+  border: 4px solid var(--mainColor);
+}
+
+[data-theme="light"] [data-linkstyle-pathbox],
+[data-theme="light"] [data-linkstyle-path]::before,
+[data-theme="light"] [data-linkstyle-pathbox] input{
+  color: var(--boxGry);
+  background: var(--mainColor);
+}
+
+[data-linkstyle-pathbox] > div{
+  width: fit-content;
+}
+
+[data-linkstyle-path]{
+  min-width: fit-content;
+  opacity: 0.6;
+  animation: boxUp 0.5s;
+}
+
+[data-linkstyle-path] input{
+  font-size: 10px;
+  pointer-events: none;
+}
+[data-linkstyle-path] div{
+  font-size: 10px;
+  padding: 0 40px 0 4px;
+}
+
+[data-linkstyle-path]::before{
+  content: '🔍';
+  font-size: 12px;
+  color: var(--mainColor);
+  margin: 0 -2px;
+}
+
+[data-linkstyle-path="false"]::before,
+[data-theme="light"] [data-linkstyle-path="false"]::before{
+  content: '⚠ ';
+  color: var(--liColor);
+  margin: 0;
+}
+
+[data-linkstyle-path="maybe"]{
+  opacity: 1;
+}
+
+[data-linkstyle-path="maybe"]::before{
+  content: '⇨ ';
+  margin: 0;
+}
+
+[data-linkstyle-path="maybe"] input{
+  pointer-events: auto;
+}
+
+[data-linkstyle-btnbox]{
+  width: 24ch;
+}
+
+[data-linkstyle-btn]{
+  width: 7ch;
+  height: 2.5ch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.25ch;
+  padding: 0 0.5ch;
+  box-sizing: border-box;
+  color: #2e2e2e;
+}
+
+[data-linkstyle-btn="relink"],[data-linkstyle-btn="relink"]:hover{
+  background: var(--linstyle-1);
+}
+[data-linkstyle-btn="create"],[data-linkstyle-btn="create"]:hover{
+  background: var(--linstyle-2);
+}
+[data-linkstyle-btn="reset"],[data-linkstyle-btn="reset"]:hover{
+  background: var(--linstyle-3);
+}
+
+[data-linkstyle-islink="false"] [data-linkstyle-btn="relink"],
+[data-linkstyle-iscreate="false"] [data-linkstyle-btn="create"],
+[data-linkstyle-isreset="false"] [data-linkstyle-btn="reset"]{
+  pointer-events: none;
+  opacity: 0.4;
 }
 
 [data-text-mini]{
@@ -2606,8 +2753,11 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   
 }
 
-@media (max-width:460px) {
-  
+@media (max-width:419px) {
+  [data-linkstyle-btnbox]{
+    width: 8ch;
+    flex-wrap: wrap;
+  }
 }
 
 @media (min-width:420px) {
@@ -2621,6 +2771,19 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
 
   [data-skilltype-name]{
     display: flex;
+  }
+
+  [data-linkstyle-pathbox] > div{
+    width: calc(100% - 4px);
+    display: flex;
+  }
+
+  [data-linkstyle-path] > div{
+    padding-right: 4px;
+  }
+
+  [data-linkstyle-path="maybe"] {
+    flex: 1;
   }
 
 }
@@ -2838,6 +3001,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
           <input type="password" id="login-password" placeholder="密码" data-input data-en-placeholder="Password"/>
         </div>
         <div data-login-error class="font-s12" style="display: none; color: var(--code7); padding: 4px 8px;"></div>
+        <div data-resend-email-link class="font-s10 op6" style="display: none; cursor: pointer; text-decoration: underline; padding: 4px 8px;" data-en-text="Resend confirmation email">重新发送确认邮件</div>
         <div class="df-sc gap8">
           <div data-btn="main" data-btn-login class="df-cc fl1" data-en-text="LOG IN">登录</div>
           <div data-btn="main" data-btn-show-register class="df-cc fl1 op6" data-en-text="SIGN UP →">注册 →</div>
@@ -2878,7 +3042,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
           <div class="df-ffc gap4 fl1">
             <div class="font-s16" style="font-weight: bold;" data-user-display-name>--</div>
             <div class="font-s12 op6" data-user-display-email>--</div>
-            <div class="font-s10 op6" data-en-text="Premium User" data-user-premium style="display: none;">付费用户</div>
+            <div class="df-lc gap4">
+              <div class="font-s10 op6" data-en-text="Premium User" data-user-premium style="display: none;">付费用户</div>
+              <div class="font-s10 op6" data-en-text="Admin User" data-user-admin style="display: none;">管理员</div>
+            </div>
           </div>
         </div>
         <div data-btn="main" data-btn-logout class="df-cc" data-en-text="LOG OUT">退出登录</div>
@@ -2894,7 +3061,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
           <!-- 用户登录入口 -->
           <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
             <div data-user-name style="display: none;" data-en-text="USER">用户</div>
-            <div data-user-login-text data-en-text="LOG IN">登录</div>
+            <div data-user-login-text data-en-text="LOG IN (Beta)">登录（测试）</div>
             <div class="pad2 mar-l4 wh-16" style=" --fill:#2e2e2e;">
               <btn-login></btn-login>
             </div>
@@ -3424,10 +3591,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-variables class="w100 df-sc">
                 <div class="df-lc gap8">
-                  <div data-variables-add data-btn="icon" data-selects-must>
+                  <div data-variables-add data-btn="icon" data-selects-must class="df-lc gap2">
                     <btn-getbyselect></btn-getbyselect> 
-                    <div class="pos-a" style="top: 4px; left: 20px;"
-                    data-en-text="Traverse selection" >扫描所选</div>                                  
+                    <div data-en-text="Query selection" >扫描所选</div>   
+                    <div data-any="vw240" data-en-text="( Keep items in selection )" class="font-s8 op6" >( 操作时请保持选中 )</div>                                                              
                   </div>
                 </div>
                 <div class="df-lc gap4">
@@ -3491,10 +3658,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-linkstyle class="w100 df-sc">
                 <div class="df-lc gap8">
-                  <div data-linkstyle-add data-btn="icon" data-selects-must>
+                  <div data-linkstyle-add data-btn="icon" data-selects-must class="df-lc gap2">
                     <btn-getbyselect></btn-getbyselect> 
-                    <div class="pos-a" style="top: 4px; left: 20px;"
-                    data-en-text="Traverse selection" >扫描所选</div>                                  
+                    <div data-en-text="Query selection" >扫描所选</div>   
+                    <div data-any="vw240" data-en-text="( Keep items in selection )" class="font-s8 op6" >( 操作时请保持选中 )</div>                               
                   </div>
                 </div>
                 <div class="df-lc gap4">
@@ -3515,7 +3682,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                   <div class="pos-r" data-linkstyle-all="override" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
-                  data-tips-text="全部覆盖" data-tips-text-en="Override all">
+                  data-tips-text="全部覆盖" data-tips-text-en="Reset all">
                     <div data-btn="icon">
                       <svg width="100%" height="100%" viewBox="0 0 20 20">
                         <circle cx="10" cy="10" r="10" fill="var(--linstyle-3)"/>
@@ -3542,10 +3709,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
             <div data-variable-manage class="wh100 df-ffc ovh pos-r">
               <div data-manage-selectstyle class="w100 df-sc">
                 <div class="df-lc gap8">
-                  <div data-selectstyle-add data-btn="icon" data-selects-must>
+                  <div data-selectstyle-add data-btn="icon" data-selects-must class="df-lc gap2">
                     <btn-getbyselect></btn-getbyselect> 
-                    <div class="pos-a" style="top: 4px; left: 20px;"
-                    data-en-text="Traverse selection" >扫描所选</div>                                  
+                    <div data-en-text="Query selection" >扫描所选</div>   
+                    <div data-any="vw240" data-en-text="( Keep items in selection )" class="font-s8 op6" >( 操作时请保持选中 )</div>                                                              
                   </div>
                 </div>
               </div>
@@ -4671,7 +4838,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                             </div>
                           </label>
                         </div>
-                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/tool_web/SVdG/index.html" target="_blank">
+                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/tool_web/SVdG/index.html" target="_blank">
                           <div data-autobod-name data-en-text="Custom >" style="text-decoration: underline;">自定义></div>
                         </a>
                       </div>
@@ -4744,23 +4911,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/jsQR_correct.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/jsQR_correct.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6c80d178a0392ee1171137382c99be251b19310d/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -4919,6 +5086,10 @@ const AUTH_I18N = {
     emailAlreadyRegisteredLocal: '该邮箱已在本地注册，请先清除缓存',
     enterEmailPassword: '请输入邮箱和密码',
     emailPasswordIncorrect: '邮箱或密码错误',
+    emailNotConfirmed: '邮箱未确认，请检查邮箱并点击确认链接',
+    resendConfirmationEmail: '重新发送确认邮件',
+    resendConfirmationEmailSuccess: '确认邮件已发送，请检查邮箱',
+    resendConfirmationEmailFailed: '发送失败，请稍后重试',
     loginFailedRetry: '登录失败，请重试',
     fillAllRequired: '请填写所有必填项',
     passwordsNotMatch: '两次输入的密码不一致',
@@ -4946,6 +5117,10 @@ const AUTH_I18N = {
     emailAlreadyRegisteredLocal: 'This email is already registered locally, please clear cache first',
     enterEmailPassword: 'Please enter email and password',
     emailPasswordIncorrect: 'Email or password incorrect',
+    emailNotConfirmed: 'Email not confirmed, please check your email and click the confirmation link',
+    resendConfirmationEmail: 'Resend confirmation email',
+    resendConfirmationEmailSuccess: 'Confirmation email sent, please check your inbox',
+    resendConfirmationEmailFailed: 'Failed to send, please try again later',
     loginFailedRetry: 'Login failed, please try again',
     fillAllRequired: 'Please fill in all required fields',
     passwordsNotMatch: 'Passwords do not match',
@@ -5096,6 +5271,9 @@ const DOM = (() => {
     manageLinkstyleList: () => query('[data-manage-linkstyle-list]'),
     manageSelectstyleList: () => query('[data-manage-selectstyle-list]'),
     manageVariablesList: () => query('[data-manage-variables-list]'),
+    linkstyleClear: () => query('[data-linkstyle-clear]'),
+    selectstyleClear: () => query('[data-selectstyle-clear]'),
+    variablesClear: () => query('[data-variables-clear]'),
 
     selectInfoBox: () => queryAll('[data-selects-node]'),
 
@@ -5136,6 +5314,13 @@ const State = (() => {
 
     selectNodeInfo: [],
 
+    linkstyleInfo: [],
+    selectstyleInfo: [],
+    variablesInfo: [],
+    linkstyleInfoFinal: [],
+    selectstyleInfoFinal: [],
+    variablesInfoFinal: [],
+
     editorInfo: {
       preview: '',
       set: [],
@@ -5158,20 +5343,62 @@ const State = (() => {
     qrcodePixelGrid: [null, null],
   };
 
+  function getByPath(obj, path) {
+    if (typeof path !== 'string' || !path.includes('.')) {
+
+      return obj[path];
+    }
+
+    const keys = path.split('.');
+    let current = obj;
+    for (const k of keys) {
+      if (current == null || current === undefined) {
+        return undefined;
+      }
+
+      if (k in current) {
+        current = current[k];
+      } else {
+        return undefined;
+      }
+    }
+    return current;
+  }
+
+  function setByPath(obj, path, value) {
+    if (typeof path !== 'string' || !path.includes('.')) {
+
+      obj[path] = value;
+      return;
+    }
+
+    const keys = path.split('.');
+    const lastKey = keys.pop();
+    let current = obj;
+    for (const k of keys) {
+      if (current[k] == null || typeof current[k] !== 'object') {
+        current[k] = {};
+      }
+      current = current[k];
+    }
+    current[lastKey] = value;
+  }
+
   return {
     get(key) {
-      return state[key];
+      return getByPath(state, key);
     },
     set(key, value) {
-      state[key] = value;
+      setByPath(state, key, value);
     },
     reset(key) {
-      if (Array.isArray(state[key])) {
-        state[key] = [];
-      } else if (typeof state[key] === 'object' && state[key] !== null) {
-        state[key] = {};
+      const target = getByPath(state, key);
+      if (Array.isArray(target)) {
+        setByPath(state, key, []);
+      } else if (typeof target === 'object' && target !== null) {
+        setByPath(state, key, {});
       } else {
-        state[key] = null;
+        setByPath(state, key, null);
       }
     }
   };
@@ -5823,6 +6050,14 @@ DOM.btnResize.addEventListener('mousedown',(event)=>{
 });
 
 document.getElementById('bottom').addEventListener('dblclick',()=>{
+
+  if(typeof AuthManager === 'undefined' || !AuthManager.currentUser){
+    return;
+  }
+
+  if(!AuthManager.currentUser.isAdmin){
+    return;
+  }
   toolMessage(['','getnode'],PLUGINAPP)
 });
 
@@ -7588,6 +7823,21 @@ class CropBoxController {
   }
 
   setGridSizeToRatio() {
+
+    if(!this.grid || !this.parent) {
+      return false;
+    }
+
+    const gridStyle = window.getComputedStyle(this.grid);
+    if(gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || !this.grid.isConnected) {
+      return false;
+    }
+
+    const parentStyle = window.getComputedStyle(this.parent);
+    if(parentStyle.display === 'none' || parentStyle.visibility === 'hidden' || !this.parent.isConnected) {
+      return false;
+    }
+
     const parentRect = this.parent.getBoundingClientRect();
     if(parentRect.width > 0 && parentRect.height > 0) {
       if (this.aspectRatio) {
@@ -7762,8 +8012,22 @@ class CropBoxController {
   centerGrid() {
     if (!this.autoCenter) return false;
 
+    if(!this.grid || !this.parent) {
+      return false;
+    }
+
+    const gridStyle = window.getComputedStyle(this.grid);
+    if(gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || !this.grid.isConnected) {
+      return false;
+    }
+
+    const parentStyle = window.getComputedStyle(this.parent);
+    if(parentStyle.display === 'none' || parentStyle.visibility === 'hidden' || !this.parent.isConnected) {
+      return false;
+    }
+
     const parentRect = this.parent.getBoundingClientRect();
-    const computedStyle = window.getComputedStyle(this.grid);
+    const computedStyle = gridStyle;
     const currentWidth = parseFloat(computedStyle.width);
     const currentHeight = parseFloat(computedStyle.height) || currentWidth;
 
@@ -7789,8 +8053,22 @@ class CropBoxController {
       return;
     }
 
+    if(!this.grid || !this.parent) {
+      return;
+    }
+
+    const gridStyle = window.getComputedStyle(this.grid);
+    if(gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || !this.grid.isConnected) {
+      return;
+    }
+
+    const parentStyle = window.getComputedStyle(this.parent);
+    if(parentStyle.display === 'none' || parentStyle.visibility === 'hidden' || !this.parent.isConnected) {
+      return;
+    }
+
     const parentRect = this.parent.getBoundingClientRect();
-    const computedStyle = window.getComputedStyle(this.grid);
+    const computedStyle = gridStyle;
     const currentWidth = parseFloat(computedStyle.width) || 200;
     const currentHeight = parseFloat(computedStyle.height) || currentWidth;
     const currentLeft = parseFloat(computedStyle.left) || 0;
@@ -7911,6 +8189,20 @@ class CropBoxController {
 
   initializeGrid() {
 
+    if(!this.grid || !this.parent) {
+      return;
+    }
+
+    const gridStyle = window.getComputedStyle(this.grid);
+    if(gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || !this.grid.isConnected) {
+      return;
+    }
+
+    const parentStyle = window.getComputedStyle(this.parent);
+    if(parentStyle.display === 'none' || parentStyle.visibility === 'hidden' || !this.parent.isConnected) {
+      return;
+    }
+
     const sizeSet = this.setGridSizeToRatio();
     if(sizeSet) {
 
@@ -7924,6 +8216,21 @@ class CropBoxController {
   }
 
   tryInitialize() {
+
+    if(!this.grid || !this.parent) {
+      return;
+    }
+
+    const gridStyle = window.getComputedStyle(this.grid);
+    if(gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || !this.grid.isConnected) {
+      return;
+    }
+
+    const parentStyle = window.getComputedStyle(this.parent);
+    if(parentStyle.display === 'none' || parentStyle.visibility === 'hidden' || !this.parent.isConnected) {
+      return;
+    }
+
     const parentRect = this.parent.getBoundingClientRect();
 
     if(parentRect.width > 0 && parentRect.height > 0) {
@@ -8663,31 +8970,119 @@ function addQRLayerView(info){
 function reLinkStyleInfo(info){
 
   if(!info || info.length == 0) return;
+
+  State.set('linkstyleInfo',info);
+
+  let finalInfo = JSON.parse(JSON.stringify(info));
+  State.set('linkstyleInfoFinal',finalInfo);
   let listBox = DOM.manageLinkstyleList;
   let lan = ROOT.getAttribute('data-language');
   listBox.innerHTML = '';
-  for(let data of info){
+  for(let i = 0; i < info.length; i++){
+    let data = info[i]
     let {name,islink,iscreate,isreset,isname} = data;
     let tag = document.createElement('div');
-    tag.className = 'df-lc gap4 pad4 bsb w100';
+    tag.className = 'df-sc w100';
     tag.setAttribute('data-linkstyle-tag','');
+    tag.setAttribute('data-linkstyle-islink',islink);
+    tag.setAttribute('data-linkstyle-iscreate',iscreate);
+    tag.setAttribute('data-linkstyle-isreset',isreset);
+    tag.setAttribute('data-linkstyle-isname',isname ? 'true' : 'false');
 
     let title = document.createElement('div');
+    title.className = 'df-ffc fl1 h100 gap10 pos-r';
     title.setAttribute('data-linkstyle-title','');
+
     let colorname = document.createElement('div');
     colorname.setAttribute('data-linkstyle-colorname','');
-    colorname.textContent = name.split('/')[name.split('/').length - 1];
+    let names = name.split('/');
+    let setName = '';
+    let lastName = names[names.length - 1];
+    if(names.some(name => name.includes('@set:'))){
+      setName = names.find(name => name.includes('@set:')).replace('@set:','_') + ': ';
+    }
+    colorname.textContent = setName + lastName;
     title.appendChild(colorname);
+
+    let pathBox = document.createElement('div');
+    pathBox.className = 'w100 ovx hasscrollbar pos-r';
+    pathBox.setAttribute('data-linkstyle-pathbox','');
+    pathBox.setAttribute('data-scroll','');
+
+    let pathBoxS = document.createElement('div');
+    pathBox.appendChild(pathBoxS);
+
+    let pathS = document.createElement('div');
+    pathS.setAttribute('data-linkstyle-path','true');
+    pathS.className = 'df-lc';
+
     let path = document.createElement('div');
-    path.setAttribute('data-linkstyle-path','');
     path.textContent = name;
-    title.appendChild(path);
+    pathS.appendChild(path);
+    pathBoxS.appendChild(pathS);
+
+    let pathS2 = document.createElement('div');
+    pathS2.setAttribute('data-linkstyle-path','maybe');
+    pathS2.className = 'df-lc w100';
+    let path2 = document.createElement('input');
+    path2.setAttribute('data-input','');
+    path2.className = 'nobod';
+    path2.type = 'text';
+    path2.setAttribute('data-input-type','text');
+    path2.setAttribute('data-linkstyle-path','maybe');
+    pathS2.appendChild(path2);
+    pathBoxS.appendChild(pathS2);
+
+    path2.addEventListener('change',(e)=>{
+      let value = e.target.value;
+      if(value && value.trim() !== ''){
+        let linkstyleInfoFinal = State.get('linkstyleInfoFinal');
+        if((State.get('linkstyleInfo')[i].isname && value !== isname )|| (!State.get('linkstyleInfo')[i].isname && value !== name)){
+          tipsAll(['已修改样式指向，请确保修改值有效','Path modified, please ensure the modified value is valid'], 3000);
+          tag.setAttribute('data-linkstyle-islink','true');
+          tag.setAttribute('data-linkstyle-iscreate','true');
+          tag.setAttribute('data-linkstyle-isreset','true');
+          tag.setAttribute('data-linkstyle-haschange','true');
+          let newsetName = '';
+          if(value.split('/').some(name => name.includes('@set:'))){
+            newsetName = value.split('/').find(name => name.includes('@set:')).replace('@set:','_') + ': ';
+          }
+          let newLastName = value.split('/')[value.split('/').length - 1];
+          if(newLastName !== lastName || newsetName !== setName){
+            colorname.textContent = newsetName + newLastName;
+          }else{
+            colorname.textContent = setName + lastName;
+          }
+          linkstyleInfoFinal[i].changename = value;
+        }else{
+          tag.setAttribute('data-linkstyle-islink',islink);
+          tag.setAttribute('data-linkstyle-iscreate',iscreate);
+          tag.setAttribute('data-linkstyle-isreset',isreset);
+          tag.setAttribute('data-linkstyle-isname',value);
+          tag.setAttribute('data-linkstyle-haschange','false');
+          colorname.textContent = setName + lastName;
+          linkstyleInfoFinal[i].changename = value;
+          if(value == isname){
+            delete linkstyleInfoFinal[i].changename;
+          }
+        }
+        console.log(State.get('linkstyleInfoFinal'));
+      }
+    });
+
     if(isname){
-      let path2 = document.createElement('div');
-      path2.setAttribute('data-linkstyle-path','maybe');
-      path2.textContent = name;
-      title.appendChild(path2);
-      path.setAttribute('data-linkstyle-path','false');
+      path2.setAttribute('data-input-must',isname);
+      path2.value = isname;
+      pathS.setAttribute('data-linkstyle-path','false');
+    }else{
+      path2.setAttribute('data-input-must',name);
+      path2.value = name;
+    }
+
+    title.appendChild(pathBox);
+
+    if(typeof scrollX === 'function'){
+      scrollX(pathBox);
     }
     tag.appendChild(title);
 
@@ -8709,22 +9104,65 @@ function reLinkStyleInfo(info){
     btn1.textContent = lan == 'Zh' ? '创建' : 'Create';
     btnbox.appendChild(btn1);
     let btn2 = document.createElement('div');
-    btn2.setAttribute('data-linkstyle-btn','override');
+    btn2.setAttribute('data-linkstyle-btn','reset');
     btn2.setAttribute('data-btn','icon');
-    btn2.setAttribute('data-en-text','Override');
+    btn2.setAttribute('data-en-text','Reset');
     btn2.setAttribute('data-zh-text','覆盖');
-    btn2.textContent = lan == 'Zh' ? '覆盖' : 'Override';
+    btn2.textContent = lan == 'Zh' ? '覆盖' : 'Reset';
     btnbox.appendChild(btn2);
     tag.appendChild(btnbox);
 
     listBox.appendChild(tag);
 
   }
-}
+};
+
+let testStyleGroupInfo = [
+  {
+      "id": "S:62266f76f31778b5593bf69af9be06bb1b8b272b,",
+      "name": "eg/xxx@set:theme1/color1"
+  },
+  {
+      "id": "S:dea68fcec9c7297a015c9e149340348985e0b75a,",
+      "name": "eg/xxx@set:theme1/color2"
+  },
+  {
+      "id": "S:371a69830542868e2c8e5eac5ae666edf8dc3a8b,",
+      "name": "eg/xxx@set:theme1/color3"
+  },
+  {
+      "id": "S:915a43061a59b540c764341214b90d24388ee91e,",
+      "name": "eg/xxx@set:theme2/color1"
+  },
+  {
+      "id": "S:775c1f2b4a72c7c9f1d9a02115d99a0805eb8261,",
+      "name": "eg/xxx@set:theme2/color2"
+  },
+  {
+      "id": "S:cb9ca0527758d7be282a0f28412761f9250e6388,",
+      "name": "eg/xxx@set:theme2/color3"
+  }
+];
+
 function reStyleGroupInfo(info){
+
   if(!info || info.length == 0) return;
-  let listBox = DOM.manageLinkstyleList
-}
+
+  State.set('styleGroupInfo',info);
+  let listBox = DOM.manageSelectstyleList;
+  let lan = ROOT.getAttribute('data-language');
+
+};
+
+DOM.linkstyleClear.addEventListener('click',(e)=>{
+  State.reset('selectstyleInfo');
+  DOM.manageLinkstyleList.innerHTML = '';
+});
+
+DOM.selectstyleClear.addEventListener('click',(e)=>{
+  State.reset('selectstyleInfo');
+  DOM.manageSelectstyleList.innerHTML = '';
+});
 
 function reSelectComp(info){
 
@@ -9425,9 +9863,101 @@ function tryInitSupabase() {
 var AuthManager = {
   currentUser: null,
   usersList: [],
+  refreshTimer: null,
 
   setCurrentUser(user) {
     this.currentUser = user;
+
+    if (typeof State !== 'undefined') {
+      State.set('userInfo', user);
+    }
+
+    if (AUTH_CONFIG.USE_SUPABASE && supabaseClient && user && user.id) {
+      this.refreshUserProfile();
+      this.startRefreshTimer();
+    } else {
+
+      this.stopRefreshTimer();
+    }
+  },
+
+  async refreshUserProfile() {
+    if (!AUTH_CONFIG.USE_SUPABASE || !supabaseClient || !this.currentUser) {
+      return;
+    }
+
+    try {
+
+      const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+      if (sessionError || !session?.user || session.user.id !== this.currentUser.id) {
+
+        this.stopRefreshTimer();
+        return;
+      }
+
+      const { data: profileData, error: profileError } = await supabaseClient
+        .from('user_profiles')
+        .select('username,is_premium,is_admin')
+        .eq('id', this.currentUser.id)
+        .maybeSingle();
+
+      if (profileError) {
+        console.warn('Failed to refresh user profile:', profileError);
+        return;
+      }
+
+      if (profileData) {
+
+        const updatedUser = {
+          ...this.currentUser,
+          username: profileData.username || this.currentUser.username,
+          isPremium: profileData.is_premium || false,
+          isAdmin: profileData.is_admin || false
+        };
+
+        const hasChanges =
+          this.currentUser.isPremium !== updatedUser.isPremium ||
+          this.currentUser.isAdmin !== updatedUser.isAdmin ||
+          this.currentUser.username !== updatedUser.username;
+
+        if (hasChanges) {
+          this.currentUser = updatedUser;
+          AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
+
+          if (typeof State !== 'undefined') {
+            State.set('userInfo', this.currentUser);
+          }
+
+          this.updateUI();
+          console.log('User profile refreshed:', updatedUser);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to refresh user profile:', e);
+    }
+  },
+
+  startRefreshTimer() {
+
+    this.stopRefreshTimer();
+
+    if (!AUTH_CONFIG.USE_SUPABASE || !supabaseClient || !this.currentUser) {
+      return;
+    }
+
+    this.refreshTimer = setInterval(() => {
+      this.refreshUserProfile();
+    }, 5 * 60 * 1000);
+
+    console.log('User profile refresh timer started (5 minutes interval)');
+  },
+
+  stopRefreshTimer() {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = null;
+      console.log('User profile refresh timer stopped');
+    }
   },
 
   setUsersList(users) {
@@ -9442,11 +9972,17 @@ var AuthManager = {
           const { data: { session }, error } = await supabaseClient.auth.getSession();
           if (!error && session?.user) {
 
+            const cachedUser = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USER);
+            if (cachedUser && cachedUser.id === session.user.id) {
+              this.currentUser = cachedUser;
+              this.updateUI();
+            }
+
             let profile = null;
             try {
               const { data: profileData, error: profileError } = await supabaseClient
                 .from('user_profiles')
-                .select('username,is_premium')
+                .select('username,is_premium,is_admin')
                 .eq('id', session.user.id)
                 .maybeSingle();
 
@@ -9457,6 +9993,11 @@ var AuthManager = {
                   code: profileError.code
                 });
 
+                if (!this.currentUser && cachedUser) {
+                  this.currentUser = cachedUser;
+                  this.updateUI();
+                }
+                return;
               } else if (profileData) {
                 profile = profileData;
                 console.log('User profile fetched in init:', profile);
@@ -9466,16 +10007,34 @@ var AuthManager = {
             } catch (e) {
               console.warn('Failed to fetch user profile in init:', e);
 
+              if (!this.currentUser && cachedUser) {
+                this.currentUser = cachedUser;
+                this.updateUI();
+              }
+              return;
             }
 
-            this.currentUser = {
+            const updatedUser = {
               id: session.user.id,
               email: session.user.email,
               username: profile?.username || session.user.email.split('@')[0],
-              isPremium: profile?.is_premium || false
+              isPremium: profile?.is_premium || false,
+              isAdmin: profile?.is_admin || false
             };
+
+            const hasChanges = !this.currentUser ||
+              this.currentUser.isPremium !== updatedUser.isPremium ||
+              this.currentUser.isAdmin !== updatedUser.isAdmin ||
+              this.currentUser.username !== updatedUser.username;
+
+            this.currentUser = updatedUser;
             AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
-            this.updateUI();
+
+            if (hasChanges) {
+              this.updateUI();
+            }
+
+            this.startRefreshTimer();
             return;
           }
         } catch (e) {
@@ -9687,15 +10246,16 @@ var AuthManager = {
 
         if (session) {
           try {
-            const { data: profileData, error: profileError } = await supabaseClient
-              .from('user_profiles')
-              .insert({
-                id: data.user.id,
-                username: username,
-                is_premium: false
-              })
-              .select()
-              .single();
+              const { data: profileData, error: profileError } = await supabaseClient
+                .from('user_profiles')
+                .insert({
+                  id: data.user.id,
+                  username: username,
+                  is_premium: false,
+                  is_admin: false
+                })
+                .select()
+                .single();
 
             if (profileError) {
               console.error('Failed to create user profile:', profileError);
@@ -9729,7 +10289,8 @@ var AuthManager = {
           id: data.user.id,
           email: data.user.email,
           username: username,
-          isPremium: false
+          isPremium: false,
+          isAdmin: false
         };
 
         if (session) {
@@ -9769,7 +10330,8 @@ var AuthManager = {
       username: username,
       password: this.hashPassword(password),
       createdAt: new Date().toISOString(),
-      isPremium: false
+      isPremium: false,
+      isAdmin: false
     };
 
     existingUsers.push(user);
@@ -9792,13 +10354,67 @@ var AuthManager = {
     if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
       try {
 
+        if (!email || !email.includes('@') || !email.includes('.')) {
+          return { success: false, error: getAuthText('invalidEmailFormat') || '邮箱格式不正确' };
+        }
+
+        if (!password || password.trim() === '') {
+          return { success: false, error: getAuthText('enterEmailPassword') || '请输入邮箱和密码' };
+        }
+
         const { data, error } = await supabaseClient.auth.signInWithPassword({
-          email: email,
+          email: email.trim(),
           password: password
         });
 
         if (error) {
-          return { success: false, error: getAuthText('emailPasswordIncorrect') };
+
+          console.error('Supabase login error:', {
+            message: error.message,
+            status: error.status,
+            code: error.code
+          });
+
+          let errorMessage = getAuthText('emailPasswordIncorrect');
+
+          if (error.code === 'email_not_confirmed') {
+            errorMessage = getAuthText('emailNotConfirmed') || '邮箱未确认，请检查邮箱并点击确认链接';
+
+            const resendLink = document.querySelector('[data-resend-email-link]');
+            if (resendLink) {
+              resendLink.style.display = 'block';
+              resendLink.onclick = async () => {
+                const emailInput = document.getElementById('login-email');
+                if (emailInput && emailInput.value) {
+                  const result = await AuthManager.resendConfirmationEmail(emailInput.value);
+                  if (result.success) {
+                    AuthManager.showError('login', result.message);
+                    resendLink.style.display = 'none';
+                  } else {
+                    AuthManager.showError('login', result.error);
+                  }
+                }
+              };
+            }
+          } else if (error.code === 'invalid_credentials') {
+            errorMessage = getAuthText('emailPasswordIncorrect') || '邮箱或密码错误，请检查后重试';
+          } else if (error.message) {
+            const errorMsg = error.message.toLowerCase();
+            if (errorMsg.includes('invalid login credentials') || errorMsg.includes('invalid_credentials')) {
+              errorMessage = getAuthText('emailPasswordIncorrect') || '邮箱或密码错误，请检查后重试';
+            } else if (errorMsg.includes('email not confirmed')) {
+              errorMessage = getAuthText('emailNotConfirmed') || '邮箱未确认，请检查邮箱并点击确认链接';
+            } else if (errorMsg.includes('email')) {
+              errorMessage = getAuthText('invalidEmailFormat') || '邮箱格式不正确';
+            } else if (errorMsg.includes('password')) {
+              errorMessage = '密码错误';
+            } else {
+
+              errorMessage = error.message || getAuthText('loginFailedRetry') || '登录失败，请重试';
+            }
+          }
+
+          return { success: false, error: errorMessage };
         }
 
         if (!data.user) {
@@ -9810,7 +10426,7 @@ var AuthManager = {
 
           const { data: profileData, error: profileError } = await supabaseClient
             .from('user_profiles')
-            .select('username,is_premium')
+            .select('username,is_premium,is_admin')
             .eq('id', data.user.id)
             .maybeSingle();
 
@@ -9834,7 +10450,8 @@ var AuthManager = {
                 .insert({
                   id: data.user.id,
                   username: data.user.email.split('@')[0],
-                  is_premium: false
+                  is_premium: false,
+                  is_admin: false
                 })
                 .select()
                 .maybeSingle();
@@ -9857,11 +10474,14 @@ var AuthManager = {
           id: data.user.id,
           email: data.user.email,
           username: profile?.username || data.user.email.split('@')[0],
-          isPremium: profile?.is_premium || false
+          isPremium: profile?.is_premium || false,
+          isAdmin: profile?.is_admin || false
         };
 
         AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
         this.updateUI();
+
+        this.startRefreshTimer();
 
         return { success: true, user: this.currentUser };
       } catch (e) {
@@ -9898,6 +10518,8 @@ var AuthManager = {
         console.warn('Supabase sign out failed:', e);
       }
     }
+
+    this.stopRefreshTimer();
 
     this.currentUser = null;
     AuthStorage.remove(AUTH_CONFIG.STORAGE_KEY_USER);
@@ -10015,6 +10637,9 @@ var AuthManager = {
     if (loginEmail) loginEmail.value = '';
     if (loginPassword) loginPassword.value = '';
     this.hideError('login');
+
+    const resendLink = document.querySelector('[data-resend-email-link]');
+    if (resendLink) resendLink.style.display = 'none';
   },
 
   showRegisterForm() {
@@ -10057,6 +10682,7 @@ var AuthManager = {
       const userAvatar = document.querySelector('[data-user-avatar]');
       const userId = document.querySelector('[data-user-id]');
       const userPremium = document.querySelector('[data-user-premium]');
+      const userAdmin = document.querySelector('[data-user-admin]');
       let [username,emailname,useremail] = [this.currentUser.username,this.currentUser.email.split('@')[0],this.currentUser.email];
 
       let iconname = username.slice(-2) || emailname.slice(-2);
@@ -10069,6 +10695,7 @@ var AuthManager = {
       if (userAvatar) userAvatar.textContent = iconname.toUpperCase();
       if (userId) userId.textContent = this.currentUser.id;
       if (userPremium) userPremium.style.display = this.currentUser.isPremium ? 'block' : 'none';
+      if (userAdmin) userAdmin.style.display = this.currentUser.isAdmin ? 'block' : 'none';
     }
   },
 
@@ -10089,6 +10716,42 @@ var AuthManager = {
 
   isPremium() {
     return this.currentUser && this.currentUser.isPremium === true;
+  },
+
+  async resendConfirmationEmail(email) {
+    if (!AUTH_CONFIG.USE_SUPABASE || !supabaseClient) {
+      return { success: false, error: getAuthText('supabaseNotInitialized') || 'Supabase 未初始化' };
+    }
+
+    if (!email || !email.includes('@')) {
+      return { success: false, error: getAuthText('invalidEmailFormat') || '邮箱格式不正确' };
+    }
+
+    try {
+      const { data, error } = await supabaseClient.auth.resend({
+        type: 'signup',
+        email: email.trim()
+      });
+
+      if (error) {
+        console.error('Resend confirmation email error:', error);
+        return {
+          success: false,
+          error: getAuthText('resendConfirmationEmailFailed') || '发送失败，请稍后重试'
+        };
+      }
+
+      return {
+        success: true,
+        message: getAuthText('resendConfirmationEmailSuccess') || '确认邮件已发送，请检查邮箱'
+      };
+    } catch (e) {
+      console.error('Resend confirmation email failed:', e);
+      return {
+        success: false,
+        error: getAuthText('resendConfirmationEmailFailed') || '发送失败，请稍后重试'
+      };
+    }
   }
 };
 

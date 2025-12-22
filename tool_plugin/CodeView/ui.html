@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html data-theme="dark" data-language="En" data-plugin="widget">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_style.css"  >
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/run.js"></script>
+  <style>
+    :root{
+      --mainFontSize:12px;
+      --mainFontSize-mini:10px;
+    }
+    body{
+      padding: 16px 12px;
+    }
+    #codeInput-scroll { 
+      font-family: 'Roboto Mono', monospace; 
+    }
+    /*--按钮类*/
+    [data-btn]{
+      max-width: 580px;
+      padding: 2px 0;
+      border: 1px solid var(--boxBod);
+      box-sizing: border-box;
+      cursor: var(--pointer,pointer);
+      position: relative;
+    }
+
+    [data-btn]:disabled{
+      background: var(--boxGry);
+      transform: translateY(1px);
+      cursor: default;
+      opacity: 0.6;
+    }
+
+    [data-btn]:hover{
+      background: var(--boxGry);
+    }
+
+    [data-btn]:active{
+      transform: translateY(1px);
+    }
+
+    [data-btn="op"]{
+      border: none;
+      background: none;
+    }
+
+    [data-btn="op"]:hover{
+      background: none;
+      opacity: 0.5;
+    }
+
+    #codeType [data-option="option"]{
+      padding-left: 10px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="df-ffc gap16">
+    <div class="df-ffc gap8">
+      <div class="df-lc gap4 w100">
+        <div>Code Input:</div>
+        <div id="codeType" class="df-lc pos-r gap4" data-select data-select-close data-select-value="AUTO" style="width: 90px; z-index:2;">
+          <input id="select-value-1" type="text" data-select-input="textContent" readonly value="Auto">
+          <input id="select-show-1" data-select-pick type="checkbox">
+          <label for="select-show-1" class="show-next wh100 pos-a" style="top:0; right: 0;"></label>
+          <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: normal; display: none; top:24px;">
+            <div class="pointer" data-option="option" data-option-main="true" data-option-value="AUTO">Auto</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="javascript">JavaScript</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="html">HTML</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="css">CSS</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="json">Json</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="sql">SQL</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="bash">Bash</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="php">PHP</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="python">Python</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="go">GO</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="rust">Rust</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="java">Java</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="c">C</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="csharp">C#</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="ruby">Ruby</div>
+            <div class="pointer" data-option="option" data-option-main="false" data-option-value="typescript">TypeScript</div>
+          </div>
+        </div>
+      </div>
+      <div id="codeInput-scroll" class="w100 pos-r">
+        <textarea style="height: 260px;" class="w100" data-textarea-wrap="false" spellcheck="false" id="codeInput"
+        ></textarea>
+        <!--清空-->
+        <div class="pos-a wh-12" data-close="clear"  style="right: 4px; top:4px;">
+          <btn-close></btn-close>
+        </div>
+      </div>
+    </div>
+    <div class="df-lc gap8 w100">
+      <div class="df-lc gap4 fl1">
+        <div>Wrap width</div>
+        <input type="text" id="widthInput" data-input data-input-type="float"  data-input-must="100,2000" placeholder="123" min="100" max="2000">
+      </div>
+    </div>
+    <div data-btn id="applyBtn" class="df-cc bod-r8">Apply</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/prism.js"></script>
+  <!-- Prism.js 语言支持（注意加载顺序：基础语言和依赖组件先加载） -->
+  <!-- PHP 需要 markup-templating 依赖 -->
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-markup-templating.min.js"></script>
+  <!-- 基础语言 -->
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-sql.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-php.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-go.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-rust.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-java.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-c.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-csharp.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-ruby.min.js"></script>
+  <!-- TypeScript 依赖 JavaScript，确保 JavaScript 已加载后再加载 TypeScript -->
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-typescript.min.js"></script>
+
+  <script>
+    window.onmessage = (event) => {
+      const { type, data } = event.data.pluginMessage || {};
+      if (type === 'init') {
+        document.getElementById('codeInput').value = data.textContent || '';
+      }
+    };
+ 
+    let codeColor = {
+      mainColor: "#acacac",
+      code1:"#48a67b",
+      code2:"#9377b6",
+      code3:"#48a64d",
+      code4:"#b677b1",
+      code5:"#a66e48",
+      code6:"#77b6b6",
+      code7:"#a64848",
+      code8:"#527ac4",
+      code9:"#e09524",
+      code10:"#ec657c",
+    }
+
+    // 代码类型检测函数
+    function detectLanguage(code) {
+      if (!code || !code.trim()) return 'javascript';
+      
+      const trimmed = code.trim();
+      
+      // HTML/XML 检测（优先检测，因为可能包含其他代码）
+      if (/^<\s*!?DOCTYPE\s+html/i.test(trimmed) || 
+          /^<\s*html/i.test(trimmed) || 
+          (/^<\s*[\w-]+[\s>]/.test(trimmed) && /<\s*\/[\w-]+[\s>]/.test(code))) {
+        return 'html';
+      }
+      
+      // CSS 检测（优先检测，因为CSS特征明显）
+      // 1. 检测CSS变量（最明显的CSS特征）
+      if (/--[\w-]+\s*:/.test(code)) {
+        return 'css';
+      }
+      // 2. 检测CSS at-rules
+      if (/@(media|import|keyframes|font-face|charset|namespace|page|supports|document|viewport)\s/.test(code)) {
+        return 'css';
+      }
+      // 3. 检测CSS选择器后跟大括号（包括属性选择器、伪类等）
+      // 匹配：html[...]{, .class{, #id{, [attr]{, :hover{, @media{ 等
+      if (/^\s*([\w-]+(\[[^\]]*\])*|[\w-]*\[[^\]]+\]|[\w-]+:[\w-]+|@[\w-]+|[\w-]+\s*[>+~]\s*[\w-]+|:[\w-]+(\([^)]*\))?)\s*\{/.test(trimmed)) {
+        // 排除JavaScript对象字面量
+        if (!/function\s*\(|=>\s*\{|const\s+\w+\s*=\s*\{|let\s+\w+\s*=\s*\{/.test(code)) {
+          return 'css';
+        }
+      }
+      // 4. 检测CSS属性格式（property: value;）且没有JS特征
+      if (/^\s*[\w-]+\s*:\s*[^;]+;/.test(trimmed) && 
+          !/function|const\s+\w+\s*=|let\s+\w+\s*=|var\s+\w+\s*=|=>/.test(code) &&
+          /[\w-]+\s*:\s*[^;]+;/.test(code)) {
+        return 'css';
+      }
+      
+      // JSON 检测（在JS之前，避免误判）
+      if (/^\s*[\{\[]/.test(trimmed) && /[\}\]]\s*$/.test(trimmed) &&
+          /"[^"]*"\s*:/.test(code) && !/function|=>|const|let|var/.test(code)) {
+        return 'json';
+      }
+      
+      // SQL 检测
+      if (/^\s*(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP)\s+/i.test(trimmed) ||
+          /FROM\s+\w+|WHERE\s+\w+\s*=|JOIN\s+\w+/i.test(code)) {
+        return 'sql';
+      }
+      
+      // Shell/Bash 检测
+      if (/^\s*#!\/bin\/(bash|sh)/.test(trimmed) ||
+          /^\s*\$\(/.test(trimmed) || /if\s+\[/.test(code)) {
+        return 'bash';
+      }
+      
+      // PHP 检测
+      if (/^\s*<\?php/.test(trimmed) || /<\?=/.test(code)) {
+        return 'php';
+      }
+      
+      // Python 检测（在JS之前，因为Python也有import/class）
+      if (/^\s*(def|from\s+\w+\s+import|if\s+__name__|print\()/.test(trimmed) ||
+          (/:\s*$/.test(trimmed) && /^\s*(if|elif|else|for|while|def|class|try|except|finally)\s+/.test(trimmed)) ||
+          /^\s*import\s+\w+/.test(trimmed) && !/from\s+['"]/.test(code) && !/require\(/.test(code)) {
+        return 'python';
+      }
+      
+      // Go 检测（在JS之前，因为Go也有package/import）
+      if (/^\s*package\s+\w+/.test(trimmed) ||
+          /func\s+\w+\s*\(/.test(code) ||
+          (/:\s*=/.test(code) && /import\s*\(/.test(code))) {
+        return 'go';
+      }
+      
+      // Rust 检测（在JS之前）
+      if (/^\s*(fn|let\s+mut|pub\s+(fn|mod|use)|use\s+\w+::)/.test(trimmed) ||
+          /!\s*\{/.test(code) || (/::/.test(code) && /fn\s+\w+/.test(code))) {
+        return 'rust';
+      }
+      
+      // Java 检测（在JS之前，因为Java也有class）
+      if (/^\s*(public|private|protected)\s+(static\s+)?(class|interface|enum)/.test(trimmed) ||
+          /^\s*package\s+[\w.]+;/.test(trimmed) ||
+          /System\.(out|err)\.print/.test(code)) {
+        return 'java';
+      }
+      
+      // C/C++ 检测
+      if (/^\s*#\s*include\s*[<"]/.test(trimmed) ||
+          /^\s*(int|void|char|float|double)\s+main\s*\(/.test(trimmed) ||
+          /std::(cout|cin|endl)/.test(code)) {
+        if (/std::|namespace\s+std|using\s+namespace/.test(code)) {
+          return 'cpp';
+        }
+        return 'c';
+      }
+      
+      // C# 检测
+      if (/^\s*using\s+System;/.test(trimmed) ||
+          (/^\s*(public|private|protected)\s+class/.test(trimmed) && /namespace\s+\w+/.test(code))) {
+        return 'csharp';
+      }
+      
+      // Ruby 检测
+      if (/^\s*(def\s+\w+\s*\(|class\s+\w+|module\s+\w+|require\s+['"]|puts\s+)/.test(trimmed) ||
+          /\.each\s*\{|\.map\s*\{/.test(code)) {
+        return 'ruby';
+      }
+      
+      // TypeScript 检测（在JS之前，因为TS包含JS特征）
+      if (/:\s*(string|number|boolean|any|void|object|Array<|Promise<|Record<)/.test(code) ||
+          /interface\s+\w+|type\s+\w+\s*=|as\s+\w+/.test(code) ||
+          (/^\s*(import|export|const|let|var|function|class)\s+/.test(trimmed) && 
+           /:\s*(string|number|boolean|any|void|object|Array<|Promise<)/.test(code))) {
+        return 'typescript';
+      }
+      
+      // JavaScript 检测（更严格的条件）
+      if (/=>\s*\{?/.test(code) || // 箭头函数
+          /console\.(log|error|warn|info|debug)/.test(code) || // console方法
+          /require\s*\(|module\.exports|exports\./.test(code) || // Node.js特征
+          /^\s*(const|let|var)\s+\w+\s*=/.test(trimmed) || // 变量声明
+          /^\s*function\s+\w+\s*\(/.test(trimmed) || // 函数声明
+          /^\s*class\s+\w+/.test(trimmed) && /constructor\s*\(/.test(code) || // ES6类
+          (/^\s*(import|export)\s+/.test(trimmed) && /from\s+['"]/.test(code))) { // ES6模块
+        return 'javascript';
+      }
+      
+      // 默认返回 javascript
+      return 'javascript';
+    }
+
+    const themeColors = {
+      'keyword': '#C586C0',        // 关键字（紫色）
+      'string': '#CE9178',         // 字符串（橙色）
+      'number': '#B5CEA8',         // 数字（浅绿色）
+      'function': '#DCDCAA',       // 函数（黄色）
+      'class-name': '#4EC9B0',     // 类名（青色）
+      'variable': '#9CDCFE',       // 变量（浅蓝色）
+      'comment': '#6A9955',        // 注释（绿色）
+      'property': '#9CDCFE',       // 属性（浅蓝色）
+      'punctuation': '#D4D4D4',    // 标点（白色）
+      'operator': '#D4D4D4',       // 运算符（白色）
+      'bracket': '#D4D4D4',        // 括号（白色）
+      'tag': '#569CD6',            // HTML 标签（蓝色）
+      'attr-name': '#92C5F7',      // 属性名（浅蓝色）
+      'attr-value': '#CE9178',     // 属性值（橙色）
+      'directive': '#C586C0',      // 指令（紫色）
+      'entity': '#CE9178',         // 实体（橙色）
+      'url': '#CE9178',            // URL（橙色）
+      'symbol': '#DCDCAA',         // 符号（黄色）
+      'regex': '#CE9178',          // 正则（橙色）
+      'boolean': '#569CD6',        // 布尔值（蓝色）
+      'template-string': '#CE9178',// 模板字符串（橙色）
+      'interpolation': '#9CDCFE',  // 插值（浅蓝色）
+      'parameter': '#9CDCFE',      // 参数（浅蓝色）
+      'constant': '#4FC1FF',       // 常量（亮蓝色）
+    };
+
+    function sendData() {
+      const codeContent = document.getElementById('codeInput').value;
+      
+      let detectedLang = document.getElementById('codeType').getAttribute('data-select-value');
+      // 去除前后空格，避免空格导致的判断失败
+      if(detectedLang && detectedLang.trim() == 'AUTO'){
+        // 自动检测代码类型
+        detectedLang = detectLanguage(codeContent);
+        if(detectedLang){
+          let option = document.getElementById('codeType').querySelector(`[data-option-value="${detectedLang}"]`);
+          if(option){
+            option.click();
+          }
+        }
+      } else {
+        // 去除空格，确保语言标识符正确
+        detectedLang = detectedLang ? detectedLang.trim() : 'javascript';
+      }
+      
+      // 获取对应的 Prism 语言对象，如果不支持则降级到 javascript
+      let prismLang = Prism.languages[detectedLang];
+      let finalLang = detectedLang;
+      
+      if (!prismLang) {
+        console.warn(`Prism.js doesn't support language: ${detectedLang}, falling back to javascript`);
+        prismLang = Prism.languages.javascript;
+        finalLang = 'javascript';
+      }
+      
+      // 使用检测到的语言进行高亮
+      let codePrism = null;
+      try {
+        // 检查语言定义是否完整（某些语言可能加载失败）
+        if (prismLang && typeof prismLang === 'object') {
+          codePrism = Prism.highlight(codeContent, prismLang, finalLang);
+        } else {
+          throw new Error(`Language definition for ${finalLang} is invalid`);
+        }
+      } catch (e) {
+        console.error('Error highlighting code:', e);
+        console.warn(`Falling back to javascript for language: ${finalLang}`);
+        // 降级到 javascript
+        try {
+          if (Prism.languages.javascript) {
+            codePrism = Prism.highlight(codeContent, Prism.languages.javascript, 'javascript');
+          } else {
+            codePrism = codeContent; // 如果连 javascript 都没有，使用原始代码
+          }
+        } catch (e2) {
+          console.error('Error highlighting with javascript fallback:', e2);
+          codePrism = codeContent; // 如果高亮失败，使用原始代码
+        }
+      }
+      
+      // 将 Prism 高亮后的 HTML 转换为 Figma Widget 的 Span 格式字符串
+      // 格式: <Span fill="#xxx">text</Span>
+      function convertPrismToSpanString(html) {
+        if (!html || typeof html !== 'string') return '';
+        
+        // 颜色转换辅助函数：将各种颜色格式转换为hex
+        function colorToHex(colorStr) {
+          if (!colorStr) return null;
+          
+          const lowerColor = colorStr.toLowerCase().trim();
+          
+          // HEX格式: #rgb, #rrggbb, #rrggbbaa
+          if (lowerColor.startsWith('#')) {
+            const hex = lowerColor.replace(/[^0-9a-f]/g, '');
+            if (hex.length === 3 || hex.length === 6 || hex.length === 8) {
+              // 3位hex扩展为6位
+              if (hex.length === 3) {
+                return '#' + hex.split('').map(c => c + c).join('');
+              }
+              // 6位或8位hex，只取前6位（忽略alpha通道）
+              return '#' + hex.substring(0, 6);
+            }
+          }
+          
+          // RGB格式: rgb(r, g, b) 或 rgba(r, g, b, a)
+          const rgbMatch = lowerColor.match(/rgba?\(([^)]+)\)/);
+          if (rgbMatch) {
+            const values = rgbMatch[1].split(',').map(v => parseFloat(v.trim()));
+            if (values.length >= 3) {
+              const r = Math.max(0, Math.min(255, Math.round(values[0])));
+              const g = Math.max(0, Math.min(255, Math.round(values[1])));
+              const b = Math.max(0, Math.min(255, Math.round(values[2])));
+              // 使用yn_comp.js中的rgbTohex函数
+              if (typeof rgbTohex === 'function') {
+                return rgbTohex(r, g, b);
+              }
+              // 备用实现
+              return '#' + [r, g, b].map(x => {
+                const hex = x.toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+              }).join('');
+            }
+          }
+          
+          // HSL格式: hsl(h, s%, l%) 或 hsla(h, s%, l%, a)
+          const hslMatch = lowerColor.match(/hsla?\(([^)]+)\)/);
+          if (hslMatch) {
+            const values = hslMatch[1].split(',').map(v => parseFloat(v.replace('%', '').trim()));
+            if (values.length >= 3) {
+              const h = values[0];
+              const s = Math.max(0, Math.min(100, values[1]));
+              const l = Math.max(0, Math.min(100, values[2]));
+              // 使用yn_comp.js中的hslTorgb和rgbTohex函数
+              if (typeof hslTorgb === 'function' && typeof rgbTohex === 'function') {
+                const rgb = hslTorgb(h, s, l, 255);
+                return rgbTohex(rgb[0], rgb[1], rgb[2]);
+              }
+              // 备用实现（简化版HSL转RGB）
+              const hNorm = (h % 360) / 360;
+              const sNorm = s / 100;
+              const lNorm = l / 100;
+              let r, g, b;
+              if (sNorm === 0) {
+                r = g = b = lNorm;
+              } else {
+                const hue2rgb = (p, q, t) => {
+                  if (t < 0) t += 1;
+                  if (t > 1) t -= 1;
+                  if (t < 1/6) return p + (q - p) * 6 * t;
+                  if (t < 1/2) return q;
+                  if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                  return p;
+                };
+                const q = lNorm < 0.5 ? lNorm * (1 + sNorm) : lNorm + sNorm - lNorm * sNorm;
+                const p = 2 * lNorm - q;
+                r = hue2rgb(p, q, hNorm + 1/3);
+                g = hue2rgb(p, q, hNorm);
+                b = hue2rgb(p, q, hNorm - 1/3);
+              }
+              const rHex = Math.round(r * 255).toString(16).padStart(2, '0');
+              const gHex = Math.round(g * 255).toString(16).padStart(2, '0');
+              const bHex = Math.round(b * 255).toString(16).padStart(2, '0');
+              return '#' + rHex + gHex + bHex;
+            }
+          }
+          
+          return null;
+        }
+        
+        // 在文本中查找颜色代码并插入颜色方块
+        function insertColorSquares(text) {
+          if (!text) return text;
+          
+          // 匹配颜色代码的正则表达式
+          // HEX: #rgb, #rrggbb, #rrggbbaa (后面不能跟hex字符)
+          const hexPattern = /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})(?![0-9a-fA-F])/g;
+          // RGB/RGBA: rgb(r,g,b) 或 rgba(r,g,b,a)
+          const rgbPattern = /rgba?\(\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?(?:\s*,\s*[\d.]+)?\s*\)/g;
+          // HSL/HSLA: hsl(h,s%,l%) 或 hsla(h,s%,l%,a)
+          const hslPattern = /hsla?\(\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?%\s*,\s*\d+(?:\.\d+)?%(?:\s*,\s*[\d.]+)?\s*\)/g;
+          
+          let result = text;
+          const matches = [];
+          
+          // 收集所有颜色匹配（包括位置信息）
+          [hexPattern, rgbPattern, hslPattern].forEach(pattern => {
+            let match;
+            pattern.lastIndex = 0; // 重置正则
+            while ((match = pattern.exec(text)) !== null) {
+              matches.push({
+                index: match.index,
+                length: match[0].length,
+                color: match[0]
+              });
+            }
+          });
+          
+          // 去重：如果同一个位置有多个匹配，只保留第一个
+          const uniqueMatches = [];
+          const seenIndices = new Set();
+          matches.forEach(match => {
+            if (!seenIndices.has(match.index)) {
+              seenIndices.add(match.index);
+              uniqueMatches.push(match);
+            }
+          });
+          
+          // 按位置倒序排序，从后往前替换，避免索引偏移
+          uniqueMatches.sort((a, b) => b.index - a.index);
+          
+          // 从后往前插入颜色方块
+          uniqueMatches.forEach(match => {
+            const hexColor = colorToHex(match.color);
+            if (hexColor) {
+              const before = result.substring(0, match.index);
+              const after = result.substring(match.index);
+              result = before + `<Span fill="${hexColor}">■</Span>` + after;
+            }
+          });
+          
+          return result;
+        }
+        
+        // 使用 DOM 解析器处理嵌套结构
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        
+        // 递归处理节点
+        function processNode(node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            // 文本节点，先插入颜色方块，再转义 HTML 特殊字符
+            let text = node.textContent;
+            // 在颜色代码前插入颜色方块
+            text = insertColorSquares(text);
+            
+            // 转义 HTML 特殊字符（但保留已插入的Span标签）
+            // 方法：分割文本，分别处理Span标签和普通文本
+            const parts = [];
+            let lastIndex = 0;
+            
+            // 查找所有Span标签的位置
+            // 匹配格式：<Span fill="#hex">■</Span> 或 <span fill="#hex">■</span>
+            const spanRegex = /<[Ss]pan\s+fill="[^"]+">■<\/[Ss]pan>/g;
+            let match;
+            spanRegex.lastIndex = 0;
+            
+            while ((match = spanRegex.exec(text)) !== null) {
+              // 添加Span标签之前的文本（转义）
+              if (match.index > lastIndex) {
+                const beforeText = text.substring(lastIndex, match.index);
+                parts.push(beforeText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+              }
+              // 添加Span标签（不转义）
+              parts.push(match[0]);
+              lastIndex = match.index + match[0].length;
+            }
+            
+            // 添加剩余的文本（转义）
+            if (lastIndex < text.length) {
+              const remainingText = text.substring(lastIndex);
+              parts.push(remainingText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+            }
+            
+            // 如果没有找到Span标签，直接转义整个文本
+            if (parts.length === 0) {
+              return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+            
+            return parts.join('');
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            const tagName = node.tagName.toLowerCase();
+            
+            if (tagName === 'span' && node.classList.contains('token')) {
+              // 获取 token 类名
+              const classes = Array.from(node.classList).filter(c => c !== 'token');
+              let color = codeColor.mainColor; // 默认颜色
+              
+              // 查找匹配的类名
+              for (const cls of classes) {
+                if (themeColors[cls]) {
+                  color = themeColors[cls];
+                  break;
+                }
+              }
+              
+              // 如果没有找到匹配的，尝试匹配部分类名
+              if (color === codeColor.mainColor) {
+                for (const [key, value] of Object.entries(themeColors)) {
+                  if (classes.some(c => c.includes(key) || key.includes(c))) {
+                    color = value;
+                    break;
+                  }
+                }
+              }
+              
+              // 处理子节点
+              let content = '';
+              Array.from(node.childNodes).forEach(child => {
+                content += processNode(child);
+              });
+              
+              // 检查内容中是否包含颜色方块Span（由insertColorSquares插入的）
+              // 格式：<Span fill="#hex">■</Span>（不区分大小写）
+              const colorSquareRegex = /<[Ss]pan\s+fill="([^"]+)">■<\/[Ss]pan>/g;
+              const colorSquares = [];
+              let lastIndex = 0;
+              let match;
+              let newContent = '';
+              
+              // 查找所有颜色方块并提取
+              while ((match = colorSquareRegex.exec(content)) !== null) {
+                // 添加颜色方块之前的文本
+                if (match.index > lastIndex) {
+                  newContent += content.substring(lastIndex, match.index);
+                }
+                // 保存颜色方块（将在token span外面）
+                colorSquares.push(match[0]);
+                lastIndex = match.index + match[0].length;
+              }
+              
+              // 添加剩余的文本
+              if (lastIndex < content.length) {
+                newContent += content.substring(lastIndex);
+              }
+              
+              // 如果有颜色方块，将它们放在token span外面
+              if (colorSquares.length > 0) {
+                return colorSquares.join('') + `<Span fill="${color}">${newContent}</Span>`;
+              }
+              
+              // 生成 Span 格式
+              return `<Span fill="${color}">${content}</Span>`;
+            } else {
+              // 非 token span，递归处理子节点
+              let content = '';
+              Array.from(node.childNodes).forEach(child => {
+                content += processNode(child);
+              });
+              return content;
+            }
+          }
+          return '';
+        }
+        
+        // 处理所有子节点
+        let result = '';
+        Array.from(tempDiv.childNodes).forEach(child => {
+          result += processNode(child);
+        });
+        
+        return result;
+      }
+      
+      // 转换高亮后的代码为 Span 格式字符串（用于渲染）
+      let spanContent = '';
+      if (codePrism && typeof codePrism === 'string') {
+        spanContent = convertPrismToSpanString(codePrism);
+        console.log('Detected language:', finalLang);
+        console.log('Converted to Span format');
+      }
+      
+      const width = document.getElementById('widthInput').value * 1 || 400;
+      
+      // 发送数据：textContent 存储纯文本，spanContent 存储 Span 格式（用于渲染）
+      parent.postMessage({ 
+        pluginMessage: { 
+          type: 'update', 
+          data: { 
+            textContent: codeContent,  // 纯文本
+            spanContent: spanContent || codeContent,  // Span 格式，如果没有转换则使用纯文本
+            width
+          } 
+        } 
+      }, '*');
+    }
+    document.getElementById('applyBtn').addEventListener('click', sendData);
+  </script>
+</body>
+</html>

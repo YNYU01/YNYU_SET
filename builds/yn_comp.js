@@ -121,10 +121,14 @@ function COMP_MAIN(){
     
     const input = select.querySelector('[data-select-input]');
     if (input) {
-      input.value = optionValue;
-      // 更新中英文属性
-      input.setAttribute('data-zh-input', zhValue);
-      input.setAttribute('data-en-input', enValue);
+      if(input.getAttribute('data-select-input') == 'textContent'){
+        input.value = select.textContent;
+      } else {
+        input.value = optionValue;
+        // 更新中英文属性
+        input.setAttribute('data-zh-input', zhValue);
+        input.setAttribute('data-en-input', enValue);
+      }
     }
     
     /*切换选项后是否关闭下拉框*/
@@ -2262,6 +2266,7 @@ scrollNode.forEach(item =>{
   scrollX(item)
 })
 function scrollX(node){
+  
   let nodeScroll = false;
   let nodeStartX,nodeScrollLeft;
   let hasDragged = false; // 标记是否发生了拖拽
