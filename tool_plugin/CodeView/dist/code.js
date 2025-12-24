@@ -2,7 +2,7 @@
 (() => {
   // tool_plugin/CodeView/widget-src/code.tsx
   var { widget } = figma;
-  var { useSyncedState, usePropertyMenu, AutoLayout, Text, Span, waitForTask } = widget;
+  var { useSyncedState, usePropertyMenu, AutoLayout, Text, Span, waitForTask, Rectangle, Frame, Line } = widget;
   function Widget() {
     const [textContent, setTextContent] = useSyncedState("textContent", `function example() {
   // This is an example code
@@ -10,61 +10,108 @@
   console.log(message);
   return message;
 }`);
-    const [spanContent, setSpanContent] = useSyncedState("spanContent", "");
+    const [spanContentArray, setSpanContentArray] = useSyncedState("spanContentArray", []);
     const [wordWrap, setWordWrap] = useSyncedState("wordWrap", false);
     const [width, setWidth] = useSyncedState("width", 400);
-    const codeContent = spanContent || textContent;
-    function parseSpanString(text) {
-      if (!text) return [" "];
-      const elements = [];
-      const regex = /<Span fill="([^"]+)">([\s\S]*?)<\/Span>/g;
-      let lastIndex = 0;
-      let match;
-      let key = 0;
-      while ((match = regex.exec(text)) !== null) {
-        if (match.index > lastIndex) {
-          const plainText = text.substring(lastIndex, match.index);
-          if (plainText) {
-            elements.push(plainText);
-          }
-        }
-        const color = match[1];
-        let content = match[2];
-        if (content.includes("<Span fill=")) {
-          const nestedElements = parseSpanString(content);
-          elements.push(/* @__PURE__ */ figma.widget.h(Span, { key: key++, fill: color }, nestedElements));
-        } else {
-          content = content.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-          elements.push(/* @__PURE__ */ figma.widget.h(Span, { key: key++, fill: color }, content));
-        }
-        lastIndex = regex.lastIndex;
+    const [fontSize, setFontSize] = useSyncedState("fontSize", 16);
+    const [pickLineY, setPickLineY] = useSyncedState("pickLineY", -1);
+    const [lineNumber, setLineNumber] = useSyncedState("lineNumber", true);
+    const [indentLine, setIndentLine] = useSyncedState("indentLine", true);
+    const [indentRule, setIndentRule] = useSyncedState("indentRule", 2);
+    const codeLines = spanContentArray && spanContentArray.length > 0 ? spanContentArray : textContent ? textContent.split("\n").map((line, index) => {
+      var _a, _b;
+      return {
+        line: index,
+        indent: Math.floor((((_b = (_a = line.match(/^(\s*)/)) == null ? void 0 : _a[1]) == null ? void 0 : _b.length) || 0) / 2),
+        spans: [{ tagname: null, color: null, text: line }]
+      };
+    }) : [];
+    function addIndentLine(indent) {
+      if (indent <= 0) {
+        return null;
       }
-      if (lastIndex < text.length) {
-        const plainText = text.substring(lastIndex);
-        if (plainText) {
-          const decoded = plainText.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-          elements.push(decoded);
+      return Array.from({ length: indent }, (_, i) => /* @__PURE__ */ figma.widget.h(
+        Rectangle,
+        {
+          key: i,
+          name: "@code:indentline",
+          width: 0.5,
+          height: "fill-parent",
+          fill: "#252525"
         }
-      }
-      return elements.length > 0 ? elements : [" "];
+      ));
     }
-    const codeLines = codeContent ? codeContent.split("\n") : [];
+    function renderSpans(spans) {
+      if (!spans || spans.length === 0) return [" "];
+      let key = 0;
+      return spans.map((span) => {
+        if (span.tagname === "span" && span.color) {
+          return /* @__PURE__ */ figma.widget.h(Span, { key: key++, fill: span.color }, span.text || "");
+        } else {
+          return span.text || "";
+        }
+      });
+    }
     const lineCount = codeLines.length || 1;
     const padding = 12;
-    const fontSize = 16;
+    const lineHeight = fontSize * 1.5;
+    const initialPickLineY = pickLineY === -1 ? lineHeight * -1 - 1 : pickLineY;
     const numberWidth = fontSize * (10 / 16) * codeLines.length.toString().length;
+    const indentWidth = fontSize * (10 / 16) - 0.5;
     usePropertyMenu(
       [
         {
           itemType: "action",
           propertyName: "openConfig",
-          tooltip: "Open Config"
+          tooltip: "Open Config",
+          icon: `
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19.2041 9.021C19.7148 9.021 20.187 9.29356 20.4424 9.73584L23.6465 15.2856C23.9015 15.7277 23.9016 16.2723 23.6465 16.7144L20.4424 22.2642C20.187 22.7064 19.7148 22.979 19.2041 22.979H12.7959C12.2852 22.979 11.813 22.7064 11.5576 22.2642L8.35352 16.7144C8.09842 16.2723 8.09846 15.7277 8.35352 15.2856L11.5576 9.73584C11.813 9.29356 12.2852 9.021 12.7959 9.021H19.2041Z" stroke="white" stroke-width="1.22526"/>
+        <circle cx="16" cy="16" r="2" fill="white"/>
+        </svg>`
+        },
+        {
+          itemType: "separator"
         },
         {
           itemType: "toggle",
           propertyName: "wordWrap",
-          tooltip: "Toggle word wrap",
-          isToggled: wordWrap
+          tooltip: "Is word wrap",
+          isToggled: wordWrap,
+          icon: `
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" fill-rule="evenodd" 
+        d="M6.5 6a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-1 0v-10a.5.5 0 0 1 .5-.5m3 4h5a.5.5 0 1 0 0-1h-5a.5.5 0 0 0 0 1m5 2h-5a.5.5 0 1 1 0-1h5a.5.5 0 1 1 0 1M9 13.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m9-7a.5.5 0 0 0-1 0v10a.5.5 0 0 0 1 0z" 
+        clip-rule="evenodd">
+        </path>
+        </svg>`
+        },
+        {
+          itemType: "toggle",
+          propertyName: "lineNumber",
+          tooltip: "Is line number",
+          isToggled: lineNumber,
+          icon: `
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" 
+        d="M8.5 13a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.276.447L7 15.81V16h1.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .276-.447L8 14.19V14H6.5a.5.5 0 0 1 0-1zm9 3a.5.5 0 0 1 0 1h-6a.5.5 0 0 1 0-1zm0-5a.5.5 0 0 1 0 1h-6a.5.5 0 0 1 0-1zM7.6 6.01a.5.5 0 0 1 .4.49v3a.5.5 0 0 1-1 0V7h-.5a.5.5 0 0 1 0-1h1zM17.5 6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1 0-1z">
+        </path>
+        </svg>`
+        },
+        {
+          itemType: "toggle",
+          propertyName: "indentLine",
+          tooltip: "Is indent line",
+          isToggled: indentLine,
+          icon: `
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 9.52075H24" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M8 21.8965H24" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M12.5454 13.646H22.4062" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M12.5454 17.7712H22.4062" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M8.66211 13.1011L8.66211 18.8989" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="0.1 2.5"/>
+        </svg>
+        `
         }
       ],
       ({ propertyName }) => {
@@ -74,14 +121,28 @@
               figma.showUI(__html__, { width: 300, height: 340, themeColors: true });
               figma.ui.postMessage({
                 type: "init",
-                data: { textContent }
+                data: { textContent, fontSize, width }
               });
               figma.ui.onmessage = (msg) => {
                 if (msg.type === "update") {
-                  const { textContent: newText, spanContent: newSpan, width: newWidth } = msg.data;
+                  const { textContent: newText, spanContentArray: spanContentArray2, width: newWidth, fontSize: newFontSize, indentRule: newIndentRule } = msg.data;
                   setTextContent(newText || "");
-                  setSpanContent(newSpan || "");
+                  if (spanContentArray2 && Array.isArray(spanContentArray2) && spanContentArray2.length > 0) {
+                    setSpanContentArray(spanContentArray2);
+                  } else {
+                    setSpanContentArray(newText ? newText.split("\n").map((line, index) => {
+                      var _a, _b;
+                      return {
+                        line: index,
+                        indent: Math.floor((((_b = (_a = line.match(/^(\s*)/)) == null ? void 0 : _a[1]) == null ? void 0 : _b.length) || 0) / 2),
+                        spans: [{ tagname: null, color: null, text: line }]
+                      };
+                    }) : []);
+                  }
                   if (newWidth) setWidth(newWidth);
+                  if (newFontSize) setFontSize(newFontSize);
+                  if (newIndentRule) setIndentRule(newIndentRule);
+                  setPickLineY(-1);
                 } else if (msg.type === "close") {
                   figma.closePlugin();
                   resolve();
@@ -91,12 +152,17 @@
           );
         } else if (propertyName === "wordWrap") {
           setWordWrap(!wordWrap);
+        } else if (propertyName === "lineNumber") {
+          setLineNumber(!lineNumber);
+        } else if (propertyName === "indentLine") {
+          setIndentLine(!indentLine);
         }
       }
     );
     return /* @__PURE__ */ figma.widget.h(
       AutoLayout,
       {
+        name: "@pre",
         direction: "vertical",
         spacing: 0,
         padding: 0,
@@ -105,63 +171,128 @@
         fill: "#1a1a1a",
         cornerRadius: 4
       },
-      codeLines.length > 0 ? codeLines.map((line, index) => /* @__PURE__ */ figma.widget.h(
-        AutoLayout,
+      /* @__PURE__ */ figma.widget.h(
+        Line,
         {
-          key: index,
-          direction: "horizontal",
-          spacing: 0,
-          padding: 0,
-          width: wordWrap ? width : "hug-contents",
-          height: "hug-contents"
-        },
-        /* @__PURE__ */ figma.widget.h(
+          name: "@pickline:bottom",
+          positioning: "absolute",
+          key: "pickLine1",
+          x: 1,
+          y: initialPickLineY,
+          length: 1e3 * numberWidth,
+          stroke: "#383838",
+          strokeWidth: 1,
+          hidden: wordWrap
+        }
+      ),
+      /* @__PURE__ */ figma.widget.h(
+        Line,
+        {
+          name: "@pickline:top",
+          positioning: "absolute",
+          key: "pickLine2",
+          x: 1,
+          y: initialPickLineY - fontSize - Math.floor(fontSize / 5),
+          length: 1e3 * numberWidth,
+          stroke: "#383838",
+          strokeWidth: 1,
+          hidden: wordWrap
+        }
+      ),
+      codeLines.length > 0 ? codeLines.map((lineData, index) => {
+        let isEmptyLine = false;
+        if (lineData.indent > 0 && lineData.spans[0].text === "") {
+          isEmptyLine = true;
+        }
+        return /* @__PURE__ */ figma.widget.h(
           AutoLayout,
           {
-            direction: "vertical",
+            name: "@code:mix",
+            key: index,
+            direction: "horizontal",
             spacing: 0,
-            padding: { top: index === 0 ? 8 : 0, bottom: index === codeLines.length - 1 ? 8 : 0, left: padding, right: padding },
-            width: "hug-contents",
-            height: "fill-parent",
-            fill: "#252526"
-          },
-          /* @__PURE__ */ figma.widget.h(
-            Text,
-            {
-              fontSize,
-              fontFamily: "Roboto Mono",
-              fill: "#858585",
-              width: numberWidth,
-              horizontalAlignText: "right"
-            },
-            index + 1
-          )
-        ),
-        /* @__PURE__ */ figma.widget.h(
-          AutoLayout,
-          {
-            direction: "vertical",
-            spacing: 0,
-            padding: { top: index === 0 ? 8 : 0, bottom: index === codeLines.length - 1 ? 8 : 0, left: padding, right: padding },
-            width: wordWrap ? "fill-parent" : "hug-contents",
+            padding: 0,
+            width: wordWrap ? width : "fill-parent",
             height: "hug-contents",
-            horizontalAlignItems: "start"
+            onClick: () => {
+              const newY = (index + 1) * ((lineHeight - fontSize) / 2 + fontSize) + 8;
+              if (initialPickLineY === newY) {
+                setPickLineY(-1);
+              } else {
+                setPickLineY(newY);
+              }
+            }
           },
           /* @__PURE__ */ figma.widget.h(
-            Text,
+            AutoLayout,
             {
-              fontSize,
-              fontFamily: "Roboto Mono",
-              fill: "#D4D4D4",
-              width: wordWrap ? "fill-parent" : "hug-contents",
-              horizontalAlignText: "left"
+              hidden: !lineNumber,
+              name: "@code:linenum",
+              direction: "vertical",
+              spacing: 0,
+              padding: { top: index === 0 ? 8 : 0, bottom: index === codeLines.length - 1 ? 8 + (lineHeight - fontSize) / 2 : (lineHeight - fontSize) / 2, left: padding, right: padding },
+              width: "hug-contents",
+              height: "fill-parent",
+              fill: initialPickLineY === (index + 1) * ((lineHeight - fontSize) / 2 + fontSize) + 8 ? "#383838" : "#252525"
             },
-            line.includes("<Span fill=") ? parseSpanString(line) : line || " "
+            /* @__PURE__ */ figma.widget.h(
+              Text,
+              {
+                fontSize,
+                lineHeight: fontSize,
+                fontFamily: "Roboto Mono",
+                fill: initialPickLineY === (index + 1) * ((lineHeight - fontSize) / 2 + fontSize) + 8 ? "#ffffff" : "#858585",
+                width: numberWidth,
+                horizontalAlignText: "right"
+              },
+              index + 1
+            )
+          ),
+          /* @__PURE__ */ figma.widget.h(
+            AutoLayout,
+            {
+              name: "@code:line",
+              direction: "vertical",
+              spacing: 0,
+              padding: { top: index === 0 ? 8 : 0, bottom: index === codeLines.length - 1 ? 8 + (lineHeight - fontSize) / 2 : (lineHeight - fontSize) / 2, left: padding, right: padding },
+              width: lineData.indent > 0 && isEmptyLine ? (lineData.indent + 1) * (indentWidth + 0.5) + 12 : wordWrap ? "fill-parent" : "hug-contents",
+              height: "hug-contents",
+              horizontalAlignItems: "start",
+              stroke: "#383838",
+              strokeWidth: wordWrap && initialPickLineY === (index + 1) * ((lineHeight - fontSize) / 2 + fontSize) + 8 ? 1 : 0
+            },
+            /* @__PURE__ */ figma.widget.h(
+              AutoLayout,
+              {
+                name: "@code:indentation",
+                hidden: !indentLine,
+                spacing: (indentWidth + 0.5) * indentRule,
+                positioning: "absolute",
+                x: 12,
+                y: 0,
+                width: "hug-contents",
+                height: (lineHeight - fontSize) / 2 + fontSize
+              },
+              addIndentLine(lineData.indent)
+            ),
+            /* @__PURE__ */ figma.widget.h(
+              Text,
+              {
+                fontSize,
+                lineHeight: fontSize,
+                fontFamily: "Roboto Mono",
+                fill: "#D4D4D4",
+                width: wordWrap ? "fill-parent" : "hug-contents",
+                horizontalAlignText: "left"
+              },
+              renderSpans(lineData.spans)
+            )
           )
-        )
-      )) : /* @__PURE__ */ figma.widget.h(
+        );
+      }) : /* @__PURE__ */ figma.widget.h(
         AutoLayout,
         {
+          name: "@code:mix",
           direction: "horizontal",
           spacing: 0,
           padding: 0,
@@ -171,6 +302,7 @@
         /* @__PURE__ */ figma.widget.h(
           AutoLayout,
           {
+            name: "@code:linenum",
             direction: "vertical",
             spacing: 0,
             padding: { top: 8, bottom: 8, left: padding, right: padding },
@@ -182,6 +314,7 @@
             Text,
             {
               fontSize,
+              lineHeight: fontSize,
               fontFamily: "Roboto Mono",
               fill: "#858585",
               width: "hug-contents",
@@ -193,6 +326,7 @@
         /* @__PURE__ */ figma.widget.h(
           AutoLayout,
           {
+            name: "@code:line",
             direction: "vertical",
             spacing: 0,
             padding: { top: 8, bottom: 8, left: padding, right: padding },
@@ -205,6 +339,7 @@
             Text,
             {
               fontSize,
+              lineHeight: fontSize,
               fontFamily: "Roboto Mono",
               fill: "#858585",
               width: "hug-contents",

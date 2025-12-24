@@ -1175,13 +1175,13 @@ figma.ui.onmessage = async (message) => {
         b.forEach(item => {
             if(item.type == 'INSTANCE'){
                 if(item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')){
-                    reTableStyle(null,null,[[item],[1,1,1,1]]);
+                    reTableStyle(null,null,[[item],[1,1,1,1,null]]);
                 }
                 return;
             };
             let comps = item.findAll(items => items.type == 'INSTANCE' );
             comps = comps.filter(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn'));
-            reTableStyle(null,null,[comps,[1,1,1,1]]);
+            reTableStyle(null,null,[comps,[1,1,1,1,null]]);
         });
     };
     //全不描边
@@ -1190,13 +1190,13 @@ figma.ui.onmessage = async (message) => {
         b.forEach(item => {
             if(item.type == 'INSTANCE'){
                 if(item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')){
-                    reTableStyle(null,null,[[item],[0,0,0,0]]);
+                    reTableStyle(null,null,[[item],[0,0,0,0,null]]);
                 }
                 return;
             };
             let comps = item.findAll(items => items.type == 'INSTANCE' );
             comps = comps.filter(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn'));
-            reTableStyle(null,null,[comps,[0,0,0,0]]);
+            reTableStyle(null,null,[comps,[0,0,0,0,null]]);
         });
     };
     //全填充
@@ -3646,6 +3646,7 @@ function addCompPro(node,layer,name,type,value){
 };
 //修改表格样式
 function reTableStyle(table,style,comps){
+    
     if(comps){
         comps[0].forEach(item => {
             //console.log(comps[1])
@@ -3653,7 +3654,21 @@ function reTableStyle(table,style,comps){
         });
         return;
     };
+    if(!style || !table || table && (!table.children || table.children.length < 2)) return;
     let columns = table.findChildren(item => item.name.includes('@column'));
+    //必须保证传入数值或null
+    if(style && typeof style === 'object' && !Array.isArray(style)){
+        if(Array.isArray(style.th)){
+            style.th = style.th.map(item => {
+                return (item === undefined || item === null) ? null : item;
+            });
+        }
+        if(Array.isArray(style.td)){
+            style.td = style.td.map(item => {
+                return (item === undefined || item === null) ? null : item;
+            });
+        }
+    }
     for(let i = 0; i < columns.length; i++){
         let headers = columns[i].findChildren(item => item.name.includes('@th'));
         let datas  = columns[i].findChildren(item => item.name.includes('@td') || item.name.includes('@tn'));
@@ -3679,10 +3694,10 @@ function reTableStyle(table,style,comps){
             //console.log(key.split('#')[0])
             /**/
             switch (key.split('#')[0]){
-                case '--bod-t': comp.setProperties({[key]:(Array[0] !== undefined && Array[0] == 0) ? false : true});break
-                case '--bod-r': comp.setProperties({[key]:(Array[1] !== undefined && Array[1] == 0) ? false : true});break
-                case '--bod-b': comp.setProperties({[key]:(Array[2] !== undefined && Array[2] == 0) ? false : true});break
-                case '--bod-l': comp.setProperties({[key]:(Array[3] !== undefined && Array[3] == 0) ? false : true});break
+                case '--bod-t': if(Array[0] !== null) comp.setProperties({[key]:(Array[0] == 0) ? false : true});break
+                case '--bod-r': if(Array[1] !== null) comp.setProperties({[key]:(Array[1] == 0) ? false : true});break
+                case '--bod-b': if(Array[2] !== null) comp.setProperties({[key]:(Array[2] == 0) ? false : true});break
+                case '--bod-l': if(Array[3] !== null) comp.setProperties({[key]:(Array[3] == 0) ? false : true});break
                 case '--fills':
                     //是否为间格区分色
                     if(Array[4] && Array[4] == 'rowSpace' && row){
@@ -3699,7 +3714,7 @@ function reTableStyle(table,style,comps){
                             comp.setProperties({[key]: true});
                         };
                     } else {
-                        comp.setProperties({[key]:(Array[4] !== undefined && Array[4] == 0) ? false : true});
+                        if(Array[4] !== null) comp.setProperties({[key]:(Array[4] == 0) ? false : true});
                     }
                 ;break
             }

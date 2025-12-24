@@ -387,6 +387,8 @@ function revokeImageObjectURL(url){
 // 窗口加载事件
 window.addEventListener('load',()=>{
   let time = getTime('HH')[0];
+  let tabs = ['create','export','editor','variable','sheet','more tools']
+
   /*
   if(time*1 > 20 && IS_PLUGIN_ENV){
     nullPage();
@@ -395,9 +397,14 @@ window.addEventListener('load',()=>{
     return;
   };
   */
+  if(QUERY_PARAMS.page){
+    let page = QUERY_PARAMS.page.toLowerCase();
+    if(tabs.includes(page)){
+      viewPage(page);
+    }
+  }
   setTimeout(() => {
     /*clear*/
-    let tabs = ['create','export','editor','variable','sheet','more tools']
     //viewPage(tabs[5])
     /**/;
     if(window.innerWidth < 300){

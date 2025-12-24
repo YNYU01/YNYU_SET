@@ -2,16 +2,27 @@
 <html data-theme="dark" data-language="En" data-plugin="widget">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d38b70d9d87b1da1a7fbdce1d26f02100f4e0af/builds/yn_style.css"  >
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d38b70d9d87b1da1a7fbdce1d26f02100f4e0af/publics/run.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_style.css"  >
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/publics/run.js"></script>
   <style>
     :root{
       --mainFontSize:12px;
       --mainFontSize-mini:10px;
+      --pointer:url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/pointer_24.png'),auto;
     }
-    body{
-      padding: 16px 12px;
+    html{
+      cursor: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/cursor_16.png'),auto;
     }
+
+    * {
+      cursor: inherit;
+    }
+
+    input[type="text"],textarea{
+      cursor: text;
+    }
+     
     #codeInput-scroll { 
       font-family: 'Roboto Mono', monospace; 
     }
@@ -50,17 +61,55 @@
       opacity: 0.5;
     }
 
+    [data-btn="main"]{
+      border-radius: 20px;
+      background: var(--boxGry);
+    }
+
+    [data-input-unit]{
+      height: 20px;
+      width: 18px;
+      flex: 0 0 auto;
+      padding: 0 0 0 0.5ch;
+      background: var(--boxGry);
+      margin-left: -0.5ch;
+      border-radius: 0 4px 4px 0;
+    }
+
+    [data-input-unit="auto"]{
+      width: fit-content;
+      padding:0 0.5ch 0 1ch;
+    }
+
     #codeType [data-option="option"]{
       padding-left: 10px;
+    }
+
+    #bottom{
+      border-top: 1px solid var(--boxBod);
+      background-image: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/VI/logo_graph_bod.png'), linear-gradient(rgba(20, 20, 20, 0.2), rgba(20, 20, 20, 0.2));
+      background-size: 300px auto;
+      background-repeat: repeat-x;
+      background-position: 0 0;
+      background-color: var(--boxBak);
+      animation: bgMove 40s linear infinite;
+    }
+    @keyframes bgMove {
+      0% {
+        background-position-x: 0;
+      }
+      100% {
+        background-position-x: -300px;
+      }
     }
 
   </style>
 </head>
 <body>
-  <div class="df-ffc gap16">
-    <div class="df-ffc gap8">
-      <div class="df-lc gap4 w100">
-        <div>Code Input:</div>
+  <div class="df-ffc" style="--boxBak: #171717; padding:12px 12px 6px 12px;">
+    <div class="df-ffc gap8 pad10 bsb">
+      <div class="df-sc gap4 w100">
+        <div class="op6">Code Input:</div>
         <div id="codeType" class="df-lc pos-r gap4" data-select data-select-close data-select-value="AUTO" style="width: 90px; z-index:2;">
           <input id="select-value-1" type="text" data-select-input="textContent" readonly value="Auto">
           <input id="select-show-1" data-select-pick type="checkbox">
@@ -94,20 +143,51 @@
         </div>
       </div>
     </div>
-    <div class="df-lc gap8 w100">
+    <div class="df-lc w100 pad10 bsb mar-b10" style="gap: 20px;">
       <div class="df-lc gap4 fl1">
-        <div>Wrap width</div>
-        <input type="text" id="widthInput" data-input data-input-type="float"  data-input-must="100,2000" placeholder="123" min="100" max="2000">
+        <div class="wh-16 pos-r" data-tips="auto" 
+        data-tips-y="top" data-tips-x="left" 
+        data-tips-text-en="Set wap width"
+        style="--tips-w: 8ch;">
+          <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill="var(--mainColor)" d="M20.4001 7.14238L19.2307 7.3287L16.8062 19.2H14.1886L11.8836 10.6293H11.8193L9.81159 19.2H7.20469L4.76945 7.3287L3.6001 7.14238V4.80005H8.8568V7.14238L7.62309 7.43517L8.71734 14.023H8.78171L10.8001 4.80005H12.9028L15.2399 14.0496H15.3043L16.3878 7.44848L15.1434 7.14238V4.80005H20.4001V7.14238Z"/>
+            <rect fill="var(--mainColor)" y="3.6001" width="1.8" height="16.8"/>
+            <rect fill="var(--mainColor)" x="22.2" y="3.6001" width="1.8" height="16.8"/>
+          </svg>          
+        </div>
+        <div class="df-lc fl1" >
+          <input type="text" id="widthInput" data-input data-input-type="float"  data-input-must="100,2000" placeholder="123" style=" text-align: center; height: 20px;">
+          <div class="df-cc" data-input-unit="auto">px</div>
+        </div>
+      </div>
+      <div class="df-lc gap4 fl1">
+        <div class="wh-14 pos-r" data-tips="auto" 
+        data-tips-y="top" data-tips-x="left" 
+        data-tips-text-en="Set font size"
+        style="--tips-w: 8ch;">
+          <input-fontsize></input-fontsize>
+        </div>
+        <div class="df-lc fl1" >
+          <input type="text" id="fontSizeInput" data-input data-input-type="float"  data-input-must="8,72" placeholder="16" style=" text-align: center; height: 20px;">
+          <div class="df-cc" data-input-unit="auto">px</div>
+        </div>
       </div>
     </div>
-    <div data-btn id="applyBtn" class="df-cc bod-r8">Apply</div>
+    <div data-btn="main" id="applyBtn" class="df-cc bod-r8">Apply</div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d38b70d9d87b1da1a7fbdce1d26f02100f4e0af/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d38b70d9d87b1da1a7fbdce1d26f02100f4e0af/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d38b70d9d87b1da1a7fbdce1d26f02100f4e0af/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d38b70d9d87b1da1a7fbdce1d26f02100f4e0af/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@4d38b70d9d87b1da1a7fbdce1d26f02100f4e0af/publics/other/prism.js"></script>
+  <div id="bottom" class="df-sc pad10 bsb">
+    <div style="height: 18px; --fill: var(--mainColor);">
+      <set-en-home></set-en-home>
+    </div>
+    <div class="font-s10 op6">©2024-2025 @YNYU www.ynyuset.cn</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/publics/other/prism.js"></script>
   <!-- Prism.js 语言支持（注意加载顺序：基础语言和依赖组件先加载） -->
   <!-- PHP 需要 markup-templating 依赖 -->
   <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-markup-templating.min.js"></script>
@@ -131,9 +211,18 @@
       const { type, data } = event.data.pluginMessage || {};
       if (type === 'init') {
         document.getElementById('codeInput').value = data.textContent || '';
+        if (data.fontSize) {
+          document.getElementById('fontSizeInput').value = data.fontSize;
+        }
+        if (data.width) {
+          document.getElementById('widthInput').value = data.width;
+        }
       }
     };
  
+    getElementMix('codeInput').addEventListener('change',()=>{
+      document.querySelector('[data-option-value="AUTO"]').click();
+    });
     let codeColor = {
       mainColor: "#acacac",
       code1:"#48a67b",
@@ -172,7 +261,7 @@
       }
       // 3. 检测CSS选择器后跟大括号（包括属性选择器、伪类等）
       // 匹配：html[...]{, .class{, #id{, [attr]{, :hover{, @media{ 等
-      if (/^\s*([\w-]+(\[[^\]]*\])*|[\w-]*\[[^\]]+\]|[\w-]+:[\w-]+|@[\w-]+|[\w-]+\s*[>+~]\s*[\w-]+|:[\w-]+(\([^)]*\))?)\s*\{/.test(trimmed)) {
+      if (/^\s*([#.][\w-]+|[\w-]+(\[[^\]]*\])*|[\w-]*\[[^\]]+\]|[\w-]+:[\w-]+|@[\w-]+|[\w-]+\s*[>+~]\s*[\w-]+|:[\w-]+(\([^)]*\))?)\s*\{/.test(trimmed)) {
         // 排除JavaScript对象字面量
         if (!/function\s*\(|=>\s*\{|const\s+\w+\s*=\s*\{|let\s+\w+\s*=\s*\{/.test(code)) {
           return 'css';
@@ -361,10 +450,10 @@
         }
       }
       
-      // 将 Prism 高亮后的 HTML 转换为 Figma Widget 的 Span 格式字符串
-      // 格式: <Span fill="#xxx">text</Span>
-      function convertPrismToSpanString(html) {
-        if (!html || typeof html !== 'string') return '';
+      // 将 Prism 高亮后的 HTML 转换为数组格式
+      // 格式: [{tagname:'span',color:'#xxxxxx',text:'...'},...]
+      function convertPrismToSpanArray(html) {
+        if (!html || typeof html !== 'string') return [];
         
         // 颜色转换辅助函数：将各种颜色格式转换为hex
         function colorToHex(colorStr) {
@@ -508,48 +597,80 @@
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
         
-        // 递归处理节点
+        // 递归处理节点，返回数组格式
         function processNode(node) {
           if (node.nodeType === Node.TEXT_NODE) {
-            // 文本节点，先插入颜色方块，再转义 HTML 特殊字符
+            // 文本节点，处理颜色代码
             let text = node.textContent;
-            // 在颜色代码前插入颜色方块
-            text = insertColorSquares(text);
-            
-            // 转义 HTML 特殊字符（但保留已插入的Span标签）
-            // 方法：分割文本，分别处理Span标签和普通文本
-            const parts = [];
+            const result = [];
             let lastIndex = 0;
             
-            // 查找所有Span标签的位置
-            // 匹配格式：<Span fill="#hex">■</Span> 或 <span fill="#hex">■</span>
-            const spanRegex = /<[Ss]pan\s+fill="[^"]+">■<\/[Ss]pan>/g;
-            let match;
-            spanRegex.lastIndex = 0;
+            // 匹配颜色代码的正则表达式
+            const hexPattern = /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})(?![0-9a-fA-F])/g;
+            const rgbPattern = /rgba?\(\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?(?:\s*,\s*[\d.]+)?\s*\)/g;
+            const hslPattern = /hsla?\(\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?%\s*,\s*\d+(?:\.\d+)?%(?:\s*,\s*[\d.]+)?\s*\)/g;
             
-            while ((match = spanRegex.exec(text)) !== null) {
-              // 添加Span标签之前的文本（转义）
+            const matches = [];
+            [hexPattern, rgbPattern, hslPattern].forEach(pattern => {
+              let match;
+              pattern.lastIndex = 0;
+              while ((match = pattern.exec(text)) !== null) {
+                matches.push({
+                  index: match.index,
+                  length: match[0].length,
+                  color: match[0]
+                });
+              }
+            });
+            
+            // 去重并按位置排序
+            const uniqueMatches = [];
+            const seenIndices = new Set();
+            matches.forEach(match => {
+              if (!seenIndices.has(match.index)) {
+                seenIndices.add(match.index);
+                uniqueMatches.push(match);
+              }
+            });
+            uniqueMatches.sort((a, b) => a.index - b.index);
+            
+            // 处理文本和颜色代码
+            uniqueMatches.forEach(match => {
+              // 添加颜色代码之前的文本
               if (match.index > lastIndex) {
                 const beforeText = text.substring(lastIndex, match.index);
-                parts.push(beforeText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+                if (beforeText) {
+                  result.push({ tagname: null, color: null, text: beforeText });
+                }
               }
-              // 添加Span标签（不转义）
-              parts.push(match[0]);
-              lastIndex = match.index + match[0].length;
-            }
+              // 添加颜色方块和原始颜色代码文本
+              const hexColor = colorToHex(match.color);
+              if (hexColor) {
+                // 先添加颜色方块（使用颜色代码本身的颜色）
+                result.push({ tagname: 'span', color: hexColor, text: '■' });
+                // 再添加原始颜色代码文本（保持代码高亮的颜色，不应用颜色代码本身的颜色）
+                result.push({ tagname: null, color: null, text: match.color });
+              } else {
+                // 如果无法转换颜色，至少保留原始文本
+                result.push({ tagname: null, color: null, text: match.color });
+              }
+              lastIndex = match.index + match.length;
+            });
             
-            // 添加剩余的文本（转义）
+            // 添加剩余的文本
             if (lastIndex < text.length) {
               const remainingText = text.substring(lastIndex);
-              parts.push(remainingText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+              if (remainingText) {
+                result.push({ tagname: null, color: null, text: remainingText });
+              }
             }
             
-            // 如果没有找到Span标签，直接转义整个文本
-            if (parts.length === 0) {
-              return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            // 如果没有颜色代码，直接返回文本
+            if (result.length === 0 && text) {
+              return [{ tagname: null, color: null, text: text }];
             }
             
-            return parts.join('');
+            return result.length > 0 ? result : [];
           } else if (node.nodeType === Node.ELEMENT_NODE) {
             const tagName = node.tagName.toLowerCase();
             
@@ -576,87 +697,206 @@
                 }
               }
               
-              // 处理子节点
-              let content = '';
+              // 处理子节点，收集所有数组项
+              const childArrays = [];
               Array.from(node.childNodes).forEach(child => {
-                content += processNode(child);
+                const childResult = processNode(child);
+                if (Array.isArray(childResult) && childResult.length > 0) {
+                  childArrays.push(...childResult);
+                }
               });
               
-              // 检查内容中是否包含颜色方块Span（由insertColorSquares插入的）
-              // 格式：<Span fill="#hex">■</Span>（不区分大小写）
-              const colorSquareRegex = /<[Ss]pan\s+fill="([^"]+)">■<\/[Ss]pan>/g;
-              const colorSquares = [];
-              let lastIndex = 0;
-              let match;
-              let newContent = '';
-              
-              // 查找所有颜色方块并提取
-              while ((match = colorSquareRegex.exec(content)) !== null) {
-                // 添加颜色方块之前的文本
-                if (match.index > lastIndex) {
-                  newContent += content.substring(lastIndex, match.index);
+              // 将子节点数组合并，如果有多个项，需要将它们组合
+              if (childArrays.length === 0) {
+                return [];
+              } else {
+                // 处理子节点数组：颜色方块保留，其他文本用 token 颜色包装
+                const result = [];
+                let currentText = '';
+                
+                childArrays.forEach(item => {
+                  if (item.tagname === 'span' && item.text === '■') {
+                    // 颜色方块，先保存之前的文本（如果有）
+                    if (currentText) {
+                      result.push({ tagname: 'span', color: color, text: currentText });
+                      currentText = '';
+                    }
+                    // 添加颜色方块（保留原有颜色）
+                    result.push(item);
+                  } else if (item.tagname === 'span' && item.color) {
+                    // 已经有颜色的 span，先保存之前的文本（如果有）
+                    if (currentText) {
+                      result.push({ tagname: 'span', color: color, text: currentText });
+                      currentText = '';
+                    }
+                    // 保留原有的 span（可能是嵌套的）
+                    result.push(item);
+                  } else {
+                    // 普通文本，累积
+                    currentText += item.text || '';
+                  }
+                });
+                
+                // 添加剩余的文本
+                if (currentText) {
+                  result.push({ tagname: 'span', color: color, text: currentText });
                 }
-                // 保存颜色方块（将在token span外面）
-                colorSquares.push(match[0]);
-                lastIndex = match.index + match[0].length;
+                
+                return result;
               }
-              
-              // 添加剩余的文本
-              if (lastIndex < content.length) {
-                newContent += content.substring(lastIndex);
-              }
-              
-              // 如果有颜色方块，将它们放在token span外面
-              if (colorSquares.length > 0) {
-                return colorSquares.join('') + `<Span fill="${color}">${newContent}</Span>`;
-              }
-              
-              // 生成 Span 格式
-              return `<Span fill="${color}">${content}</Span>`;
             } else {
               // 非 token span，递归处理子节点
-              let content = '';
+              const result = [];
               Array.from(node.childNodes).forEach(child => {
-                content += processNode(child);
+                const childResult = processNode(child);
+                if (Array.isArray(childResult) && childResult.length > 0) {
+                  result.push(...childResult);
+                }
               });
-              return content;
+              return result;
             }
           }
-          return '';
+          return [];
         }
         
-        // 处理所有子节点
-        let result = '';
+        // 先完整处理整个 HTML 结构，提取所有的 spans（这样可以保持跨行的注释块等结构完整）
+        const allSpans = [];
         Array.from(tempDiv.childNodes).forEach(child => {
-          result += processNode(child);
+          const childResult = processNode(child);
+          if (Array.isArray(childResult) && childResult.length > 0) {
+            allSpans.push(...childResult);
+          }
         });
+        
+        // 将 spans 按换行符分割成行
+        // 遍历所有 spans，根据文本中的换行符来分割
+        const result = [];
+        let currentLineSpans = [];
+        let currentLineText = '';
+        let lastIndent = 0;
+        let lineIndex = 0;
+        
+        function finalizeLine() {
+          if (currentLineSpans.length === 0 && currentLineText.trim() === '') {
+            // 空行
+            result.push({
+              line: lineIndex++,
+              indent: lastIndent,
+              spans: [{ tagname: null, color: null, text: '' }]
+            });
+          } else {
+            // 计算该行的缩进
+            const leadingSpaces = (currentLineText.match(/^(\s*)/)?.[1] || '').length;
+            const isEmptyLine = currentLineText.trim() === '';
+            const indent = isEmptyLine ? lastIndent : Math.floor(leadingSpaces / 2);
+            
+            // 如果该行没有 spans，至少添加一个空文本项
+            if (currentLineSpans.length === 0) {
+              currentLineSpans.push({ tagname: null, color: null, text: '' });
+            }
+            
+            result.push({
+              line: lineIndex++,
+              indent: indent,
+              spans: currentLineSpans
+            });
+            
+            // 仅在非空行时更新上一次的缩进
+            if (!isEmptyLine) {
+              lastIndent = indent;
+            }
+          }
+          
+          // 重置当前行
+          currentLineSpans = [];
+          currentLineText = '';
+        }
+        
+        // 遍历所有 spans，按换行符分割
+        allSpans.forEach(span => {
+          const text = span.text || '';
+          
+          if (text.includes('\n')) {
+            // 如果文本包含换行符，需要分割
+            const parts = text.split('\n');
+            
+            for (let i = 0; i < parts.length; i++) {
+              const part = parts[i];
+              
+              if (i === 0) {
+                // 第一部分，添加到当前行
+                if (part) {
+                  currentLineSpans.push({
+                    tagname: span.tagname,
+                    color: span.color,
+                    text: part
+                  });
+                  currentLineText += part;
+                }
+              } else {
+                // 后续部分，先完成当前行，然后开始新行
+                finalizeLine();
+                
+                if (part) {
+                  currentLineSpans.push({
+                    tagname: span.tagname,
+                    color: span.color,
+                    text: part
+                  });
+                  currentLineText += part;
+                }
+              }
+            }
+          } else {
+            // 没有换行符，直接添加到当前行
+            currentLineSpans.push({
+              tagname: span.tagname,
+              color: span.color,
+              text: text
+            });
+            currentLineText += text;
+          }
+        });
+        
+        // 处理最后一行
+        if (currentLineSpans.length > 0 || currentLineText) {
+          finalizeLine();
+        }
         
         return result;
       }
       
-      // 转换高亮后的代码为 Span 格式字符串（用于渲染）
-      let spanContent = '';
+      // 转换高亮后的代码为数组格式（用于渲染）
+      let spanContentArray = [];
       if (codePrism && typeof codePrism === 'string') {
-        spanContent = convertPrismToSpanString(codePrism);
-        console.log('Detected language:', finalLang);
-        console.log('Converted to Span format');
+        spanContentArray = convertPrismToSpanArray(codePrism);
       }
       
       const width = document.getElementById('widthInput').value * 1 || 400;
+      const fontSize = document.getElementById('fontSizeInput').value * 1 || 16;
       
-      // 发送数据：textContent 存储纯文本，spanContent 存储 Span 格式（用于渲染）
+      //默认缩进以2为单位，判断缩进规律是不是4的倍数
+      let indentRule = 2;
+      let indents = spanContentArray.map(item => item.indent);
+      if(indents.every(indent => indent % 4 !== 0)) {
+        indentRule = 4;
+      }
+      // 发送数据：textContent 存储纯文本，spanContentArray 存储数组格式（用于渲染）
       parent.postMessage({ 
         pluginMessage: { 
           type: 'update', 
           data: { 
             textContent: codeContent,  // 纯文本
-            spanContent: spanContent || codeContent,  // Span 格式，如果没有转换则使用纯文本
-            width
+            spanContentArray: spanContentArray,  // 数组格式 [{tagname, color, text}, ...]
+            width,
+            fontSize,
+            indentRule
           } 
         } 
       }, '*');
     }
     document.getElementById('applyBtn').addEventListener('click', sendData);
+  
   </script>
 </body>
 </html>
