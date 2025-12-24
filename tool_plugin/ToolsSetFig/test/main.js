@@ -398,7 +398,7 @@ window.addEventListener('load',()=>{
   };
   */
   if(QUERY_PARAMS.page){
-    let page = QUERY_PARAMS.page.toLowerCase();
+    let page = QUERY_PARAMS.page.toLowerCase().replace('_',' ');
     if(tabs.includes(page)){
       viewPage(page);
     }
