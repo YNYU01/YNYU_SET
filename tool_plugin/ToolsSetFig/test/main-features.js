@@ -336,7 +336,8 @@ function createPaintStyle(){
       tipsAll(['数据格式错误','Error format data'],1000);
       return;
     }
-    let color = getcolorTypeOrHex(item[1],true);
+    let color = getcolorTypeOrHex(item[1]);
+    log(color)
     if(color) styleAll.push([item[0],color]);
   });
   if(styleAll.length === 0) return;

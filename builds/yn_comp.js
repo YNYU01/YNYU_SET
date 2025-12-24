@@ -1799,6 +1799,7 @@ function inputMust(node,info){
       }
     }
   }
+  return node.value;
 }
 
 function reTV(){
