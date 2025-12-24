@@ -52,6 +52,10 @@ let skillSecInfo = [
     id: 'AutoFillBorder',
     name: ["自适应底框","auto fill border"],
   },
+  {
+    id: 'PaintStyle',
+    name: ["颜色样式","paint style"],
+  },
 ]
 
 let toUserTips = {

@@ -28,6 +28,7 @@ const SKILL_STRATEGIES = {
   'Add Shadow-stroke': () => createShadowStroke('reset'),
   'Merge Character': () => mergeText('character'),
   'Merge Keep Style': () => mergeText('all'),
+  'Create Paint Style': () => createPaintStyle(),
 };
 
 // 带数据通信的双击功能映射
@@ -161,7 +162,7 @@ function sendTable(type){
 };
 
 
-// 表单页 > 应用预设样式-随机主题
+// 表单页 > 应用预设样式-
 function applyTableStyleStrategy(){
   let styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
   let styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
@@ -225,47 +226,11 @@ function reduceTableRowColStrategy(){
   }
 };
 
-// 表单页 > 随机主题策略
-function randomTableThemeStrategy(){
-  let styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
-  let styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
-
-  let fill = 1;
-  let bod = [1,1,1,1];
-  switch(styleFillId){
-    case '2':
-      fill = 'rowSpace';
-    break;
-    case '3':
-      fill = 'columnSpace';
-    break;
-    case '4':
-      fill = '0';
-    break;
-  };
-  switch(styleBodId){
-    case '2':
-      bod = [1,0,1,0];
-      break;
-    case '3':
-      bod = [0,1,0,1];
-      break;
-    case '4':
-      bod = [0,0,0,0];
-      break;
-  }
-  let styleAll = {
-    td:[...bod,fill],
-    th:[...bod,1]
-  };
-  toolMessage([[styleAll,'theme'],'reTable'],PLUGINAPP);
-};
-
 const TABLE_SET_FUNCTIONS = {
   'style': applyTableStyleStrategy,
   'add': addTableRowColStrategy,
   'reduce': reduceTableRowColStrategy,
-  'theme': randomTableThemeStrategy
+  'theme': () => toolMessage([[null,'theme'],'reTable'],PLUGINAPP)
 };
 
 // 表单页 > 执行表格设置功能
@@ -353,4 +318,27 @@ function createShadowStroke(type){
 function mergeText(type){
   let order =  DOM.mergeOrder.getAttribute('data-radio-value');
   toolMessage([[type,order],'mergeText'],PLUGINAPP);
+};
+
+// 更多功能 > 创建样式
+function createPaintStyle(){
+  let data = getElementMix('input-styledata').value.trim();
+  if(data === '' || !data.includes('name\tcolor')) return;
+  let dataArray = data.split('\n').map(item => item.split('\t'));
+  let styleAll = [];
+  let names = dataArray.map(item => item[0]);
+  if(names.length !== new Set(names).size) {
+    tipsAll(['名称重复,请检查','Name duplicate, please check'],1000);
+    return;
+  }
+  dataArray.forEach((item) => {
+    if(!item[0] || !item[1]) {
+      tipsAll(['数据格式错误','Error format data'],1000);
+      return;
+    }
+    let color = getcolorTypeOrHex(item[1],true);
+    if(color) styleAll.push([item[0],color]);
+  });
+  if(styleAll.length === 0) return;
+  toolMessage([styleAll,'createPaintStyle'],PLUGINAPP);
 };

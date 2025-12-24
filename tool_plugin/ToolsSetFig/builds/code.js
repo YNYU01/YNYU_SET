@@ -1151,7 +1151,6 @@ figma.ui.onmessage = async (message) => {
                     reCompNum(table,_H,V);
                 ;break
                 case 'theme':
-                    //reTableStyle(table,setdata);
                     //一个饱和度、明度适中的颜色
                     let [H,S,L] = [Math.random()*360,(Math.random()*50) + 10,(Math.random()*80) + 10];
                     S = S <= 30 && L <= 50 ? S*1.2 : S;
@@ -2525,6 +2524,23 @@ figma.ui.onmessage = async (message) => {
             break
         }
     };
+    //创建样式
+    if( type == "createPaintStyle"){
+        console.log(info)
+        //更新样式列表
+        await getStyle('paint');
+        let localPaintStyles = localStyles.paint.list;
+        let names = localPaintStyles.map(item => item.name);
+        info.forEach(item => {
+            let name = item[0];
+            if(names.includes(name)){
+                name = name + ' ?';
+            }
+            let style = figma.createPaintStyle();
+            style.name = name;
+            style.paints = [toRGB(item[1],true)];
+        });
+    }
 };
 
 //==========初始化==========
@@ -3430,33 +3446,26 @@ async function getStyle(type,isSend){
     let info = {list:[],nodes:[]}
     switch (type){
         case "paint":
-            figma.getLocalPaintStylesAsync()
-            .then((styles)=>{
-                //有哪些样式
-                //console.log(styles)
-                info.list = styles.map(item =>{
-                    return {
-                        id: item.id,
-                        name: item.name,
-                        paints: item.paints,
-                    }
-                });
-                if(isSend){
-                    let hasStyle = info.list.some(item => item.name.includes('@set:')) ? true : false;
-                    postmessage([hasStyle,'styleInfo']);
-                };
-                let promises = styles.map(item => item.getStyleConsumersAsync());
-                Promise.all(promises)
-                .then((consumers)=>{
-                    //应用在什么节点
-                    //console.log(consumers)
-                    info.nodes = consumers.flat();
-                    localStyles.paint = info;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            let styles = await figma.getLocalPaintStylesAsync()
+            //有哪些样式
+            //console.log(styles)
+            info.list = styles.map(item =>{
+                return {
+                    id: item.id,
+                    name: item.name,
+                    paints: item.paints,
+                }
             });
+            if(isSend){
+                let hasStyle = info.list.some(item => item.name.includes('@set:')) ? true : false;
+                postmessage([hasStyle,'styleInfo']);
+            };
+            let promises = styles.map(item => item.getStyleConsumersAsync());
+            let consumers = await Promise.all(promises)
+            //应用在什么节点
+            //console.log(consumers)
+            info.nodes = consumers.flat();
+            localStyles.paint = info;
         break
         case "text":
 

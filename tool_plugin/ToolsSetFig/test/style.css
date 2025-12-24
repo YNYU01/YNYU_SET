@@ -1006,6 +1006,18 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
   right: 4px;
 }
 
+[data-inputstyledata-box] [data-textarea="tips"]{
+  white-space: normal;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--boxBod);
+  bottom: 0;
+  padding: 0px 10px;
+  box-sizing: border-box;
+  animation: boxUp 0.5s;
+  pointer-events: none;
+}
+
 
 /*按钮类--*/
 

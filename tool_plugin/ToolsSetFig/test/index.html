@@ -1071,7 +1071,7 @@
                   <input-regexpenter></input-regexpenter>      
                 </div>
                 <input id="input-linefeed" data-input class="nobod fl1" type="text" 
-                value="[enter]"> 
+                value="\n"> 
                 <!--重置-->
                 <div data-input-reset data-btn="reset">
                   <btn-reset></btn-reset>
@@ -1965,6 +1965,28 @@
                   </div>
                   <div class="df-lc" data-skill-line data-selects-must="false">
                     <div class="df-cc" data-btn="skill-main" data-en-text="Border Example( Coming soon~ )">生成示例（敬请期待~）</div>
+                  </div>
+                </div>
+                <div class="fl1"  data-skill-sec="PaintStyle">
+                  <div data-skill-star="false">
+                    <btn-star></btn-star>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line data-selects-must="false">
+                    <div data-inputstyledata-box class="w100 pos-r" style="height: 200px;">
+                      <textarea class="wh100" data-textarea-wrap="false" spellcheck="false" id="input-styledata" data-textarea="eg" 
+                      data-eg="name\tcolor\neg/dark/theme\t#18e7a6\neg/dark/boxBod\t#aeaeae\neg/dark/boxBak\t#eeeeee\neg/light/theme\t#3ac989\neg/light/boxBod\t#494949\neg/light/boxBak\t#202020"
+                      ></textarea>
+                      <!--清空-->
+                      <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
+                        <btn-close></btn-close>
+                      </div> 
+                      <ul data-textarea="tips" class="pos-a w100 df-ffc">
+                        <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
+                        <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
+                        <li data-li-style="2" data-en-text="Table header must with: name | color " >表头固定用：name,color</li>
+                      </ul>
+                    </div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Create Paint Style">创建样式</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>

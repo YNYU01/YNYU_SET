@@ -582,7 +582,8 @@ function COMP_MAIN(){
     let egtext = item.getAttribute('data-eg');
     const ROOT = document.documentElement;
     if (ROOT.getAttribute('data-language') == 'En') {
-      egtext = item.getAttribute('data-eg-en');
+      let egtextEn = item.getAttribute('data-eg-en');
+      if (egtextEn) egtext = egtextEn;
     }
     egtext = egtext.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
     if (egtext) {
@@ -2168,6 +2169,53 @@ function hsvTohsl(h, s, v) {
   }
   return [h,Math.floor(s * 100),Math.floor(l * 100)]; // 返回HSL值，乘以100以匹配常见的百分比表示法
 
+}
+
+// 颜色转换辅助函数：将各种颜色格式转换为hex
+/**
+ * 
+ * @param {string} colorStr - 颜色字符串，如#rgb, #rrggbb, #rrggbbaa, rgb(r, g, b), rgba(r, g, b, a), hsl(h, s%, l%), hsla(h, s%, l%, a)
+ * @returns {string} - 颜色十六进制值，如#rgb, #rrggbb, #rrggbbaa
+ */
+function getcolorTypeOrHex(colorStr,onlyType) {
+  if (!colorStr) return null;
+  
+  const lowerColor = colorStr.toLowerCase().trim();
+  
+  // HEX格式: #rgb, #rrggbb, #rrggbbaa
+  if (lowerColor.startsWith('#')) {
+    if(onlyType) return 'HEX';
+    return inputMust({value:lowerColor},['hex','#000000']);
+  }
+  
+  // RGB格式: rgb(r, g, b) 或 rgba(r, g, b, a)
+  const rgbMatch = lowerColor.match(/rgba?\(([^)]+)\)/);
+  if (rgbMatch) {
+    const values = rgbMatch[1].split(',').map(v => parseFloat(v.trim()));
+    if (values.length >= 3) {
+      if(onlyType) return 'RGB';
+      const r = Math.max(0, Math.min(255, Math.round(values[0])));
+      const g = Math.max(0, Math.min(255, Math.round(values[1])));
+      const b = Math.max(0, Math.min(255, Math.round(values[2])));
+      return rgbTohex(r, g, b);
+    }
+  }
+  
+  // HSL格式: hsl(h, s%, l%) 或 hsla(h, s%, l%, a)
+  const hslMatch = lowerColor.match(/hsla?\(([^)]+)\)/);
+  if (hslMatch) {
+    const values = hslMatch[1].split(',').map(v => parseFloat(v.replace('%', '').trim()));
+    if (values.length >= 3) {
+      if(onlyType) return 'HSL';
+      const h = values[0];
+      const s = Math.max(0, Math.min(100, values[1]));
+      const l = Math.max(0, Math.min(100, values[2]));
+      const rgb = hslTorgb(h, s, l, 255);
+        return rgbTohex(rgb[0], rgb[1], rgb[2]);
+    }
+  }
+  
+  return null;
 }
 
 /**

@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -50,11 +50,22 @@ window.addEventListener('message',(message)=>{
       case 'userTheme': info == 'light' ? setTheme(true) : setTheme(false);break
       case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
       case 'userResize': reRootSize(info);break
+      case 'userInfo':
+
+          let isLoggedIn = false;
+          if (info && info.name) {
+            const userName = info.name.trim();
+            isLoggedIn = userName !== '' && userName !== 'Anonymous' && userName !== '匿名';
+          }
+          const loginBtn = document.querySelector('[data-user-login-btn]');
+          if (loginBtn) loginBtn.style.display = isLoggedIn ? 'flex' : 'none';
+        break
     };
-    if(ISWORK_TIME && info){
+    if(ISWORK_TIME){
       switch (type){
         case 'tabPick': viewPage(info);break
         case 'userSkillStar':userSkillStar = info || []; moveSkillStar(userSkillStar);break
+
         case 'toolsSetFig_user':
           if(typeof AuthManager !== 'undefined') {
             AuthManager.setCurrentUser(info);
@@ -85,7 +96,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1094,6 +1105,18 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
   padding: 1px;
   top: 4px;
   right: 4px;
+}
+
+[data-inputstyledata-box] [data-textarea="tips"]{
+  white-space: normal;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--boxBod);
+  bottom: 0;
+  padding: 0px 10px;
+  box-sizing: border-box;
+  animation: boxUp 0.5s;
+  pointer-events: none;
 }
 
 
@@ -3953,7 +3976,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   <input-regexpenter></input-regexpenter>      
                 </div>
                 <input id="input-linefeed" data-input class="nobod fl1" type="text" 
-                value="[enter]"> 
+                value="\n"> 
                 <!--重置-->
                 <div data-input-reset data-btn="reset">
                   <btn-reset></btn-reset>
@@ -4838,7 +4861,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                             </div>
                           </label>
                         </div>
-                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/tool_web/SVdG/index.html" target="_blank">
+                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/tool_web/SVdG/index.html" target="_blank">
                           <div data-autobod-name data-en-text="Custom >" style="text-decoration: underline;">自定义></div>
                         </a>
                       </div>
@@ -4847,6 +4870,28 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-lc" data-skill-line data-selects-must="false">
                     <div class="df-cc" data-btn="skill-main" data-en-text="Border Example( Coming soon~ )">生成示例（敬请期待~）</div>
+                  </div>
+                </div>
+                <div class="fl1"  data-skill-sec="PaintStyle">
+                  <div data-skill-star="false">
+                    <btn-star></btn-star>
+                  </div>
+                  <div class="df-ffc df-cc" data-skill-line data-selects-must="false">
+                    <div data-inputstyledata-box class="w100 pos-r" style="height: 200px;">
+                      <textarea class="wh100" data-textarea-wrap="false" spellcheck="false" id="input-styledata" data-textarea="eg" 
+                      data-eg="name\tcolor\neg/dark/theme\t#18e7a6\neg/dark/boxBod\t#aeaeae\neg/dark/boxBak\t#eeeeee\neg/light/theme\t#3ac989\neg/light/boxBod\t#494949\neg/light/boxBak\t#202020"
+                      ></textarea>
+                      <!--清空-->
+                      <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
+                        <btn-close></btn-close>
+                      </div> 
+                      <ul data-textarea="tips" class="pos-a w100 df-ffc">
+                        <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
+                        <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
+                        <li data-li-style="2" data-en-text="Table header must with: name | color " >表头固定用：name,color</li>
+                      </ul>
+                    </div>
+                    <div class="df-cc" data-btn="skill-main" data-en-text="Create Paint Style">创建样式</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -4911,23 +4956,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/jsQR_correct.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/other/jsQR_correct.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@20ab64d3f593969c41aafc3e0e36de04b24482c7/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ca84a1f5f622ce7aa26240c672e5f19152893f45/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -4983,6 +5028,10 @@ let skillSecInfo = [
   {
     id: 'AutoFillBorder',
     name: ["自适应底框","auto fill border"],
+  },
+  {
+    id: 'PaintStyle',
+    name: ["颜色样式","paint style"],
   },
 ]
 
@@ -5080,8 +5129,8 @@ const AUTH_I18N = {
     registrationFailed: '注册失败: {0}',
     unknownError: '未知错误',
     registrationFailedRetry: '注册失败，请重试',
-    registrationSuccess: '注册成功！请检查邮箱并点击确认链接以完成注册。',
-    registrationSuccessShort: '注册成功！请检查邮箱并点击确认链接。',
+    registrationSuccess: '注册成功！请检查邮箱并点击确认链接以完成注册。如未收到邮件，请耐心等待或联系管理员处理。',
+    registrationSuccessShort: '注册成功！请检查邮箱并点击确认链接。如未收到邮件，请耐心等待或联系管理员处理。',
     registrationFailedConfig: '注册失败，请检查 Supabase 配置或网络连接',
     emailAlreadyRegisteredLocal: '该邮箱已在本地注册，请先清除缓存',
     enterEmailPassword: '请输入邮箱和密码',
@@ -5111,8 +5160,8 @@ const AUTH_I18N = {
     registrationFailed: 'Registration failed: {0}',
     unknownError: 'Unknown error',
     registrationFailedRetry: 'Registration failed, please try again',
-    registrationSuccess: 'Registration successful! Please check your email and click the confirmation link to complete registration.',
-    registrationSuccessShort: 'Registration successful! Please check your email and click the confirmation link.',
+    registrationSuccess: 'Registration successful! Please check your email and click the confirmation link to complete registration. If you don\'t receive the email, please wait patiently or contact the administrator.',
+    registrationSuccessShort: 'Registration successful! Please check your email and click the confirmation link. If you don\'t receive the email, please wait patiently or contact the administrator.',
     registrationFailedConfig: 'Registration failed, please check Supabase configuration or network connection',
     emailAlreadyRegisteredLocal: 'This email is already registered locally, please clear cache first',
     enterEmailPassword: 'Please enter email and password',
@@ -5475,7 +5524,14 @@ function revokeImageObjectURL(url){
 
 window.addEventListener('load',()=>{
   let time = getTime('HH')[0];
+  let tabs = ['create','export','editor','variable','sheet','more tools']
 
+  if(QUERY_PARAMS.page){
+    let page = QUERY_PARAMS.page.toLowerCase().replace('_',' ');
+    if(tabs.includes(page)){
+      viewPage(page);
+    }
+  }
   setTimeout(() => {
 
 ;
@@ -9479,6 +9535,7 @@ const SKILL_STRATEGIES = {
   'Add Shadow-stroke': () => createShadowStroke('reset'),
   'Merge Character': () => mergeText('character'),
   'Merge Keep Style': () => mergeText('all'),
+  'Create Paint Style': () => createPaintStyle(),
 };
 
 const SKILL_DBLCLICK_STRATEGIES = {
@@ -9654,46 +9711,11 @@ function reduceTableRowColStrategy(){
   }
 };
 
-function randomTableThemeStrategy(){
-  let styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
-  let styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
-
-  let fill = 1;
-  let bod = [1,1,1,1];
-  switch(styleFillId){
-    case '2':
-      fill = 'rowSpace';
-    break;
-    case '3':
-      fill = 'columnSpace';
-    break;
-    case '4':
-      fill = '0';
-    break;
-  };
-  switch(styleBodId){
-    case '2':
-      bod = [1,0,1,0];
-      break;
-    case '3':
-      bod = [0,1,0,1];
-      break;
-    case '4':
-      bod = [0,0,0,0];
-      break;
-  }
-  let styleAll = {
-    td:[...bod,fill],
-    th:[...bod,1]
-  };
-  toolMessage([[styleAll,'theme'],'reTable'],PLUGINAPP);
-};
-
 const TABLE_SET_FUNCTIONS = {
   'style': applyTableStyleStrategy,
   'add': addTableRowColStrategy,
   'reduce': reduceTableRowColStrategy,
-  'theme': randomTableThemeStrategy
+  'theme': () => toolMessage([[null,'theme'],'reTable'],PLUGINAPP)
 };
 
 function sendTableSet(type){
@@ -9775,6 +9797,28 @@ function mergeText(type){
   toolMessage([[type,order],'mergeText'],PLUGINAPP);
 };
 
+function createPaintStyle(){
+  let data = getElementMix('input-styledata').value.trim();
+  if(data === '' || !data.includes('name\tcolor')) return;
+  let dataArray = data.split('\n').map(item => item.split('\t'));
+  let styleAll = [];
+  let names = dataArray.map(item => item[0]);
+  if(names.length !== new Set(names).size) {
+    tipsAll(['名称重复,请检查','Name duplicate, please check'],1000);
+    return;
+  }
+  dataArray.forEach((item) => {
+    if(!item[0] || !item[1]) {
+      tipsAll(['数据格式错误','Error format data'],1000);
+      return;
+    }
+    let color = getcolorTypeOrHex(item[1],true);
+    if(color) styleAll.push([item[0],color]);
+  });
+  if(styleAll.length === 0) return;
+  toolMessage([styleAll,'createPaintStyle'],PLUGINAPP);
+};
+
   
 
 
@@ -9847,15 +9891,13 @@ function initSupabaseClient() {
           AUTH_CONFIG.SUPABASE_URL,
           AUTH_CONFIG.SUPABASE_ANON_KEY
         );
-        console.log('Supabase client initialized successfully');
         return true;
       } catch (e) {
         console.error('Failed to initialize Supabase:', e);
         return false;
       }
     } else {
-      console.warn('Supabase SDK not loaded. Check if the script tag is present and loaded correctly.');
-      console.log('typeof supabase:', typeof supabase);
+      console.warn('Supabase SDK not loaded');
       return false;
     }
   }
@@ -9954,7 +9996,6 @@ var AuthManager = {
           }
 
           this.updateUI();
-          console.log('User profile refreshed:', updatedUser);
         }
       }
     } catch (e) {
@@ -9973,15 +10014,12 @@ var AuthManager = {
     this.refreshTimer = setInterval(() => {
       this.refreshUserProfile();
     }, 5 * 60 * 1000);
-
-    console.log('User profile refresh timer started (5 minutes interval)');
   },
 
   stopRefreshTimer() {
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
       this.refreshTimer = null;
-      console.log('User profile refresh timer stopped');
     }
   },
 
@@ -10012,11 +10050,7 @@ var AuthManager = {
                 .maybeSingle();
 
               if (profileError) {
-                console.warn('Failed to fetch user profile in init:', {
-                  error: profileError,
-                  message: profileError.message,
-                  code: profileError.code
-                });
+                console.warn('Failed to fetch user profile in init:', profileError.message);
 
                 if (!this.currentUser && cachedUser) {
                   this.currentUser = cachedUser;
@@ -10025,9 +10059,6 @@ var AuthManager = {
                 return;
               } else if (profileData) {
                 profile = profileData;
-                console.log('User profile fetched in init:', profile);
-              } else {
-                console.log('User profile not found in init, using defaults');
               }
             } catch (e) {
               console.warn('Failed to fetch user profile in init:', e);
@@ -10164,18 +10195,12 @@ var AuthManager = {
     if (AUTH_CONFIG.USE_SUPABASE) {
 
       if (!supabaseClient) {
-        console.log('Supabase client not initialized, attempting to initialize...');
         const initResult = tryInitSupabase();
 
         await new Promise(resolve => setTimeout(resolve, 100));
 
         if (!supabaseClient) {
-          console.error('Supabase client initialization failed. Check:', {
-            'SDK loaded': typeof supabase !== 'undefined',
-            'createClient exists': typeof supabase !== 'undefined' && typeof supabase.createClient !== 'undefined',
-            'URL configured': !!AUTH_CONFIG.SUPABASE_URL,
-            'Key configured': !!AUTH_CONFIG.SUPABASE_ANON_KEY
-          });
+          console.error('Supabase client initialization failed');
           return { success: false, error: getAuthText('supabaseNotInitialized') };
         }
       }
@@ -10193,13 +10218,7 @@ var AuthManager = {
         });
 
         if (error) {
-
-          console.error('Supabase registration error:', {
-            message: error.message,
-            status: error.status,
-            code: error.code,
-            fullError: error
-          });
+          console.error('Supabase registration error:', error.message);
 
           let errorMsg = error.message;
 
@@ -10297,16 +10316,12 @@ var AuthManager = {
                 return { success: false, error: getAuthText('emailAlreadyRegistered') };
               }
 
-            } else {
-              console.log('User profile created successfully:', profileData);
             }
           } catch (e) {
             console.error('User profile creation failed:', e);
 
           }
         } else {
-
-          console.log('User registered but needs email confirmation. Profile will be created after confirmation.');
 
         }
 
@@ -10343,7 +10358,6 @@ var AuthManager = {
     }
 
     const existingUsers = this.getUsersList();
-    console.log('Checking local users list:', existingUsers);
     if (existingUsers && existingUsers.length > 0 && existingUsers.find(u => u.email === email)) {
       return { success: false, error: getAuthText('emailAlreadyRegisteredLocal') };
     }
@@ -10456,19 +10470,12 @@ var AuthManager = {
             .maybeSingle();
 
           if (profileError) {
-            console.warn('Failed to fetch user profile:', {
-              error: profileError,
-              message: profileError.message,
-              code: profileError.code,
-              details: profileError.details
-            });
+            console.warn('Failed to fetch user profile:', profileError.message);
 
           } else if (profileData) {
             profile = profileData;
-            console.log('User profile fetched successfully:', profile);
           } else {
 
-            console.log('User profile not found, attempting to create...');
             try {
               const { data: newProfileData, error: createError } = await supabaseClient
                 .from('user_profiles')
@@ -10483,7 +10490,6 @@ var AuthManager = {
 
               if (!createError && newProfileData) {
                 profile = newProfileData;
-                console.log('User profile created successfully during login:', profile);
               } else if (createError) {
                 console.warn('Failed to create user profile during login:', createError);
               }
@@ -10568,7 +10574,6 @@ var AuthManager = {
       }
     }
     this.updateUI();
-    console.log(getAuthText('localCacheCleared'));
   },
 
   getUsersList() {
