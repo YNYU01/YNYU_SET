@@ -69,15 +69,15 @@ function pathS(fill,stroke,strokeWidth,strokeLinecap,strokeLinejoin){
 function circleS(cx,cy,r){
   cx = cx || cx === 0 ? `cx="${cx}"` : '';
   cy = cy || cy === 0 ? `cy="${cy}"` : '';
-  r = r ? `r="${r}"` : '0';
+  r = r ? `r="${r}"` : '';
   return `${cx} ${cy} ${r}`;
 }
 function rectS(width,height,x,y,rx){
   width = width ? `width="${width}"` : '';
   height = height ? `height="${height}"` : '';
-  x = x || x === 0 ? `x="${x}"` : '0';
-  y = y || y === 0 ? `y="${y}"` : '0';
-  rx = rx ? `rx="${rx}"` : '0';
+  x = x || x === 0 ? `x="${x}"` : '';
+  y = y || y === 0 ? `y="${y}"` : '';
+  rx = rx ? `rx="${rx}"` : '';
   return `${x} ${y} ${width} ${height} ${rx}`;
 }
 function icon(num){

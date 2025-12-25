@@ -2006,6 +2006,15 @@ figma.ui.onmessage = async (message) => {
         });
         a.selection = selects;
     };
+    //转为自动布局
+    if( type == 'To Auto Layout'){
+        let b = getSelectionMix();
+        b.forEach(item => {
+            if(item.layoutMode && item.layoutMode == 'NONE'){
+                addAutoLayout(item,['H','TL',0,[0,0]],[true,true]);
+            }
+        });
+    };
     //填充组件到容器
     if( type == 'Clone to Fill'){
         let a = figma.currentPage;
