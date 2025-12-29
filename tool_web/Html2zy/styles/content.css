@@ -1,0 +1,9 @@
+/* 定位线框样式 */
+#html2zy-position-frame {
+  position: absolute;
+  border: 2px solid #1cc992;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 2147483647;
+  background-color: rgba(28, 201, 146, 0.1);
+}

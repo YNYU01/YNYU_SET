@@ -226,7 +226,8 @@ figma.ui.onmessage = async (message) => {
     };
     //批量创建节点
     if ( type == "createZy"){
-        //console.log(info)
+        console.log(info)
+
         for (const zy of info) {
             let bg1 = [toRGB('#EEEEEE',true)];
             let color1 = [toRGB('#272727',true)];  
@@ -234,7 +235,7 @@ figma.ui.onmessage = async (message) => {
             let color3 = [toRGB('#808080',true)];
             let color4 = [toRGB('#AEAEAE',true)];
             let thComp,tdComp,preComp,allComp = [];
-            let box = addFrame([900,100,null,null,zy.zyName,[]]);
+            let box = addFrame([100,100,null,null,zy.zyName,[]]);
             figma.currentPage.appendChild(box);
             switch (zy.zyType){
                 case 'md':
@@ -245,259 +246,279 @@ figma.ui.onmessage = async (message) => {
                 break
                 case 'svg':
                 break
-            };
-            for (const cres of zy.nodes) {
-                let CreateZyNode = {
-                    h: async function(cre,level){
-                        let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
-                        let text = await addText([{family:'Inter',style:'Bold'},characters,(48 - level * 4),color1]);
-                        let line = addFrame([100,100,null,null,'@h' + level,[]]);
-                        addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
-                        line.appendChild(text);
-                        text.layoutSizingHorizontal = 'FILL';
-                        box.appendChild(line);
-                        line.layoutSizingHorizontal = 'FILL';
-                    },
-                    h1: function(cre){
-                        return CreateZyNode.h(cre,1);
-                    },
-                    h2: function(cre){
-                        return CreateZyNode.h(cre,2);
-                    },
-                    h3: function(cre){
-                        return CreateZyNode.h(cre,3);
-                    },
-                    h4: function(cre){
-                        return CreateZyNode.h(cre,4);
-                    },
-                    h5: function(cre){
-                        return CreateZyNode.h(cre,5);
-                    },
-                    h6: function(cre){
-                        return CreateZyNode.h(cre,6);
-                    },
-                    p: async function(cre){
-                        let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
-                        let text = await addText([{family:'Inter',style:'Regular'},characters,28,color2]);
-                        let line = addFrame([100,100,null,null,'@p',[]]);
-                        addAutoLayout(line,['V','TL',0,[6,0,6,28]]);
-                        line.appendChild(text);
-                        text.layoutSizingHorizontal = 'FILL';
-                        box.appendChild(line);
-                        line.layoutSizingHorizontal = 'FILL';
-                    },
-                    br: function(cre){
-                        let line = addFrame([100,24,null,null,'@br',[]]);
-                        box.appendChild(line);
-                        line.layoutSizingHorizontal = 'FILL';
-                    },
-                    hr: function(cre){
-                        let line = addFrame([100,24,null,null,'@hr',[]]);
-                        addAutoLayout(line,['V','CC',0,[20,10,20,10]]);
-                        let path = figma.createVector();
-                        path.vectorPaths = [{
-                            windingRule: "NONE",
-                            data: "M 0 0 L 100 0",
-                          }]
-                        path.dashPattern = [4,4];
-                        path.strokeWeight = 1;
-                        path.strokes = color1;
-                        line.appendChild(path);
-                        path.layoutSizingHorizontal = 'FILL';
-                        box.appendChild(line);
-                        line.layoutSizingHorizontal = 'FILL';
-                    },
-                    code: async function(cre){
-                        let characters = cre.content.join('\n');
-                        //text.textAutoResize = 'HEIGHT';
-                        //text.layoutSizingVertical = 'HUG';
-                        let line = addFrame([100,100,null,null,'@code:' + cre.language,[]]);
-                        addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
-                        if(!preComp){
-                            let pre = addFrame([626,100,null,null,'@pre',[]]);
-                            addAutoLayout(pre,['H','TL',0,[10,20,10,0]]);
-                            pre.itemReverseZIndex = true;//前面堆叠在上
-                            pre.fills = [toRGB('#272727',true)];
-                            [pre.bottomLeftRadius,pre.bottomRightRadius,pre.topLeftRadius,pre.topRightRadius] = [10,10,10,10];
-
-                            let mask = addFrame([100,100,null,null,'mask',[]]);
-                            addAutoLayout(mask,['V','TL',0,[0,10,0,20]]);
-                            mask.strokes = [toRGB('#272727',true)];
-                            mask.fills = [toRGB('#27272799',true)];
-                            [mask.strokeTopWeight,mask.strokeRightWeight,mask.strokeBottomWeight,mask.strokeLeftWeight] = [0,14,0,0];
-                            let num = await addText([{family:'Roboto Mono',style:'Regular'},'4',20,color4]);
-                            num.autoRename = false;
-                            num.name = '#last-line-num.text';
-                            num.fills = [];
-                            mask.appendChild(num);
-                            pre.appendChild(mask);
-
-                            let eg = `function any(){\n\t/*somthing there*/\n}\n//Remember to change the value of 'last-line-num', it must be 4 here`;
-                            let code = await addText([{family:'Roboto Mono',style:'Regular'},eg,20,color4]);    
-                            code.setRangeListOptions(0,eg.length,{type: 'ORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
-                            code.hangingList = true;
-                            pre.appendChild(code);
-                            code.layoutSizingHorizontal = 'FILL';
-
-                            mask.layoutSizingHorizontal = 'HUG';
-                            mask.layoutSizingVertical = 'FILL';
-                            preComp = figma.createComponentFromNode(pre);
-                            addCompPro(preComp,num,'--last-line-num','TEXT','4');
-
-                            preComp.x = box.x - 450;
-                            preComp.y = box.y + 120;
-                            preComp.resize(426,100);
-                            preComp.layoutSizingVertical = 'HUG';
-                            allComp.push(preComp);
-                        };
-                        let newPre = preComp.createInstance();
-                        line.appendChild(newPre);
-                        newPre.layoutSizingHorizontal = 'FILL';
-                        newPre.layoutSizingVertical = 'HUG';
-                        newPre.children[1].characters = characters;
-                        let proId = Object.keys(newPre.componentProperties).filter(item => item.split('#')[0] == '--last-line-num')[0];
-                        newPre.setProperties({[proId]: (cre.content.length).toString()});
-                        box.appendChild(line);
-                        line.layoutSizingHorizontal = 'FILL';
-                    },
-                    ul: async function(cre){
-                        let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
-                        let text = await addText([{family:'Inter',style:'Regular'},characters,24,color3]);
-                        text.setRangeListOptions(0,characters.length,{type: 'UNORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
-                        text.listSpacing = 6;
-                        let line = addFrame([100,100,null,null,'@ul',[]]);
-                        addAutoLayout(line,['V','TL',0,[0,0,6,0]]);
-                        line.appendChild(text);
-                        text.layoutSizingHorizontal = 'FILL';
-                        box.appendChild(line);
-                        line.layoutSizingHorizontal = 'FILL';
-                    },
-                    ol: async function(cre){
-                        let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
-                        let text = await addText([{family:'Inter',style:'Regular'},characters,24,color3]);
-                        text.setRangeListOptions(0,characters.length,{type: 'ORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
-                        text.listSpacing = 6;
-                        let line = addFrame([100,100,null,null,'@ol',[]]);
-                        addAutoLayout(line,['V','TL',0,[0,0,6,28]]);
-                        line.appendChild(text);
-                        text.layoutSizingHorizontal = 'FILL';
-                        box.appendChild(line);
-                        line.layoutSizingHorizontal = 'FILL';
-                    },
-                    blockquote: async function(cre){
-                        let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
-                        //console.log(cre,characters)
-                        let text = await addText([{family:'Inter',style:'Light'},characters,22 ,color3]);
-                        //text.relativeTransform = [[1,-0.2126,0],[0,0.9771,0]];
-                        let line = addFrame([100,100,null,null,'@blockquote',[]]);
-                        addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
-                        let pre = addFrame([100,100,null,null,'@pre',[]]);
-                        addAutoLayout(pre,['V','TL',0,[10,10,10,10]]);
-                        pre.strokes = [toRGB('#272727',true)];
-                        [pre.strokeTopWeight,pre.strokeRightWeight,pre.strokeBottomWeight,pre.strokeLeftWeight] = [1,1,4,1];
-                        [pre.bottomLeftRadius,pre.bottomRightRadius,pre.topLeftRadius,pre.topRightRadius] = [10,10,10,10];
-                        pre.appendChild(text);
-                        text.layoutSizingHorizontal = 'FILL';
-                        line.appendChild(pre);
-                        pre.layoutSizingHorizontal = 'FILL';
-                        box.appendChild(line);
-                        line.layoutSizingHorizontal = 'FILL';
-                    },
-                    table:async function(cre){
-                        await figma.clientStorage.getAsync('userLanguage')
-                        .then (async (language) => {
-                            if(!thComp){
-                                thComp = await addTableCompMust('th',language,null,true);
-                                allComp.push(thComp);
-                            };
-                            if(!tdComp){
-                                tdComp = await addTableCompMust('td',language,null,true);
-                                allComp.push(tdComp);
-                            };
-                            let all = await createTable(thComp,tdComp,language,true);  
-                            let newth = all[0];
-                            let newtd = all[1];
-                            let table = all[2];
-                            
-                            let data = cre.rows;
-                            //反转行列
-                            data = data[0].map((_, i) => data.map(row => row[i]));
-                            data = data.map(item => {
-                                item = item.map(items => {
-                                    if(typeof items == 'object'){
-                                        return items.map(item => item.content).join('');
-                                    }else{
-                                        return items;
-                                    }
-                                });
-                                return item;
-                            });
-                            let H = data[0].length;
-                            let L = data.length - 3;
-                            reCompNum(table,H,L)
-                            reTableByArray(table,data,'[enter]','--');
-                            reTableStyle(table,{th:[1,1,1,1,1],td:[1,1,1,1,'rowSpace']});
-                            reAnyByTags([newth],[{'#table.fill':'#B8B8B8','#table.stroke':'#272727'}]);
-                            reAnyByTags([newtd],[{'#table.fill':'#DADADA','#table.stroke':'#272727'}]);
-                            let line = addFrame([100,100,null,null,'@sheet',[]]);
-                            addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
-                            line.appendChild(table);
-                            table.layoutSizingHorizontal = 'FILL';
-                            table.clipsContent = true;
-                            table.fills = [];
-                            table.strokes = [toRGB('#272727',true)];
-                            [table.bottomLeftRadius,table.bottomRightRadius,table.topLeftRadius,table.topRightRadius] = [20,20,20,20];
-                            box.appendChild(line);
-                            newth.x = box.x - 200;
-                            newtd.x = box.x - 200;
-                            newth.y = box.y;
-                            newtd.y = box.y + 60;
-                            
-                            line.layoutSizingHorizontal = 'FILL';
-                        })
-                        .catch (error => {
-                            console.log(error);
-                        })
-                    },
-                    image:async function(cre){
-                        let line = addFrame([100,100,null,null,'@image',[]]);
-                        addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
-                        let img = figma.createRectangle();
-                        line.appendChild(img);
-                        box.appendChild(line);
-                        let image = await figma.createImageAsync(cre.src);
-                        let { width, height } = await image.getSizeAsync();
-                        img.resize(width, height);
-                        img.fills = [
-                            {
-                                type: 'IMAGE',
-                                imageHash: image.hash,
-                                scaleMode: 'FILL'
+                case 'json':
+                    if(zy.jsonData){
+                        try {
+                            let rootNode = await jsonDataToNode(zy.jsonData);
+                            if(rootNode){
+                                box.appendChild(rootNode);
+                                // 调整 box 尺寸以适应内容
+                                addAutoLayout(box,['V','TL',0,[0,0,0,0]],[false,false,false,false]);
+                                box.layoutSizingHorizontal = 'HUG';
+                                box.layoutSizingVertical = 'HUG';
                             }
-                        ];
-                        img.name = cre.alt || 'image';
-                        img.lockAspectRatio();
-                        img.layoutSizingHorizontal = 'FILL';
-                        line.layoutSizingHorizontal = 'FILL';
-                    },
+                        } catch(error) {
+                            console.error('JSON to Node error:', error);
+                        }
+                    }
+                break
+            };
+            if(zy.nodes){
+                for (const cres of zy.nodes) {
+                    let CreateZyNode = {
+                        h: async function(cre,level){
+                            let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
+                            let text = await addText([{family:'Inter',style:'Bold'},characters,(48 - level * 4),color1]);
+                            let line = addFrame([100,100,null,null,'@h' + level,[]]);
+                            addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
+                            line.appendChild(text);
+                            text.layoutSizingHorizontal = 'FILL';
+                            box.appendChild(line);
+                            line.layoutSizingHorizontal = 'FILL';
+                        },
+                        h1: function(cre){
+                            return CreateZyNode.h(cre,1);
+                        },
+                        h2: function(cre){
+                            return CreateZyNode.h(cre,2);
+                        },
+                        h3: function(cre){
+                            return CreateZyNode.h(cre,3);
+                        },
+                        h4: function(cre){
+                            return CreateZyNode.h(cre,4);
+                        },
+                        h5: function(cre){
+                            return CreateZyNode.h(cre,5);
+                        },
+                        h6: function(cre){
+                            return CreateZyNode.h(cre,6);
+                        },
+                        p: async function(cre){
+                            let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
+                            let text = await addText([{family:'Inter',style:'Regular'},characters,28,color2]);
+                            let line = addFrame([100,100,null,null,'@p',[]]);
+                            addAutoLayout(line,['V','TL',0,[6,0,6,28]]);
+                            line.appendChild(text);
+                            text.layoutSizingHorizontal = 'FILL';
+                            box.appendChild(line);
+                            line.layoutSizingHorizontal = 'FILL';
+                        },
+                        br: function(cre){
+                            let line = addFrame([100,24,null,null,'@br',[]]);
+                            box.appendChild(line);
+                            line.layoutSizingHorizontal = 'FILL';
+                        },
+                        hr: function(cre){
+                            let line = addFrame([100,24,null,null,'@hr',[]]);
+                            addAutoLayout(line,['V','CC',0,[20,10,20,10]]);
+                            let path = figma.createVector();
+                            path.vectorPaths = [{
+                                windingRule: "NONE",
+                                data: "M 0 0 L 100 0",
+                            }]
+                            path.dashPattern = [4,4];
+                            path.strokeWeight = 1;
+                            path.strokes = color1;
+                            line.appendChild(path);
+                            path.layoutSizingHorizontal = 'FILL';
+                            box.appendChild(line);
+                            line.layoutSizingHorizontal = 'FILL';
+                        },
+                        code: async function(cre){
+                            let characters = cre.content.join('\n');
+                            //text.textAutoResize = 'HEIGHT';
+                            //text.layoutSizingVertical = 'HUG';
+                            let line = addFrame([100,100,null,null,'@code:' + cre.language,[]]);
+                            addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
+                            if(!preComp){
+                                let pre = addFrame([626,100,null,null,'@pre',[]]);
+                                addAutoLayout(pre,['H','TL',0,[10,20,10,0]]);
+                                pre.itemReverseZIndex = true;//前面堆叠在上
+                                pre.fills = [toRGB('#272727',true)];
+                                [pre.bottomLeftRadius,pre.bottomRightRadius,pre.topLeftRadius,pre.topRightRadius] = [10,10,10,10];
+
+                                let mask = addFrame([100,100,null,null,'mask',[]]);
+                                addAutoLayout(mask,['V','TL',0,[0,10,0,20]]);
+                                mask.strokes = [toRGB('#272727',true)];
+                                mask.fills = [toRGB('#27272799',true)];
+                                [mask.strokeTopWeight,mask.strokeRightWeight,mask.strokeBottomWeight,mask.strokeLeftWeight] = [0,14,0,0];
+                                let num = await addText([{family:'Roboto Mono',style:'Regular'},'4',20,color4]);
+                                num.autoRename = false;
+                                num.name = '#last-line-num.text';
+                                num.fills = [];
+                                mask.appendChild(num);
+                                pre.appendChild(mask);
+
+                                let eg = `function any(){\n\t/*somthing there*/\n}\n//Remember to change the value of 'last-line-num', it must be 4 here`;
+                                let code = await addText([{family:'Roboto Mono',style:'Regular'},eg,20,color4]);    
+                                code.setRangeListOptions(0,eg.length,{type: 'ORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
+                                code.hangingList = true;
+                                pre.appendChild(code);
+                                code.layoutSizingHorizontal = 'FILL';
+
+                                mask.layoutSizingHorizontal = 'HUG';
+                                mask.layoutSizingVertical = 'FILL';
+                                preComp = figma.createComponentFromNode(pre);
+                                addCompPro(preComp,num,'--last-line-num','TEXT','4');
+
+                                preComp.x = box.x - 450;
+                                preComp.y = box.y + 120;
+                                preComp.resize(426,100);
+                                preComp.layoutSizingVertical = 'HUG';
+                                allComp.push(preComp);
+                            };
+                            let newPre = preComp.createInstance();
+                            line.appendChild(newPre);
+                            newPre.layoutSizingHorizontal = 'FILL';
+                            newPre.layoutSizingVertical = 'HUG';
+                            newPre.children[1].characters = characters;
+                            let proId = Object.keys(newPre.componentProperties).filter(item => item.split('#')[0] == '--last-line-num')[0];
+                            newPre.setProperties({[proId]: (cre.content.length).toString()});
+                            box.appendChild(line);
+                            line.layoutSizingHorizontal = 'FILL';
+                        },
+                        ul: async function(cre){
+                            let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
+                            let text = await addText([{family:'Inter',style:'Regular'},characters,24,color3]);
+                            text.setRangeListOptions(0,characters.length,{type: 'UNORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
+                            text.listSpacing = 6;
+                            let line = addFrame([100,100,null,null,'@ul',[]]);
+                            addAutoLayout(line,['V','TL',0,[0,0,6,0]]);
+                            line.appendChild(text);
+                            text.layoutSizingHorizontal = 'FILL';
+                            box.appendChild(line);
+                            line.layoutSizingHorizontal = 'FILL';
+                        },
+                        ol: async function(cre){
+                            let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
+                            let text = await addText([{family:'Inter',style:'Regular'},characters,24,color3]);
+                            text.setRangeListOptions(0,characters.length,{type: 'ORDERED'});//"ORDERED" | "UNORDERED" | "NONE"
+                            text.listSpacing = 6;
+                            let line = addFrame([100,100,null,null,'@ol',[]]);
+                            addAutoLayout(line,['V','TL',0,[0,0,6,28]]);
+                            line.appendChild(text);
+                            text.layoutSizingHorizontal = 'FILL';
+                            box.appendChild(line);
+                            line.layoutSizingHorizontal = 'FILL';
+                        },
+                        blockquote: async function(cre){
+                            let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
+                            //console.log(cre,characters)
+                            let text = await addText([{family:'Inter',style:'Light'},characters,22 ,color3]);
+                            //text.relativeTransform = [[1,-0.2126,0],[0,0.9771,0]];
+                            let line = addFrame([100,100,null,null,'@blockquote',[]]);
+                            addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
+                            let pre = addFrame([100,100,null,null,'@pre',[]]);
+                            addAutoLayout(pre,['V','TL',0,[10,10,10,10]]);
+                            pre.strokes = [toRGB('#272727',true)];
+                            [pre.strokeTopWeight,pre.strokeRightWeight,pre.strokeBottomWeight,pre.strokeLeftWeight] = [1,1,4,1];
+                            [pre.bottomLeftRadius,pre.bottomRightRadius,pre.topLeftRadius,pre.topRightRadius] = [10,10,10,10];
+                            pre.appendChild(text);
+                            text.layoutSizingHorizontal = 'FILL';
+                            line.appendChild(pre);
+                            pre.layoutSizingHorizontal = 'FILL';
+                            box.appendChild(line);
+                            line.layoutSizingHorizontal = 'FILL';
+                        },
+                        table:async function(cre){
+                            await figma.clientStorage.getAsync('userLanguage')
+                            .then (async (language) => {
+                                if(!thComp){
+                                    thComp = await addTableCompMust('th',language,null,true);
+                                    allComp.push(thComp);
+                                };
+                                if(!tdComp){
+                                    tdComp = await addTableCompMust('td',language,null,true);
+                                    allComp.push(tdComp);
+                                };
+                                let all = await createTable(thComp,tdComp,language,true);  
+                                let newth = all[0];
+                                let newtd = all[1];
+                                let table = all[2];
+                                
+                                let data = cre.rows;
+                                //反转行列
+                                data = data[0].map((_, i) => data.map(row => row[i]));
+                                data = data.map(item => {
+                                    item = item.map(items => {
+                                        if(typeof items == 'object'){
+                                            return items.map(item => item.content).join('');
+                                        }else{
+                                            return items;
+                                        }
+                                    });
+                                    return item;
+                                });
+                                let H = data[0].length;
+                                let L = data.length - 3;
+                                reCompNum(table,H,L)
+                                reTableByArray(table,data,'[enter]','--');
+                                reTableStyle(table,{th:[1,1,1,1,1],td:[1,1,1,1,'rowSpace']});
+                                reAnyByTags([newth],[{'#table.fill':'#B8B8B8','#table.stroke':'#272727'}]);
+                                reAnyByTags([newtd],[{'#table.fill':'#DADADA','#table.stroke':'#272727'}]);
+                                let line = addFrame([100,100,null,null,'@sheet',[]]);
+                                addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
+                                line.appendChild(table);
+                                table.layoutSizingHorizontal = 'FILL';
+                                table.clipsContent = true;
+                                table.fills = [];
+                                table.strokes = [toRGB('#272727',true)];
+                                [table.bottomLeftRadius,table.bottomRightRadius,table.topLeftRadius,table.topRightRadius] = [20,20,20,20];
+                                box.appendChild(line);
+                                newth.x = box.x - 200;
+                                newtd.x = box.x - 200;
+                                newth.y = box.y;
+                                newtd.y = box.y + 60;
+                                
+                                line.layoutSizingHorizontal = 'FILL';
+                            })
+                            .catch (error => {
+                                console.log(error);
+                            })
+                        },
+                        image:async function(cre){
+                            let line = addFrame([100,100,null,null,'@image',[]]);
+                            addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
+                            let img = figma.createRectangle();
+                            line.appendChild(img);
+                            box.appendChild(line);
+                            let image = await figma.createImageAsync(cre.src);
+                            let { width, height } = await image.getSizeAsync();
+                            img.resize(width, height);
+                            img.fills = [
+                                {
+                                    type: 'IMAGE',
+                                    imageHash: image.hash,
+                                    scaleMode: 'FILL'
+                                }
+                            ];
+                            img.name = cre.alt || 'image';
+                            img.lockAspectRatio();
+                            img.layoutSizingHorizontal = 'FILL';
+                            line.layoutSizingHorizontal = 'FILL';
+                        },
+                    };
+                    try {
+                        await CreateZyNode[cres.type](cres);
+                    } catch (error) {
+                        console.log(error);
+                    };
+                    if(zy.nodes.findIndex(item => item == cres) == zy.nodes.length - 1){
+                        setTimeout(() => {
+                            figma.currentPage.selection = [box];
+                            if(!thComp && !tdComp && preComp){
+                                preComp.y = box.y;
+                            }else{
+                                layoutByRatio(allComp,true);
+                            };
+                            figma.viewport.scrollAndZoomIntoView([box]);
+                            figma.viewport.zoom = figma.viewport.zoom * 0.6;
+                        }, 100);
+                    };
                 };
-                try {
-                    await CreateZyNode[cres.type](cres);
-                } catch (error) {
-                    console.log(error);
-                };
-                if(zy.nodes.findIndex(item => item == cres) == zy.nodes.length - 1){
-                    setTimeout(() => {
-                        figma.currentPage.selection = [box];
-                        if(!thComp && !tdComp && preComp){
-                            preComp.y = box.y;
-                        }else{
-                            layoutByRatio(allComp,true);
-                        };
-                        figma.viewport.scrollAndZoomIntoView([box]);
-                        figma.viewport.zoom = figma.viewport.zoom * 0.6;
-                    }, 100);
-                };
+            };
+            if(zy.jsonData){
             };
         };
     };
@@ -2712,6 +2733,9 @@ function setMain(info,node,cloneNode){
     x = x ? x : viewX;
     y = y ? y : viewY;
     fills = fills ? fills : [];
+    // 确保 w 和 h 是有效数字且至少为 1（Figma 要求最小尺寸为 1）
+    w = typeof w === 'number' && !isNaN(w) ? Math.max(1, w) : 1;
+    h = typeof h === 'number' && !isNaN(h) ? Math.max(1, h) : 1;
     node.resize(w,h);
 
     node.x = x;
@@ -4186,6 +4210,21 @@ function easePickTable(type,nodes){
  * @param {node} node - 需自动布局的对象
  * @param {[HV,TBLR,gap,padding:[H,V] | [T,R,B,L]]} layout  - 横竖、定位，间距，边距
  * @param {[boolean,boolean]} isFixed - 是否固定尺寸
+ * 
+ * 布局对齐说明（统一使用TBLR表示，不管横竖排版）：
+ * - T = Top (上) = 垂直方向的MIN
+ * - B = Bottom (下) = 垂直方向的MAX
+ * - L = Left (左) = 水平方向的MIN
+ * - R = Right (右) = 水平方向的MAX
+ * - C = Center (居中)
+ * - S = Space Between (仅在主轴方向有效)
+ * - A = Baseline (仅在H模式的主轴方向有效，即水平方向)
+ * 
+ * 示例：'TL' = 左上对齐
+ * - H模式：主轴(水平)=L(左/MIN)，副轴(垂直)=T(上/MIN)
+ *   → HTML: flex-direction: row; justify-content: flex-start; align-items: flex-start;
+ * - V模式：主轴(垂直)=T(上/MIN)，副轴(水平)=L(左/MIN)
+ *   → HTML: flex-direction: column; justify-content: flex-start; align-items: flex-start;
  */
 function addAutoLayout(node,layout,isFixed){
     node.layoutPositioning = 'AUTO';
@@ -4194,61 +4233,93 @@ function addAutoLayout(node,layout,isFixed){
         node.counterAxisSizingMode = isFixed[1] ? "FIXED" : "AUTO";
     };
     node.clipsContent = false;//默认超出不裁剪
+    
+    const align = layout[1] || 'TL'; // 默认左上对齐
+    const verticalAlign = align[0]; // 第一个字符：垂直方向 (T/B/C)
+    const horizontalAlign = align[1]; // 第二个字符：水平方向 (L/R/C/S/A)
+    
     switch (layout[0]){
         case 'H':
+            // H模式（横向布局）：主轴=水平，副轴=垂直
+            // HTML对应: flex-direction: row;
             node.layoutMode = 'HORIZONTAL';
-            switch (layout[1][0]){
-                case 'T':
-                    node.primaryAxisAlignItems = 'MIN'
-                ;break
-                case 'C':
-                    node.primaryAxisAlignItems = 'CENTER'
-                ;break
-                case 'B':
-                    node.primaryAxisAlignItems = 'MAX'
-                ;break
-            };
-            switch (layout[1][1]){
+            
+            // 主轴对齐（水平方向）：L=左, R=右, C=中, S=间距, A=基线
+            // HTML对应: justify-content（L/C/R/S）或 align-items: baseline（A）
+            // 注意：基线对齐(A)仅在H模式可用，Figma限制baseline只能在水平方向的主轴使用
+            switch (horizontalAlign){
                 case 'L':
-                    node.counterAxisAlignItems = 'MIN'
-                ;break
+                    node.primaryAxisAlignItems = 'MIN'; // HTML: justify-content: flex-start;
+                    break;
                 case 'C':
-                    node.counterAxisAlignItems = 'CENTER'
-                ;break
+                    node.primaryAxisAlignItems = 'CENTER'; // HTML: justify-content: center;
+                    break;
                 case 'R':
-                    node.counterAxisAlignItems = 'MAX';
-                ;break
-                case 'B':
-                    node.counterAxisAlignItems = 'BASELINE';
-                ;break
+                    node.primaryAxisAlignItems = 'MAX'; // HTML: justify-content: flex-end;
+                    break;
+                case 'S': 
+                    node.primaryAxisAlignItems = 'SPACE_BETWEEN'; // HTML: justify-content: space-between;
+                    break;
+                case 'A': 
+                    node.primaryAxisAlignItems = 'BASELINE'; // HTML: align-items: baseline (仅在H模式可用)
+                    break;
             };
-        ;break
+            
+            // 副轴对齐（垂直方向）：T=上, B=下, C=中
+            // HTML对应: align-items
+            switch (verticalAlign){
+                case 'T':
+                    node.counterAxisAlignItems = 'MIN'; // HTML: align-items: flex-start;
+                    break;
+                case 'C':
+                    node.counterAxisAlignItems = 'CENTER'; // HTML: align-items: center;
+                    break;
+                case 'B':
+                    node.counterAxisAlignItems = 'MAX'; // HTML: align-items: flex-end;
+                    break;
+            };
+            break;
+            
         case 'V':
+            // V模式（纵向布局）：主轴=垂直，副轴=水平
+            // HTML对应: flex-direction: column;
             node.layoutMode = 'VERTICAL';
-            switch (layout[1][0]){
+            
+            // 主轴对齐（垂直方向）：T=上, B=下, C=中, S=间距
+            // 注意：基线对齐(A)仅在H模式可用，V模式不支持
+            // HTML对应: justify-content
+            switch (verticalAlign){
                 case 'T':
-                    node.primaryAxisAlignItems = 'MIN';
-                ;break
+                    node.primaryAxisAlignItems = 'MIN'; // HTML: justify-content: flex-start;
+                    break;
                 case 'C':
-                    node.primaryAxisAlignItems = 'CENTER';
-                ;break
+                    node.primaryAxisAlignItems = 'CENTER'; // HTML: justify-content: center;
+                    break;
                 case 'B':
-                    node.primaryAxisAlignItems = 'MAX';
-                ;break
+                    node.primaryAxisAlignItems = 'MAX'; // HTML: justify-content: flex-end;
+                    break;
+                case 'S': 
+                    node.primaryAxisAlignItems = 'SPACE_BETWEEN'; // HTML: justify-content: space-between;
+                    break;
+                // 注意：case 'A' (baseline) 仅在H模式可用，V模式不支持
             };
-            switch (layout[1][1]){
+            
+            // 副轴对齐（水平方向）：L=左, R=右, C=中
+            // HTML对应: align-items
+            switch (horizontalAlign){
                 case 'L':
-                    node.counterAxisAlignItems = 'MIN';
-                ;break
+                    node.counterAxisAlignItems = 'MIN'; // HTML: align-items: flex-start;
+                    break;
                 case 'C':
-                    node.counterAxisAlignItems = 'CENTER';
-                ;break
+                    node.counterAxisAlignItems = 'CENTER'; // HTML: align-items: center;
+                    break;
                 case 'R':
-                    node.counterAxisAlignItems = 'MAX';
-                ;break
+                    node.counterAxisAlignItems = 'MAX'; // HTML: align-items: flex-end;
+                    break;
             };
-        ;break
+            break;
     };
+    
     
     
     node.itemSpacing = layout[2] ? layout[2]  : 0;
@@ -4532,7 +4603,7 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
                     splitnodes[i].parent.insertChild((layerIndex2 + 1),group2);
                 };
                 group2.name = '@split-l';
-                addAutoLayout(group2,['H','BB',0,[0,0]],[false,true]);
+                addAutoLayout(group2,['H','BA',0,[0,0]],[false,true]);
                 let lines2 = splitnodes[i].getStyledTextSegments(splitTag).map(item => [item.start,item.end]);
                 let lineHights = splitnodes[i].getStyledTextSegments(['lineHeight']);
                 if(lineHights.length > 1){
@@ -4566,7 +4637,7 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
                 splitnodes[i].parent.insertChild((layerIndex2 + 1),group2);
             }
             group2.name = '@split-l';
-            addAutoLayout(group2,['H','BB',0,[0,0]],[false,true]);
+            addAutoLayout(group2,['H','BA',0,[0,0]],[false,true]);
             let lines2length = splitnodes[i].characters.split(splitKeys[0]).map(item => item.length);
             let lines2 = []
             let start2 = 0;
@@ -5022,6 +5093,2054 @@ function getTablesByNodes(nodes = [], deep = true){
         return true;
     });
 };
+
+// ========== JSON 数据转 Figma 节点 - 重构后的模块化结构 ==========
+
+// 工具函数：解析 JSON 数据格式
+function parseJsonData(jsonData) {
+    if (!jsonData) return null;
+    
+    // 支持多种 JSON 格式
+    if (jsonData.element) {
+        return jsonData.element;
+    } else if (jsonData.position || jsonData.styles) {
+        // 直接是 element 对象
+        return jsonData;
+    }
+    
+    return null;
+}
+
+// 工具函数：解析数值
+function parseNumeric(value, defaultValue = 0) {
+    if (!value) return defaultValue;
+    const num = parseFloat(value);
+    return isNaN(num) ? defaultValue : num;
+}
+
+// 工具函数：获取节点名称
+function getNodeName(elementData, tagName) {
+    return elementData.id || 
+           (elementData.classes && elementData.classes.length > 0 ? elementData.classes[0] : null) || 
+           tagName;
+}
+
+// 工具函数：应用基础样式（display, opacity）
+function applyBasicStyles(node, styles) {
+    if (styles.display === 'none') {
+        node.visible = false;
+    }
+    
+    if (styles.opacity && styles.opacity !== 1) {
+        node.opacity = styles.opacity * 1;
+    }
+}
+
+// 元素处理器：SVG 元素
+class SvgElementProcessor {
+    static async process(elementData, position, styles, parentNode) {
+        if (!elementData.isSpecialElement || elementData.specialType !== 'svg' || !elementData.svgCode) {
+            return null;
+        }
+        
+        try {
+            const svgNode = figma.createNodeFromSvg(elementData.svgCode);
+            
+            const x = position.x || 0;
+            const y = position.y || 0;
+            const width = position.width || svgNode.width || 100;
+            const height = position.height || svgNode.height || 100;
+            
+            svgNode.x = x;
+            svgNode.y = y;
+            
+            if (svgNode.width !== width || svgNode.height !== height) {
+                //svgNode.resize(width, height);
+            }
+            
+            svgNode.name = getNodeName(elementData, 'svg');
+            
+            if (parentNode) {
+                parentNode.appendChild(svgNode);
+            } else {
+                figma.currentPage.appendChild(svgNode);
+            }
+            
+            return svgNode;
+        } catch (e) {
+            console.warn('Failed to create SVG node:', e);
+            return null;
+        }
+    }
+}
+
+// 元素处理器：文本元素（inline span）
+class TextElementProcessor {
+    /**
+     * 统一处理文本元素：支持分段文本（span包裹）和直接文本（普通textContent）
+     * @param {Object} elementData - 元素数据
+     * @param {Object} styles - 样式对象
+     * @param {string} textContent - 文本内容
+     * @param {string} tagName - 标签名
+     * @param {number} parentWidth - 父容器宽度
+     * @param {Array} children - 子元素数组
+     * @param {Object} options - 选项：{ isDirectText: false, parentNode: null, whiteSpace: null }
+     * @returns {Promise<TextNode|null>} - 文本节点或 null
+     */
+    static async process(elementData, styles, textContent, tagName, parentWidth = null, children = null, options = {}) {
+        const { isDirectText = false, parentNode = null, whiteSpace = null } = options;
+        
+        // 如果是直接文本处理（普通textContent），不需要检查 span 条件
+        if (!isDirectText) {
+            const isInlineSpan = tagName === 'span' && 
+                                (!styles.display || styles.display === 'inline' || styles.display === '') &&
+                                (!styles.position || styles.position === 'static' || styles.position === 'relative') &&
+                                (!styles.backgroundColor || styles.backgroundColor === 'rgba(0, 0, 0, 0)' || styles.backgroundColor === 'transparent') &&
+                                (!styles.borderWidth || parseFloat(styles.borderWidth) === 0) &&
+                                (!styles.borderRadius || parseFloat(styles.borderRadius) === 0);
+            
+            // 如果不是内联 span，返回 null
+            if (!isInlineSpan) {
+                return null;
+            }
+        }
+        
+        // 检查是否有有效的文本内容（主文本或子 span 的文本）
+        const hasTextContent = textContent && textContent.length > 0;
+        const hasChildText = children && children.length > 0 && 
+                            children.some(child => child.textContent && child.textContent.length > 0);
+        
+        // 如果是直接文本，必须有 textContent
+        if (isDirectText && !hasTextContent) {
+            return null;
+        }
+        
+        // 如果是分段文本，必须有文本内容或子 span
+        if (!isDirectText && !hasTextContent && !hasChildText) {
+            return null;
+        }
+        
+        try {
+            // 处理 fontFamily：split(",") 并去掉引号，取第一个
+            const parseFontFamily = (fontFamilyStr) => {
+                if (!fontFamilyStr) return 'Inter';
+                // 去掉引号
+                let cleaned = fontFamilyStr.replace(/['"]/g, '');
+                // split(",") 并取第一个
+                const parts = cleaned.split(',').map(part => part.trim());
+                return parts[0] || 'Inter';
+            };
+            
+            // 处理 fontWeight：转换为 Figma 的 style
+            const parseFontStyle = (fontWeight) => {
+                if (!fontWeight) return 'Regular';
+                const weight = parseFloat(fontWeight);
+                if (!isNaN(weight) && weight >= 600) {
+                    return 'Bold';
+                }
+                return 'Regular';
+            };
+            
+            // 收集所有文本片段和样式
+            const textSegments = [];
+            
+            // 如果有子 span，收集所有子 span 的文本和样式
+            if (children && children.length > 0 && children.every(child => child.tagName === 'span')) {
+                let currentIndex = 0;
+                
+                for (const child of children) {
+                    // 获取子元素的文本内容（可能是 null、空字符串或实际文本）
+                    // 注意：即使 textContent 是 null，也要检查是否有子元素（嵌套的 span）
+                    let childText = '';
+                    if (child.textContent !== null && child.textContent !== undefined) {
+                        childText = String(child.textContent);
+                    } else if (child.children && child.children.length > 0) {
+                        // 如果 textContent 是 null 但有子元素，递归收集子元素的文本
+                        for (const grandChild of child.children) {
+                            if (grandChild.textContent !== null && grandChild.textContent !== undefined) {
+                                childText += String(grandChild.textContent);
+                            }
+                        }
+                    }
+                    
+                    // 只要有文本内容（包括空字符串，因为可能是空格），就收集
+                    // 注意：即使是空字符串也会被收集，因为可能是空格或其他不可见字符
+                    if (childText !== null && childText !== undefined) {
+                        const childStyles = child.styles || {};
+                        const childFontSize = parseFloat(childStyles.fontSize) || parseFloat(styles.fontSize) || 16;
+                        const childFontFamily = parseFontFamily(childStyles.fontFamily || styles.fontFamily);
+                        const childFontStyle = parseFontStyle(childStyles.fontWeight || styles.fontWeight);
+                        
+                        let childFills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
+                        if (childStyles.color) {
+                            try {
+                                childFills = [toRGB(childStyles.color, true)];
+                            } catch (e) {
+                                console.warn('Text color parse error:', e);
+                            }
+                        } else if (styles.color) {
+                            try {
+                                childFills = [toRGB(styles.color, true)];
+                            } catch (e) {
+                                console.warn('Text color parse error:', e);
+                            }
+                        }
+                        
+                        textSegments.push({
+                            text: childText,
+                            start: currentIndex,
+                            end: currentIndex + childText.length,
+                            fontSize: childFontSize,
+                            fontFamily: childFontFamily,
+                            fontStyle: childFontStyle,
+                            fills: childFills
+                        });
+                        
+                        currentIndex += childText.length;
+                    }
+                }
+            }
+            
+            // 如果有主文本内容，添加到开头或末尾
+            if (textContent) {
+                const mainFontSize = parseFloat(styles.fontSize) || 16;
+                const mainFontFamily = parseFontFamily(styles.fontFamily);
+                const mainFontStyle = parseFontStyle(styles.fontWeight);
+                
+                let mainFills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
+                if (styles.color) {
+                    try {
+                        mainFills = [toRGB(styles.color, true)];
+                    } catch (e) {
+                        console.warn('Text color parse error:', e);
+                    }
+                }
+                
+                // 如果已有子 span 的文本，主文本添加到末尾
+                if (textSegments.length > 0) {
+                    const lastEnd = textSegments[textSegments.length - 1].end;
+                    textSegments.push({
+                        text: textContent,
+                        start: lastEnd,
+                        end: lastEnd + textContent.length,
+                        fontSize: mainFontSize,
+                        fontFamily: mainFontFamily,
+                        fontStyle: mainFontStyle,
+                        fills: mainFills
+                    });
+                } else {
+                    // 否则作为第一个片段
+                    textSegments.push({
+                        text: textContent,
+                        start: 0,
+                        end: textContent.length,
+                        fontSize: mainFontSize,
+                        fontFamily: mainFontFamily,
+                        fontStyle: mainFontStyle,
+                        fills: mainFills
+                    });
+                }
+            }
+            
+            // 合并所有文本
+            const fullText = textSegments.map(seg => seg.text).join('');
+            
+            // 如果没有文本片段，返回 null
+            // 注意：即使 fullText 是空字符串，只要 textSegments 不为空，也应该创建文本节点（可能是空格）
+            if (textSegments.length === 0) {
+                return null;
+            }
+            
+            // 如果 fullText 为空或只有空白字符，检查是否应该创建文本节点
+            // 如果 textSegments 中有非空文本，应该创建节点
+            const hasNonEmptyText = textSegments.some(seg => seg.text && seg.text.trim().length > 0);
+            if (!hasNonEmptyText && (!fullText || fullText.trim().length === 0)) {
+                return null;
+            }
+            
+            // 使用第一个片段的样式作为默认样式创建文本节点
+            const firstSegment = textSegments[0];
+            const defaultFontSize = firstSegment.fontSize;
+            const defaultFontFamily = firstSegment.fontFamily;
+            const defaultFontStyle = firstSegment.fontStyle;
+            const defaultFills = firstSegment.fills;
+            
+            const node = await addText([{family: defaultFontFamily, style: defaultFontStyle}, fullText, defaultFontSize, defaultFills]);
+            
+            // 为每个片段设置不同的样式
+            for (const segment of textSegments) {
+                // 设置字体
+                if (segment.fontFamily !== defaultFontFamily || segment.fontStyle !== defaultFontStyle) {
+                    try {
+                        await figma.loadFontAsync({family: segment.fontFamily, style: segment.fontStyle});
+                        node.setRangeFontName(segment.start, segment.end, {family: segment.fontFamily, style: segment.fontStyle});
+                    } catch (e) {
+                        console.warn('Failed to load font:', segment.fontFamily, segment.fontStyle, e);
+                    }
+                }
+                
+                // 设置字体大小
+                if (segment.fontSize !== defaultFontSize) {
+                    node.setRangeFontSize(segment.start, segment.end, segment.fontSize);
+                }
+                
+                // 设置颜色
+                if (JSON.stringify(segment.fills) !== JSON.stringify(defaultFills)) {
+                    node.setRangeFills(segment.start, segment.end, segment.fills);
+                }
+            }
+            
+            // 设置文本对齐方式
+            const textAlign = styles.textAlign ? styles.textAlign.toLowerCase() : null;
+            if (textAlign) {
+                if (textAlign === 'left' || textAlign === 'start') {
+                    node.textAlignHorizontal = 'LEFT';
+                } else if (textAlign === 'center') {
+                    node.textAlignHorizontal = 'CENTER';
+                } else if (textAlign === 'right' || textAlign === 'end') {
+                    node.textAlignHorizontal = 'RIGHT';
+                } else if (textAlign === 'justify') {
+                    node.textAlignHorizontal = 'JUSTIFIED';
+                }
+            }
+            
+            // 设置行高
+            if (styles.lineHeight && styles.lineHeight !== 'normal') {
+                const lineHeight = styles.lineHeight;
+                if (lineHeight.includes('px')) {
+                    const lineHeightValue = parseFloat(lineHeight);
+                    if (!isNaN(lineHeightValue)) {
+                        node.lineHeight = {value: lineHeightValue, unit: 'PIXELS'};
+                    }
+                } else if (lineHeight.includes('%')) {
+                    const lineHeightValue = parseFloat(lineHeight);
+                    if (!isNaN(lineHeightValue)) {
+                        node.lineHeight = {value: lineHeightValue, unit: 'PERCENT'};
+                    }
+                } else {
+                    const lineHeightValue = parseFloat(lineHeight);
+                    if (!isNaN(lineHeightValue)) {
+                        node.lineHeight = {value: lineHeightValue * defaultFontSize, unit: 'PIXELS'};
+                    }
+                }
+            }
+            
+            return node;
+        } catch (error) {
+            console.error('Text creation error:', error);
+            return null;
+        }
+    }
+}
+
+/**
+ * 根据规则设置文本节点的宽度
+ * 原则：最先判断父元素是否有自动布局
+ * - 有自动布局：判断是否有文本换行，有换行则宽度设置为填充（FILL）
+ * - 无自动布局：判断是否有文本居中/居右，有居中/居右且有换行则宽度设置为父元素的宽度
+ * @param {TextNode} textNode - 文本节点
+ * @param {SceneNode} parentNode - 父容器节点
+ * @param {Object} styles - 样式对象
+ * @param {number} parentWidth - 父容器宽度（备用）
+ */
+function applyTextWidthRules(textNode, parentNode, styles, parentWidth = null, isSpan = false) {
+    if (!textNode || !parentNode) {
+        return;
+    }
+    //console.log(textNode.characters)
+    // 原则：最先判断父元素是否有自动布局
+    const hasAutoLayout = parentNode.layoutMode && parentNode.layoutMode !== 'NONE';
+    const hasTextWrap = styles.whiteSpace && styles.whiteSpace !== 'nowrap';
+    const textAlign = styles.textAlign ? styles.textAlign.toLowerCase() : null;
+    const hasTextCenterOrRight = textAlign === 'center' || textAlign === 'right' || textAlign === 'end';
+    
+    if (hasAutoLayout) {
+        // 有自动布局：判断是否有文本换行
+        if (hasTextWrap) {
+            //console.log('有自动布局,有换行',textNode.characters)
+            // 有换行：在填入文本对象后宽度设置为填充（FILL）
+            textNode.layoutSizingHorizontal = 'FILL';
+        }else{
+            if(isSpan) {
+                parentNode.layoutSizingHorizontal = 'HUG';
+                //模拟html中span自带的间距，严格来说要实现0.5ch的效果，但这里先简单处理
+                if(parentNode.paddingLeft < 1 ) parentNode.paddingLeft = 1;
+                if(parentNode.paddingRight < 1 ) parentNode.paddingRight = 1;
+            };//如果是span，则父元素宽度设置自适应
+            textNode.layoutSizingHorizontal = 'HUG';
+        }
+    } else {
+        // 无自动布局：判断是否有文本居中/居右
+        //console.log('无自动布局，有居中/居右',textNode.characters)
+        if (hasTextCenterOrRight) {
+            const parentWidthValue = parentNode.width || parentWidth || 0;
+            if (parentWidthValue > 0) {
+                textNode.resize(parentWidthValue, textNode.height);
+            }
+        }
+    }
+}
+
+/**
+ * 处理渐变色填充：将 CSS 渐变字符串转换为 Figma 渐变填充格式
+ * @param {string} backgroundImage - CSS 渐变字符串（如 'linear-gradient(to right, red, blue)'）
+ * @returns {Array|null} - Figma 渐变填充数组，如果不是渐变则返回 null
+ */
+function parseGradientFill(backgroundImage) {
+    if (!backgroundImage || backgroundImage === 'none') {
+        return null;
+    }
+    
+    // 检查是否是渐变色（不处理 repeating，因为 Figma 不支持）
+    const gradientPattern = /(linear-gradient|radial-gradient|conic-gradient)\s*\(/i;
+    if (!gradientPattern.test(backgroundImage)) {
+        return null; // 不是渐变，返回 null
+    }
+    
+    try {
+        // 提取渐变类型
+        const typeMatch = backgroundImage.match(/(linear-gradient|radial-gradient|conic-gradient)/i);
+        if (!typeMatch) {
+            return null;
+        }
+        
+        const baseType = typeMatch[1].toLowerCase();
+        
+        // 提取渐变参数（去除函数名和括号）
+        const paramsMatch = backgroundImage.match(/\(([^)]+)\)/);
+        if (!paramsMatch) {
+            return null;
+        }
+        
+        const params = paramsMatch[1].trim();
+        
+        // 解析渐变方向和颜色停止点
+        let angle = 0; // 默认角度（线性渐变）
+        let gradientFigmaType = 'GRADIENT_LINEAR';
+        
+        if (baseType === 'linear-gradient') {
+            // 线性渐变：解析方向
+            // CSS 方向定义：
+            // - to right: 从左到右 (0度)
+            // - to bottom: 从上到下 (90度)
+            // - to left: 从右到左 (180度)
+            // - to top: 从下到上 (-90度)
+            // - to right top / to top right: 从左下到右上 (45度)
+            // - to right bottom / to bottom right: 从左上到右下 (-45度)
+            // - to left top / to top left: 从右下到左上 (135度)
+            // - to left bottom / to bottom left: 从右上到左下 (-135度)
+            
+            let hasTop = params.includes('to top') || params.includes('top');
+            let hasBottom = params.includes('to bottom') || params.includes('bottom');
+            let hasLeft = params.includes('to left') || params.includes('left');
+            let hasRight = params.includes('to right') || params.includes('right');
+            
+            // 处理组合方向
+            if (hasRight && hasTop) {
+                // to right top: 从左下到右上 (45度)
+                angle = Math.PI / 4;
+            } else if (hasRight && hasBottom) {
+                // to right bottom: 从左上到右下 (-45度)
+                angle = -Math.PI / 4;
+            } else if (hasLeft && hasTop) {
+                // to left top: 从右下到左上 (135度)
+                angle = 3 * Math.PI / 4;
+            } else if (hasLeft && hasBottom) {
+                // to left bottom: 从右上到左下 (-135度)
+                angle = -3 * Math.PI / 4;
+            } else if (hasRight) {
+                angle = 0; // 从左到右
+            } else if (hasBottom) {
+                angle = Math.PI / 2; // 从上到下
+            } else if (hasLeft) {
+                angle = Math.PI; // 从右到左
+            } else if (hasTop) {
+                angle = -Math.PI / 2; // 从下到上
+            } else {
+                // 尝试解析角度（如 45deg 或 -45deg）
+                const angleMatch = params.match(/(-?\d+(?:\.\d+)?)\s*deg/);
+                if (angleMatch) {
+                    const cssAngle = parseFloat(angleMatch[1]);
+                    // CSS 角度：0deg = 从下到上，90deg = 从左到右
+                    // 转换为标准角度：standardAngle = 90 - cssAngle
+                    angle = ((90 - cssAngle) * Math.PI) / 180;
+                }
+            }
+            gradientFigmaType = 'GRADIENT_LINEAR';
+        } else if (baseType === 'radial-gradient') {
+            gradientFigmaType = 'GRADIENT_RADIAL';
+            // 径向渐变：默认从中心向外，不需要角度
+        } else if (baseType === 'conic-gradient') {
+            gradientFigmaType = 'GRADIENT_ANGULAR';
+            // 圆锥渐变：解析起始角度
+            const angleMatch = params.match(/(\d+(?:\.\d+)?)\s*deg/);
+            if (angleMatch) {
+                angle = (parseFloat(angleMatch[1]) * Math.PI) / 180;
+            }
+        }
+        
+        // 提取颜色停止点（颜色已经是 HEX 格式）
+        const colorMatches = [];
+        // 匹配 HEX 颜色、__TRANSPARENT__、以及可能的位置信息
+        const colorPattern = /(#[0-9a-fA-F]{3,8}|__TRANSPARENT__)(?:\s+(\d+(?:\.\d+)?%?))?/gi;
+        let match;
+        
+        while ((match = colorPattern.exec(params)) !== null) {
+            const colorStr = match[1];
+            const posStr = match[2];
+            
+            let position;
+            if (posStr) {
+                // 有位置信息
+                if (posStr.includes('%')) {
+                    position = parseFloat(posStr) / 100;
+                } else {
+                    position = parseFloat(posStr);
+                }
+            } else {
+                // 没有位置信息，平均分配
+                // 这里先收集所有颜色，后面再统一分配位置
+                position = null;
+            }
+            
+            colorMatches.push({
+                color: colorStr,
+                position: position
+            });
+        }
+        
+        // 如果没有提取到颜色，尝试更简单的方法：分割参数
+        if (colorMatches.length === 0) {
+            // 移除方向关键词，然后按逗号分割
+            const cleanedParams = params
+                .replace(/to\s+(right|left|top|bottom|top\s+right|top\s+left|bottom\s+right|bottom\s+left)/gi, '')
+                .replace(/\d+(?:\.\d+)?\s*deg/gi, '')
+                .trim();
+            
+            const parts = cleanedParams.split(',').map(p => p.trim()).filter(p => p);
+            parts.forEach((part, index) => {
+                // 尝试提取颜色和位置
+                const colorPosMatch = part.match(/(#[0-9a-fA-F]{3,8}|__TRANSPARENT__)\s+(\d+(?:\.\d+)?%?)/);
+                if (colorPosMatch) {
+                    const colorStr = colorPosMatch[1];
+                    const posStr = colorPosMatch[2];
+                    const pos = posStr.includes('%') ? parseFloat(posStr) / 100 : parseFloat(posStr);
+                    colorMatches.push({
+                        color: colorStr,
+                        position: Math.max(0, Math.min(1, pos))
+                    });
+                } else {
+                    // 只有颜色，没有位置
+                    const normalizedPos = parts.length > 1 ? index / (parts.length - 1) : 0;
+                    colorMatches.push({
+                        color: part,
+                        position: Math.max(0, Math.min(1, normalizedPos))
+                    });
+                }
+            });
+        } else {
+            // 统一处理位置：如果有 null 位置，平均分配
+            const nullPositions = colorMatches.filter(cm => cm.position === null);
+            if (nullPositions.length > 0) {
+                const withPosition = colorMatches.filter(cm => cm.position !== null);
+                const totalWithPosition = withPosition.length;
+                const totalColors = colorMatches.length;
+                
+                // 重新分配位置
+                colorMatches.forEach((cm, index) => {
+                    if (cm.position === null) {
+                        // 平均分配
+                        cm.position = index / (totalColors - 1);
+                    }
+                });
+            }
+        }
+        
+        // 至少需要两个颜色停止点
+        if (colorMatches.length < 2) {
+            return null;
+        }
+        
+        // 确保位置在 0-1 范围内，并排序
+        colorMatches.forEach(cm => {
+            cm.position = Math.max(0, Math.min(1, cm.position));
+        });
+        colorMatches.sort((a, b) => a.position - b.position);
+        
+        // 转换为 Figma 渐变停止点格式
+        // 颜色已经是 HEX 格式，使用 toRGB 转换为 Figma 颜色格式
+        const gradientStops = colorMatches.map(cm => {
+            let color;
+            if (cm.color === '__TRANSPARENT__') {
+                // 透明色：使用 rgba(0,0,0,0)
+                color = { r: 0, g: 0, b: 0, a: 0 };
+            } else {
+                // HEX 颜色转换为 RGB
+                color = toRGB(cm.color, false);
+                if(!color.a) color.a = 1;
+            }
+            return {
+                color: color,
+                position: cm.position
+            };
+        });
+        
+        // 构建 gradientTransform 矩阵
+        // Transform 格式：[[a, b, tx], [c, d, ty]]
+        // Figma 的线性渐变 transform 需要归一化的方向向量和偏移值
+        // 对于对角线渐变，需要偏移值来确保渐变覆盖整个元素
+        let gradientTransform = null;
+        if (gradientFigmaType === 'GRADIENT_LINEAR') {
+            const cosAngle = Math.cos(angle);
+            const sinAngle = Math.sin(angle);
+            
+            // Figma 使用 1/√2 作为归一化因子
+            const normalizeFactor = 1 / Math.sqrt(2);
+            
+            // 计算归一化的方向向量
+            const dx = cosAngle * normalizeFactor;
+            const dy = sinAngle * normalizeFactor;
+            
+            // 对于对角线渐变，需要计算偏移值
+            // 根据用户反馈，to left top (135度) 需要偏移 [1, 0.5]
+            let tx = 0;
+            let ty = 0;
+            
+            // 根据角度计算偏移值
+            const absAngle = Math.abs(angle);
+            const is135 = Math.abs(absAngle - 3 * Math.PI / 4) < 0.01;
+            const is45 = Math.abs(absAngle - Math.PI / 4) < 0.01;
+            
+            if (is135) {
+                // 135度 (to left top): 偏移 [1, 0.5]
+                tx = 1;
+                ty = 0.5;
+            } else if (is45 && angle > 0) {
+                // 45度 (to right top): 偏移 [0.5, 0]
+                tx = 0.5;
+                ty = 0;
+            } else if (is45 && angle < 0) {
+                // -45度 (to right bottom): 偏移 [0, 0.5]
+                tx = 0;
+                ty = 0.5;
+            } else if (Math.abs(absAngle - 3 * Math.PI / 4) < 0.01 && angle < 0) {
+                // -135度 (to left bottom): 偏移 [0.5, 1]
+                tx = 0.5;
+                ty = 1;
+            }
+            
+            // 矩阵构造：第一行 [dx, -dy, tx]，第二行 [dy, dx, ty]
+            // 根据用户数据，to left top 应该是 [-0.5, -0.5, 1] 和 [0.5, -0.5, 0.5]
+            gradientTransform = [
+                [dx, -dy, tx],
+                [dy, dx, ty]
+            ];
+        } else if (gradientFigmaType === 'GRADIENT_ANGULAR') {
+            // 圆锥渐变：类似线性渐变
+            const cosAngle = Math.cos(angle);
+            const sinAngle = Math.sin(angle);
+            const normalizeFactor = 1 / Math.sqrt(2);
+            
+            gradientTransform = [
+                [cosAngle * normalizeFactor, sinAngle * normalizeFactor, 0],
+                [-sinAngle * normalizeFactor, cosAngle * normalizeFactor, 0]
+            ];
+        } else if (gradientFigmaType === 'GRADIENT_RADIAL') {
+            // 径向渐变：默认单位矩阵（从中心向外）
+            gradientTransform = [
+                [1, 0, 0],
+                [0, 1, 0]
+            ];
+        }
+        
+        // 构建 Figma 渐变填充对象
+        return {
+            opacity: 1,
+            blendMode: 'NORMAL',
+            visible: true,
+            type: gradientFigmaType,
+            gradientStops: gradientStops,
+            gradientTransform: gradientTransform
+        };
+        
+    } catch (e) {
+        console.warn('Failed to parse gradient:', backgroundImage, e);
+        return null;
+    }
+}
+
+// 主函数：JSON 数据转 Figma 节点
+async function jsonDataToNode(jsonData, parentNode = null) {
+    const element = parseJsonData(jsonData);
+    if (!element) {
+        console.log('No element')
+        return null;
+    }
+    
+    const rootNode = await elementToNode(element, parentNode);
+    
+    if (rootNode && !parentNode) {
+        figma.currentPage.appendChild(rootNode);
+    }
+    
+    return rootNode;
+}
+
+// 递归函数：将元素数据转换为 Figma 节点
+async function elementToNode(elementData, parentNode) {
+    if(!elementData){
+        console.log('No elementData')
+        return null;
+    }
+    
+    const position = elementData.position || {};
+    const styles = elementData.styles || {};
+    const tagName = elementData.tagName || 'div';
+    const inputType = elementData.inputType || null;
+    const textContent = elementData.textContent;
+    const children = elementData.children || [];
+    
+    // 尝试使用 SVG 处理器
+    const svgNode = await SvgElementProcessor.process(elementData, position, styles, parentNode);
+    if (svgNode) {
+        // 递归处理子元素（SVG 通常没有子元素，但为了完整性保留）
+        if (children && children.length > 0) {
+            for (const child of children) {
+                await elementToNode(child, svgNode);
+            }
+        }
+        return svgNode;
+    }
+    
+    // 解析 margin 值
+    const parseMargin = (value) => {
+        if (!value) return 0;
+        const num = parseFloat(value);
+        return isNaN(num) ? 0 : num;
+    };
+    
+    const marginTop = parseMargin(styles.marginTop);
+    const marginRight = parseMargin(styles.marginRight);
+    const marginBottom = parseMargin(styles.marginBottom);
+    const marginLeft = parseMargin(styles.marginLeft);
+    
+    // 检查是否有 margin（不都为0）
+    const hasMargin = marginTop !== 0 || marginRight !== 0 || marginBottom !== 0 || marginLeft !== 0;
+    
+    // 获取位置和尺寸（容器的实际尺寸）
+    let width = position.width || 0;
+    let height = position.height || 0;
+    
+    // 确保 width 和 height 是有效数字
+    width = typeof width === 'number' && !isNaN(width) ? Math.max(0, width) : 0;
+    height = typeof height === 'number' && !isNaN(height) ? Math.max(0, height) : 0;
+    
+    // 判断是否需要使用自动尺寸（HUG 模式）
+    const shouldUseHug = width <= 0 && height <= 0; // 宽高都为零时使用 HUG 模式
+    
+    // 确保传给 addFrame 的尺寸至少为 1（Figma 要求最小尺寸为 1）
+    if (shouldUseHug) {
+        width = 1; // 使用最小尺寸，让 HUG 模式自动调整
+        height = 1;
+    } else {
+        if (width <= 0) {
+            width = 1; // 使用最小宽度，而不是默认值 100
+        }
+        if (height <= 0) {
+            height = 1; // 使用最小高度，而不是默认值 100
+        }
+    }
+    
+    // 处理位置：绝对定位的 TBLR 优先级高于 x/y
+    const isAbsolute = styles.position === 'absolute' || styles.position === 'fixed';
+    let absolutePosition = null; // 保存绝对定位的值，稍后处理
+    
+    // 解析定位值，支持百分比和数值
+    const parseValue = (value) => {
+        if (!value || value === 'auto') return null;
+        
+        // 如果是百分比，保存原始值，稍后根据父容器尺寸转换
+        if (typeof value === 'string' && value.includes('%')) {
+            const percent = parseFloat(value);
+            if (!isNaN(percent)) {
+                return { type: 'percent', value: percent };
+            }
+        }
+        
+        // 尝试解析为数值
+        const num = parseFloat(value);
+        if (!isNaN(num)) {
+            return num;
+        }
+        
+        // 无效值返回 null
+        return null;
+    };
+    
+    let x = position.x || 0;
+    let y = position.y || 0;
+    
+    if (isAbsolute) {
+        // 绝对定位：保存 top, right, bottom, left 值
+        absolutePosition = {
+            top: parseValue(styles.top),
+            right: parseValue(styles.right),
+            bottom: parseValue(styles.bottom),
+            left: parseValue(styles.left)
+        };
+        
+        // 如果有 TBLR 值，优先使用它们来计算 x/y（优先级高于 position.x/y）
+        // 注意：这里先根据 TBLR 计算初始 x/y，后续在添加到父容器后还会根据父容器尺寸重新计算
+        if (absolutePosition.left !== null && typeof absolutePosition.left === 'number') {
+            x = absolutePosition.left;
+        } else if (absolutePosition.right !== null && typeof absolutePosition.right === 'number') {
+            // 如果只有 right，需要根据父容器宽度计算，这里先使用 position.x 作为占位
+            // 后续在添加到父容器后会重新计算
+            x = position.x || 0;
+        }
+        
+        if (absolutePosition.top !== null && typeof absolutePosition.top === 'number') {
+            y = absolutePosition.top;
+        } else if (absolutePosition.bottom !== null && typeof absolutePosition.bottom === 'number') {
+            // 如果只有 bottom，需要根据父容器高度计算，这里先使用 position.y 作为占位
+            // 后续在添加到父容器后会重新计算
+            y = position.y || 0;
+        }
+    }
+    
+    // 尝试使用文本处理器（inline span）
+    // 检查是否是 span 元素，且子元素都是 span（用于合并多个 span 为一个文本节点）
+    const isSpanWithSpanChildren = tagName === 'span' && 
+                                   children && children.length > 0 &&
+                                   children.every(child => child.tagName === 'span');
+    
+    // 尝试使用文本处理器（inline span）
+    // 条件：没有子元素，或者子元素都是 span（用于合并多个 span 为一个文本节点）
+    if (!children || children.length === 0 || isSpanWithSpanChildren) {
+        // 获取父容器宽度（优先使用 parentNode.width，否则使用 position.width）
+        const parentWidth = parentNode ? (parentNode.width || null) : (position.width || null);
+        // 对于复合 span，whiteSpace 应该来自外层容器的 styles（elementData.styles），而不是 span 自身的 styles
+        // 因为复合 span 只记录文本样式，whiteSpace 是布局相关的属性，应该从外层容器获取
+        // 如果 elementData.styles 中有 whiteSpace，使用它；否则使用当前 styles.whiteSpace
+        const whiteSpaceValue = (elementData && elementData.styles && elementData.styles.whiteSpace) 
+            ? elementData.styles.whiteSpace 
+            : styles.whiteSpace;
+        
+        const textNode = await TextElementProcessor.process(
+            elementData, 
+            styles, 
+            textContent, 
+            tagName, 
+            parentWidth, 
+            children,
+            {
+                isDirectText: false,
+                parentNode: null, // 先不传入，等添加到父容器后再处理宽度
+                whiteSpace: whiteSpaceValue
+            }
+        );
+        if (textNode) {
+            // 将文本节点添加到父容器中
+            if (parentNode) {
+                parentNode.appendChild(textNode);
+                // 根据规则设置文本宽度（在添加到父容器后处理）
+                // 对于复合 span，使用外层容器的 whiteSpace（已在 whiteSpaceValue 中获取）
+                let stylesForWidth = JSON.parse(JSON.stringify(styles));
+                if(isSpanWithSpanChildren && whiteSpaceValue){
+                    stylesForWidth['whiteSpace'] = whiteSpaceValue;
+                }
+                applyTextWidthRules(textNode, parentNode, stylesForWidth, parentWidth);
+            }
+
+            return textNode;
+        }
+    }
+    
+    // 普通容器元素处理
+    // 获取名称（优先使用 id，然后是 class，最后是 tagName）
+    const nodeName = getNodeName(elementData, tagName);
+    
+    // 特殊处理：某些类型的 input 元素需要转换为普通元素
+    const needsSpecialInputHandling = tagName === 'input' && inputType && ['checkbox', 'radio', 'file', 'range'].includes(inputType);
+    
+    let node = null;
+    // 特殊处理：某些类型的 input 元素转换为普通 div 元素
+    // 因为 checkbox, radio, file, range 等有默认样式，转换为普通元素更容易处理
+    let actualTagName = needsSpecialInputHandling ? 'div' : tagName;
+    
+    // 处理背景颜色
+    let fills = [];
+
+    // 检查是否是透明色标记
+    // 如果是透明色标记，fills 保持为空数组 []
+    if(styles.backgroundColor && styles.backgroundColor !== '__TRANSPARENT__' && styles.backgroundColor !== 'rgba(0, 0, 0, 0)' && styles.backgroundColor !== 'transparent'){
+        try {
+            fills = [toRGB(styles.backgroundColor, true)];
+        } catch(e) {
+            console.warn('Background color parse error:', e);
+        }
+    }
+    //如果有渐变色，则设置渐变色
+    if(styles.backgroundImage){
+        try {
+            let gradient = parseGradientFill(styles.backgroundImage);
+            if(gradient){
+                //console.log(gradient)
+                // gradient 已经是一个完整的 Figma Paint 对象，可以直接使用
+                fills.push(gradient);
+            }
+        } catch(e) {
+            console.warn('Gradient parse error:', e);
+        }
+    }
+    // 如果是特殊类型的 input，在名称中标注类型
+    const frameName = needsSpecialInputHandling ? `${nodeName}_${inputType}` : nodeName;
+    node = addFrame([width, height, x, y, frameName, fills]);
+    
+    
+    // 设置圆角（优先使用四个角的单独属性）
+    const parseRadius = (value) => {
+        if (!value) return 0;
+        const num = parseFloat(value);
+        return isNaN(num) ? 0 : num;
+    };
+            
+    const topLeft = parseRadius(styles.borderTopLeftRadius);
+    const topRight = parseRadius(styles.borderTopRightRadius);
+    const bottomRight = parseRadius(styles.borderBottomRightRadius);
+    const bottomLeft = parseRadius(styles.borderBottomLeftRadius);
+            
+    // 如果四个角的单独属性都有值，使用它们
+    if (topLeft > 0 || topRight > 0 || bottomRight > 0 || bottomLeft > 0) {
+        node.topLeftRadius = topLeft;
+        node.topRightRadius = topRight;
+        node.bottomRightRadius = bottomRight;
+        node.bottomLeftRadius = bottomLeft;
+    } else if (styles.borderRadius) {
+        // 如果没有单独属性，使用复合的 borderRadius
+        const radius = parseRadius(styles.borderRadius);
+        if (radius > 0) {
+            [node.topLeftRadius, node.topRightRadius, node.bottomRightRadius, node.bottomLeftRadius] = [radius, radius, radius, radius];
+        }
+    }
+            
+    // 设置描边（使用四个边的单独属性）
+    const parseBorderWidth = (value) => {
+        if (!value) return 0;
+        const num = parseFloat(value);
+        return isNaN(num) ? 0 : num;
+    };
+            
+    const parseBorderColor = (value) => {
+        // 检查是否是透明色标记
+        if (!value || value === '__TRANSPARENT__' || value === 'transparent' || value === 'rgba(0, 0, 0, 0)' || value === 'rgba(0,0,0,0)') {
+            return null;
+        }
+        try {
+            return toRGB(value, true);
+        } catch(e) {
+            console.warn('Border color parse error:', e);
+            return null;
+        }
+    };
+            
+    const topWidth = parseBorderWidth(styles.borderTopWidth);
+    const rightWidth = parseBorderWidth(styles.borderRightWidth);
+    const bottomWidth = parseBorderWidth(styles.borderBottomWidth);
+    const leftWidth = parseBorderWidth(styles.borderLeftWidth);
+            
+    // 如果四个边的单独属性都有值，使用它们
+    if (topWidth > 0 || rightWidth > 0 || bottomWidth > 0 || leftWidth > 0) {
+        // 获取各边的颜色（优先使用单独属性，否则使用通用属性）
+        // 如果颜色是透明，不设置默认黑色
+        const topColor = parseBorderColor(styles.borderTopColor) || parseBorderColor(styles.borderColor);
+        const rightColor = parseBorderColor(styles.borderRightColor) || parseBorderColor(styles.borderColor);
+        const bottomColor = parseBorderColor(styles.borderBottomColor) || parseBorderColor(styles.borderColor);
+        const leftColor = parseBorderColor(styles.borderLeftColor) || parseBorderColor(styles.borderColor);
+        
+        // 设置各边的描边宽度
+        node.strokeTopWeight = topWidth;
+        node.strokeRightWeight = rightWidth;
+        node.strokeBottomWeight = bottomWidth;
+        node.strokeLeftWeight = leftWidth;
+        
+        /*
+        // 根据 boxSizing 设置描边对齐方式
+        // border-box: 宽度包含 padding 和 border，描边应该居外
+        // border-box: 宽度不包含 padding 和 border，宽度包含padding和border，应该居内
+        const boxSizing = styles.boxSizing || 'border-box';
+        if(boxSizing === 'border-box'){
+            node.strokeAlign = 'OUTSIDE';
+        } else {
+            // border-box 或其他情况，描边居内
+            node.strokeAlign = 'INSIDE';
+        }
+            */
+        //宽度全部计算了padding和border，描边统一居内
+        node.strokeAlign = 'INSIDE';   
+        
+        // 设置描边颜色（如果各边颜色相同，使用单一颜色；否则需要分别设置）
+        // 注意：Figma 的 setStroke 函数可能不支持各边不同颜色，这里先使用通用颜色
+        const commonColor = topColor; // 使用顶部颜色作为通用颜色
+        // 如果所有颜色都是 null（透明），设置 strokes 为空数组
+        if (commonColor) {
+            node.strokes = [commonColor];
+        } else {
+            node.strokes = [];
+        }
+        
+        // 处理描边样式（dashed, dotted）
+        // 获取各边的样式（优先使用单独属性，否则使用通用属性）
+        const parseBorderStyle = (value) => {
+            if (!value) return null;
+            return value.toLowerCase().trim();
+        };
+        
+        const topStyle = parseBorderStyle(styles.borderTopStyle) || parseBorderStyle(styles.borderStyle);
+        const rightStyle = parseBorderStyle(styles.borderRightStyle) || parseBorderStyle(styles.borderStyle);
+        const bottomStyle = parseBorderStyle(styles.borderBottomStyle) || parseBorderStyle(styles.borderStyle);
+        const leftStyle = parseBorderStyle(styles.borderLeftStyle) || parseBorderStyle(styles.borderStyle);
+        
+        // 检查是否有 dashed 或 dotted 样式
+        // 注意：Figma 的 dashPattern 是全局的，不能为各边单独设置
+        // 如果各边样式不同，使用第一个非 solid 的样式
+        // 注意：某些节点类型（如 TEXT）不支持 dashPattern，需要检查
+        const allStyles = [topStyle, rightStyle, bottomStyle, leftStyle].filter(s => s && s !== 'solid' && s !== 'none');
+        if (allStyles.length > 0) {
+            const dashStyle = allStyles[0]; // 使用第一个非 solid 的样式
+            
+            // 检查节点是否支持 dashPattern（TEXT 节点不支持）
+            if (node.type !== 'TEXT' && 'dashPattern' in node) {
+                try {
+                    if (dashStyle === 'dashed') {
+                        // dashed: 使用 [5, 5] 模式（5px 实线，5px 空白）
+                        // 根据描边宽度调整虚线长度
+                        const avgWidth = (topWidth + rightWidth + bottomWidth + leftWidth) / 4 || 1;
+                        const dashLength = Math.max(4, avgWidth * 2); // 至少 4px，或根据宽度调整
+                        node.dashPattern = [dashLength, dashLength];
+                    } else if (dashStyle === 'dotted') {
+                        // dotted: 使用 [1, 2] 模式（1px 点，2px 空白）
+                        const avgWidth = (topWidth + rightWidth + bottomWidth + leftWidth) / 4 || 1;
+                        const dotLength = Math.max(1, avgWidth); // 点的大小
+                        const gapLength = Math.max(2, avgWidth * 2); // 间距
+                        node.dashPattern = [dotLength, gapLength];
+                    }
+                } catch (e) {
+                    // 如果设置失败（节点不支持或属性只读），忽略错误
+                    console.warn('Failed to set dashPattern:', e);
+                }
+            }
+            // 如果是 'solid' 或 'none'，不设置 dashPattern（使用默认实线）
+        }
+    } else if (styles.borderWidth && parseBorderWidth(styles.borderWidth) > 0) {
+        // 如果没有单独属性，使用复合的 borderWidth
+        const borderWidth = parseBorderWidth(styles.borderWidth);
+        const borderColor = parseBorderColor(styles.borderColor);
+        // 如果边框颜色是透明，设置 strokes 为空数组
+        if (borderColor) {
+            setStroke(node, 'CENTER', [borderWidth, borderWidth, borderWidth, borderWidth], [borderColor]);
+            
+            // 处理描边样式（dashed, dotted）
+            // 注意：某些节点类型（如 TEXT）不支持 dashPattern，需要检查
+            const borderStyle = styles.borderStyle ? styles.borderStyle.toLowerCase().trim() : null;
+            if (borderStyle === 'dashed' || borderStyle === 'dotted') {
+                // 检查节点是否支持 dashPattern（TEXT 节点不支持）
+                if (node.type !== 'TEXT' && 'dashPattern' in node) {
+                    try {
+                        if (borderStyle === 'dashed') {
+                            // dashed: 使用 [5, 5] 模式
+                            const dashLength = Math.max(4, borderWidth * 2);
+                            node.dashPattern = [dashLength, dashLength];
+                        } else if (borderStyle === 'dotted') {
+                            // dotted: 使用 [1, 2] 模式
+                            const dotLength = Math.max(1, borderWidth);
+                            const gapLength = Math.max(2, borderWidth * 2);
+                            node.dashPattern = [dotLength, gapLength];
+                        }
+                    } catch (e) {
+                        // 如果设置失败（节点不支持或属性只读），忽略错误
+                        console.warn('Failed to set dashPattern:', e);
+                    }
+                }
+            }
+        } else {
+            // 透明边框，不设置描边
+            node.strokes = [];
+        }
+    } else {
+        // 没有边框宽度，确保 strokes 为空数组
+        node.strokes = [];
+    }
+            
+    // 设置自动布局（如果适用）
+    // span 元素如果没有 flex 数据，默认按 H,LC（水平方向，左中对齐）
+    // 宽高为零的元素也转为自动布局，自适应宽高
+    // 有 padding 的元素也转为自动布局
+    // 列表元素（ul, ol, li）也转为自动布局
+    const isSpan = tagName === 'span';
+    const isListElement = tagName === 'ul' || tagName === 'ol' || tagName === 'li';
+    const hasFlexDisplay = styles.display === 'flex' || styles.display === 'inline-flex';
+    // 只有当宽高都为 0 时，才认为是零尺寸（需要自动布局）
+    // 如果只有其中一个为 0，应该使用实际的另一个值，不需要自动布局
+    const hasZeroSize = (position.width || 0) <= 0 && (position.height || 0) <= 0;
+            
+    // 检查是否有 padding（不为零）
+    const parsePadding = (value) => {
+        if (!value) return 0;
+        const num = parseFloat(value);
+        return isNaN(num) ? 0 : num;
+    };
+    let paddingTop = parsePadding(styles.paddingTop);
+    let paddingRight = parsePadding(styles.paddingRight);
+    let paddingBottom = parsePadding(styles.paddingBottom);
+    let paddingLeft = parsePadding(styles.paddingLeft);
+    let hasPadding = paddingTop > 0 || paddingRight > 0 || paddingBottom > 0 || paddingLeft > 0;
+    
+    const shouldUseAutoLayout = hasFlexDisplay || (isSpan && !hasFlexDisplay) || hasZeroSize || hasPadding || isListElement;
+    
+    // 定义变量，用于在处理完子元素后检查 flexWrap
+    let needsWrapCheck = false; // 标记是否需要检查换行
+    let spacing = 0; // 间距
+    // 注意：paddingLeft 和 paddingRight 已在上面声明（5931-5934行）
+    
+    // 对齐代码生成函数：第一个字母是T/B/C（垂直），第二个字母是L/R/C（水平）
+    // 简化对齐判断逻辑
+    function getAlign(dir, jc, ai) {
+        let tb = 'T',lr = 'L'
+        switch(ai){
+            case 'center':
+                if(dir === 'H'){
+                     tb = 'C'  // H模式：alignItems控制副轴（垂直方向），应映射到tb
+                }  else {
+                    lr = 'C';  // V模式：alignItems控制副轴（水平方向），应映射到lr
+                }
+                break;
+            case 'end':
+                if(dir === 'H'){
+                    tb = 'B';  // H模式：alignItems控制副轴（垂直方向），应映射到tb
+                }  else {
+                    lr = 'R';  // V模式：alignItems控制副轴（水平方向），应映射到lr
+                }
+                break;
+            case 'space-between':
+                // 注意：Figma的counterAxisAlignItems不支持SPACE_BETWEEN，但为了逻辑正确性，这里仍然正确映射
+                if(dir === 'H'){
+                    tb = 'S';  // H模式：alignItems控制副轴（垂直方向），应映射到tb
+                }  else {
+                    lr = 'S';  // V模式：alignItems控制副轴（水平方向），应映射到lr
+                }
+                break;
+            case 'baseline':
+                // 注意：Figma的基线对齐仅在H模式的主轴（水平方向）可用
+                // 虽然CSS中align-items: baseline是副轴对齐，但Figma限制baseline只能在H模式主轴使用
+                if(dir === 'H'){
+                    lr = 'A';  // H模式：baseline映射到主轴（水平方向），即lr
+                }  else {
+                    // V模式不支持baseline，保持默认值或忽略
+                }
+                break;
+        }
+        switch(jc){
+            case 'center':
+                if(dir === 'H'){
+                    lr = 'C';  // H模式：justifyContent控制主轴（水平方向），应映射到lr
+                }  else {
+                    tb = 'C';  // V模式：justifyContent控制主轴（垂直方向），应映射到tb
+                }
+                break;
+            case 'end':
+                if(dir === 'H'){
+                    lr = 'R';  // H模式：justifyContent控制主轴（水平方向），应映射到lr
+                }  else {
+                    tb = 'B';  // V模式：justifyContent控制主轴（垂直方向），应映射到tb
+                }
+                break;
+            case 'space-between':
+                if(dir === 'H'){
+                    lr = 'S';  // H模式：justifyContent控制主轴（水平方向），应映射到lr
+                }  else {
+                    tb = 'S';  // V模式：justifyContent控制主轴（垂直方向），应映射到tb
+                }
+                break;
+            case 'baseline':
+                // 注意：Figma的基线对齐仅在H模式的主轴（水平方向）可用
+                // CSS的justify-content不支持baseline，但如果出现，仅在H模式处理
+                if(dir === 'H'){
+                    lr = 'A';  // H模式：baseline映射到主轴（水平方向），即lr
+                }  else {
+                    // V模式不支持baseline，保持默认值或忽略
+                }
+                break;
+        }
+        return tb + lr;
+    };
+
+    if(shouldUseAutoLayout){
+        // 方向判断：根据 flexDirection 判断
+        // flexWrap 是否触发换行取决于子容器宽度是否超出，需要在处理完子元素后判断
+        let direction = 'V'; // 默认垂直方向（HTML是上下布局）
+        
+        if(isSpan || isListElement){
+            direction = 'H';
+        }
+        if(hasFlexDisplay){
+            if(styles.flexDirection === 'column'){
+                direction = 'V';
+            } else {
+                // flexDirection === 'row' 或未设置
+                // 如果 flexWrap 是 wrap，需要处理完子元素后判断是否换行
+                if(styles.flexWrap && (styles.flexWrap === 'wrap' || styles.flexWrap === 'wrap-reverse')){
+                    needsWrapCheck = true;
+                    // 先假设会换行，使用 V（垂直布局），如果子元素不超出，后面会改为 H
+                    direction = 'V';
+                } else {
+                    // flexWrap 是 nowrap 或未设置，使用水平方向
+                    direction = 'H';
+                }
+            }
+        }
+        
+        
+        // 生成对齐代码
+        let align = 'TL'; // 默认左上对齐
+        if(hasFlexDisplay){
+            align = getAlign(direction, styles.justifyContent, styles.alignItems);
+        };
+        if(tagName == 'input'){
+            align = 'CL';
+        };
+        //根据padding和子元素大小进一步判断自动布局是否需要居中，提升还原体验，如不够精确可去掉
+        if(!hasFlexDisplay && hasPadding && tagName !== 'input' && elementData.children && elementData.children.length > 0){
+            //默认没flex但有padding时是V模式
+            let trueNodes = elementData.children.filter(item => item.styles.display !== 'none' && item.styles.visibility !== 'hidden' && item.styles.position !== 'absolute');
+            if(trueNodes.length !== 1) return
+            let tb,lr
+            let childPos = elementData.children[0].position;
+            let top = Number(childPos.top);
+            let bottom = Number(childPos.bottom);
+            let left = Number(childPos.left);
+            let right = Number(childPos.right);
+            if(top === -bottom && top !== 0){
+                tb = 'C'
+            }else{
+                tb = 'T'
+            }
+            if(left === -right && left !== 0){
+                lr = 'C'
+            }else{
+                lr = 'L'
+            }
+            align = tb + lr;
+            if(align == 'CC'){
+                console.log('666')
+            }
+        }
+        
+        spacing = parseFloat(styles.gap) || 0;
+        
+        // 保存 padding 值（用于后续计算可用宽度）
+        paddingLeft = paddingLeft || 0;
+        paddingRight = paddingRight || 0;
+        
+        // 使用上面已经解析好的 padding 值（paddingTop, paddingRight, paddingBottom, paddingLeft 已在函数开始处声明）
+        let padding = [0, 0, 0, 0];
+        
+        // 如果四个边的单独属性都有值，使用它们
+        if (paddingTop !== 0 || paddingRight !== 0 || paddingBottom !== 0 || paddingLeft !== 0) {
+            padding = [paddingTop, paddingRight, paddingBottom, paddingLeft];
+        } else if (styles.padding) {
+            // 如果没有单独属性，使用复合的 padding
+            const paddingValue = parsePadding(styles.padding);
+            padding = [paddingValue, paddingValue, paddingValue, paddingValue];
+        }
+        //由于描边被宽度包括，padding需要加上描边宽度，四个边都要加
+        padding[0] += topWidth;
+        padding[1] += rightWidth;
+        padding[2] += bottomWidth;
+        padding[3] += leftWidth;
+        // 根据是否需要 HUG 模式来决定使用 FIXED 还是 AUTO
+        // 如果 shouldUseHug 为 true（尺寸为 0 且是 flex 容器），使用 AUTO（HUG）模式；否则使用 FIXED
+        const useFixed = !shouldUseHug;
+        addAutoLayout(node, [direction, align, spacing, padding], [useFixed, useFixed]);
+        
+        // 如果使用 FIXED 模式，确保节点尺寸正确设置
+        if (useFixed && width > 0 && height > 0) {
+            node.resize(width, height);
+        } else if (shouldUseHug || hasZeroSize) {
+            // 如果使用 HUG 模式（宽高为零），确保设置正确的尺寸模式
+            node.layoutSizingHorizontal = 'HUG';
+            node.layoutSizingVertical = 'HUG';
+        }
+        // 注意：flexWrap 的处理会在处理完子元素后进行，根据子元素宽度是否超出来判断
+    }
+            
+    // 统一处理文本元素：使用 TextElementProcessor 处理直接文本（普通textContent）
+    if(textContent){
+        // 获取父容器宽度（优先使用 node.width，否则使用 position.width）
+        const parentWidth = node ? (node.width || null) : (position.width || null);
+        
+        // 使用 TextElementProcessor 处理直接文本
+        const textNode = await TextElementProcessor.process(
+            elementData, 
+            styles, 
+            textContent, 
+            tagName, 
+            parentWidth, 
+            null, // 直接文本没有子元素
+            {
+                isDirectText: true,
+                parentNode: node,
+                whiteSpace: styles.whiteSpace
+            }
+        );
+        
+        if(textNode){
+            let isSpan = false;
+            if(tagName == 'span'){
+                isSpan = true;
+            }
+            textNode.name = '';
+            // 注意：关于特殊tagname（input/textarea）不用再判断，是否自动布局是前置设置的
+            node.appendChild(textNode);
+            // 根据规则设置文本宽度（在添加到父容器后处理）
+            applyTextWidthRules(textNode, node, styles, parentWidth, isSpan);
+        }
+    }
+        
+    // 检查 zIndex，如果是负数，需要将元素转移到父级的父级
+    // 先计算 actualX 和 actualY，因为 marginFrame 的位置也需要考虑 zIndex
+    const zIndex = styles.zIndex ? parseFloat(styles.zIndex) : null;
+    const hasNegativeZIndex = zIndex !== null && !isNaN(zIndex) && zIndex < 0;
+    
+    // 确定实际的父节点和目标位置
+    let actualParentNode = parentNode;
+    let actualX = x;
+    let actualY = y;
+    
+    if(hasNegativeZIndex && parentNode){
+        // 如果 zIndex 是负数，将元素转移到父级的父级
+        const grandParentNode = parentNode.parent;
+        if(grandParentNode && grandParentNode !== figma.currentPage){
+            // 计算相对于原父级的位置，转换为相对于祖父级的位置
+            const parentX = parentNode.x || 0;
+            const parentY = parentNode.y || 0;
+            actualX = x + parentX;
+            actualY = y + parentY;
+            actualParentNode = grandParentNode;
+        }
+    }
+    
+    // 如果有 margin，提前创建 marginFrame 容器
+    // 策略：在创建过程中遇到 margin 直接创建容器，等原元素递归完才返回
+    let marginFrame = null;
+    if(hasMargin){
+        // 先创建一个临时的 marginFrame（尺寸会在递归完成后更新）
+        const tempWidth = Math.max(1, width || 1);
+        const tempHeight = Math.max(1, height || 1);
+        const totalWidth = Math.max(1, tempWidth + marginLeft + marginRight);
+        const totalHeight = Math.max(1, tempHeight + marginTop + marginBottom);
+        
+        // 使用 actualX 和 actualY 作为初始位置（会在递归完成后更新）
+        const marginFrameName = (nodeName && typeof nodeName === 'string') ? (nodeName + '_margin') : '_margin';
+        marginFrame = addFrame([totalWidth, totalHeight, actualX || x || 0, actualY || y || 0, marginFrameName, []]);
+        marginFrame.fills = []; // 透明背景
+        
+        // 将 node 添加到 marginFrame 中，并设置位置（考虑 margin）
+        marginFrame.appendChild(node);
+        node.x = marginLeft;
+        node.y = marginTop;
+        
+        // 注意：marginFrame 暂时不添加到父节点，等递归完成后再处理
+    }
+    
+    // 设置 node 的位置
+    // 注意：如果有 margin，node 已经在 marginFrame 中，位置已经设置为 marginLeft 和 marginTop
+    // 如果没有 margin，设置 node 的位置
+    if(!hasMargin){
+        node.x = actualX || x || 0;
+        node.y = actualY || y || 0;
+    }
+    let finalNode = hasMargin ? marginFrame : node;
+        
+    // 设置位置（相对于父节点）
+    // 注意：如果有 margin，marginFrame 会在递归完成后添加到父节点
+    if(actualParentNode){
+        if(!hasMargin){
+            finalNode.x = actualX || x || 0;
+            finalNode.y = actualY || y || 0;
+            
+            // 确定插入位置
+            let index = actualParentNode.children.length; // 默认添加到末尾（最上层）
+            
+            // 只有当元素被移出原容器时（如负zIndex），才需要特殊处理
+            // 确保元素在原容器的下方（figma下标越小越底层）
+            if(hasNegativeZIndex && parentNode && actualParentNode !== parentNode){
+                // 找到原容器（parentNode）在 actualParentNode 中的位置
+                const parentIndex = actualParentNode.children.findIndex(item => item.id === parentNode.id);
+                if(parentIndex !== -1){
+                    // 插入到原容器的位置（原容器会被推到上层）
+                    index = parentIndex;
+                }
+            }
+            
+            actualParentNode.insertChild(index, finalNode);
+        }
+        // 如果有 margin，marginFrame 会在递归完成后添加到父节点
+        // 如果有 margin，node 会在后面被添加到 actualParentNode，然后被移动到 marginFrame
+        // 所以这里不需要添加到 actualParentNode
+        
+        // 如果父容器是自动布局，且当前元素是绝对定位，需要设置绝对定位
+        // 注意：必须先添加到父容器，然后才能设置 layoutPositioning = 'ABSOLUTE'
+        if(isAbsolute){
+            // 如果有 margin，finalNode 是 marginFrame，但 marginFrame 还没有被添加到父节点
+            // 所以应该对 node 设置 layoutPositioning（node 的父节点是 marginFrame）
+            // 如果没有 margin，finalNode 就是 node，直接设置即可
+            const targetNode = hasMargin ? node : finalNode;
+            const targetParent = targetNode.parent;
+            
+            // 检查目标节点的父节点是否有自动布局
+            if(targetParent && targetParent.layoutMode && targetParent.layoutMode !== 'NONE'){
+                try {
+                    // 直接设置，不需要判断 layoutPositioning 是否存在
+                    // 如果节点不支持此属性，会抛出错误，我们捕获即可
+                    targetNode.layoutPositioning = 'ABSOLUTE';
+                } catch(e) {
+                    // 某些节点类型可能不支持 layoutPositioning（如 TEXT 节点）
+                    // 或者父节点实际上没有自动布局（Figma 内部验证）
+                    console.warn('Failed to set layoutPositioning for absolute element:', {
+                        targetNode: (targetNode && targetNode.name) || 'unknown',
+                        targetNodeType: (targetNode && targetNode.type) || 'unknown',
+                        targetParent: (targetParent && targetParent.name) || 'unknown',
+                        targetParentLayoutMode: (targetParent && targetParent.layoutMode) || 'NONE',
+                        hasMargin: hasMargin,
+                        error: e
+                    });
+                }
+            }
+            
+            // 计算描边宽度（用于 border-box 时的位置调整）
+            const boxSizing = styles.boxSizing || 'border-box';
+            const parseBorderWidth = (value) => {
+                if (!value) return 0;
+                const num = parseFloat(value);
+                return isNaN(num) ? 0 : num;
+            };
+            const topWidth = parseBorderWidth(styles.borderTopWidth) || parseBorderWidth(styles.borderWidth) || 0;
+            const rightWidth = parseBorderWidth(styles.borderRightWidth) || parseBorderWidth(styles.borderWidth) || 0;
+            const bottomWidth = parseBorderWidth(styles.borderBottomWidth) || parseBorderWidth(styles.borderWidth) || 0;
+            const leftWidth = parseBorderWidth(styles.borderLeftWidth) || parseBorderWidth(styles.borderWidth) || 0;
+            
+            // 辅助函数：将定位值转换为像素值（处理百分比和数值）
+            const convertToPixels = (value, parentSize) => {
+                if (value === null || value === undefined) return null;
+                
+                // 如果是百分比对象
+                if (typeof value === 'object' && value.type === 'percent') {
+                    if (parentSize && parentSize > 0) {
+                        return (value.value / 100) * parentSize;
+                    }
+                    return null; // 无法转换百分比，返回 null
+                }
+                
+                // 如果是数值，直接返回
+                if (typeof value === 'number' && !isNaN(value)) {
+                    return value;
+                }
+                
+                // 无效值返回 null
+                return null;
+            };
+            
+            // 根据 top/left/right/bottom 计算位置
+            let absX = actualX;
+            let absY = actualY;
+            
+            // 获取父容器的实际尺寸（对于自动布局的容器，优先使用 absoluteRenderBounds 或 absoluteBoundingBox）
+            const getParentSize = (node, dimension) => {
+                if (!node) return 0;
+                // 优先使用 absoluteRenderBounds（更准确）
+                if (node.absoluteRenderBounds) {
+                    return dimension === 'width' ? node.absoluteRenderBounds.width : node.absoluteRenderBounds.height;
+                }
+                // 其次使用 absoluteBoundingBox
+                if (node.absoluteBoundingBox) {
+                    return dimension === 'width' ? node.absoluteBoundingBox.width : node.absoluteBoundingBox.height;
+                }
+                // 最后使用 width/height 属性
+                return dimension === 'width' ? (node.width || 0) : (node.height || 0);
+            };
+            
+            const parentWidth = getParentSize(actualParentNode, 'width');
+            const parentHeight = getParentSize(actualParentNode, 'height');
+            
+            // 如果 absolutePosition 存在，使用它来计算位置
+            if (absolutePosition) {
+                // 如果设置了 left，使用 left
+                const leftValue = convertToPixels(absolutePosition.left, parentWidth);
+                if (leftValue !== null) {
+                    // 如果是 border-box 且描边居内，需要考虑描边宽度
+                    if(boxSizing === 'border-box'){
+                        absX = leftValue + leftWidth;
+                    } else {
+                        absX = leftValue;
+                    }
+                } else {
+                    // 如果设置了 right，需要从父容器宽度计算
+                    const rightValue = convertToPixels(absolutePosition.right, parentWidth);
+                    if (rightValue !== null) {
+                        // 如果是 border-box 且描边居内，需要考虑描边宽度
+                        if(boxSizing === 'border-box'){
+                            absX = parentWidth - width - rightWidth - rightValue;
+                        } else {
+                            absX = parentWidth - width - rightValue;
+                        }
+                    }
+                }
+                
+                // 如果设置了 top，使用 top
+                const topValue = convertToPixels(absolutePosition.top, parentHeight);
+                if (topValue !== null) {
+                    // 如果是 border-box 且描边居内，需要考虑描边宽度
+                    if(boxSizing === 'border-box'){
+                        absY = topValue + topWidth;
+                    } else {
+                        absY = topValue;
+                    }
+                } else {
+                    // 如果设置了 bottom，需要从父容器高度计算
+                    const bottomValue = convertToPixels(absolutePosition.bottom, parentHeight);
+                    if (bottomValue !== null) {
+                        // 如果是 border-box 且描边居内，需要考虑描边宽度
+                        //console.log('DEBUG 222: bottom分支进入, boxSizing=', boxSizing, 'bottom=', bottomValue);
+                        if(boxSizing === 'border-box'){
+                            //console.log(222, parentHeight, height, bottomWidth, bottomValue)
+                            absY = parentHeight - height - bottomWidth - bottomValue;
+                        } else {
+                            absY = parentHeight - height - bottomValue;
+                            //console.log(333, parentHeight, height, bottomValue)
+                        }
+                    }
+                }
+            }
+            
+            // 设置绝对定位的位置（即使所有定位值都是 'auto'，也使用默认位置）
+            finalNode.x = absX;
+            finalNode.y = absY;
+            
+        } else if (isAbsolute && actualParentNode) {
+            // 如果父容器不是自动布局，但元素是绝对定位，仍然需要根据定位值设置位置
+            // 注意：在非自动布局的父容器中，layoutPositioning 可能不起作用，但应该尝试设置
+            try {
+                if(finalNode.layoutPositioning){
+                    finalNode.layoutPositioning = 'ABSOLUTE';
+                }
+            } catch (e) {
+                // 如果设置失败（可能因为父容器不支持），忽略错误
+                //console.warn('Failed to set layoutPositioning for absolute element in non-auto-layout parent:', e);
+            }
+            
+            // 即使父容器不是自动布局，如果元素是绝对定位，也应该根据定位值设置位置
+            if (absolutePosition) {
+                const boxSizing = styles.boxSizing || 'border-box';
+                const parseBorderWidth = (value) => {
+                    if (!value) return 0;
+                    const num = parseFloat(value);
+                    return isNaN(num) ? 0 : num;
+                };
+                const topWidth = parseBorderWidth(styles.borderTopWidth) || parseBorderWidth(styles.borderWidth) || 0;
+                const rightWidth = parseBorderWidth(styles.borderRightWidth) || parseBorderWidth(styles.borderWidth) || 0;
+                const bottomWidth = parseBorderWidth(styles.borderBottomWidth) || parseBorderWidth(styles.borderWidth) || 0;
+                const leftWidth = parseBorderWidth(styles.borderLeftWidth) || parseBorderWidth(styles.borderWidth) || 0;
+                
+                // 辅助函数：将定位值转换为像素值（处理百分比和数值）
+                const convertToPixels = (value, parentSize) => {
+                    if (value === null || value === undefined) return null;
+                    
+                    // 如果是百分比对象
+                    if (typeof value === 'object' && value.type === 'percent') {
+                        if (parentSize && parentSize > 0) {
+                            return (value.value / 100) * parentSize;
+                        }
+                        return null; // 无法转换百分比，返回 null
+                    }
+                    
+                    // 如果是数值，直接返回
+                    if (typeof value === 'number' && !isNaN(value)) {
+                        return value;
+                    }
+                    
+                    // 无效值返回 null
+                    return null;
+                };
+                
+                // 获取父容器的实际尺寸（对于自动布局的容器，优先使用 absoluteRenderBounds 或 absoluteBoundingBox）
+                const getParentSize = (node, dimension) => {
+                    if (!node) return 0;
+                    // 优先使用 absoluteRenderBounds（更准确）
+                    if (node.absoluteRenderBounds) {
+                        return dimension === 'width' ? node.absoluteRenderBounds.width : node.absoluteRenderBounds.height;
+                    }
+                    // 其次使用 absoluteBoundingBox
+                    if (node.absoluteBoundingBox) {
+                        return dimension === 'width' ? node.absoluteBoundingBox.width : node.absoluteBoundingBox.height;
+                    }
+                    // 最后使用 width/height 属性
+                    return dimension === 'width' ? (node.width || 0) : (node.height || 0);
+                };
+                
+                const parentWidth = getParentSize(actualParentNode, 'width');
+                const parentHeight = getParentSize(actualParentNode, 'height');
+                
+                // 根据 top/left/right/bottom 计算位置
+                let absX = finalNode.x || 0;
+                let absY = finalNode.y || 0;
+                
+                // 如果设置了 left，使用 left
+                const leftValue = convertToPixels(absolutePosition.left, parentWidth);
+                if (leftValue !== null) {
+                    if(boxSizing === 'border-box'){
+                        absX = leftValue + leftWidth;
+                    } else {
+                        absX = leftValue;
+                    }
+                } else {
+                    // 如果设置了 right，需要从父容器宽度计算
+                    const rightValue = convertToPixels(absolutePosition.right, parentWidth);
+                    if (rightValue !== null) {
+                        if(boxSizing === 'border-box'){
+                            absX = parentWidth - width - rightWidth - rightValue;
+                        } else {
+                            absX = parentWidth - width - rightValue;
+                        }
+                    }
+                }
+                
+                // 如果设置了 top，使用 top
+                const topValue = convertToPixels(absolutePosition.top, parentHeight);
+                if (topValue !== null) {
+                    if(boxSizing === 'border-box'){
+                        absY = topValue + topWidth;
+                    } else {
+                        absY = topValue;
+                    }
+                } else {
+                    // 如果设置了 bottom，需要从父容器高度计算
+                    const bottomValue = convertToPixels(absolutePosition.bottom, parentHeight);
+                    if (bottomValue !== null) {
+                        if(boxSizing === 'border-box'){
+                            absY = parentHeight - height - bottomWidth - bottomValue;
+                        } else {
+                            absY = parentHeight - height - bottomValue;
+                        }
+                    }
+                }
+                
+                // 设置绝对定位的位置
+                finalNode.x = absX;
+                finalNode.y = absY;
+            }
+        }
+    }
+
+    // 处理 transform
+    if(styles.transform && styles.transform !== 'none'){
+        try {
+            // 解析 transform 字符串
+            // 例如: "translate(10px, 20px) rotate(45deg) scale(1.5)" 或 "matrix(0.707107, 0.707107, -0.707107, 0.707107, 0, 0)"
+            const transformStr = styles.transform.trim();
+            
+            // 优先处理 matrix 格式（浏览器计算后的 transform 通常是 matrix 格式）
+            const matrixMatch = transformStr.match(/matrix\(([^)]+)\)/);
+            if(matrixMatch){
+                const matrixValues = matrixMatch[1].split(',').map(v => parseFloat(v.trim()));
+                if(matrixValues.length === 6 && !matrixValues.some(v => isNaN(v))){
+                    // matrix(a, b, c, d, e, f) 格式
+                    // CSS transform matrix 格式：
+                    // [a  c  e]
+                    // [b  d  f]
+                    // [0  0  1]
+                    // Figma 的 relativeTransform 也是 3x3 矩阵，可以直接映射
+                    const [a, b, c, d, e, f] = matrixValues;
+                    
+                    // 直接映射到 Figma 的 relativeTransform
+                    // Figma 格式：[[a, c, e], [b, d, f], [0, 0, 1]]
+                    finalNode.relativeTransform = [
+                        [a, c, finalNode.x],
+                        [b, d, finalNode.y]
+                    ];
+                }
+            } else {
+                // 如果不是 matrix 格式，使用原来的解析逻辑
+                // 提取 translate 值
+                const translateMatch = transformStr.match(/translate\(([^)]+)\)/);
+                if(translateMatch){
+                    const translateValues = translateMatch[1].split(',').map(v => parseFloat(v.trim()));
+                    if(translateValues.length >= 2 && !isNaN(translateValues[0]) && !isNaN(translateValues[1])){
+                        x += translateValues[0];
+                        y += translateValues[1];
+                    } else if(translateValues.length === 1 && !isNaN(translateValues[0])){
+                        x += translateValues[0];
+                    }
+                }
+                
+                // 提取 translateX 值
+                const translateXMatch = transformStr.match(/translateX\(([^)]+)\)/);
+                if(translateXMatch){
+                    const tx = parseFloat(translateXMatch[1]);
+                    if(!isNaN(tx)) x += tx;
+                }
+                
+                // 提取 translateY 值
+                const translateYMatch = transformStr.match(/translateY\(([^)]+)\)/);
+                if(translateYMatch){
+                    const ty = parseFloat(translateYMatch[1]);
+                    if(!isNaN(ty)) y += ty;
+                }
+                
+                // 提取 rotate 值（转换为弧度）
+                const rotateMatch = transformStr.match(/rotate\(([^)]+)\)/);
+                if(rotateMatch){
+                    const rotateValue = rotateMatch[1].trim();
+                    // 支持 deg 和 rad 单位
+                    let angle = 0;
+                    if(rotateValue.includes('deg')){
+                        angle = parseFloat(rotateValue) * Math.PI / 180;
+                    } else if(rotateValue.includes('rad')){
+                        angle = parseFloat(rotateValue);
+                    } else {
+                        // 默认当作度
+                        angle = parseFloat(rotateValue) * Math.PI / 180;
+                    }
+                    if(!isNaN(angle)){
+                        finalNode.rotation = angle;
+                    }
+                }
+                
+                // 提取 scale 值
+                const scaleMatch = transformStr.match(/scale\(([^)]+)\)/);
+                if(scaleMatch){
+                    const scaleValues = scaleMatch[1].split(',').map(v => parseFloat(v.trim()));
+                    if(scaleValues.length >= 2 && !isNaN(scaleValues[0]) && !isNaN(scaleValues[1])){
+                        // Figma 使用 relativeTransform 来处理缩放
+                        const scaleX = scaleValues[0];
+                        const scaleY = scaleValues[1];
+                        finalNode.relativeTransform = [
+                            [scaleX, 0, 0],
+                            [0, scaleY, 0]
+                        ];
+                    } else if(scaleValues.length === 1 && !isNaN(scaleValues[0])){
+                        const scale = scaleValues[0];
+                        finalNode.relativeTransform = [
+                            [scale, 0, 0],
+                            [0, scale, 0]
+                        ];
+                    }
+                }
+                
+                // 提取 scaleX 值
+                const scaleXMatch = transformStr.match(/scaleX\(([^)]+)\)/);
+                if(scaleXMatch){
+                    const sx = parseFloat(scaleXMatch[1]);
+                    if(!isNaN(sx)){
+                        const currentTransform = finalNode.relativeTransform || [[1, 0, 0], [0, 1, 0]];
+                        finalNode.relativeTransform = [
+                            [sx, currentTransform[0][1], currentTransform[0][2]],
+                            [currentTransform[1][0], currentTransform[1][1], currentTransform[1][2]]
+                        ];
+                    }
+                }
+                
+                // 提取 scaleY 值
+                const scaleYMatch = transformStr.match(/scaleY\(([^)]+)\)/);
+                if(scaleYMatch){
+                    const sy = parseFloat(scaleYMatch[1]);
+                    if(!isNaN(sy)){
+                        const currentTransform = finalNode.relativeTransform || [[1, 0, 0], [0, 1, 0]];
+                        finalNode.relativeTransform = [
+                            [currentTransform[0][0], currentTransform[0][1], currentTransform[0][2]],
+                            [currentTransform[1][0], sy, currentTransform[1][2]]
+                        ];
+                    }
+                }
+                
+                // 提取 skew 值
+                const skewMatch = transformStr.match(/skew\(([^)]+)\)/);
+                if(skewMatch){
+                    const skewValues = skewMatch[1].split(',').map(v => parseFloat(v.trim()) * Math.PI / 180);
+                    if(skewValues.length >= 2 && !isNaN(skewValues[0]) && !isNaN(skewValues[1])){
+                        const skewX = Math.tan(skewValues[0]);
+                        const skewY = Math.tan(skewValues[1]);
+                        finalNode.relativeTransform = [
+                            [1, skewX, 0],
+                            [skewY, 1, 0]
+                        ];
+                    }
+                }
+            }
+        } catch(e) {
+            console.warn('Transform parse error:', e);
+        }
+    }
+
+    // 应用基础样式（display: none, opacity）
+    applyBasicStyles(finalNode, styles);
+
+    // 绝对定位节点也需要设置超出裁剪（在设置绝对定位之后）
+    if (styles.overflow || styles.overflowX || styles.overflowY) {
+        const overflow = styles.overflow || 'visible';
+        const overflowX = styles.overflowX || overflow;
+        const overflowY = styles.overflowY || overflow;
+        if (overflowX === 'hidden' || overflowX === 'scroll' || 
+            overflowY === 'hidden' || overflowY === 'scroll') {
+            finalNode.clipsContent = true;
+        } else {
+            finalNode.clipsContent = false;
+        }
+    }
+
+    // 递归处理子元素（添加到 node）
+    if(children && children.length > 0){
+        for(const child of children){
+            await elementToNode(child, node);
+        }
+    }
+    
+    // 处理 flexWrap：根据子容器宽度是否超出来判断使用 H 还是 V
+    // flexWrap 是否触发换行取决于子容器宽度是否超出父容器
+    /*还是太粗暴了，后续再优化，先保留本身的flexWrap
+    if(needsWrapCheck && hasFlexDisplay && node.children && node.children.length > 0 && node.layoutMode){
+        // 计算子元素的总宽度（包括间距）
+        let totalChildWidth = 0;
+        const childSpacing = spacing || 0;
+        for(let i = 0; i < node.children.length; i++){
+            const child = node.children[i];
+            if(child.width){
+                totalChildWidth += child.width;
+                if(i > 0){
+                    totalChildWidth += childSpacing; // 添加间距
+                }
+            }
+        }
+        
+        // 获取父容器宽度（考虑 padding）
+        const containerWidth = node.width || width || 0;
+        const containerPadding = (paddingLeft || 0) + (paddingRight || 0);
+        const availableWidth = containerWidth - containerPadding;
+        
+        // 如果子元素总宽度超过父容器宽度，说明会换行，应该用 V（垂直布局）
+        // 否则用 H（水平布局）
+        if(totalChildWidth > availableWidth && availableWidth > 0){
+            // 会换行，使用 V（垂直布局）
+            if(node.layoutMode === 'HORIZONTAL'){
+                // 需要改为垂直布局
+                node.layoutMode = 'VERTICAL';
+                // 重新生成对齐代码（因为方向改变了）
+                let newAlign = getAlign('V', styles.justifyContent, styles.alignItems);
+                // 更新对齐设置
+                if(newAlign){
+                    const v = newAlign[0];
+                    const h = newAlign[1];
+                    // 更新 primaryAxisAlignItems（垂直方向）
+                    if(v === 'T') node.primaryAxisAlignItems = 'MIN';
+                    else if(v === 'C') node.primaryAxisAlignItems = 'CENTER';
+                    else if(v === 'B') node.primaryAxisAlignItems = 'MAX';
+                    // 更新 counterAxisAlignItems（水平方向）
+                    if(h === 'L') node.counterAxisAlignItems = 'MIN';
+                    else if(h === 'C') node.counterAxisAlignItems = 'CENTER';
+                    else if(h === 'R' || h === 'B') node.counterAxisAlignItems = 'MAX';
+                }
+            }
+        } else {
+            // 不会换行，使用 H（水平布局）
+            if(node.layoutMode === 'VERTICAL'){
+                // 需要改为水平布局
+                node.layoutMode = 'HORIZONTAL';
+                // 重新生成对齐代码（因为方向改变了）
+                let newAlign = getAlign('H', styles.justifyContent, styles.alignItems);
+                // 更新对齐设置
+                if(newAlign){
+                    const v = newAlign[0];
+                    const h = newAlign[1];
+                    // 更新 primaryAxisAlignItems（水平方向）
+                    if(h === 'L') node.primaryAxisAlignItems = 'MIN';
+                    else if(h === 'C') node.primaryAxisAlignItems = 'CENTER';
+                    else if(h === 'R' || h === 'B') node.primaryAxisAlignItems = 'MAX';
+                    // 更新 counterAxisAlignItems（垂直方向）
+                    if(v === 'T') node.counterAxisAlignItems = 'MIN';
+                    else if(v === 'C') node.counterAxisAlignItems = 'CENTER';
+                    else if(v === 'B') node.counterAxisAlignItems = 'MAX';
+                }
+            }
+        }
+    }
+    */
+   if(needsWrapCheck && hasFlexDisplay && node.layoutMode){
+        node.layoutMode = 'HORIZONTAL';
+        node.layoutWrap = 'WRAP';
+   }
+    
+    // 最后处理 margin：如果有 margin，更新 marginFrame 的尺寸和位置，然后添加到父节点
+    // 注意：必须在所有子元素处理完成后，才能准确获取 node 的实际尺寸和位置
+    // 这样可以避免子元素解析失败时影响 marginFrame 的坐标
+    if(hasMargin && marginFrame){
+        // 使用 node 的实际尺寸（自动布局换行后可能已经改变）
+        const actualNodeWidth = node.width || width || 1;
+        const actualNodeHeight = node.height || height || 1;
+        
+        // 计算包含 margin 的总尺寸
+        const totalWidth = Math.max(1, actualNodeWidth + marginLeft + marginRight);
+        const totalHeight = Math.max(1, actualNodeHeight + marginTop + marginBottom);
+        
+        // 更新 marginFrame 的尺寸
+        marginFrame.resize(totalWidth, totalHeight);
+        
+        // 获取 node 的当前位置（相对于 marginFrame 的父节点，如果存在）
+        // 注意：此时 node 已经在 marginFrame 中，node.x 和 node.y 是相对于 marginFrame 的
+        // 需要获取 marginFrame 应该相对于其父节点的位置
+        let marginFrameX, marginFrameY;
+        
+        // 如果原元素是绝对定位，需要使用绝对定位的坐标计算逻辑
+        // 否则使用 actualX 和 actualY
+        if(isAbsolute && absolutePosition && actualParentNode){
+            // 使用绝对定位的坐标计算逻辑（与 6257-6391 行的逻辑一致）
+            const boxSizing = styles.boxSizing || 'border-box';
+            const parseBorderWidth = (value) => {
+                if (!value) return 0;
+                const num = parseFloat(value);
+                return isNaN(num) ? 0 : num;
+            };
+            const topWidth = parseBorderWidth(styles.borderTopWidth) || parseBorderWidth(styles.borderWidth) || 0;
+            const rightWidth = parseBorderWidth(styles.borderRightWidth) || parseBorderWidth(styles.borderWidth) || 0;
+            const bottomWidth = parseBorderWidth(styles.borderBottomWidth) || parseBorderWidth(styles.borderWidth) || 0;
+            const leftWidth = parseBorderWidth(styles.borderLeftWidth) || parseBorderWidth(styles.borderWidth) || 0;
+            
+            // 辅助函数：将定位值转换为像素值（处理百分比和数值）
+            const convertToPixels = (value, parentSize) => {
+                if (value === null || value === undefined) return null;
+                if (typeof value === 'object' && value.type === 'percent') {
+                    if (parentSize && parentSize > 0) {
+                        return (value.value / 100) * parentSize;
+                    }
+                    return null;
+                }
+                if (typeof value === 'number' && !isNaN(value)) {
+                    return value;
+                }
+                return null;
+            };
+            
+            // 获取父容器的实际尺寸
+            const getParentSize = (node, dimension) => {
+                if (!node) return 0;
+                if (node.absoluteRenderBounds) {
+                    return dimension === 'width' ? node.absoluteRenderBounds.width : node.absoluteRenderBounds.height;
+                }
+                if (node.absoluteBoundingBox) {
+                    return dimension === 'width' ? node.absoluteBoundingBox.width : node.absoluteBoundingBox.height;
+                }
+                return dimension === 'width' ? (node.width || 0) : (node.height || 0);
+            };
+            
+            const parentWidth = getParentSize(actualParentNode, 'width');
+            const parentHeight = getParentSize(actualParentNode, 'height');
+            
+            // 根据 top/left/right/bottom 计算位置
+            let absX = actualX || x || 0;
+            let absY = actualY || y || 0;
+            
+            // 如果设置了 left，使用 left
+            const leftValue = convertToPixels(absolutePosition.left, parentWidth);
+            if (leftValue !== null) {
+                if(boxSizing === 'border-box'){
+                    absX = leftValue + leftWidth;
+                } else {
+                    absX = leftValue;
+                }
+            } else {
+                // 如果设置了 right，需要从父容器宽度计算
+                const rightValue = convertToPixels(absolutePosition.right, parentWidth);
+                if (rightValue !== null) {
+                    if(boxSizing === 'border-box'){
+                        absX = parentWidth - width - rightWidth - rightValue;
+                    } else {
+                        absX = parentWidth - width - rightValue;
+                    }
+                }
+            }
+            
+            // 如果设置了 top，使用 top
+            const topValue = convertToPixels(absolutePosition.top, parentHeight);
+            if (topValue !== null) {
+                if(boxSizing === 'border-box'){
+                    absY = topValue + topWidth;
+                } else {
+                    absY = topValue;
+                }
+            } else {
+                // 如果设置了 bottom，需要从父容器高度计算
+                const bottomValue = convertToPixels(absolutePosition.bottom, parentHeight);
+                if (bottomValue !== null) {
+                    if(boxSizing === 'border-box'){
+                        absY = parentHeight - height - bottomWidth - bottomValue;
+                    } else {
+                        absY = parentHeight - height - bottomValue;
+                    }
+                }
+            }
+            
+            marginFrameX = absX;
+            marginFrameY = absY;
+        } else {
+            // 如果不是绝对定位，使用 actualX 和 actualY（考虑了 zIndex 的情况）
+            marginFrameX = actualX || x || 0;
+            marginFrameY = actualY || y || 0;
+        }
+        
+        // 设置 marginFrame 的位置
+        marginFrame.x = marginFrameX;
+        marginFrame.y = marginFrameY;
+        
+        // 将 marginFrame 添加到父节点（如果存在）
+        if(actualParentNode){
+            // 确定插入位置
+            let index = actualParentNode.children.length; // 默认添加到末尾（最上层）
+            
+            // 只有当元素被移出原容器时（如负zIndex），才需要特殊处理
+            if(hasNegativeZIndex && parentNode && actualParentNode !== parentNode){
+                const parentIndex = actualParentNode.children.findIndex(item => item.id === parentNode.id);
+                if(parentIndex !== -1){
+                    index = parentIndex;
+                }
+            }
+            
+            actualParentNode.insertChild(index, marginFrame);
+            // 确保位置正确（因为 insertChild 可能会影响位置）
+            marginFrame.x = marginFrameX;
+            marginFrame.y = marginFrameY;
+        }
+        
+        // 如果原容器（node）是绝对定位，marginFrame 也要继承设置绝对定位
+        // 检查 node 是否是绝对定位（通过 layoutPositioning 或 styles.position）
+        const nodeIsAbsolute = node.layoutPositioning === 'ABSOLUTE' || isAbsolute;
+        if(nodeIsAbsolute && actualParentNode && actualParentNode.layoutMode && actualParentNode.layoutMode !== 'NONE'){
+            // 如果 marginFrame 的父节点是自动布局，设置 marginFrame 为绝对定位
+            try {
+                marginFrame.layoutPositioning = 'ABSOLUTE';
+                // 重要：设置 ABSOLUTE 后，Figma 可能会重新排列元素，导致坐标被改变
+                // 需要重新设置坐标，使用之前计算好的 marginFrameX 和 marginFrameY
+                marginFrame.x = marginFrameX;
+                marginFrame.y = marginFrameY;
+            } catch (e) {
+                // 如果设置失败（可能因为父容器不支持），忽略错误
+                console.warn('Failed to set layoutPositioning for marginFrame:', e);
+            }
+        }
+        
+        finalNode = marginFrame;
+    }
+    
+    return finalNode;
+}
 
 const BASIC_PROPS = [
     "a",//RGBA-A

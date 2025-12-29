@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Html2zy - 页面快照工具",
+  "version": "1.0.0",
+  "description": "将当前页面或指定元素转化为快照，记录实际的宽、高、位置、样式等信息",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/Html2zy.png",
+      "48": "icons/Html2zy-1.png",
+      "128": "icons/Html2zy-2.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "builds/yn_tool.js",
+        "content.js"
+      ],
+      "css": ["styles/content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/Html2zy.png",
+    "48": "icons/Html2zy-1.png",
+    "128": "icons/Html2zy-2.png"
+  }
+}
+

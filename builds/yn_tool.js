@@ -2035,12 +2035,12 @@ Object.assign(TOOL_JS.prototype, {
     
     if (node.hasAttribute('data-resize')) {
       var styleId = 'hide-resize-' + Date.now();
-      var existingStyle = document.getElementById(styleId);
+      var existingStyle = node.querySelector('style#' + styleId) || document.getElementById(styleId);
       if (!existingStyle) {
         var styleElement = document.createElement('style');
         styleElement.id = styleId;
         styleElement.textContent = '[data-resize]::after { display: none !important; }';
-        clone.appendChild(styleElement);
+        node.appendChild(styleElement);
       }
     }
     

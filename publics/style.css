@@ -52,6 +52,14 @@ html{
   cursor: url('../VI/drag_32.png'),grabbing;
 }
 
+input[type="text"],textarea{
+  cursor: text;
+}
+
+*::selection{
+  background: rgba(49, 207, 154, 0.24);
+}
+
 .tex-noise{
   width: 100%;
   height: 100%;

@@ -6,3 +6,8 @@
 *.pem
 server.js
 bundle.js
+
+# 扩展目录中的同步文件（避免重复提交）
+tool_web/Html2zy/builds/
+tool_web/Html2zy/publics/
+tool_web/Html2zy/VI/

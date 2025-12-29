@@ -1172,7 +1172,7 @@ DOM.dropUp.addEventListener('dragleave',(e)=>{
 const FILE_UPLOAD_STRATEGIES = {
   'image': (files) => addImageTags(files, true),
   'table': (files) => addTableText(files, true),
-  'zy': (files) => addZyCatalogue(files)
+  'zy': (files) => addZyCatalogue(files) // 不直接触发通信，数据提前存储，通过 [data-create-any] 按钮发送
 };
 
 // 执行文件上传策略（简化：直接使用策略映射，保留错误处理）
@@ -1232,21 +1232,444 @@ async function handleZyFile(content, createname){
   console.warn('handleZyFile: ZY file format not yet implemented');
 };
 
+// 处理渐变字符串中的颜色值，将颜色转换为 hex 格式
+function convertGradientColors(gradientString) {
+  if (!gradientString || typeof gradientString !== 'string') {
+    return gradientString;
+  }
+  
+  // 匹配渐变函数：linear-gradient, radial-gradient, conic-gradient, repeating-linear-gradient, repeating-radial-gradient
+  const gradientPattern = /(linear-gradient|radial-gradient|conic-gradient|repeating-linear-gradient|repeating-radial-gradient)\s*\(/gi;
+  
+  let convertedGradient = gradientString;
+  let match;
+  
+  // 找到所有渐变函数的位置
+  const gradientMatches = [];
+  while ((match = gradientPattern.exec(gradientString)) !== null) {
+    gradientMatches.push({
+      start: match.index,
+      functionName: match[1],
+      fullMatch: match[0]
+    });
+  }
+  
+  // 如果没有找到渐变函数，直接返回
+  if (gradientMatches.length === 0) {
+    return gradientString;
+  }
+  
+  // 从后往前处理，避免位置偏移
+  for (let i = gradientMatches.length - 1; i >= 0; i--) {
+    const gradMatch = gradientMatches[i];
+    const startPos = gradMatch.start;
+    
+    // 找到对应的右括号（需要匹配嵌套的括号）
+    let depth = 0;
+    let endPos = startPos;
+    let inString = false;
+    let stringChar = '';
+    
+    for (let j = startPos; j < gradientString.length; j++) {
+      const char = gradientString[j];
+      
+      // 处理字符串内的字符（跳过引号内的内容）
+      if (char === '"' || char === "'") {
+        if (!inString) {
+          inString = true;
+          stringChar = char;
+        } else if (char === stringChar) {
+          inString = false;
+          stringChar = '';
+        }
+        continue;
+      }
+      
+      if (inString) continue;
+      
+      if (char === '(') {
+        depth++;
+      } else if (char === ')') {
+        depth--;
+        if (depth === 0) {
+          endPos = j;
+          break;
+        }
+      }
+    }
+    
+    // 提取渐变函数的内容（不包括函数名和括号）
+    const gradientContent = gradientString.substring(startPos + gradMatch.fullMatch.length, endPos);
+    
+    // 解析渐变内容中的颜色值
+    // 颜色值可能出现在：
+    // 1. 方向/角度之后：linear-gradient(to right, red, blue)
+    // 2. 位置参数之后：radial-gradient(circle, red 0%, blue 100%)
+    // 3. 直接颜色列表：conic-gradient(red, yellow, green)
+    
+    // 更精确的颜色值匹配模式
+    // 匹配：rgba/rgb/hsla/hsl 函数、hex 颜色、颜色名称、transparent
+    // 可能后面跟着位置（如 "red 50%" 或 "rgba(255,0,0,0.5) 0%")
+    const colorPattern = /(rgba?\([^)]+\)|hsla?\([^)]+\)|#[0-9a-fA-F]{3,8}|transparent|currentColor|\b\w+\b)(?:\s+([0-9.]+%?|at\s+[^,)]+))?/gi;
+    
+    let processedContent = gradientContent;
+    let colorMatch;
+    const colorMatches = [];
+    
+    // 收集所有颜色匹配
+    while ((colorMatch = colorPattern.exec(gradientContent)) !== null) {
+      // 跳过方向关键字和位置关键字
+      const colorValue = colorMatch[1].trim();
+      const skipKeywords = ['to', 'at', 'circle', 'ellipse', 'closest-side', 'closest-corner', 'farthest-side', 'farthest-corner', 'from', 'deg', 'rad', 'turn', 'grad'];
+      
+      if (skipKeywords.includes(colorValue.toLowerCase())) {
+        continue;
+      }
+      
+      colorMatches.push({
+        fullMatch: colorMatch[0],
+        colorValue: colorValue,
+        position: colorMatch[2] || null,
+        index: colorMatch.index
+      });
+    }
+    
+    // 从后往前替换，避免位置偏移
+    for (let j = colorMatches.length - 1; j >= 0; j--) {
+      const colorMatch = colorMatches[j];
+      const colorValue = colorMatch.colorValue.trim();
+      
+      // 跳过 CSS 变量和特殊值
+      if (colorValue.startsWith('var(') || 
+          colorValue === 'none' || 
+          colorValue === 'currentColor' ||
+          colorValue.startsWith('url(')) {
+        continue;
+      }
+      
+      // 检测透明色
+      const isTransparent = colorValue === 'transparent' || 
+                           colorValue === 'rgba(0, 0, 0, 0)' || 
+                           colorValue === 'rgba(0,0,0,0)' ||
+                           colorValue.toLowerCase() === 'transparent';
+      
+      let replacement;
+      if (isTransparent) {
+        replacement = '__TRANSPARENT__';
+      } else {
+        // 使用 getcolorTypeOrHex 转换颜色值
+        try {
+          const hexColor = getcolorTypeOrHex(colorValue);
+          if (hexColor && hexColor !== colorValue) {
+            replacement = hexColor;
+          } else {
+            continue; // 转换失败，保留原值
+          }
+        } catch (e) {
+          // 如果转换失败，保留原值
+          console.warn('Failed to convert gradient color:', colorValue, e);
+          continue;
+        }
+      }
+      
+      // 构建替换字符串（保留位置信息）
+      const newColorValue = colorMatch.position ? 
+        `${replacement} ${colorMatch.position}` : 
+        replacement;
+      
+      // 替换颜色值（需要匹配完整的颜色值，包括前面的逗号或空格）
+      const beforeMatch = processedContent.substring(0, colorMatch.index);
+      const afterMatch = processedContent.substring(colorMatch.index + colorMatch.fullMatch.length);
+      
+      // 确保替换后的格式正确（保留前面的分隔符）
+      const separatorMatch = beforeMatch.match(/[,\s]*$/);
+      const separator = separatorMatch ? separatorMatch[0] : '';
+      processedContent = beforeMatch.substring(0, beforeMatch.length - separator.length) + separator + newColorValue + afterMatch;
+    }
+    
+    // 替换整个渐变函数
+    const beforeGradient = convertedGradient.substring(0, startPos);
+    const afterGradient = convertedGradient.substring(endPos + 1);
+    convertedGradient = beforeGradient + gradMatch.fullMatch + processedContent + ')' + afterGradient;
+  }
+  
+  return convertedGradient;
+}
+
+// 处理 SVG 代码中的颜色值，将颜色转换为 hex 格式
+function convertSvgColors(svgCode) {
+  if (!svgCode || typeof svgCode !== 'string') {
+    return svgCode;
+  }
+  
+  // SVG 中可能包含的颜色属性
+  const colorAttributes = ['fill', 'stroke', 'stop-color', 'flood-color', 'lighting-color'];
+  
+  // SVG 中可能包含的透明度属性
+  const opacityAttributes = ['fill-opacity', 'stroke-opacity', 'opacity'];
+  
+  let convertedSvg = svgCode;
+  
+  // 处理每个颜色属性
+  colorAttributes.forEach(attr => {
+    // 匹配属性值，支持单引号、双引号和无引号，以及可能的空格
+    // 匹配模式：attr="value" 或 attr='value' 或 attr=value
+    // 转义特殊字符
+    const escapedAttr = attr.replace(/-/g, '\\-');
+    // 匹配带引号的：attr="value" 或 attr='value'
+    const quotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*(["'])([^"']+)\\2`, 'gi');
+    // 匹配无引号的：attr=value（值不能包含空格、>、=、引号）
+    const unquotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*([^\\s>="']+)`, 'gi');
+    
+    // 先处理带引号的情况
+    convertedSvg = convertedSvg.replace(quotedRegex, (match, attrName, quote, colorValue) => {
+      if (!colorValue) return match;
+      
+      // 跳过 CSS 变量和特殊值
+      if (colorValue.startsWith('var(') || 
+          colorValue === 'none' || 
+          colorValue === 'currentColor' ||
+          colorValue.startsWith('url(')) {
+        return match;
+      }
+      
+      // 检测透明色
+      const isTransparent = colorValue === 'transparent' || 
+                           colorValue === 'rgba(0, 0, 0, 0)' || 
+                           colorValue === 'rgba(0,0,0,0)' ||
+                           colorValue.toLowerCase() === 'transparent';
+      
+      if (isTransparent) {
+        // 透明色替换为 __TRANSPARENT__
+        return `${attrName}=${quote}__TRANSPARENT__${quote}`;
+      } else {
+        // 使用 getcolorTypeOrHex 转换颜色值
+        try {
+          const hexColor = getcolorTypeOrHex(colorValue);
+          if (hexColor && hexColor !== colorValue) {
+            return `${attrName}=${quote}${hexColor}${quote}`;
+          }
+        } catch (e) {
+          // 如果转换失败，保留原值
+          console.warn('Failed to convert SVG color:', colorValue, e);
+        }
+      }
+      
+      return match;
+    });
+    
+    // 再处理无引号的情况
+    convertedSvg = convertedSvg.replace(unquotedRegex, (match, attrName, colorValue) => {
+      if (!colorValue) return match;
+      
+      // 跳过 CSS 变量和特殊值
+      if (colorValue.startsWith('var(') || 
+          colorValue === 'none' || 
+          colorValue === 'currentColor' ||
+          colorValue.startsWith('url(')) {
+        return match;
+      }
+      
+      // 检测透明色
+      const isTransparent = colorValue === 'transparent' || 
+                           colorValue === 'rgba(0, 0, 0, 0)' || 
+                           colorValue === 'rgba(0,0,0,0)' ||
+                           colorValue.toLowerCase() === 'transparent';
+      
+      if (isTransparent) {
+        // 透明色替换为 __TRANSPARENT__（使用引号）
+        return `${attrName}="__TRANSPARENT__"`;
+      } else {
+        // 使用 getcolorTypeOrHex 转换颜色值
+        try {
+          const hexColor = getcolorTypeOrHex(colorValue);
+          if (hexColor && hexColor !== colorValue) {
+            return `${attrName}="${hexColor}"`;
+          }
+        } catch (e) {
+          // 如果转换失败，保留原值
+          console.warn('Failed to convert SVG color:', colorValue, e);
+        }
+      }
+      
+      return match;
+    });
+  });
+  
+  // 处理透明度属性（fill-opacity, stroke-opacity, opacity）
+  opacityAttributes.forEach(attr => {
+    // 匹配属性值，支持单引号和双引号，以及可能的空格
+    const escapedAttr = attr.replace(/-/g, '\\-');
+    const quotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*(["'])([^"']+)\\2`, 'gi');
+    const unquotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*([^\\s>="']+)`, 'gi');
+    
+    // 先处理带引号的情况
+    convertedSvg = convertedSvg.replace(quotedRegex, (match, attrName, quote, opacityValue) => {
+      if (!opacityValue) return match;
+      
+      // 跳过 CSS 变量
+      if (opacityValue.startsWith('var(')) {
+        return match;
+      }
+      
+      // 验证透明度值（0-1 范围）
+      const opacityNum = parseFloat(opacityValue);
+      if (isNaN(opacityNum) || opacityNum < 0 || opacityNum > 1) {
+        // 值无效，设置为 1
+        return `${attrName}=${quote}1${quote}`;
+      }
+      
+      // 值有效，保持原值
+      return match;
+    });
+    
+    // 再处理无引号的情况
+    convertedSvg = convertedSvg.replace(unquotedRegex, (match, attrName, opacityValue) => {
+      if (!opacityValue) return match;
+      
+      // 跳过 CSS 变量
+      if (opacityValue.startsWith('var(')) {
+        return match;
+      }
+      
+      // 验证透明度值（0-1 范围）
+      const opacityNum = parseFloat(opacityValue);
+      if (isNaN(opacityNum) || opacityNum < 0 || opacityNum > 1) {
+        // 值无效，设置为 1（使用引号）
+        return `${attrName}="1"`;
+      }
+      
+      // 值有效，保持原值
+      return match;
+    });
+  });
+  
+  return convertedSvg;
+}
+
+// 递归处理 JSON 数据中的颜色值，使用 getcolorTypeOrHex 转换为 hex
+function convertColorsInJsonData(data) {
+  if (!data || typeof data !== 'object') {
+    return data;
+  }
+  
+  // 如果是数组，递归处理每个元素
+  if (Array.isArray(data)) {
+    return data.map(item => convertColorsInJsonData(item));
+  }
+  
+  // 如果是对象，处理每个属性
+  const result = {};
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const value = data[key];
+      
+      // 检查是否是颜色相关的属性
+      const colorKeys = [
+        'backgroundColor', 'borderColor', 'color',
+        'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'
+      ];
+      
+      if (colorKeys.includes(key) && typeof value === 'string') {
+        // 检测透明色：保持记录，不转换为 hex
+        const isTransparent = value === 'transparent' || 
+                             value === 'rgba(0, 0, 0, 0)' || 
+                             value === 'rgba(0,0,0,0)' ||
+                             value.toLowerCase() === 'transparent';
+        
+        if (isTransparent) {
+          // 保持透明色记录，使用特殊标记
+          result[key] = '__TRANSPARENT__';
+        } else {
+          // 使用 getcolorTypeOrHex 转换颜色值（不传 onlyType 参数，返回 hex）
+          const hexColor = getcolorTypeOrHex(value);
+          result[key] = hexColor || value; // 如果转换失败，保留原值
+        }
+      } else if (key === 'svgCode' && typeof value === 'string') {
+        // 处理 svgCode 中的颜色值
+        result[key] = convertSvgColors(value);
+      } else if (key === 'backgroundImage' && typeof value === 'string') {
+        // 处理 backgroundImage 渐变字符串中的颜色值
+        result[key] = convertGradientColors(value);
+      } else if (key === 'styles' && typeof value === 'object') {
+        // 处理 styles 对象中的所有颜色属性
+        result[key] = convertColorsInJsonData(value);
+      } else if (key === 'children' && Array.isArray(value)) {
+        // 递归处理子元素
+        result[key] = value.map(child => convertColorsInJsonData(child));
+      } else if (typeof value === 'object' && value !== null) {
+        // 递归处理嵌套对象
+        result[key] = convertColorsInJsonData(value);
+      } else {
+        result[key] = value;
+      }
+    }
+  }
+  
+  return result;
+}
+
+// JSON 文件处理策略（占位符）
+async function handleJsonFile(content, createname, shouldCreateTag = true){
+  const textarea = DOM.userText;
+  if (textarea) {
+    // 填充 textarea，方便用户修改
+    textarea.value = content.trim();
+    textarea.focus();
+    
+    try {
+      // 解析 JSON 数据
+      let jsonData = JSON.parse(content.trim());
+      
+      // 转换 JSON 数据中的颜色值为 hex 格式
+      jsonData = convertColorsInJsonData(jsonData);
+      
+      // 创建符合格式的 ZY 对象结构
+      const jsonZyData = [{
+        zyName: createname || 'JSON_NODE',
+        zyType: 'json',
+        jsonData: jsonData
+      }];
+      
+      // 数据必须存储到 CataloguesInfo（即使不创建标签）
+      jsonZyData.forEach(item => {
+        if(item && item.zyType){
+          CataloguesInfo.push(item);
+        }
+      });
+      
+      // 根据参数决定是否创建标签（测试阶段默认创建，后续可能不创建）
+      if(shouldCreateTag){
+        addTag('zy', jsonZyData);
+      }
+    } catch (error) {
+      console.error('JSON parsing error:', error);
+      tipsAll(MESSAGES.ZY_DATA_ERROR, 3000);
+    }
+  }
+};
+
 // 文件格式处理策略映射
 const FILE_FORMAT_STRATEGIES = {
   'md': handleMarkdownFile,
   'svg': handleSvgFile,
-  'zy': handleZyFile
+  'zy': handleZyFile,
+  'json': handleJsonFile
 };
 
 // 执行文件格式处理策略（简化：直接使用策略映射，保留错误处理）
-async function executeFileFormatStrategy(format, content, createname){
+async function executeFileFormatStrategy(format, content, createname, shouldCreateTag = true){
   const strategy = FILE_FORMAT_STRATEGIES[format];
   if (!strategy) {
     console.warn(`Unknown file format: ${format}`);
     return;
   }
-  await strategy(content, createname);
+  // 对于支持 shouldCreateTag 参数的策略，传递该参数
+  if (format === 'json' && strategy.length >= 3) {
+    await strategy(content, createname, shouldCreateTag);
+  } else {
+    await strategy(content, createname);
+  }
 };
 
 // 检测文件类型
@@ -1760,9 +2183,11 @@ function addTableTags(){
 async function addZyCatalogue(files,codetype){
   //log([files,files instanceof FileList , files instanceof File])
   if(codetype){
-    // 如果指定了 codetype，说明是从文本框转换来的，直接添加标签
+    // 如果指定了 codetype，说明是从文本框转换来的，直接添加标签（数据已提前存储）
     addTag('zy',files)
   } else if ( files instanceof FileList || files instanceof File || (Array.isArray(files) && files.length > 0)){
+    // 文件上传时，清空之前的标签（与其他类型保持一致）
+    DOM.clearCreateTags.click();
     // 拖拽上传的情况，需要验证文件格式
     let hasError = false;
     let processedCount = 0;
@@ -1773,21 +2198,28 @@ async function addZyCatalogue(files,codetype){
       const lastDotIndex = file.name.lastIndexOf('.');
       const format = lastDotIndex > 0 ? file.name.substring(lastDotIndex + 1).toLowerCase() : '';
       
-      // 检查格式是否支持（md, svg, zy）
-      const supportedFormats = ['md', 'svg', 'zy'];
-      if (!format || !supportedFormats.includes(format)) {
+      // 检查格式是否支持（md, svg, zy, json...）
+      if (!format || !zyType.includes(format)) {
         hasError = true;
         continue;
       }
       
       let filenameRegex = new RegExp('.' + format,'gi');
-      let createname = file.name.replace(filenameRegex,'') + '@MD_NODE';
+      // 根据文件格式动态生成节点后缀
+      const nodeSuffixMap = {
+        'md': '@MD_NODE',
+        'svg': '@SVG_NODE',
+        'json': '@JSON_NODE',
+        'zy': '@ZY_NODE'
+      };
+      const nodeSuffix = nodeSuffixMap[format] || '@ZY_NODE';
+      let createname = file.name.replace(filenameRegex,'') + nodeSuffix;
       
       try{
         let reader = new FileReader();
         reader.onload = async(e)=>{
           try {
-            // 使用策略模式处理文件格式
+            // 使用策略模式处理文件格式（数据会提前存储到 CataloguesInfo）
             await executeFileFormatStrategy(format, reader.result, createname);
             processedCount++;
           } catch (error) {
@@ -1990,54 +2422,79 @@ function createTableTagStrategy(info){
 };
 
 // 资源目录标签策略
+/**
+ * 
+ * @param {Array} info - {zyName: string, zyType: string, nodes?: Array, jsonData?: object}
+ * @example
+ * [{zyName: 'zy1', zyType: 'md', nodes: [], jsonData: {}}]
+ */
 function createZyTagStrategy(info){
-  if(info.zyType){
-    CataloguesInfo.push(info);
-    //log(info)
-    let index = Array.from(DOM.cataloguesBox.children).length;
-    let tag = document.createElement('div');
-    DOM.cataloguesBox.parentNode.parentNode.setAttribute('data-create-tags-box','zy');
-    let main = addTagMain(tag,index,'zynode');
+  // 处理数组输入（md、svg、json 都可能传递数组）
+  // 格式：[{zyName: string, zyType: string, nodes?: Array, jsonData?: object}]
+  const items = Array.isArray(info) ? info : [info];
+  
+  items.forEach(item => {
+    if(item && item.zyType){
+      // 检查是否已经存储（避免重复存储，因为 handleJsonFile 可能已经存储了）
+      const existingIndex = CataloguesInfo.findIndex(cat => 
+        cat.zyName === item.zyName && cat.zyType === item.zyType
+      );
+      
+      let index;
+      if(existingIndex === -1){
+        // 如果不存在，才存储
+        CataloguesInfo.push(item);
+        index = CataloguesInfo.length - 1;
+      } else {
+        // 如果已存在，使用现有索引
+        index = existingIndex;
+      }
+      
+      //log(item)
+      let tag = document.createElement('div');
+      DOM.cataloguesBox.parentNode.parentNode.setAttribute('data-create-tags-box','zy');
+      let main = addTagMain(tag,index,'zynode');
 
-    let name = document.createElement('input');
-    name.type = 'text';
-    name.value = info.zyName;
-    name.id = 'zynode_n_' + index;
-    name.setAttribute('data-input','');
-    name.setAttribute('data-zynode-info','name');
-    name.className = 'nobod fl1';
-    name.addEventListener('change',() => {
-      inputMust(name,['text',info.zyName]);
-      CataloguesInfo[index].zyName = name.value;
-    });
-    main.appendChild(name);
+      let name = document.createElement('input');
+      name.type = 'text';
+      name.value = item.zyName;
+      name.id = 'zynode_n_' + index;
+      name.setAttribute('data-input','');
+      name.setAttribute('data-zynode-info','name');
+      name.className = 'nobod fl1';
+      name.addEventListener('change',() => {
+        inputMust(name,['text',item.zyName]);
+        CataloguesInfo[index].zyName = name.value;
+      });
+      main.appendChild(name);
 
-    let layerList = document.createElement('div');
-    layerList.setAttribute('data-layerlist','');
-    switch(info.zyType){
-      case 'md':
-        let html = marked.parse(DOM.userText.value.trim());
-        layerList.innerHTML = html;
-        layerList.addEventListener('dblclick',async()=>{
-          
-          let imgdata = await tool.DomToImagedata(layerList,{scale:3});
-          imgdata.fileName = info.zyName;
-          //console.log(imgdata)
-          tool.ExportImgByData(hasExport,[imgdata],false,imgdata.fileName)
-          function hasExport(index,finalSize,quality,isSuccess){
-            log(index,finalSize,quality,isSuccess)
-          };
-          
-        });
-        break;
-      case 'svg':
-        break;
+      let layerList = document.createElement('div');
+      layerList.setAttribute('data-layerlist','');
+      switch(item.zyType){
+        case 'md':
+          let html = marked.parse(DOM.userText.value.trim());
+          layerList.innerHTML = html;
+          layerList.addEventListener('dblclick',async()=>{
+            
+            let imgdata = await tool.DomToImagedata(layerList,{scale:3});
+            imgdata.fileName = item.zyName;
+            //console.log(imgdata)
+            tool.ExportImgByData(hasExport,[imgdata],false,imgdata.fileName)
+            function hasExport(index,finalSize,quality,isSuccess){
+              log(index,finalSize,quality,isSuccess)
+            };
+            
+          });
+          break;
+        case 'svg':
+          break;
+        case 'json':
+          break;
+      }
+      tag.appendChild(layerList);
+      DOM.cataloguesBox.appendChild(tag);
     }
-    tag.appendChild(layerList);
-    DOM.cataloguesBox.appendChild(tag);
-  }else{
-
-  };
+  });
 };
 
 // 导出图片标签策略
@@ -2417,13 +2874,46 @@ DOM.convertTags.addEventListener('click',async ()=>{
     let svgs = await tool.SvgToObj(DOM.userText.value.trim())
     addZyCatalogue(svgs,'svg')
   }else if(firstline !== ''){
-    //tipsAll(['数据格式错误, 请检查~','Data format error, please check~'],3000)
-    try{
-      let mds = await tool.MdToObj(DOM.userText.value.trim());
-      //console.log(mds)
-      addZyCatalogue(mds,'md')
-    } catch (e) {
-      console.error('Failed to parse markdown:', e);
+    // 尝试判断是否为 JSON 格式
+    const textContent = DOM.userText.value.trim();
+    // 更准确的 JSON 格式判断：去除首尾空白后检查
+    const trimmedContent = textContent.trim();
+    const isJsonFormat = (trimmedContent.startsWith('{') && trimmedContent.endsWith('}')) || 
+                        (trimmedContent.startsWith('[') && trimmedContent.endsWith(']'));
+    
+    if (isJsonFormat) {
+      try {
+        let jsonData = JSON.parse(trimmedContent);
+        // 转换 JSON 数据中的颜色值为 hex 格式
+        jsonData = convertColorsInJsonData(jsonData);
+        // JSON 格式，创建 JSON 类型的 ZY 对象
+        const jsonZyData = [{
+          zyName: 'JSON_NODE',
+          zyType: 'json',
+          jsonData: jsonData
+        }];
+        addZyCatalogue(jsonZyData, 'json');
+        return; // 成功处理 JSON，直接返回，不继续处理
+      } catch (e) {
+        // JSON 解析失败，继续尝试 markdown
+        console.warn('Failed to parse JSON, trying markdown:', e);
+        try{
+          let mds = await tool.MdToObj(textContent);
+          addZyCatalogue(mds,'md')
+        } catch (mdError) {
+          console.error('Failed to parse markdown:', mdError);
+        }
+      }
+    } else {
+      // 非 JSON 格式，尝试解析为 markdown
+      //tipsAll(['数据格式错误, 请检查~','Data format error, please check~'],3000)
+      try{
+        let mds = await tool.MdToObj(textContent);
+        //console.log(mds)
+        addZyCatalogue(mds,'md')
+      } catch (e) {
+        console.error('Failed to parse markdown:', e);
+      }
     }
   };
 });

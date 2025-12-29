@@ -1,0 +1,135 @@
+body {
+  width: 400px;
+  height: 600px;
+  --mainFontSize: 12px;
+}
+
+input[type="text"],textarea{
+  cursor: text;
+}
+
+*::selection{
+  background: rgba(49, 207, 154, 0.24);
+}
+
+[data-page-id="html2zy"] [data-btn]{
+  background: var(--boxGry);
+  border-radius: 6px;
+}
+
+/* 元素列表样式 */
+.elements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.element-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background: var(--boxBak);
+  border: 1px solid var(--boxBod);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.element-item:hover {
+  border-color: var(--mainColor);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.element-checkbox {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.element-preview {
+  width: 60px;
+  height: 40px;
+  object-fit: contain;
+  border: 1px solid var(--boxBod);
+  border-radius: 4px;
+  background: var(--boxBak);
+  flex-shrink: 0;
+}
+
+.element-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.element-info-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--textMain);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.element-info-desc {
+  font-size: 11px;
+  color: var(--textSub);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.element-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.element-action-btn {
+  padding: 6px 12px;
+  font-size: 11px;
+  border: 1px solid var(--boxBod);
+  border-radius: 4px;
+  background: var(--boxBak);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.element-action-btn:hover {
+  background: var(--boxGry);
+  border-color: var(--mainColor);
+  color: var(--mainColor);
+}
+
+.element-action-btn:active {
+  background: var(--boxBod);
+}
+
+/* 状态提示样式 */
+.status {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: none;
+  text-align: center;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.status.success {
+  display: block;
+  background: rgba(28, 201, 146, 0.15);
+  color: var(--mainColor);
+  border: 1px solid var(--mainColor);
+}
+
+.status.error {
+  display: block;
+  background: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}

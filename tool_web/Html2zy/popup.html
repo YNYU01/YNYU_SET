@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light" data-language="Zh" data-webplugin="chrome">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <meta name="description" content="网页内容简介，转发时显示">
+  <title data-en-text="YN+ Html2zy">云即·网页快照助手</title>
+  <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
+  <link rel="stylesheet" href="publics/fonts.css">
+  <link rel="stylesheet" href="publics/style.css">
+  <link rel="stylesheet" href="builds/yn_style.css"  >
+  <link rel="stylesheet" href="styles/popup.css">
+  <script src="publics/run.js"></script>
+</head>
+<body class="noselect df-ffc df-cc">
+  <!--顶部-->
+  <div data-banner-top-mask class="df-sc w100" style="background: var(--mainColor);height: 30px;">
+    <div class="df-lc h100">
+      <set-zh-works data-any="zh" class="df-cc h100" style="--fill: var(--boxBak);"></set-zh-works>        
+      <set-en-works data-any="en" class="df-cc h100" style="--fill: var(--boxBak);"></set-en-works>       
+      <div data-any="zh" data-en-text=">>YN+ Html2zy" class="font-s12" style="padding-right: 10px; color: var(--boxBak); font-weight: 700; ">
+        >> 云即·网页快照助手
+      </div>
+      <div data-any="en" data-en-text=">>YN+ Html2zy" class="font-s12" style="padding-right: 10px; color: var(--boxBak); font-weight: 900;">
+        >> 云即·网页快照助手
+     </div>
+    </div>
+    <div class="df-lc gap4" style="padding-right: 10px;">
+      <div id="btn-theme" class="fl0 df-cc wh-22 pad4 bsb bod-r6" style=" background: var(--swi-bak); ">
+        <input id="theme-1" data-theme-check type="checkbox" checked="true">
+        <label for="theme-1" class="btn-theme wh100">
+          <btn-theme></btn-theme>
+        </label>
+      </div>
+      <input id="language-1" data-language-check type="checkbox" checked="true" >
+      <label for="language-1" class="switch" 
+      style="--swi-h:20px; --swi-r:6px; --swi-bod:transparent; --swi-af:var(--mainColor);">
+        <div class="pos-a wh-16" data-swi-icon style="top:2px; left: 2px; z-index: 2;">
+          <btn-lang></btn-lang>
+        </div>
+      </label>  
+    </div>
+  </div>
+  <!--杂色质感-->
+  <div id="noise"></div>
+  <div id="watermark" class="watermark"></div>
+  <!--全局tips-->
+  <div id="tips-all">
+      <div id="tips-all-text" class="tips-all-text" >
+          温馨提示
+      </div>
+  </div>
+  <div data-page-id="html2zy" class="wh100 df-ffc pad10 gap4 bsb">
+    <!-- 元素选择器 -->
+    <div class="w100 df-ffc gap4">
+      <div class="df-lc gap4">
+        <input type="text" id="cssSelector" placeholder="输入 CSS 选择器" 
+        data-en-placeholder="Input CSS selector"
+        data-input data-input-type="text" value="[data-h2zy]">
+        <div id="scanButton" data-btn class="df-cc" data-en-text="Scan">扫描</div>
+      </div>
+    </div>
+    <!-- 元素列表 -->
+    <div id="listSection" class="wh100" >
+      <div id="elementsList" class="wh100 ovy noscrollbar pad8 bsb">
+        <!-- 元素列表内容 -->
+      </div>
+    </div>
+    <!-- 状态提示和导出按钮 -->
+    <div class="w100 df-ffc" style="position: relative; flex-shrink: 0;">
+      <div data-status class="status" id="status"></div>
+      <div id="exportButton" data-btn class="df-cc w100" data-en-text="Export Selected Elements">导出选中元素</div>
+    </div>
+  </div>
+
+  <script src="builds/yn_tool.js"></script>
+  <script src="builds/yn_comp.js"></script>
+  <script src="builds/yn_icon.js"></script>
+  <script src="publics/graph.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
