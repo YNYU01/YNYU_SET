@@ -12,96 +12,73 @@ input[type="text"],textarea{
   background: rgba(49, 207, 154, 0.24);
 }
 
-[data-page-id="html2zy"] [data-btn]{
+[data-page-id="html2zy"] [data-btn="main"]{
   background: var(--boxGry);
   border-radius: 6px;
+  padding: 0.25ch 2ch;
+}
+
+[data-page-id="html2zy"] [data-btn="export"]{
+  background: var(--themeColor);
+  border: none;
+  border-radius: 6px;
+  padding: 1.5ch;
+  color: #2b2b2b;
+  font-weight: 700;
+}
+
+[data-page-id="html2zy"] [data-btn="sec"]{
+  border-radius: 16px;
+  padding: 0.25ch 2ch;
+}
+
+[data-list-section]{
+  height: calc(100dvh - 64px);
+}
+
+input[type="checkbox"]:checked + label btn-view{
+  --fill: var(--code1);
+}
+
+#elementsList{
+  height: calc(100% - 60px);
+}
+
+#bottom{
+  height: 30px;
+  border-top: 1px solid var(--boxBod);
+  background-image: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/VI/logo_graph_bod.png');
+  background-size: 300px auto;
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  animation: bgMove 40s linear infinite;
+}
+@keyframes bgMove {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: -300px;
+  }
 }
 
 /* 元素列表样式 */
-.elements-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.element-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px;
-  background: var(--boxBak);
+[data-tag-element]{
   border: 1px solid var(--boxBod);
-  border-radius: 6px;
-  transition: all 0.2s;
+  padding: 4px 10px 6px 10px;
+  box-sizing: border-box;
+  border-radius: 4px;
 }
 
-.element-item:hover {
-  border-color: var(--mainColor);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.element-checkbox {
-  flex-shrink: 0;
-  cursor: pointer;
-}
-
-.element-preview {
-  width: 60px;
-  height: 40px;
-  object-fit: contain;
+[data-previewbox]{
+  display: none;
   border: 1px solid var(--boxBod);
   border-radius: 4px;
-  background: var(--boxBak);
-  flex-shrink: 0;
-}
-
-.element-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.element-info-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--textMain);
-  margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.element-info-desc {
-  font-size: 11px;
-  color: var(--textSub);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.element-actions {
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.element-action-btn {
-  padding: 6px 12px;
-  font-size: 11px;
-  border: 1px solid var(--boxBod);
-  border-radius: 4px;
-  background: var(--boxBak);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.element-action-btn:hover {
-  background: var(--boxGry);
-  border-color: var(--mainColor);
-  color: var(--mainColor);
-}
-
-.element-action-btn:active {
-  background: var(--boxBod);
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100px;
+  max-height: 50vh;
+  resize: both;
 }
 
 /* 状态提示样式 */
@@ -111,25 +88,25 @@ input[type="text"],textarea{
   left: 0;
   right: 0;
   margin-bottom: 8px;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 20px;
   display: none;
   text-align: center;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .status.success {
   display: block;
-  background: rgba(28, 201, 146, 0.15);
-  color: var(--mainColor);
-  border: 1px solid var(--mainColor);
+  background-image: linear-gradient(to bottom, rgba(28, 201, 146, 0.15));
+  background-color: var(--boxBak);
+  color: var(--code1);
+  border: 1px solid var(--code1);
 }
 
 .status.error {
   display: block;
-  background: rgba(220, 53, 69, 0.15);
+  background-image: linear-gradient(to bottom, rgba(220, 53, 69, 0.15));
+  background-color: var(--boxBak);
   color: #dc3545;
   border: 1px solid #dc3545;
 }

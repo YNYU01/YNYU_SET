@@ -31,6 +31,7 @@ const LOGO_SET_ZH = `
 class logoynyuzhhome extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="100%" height="100%" viewBox="0 0 896 256" fill="none" xmlns="http://www.w3.org/2000/svg">
     `+ LOGO_YNYU_ZH +`
@@ -43,6 +44,7 @@ customElements.define('yu-zh-home', logoynyuzhhome);
 class logoynyuenhome extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="100%" height="100%" viewBox="0 0 896 256" fill="none" xmlns="http://www.w3.org/2000/svg">
     `+ LOGO_YNYU_EN +`
@@ -55,6 +57,7 @@ customElements.define('yu-en-home', logoynyuenhome);
 class logosetzhhome extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="100%" height="100%" viewBox="0 0 453 136" fill="none" xmlns="http://www.w3.org/2000/svg">
     `+ LOGO_SET_ZH +`
@@ -67,6 +70,7 @@ customElements.define('set-zh-home', logosetzhhome);
 class logosetenhome extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="100%" height="100%" viewBox="0 0 453 136" fill="none" xmlns="http://www.w3.org/2000/svg">
     `+ LOGO_SET_EN +`
@@ -79,6 +83,7 @@ customElements.define('set-en-home', logosetenhome);
 class logosetzh extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="100%" height="100%" viewBox="110 0 453 136" fill="none" xmlns="http://www.w3.org/2000/svg">
     `+ LOGO_SET_ZH +`
@@ -91,6 +96,7 @@ customElements.define('set-zh', logosetzh);
 class logoseten extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="100%" height="100%" viewBox="20 0 453 136" fill="none" xmlns="http://www.w3.org/2000/svg">
     `+ LOGO_SET_EN +`
@@ -103,6 +109,7 @@ customElements.define('set-en', logoseten);
 class logosetzhworks extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="94%" height="94%" viewBox="110 0 260 140" fill="none" xmlns="http://www.w3.org/2000/svg">
     `+ LOGO_SET_ZH +`
@@ -115,6 +122,7 @@ customElements.define('set-zh-works', logosetzhworks);
 class logosetenworks extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="94%" height="94%" viewBox="20 0 420 150" fill="none" xmlns="http://www.w3.org/2000/svg">
     `+ LOGO_SET_EN +`
@@ -127,6 +135,7 @@ customElements.define('set-en-works', logosetenworks);
 class logoynyuzhworks extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="76%" height="76%" viewBox="100 10 720 256" fill="none" xmlns="http://www.w3.org/2000/svg">
     `+ LOGO_YNYU_ZH +`
@@ -139,6 +148,7 @@ customElements.define('yu-zh-works', logoynyuzhworks);
 class logoynyuenworks extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="76%" height="76%" viewBox="0 6 896 256" fill="none" xmlns="http://www.w3.org/2000/svg">
     `+ LOGO_YNYU_EN +`
@@ -151,6 +161,7 @@ customElements.define('yu-en-works', logoynyuenworks);
 class logographbod extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="100%" height="100%" viewBox="0 0 827 1072" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path data-graph-bod d="M627.473 986.701L655.588 908.327C656.331 906.254 657.231 904.891 658.287 904.237C659.749 903.33 661.89 902.716 664.709 902.396L664.602 924.301L691.483 924.354L663.369 1002.73C662.626 1004.8 661.726 1006.17 660.67 1006.82C659.208 1007.73 657.067 1008.34 654.248 1008.66L654.354 986.754L627.473 986.701Z"/>
@@ -223,6 +234,7 @@ customElements.define('logo-graph-bod', logographbod);
 class logograph extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="100%" height="100%"  viewBox="0 0 17 28" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fill="var(--fill)" d="M9.81641 0.479004C8.55054 0.67972 7.76735 1.20313 7.46683 2.04919L0.394287 21.9602L7.18329 21.9726V27.4793C8.44915 27.2786 9.23234 26.7552 9.53287 25.9091L16.6054 5.99811L9.81644 5.98572L9.81641 0.479004Z"/>
@@ -236,6 +248,7 @@ customElements.define('logo-graph', logograph);
 class logohead extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     <svg width="100%" height="100%" viewBox="0 0 56 68" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g transform="translate(0,12)" clip-path="url(#clip0_2831_438)">

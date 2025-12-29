@@ -12,9 +12,9 @@
   <link rel="stylesheet" href="styles/popup.css">
   <script src="publics/run.js"></script>
 </head>
-<body class="noselect df-ffc df-cc">
+<body class="noselect df-ffc df-cc fl0">
   <!--顶部-->
-  <div data-banner-top-mask class="df-sc w100" style="background: var(--mainColor);height: 30px;">
+  <div data-banner-top-mask class="df-sc w100 fl0" style="background: var(--mainColor);height: 30px;">
     <div class="df-lc h100">
       <set-zh-works data-any="zh" class="df-cc h100" style="--fill: var(--boxBak);"></set-zh-works>        
       <set-en-works data-any="en" class="df-cc h100" style="--fill: var(--boxBak);"></set-en-works>       
@@ -50,29 +50,36 @@
           温馨提示
       </div>
   </div>
-  <div data-page-id="html2zy" class="wh100 df-ffc pad10 gap4 bsb">
-    <!-- 元素选择器 -->
-    <div class="w100 df-ffc gap4">
-      <div class="df-lc gap4">
-        <input type="text" id="cssSelector" placeholder="输入 CSS 选择器" 
-        data-en-placeholder="Input CSS selector"
-        data-input data-input-type="text" value="[data-h2zy]">
-        <div id="scanButton" data-btn class="df-cc" data-en-text="Scan">扫描</div>
+  <div data-page-id="html2zy" class="wh100 df-ffc gap4 bsb">
+    <div data-list-section class="pad10 df-ffc gap4 bsb">
+      <!-- 元素选择器 -->
+      <div class="w100 df-ffc gap4 fl0">
+        <div class="df-lc gap4">
+          <input type="text" id="cssSelector" placeholder="输入 CSS 选择器"  class="h100"
+          data-en-placeholder="Input CSS selector"
+          data-input data-input-type="text" value="[data-h2zy]">
+          <div id="scanButton" data-btn="main" class="df-cc" data-en-text="Scan">扫描</div>
+        </div>
       </div>
-    </div>
-    <!-- 元素列表 -->
-    <div id="listSection" class="wh100" >
-      <div id="elementsList" class="wh100 ovy noscrollbar pad8 bsb">
+      <!-- 元素列表 -->
+      <div id="elementsList" class="df-ffc wh100 ovy noscrollbar gap4">
         <!-- 元素列表内容 -->
       </div>
+      <!-- 状态提示和导出按钮 -->
+      <div class="w100 df-ffc pos-r fl0">
+        <div data-status class="status" id="status"></div>
+        <div id="exportButton" data-btn="export" class="df-cc w100" data-en-text="Export Selected Elements">导出选中元素</div>
+      </div>
     </div>
-    <!-- 状态提示和导出按钮 -->
-    <div class="w100 df-ffc" style="position: relative; flex-shrink: 0;">
-      <div data-status class="status" id="status"></div>
-      <div id="exportButton" data-btn class="df-cc w100" data-en-text="Export Selected Elements">导出选中元素</div>
+
+    <div id="bottom" class="df-sc pad10 bsb fl0">
+      <div>  </div>
+      <div class="font-s10 op6">©2024-2025 @YNYU www.ynyuset.cn</div>
     </div>
   </div>
 
+  <script src="publics/other/FileSaver.min.js"></script>
+  <script src="publics/other/jszip.js"></script>
   <script src="builds/yn_tool.js"></script>
   <script src="builds/yn_comp.js"></script>
   <script src="builds/yn_icon.js"></script>

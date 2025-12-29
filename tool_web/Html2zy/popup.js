@@ -13,7 +13,6 @@
   const elements = {
     cssSelector: document.getElementById('cssSelector'),
     scanButton: document.getElementById('scanButton'),
-    listSection: document.getElementById('listSection'),
     elementsList: document.getElementById('elementsList'),
     exportButton: document.getElementById('exportButton'),
     status: document.getElementById('status')
@@ -124,20 +123,29 @@
       if (response && response.success) {
         const data = response.data;
         
-        // 处理单个或多个元素
-        if (data.element) {
-          // 单个元素
-          elementSnapshots = [{ snapshot: data.element, selector: selector, index: 0 }];
-        } else if (data.elements && data.elements.length > 0) {
-          // 多个元素
-          elementSnapshots = data.elements.map((el, idx) => ({
-            snapshot: el,
-            selector: selector,
-            index: idx
-          }));
+        // 处理单个或多个元素（data 现在是包含单个元素快照的数组）
+        if (Array.isArray(data) && data.length > 0) {
+          // 过滤掉 null 或无效的快照数据
+          elementSnapshots = data
+            .map((el, idx) => ({
+              snapshot: el,
+              selector: selector,
+              index: idx
+            }))
+            .filter(item => item.snapshot !== null && item.snapshot !== undefined);
+          
+          // 重新设置索引
+          elementSnapshots.forEach((item, idx) => {
+            item.index = idx;
+          });
         } else {
           showStatus(['未找到匹配的元素','No matching elements found'], 'error');
-          elements.listSection.style.display = 'none';
+          return;
+        }
+        
+        // 如果过滤后没有有效元素，显示错误
+        if (elementSnapshots.length === 0) {
+          showStatus(['未找到有效的元素（可能所有元素都被隐藏）','No valid elements found (all elements may be hidden)'], 'error');
           return;
         }
 
@@ -164,6 +172,7 @@
    * 渲染元素列表
    */
   async function renderElementsList() {
+    let lang = ROOT.getAttribute('data-language');
     elements.elementsList.innerHTML = '';
     
     if (elementSnapshots.length === 0) {
@@ -178,6 +187,7 @@
       // 获取元素标识信息
       const tagName = snapshot.tagName || 'unknown';
       const id = snapshot.id || '';
+      const bodradius = snapshot.styles.borderRadius || '';
       const classes = snapshot.classes || [];
       const h2zyValue = snapshot.dataH2zy || '';
       
@@ -191,19 +201,55 @@
         });
         if (previewResponse && previewResponse.success && previewResponse.imageData) {
           previewUrl = previewResponse.imageData;
+          // 保存预览图数据到 elementSnapshots 中以便后续复用
+          elementSnapshots[i].preview = previewResponse.imageData;
         }
       } catch (e) {
         console.warn('生成预览图失败:', e);
       }
 
+      //创建预览图
+      const previewbox = document.createElement('div');
+      previewbox.setAttribute('data-previewbox', '');
+      previewbox.className = 'w100 tex-pixelbg ovy noscrollbar';
+
+      const preview = document.createElement('img');
+      preview.src = previewUrl;
+      preview.alt = lang === 'Zh' ? '预览图' : 'Preview';
+      preview.onload = function() {
+        if(this.width > 360) {
+          // aspectRatio 需要字符串格式，并设置 height: auto 确保比例正确
+          this.style.aspectRatio = `${this.width} / ${this.height}`;
+          this.style.width = '360px';
+          this.style.height = 'auto';
+        } else {
+          this.style.marginLeft = `${(360 - this.width) / 2}px`;
+        }
+        if(this.height < 100){
+          this.style.marginTop = `${(100 - this.height) / 2}px`;
+        }
+        preview.style.borderRadius = bodradius;
+      };
+      preview.onerror = function() {
+        this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="40"><rect width="60" height="40" fill="%23f0f0f0"/><text x="30" y="20" text-anchor="middle" font-size="10" fill="%23999">无预览</text></svg>';
+      };
+
+      
+      previewbox.appendChild(preview);
+
       // 创建列表项
       const listItem = document.createElement('div');
-      listItem.className = 'element-item';
+      listItem.setAttribute('data-tag-element', '');
+      listItem.className = 'w100 df-ffc gap4';
       listItem.dataset.index = i;
+
+      const infoline = document.createElement('div');
+      infoline.className = 'w100 df-sc gap4';
 
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
-      checkbox.className = 'element-checkbox';
+      checkbox.id = `h2zy-chk-${i}`;
+      checkbox.setAttribute('data-input', '');
       checkbox.checked = selectedIndices.has(i);
       checkbox.addEventListener('change', (e) => {
         if (e.target.checked) {
@@ -213,75 +259,75 @@
         }
         updateExportButton();
       });
+      infoline.appendChild(checkbox);
 
-      const preview = document.createElement('img');
-      preview.className = 'element-preview';
-      preview.src = previewUrl || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="40"><rect width="60" height="40" fill="%23f0f0f0"/><text x="30" y="20" text-anchor="middle" font-size="10" fill="%23999">无预览</text></svg>';
-      preview.alt = '预览图';
-      preview.onerror = function() {
-        this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="40"><rect width="60" height="40" fill="%23f0f0f0"/><text x="30" y="20" text-anchor="middle" font-size="10" fill="%23999">无预览</text></svg>';
-      };
+      let checkboxLabel = document.createElement('label');
+      checkboxLabel.setAttribute('for', `h2zy-chk-${i}`);
+      checkboxLabel.className = 'df-cc wh-14 check pos-r';
+      checkboxLabel.innerHTML = '<btn-check-tick></btn-check-tick>';
+      infoline.appendChild(checkboxLabel);
 
-      const info = document.createElement('div');
-      info.className = 'element-info';
-      
-      const title = document.createElement('div');
-      title.className = 'element-info-title';
-      const nameParts = [];
-      if (h2zyValue) {
-        nameParts.push(`${i + 1}-${h2zyValue}`);
-      } else {
-        nameParts.push(`${i + 1}-${tagName}`);
-      }
-      if (id) nameParts.push(`#${id}`);
-      if (classes.length > 0) nameParts.push(`.${classes[0]}`);
-      title.textContent = nameParts.join(' ');
-      
-      const desc = document.createElement('div');
-      desc.className = 'element-info-desc';
-      const descParts = [];
-      if (snapshot.position) {
-        descParts.push(`${Math.round(snapshot.position.width)}×${Math.round(snapshot.position.height)}`);
-      }
-      if (snapshot.textContent) {
-        const text = snapshot.textContent.substring(0, 30);
-        if (text.length < snapshot.textContent.length) {
-          descParts.push(text + '...');
-        } else {
-          descParts.push(text);
-        }
-      }
-      desc.textContent = descParts.join(' | ') || '无描述';
-
-      info.appendChild(title);
-      info.appendChild(desc);
+      const title = document.createElement('input');
+      title.setAttribute('data-h2zy-name', i);
+      title.className = 'w100 nobod';
+      title.type = 'text';
+      title.value = `${i + 1}.${h2zyValue ? h2zyValue : tagName} ${id ? `#${id}` : ''} ${classes.length > 0 ? `.${classes[0]}` : ''}`;
+      title.setAttribute('data-input', '');
+      title.addEventListener('change', (e) => {
+        console.log(e.target.value);
+      });
+      infoline.appendChild(title);
 
       const actions = document.createElement('div');
-      actions.className = 'element-actions';
+      actions.className = 'df-lc gap4';
       
-      const locateBtn = document.createElement('button');
-      locateBtn.className = 'element-action-btn';
-      locateBtn.textContent = '定位';
-      locateBtn.title = '在页面中定位此元素';
+      const locateBtn = document.createElement('div');
+      locateBtn.setAttribute('data-btn', 'sec');
+      locateBtn.setAttribute('data-en-text','Locate');
+      locateBtn.setAttribute('data-zh-text','定位');
+      locateBtn.className = 'bod-r4 df-cc';
+      locateBtn.textContent = lang === 'Zh' ? '定位' : 'Locate';
       locateBtn.addEventListener('click', () => {
         locateElement(item.selector, i);
       });
+      actions.appendChild(locateBtn);
 
-      const copyBtn = document.createElement('button');
-      copyBtn.className = 'element-action-btn';
-      copyBtn.textContent = '复制';
-      copyBtn.title = '复制此元素的 JSON';
+      const copyBtn = document.createElement('div');
+      copyBtn.setAttribute('data-btn', 'sec');
+      copyBtn.setAttribute('data-en-text','Copy');
+      copyBtn.setAttribute('data-zh-text','复制');
+      copyBtn.className = 'bod-r4 df-cc';
+      copyBtn.textContent = lang === 'Zh' ? '复制' : 'Copy';
       copyBtn.addEventListener('click', () => {
         copySingleJSON(i);
       });
-
-      actions.appendChild(locateBtn);
       actions.appendChild(copyBtn);
 
-      listItem.appendChild(checkbox);
-      listItem.appendChild(preview);
-      listItem.appendChild(info);
-      listItem.appendChild(actions);
+      infoline.appendChild(actions);
+
+      let viewbtn = document.createElement('input');
+      viewbtn.type = 'checkbox';
+      viewbtn.id = `h2zy-view-${i}`;
+      viewbtn.setAttribute('data-input', '');
+      viewbtn.checked = false;
+      viewbtn.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          previewbox.style.display = 'block';
+        } else {
+          previewbox.style.display = 'none';
+        }
+      });
+      infoline.appendChild(viewbtn);
+
+      let viewbtnLabel = document.createElement('label');
+      viewbtnLabel.setAttribute('for', `h2zy-view-${i}`);
+      viewbtnLabel.setAttribute('data-btn','op');
+      viewbtnLabel.className = 'df-cc wh-20';
+      viewbtnLabel.innerHTML = '<btn-view></btn-view>';
+      infoline.appendChild(viewbtnLabel);
+
+      listItem.appendChild(infoline);
+      listItem.appendChild(previewbox);
 
       elements.elementsList.appendChild(listItem);
     }
@@ -352,7 +398,12 @@
         .sort((a, b) => a - b)
         .map(idx => elementSnapshots[idx]);
 
-      // 创建导出数据
+      // 获取输入框的值（data-h2zy-name="i"）
+      const firstSelectedIndex = Array.from(selectedIndices).sort((a, b) => a - b)[0];
+      const nameInput = document.querySelector(`input[data-h2zy-name="${firstSelectedIndex}"]`);
+      const inputValue = nameInput ? nameInput.value.trim() : '';
+      
+      // 创建导出数据（复用已生成的预览图）
       const exportData = {
         timestamp: new Date().toISOString(),
         url: (await chrome.tabs.query({ active: true, currentWindow: true }))[0].url,
@@ -367,44 +418,44 @@
             name: h2zyValue ? `${idx + 1}-${h2zyValue}` : `${idx + 1}-${tagName}`,
             selector: item.selector,
             dataH2zy: h2zyValue,
-            snapshot: snapshot
+            snapshot: snapshot,
+            preview: item.preview || null // 复用已生成的预览图
           };
         })
       };
 
-      // 生成预览图
-      for (let i = 0; i < selectedSnapshots.length; i++) {
-        const item = selectedSnapshots[i];
-        try {
-          const previewResponse = await sendMessageToContent({
-            type: 'generatePreview',
-            selector: item.selector,
-            index: item.index
-          });
-          if (previewResponse && previewResponse.success && previewResponse.imageData) {
-            exportData.elements[i].preview = previewResponse.imageData;
-          }
-        } catch (e) {
-          console.warn('生成预览图失败:', e);
-        }
-      }
-
-      // 创建 JSON 文件
+      // 创建 ZIP 压缩包
+      const zip = new JSZip();
+      
+      // 添加 JSON 数据文件
       const json = JSON.stringify(exportData, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
+      zip.file('export.json', json);
+      
+      // 添加预览图（如果有）
+      exportData.elements.forEach((element, idx) => {
+        if (element.preview) {
+          // 将 base64 图片转换为二进制
+          const base64Data = element.preview.replace(/^data:image\/\w+;base64,/, '');
+          const binaryString = atob(base64Data);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          zip.file(`preview_${idx + 1}.png`, bytes);
+        }
+      });
+
+      // 生成 ZIP 文件
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(zipBlob);
       const a = document.createElement('a');
       a.href = url;
       
-      // 生成文件名
+      // 生成文件名：输入框值 + "_html2zy" + 时间戳
       const timestamp = Date.now();
-      const h2zyValues = selectedSnapshots
-        .map(item => item.snapshot.dataH2zy)
-        .filter(v => v)
-        .join('_');
-      const fileName = h2zyValues 
-        ? `html2zy-export-${h2zyValues}-${timestamp}.json`
-        : `html2zy-export-${timestamp}.json`;
+      const fileName = inputValue 
+        ? `${inputValue}_html2zy_${timestamp}.zip`
+        : `html2zy_${timestamp}.zip`;
       
       a.download = fileName;
       document.body.appendChild(a);

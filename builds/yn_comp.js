@@ -1319,8 +1319,7 @@ window.addEventListener('load', () => {
         setLanguage(lan == 'Zh' ? true : false,false);
       };
       if(theme){
-        ROOT.setAttribute('data-theme',theme);
-        storageMix.set('userTheme',theme);
+        setTheme(theme == 'light' ? true : false,false);
       };
     }else{ 
       return;
@@ -1328,18 +1327,14 @@ window.addEventListener('load', () => {
 
     if(!QUERY_PARAMS) return;
     if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'zh'){
-      ROOT.setAttribute('data-language','Zh');
-      storageMix.set('userLanguage','Zh');
+      setLanguage(true,false);
     }else if(QUERY_PARAMS.lan && QUERY_PARAMS.lan.toLowerCase() == 'en'){
-      ROOT.setAttribute('data-language','En');
-      storageMix.set('userLanguage','En');
+      setLanguage(false,false);
     };
     if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'light'){
-      ROOT.setAttribute('data-theme','light');
-      storageMix.set('userTheme','light');
+      setTheme(true,false);
     }else if(QUERY_PARAMS.theme && QUERY_PARAMS.theme.toLowerCase() == 'dark'){
-      ROOT.setAttribute('data-theme','dark');
-      storageMix.set('userTheme','dark');
+      setTheme(false,false);
     };
   };
 

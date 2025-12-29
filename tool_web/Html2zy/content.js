@@ -1384,22 +1384,7 @@
         throw new Error(`未找到匹配选择器 "${selector}" 的元素`);
       }
 
-      if (elements.length === 1) {
-        return {
-          timestamp: new Date().toISOString(),
-          url: window.location.href,
-          selector: selector,
-          element: snapshotElement(elements[0], options)
-        };
-      } else {
-        return {
-          timestamp: new Date().toISOString(),
-          url: window.location.href,
-          selector: selector,
-          count: elements.length,
-          elements: Array.from(elements).map(el => snapshotElement(el, options))
-        };
-      }
+      return Array.from(elements).map(el => snapshotElement(el, options));
     } catch (error) {
       throw new Error(`选择器错误: ${error.message}`);
     }
@@ -1468,6 +1453,7 @@
 
   /**
    * 生成元素预览图
+   * 优先使用浏览器原生截图功能，失败则回退到其他方法
    */
   async function generateElementPreview(selector, index) {
     try {
@@ -1477,24 +1463,15 @@
       }
 
       const element = elements[index];
-      
-      // 检查是否有 tool.js
-      if (typeof TOOL_JS === 'undefined') {
-        console.error('tool.js 未加载');
-        // 如果 tool.js 未加载，使用简单的 canvas 方法
-        return generatePreviewWithCanvas(element);
+
+      try {
+        const browserPreview = await generatePreviewWithBrowserCapture(element);
+        if (browserPreview) {
+          return browserPreview;
+        }
+      } catch (browserError) {
+        console.warn('浏览器原生截图失败，尝试其他方法:', browserError);
       }
-
-      const tool = new TOOL_JS();
-      
-      // 使用 tool.js 的 DomToImagedata 方法
-      const imageData = await tool.DomToImagedata(element, {
-        format: 'png',
-        quality: 0.9,
-        scale: 1
-      });
-
-      return imageData;
     } catch (error) {
       console.error('生成预览图失败:', error);
       // 如果失败，尝试使用 canvas 方法
@@ -1506,6 +1483,169 @@
       } catch (e) {
         console.error('Canvas 预览图生成也失败:', e);
       }
+      throw error;
+    }
+  }
+
+  /**
+   * 等待滚动完成
+   * 通过监听滚动事件和检查元素位置来确保滚动真正完成
+   */
+  async function waitForScrollComplete(element, timeout = 3000) {
+    return new Promise((resolve, reject) => {
+      const startTime = Date.now();
+      let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      let lastScrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+      let lastElementTop = element.getBoundingClientRect().top;
+      let lastElementLeft = element.getBoundingClientRect().left;
+      let scrollTimer = null;
+      let rafId = null;
+      
+      const checkScrollComplete = () => {
+        const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const currentScrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        const currentRect = element.getBoundingClientRect();
+        const currentElementTop = currentRect.top;
+        const currentElementLeft = currentRect.left;
+        
+        // 检查滚动位置和元素位置是否稳定
+        const scrollChanged = 
+          Math.abs(currentScrollTop - lastScrollTop) > 1 ||
+          Math.abs(currentScrollLeft - lastScrollLeft) > 1;
+        const elementMoved = 
+          Math.abs(currentElementTop - lastElementTop) > 1 ||
+          Math.abs(currentElementLeft - lastElementLeft) > 1;
+        
+        if (scrollChanged || elementMoved) {
+          // 滚动还在进行中，更新位置并继续等待
+          lastScrollTop = currentScrollTop;
+          lastScrollLeft = currentScrollLeft;
+          lastElementTop = currentElementTop;
+          lastElementLeft = currentElementLeft;
+          
+          // 清除之前的定时器，重新设置
+          if (scrollTimer) clearTimeout(scrollTimer);
+          scrollTimer = setTimeout(() => {
+            cleanup();
+            resolve();
+          }, 100); // 100ms 内没有变化则认为滚动完成
+          
+          // 继续检查
+          rafId = requestAnimationFrame(checkScrollComplete);
+        } else {
+          // 滚动已经稳定，等待一小段时间确保完全停止
+          if (scrollTimer) clearTimeout(scrollTimer);
+          scrollTimer = setTimeout(() => {
+            cleanup();
+            resolve();
+          }, 50);
+        }
+        
+        // 超时检查
+        if (Date.now() - startTime > timeout) {
+          cleanup();
+          console.warn('等待滚动完成超时，继续执行');
+          resolve(); // 超时也继续执行，而不是拒绝
+        }
+      };
+      
+      const cleanup = () => {
+        if (scrollTimer) clearTimeout(scrollTimer);
+        if (rafId) cancelAnimationFrame(rafId);
+        window.removeEventListener('scroll', onScroll, true);
+      };
+      
+      const onScroll = () => {
+        // 滚动事件触发时，通过 requestAnimationFrame 检查
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(checkScrollComplete);
+      };
+      
+      // 监听滚动事件（包括所有滚动容器）
+      window.addEventListener('scroll', onScroll, true);
+      
+      // 立即开始检查
+      rafId = requestAnimationFrame(checkScrollComplete);
+      
+      // 初始延迟，给滚动一些启动时间
+      setTimeout(() => {
+        checkScrollComplete();
+      }, 50);
+    });
+  }
+
+  /**
+   * 使用浏览器原生截图功能生成预览图
+   * 使用 Chrome 的 chrome.tabs.captureVisibleTab API
+   */
+  async function generatePreviewWithBrowserCapture(element) {
+    try {
+      // 滚动元素到视口中心（确保元素可见）
+      element.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });
+      
+      // 等待滚动完成 - 使用更可靠的方法
+      await waitForScrollComplete(element);
+      
+      // 重新获取滚动后的位置
+      const newRect = element.getBoundingClientRect();      
+      // 通过 background script 调用 Chrome 原生截图 API
+      const response = await chrome.runtime.sendMessage({
+        type: 'captureTab'
+      });
+      
+      if (!response || !response.success || !response.dataUrl) {
+        throw new Error('截图失败: ' + (response?.error || '未知错误'));
+      }
+
+      // 将截图转换为图片，然后在 Canvas 中裁剪元素区域
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = function() {
+          try {
+            // 计算设备像素比（处理高 DPI 屏幕）
+            const devicePixelRatio = window.devicePixelRatio || 1;
+            
+            // 截图的实际尺寸可能与页面显示尺寸不同（高 DPI 屏幕）
+            // 需要计算缩放比例
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const scaleX = img.width / viewportWidth;
+            const scaleY = img.height / viewportHeight;
+            
+            // 计算元素在截图中的位置和尺寸
+            const elementX = newRect.left * scaleX;
+            const elementY = newRect.top * scaleY;
+            const elementWidth = newRect.width * scaleX;
+            const elementHeight = newRect.height * scaleY;
+            
+            // 创建 Canvas 并裁剪元素区域
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = Math.max(Math.round(elementWidth), 1);
+            canvas.height = Math.max(Math.round(elementHeight), 1);
+            
+            // 绘制裁剪后的区域
+            ctx.drawImage(
+              img,
+              Math.round(elementX), Math.round(elementY),
+              Math.round(elementWidth), Math.round(elementHeight),
+              0, 0,
+              canvas.width, canvas.height
+            );
+            
+            // 返回裁剪后的图片数据
+            resolve(canvas.toDataURL('image/png'));
+          } catch (error) {
+            reject(error);
+          }
+        };
+        img.onerror = function() {
+          reject(new Error('加载截图图片失败'));
+        };
+        img.src = response.dataUrl;
+      });
+    } catch (error) {
+      console.error('浏览器原生截图失败:', error);
       throw error;
     }
   }
@@ -1529,13 +1669,13 @@
       ctx.fillStyle = '#999';
       ctx.font = '12px Arial';
       ctx.textAlign = 'center';
-      ctx.fillText('预览图', canvas.width / 2, canvas.height / 2);
+      ctx.fillText('⚠', canvas.width / 2, canvas.height / 2);
       
       return canvas.toDataURL('image/png');
     } catch (error) {
       console.error('Canvas 预览图生成失败:', error);
       // 返回一个占位符 SVG
-      return 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="40"><rect width="60" height="40" fill="%23f0f0f0"/><text x="30" y="20" text-anchor="middle" font-size="10" fill="%23999">无预览</text></svg>';
+      return 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="40"><rect width="60" height="40" fill="%23f0f0f0"/><text x="30" y="20" text-anchor="middle" font-size="10" fill="%23999">⚠</text></svg>';
     }
   }
 

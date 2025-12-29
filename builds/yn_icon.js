@@ -89,6 +89,7 @@ function icon(num){
 class btntheme extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${svgS('0 0 12 12','100%','100%','display: var(--df-l);')}
       <circle ${circleS(6,6,2)} ${pathS('auto')}/>
@@ -125,6 +126,7 @@ customElements.define('btn-theme', btntheme);
 class btnlang extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(22)}
       <rect ${rectS(22,22,0,0,6)} ${pathS('auto')}/>
@@ -144,6 +146,7 @@ customElements.define('btn-lang', btnlang);
 class btnsearch extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
       ${icon(24)}
         <circle ${circleS(12,11,8.5)} ${pathS(null,'auto','3')}/>
@@ -158,6 +161,7 @@ customElements.define('btn-search', btnsearch);
 class btnshow extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(10)}
       <path class="path1" ${pathS('auto')} d="M5.5,2L8,2L8,4.5L10,4.5L10,0L5.5,0L5.5,2Z"/>
@@ -171,6 +175,7 @@ customElements.define('btn-show', btnshow);
 class btndown extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M4 15H16V13H19V19H1V13H4V15ZM12 8H16L10 14L4 8H8V1H12V8Z"/>
@@ -183,6 +188,7 @@ customElements.define('btn-down', btndown);
 class btnset extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(18)}
       <path ${pathS('auto')} d="M7 4H11L10.5 0H7.5L7 4Z"/>
@@ -204,6 +210,7 @@ customElements.define('btn-set', btnset);
 class btnre extends HTMLElement {
   constructor() {
       super();
+    this.className = 'df-cc wh100';
       this.innerHTML = `
       ${icon(20)}
         <path ${pathS('auto')}  d="M12.2855,7.6274L11.71607,9.7524003L6.11928,3.5940002612L14.0454,1.05907L13.5682,2.840080261231C16.2837,4.1933303,18,6.9662403,18,10.000240261230468C18,12.14093026123047,17.142,14.192330261230468,15.618,15.695630261230468C15.8708,14.991330261230468,16,14.248530261230469,16,13.500230261230469C16,10.989500261230468,14.554,8.703270261230468,12.2855,7.6273202612304685ZM6.43178,17.16043026123047L5.95456,18.94143026123047L13.8807,16.40643026123047L8.28393,10.248070261230469L7.71452,12.373130261230468C5.446,11.29723026123047,4,9.010970261230469,4,6.500240261230469C4,5.751890261230469,4.12923,5.009170261230469,4.38199,4.304810261230468C2.857956,5.808120261230469,2,7.859530261230469,2,10.000240261230468C2,13.03423026123047,3.71629,15.80713026123047,6.43178,17.16043026123047Z"/>
@@ -216,6 +223,7 @@ customElements.define('btn-re', btnre);
 class btnchange extends HTMLElement {
   constructor() {
       super();
+    this.className = 'df-cc wh100';
       this.innerHTML = `
       ${svgS('0 -1 18 14','100%','100%')}
           <path ${pathS('auto')} d="M7.84606,8.54545L7.84606,10L4,8.25454L4,7.09091L7.07693,7.09091L7.84606,7.09091L13.99991,7.09091L13.99991,8.54545L7.84606,8.54545ZM10.15385,3.45455L10.15385,2L13.99996,3.74546L13.99996,5L10.15385,5L4,5L4,3.45455L10.15385,3.45455Z"/>
@@ -229,6 +237,7 @@ customElements.define('btn-change', btnchange);
 class btnreset extends HTMLElement {
   constructor() {
       super();
+    this.className = 'df-cc wh100';
       this.innerHTML = `
       ${icon(20)}
         <path ${pathS(null,'auto',2.5,'round')} d="M5 9V7.83333C5 5.99238 6.27919 4.5 7.85714 4.5H15"/>
@@ -244,6 +253,7 @@ customElements.define('btn-reset', btnreset);
 class btninfo extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(18)}
       <g transform="translate(7,3.5),scale(0.9)">
@@ -263,6 +273,7 @@ customElements.define('btn-info', btninfo);
 class btnclose extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.className = 'btn-op'
     this.innerHTML = `
     ${icon(18)}
@@ -278,6 +289,7 @@ customElements.define('btn-close', btnclose);
 class btncheck extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(18)}
       <circle ${circleS(9,9,8)} ${pathS('var(--fill,transparent)','var(--bod,var(--mainColor))','1.2')}/>
@@ -291,6 +303,7 @@ customElements.define('btn-check', btncheck);
 class btnchecktick extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(14)}
       <path ${pathS(null,'check','1.6','round','round')} d="M3.91211 6.92286L6.72632 9.66309L10.5033 3.49146"/>
@@ -304,6 +317,7 @@ customElements.define('btn-check-tick', btnchecktick);
 class btncopy extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.className = 'btn-op'
     this.innerHTML = `
     ${svgS('0 0 11 11','100%','100%')}
@@ -320,6 +334,7 @@ customElements.define('btn-copy', btncopy);
 class btngetcolor extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
     <path ${pathS('auto')}
@@ -334,6 +349,7 @@ customElements.define('btn-getcolor', btngetcolor);
 class btncolor extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${svgS('0 0 28 28','100%','100%')}
       <rect ${rectS(20,20,4,4,2)} ${pathS('var(--input-color,#888)')}/>
@@ -347,6 +363,7 @@ customElements.define('btn-color', btncolor);
 class btnuserimg extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(42)}
       <path ${pathS('auto')} d="M35,18C38.866,18,42,14.866,42,11C42,7.13401,38.866,4,35,4C31.134,4,28,7.13401,28,11C28,14.866,31.134,18,35,18ZM35,6C35.5523,6,36,6.44772,36,7L36,10L39,10C39.5523,10,40,10.4477,40,11C40,11.5523,39.5523,12,39,12L36,12L36,15C36,15.5523,35.5523,16,35,16C34.4477,16,34,15.5523,34,15L34,12L31,12C30.4477,12,30,11.5523,30,11C30,10.4477,30.4477,10,31,10L34,10L34,7C34,6.44772,34.4477,6,35,6Z"/>
@@ -360,6 +377,7 @@ customElements.define('btn-user-img', btnuserimg);
 class btnusertable extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(42)}
       <path ${pathS('auto')} fill-rule="evenodd" d="M26.0549 10H9C6.79086 10 5 11.7909 5 14V32C5 34.2091 6.79086 36 9 36H31C33.2091 36 35 34.2091 35 32V20C32.8567 20 30.8884 19.2508 29.3427 18H17V12H26.0549C26.0186 11.6717 26 11.338 26 11C26 10.662 26.0186 10.3283 26.0549 10ZM9 12H15V18H7V14C7 12.8954 7.89543 12 9 12ZM7 20H15L15 26H7V20ZM7 28H15V34H9C7.89543 34 7 33.1046 7 32V28ZM17 28V34H31C32.1046 34 33 33.1046 33 32V28H17ZM17 20L17 26H33V20H17Z"/>
@@ -373,6 +391,7 @@ customElements.define('btn-user-table', btnusertable);
 class btnuserzy extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(42)}
     <path ${pathS('auto')} d="M35 18C38.866 18 42 14.866 42 11C42 7.13401 38.866 4 35 4C31.134 4 28 7.13401 28 11C28 14.866 31.134 18 35 18ZM35 6C35.5523 6 36 6.44772 36 7V10H39C39.5523 10 40 10.4477 40 11C40 11.5523 39.5523 12 39 12H36V15C36 15.5523 35.5523 16 35 16C34.4477 16 34 15.5523 34 15V12H31C30.4477 12 30 11.5523 30 11C30 10.4477 30.4477 10 31 10H34V7C34 6.44772 34.4477 6 35 6Z"/>
@@ -388,6 +407,7 @@ customElements.define('btn-user-zy', btnuserzy);
 class btnstar extends HTMLElement {
   constructor() {
       super();
+    this.className = 'df-cc wh100';
       this.innerHTML = `
       ${icon(20)}
       <path data-skill-star-path ${pathS('auto')} d="M9.10133 5.24013C9.4668 4.4921 10.5329 4.4921 10.8983 5.24013L11.9152 7.32142L14.2089 7.64537C15.0332 7.76179 15.3626 8.77567 14.7642 9.3544L13.099 10.9647L13.4996 13.2462C13.6437 14.0661 12.7812 14.6928 12.0458 14.3024L9.99983 13.2163L7.95381 14.3024C7.21847 14.6928 6.35601 14.0661 6.50002 13.2462L6.9007 10.9647L5.23551 9.3544C4.63703 8.77567 4.96646 7.76179 5.79081 7.64537L8.08446 7.32142L9.10133 5.24013Z"/>
@@ -401,6 +421,7 @@ customElements.define('btn-star', btnstar);
 class btngetbyselect extends HTMLElement {
   constructor() {
       super();
+    this.className = 'df-cc wh100';
       this.innerHTML = `
       ${icon(20)}
         <path ${pathS('auto')} d="M18.8157 14.2207C19.7226 14.5107 19.7487 15.7845 18.8547 16.1123L10.4709 19.1855C10.2512 19.266 10.0096 19.2674 9.78931 19.1885L1.21313 16.1152C0.310723 15.7914 0.337167 14.505 1.2522 14.2188L2.41919 13.8535L10.1301 16.6172L17.6672 13.8535L18.8157 14.2207ZM8.89771 7.89746C9.81186 8.73115 10.3983 9.70031 10.8049 10.3096L12.2288 12.4434L12.6243 9.90918C12.708 9.3731 12.7298 8.84584 12.7034 8.33301L18.8167 10.2881C19.7234 10.5782 19.7496 11.8519 18.8557 12.1797L10.4719 15.2529C10.2521 15.3335 10.0107 15.3348 9.79028 15.2559L1.21411 12.1816C0.311182 11.858 0.337567 10.5722 1.25317 10.2861L8.89771 7.89746Z"/>
@@ -415,6 +436,7 @@ customElements.define('btn-getbyselect', btngetbyselect);
 class btnhasselect extends HTMLElement {
   constructor() {
       super();
+    this.className = 'df-cc wh100';
       this.innerHTML = `
       ${icon(20)}
         <path ${pathS('auto')} d="M18.4265 14.8145C19.3056 15.1165 19.3327 16.35 18.4675 16.6904L10.486 19.8271C10.2536 19.9184 9.9946 19.9195 9.76144 19.8301L1.59738 16.6934C0.722562 16.3569 0.749635 15.1094 1.63839 14.8115L3.17062 14.2988L10.1247 16.9697L16.9206 14.2988L18.4265 14.8145ZM18.4265 10.3438C19.3064 10.6455 19.3333 11.8804 18.4675 12.2207L10.486 15.3574C10.2535 15.4488 9.9947 15.45 9.76144 15.3604L1.59738 12.2236C0.722562 11.8872 0.749635 10.6397 1.63839 10.3418L6.26046 8.79395L9.99972 13L13.7761 8.75098L18.4265 10.3438Z"/>
@@ -428,6 +450,7 @@ customElements.define('btn-hasselect', btnhasselect);
 class btnstyle extends HTMLElement {
   constructor() {
       super();
+    this.className = 'df-cc wh100';
       this.innerHTML = `
       ${icon(1024)}
         <path ${pathS('auto')} d="M512 0c279.04 0 512 204.8 512 460.8a310.784 310.784 0 0 1-307.2 312.32h-92.672a19.456 19.456 0 0 0-19.456 18.944s0 5.12 6.144 11.264a121.856 121.856 0 0 1 31.744 84.992A132.608 132.608 0 0 1 512 1024a512 512 0 0 1 0-1024z m0 81.92a430.08 430.08 0 0 0 0 860.16 51.2 51.2 0 0 0 51.2-51.2 44.544 44.544 0 0 0-7.168-26.624l-7.168-7.68a102.4 102.4 0 0 1-24.064-64.512 102.4 102.4 0 0 1 102.4-102.4H716.8A228.864 228.864 0 0 0 942.08 460.8c-3.584-204.8-195.584-378.88-430.08-378.88z m240.64 261.12A117.76 117.76 0 1 1 633.344 460.8a117.76 117.76 0 0 1 117.76-117.76zM256 337.92a117.76 117.76 0 1 1-117.76 117.76A117.76 117.76 0 0 1 256 337.92z m496.128 87.04a35.84 35.84 0 1 0 35.84 35.84 35.84 35.84 0 0 0-36.864-35.84zM256 419.84a35.84 35.84 0 1 0 0 71.68 35.84 35.84 0 0 0 0-71.68zM536.576 153.6a117.76 117.76 0 1 1-117.76 117.76 117.76 117.76 0 0 1 117.76-117.76z m0 81.92a35.84 35.84 0 1 0 35.84 35.84 35.84 35.84 0 0 0-35.84-36.352z"/>
@@ -440,6 +463,7 @@ customElements.define('btn-style', btnstyle);
 class btnview extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
       ${icon(1024)}
       <path ${pathS('auto')} d="M512.122 272.146c-247.216 0-412.027 247.216-412.027 247.216s164.811 247.216 412.027 247.216c247.216 0 412.027-247.216 412.027-247.216S759.217 272.146 512.122 272.146z m0 410.207c-90.537 0-163.962-73.424-163.962-163.962s73.424-163.962 163.962-163.962c90.537 0 163.962 73.424 163.962 163.962-0.122 90.658-73.424 163.962-163.962 163.962z m-82.406-163.476c0 21.482 8.86 42.841 24.03 58.012s36.53 24.03 58.012 24.03 42.841-8.86 58.012-24.03c15.17-15.17 24.03-36.53 24.03-58.012s-8.86-42.841-24.03-58.012c-15.17-15.17-36.53-24.03-58.012-24.03s-42.841 8.86-58.012 24.03c-15.17 15.292-24.03 36.53-24.03 58.012z">
@@ -455,6 +479,7 @@ customElements.define('btn-view', btnview);
 class btnlistease extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <circle ${circleS(3,4,2)} ${pathS('auto')}/>
@@ -473,6 +498,7 @@ customElements.define('btn-listease', btnlistease);
 class exportimg extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <rect ${rectS(17,16,1.5,2,2)} ${pathS(null,'fill',1.5)} />
@@ -488,6 +514,7 @@ customElements.define('export-img', exportimg);
 class exportzy extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <rect ${rectS(17,16,1.5,2,2)} ${pathS(null,'fill',1.5)} />
@@ -502,6 +529,7 @@ customElements.define('export-zy', exportzy);
 class exporttext extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <rect ${rectS(17,16,1.5,2,2)} ${pathS(null,'fill',1.5)} />
@@ -516,6 +544,7 @@ customElements.define('export-text', exporttext);
 class btnfull extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS(null,'auto',1.5,'round','round')} d="M11.3689 8.77466L17.6352 2.50835"/>
@@ -535,6 +564,7 @@ customElements.define('btn-full', btnfull);
 class btndel extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(14)}
       <path ${pathS(null,'fill','1.4','round','round')} d="M2 4.27539H12"/>
@@ -551,6 +581,7 @@ customElements.define('btn-del', btndel);
 class btnreup extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(14)}
       <path ${pathS(null,'auto','1.4','round','round')} d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286"/>
@@ -564,6 +595,7 @@ customElements.define('btn-reup', btnreup);
 class btnimport extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M4 15H16V13H19V19H1V13H4V15ZM8 3.04688C12.1429 3.43349 14 6.24465 14 9.43945V13L13.8936 12.792C12.5735 10.2138 11.4251 8.2507 8 7.93945V12L2 6L8 0V3.04688Z"/>
@@ -576,6 +608,7 @@ customElements.define('btn-import', btnimport);
 class btncode extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M19 19H1V15H19V19ZM9.78516 13.6963H6.78027L10.2148 0.759766H13.2197L9.78516 13.6963ZM3.47754 7.64453L6.3252 12.2285H2.78027L0 7.64453L2.78027 2.22852H6L3.47754 7.64453ZM20 7.64453L17.2197 12.2285H13.6748L16.5225 7.64453L14 2.22852H17.2197L20 7.64453Z"/>
@@ -588,6 +621,7 @@ customElements.define('btn-code', btncode);
 class skillstar extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M9.10133 5.24013C9.4668 4.4921 10.5329 4.4921 10.8983 5.24013L11.9152 7.32142L14.2089 7.64537C15.0332 7.76179 15.3626 8.77567 14.7642 9.3544L13.099 10.9647L13.4996 13.2462C13.6437 14.0661 12.7812 14.6928 12.0458 14.3024L9.99983 13.2163L7.95381 14.3024C7.21847 14.6928 6.35601 14.0661 6.50002 13.2462L6.9007 10.9647L5.23551 9.3544C4.63703 8.77567 4.96646 7.76179 5.79081 7.64537L8.08446 7.32142L9.10133 5.24013Z"/>
@@ -601,6 +635,7 @@ customElements.define('skill-star', skillstar);
 class skillpixel extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M7 7H2V2H7V7ZM3 3V6H6V3H3Z"/>
@@ -622,6 +657,7 @@ customElements.define('skill-pixel', skillpixel);
 class skilllayer extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M9 2L8.99992 4.81319H8.02803L7.94126 3.8956H6.19353L6.19361 8.41026L7.13657 8.5641V10H3.66841V8.5641L4.73222 8.41026L4.73214 3.8956H3.05867L2.97767 4.81319H2L2.00008 2H9Z"/>
@@ -640,6 +676,7 @@ customElements.define('skill-layer', skilllayer);
 class skillvector extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M12.5 7H7.5V2H12.5V7ZM8.5 3V6H11.5V3H8.5Z"/>
@@ -660,6 +697,7 @@ customElements.define('skill-vector', skillvector);
 class skillstyle extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M7.53784 8.53784C7.53784 7.98556 7.98556 7.53784 8.53784 7.53784H11.4618C12.0141 7.53784 12.4618 7.98556 12.4618 8.53784V11.4618C12.4618 12.0141 12.0141 12.4618 11.4618 12.4618H8.53784C7.98556 12.4618 7.53784 12.0141 7.53784 11.4618V8.53784Z"/>
@@ -678,6 +716,7 @@ customElements.define('skill-style', skillstyle);
 class inputtypetag extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M20 11.5557L11.5557 20.001L1 9.44434V1H9.44434L20 11.5557ZM6 4C4.89543 4 4 4.89543 4 6C4 7.10457 4.89543 8 6 8C7.10457 8 8 7.10457 8 6C8 4.89543 7.10457 4 6 4Z"></path>
@@ -690,6 +729,7 @@ customElements.define('input-typetag', inputtypetag);
 class inputfontsize extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M13.0001 6.5H11.0001C11.0001 5.39543 10.1046 4.5 9.00006 4.5H8.50006L8.50003 14.5C8.50003 15.3284 9.1716 16 10 16V18H4.00003V16C4.82846 16 5.50003 15.3284 5.50003 14.5L5.50006 4.5H5.00006C3.89549 4.5 3.00006 5.39543 3.00006 6.5H1.00006L1 1.5H13L13.0001 6.5Z"></path>
@@ -703,6 +743,7 @@ customElements.define('input-fontsize', inputfontsize);
 class inputtabletitle extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto','auto')} d="M1.40967 3.66602C1.40967 2.56145 2.3051 1.66602 3.40967 1.66602H7.40967V6.59054H1.40967V3.66602Z"></path>
@@ -720,6 +761,7 @@ customElements.define('input-tabletitle', inputtabletitle);
 class inputnamerule extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <rect ${pathS('auto')} ${rectS(4,2,16,4,1)}></rect>
@@ -738,6 +780,7 @@ customElements.define('input-namerule', inputnamerule);
 class tabsheettype extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} fill-rule="evenodd" clip-rule="evenodd" d="M7.89746 2.57129C7.3268 3.58479 7 4.75402 7 6C7 6.54045 7.06376 7.06601 7.17969 7.57129H3V12.0713H9.5V11.3604C9.81125 11.6219 10.146 11.8557 10.5 12.0605V12.0713H10.5176C11.5434 12.661 12.7318 13 14 13C15.4877 13 16.866 12.5345 18 11.7432V16.5713L17.9893 16.7754C17.887 17.7841 17.0357 18.5713 16 18.5713H4C2.96435 18.5713 2.113 17.7841 2.01074 16.7754L2 16.5713V4.57129C2.00016 3.46686 2.89553 2.57129 4 2.57129H7.89746ZM3 16.5713C3 17.1236 3.44772 17.5713 4 17.5713H9.5V13.0713H3V16.5713ZM10.5 17.5713H16C16.5523 17.5713 17 17.1236 17 16.5713V13.0713H10.5V17.5713Z"></path>
@@ -751,6 +794,7 @@ customElements.define('tab-sheettype', tabsheettype);
 class tabtablestyle extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M7.96875 7.57129H3V12.0713H6.61914L6.50391 13.0713H3V16.5713C3 17.1236 3.44772 17.5713 4 17.5713H9.5V15.4512L10.5 14.5693V17.5713H16C16.5523 17.5713 17 17.1236 17 16.5713V13.0713H12.1982L12.5205 12.7871L13.332 12.0713H17V7.57129H15.2656L17.5137 3.26758C17.8157 3.61783 17.9999 4.07254 18 4.57129V16.5713L17.9893 16.7754C17.887 17.7841 17.0357 18.5713 16 18.5713H4C2.96435 18.5713 2.113 17.7841 2.01074 16.7754L2 16.5713V4.57129C2.00016 3.46686 2.89553 2.57129 4 2.57129H10.583L7.96875 7.57129Z"></path>
@@ -764,6 +808,7 @@ customElements.define('tab-tablestyle', tabtablestyle);
 class btnvariable extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M18.6963 14.9325L18.9217 15.4821C18.7361 15.7539 18.464 16.0317 18.1055 16.3154C17.7531 16.599 17.3748 16.8384 16.9705 17.0334C16.5722 17.2284 16.2061 17.3259 15.8721 17.3259C15.7203 17.3259 15.5913 17.2934 15.4853 17.2284C15.3778 17.1693 15.2906 17.0629 15.2236 16.9093L13.6839 13.4787C13.4954 13.6856 13.2576 13.9338 12.9706 14.2233C12.6836 14.5129 12.4167 14.8202 12.1699 15.1452C11.9306 15.4644 11.774 15.7805 11.7 16.0938C11.6539 16.2888 11.6515 16.4661 11.6928 16.6256C11.3365 16.797 11.0013 16.9566 10.6871 17.1043C10.3729 17.2521 10.0731 17.3259 9.78766 17.3259C9.41725 17.3259 9.27601 17.1398 9.36395 16.7675C9.43932 16.4483 9.67742 16.0701 10.0783 15.6328C10.4852 15.1955 10.9787 14.7257 11.5588 14.2233C12.145 13.721 12.7373 13.2187 13.3357 12.7164L11.9546 9.57831L10.4188 10.4116L10.1955 9.85311C10.2692 9.74673 10.4283 9.58717 10.6729 9.37442C10.9235 9.16167 11.212 8.94301 11.5383 8.71845C11.872 8.48797 12.2035 8.29295 12.5327 8.13339C12.8679 7.97382 13.157 7.89404 13.3998 7.89404C13.6002 7.89404 13.7416 7.97678 13.824 8.14225C14.1141 8.73913 14.3779 9.30646 14.6152 9.84424C14.8539 10.3761 15.0823 10.8873 15.3004 11.3778C15.8049 10.8873 16.1696 10.5002 16.3945 10.2166C16.6268 9.92698 16.7787 9.70832 16.85 9.56058C16.9227 9.40693 16.9682 9.29169 16.9863 9.21486C17.0212 9.06712 17.03 8.94006 17.0126 8.83369C16.9952 8.72731 16.9804 8.63571 16.9682 8.55888C17.451 8.34023 17.8182 8.18657 18.0699 8.09793C18.329 8.00337 18.5153 7.94723 18.6288 7.9295C18.7498 7.90586 18.8406 7.89404 18.9014 7.89404C19.2475 7.89404 19.3738 8.09202 19.2803 8.48797C19.2035 8.813 18.9735 9.18236 18.5904 9.59604C18.2073 10.0097 17.7509 10.4382 17.2212 10.8814C16.6928 11.3187 16.1642 11.7442 15.6354 12.1579L17.1613 15.8012L18.6963 14.9325Z"></path>
@@ -777,6 +822,7 @@ customElements.define('btn-variable', btnvariable);
 class btnrelayout extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(21)}
       <rect ${rectS(3,3,3,3)} ${pathS('auto')}></rect>
@@ -797,6 +843,7 @@ customElements.define('btn-relayout', btnrelayout);
 class inputregexpenter extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${svgS('0 0 20 23','100%','100%')}
       <path ${pathS('auto','auto',0.25)} d="M15.0417 9.94629C15.0416 11.6031 13.6985 12.9462 12.0417 12.9463H8.29461V13.999C8.29455 14.4246 7.79631 14.6557 7.47137 14.3809L4.57976 11.9346C4.10782 11.5352 4.10788 10.8067 4.57976 10.4072L7.47137 7.96094C7.79633 7.68597 8.29461 7.91709 8.29461 8.34277V9.39551H11.4909V5.13379H15.0417V9.94629Z"></path>
@@ -811,6 +858,7 @@ customElements.define('input-regexpenter', inputregexpenter);
 class inputregexpnull extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${svgS('0 0 20 23','100%','100%')}
       <path ${pathS('auto','auto',0.25)} d="M14.4007 5.40071C15.0952 6.09516 15.0952 7.22121 14.4007 7.91564L12.5149 9.80149L14.4007 11.6873C15.0951 12.3817 15.0951 13.5078 14.4007 14.2023C13.7063 14.8967 12.5803 14.8967 11.8858 14.2023L9.99997 12.3164L8.11413 14.2023C7.41969 14.8967 6.29365 14.8967 5.5992 14.2023C4.90476 13.5078 4.90476 12.3818 5.5992 11.6873L7.48505 9.80149L5.5992 7.91564C4.90476 7.2212 4.90476 6.09516 5.5992 5.40071C6.29366 4.70641 7.41973 4.70632 8.11413 5.40071L9.99997 7.28656L11.8858 5.40071C12.5803 4.70627 13.7063 4.70627 14.4007 5.40071Z"></path>
@@ -825,6 +873,7 @@ customElements.define('input-regexpnull', inputregexpnull);
 class btngoto extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${svgS('0 0 23 23','100%','100%','transform:rotate(var(--arrow-ro,0))')}
       <path ${pathS(null,'auto','var(--arrow-w)','round')} d="M2.71411 11.3821H20.7141"/>
@@ -838,6 +887,7 @@ customElements.define('btn-goto', btngoto);
 class btngotomini extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${svgS('0 0 23 23','100%','100%','transform:rotate(var(--arrow-ro,0))')}
       <path ${pathS(null,'auto','var(--arrow-w)','round')} d="M2.71387 11.3821H19.7139"/>
@@ -851,6 +901,7 @@ customElements.define('btn-goto-mini', btngotomini);
 class btnmore extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(22)}
           <g data-path="1" >
@@ -871,6 +922,7 @@ customElements.define('btn-more', btnmore);
 class btnadd extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <rect ${rectS(20,2,0,9)} ${pathS('auto')}></rect>
@@ -884,6 +936,7 @@ customElements.define('btn-add', btnadd);
 class btnsetbg extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(1024)}
       <path ${pathS('auto')} d="M810.666667 85.333333H213.333333C140.8 85.333333 85.333333 140.8 85.333333 213.333333v597.333334c0 72.533333 55.466667 128 128 128h597.333334c72.533333 0 128-55.466667 128-128V213.333333c0-72.533333-55.466667-128-128-128z m-281.6 85.333334L170.666667 499.2V401.066667L401.066667 170.666667h128zM170.666667 755.2v-136.533333L657.066667 170.666667h136.533333L170.666667 755.2zM213.333333 170.666667h68.266667L170.666667 281.6V213.333333c0-25.6 17.066667-42.666667 42.666666-42.666666z m-17.066666 678.4L853.333333 230.4v136.533333L366.933333 853.333333H213.333333c-8.533333 0-12.8 0-17.066666-4.266666zM810.666667 853.333333h-324.266667l366.933333-366.933333V810.666667c0 25.6-17.066667 42.666667-42.666666 42.666666z">
@@ -897,6 +950,7 @@ customElements.define('btn-setbg', btnsetbg);
 class btnlogin extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS('auto')} d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10Z"/>
@@ -910,6 +964,7 @@ customElements.define('btn-login', btnlogin);
 class btnscan extends HTMLElement {
   constructor() {
     super();
+    this.className = 'df-cc wh100';
     this.innerHTML = `
     ${icon(20)}
       <path ${pathS(null,'auto','var(--arrow-w,2)')} d="M0 10H20"/>
