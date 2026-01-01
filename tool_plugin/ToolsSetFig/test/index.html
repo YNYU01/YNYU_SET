@@ -330,7 +330,7 @@
                 <div id="upload-set-main" class="df">
                   <div id="upload-set-1" class="pos-r" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   data-tips-text="转为标签/大纲" data-tips-text-en="Convert to tags/catalogue">
-                    <btn-re class="df-cc wh100"></btn-re>                   
+                    <btn-re></btn-re>                   
                   </div>
                   <div id="upload-set-2" class="pos-r" data-selects-must data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   data-tips-text="从所选对象获取数据" data-tips-text-en="Retrieve data from the selected node">
@@ -478,11 +478,15 @@
             <div class="w100 df-sc">
               <div class="df-lc gap8">
                 <div class="df-lc gap2" data-export-delete data-btn="text">
-                  <btn-del class="wh-14"></btn-del>
+                  <div class="wh-14">
+                    <btn-del></btn-del>
+                  </div>
                   <div data-en-text="Delete">删除</div>                
                 </div>
                 <div class="df-lc gap2" data-export-reup data-btn="text">
-                  <btn-reup class="wh-14"></btn-reup>                    
+                  <div class="wh-14">
+                    <btn-reup></btn-reup>                    
+                  </div>
                   <div data-en-text="Re-Upload">重新上传</div>                
                 </div>
               </div>
@@ -629,10 +633,10 @@
           </div>
           <div data-variable-type class="w100 df-lc">
             <div class="fl1 df-lc upload-set gap6">
-              <div class="df-lc gap4 pos-r"
+              <div class="df-lc gap4 pos-r wh-22"
               data-tips="auto" data-tips-x="left" data-tips-y="top"
               data-tips-text="数据类型" data-tips-text-en="Sheet type">
-                <tab-sheettype class="wh-22"></tab-sheettype>
+                <tab-sheettype></tab-sheettype>
                 ▶                
               </div>
               <div class="df-lc data-scroll ovx noscrollbar gap6" data-scroll data-radio-value="style">
@@ -1529,8 +1533,7 @@
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_5" type="checkbox">
                           <label for="split_chk_5" class="check">
-                            <btn-check>
-                            </btn-check>
+                            <btn-check></btn-check>
                           </label>
                         </div>
                         <div data-split-info="name" data-en-text="FontName">字体(含字重)</div>
@@ -2000,7 +2003,7 @@
           <!--选中信息-->
           <div class="df-lc noscrollbar bsb" data-selects-node data-scroll style="padding: 0 10px;">
             <span class="df-lc mar-0a" data-selects-info-box>
-              <div style="width: 12px; height: 12px;">
+              <div class="wh-12">
                 <btn-hasselect></btn-hasselect>         
               </div>
               &nbsp;

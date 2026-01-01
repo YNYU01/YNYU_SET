@@ -12,10 +12,10 @@
   <link rel="stylesheet" href="styles/popup.css">
   <script src="publics/run.js"></script>
 </head>
-<body class="noselect df-ffc df-cc fl0">
+<body class="noselect df-ffc fl0">
   <!--顶部-->
   <div data-banner-top-mask class="df-sc w100 fl0" style="background: var(--mainColor);height: 30px;">
-    <div class="df-lc h100">
+    <a class="df-lc h100" href="https://www.ynyuset.cn/" target="_blank"> 
       <set-zh-works data-any="zh" class="df-cc h100" style="--fill: var(--boxBak);"></set-zh-works>        
       <set-en-works data-any="en" class="df-cc h100" style="--fill: var(--boxBak);"></set-en-works>       
       <div data-any="zh" data-en-text=">>YN+ Html2zy" class="font-s12" style="padding-right: 10px; color: var(--boxBak); font-weight: 700; ">
@@ -24,7 +24,7 @@
       <div data-any="en" data-en-text=">>YN+ Html2zy" class="font-s12" style="padding-right: 10px; color: var(--boxBak); font-weight: 900;">
         >> 云即·网页快照助手
      </div>
-    </div>
+    </a>
     <div class="df-lc gap4" style="padding-right: 10px;">
       <div id="btn-theme" class="fl0 df-cc wh-22 pad4 bsb bod-r6" style=" background: var(--swi-bak); ">
         <input id="theme-1" data-theme-check type="checkbox" checked="true">
@@ -41,9 +41,6 @@
       </label>  
     </div>
   </div>
-  <!--杂色质感-->
-  <div id="noise"></div>
-  <div id="watermark" class="watermark"></div>
   <!--全局tips-->
   <div id="tips-all">
       <div id="tips-all-text" class="tips-all-text" >
@@ -61,9 +58,53 @@
           <div id="scanButton" data-btn="main" class="df-cc" data-en-text="Scan">扫描</div>
         </div>
       </div>
+      <!--操作说明-->
+      <div class="bod-d df-ffc pad4 bsb bod-r4">
+        <li data-li-style="2" style="transform: skew(-8deg); white-space: normal;" 
+          data-en-text="Elements are cached after first scan, cache persists until page refresh" 
+          class="font-s10 op6">
+          首次匹配成功后会始终缓存，直到刷新页面，开/关插件都会优先读取缓存
+        </li>
+        <li data-li-style="2" style="transform: skew(-8deg); white-space: normal;" 
+          data-en-text="Failed previews won't be cached, adjust element and retry" 
+          class="font-s10 op6">
+          预览图生成失败不会被缓存，操作页面后再打开插件会自动尝试生成
+        </li>
+        <li data-li-style="2" style="transform: skew(-8deg); white-space: normal;" 
+          data-en-text="Click refresh to force update an element's data and preview" 
+          class="font-s10 op6">
+          点击刷新按钮可强制更新单个元素的数据和预览图
+        </li>
+      </div>
       <!-- 元素列表 -->
-      <div id="elementsList" class="df-ffc wh100 ovy noscrollbar gap4">
-        <!-- 元素列表内容 -->
+      <div data-elementslist-box class="df-ffc">
+        <div data-elementslist-set class="df-sc bsb pos-r bod-r4">
+          <div class="df-lc gap2">
+            <input type="checkbox" id="elements-tickall" checked="true">
+            <label for="elements-tickall" class="df-cc wh-14 check">
+              <btn-check-tick></btn-check-tick>
+            </label>
+            <div data-en-text="Select All">全选</div>
+          </div>
+          <div class="df-lc gap10">
+            <div class="df-lc gap2">
+              <input type="checkbox" id="elements-viewall">
+              <label for="elements-viewall" data-btn="op" class="df-cc wh-20 check">
+                <export-img></export-img>
+              </label>
+              <div data-en-text="View All">全部预览</div>
+            </div>
+            <div class="df-lc gap2">
+              <div data-elements-resetall class="wh-20" data-btn="op">
+                <btn-reset></btn-reset>
+              </div>
+              <div data-en-text="Reset All">重置全部</div>
+            </div>
+          </div>
+        </div>
+        <div id="elementsList" class="df-ffc wh100 ovy noscrollbar gap4">
+          <!-- 元素列表内容 -->
+        </div>
       </div>
       <!-- 状态提示和导出按钮 -->
       <div class="w100 df-ffc pos-r fl0">

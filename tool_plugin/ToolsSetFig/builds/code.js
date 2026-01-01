@@ -44,7 +44,7 @@ figma.clientStorage.getAsync('userResize')
 
 let userInfo = figma.currentUser;
 if(userInfo){
-    console.log(userInfo)
+    //console.log(userInfo)
     postmessage([userInfo,'userInfo']);
 } else {
     postmessage([null,'userInfo']);
@@ -3829,7 +3829,6 @@ function reTableByArray(table,Array,enters,nulls){
 //按数组修改组件属性
 function reAnyByArray(comps,Array,istable,enters,nulls){
     for(let i = 0; i < comps.length; i++){
-        //console.log(222)
         let comp = comps[i];
         let textPros = Object.keys(comp.componentProperties).filter(pro => comp.componentProperties[pro].type == 'TEXT');
         let dataPros = textPros.filter(key => key.split('#')[0] == '--data');
@@ -4218,7 +4217,7 @@ function easePickTable(type,nodes){
  * - R = Right (右) = 水平方向的MAX
  * - C = Center (居中)
  * - S = Space Between (仅在主轴方向有效)
- * - A = Baseline (仅在H模式的主轴方向有效，即水平方向)
+ * - A = Baseline (仅在H模式的次轴方向有效，即垂直方向)
  * 
  * 示例：'TL' = 左上对齐
  * - H模式：主轴(水平)=L(左/MIN)，副轴(垂直)=T(上/MIN)
@@ -4244,9 +4243,9 @@ function addAutoLayout(node,layout,isFixed){
             // HTML对应: flex-direction: row;
             node.layoutMode = 'HORIZONTAL';
             
-            // 主轴对齐（水平方向）：L=左, R=右, C=中, S=间距, A=基线
-            // HTML对应: justify-content（L/C/R/S）或 align-items: baseline（A）
-            // 注意：基线对齐(A)仅在H模式可用，Figma限制baseline只能在水平方向的主轴使用
+            // 主轴对齐（水平方向）：L=左, R=右, C=中, S=间距
+            // HTML对应: justify-content（L/C/R/S）
+            // 注意：基线对齐(A)仅在H模式的次轴可用，不在主轴
             switch (horizontalAlign){
                 case 'L':
                     node.primaryAxisAlignItems = 'MIN'; // HTML: justify-content: flex-start;
@@ -4260,13 +4259,12 @@ function addAutoLayout(node,layout,isFixed){
                 case 'S': 
                     node.primaryAxisAlignItems = 'SPACE_BETWEEN'; // HTML: justify-content: space-between;
                     break;
-                case 'A': 
-                    node.primaryAxisAlignItems = 'BASELINE'; // HTML: align-items: baseline (仅在H模式可用)
-                    break;
+                // 注意：case 'A' (baseline) 仅在次轴可用，不在主轴
             };
             
-            // 副轴对齐（垂直方向）：T=上, B=下, C=中
+            // 副轴对齐（垂直方向）：T=上, B=下, C=中, A=基线
             // HTML对应: align-items
+            // 注意：基线对齐(A)仅在H模式的次轴（垂直方向）可用
             switch (verticalAlign){
                 case 'T':
                     node.counterAxisAlignItems = 'MIN'; // HTML: align-items: flex-start;
@@ -4276,6 +4274,9 @@ function addAutoLayout(node,layout,isFixed){
                     break;
                 case 'B':
                     node.counterAxisAlignItems = 'MAX'; // HTML: align-items: flex-end;
+                    break;
+                case 'A':
+                    node.counterAxisAlignItems = 'BASELINE'; // HTML: align-items: baseline (仅在H模式可用)
                     break;
             };
             break;
@@ -5241,6 +5242,39 @@ class TextElementProcessor {
                 return 'Regular';
             };
             
+            // 处理 textTransform 和 fontVariantCaps：转换为 Figma 的 TextCase
+            // 参考: https://developers.figma.com/docs/plugins/api/TextCase/
+            // TextCase 值: "ORIGINAL" | "UPPER" | "LOWER" | "TITLE" | "SMALL_CAPS" | "SMALL_CAPS_FORCED"
+            const parseTextCase = (textTransform, fontVariantCaps = null) => {
+                // 优先检查 font-variant-caps（用于 SMALL_CAPS）
+                if (fontVariantCaps) {
+                    const variant = String(fontVariantCaps).toLowerCase().trim();
+                    if (variant === 'small-caps') {
+                        // 如果同时有 textTransform: capitalize，使用 SMALL_CAPS_FORCED
+                        if (textTransform && String(textTransform).toLowerCase().trim() === 'capitalize') {
+                            return 'SMALL_CAPS_FORCED';
+                        }
+                        return 'SMALL_CAPS';
+                    }
+                }
+                
+                // 处理 textTransform
+                if (!textTransform || textTransform === 'none') {
+                    return 'ORIGINAL';
+                }
+                const transform = String(textTransform).toLowerCase().trim();
+                switch (transform) {
+                    case 'uppercase':
+                        return 'UPPER';
+                    case 'lowercase':
+                        return 'LOWER';
+                    case 'capitalize':
+                        return 'TITLE';
+                    default:
+                        return 'ORIGINAL';
+                }
+            };
+            
             // 收集所有文本片段和样式
             const textSegments = [];
             
@@ -5286,6 +5320,16 @@ class TextElementProcessor {
                             }
                         }
                         
+                        // 获取 font-variant-caps（可能从 fontVariantCaps 或 fontVariant 中获取）
+                        const childFontVariantCaps = childStyles.fontVariantCaps || 
+                                                     (childStyles.fontVariant && childStyles.fontVariant.includes('small-caps') ? 'small-caps' : null) ||
+                                                     styles.fontVariantCaps ||
+                                                     (styles.fontVariant && styles.fontVariant.includes('small-caps') ? 'small-caps' : null);
+                        const childTextCase = parseTextCase(
+                            childStyles.textTransform || styles.textTransform,
+                            childFontVariantCaps
+                        );
+                        
                         textSegments.push({
                             text: childText,
                             start: currentIndex,
@@ -5293,7 +5337,8 @@ class TextElementProcessor {
                             fontSize: childFontSize,
                             fontFamily: childFontFamily,
                             fontStyle: childFontStyle,
-                            fills: childFills
+                            fills: childFills,
+                            textCase: childTextCase
                         });
                         
                         currentIndex += childText.length;
@@ -5316,6 +5361,11 @@ class TextElementProcessor {
                     }
                 }
                 
+                // 获取 font-variant-caps（可能从 fontVariantCaps 或 fontVariant 中获取）
+                const mainFontVariantCaps = styles.fontVariantCaps ||
+                                           (styles.fontVariant && styles.fontVariant.includes('small-caps') ? 'small-caps' : null);
+                const mainTextCase = parseTextCase(styles.textTransform, mainFontVariantCaps);
+                
                 // 如果已有子 span 的文本，主文本添加到末尾
                 if (textSegments.length > 0) {
                     const lastEnd = textSegments[textSegments.length - 1].end;
@@ -5326,7 +5376,8 @@ class TextElementProcessor {
                         fontSize: mainFontSize,
                         fontFamily: mainFontFamily,
                         fontStyle: mainFontStyle,
-                        fills: mainFills
+                        fills: mainFills,
+                        textCase: mainTextCase
                     });
                 } else {
                     // 否则作为第一个片段
@@ -5337,7 +5388,8 @@ class TextElementProcessor {
                         fontSize: mainFontSize,
                         fontFamily: mainFontFamily,
                         fontStyle: mainFontStyle,
-                        fills: mainFills
+                        fills: mainFills,
+                        textCase: mainTextCase
                     });
                 }
             }
@@ -5364,6 +5416,7 @@ class TextElementProcessor {
             const defaultFontFamily = firstSegment.fontFamily;
             const defaultFontStyle = firstSegment.fontStyle;
             const defaultFills = firstSegment.fills;
+            const defaultTextCase = firstSegment.textCase || 'ORIGINAL';
             
             const node = await addText([{family: defaultFontFamily, style: defaultFontStyle}, fullText, defaultFontSize, defaultFills]);
             
@@ -5387,6 +5440,25 @@ class TextElementProcessor {
                 // 设置颜色
                 if (JSON.stringify(segment.fills) !== JSON.stringify(defaultFills)) {
                     node.setRangeFills(segment.start, segment.end, segment.fills);
+                }
+                
+                // 设置文本大小写
+                const segmentTextCase = segment.textCase || 'ORIGINAL';
+                if (segmentTextCase !== defaultTextCase) {
+                    try {
+                        node.setRangeTextCase(segment.start, segment.end, segmentTextCase);
+                    } catch (e) {
+                        console.warn('Failed to set text case:', segmentTextCase, e);
+                    }
+                }
+            }
+            
+            // 如果默认文本大小写不是 ORIGINAL，设置整个文本的大小写
+            if (defaultTextCase !== 'ORIGINAL') {
+                try {
+                    node.textCase = defaultTextCase;
+                } catch (e) {
+                    console.warn('Failed to set default text case:', defaultTextCase, e);
                 }
             }
             
@@ -5456,9 +5528,9 @@ function applyTextWidthRules(textNode, parentNode, styles, parentWidth = null, i
     
     if (hasAutoLayout) {
         // 有自动布局：判断是否有文本换行
-        if (hasTextWrap) {
+        if (hasTextWrap && textNode.width > parentNode.width) {
             //console.log('有自动布局,有换行',textNode.characters)
-            // 有换行：在填入文本对象后宽度设置为填充（FILL）
+            // 有换行且超出长度：在填入文本对象后宽度设置为填充（FILL）
             textNode.layoutSizingHorizontal = 'FILL';
         }else{
             if(isSpan) {
@@ -5799,7 +5871,7 @@ async function elementToNode(elementData, parentNode) {
     const inputType = elementData.inputType || null;
     const textContent = elementData.textContent;
     const children = elementData.children || [];
-    
+    //console.log(position,styles,tagName,inputType,textContent,children)
     // 尝试使用 SVG 处理器
     const svgNode = await SvgElementProcessor.process(elementData, position, styles, parentNode);
     if (svgNode) {
@@ -6171,7 +6243,7 @@ async function elementToNode(elementData, parentNode) {
         // 没有边框宽度，确保 strokes 为空数组
         node.strokes = [];
     }
-            
+       
     // 设置自动布局（如果适用）
     // span 元素如果没有 flex 数据，默认按 H,LC（水平方向，左中对齐）
     // 宽高为零的元素也转为自动布局，自适应宽高
@@ -6231,10 +6303,10 @@ async function elementToNode(elementData, parentNode) {
                 }
                 break;
             case 'baseline':
-                // 注意：Figma的基线对齐仅在H模式的主轴（水平方向）可用
-                // 虽然CSS中align-items: baseline是副轴对齐，但Figma限制baseline只能在H模式主轴使用
+                // 注意：Figma的基线对齐仅在H模式的次轴（垂直方向）可用
+                // CSS中align-items: baseline是副轴对齐，Figma也限制baseline只能在H模式次轴使用
                 if(dir === 'H'){
-                    lr = 'A';  // H模式：baseline映射到主轴（水平方向），即lr
+                    tb = 'A';  // H模式：baseline映射到次轴（垂直方向），即tb
                 }  else {
                     // V模式不支持baseline，保持默认值或忽略
                 }
@@ -6263,10 +6335,10 @@ async function elementToNode(elementData, parentNode) {
                 }
                 break;
             case 'baseline':
-                // 注意：Figma的基线对齐仅在H模式的主轴（水平方向）可用
-                // CSS的justify-content不支持baseline，但如果出现，仅在H模式处理
+                // 注意：CSS的justify-content不支持baseline，如果出现baseline，应该忽略或报错
+                // 但为了兼容性，如果出现，仅在H模式映射到次轴（因为Figma的baseline只能在H模式次轴使用）
                 if(dir === 'H'){
-                    lr = 'A';  // H模式：baseline映射到主轴（水平方向），即lr
+                    tb = 'A';  // H模式：baseline映射到次轴（垂直方向），即tb
                 }  else {
                     // V模式不支持baseline，保持默认值或忽略
                 }
@@ -6274,7 +6346,6 @@ async function elementToNode(elementData, parentNode) {
         }
         return tb + lr;
     };
-
     if(shouldUseAutoLayout){
         // 方向判断：根据 flexDirection 判断
         // flexWrap 是否触发换行取决于子容器宽度是否超出，需要在处理完子元素后判断
@@ -6299,8 +6370,7 @@ async function elementToNode(elementData, parentNode) {
                 }
             }
         }
-        
-        
+
         // 生成对齐代码
         let align = 'TL'; // 默认左上对齐
         if(hasFlexDisplay){
@@ -6312,27 +6382,25 @@ async function elementToNode(elementData, parentNode) {
         //根据padding和子元素大小进一步判断自动布局是否需要居中，提升还原体验，如不够精确可去掉
         if(!hasFlexDisplay && hasPadding && tagName !== 'input' && elementData.children && elementData.children.length > 0){
             //默认没flex但有padding时是V模式
-            let trueNodes = elementData.children.filter(item => item.styles.display !== 'none' && item.styles.visibility !== 'hidden' && item.styles.position !== 'absolute');
-            if(trueNodes.length !== 1) return
-            let tb,lr
-            let childPos = elementData.children[0].position;
-            let top = Number(childPos.top);
-            let bottom = Number(childPos.bottom);
-            let left = Number(childPos.left);
-            let right = Number(childPos.right);
-            if(top === -bottom && top !== 0){
-                tb = 'C'
-            }else{
-                tb = 'T'
-            }
-            if(left === -right && left !== 0){
-                lr = 'C'
-            }else{
-                lr = 'L'
-            }
-            align = tb + lr;
-            if(align == 'CC'){
-                console.log('666')
+            let trueNodes = elementData.children.filter(item => item.styles && item.styles.display !== 'none' && item.styles.visibility !== 'hidden' && item.styles.position !== 'absolute');
+            if(trueNodes.length === 1){
+                let tb,lr
+                let childPos = trueNodes[0].position;
+                let top = Number(childPos.top) || 0;
+                let bottom = Number(childPos.bottom) || 0;
+                let left = Number(childPos.left) || 0;
+                let right = Number(childPos.right) || 0;
+                if(top === -bottom && top !== 0){
+                    tb = 'C'
+                }else{
+                    tb = 'T'
+                }
+                if(left === -right && left !== 0){
+                    lr = 'C'
+                }else{
+                    lr = 'L'
+                }
+                align = tb + lr;
             }
         }
         
@@ -6361,8 +6429,9 @@ async function elementToNode(elementData, parentNode) {
         // 根据是否需要 HUG 模式来决定使用 FIXED 还是 AUTO
         // 如果 shouldUseHug 为 true（尺寸为 0 且是 flex 容器），使用 AUTO（HUG）模式；否则使用 FIXED
         const useFixed = !shouldUseHug;
-        addAutoLayout(node, [direction, align, spacing, padding], [useFixed, useFixed]);
         
+        addAutoLayout(node, [direction, align, spacing, padding], [useFixed, useFixed]);
+
         // 如果使用 FIXED 模式，确保节点尺寸正确设置
         if (useFixed && width > 0 && height > 0) {
             node.resize(width, height);
@@ -6373,7 +6442,7 @@ async function elementToNode(elementData, parentNode) {
         }
         // 注意：flexWrap 的处理会在处理完子元素后进行，根据子元素宽度是否超出来判断
     }
-            
+
     // 统一处理文本元素：使用 TextElementProcessor 处理直接文本（普通textContent）
     if(textContent){
         // 获取父容器宽度（优先使用 node.width，否则使用 position.width）
@@ -6430,10 +6499,12 @@ async function elementToNode(elementData, parentNode) {
         }
     }
     
-    // 如果有 margin，提前创建 marginFrame 容器
-    // 策略：在创建过程中遇到 margin 直接创建容器，等原元素递归完才返回
+    // 如果有 margin，且父容器是自动布局，才需要创建 marginFrame 容器
+    // marginFrame 的目的是为了确保元素能有效从 position 设置 xy
+    // 如果父元素不是自动布局，不会影响当前元素的 xy，所以不需要 marginFrame
     let marginFrame = null;
-    if(hasMargin){
+    const parentHasAutoLayout = actualParentNode && actualParentNode.layoutMode && actualParentNode.layoutMode !== 'NONE';
+    if(hasMargin && parentHasAutoLayout){
         // 先创建一个临时的 marginFrame（尺寸会在递归完成后更新）
         const tempWidth = Math.max(1, width || 1);
         const tempHeight = Math.max(1, height || 1);
@@ -6454,18 +6525,18 @@ async function elementToNode(elementData, parentNode) {
     }
     
     // 设置 node 的位置
-    // 注意：如果有 margin，node 已经在 marginFrame 中，位置已经设置为 marginLeft 和 marginTop
-    // 如果没有 margin，设置 node 的位置
-    if(!hasMargin){
+    // 注意：如果有 margin 且父容器是自动布局，node 已经在 marginFrame 中，位置已经设置为 marginLeft 和 marginTop
+    // 如果没有 margin 或父容器不是自动布局，设置 node 的位置
+    if(!hasMargin || !parentHasAutoLayout){
         node.x = actualX || x || 0;
         node.y = actualY || y || 0;
     }
-    let finalNode = hasMargin ? marginFrame : node;
+    let finalNode = (hasMargin && parentHasAutoLayout && marginFrame) ? marginFrame : node;
         
     // 设置位置（相对于父节点）
-    // 注意：如果有 margin，marginFrame 会在递归完成后添加到父节点
+    // 注意：如果有 margin 且父容器是自动布局，marginFrame 会在递归完成后添加到父节点
     if(actualParentNode){
-        if(!hasMargin){
+        if(!hasMargin || !parentHasAutoLayout){
             finalNode.x = actualX || x || 0;
             finalNode.y = actualY || y || 0;
             
@@ -6485,17 +6556,17 @@ async function elementToNode(elementData, parentNode) {
             
             actualParentNode.insertChild(index, finalNode);
         }
-        // 如果有 margin，marginFrame 会在递归完成后添加到父节点
-        // 如果有 margin，node 会在后面被添加到 actualParentNode，然后被移动到 marginFrame
+        // 如果有 margin 且父容器是自动布局，marginFrame 会在递归完成后添加到父节点
+        // 如果有 margin 且父容器是自动布局，node 会在后面被添加到 actualParentNode，然后被移动到 marginFrame
         // 所以这里不需要添加到 actualParentNode
         
         // 如果父容器是自动布局，且当前元素是绝对定位，需要设置绝对定位
         // 注意：必须先添加到父容器，然后才能设置 layoutPositioning = 'ABSOLUTE'
         if(isAbsolute){
-            // 如果有 margin，finalNode 是 marginFrame，但 marginFrame 还没有被添加到父节点
+            // 如果有 margin 且父容器是自动布局，finalNode 是 marginFrame，但 marginFrame 还没有被添加到父节点
             // 所以应该对 node 设置 layoutPositioning（node 的父节点是 marginFrame）
-            // 如果没有 margin，finalNode 就是 node，直接设置即可
-            const targetNode = hasMargin ? node : finalNode;
+            // 如果没有 margin 或父容器不是自动布局，finalNode 就是 node，直接设置即可
+            const targetNode = (hasMargin && parentHasAutoLayout && marginFrame) ? node : finalNode;
             const targetParent = targetNode.parent;
             
             // 检查目标节点的父节点是否有自动布局
@@ -6904,7 +6975,7 @@ async function elementToNode(elementData, parentNode) {
             await elementToNode(child, node);
         }
     }
-    
+
     // 处理 flexWrap：根据子容器宽度是否超出来判断使用 H 还是 V
     // flexWrap 是否触发换行取决于子容器宽度是否超出父容器
     /*还是太粗暴了，后续再优化，先保留本身的flexWrap
@@ -6979,10 +7050,11 @@ async function elementToNode(elementData, parentNode) {
         node.layoutWrap = 'WRAP';
    }
     
-    // 最后处理 margin：如果有 margin，更新 marginFrame 的尺寸和位置，然后添加到父节点
+    // 最后处理 margin：如果有 margin 且父容器是自动布局，更新 marginFrame 的尺寸和位置，然后添加到父节点
     // 注意：必须在所有子元素处理完成后，才能准确获取 node 的实际尺寸和位置
     // 这样可以避免子元素解析失败时影响 marginFrame 的坐标
-    if(hasMargin && marginFrame){
+    // 只有当父容器是自动布局时才需要 marginFrame
+    if(hasMargin && marginFrame && parentHasAutoLayout){
         // 使用 node 的实际尺寸（自动布局换行后可能已经改变）
         const actualNodeWidth = node.width || width || 1;
         const actualNodeHeight = node.height || height || 1;

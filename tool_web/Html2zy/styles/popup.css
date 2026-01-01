@@ -32,16 +32,9 @@ input[type="text"],textarea{
   padding: 0.25ch 2ch;
 }
 
-[data-list-section]{
-  height: calc(100dvh - 64px);
-}
-
-input[type="checkbox"]:checked + label btn-view{
-  --fill: var(--code1);
-}
-
-#elementsList{
-  height: calc(100% - 60px);
+[data-tips]::after{
+  font-size: 10px;
+  padding: 0.25ch 1ch;
 }
 
 #bottom{
@@ -63,11 +56,40 @@ input[type="checkbox"]:checked + label btn-view{
 }
 
 /* 元素列表样式 */
+[data-list-section]{
+  height: calc(100dvh - 68px);
+}
+
+[data-elementslist-box]{
+  height: calc(100% - 108px);
+}
+
+[data-elementslist-set]{
+  padding: 4px 10px;
+  background: var(--boxGry);
+  z-index: 3;
+}
+
+#elementsList{
+  height: calc(100% - 28px);
+  padding: 20px 4px;
+  box-sizing: border-box;
+  margin-top: -10px;
+}
+
 [data-tag-element]{
   border: 1px solid var(--boxBod);
   padding: 4px 10px 6px 10px;
   box-sizing: border-box;
   border-radius: 4px;
+}
+
+[data-tag-element="false"]{
+  opacity: 0.5;
+}
+
+[data-elementslist-box] input[type="checkbox"]:checked + label{
+  --fill: var(--code1);
 }
 
 [data-previewbox]{
@@ -109,4 +131,29 @@ input[type="checkbox"]:checked + label btn-view{
   background-color: var(--boxBak);
   color: #dc3545;
   border: 1px solid #dc3545;
+}
+
+.status.loading {
+  display: block;
+  background-image: linear-gradient(to bottom, rgba(201, 120, 28, 0.15));
+  background-color: var(--boxBak);
+  color: var(--code9);
+  border: 1px solid var(--code9);
+}
+
+.status.loading::after{
+  content: '...';
+  animation: dot 1s infinite;
+}
+
+@keyframes dot {
+  0% {
+    content: '.';
+  }
+  33% {
+    content: '..';
+  }
+  66% {
+    content: '...';
+  }
 }

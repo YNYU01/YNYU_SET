@@ -318,9 +318,8 @@ class btncopy extends HTMLElement {
   constructor() {
     super();
     this.className = 'df-cc wh100';
-    this.className = 'btn-op'
     this.innerHTML = `
-    ${svgS('0 0 11 11','100%','100%')}
+    ${icon(11)}
       <path ${pathS('var(--add,transparent)')} d="M5,2L4,2L4,4L2,4L2,5L4,5L4,7L5,7L5,5L7,5L7,4L5,4L5,2Z"/>
       <path ${pathS('auto')} fill-rule="evenodd"
         d="M0,2.5L0,6.5Q0,7.53553,0.732233,8.26777Q1.29574,8.83127,2.03888,8.96112Q2.16872,9.70426,2.73223,10.2678Q3.46447,11,4.5,11L8.5,11Q9.53553,11,10.2678,10.2678Q11,9.53553,11,8.5L11,4.5Q11,3.46447,10.2678,2.73223Q9.70426,2.16872,8.96112,2.03888Q8.83127,1.29574,8.26777,0.732233Q7.53553,0,6.5,0L2.5,0Q1.46447,0,0.732233,0.732233Q0,1.46447,0,2.5ZM9,3.08099L9,6.5Q9,7.53553,8.26777,8.26777Q7.53553,9,6.5,9L3.08099,9Q3.18864,9.30996,3.43934,9.56066Q3.87868,10,4.5,10L8.5,10Q9.12132,10,9.56066,9.56066Q10,9.12132,10,8.5L10,4.5Q10,3.87868,9.56066,3.43934Q9.30996,3.18864,9,3.08099ZM1.43934,7.56066Q1,7.12132,1,6.5L1,2.5Q1,1.87868,1.43934,1.43934Q1.87868,1,2.5,1L6.5,1Q7.12132,1,7.56066,1.43934Q8,1.87868,8,2.5L8,6.5Q8,7.12132,7.56066,7.56066Q7.12132,8,6.5,8L2.5,8Q1.87868,8,1.43934,7.56066Z" 
@@ -975,3 +974,20 @@ class btnscan extends HTMLElement {
   }
 };
 customElements.define('btn-scan', btnscan);
+
+class btnlocate extends HTMLElement {
+  constructor() {
+    super();
+    this.className = 'df-cc wh100';
+    this.innerHTML = `
+    ${icon(14)}
+<circle ${circleS(7,7,5)} ${pathS(null,'auto',1.4)}/>
+<path ${pathS(null,'auto',1.4)} d="M7 1V4.5" stroke-linecap="round"/>
+<path ${pathS(null,'auto',1.4)} d="M13.0049 6.99512L9.50488 6.99512" stroke-linecap="round"/>
+<path ${pathS(null,'auto',1.4)} d="M7 9.5V13" stroke-linecap="round"/>
+<path ${pathS(null,'auto',1.4)} d="M4.50488 6.99512L1.00488 6.99512" stroke-linecap="round"/>
+</svg>
+    `;
+  }
+};
+customElements.define('btn-locate', btnlocate);

@@ -1,7 +1,7 @@
 <html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -96,7 +96,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -430,6 +430,7 @@ body{
   content: '';
   position: absolute;
   top: -1px;
+  left: 0px;
   width: 100%;
   height: 1px;
   background: var(--boxBod);
@@ -577,8 +578,8 @@ input[type="checkbox"]:checked + .tab-top{
   content: '';
   position: absolute;
   cursor:nw-resize;
-  bottom: 2px;
-  right: 2px;
+  bottom: 6px;
+  right: 6px;
   width: 8px;
   height: 8px;
   z-index: 20;
@@ -3235,7 +3236,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 <div id="upload-set-main" class="df">
                   <div id="upload-set-1" class="pos-r" data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   data-tips-text="转为标签/大纲" data-tips-text-en="Convert to tags/catalogue">
-                    <btn-re class="df-cc wh100"></btn-re>                   
+                    <btn-re></btn-re>                   
                   </div>
                   <div id="upload-set-2" class="pos-r" data-selects-must data-btn="moreset" data-tips="auto" data-tips-y="top" data-tips-x="left"
                   data-tips-text="从所选对象获取数据" data-tips-text-en="Retrieve data from the selected node">
@@ -3383,11 +3384,15 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
             <div class="w100 df-sc">
               <div class="df-lc gap8">
                 <div class="df-lc gap2" data-export-delete data-btn="text">
-                  <btn-del class="wh-14"></btn-del>
+                  <div class="wh-14">
+                    <btn-del></btn-del>
+                  </div>
                   <div data-en-text="Delete">删除</div>                
                 </div>
                 <div class="df-lc gap2" data-export-reup data-btn="text">
-                  <btn-reup class="wh-14"></btn-reup>                    
+                  <div class="wh-14">
+                    <btn-reup></btn-reup>                    
+                  </div>
                   <div data-en-text="Re-Upload">重新上传</div>                
                 </div>
               </div>
@@ -3534,10 +3539,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
           </div>
           <div data-variable-type class="w100 df-lc">
             <div class="fl1 df-lc upload-set gap6">
-              <div class="df-lc gap4 pos-r"
+              <div class="df-lc gap4 pos-r wh-22"
               data-tips="auto" data-tips-x="left" data-tips-y="top"
               data-tips-text="数据类型" data-tips-text-en="Sheet type">
-                <tab-sheettype class="wh-22"></tab-sheettype>
+                <tab-sheettype></tab-sheettype>
                 ▶                
               </div>
               <div class="df-lc data-scroll ovx noscrollbar gap6" data-scroll data-radio-value="style">
@@ -3781,7 +3786,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                               <path fill="var(--fill,var(--mainColor))" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V7H3V16Z"/>
                             </svg>
                           </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="No strokes">全填充</div>         
+                          <div data-any="vw360" data-tablestyle-name data-en-text="All Fill">全填充</div>         
                         </div>
                         <div class="fl0 df-lc" data-radio data-radio-data="2" data-radio-main="true">
                           <div data-tablestyle-chk>
@@ -4434,8 +4439,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                         <div style="width: 14px; height: 14px;">
                           <input id="split_chk_5" type="checkbox">
                           <label for="split_chk_5" class="check">
-                            <btn-check>
-                            </btn-check>
+                            <btn-check></btn-check>
                           </label>
                         </div>
                         <div data-split-info="name" data-en-text="FontName">字体(含字重)</div>
@@ -4865,7 +4869,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                             </div>
                           </label>
                         </div>
-                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/tool_web/SVdG/index.html" target="_blank">
+                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/tool_web/SVdG/index.html" target="_blank">
                           <div data-autobod-name data-en-text="Custom >" style="text-decoration: underline;">自定义></div>
                         </a>
                       </div>
@@ -4905,7 +4909,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
           <!--选中信息-->
           <div class="df-lc noscrollbar bsb" data-selects-node data-scroll style="padding: 0 10px;">
             <span class="df-lc mar-0a" data-selects-info-box>
-              <div style="width: 12px; height: 12px;">
+              <div class="wh-12">
                 <btn-hasselect></btn-hasselect>         
               </div>
               &nbsp;
@@ -4960,23 +4964,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/other/jsQR_correct.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/other/jsQR_correct.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@f23ae2ec311eb57569b9e59d6cf1dca8f5bc5c28/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8282a7442069eef9017e70e55094a23528d55658/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 

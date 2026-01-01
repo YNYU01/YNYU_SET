@@ -1,6 +1,6 @@
 const TOOL_INFO = [
   {
-    name: ["云即·工具集 Figma版","    YN+ToolsSet Fig"],
+    name: ["云即·工具集 Figma版","    YN+ ToolsSet Fig"],
     icon:"url('../preview_tools/img/Icon-ToolsSet_fig_200.png')",
     url:"help_toolsset?type=fig",
     about:[
@@ -23,7 +23,7 @@ const TOOL_INFO = [
     ]
   },
   {
-    name: ["云即·工具集 Mastergo版","YN+ToolsSet Mg"],
+    name: ["云即·工具集 Mastergo版","YN+ ToolsSet Mg"],
     icon:"url('../preview_tools/img/Icon-ToolsSet_mg_200.png')",
     url:"help_toolsset?type=mg",
     about:[
@@ -37,7 +37,7 @@ const TOOL_INFO = [
     ]
   },
   {
-    name: ["云即·工具集 PS版","YN+ToolsSet Ps"],
+    name: ["云即·工具集 PS版","YN+ ToolsSet Ps"],
     icon:"url('../preview_tools/img/Icon-ToolsSet_ps_200.png')",
     url:"help_toolsset?type=ps",
     about:[
@@ -52,7 +52,7 @@ const TOOL_INFO = [
     ]
   },
   {
-    name: ["云即·资源助手","YN+ListEase"],
+    name: ["云即·资源助手","YN+ ListEase"],
     icon:"url('../preview_tools/img/Icon-ListEase_200.png')",
     url:"../tool_web/ListEase",
     about:[
@@ -66,7 +66,7 @@ const TOOL_INFO = [
     ]
   },
   {
-    name: ["云即·字效编辑器","YN+VFontX"],
+    name: ["云即·字效编辑器","YN+ VFontX"],
     icon:"url('../preview_tools/img/Icon-VFontX_200.png')",
     url:"../tool_web/VFontX",
     about:[
@@ -77,6 +77,35 @@ const TOOL_INFO = [
     ],
     keyword:[
       ["网页","Web"],
+    ]
+  },
+  {
+    name: ["云即·矢量编辑器","YN+ SVdG"],
+    icon:"url('../preview_tools/img/Icon-SVdG_200.png')",
+    url:"../tool_web/SVdG",
+    about:[
+      [
+      "说明文案说明文案说明文案说明文案说明文案说明文案说明文案说明文案",
+      "This is a plug-in for XXX function. Please pay attention to the following issues"
+      ],
+    ],
+    keyword:[
+      ["网页","Web"],
+    ]
+  },
+  {
+    name: ["云即·网页快照助手","YN+ Html2zy"],
+    icon:"url('../preview_tools/img/Icon-Html2zy_200.png')",
+    url:"../tool_web/Html2zy/popup.html",
+    about:[
+      [
+      "说明文案说明文案说明文案说明文案说明文案说明文案说明文案说明文案",
+      "This is a plug-in for XXX function. Please pay attention to the following issues"
+      ],
+    ],
+    keyword:[
+      ["网页","Web"],
+      ["谷歌浏览器","Chrome"],
     ]
   },
 ];
