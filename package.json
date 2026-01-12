@@ -10,6 +10,11 @@
     "lint:codeview": "eslint --ext .ts,.tsx --ignore-pattern node_modules tool_plugin/CodeView/widget-src",
     "lint:codeview:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix tool_plugin/CodeView/widget-src",
     "tsc:codeview": "tsc --noEmit -p tool_plugin/CodeView/widget-src",
+    "build:tableview": "esbuild tool_plugin/TableView/widget-src/code.tsx --bundle --outfile=tool_plugin/TableView/dist/code.js --target=es6",
+    "build:tableview:watch": "esbuild tool_plugin/TableView/widget-src/code.tsx --bundle --outfile=tool_plugin/TableView/dist/code.js --target=es6 --watch",
+    "lint:tableview": "eslint --ext .ts,.tsx --ignore-pattern node_modules tool_plugin/TableView/widget-src",
+    "lint:tableview:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix tool_plugin/TableView/widget-src",
+    "tsc:tableview": "tsc --noEmit -p tool_plugin/TableView/widget-src",
     "sync:html2zy": "node tool_web/Html2zy/sync-builds.js"
   },
   "repository": {

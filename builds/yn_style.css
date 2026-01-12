@@ -462,16 +462,16 @@ input[type="range"] {
   padding: calc(var(--ratio,1) * 10px);
 }
 
-.mar-b2{
-  margin-bottom: 2px;
-}
-
 .mar-0a{
   margin: var(--mar-tb,0) auto;
 }
 
 .mar-a0{
   margin: auto var(--mar-lr,0);
+}
+
+.mar-b2{
+  margin-bottom: 2px;
 }
 
 .mar-b4{
@@ -488,6 +488,26 @@ input[type="range"] {
 
 .mar-b10{
   margin-bottom: 10px;
+}
+
+.mar-t2{
+  margin-top: 2px;
+}
+
+.mar-t4{
+  margin-top: 4px;
+}
+
+.mar-t6{
+  margin-top: 6px;
+}
+
+.mar-t8{
+  margin-top: 8px;
+}
+
+.mar-t10{ 
+  margin-top: 10px;
 }
 
 .mar-l2{
@@ -508,6 +528,26 @@ input[type="range"] {
 
 .mar-l10{
   margin-left: 10px;
+}
+
+.mar-r2{
+  margin-right: 2px;
+}
+
+.mar-r4{
+  margin-right: 4px;
+}
+  
+.mar-r6{
+  margin-right: 6px;
+}
+
+.mar-r8{
+  margin-right: 8px;
+}
+
+.mar-r10{
+  margin-right: 10px;
 }
 
 .bsb{

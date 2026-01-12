@@ -636,7 +636,7 @@
           </div>
           <div data-variable-type class="w100 df-lc">
             <div class="fl1 df-lc upload-set gap6">
-              <div class="df-lc gap4">
+              <div class="df-lc gap4" data-any="vw240">
                 <div class="df-cc pos-r wh-22"
                 data-tips="auto" data-tips-x="left" data-tips-y="top"
                 data-tips-text="数据类型" data-tips-text-en="Sheet type">
@@ -649,15 +649,13 @@
                   <div data-variable-chk>
                     <btn-style></btn-style>
                   </div>
-                  <div data-any="vw240" data-variable-chk-name data-en-text="Style">样式</div>   
-                  <div data-any="vw300" data-en-text="&nbsp;Sheet">表管理</div>        
+                  <div data-any="vw240" data-variable-chk-name data-en-text="Style Sheet">样式表管理</div>   
                 </div>
                 <div class="fl0 df-lc" data-radio data-radio-data="variable" data-radio-main="false">
                   <div data-variable-chk>
                     <btn-variable></btn-variable>                 
                   </div>
-                  <div data-any="vw240" data-variable-chk-name data-en-text="Variable">变量</div>
-                  <div data-any="vw300" data-en-text="&nbsp;Sheet">表管理</div>          
+                  <div data-any="vw240" data-variable-chk-name data-en-text="Variable Sheet">变量表管理</div>
                 </div>
               </div>
             </div>
@@ -858,204 +856,14 @@
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100">
         <div class="wh100 df-ffc ovy noscrollbar pad10 bsb" style="max-width: 560px; align-items: center; padding-bottom: 0;">
           <div class="wh100 df-ffc bsb">
-            <!--步骤1-->
-            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
-              <span>▼&nbsp;</span>
-              <span data-en-text="Get a basic table" >创建基础表格模板</span>
-              &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="and make it more diverse" class="op6">并进一步定制化设计</span>
-              <div data-any="vw300" data-help="sheet" class="fl0 df-cc">?</div>
-            </div>
-            <!--预设表格样式-->
-            <div data-tableset-thtd class="df-lc w100">
-              <div class="df-lc gap4 mar-0a" style="max-width: 100%;">
-                <div class="df-lc pos-r upload-set gap4" style="max-width: calc(100% - 44px); height: 40px;">
-                  <input id="chk-tablestyle" checked type="checkbox" >
-                  <label for="chk-tablestyle" data-tips="auto" class="fl0 pos-r wh-22" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
-                  data-tips-text="按预设样式生成组件/修改表格" data-tips-text-en="Create/change from the preset style">
-                    <tab-tablestyle></tab-tablestyle>                 
-                  </label>
-                  <div data-tablestyle-box class="df-lc gap4" style="overflow: auto;">
-                    ▶
-                    <div class="noscrollbar df-lc" data-scroll="false">
-                      <div data-tablestyle-set="fill" class="df-lc" data-radio-value="2">
-                        <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V7H3V16Z"/>
-                            </svg>
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="All Fill">全填充</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="2" data-radio-main="true">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 14V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V14H3ZM3 10H17V7H3V10Z"/>
-                            </svg>    
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Row Space">横间隔</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="3" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C3.86182 18 3.72697 17.9857 3.59668 17.959C3.46664 17.9324 3.34118 17.8933 3.22168 17.8428C2.50378 17.5392 2 16.8285 2 16V4C2 3.17153 2.50378 2.46081 3.22168 2.15723C3.34118 2.10669 3.46664 2.06765 3.59668 2.04102C3.72697 2.01433 3.86182 2 4 2H16ZM13.7832 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H13.7832V17ZM6.34766 17H9.43555V3H6.34766V17Z"/>
-                            </svg>   
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Column Space">竖间隔</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="4" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                            </svg>
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="No Fill">无填充</div>         
-                        </div>
-                      </div>
-                    </div>
-                    <div class="fl0" style="width: 1px; height: 30px; margin: 0 2px; background: var(--mainColor);"></div>
-                    <div class="noscrollbar df-lc" data-scroll="false">
-                      <div data-tablestyle-set="bod" class="df-lc" data-radio-value="4">
-                        <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"/>
-                            </svg>  
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="All Strokes">全描边</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="2" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 13V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V13H3ZM3 12H17V8H3V12ZM4 3C3.44772 3 3 3.44772 3 4V7H17V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                            </svg>   
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Row Strokes">仅横线</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="3" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H9.5V3H4ZM10.5 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H10.5V17Z"/>
-                            </svg> 
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Column Strokes">仅竖线</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="4" data-radio-main="true">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                            </svg>
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="No Strokes">无描边</div>         
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="df-lc pos-r upload-set gap4" style="max-width: calc(100% - 44px);">
-                  <input id="chk-selectcomp" type="checkbox" checked >
-                  <label for="chk-selectcomp" data-tips="auto" class="fl0 pos-r wh-22" data-tips-y="top" data-tips-x="right" style="--tips-w: 8ch;"
-                  data-tips-text="以所选对象为组件" data-tips-text-en="Create from the selected node">
-                    <btn-getbyselect></btn-getbyselect>                  
-                  </label>
-                  <div data-selectcomp-box="false" class="df-lc gap4" style="display: none; overflow: auto;">
-                    ▶
-                    <div class="noscrollbar df-lc">
-                      <div data-selectcomp-no style="padding: 0 10px;" data-en-text="Has not compliant components">未选中有效的组件</div>
-                      <div data-selectcomp-mix class="df-lc gap4">
-                        <span data-any="vw240">
-                          <span data-en-text="Header:">表头:</span>
-                        </span>
-                        <span data-selectcomp-1>none</span>
-                        <div></div>
-                        <div></div>
-                        <span data-any="vw240">
-                          <span data-en-text="Data:">数据:</span>
-                        </span>
-                        <span data-selectcomp-2>none</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> 
-            <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
-              <div data-create-table class="w100 df-cc" data-btn="main2" data-en-text="Create Table">创建表格</div>
-              <div class="w100 df-cc" data-btn="skill-main" data-selects-must data-en-text="Apply Preset" style="border-radius: 20px;">应用预设样式</div>    
-              <div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
-                <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
-                <label for="table-more" data-more-mini class="wh100 df-cc btn-more fl0 pad4">
-                  <btn-more></btn-more>
-                </label>
-              </div>
-            </div>
-            <div class="df-ffc gap4" data-tableset-more data-skill-sec style="margin: 4px 0; display: none;">
-              <div class="df-lc w100" data-skill-more>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Only Create @th/td">仅创建组件</div>
-                <div class="df-cc"  data-selects-must data-btn="skill-main" data-en-text="Make Compliant">合规化组件</div>
-              </div>
-              <div class="w100 df-cc">
-                <span data-skill-gap>
-                  <span>---</span>
-                  <span data-en-text="To xxx@table elements"> 基于xxx@table元素</span>
-                  <span>---</span>
-                </span>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-lc w100 gap4">
-                  <div class="df-lc fl1">
-                    <input id="table-column-num" type="text" value="0" data-input data-input-type="int" data-input-must="0,1000" style="text-align: center;">
-                    <div class="df-cc" data-input-unit="auto" data-en-text=" C ">列</div>
-                  </div>
-                  <div class="df-lc fl1" >
-                    <input id="table-row-num" type="text" value="0" data-input data-input-type="int" data-input-must="0,1000" style="text-align: center;">
-                    <div class="df-cc" data-input-unit="auto" data-en-text=" R ">行</div>
-                  </div>
-                </div>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 10px 0 0 10px;" data-btn="skill-main" data-en-text="Add C/R">增加行列</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 10px 10px 0;" data-btn="skill-main" data-en-text="Reduce C/R">减少行列</div>
-                </div>
-                
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 10px 0 0 10px;" data-btn="skill-main" data-en-text="All Border">全描边</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 10px 10px 0;" data-btn="skill-main" data-en-text="None Border">全不描边</div>
-                </div>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 10px 0 0 10px;" data-btn="skill-main" data-en-text="All Fill">全填充</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 10px 10px 0;" data-btn="skill-main" data-en-text="None Fill">全不填充</div>
-                </div>
-                
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <!--div class="df-cc" data-btn="skill-main" data-btn-important="skill" data-en-text="Apply Preset Style">应用样式</div-->
-                <div class="df-cc" data-btn="skill-main" data-en-text="Random Theme">随机主题</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Row Column Swap">反转行列</div>
-              </div>
-              <div class="w100 df-cc">
-                <span data-skill-gap>
-                  <span>---</span>
-                  <span data-en-text="To xxx@th/td elements"> 基于xxx@th/td元素</span>
-                  <span>---</span>
-                </span>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Select a Row">选中单行</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Select many Rows">选中多行</div>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Select Block">区域选中</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Select Inline">连续选中</div>
-              </div>
-            </div>
-            <div style="min-height: 4px;"></div>
             <!--步骤2-->
             <div class="w100 df-lc op6"  style="padding:4px 0 6px 0;vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
-              <span data-en-text="Control component properties by sheet" >用表格数据批量+参数化控制组件</span>
+              <span data-en-text="Mapping data/attribute" >批量映射数据/属性</span>
+              <span data-any="vw240" class="op6" data-en-text="&nbsp;based on component | tag">&nbsp;基于组件/标签</span>
+              <div data-any="vw300" data-help="sheet" class="fl0 df-cc">?</div>
             </div>
+
             <div class="wh100 df">
               <div id="upload-tablearea-box" data-resize class="pos-r fl1" style="min-height: 120px;">
                 <textarea class="wh100" spellcheck="false" id="upload-tablearea" data-textarea="eg"  style=" min-height: 100%;" 
@@ -1073,54 +881,99 @@
               </div>
             </div>
             <!--更多设置-->
-            <div data-tablearea-moreset class="w100 df-lc gap4" style="flex-wrap: wrap; margin: 4px 0;">
-              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 120px;">
-                <div data-tips="auto" class="fl0 df-cc pos-r wh-20" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
-                  data-tips-text="设置换行转义符, 用于兼容需要换行的数据" data-tips-text-en="Set a character to represent line feed">
-                  <input-regexpenter></input-regexpenter>      
-                </div>
-                <input id="input-linefeed" data-input class="nobod fl1" type="text" 
-                value="\n"> 
-                <!--重置-->
-                <div data-input-reset data-btn="reset">
-                  <btn-reset></btn-reset>
-                </div>  
-              </div>
-              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 120px;">
-                <div data-tips="auto" class="fl0 df-cc pos-r wh-20" data-tips-y="top" data-tips-x="center" style="--tips-w: 8ch; "
-                  data-tips-text="设置空数据占位符, 可避免潜在的错误" data-tips-text-en="Set a character to replace null data">
-                  <input-regexpnull></input-regexpnull>       
-                </div>
-                <input id="input-nulldata" data-input class="nobod fl1" type="text"
-                value="--">  
-                <!--重置-->
-                <div data-input-reset data-btn="reset">
-                  <btn-reset></btn-reset>
-                </div> 
-              </div>
-            </div>
-            <div class="df-ffc w100 bod-d pad4 gap4 bsb" data-retable-moreset >
-              <div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one auto-layout with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个自动布局 时生效</div>
-              <div class="df-lc w100 font-s10 gap4 mar-b4" data-skill-more style="flex-wrap: wrap; white-space: nowrap;">
-                <div class="fl1 df-lc gap4" style="min-width: 160px;">
-                  <div class="df ovh noscrollbar" data-scroll data-en-text="· Clone instance by data quantity">· 数据数量&gt;实例数量时, 复制最末实列</div>
-                  <div style="width: 1%;"></div>
-                  <div class="df-rc" style="min-width: 36px;">
-                    <input id="switch-autoclone" type="checkbox" checked>
-                    <label for="switch-autoclone" class="switch" style="--swi-h: 16px"></label>
+            <div data-tablearea-moreset class="w100 df-lc gap4" style="margin: 4px 0;">
+              <div class="df-lc upload-set w100 gap4 fl0" style="height: 40px; width: calc(100% - 44px);">
+                <div class="df-lc gap4" data-any="vw240">
+                  <div class="df-cc pos-r wh-22"
+                  data-tips="auto" data-tips-x="left" data-tips-y="top"
+                  data-tips-text="数据类型" data-tips-text-en="Data type">
+                    <tab-sheettype></tab-sheettype>
                   </div>
+                  ▶ 
                 </div>
-                <div class="fl1 df-lc gap4" style="min-width: 160px;">
-                  <div class="df ovh noscrollbar" data-scroll data-en-text="· Reduce instance by data quantity">· 数据数量&lt;实例数量时, 从最末实列开始删减</div>
-                  <div style="width: 1%;"></div>
-                  <div class="df-rc" style="min-width: 36px;">
-                    <input id="switch-autoreduce" type="checkbox" checked>
-                    <label for="switch-autoreduce" class="switch" style="--swi-h: 16px"></label>
+                <div data-radio-value="Text" data-mapget-type class="wh100 df-lc gap4 ovx noscrollbar" data-scroll="false">
+                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Name" data-radio-main="false">
+                    <div class="df-cc wh-18 mar-l2">
+                      <map-name></map-name>
+                    </div>
+                    <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Layers Name">图层名</div>
+                  </div>
+                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Text" data-radio-main="true">
+                    <div class="df-cc wh-18 mar-l2">
+                      <map-text></map-text>
+                    </div>
+                    <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Text Props">文本(属性)</div>
+                  </div>
+                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Pro" data-radio-main="false">
+                    <div class="df-cc wh-18 mar-l2">
+                      <map-pro></map-pro>
+                    </div>
+                    <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Any Props">组件属性</div>
+                  </div>
+                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Tag" data-radio-main="false">
+                    <div class="df-cc wh-18 mar-l2">
+                      <map-tag></map-tag>
+                    </div>
+                    <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Tags">标签</div>
                   </div>
                 </div>
               </div>
+              <input id="tablearea-moreset" type="checkbox" checked onchange="showNext(this,'data-retable-moreset','flex',true)">
+                <label for="tablearea-moreset" class="btn-moreset pos-r" data-tips="auto" data-tips-y="top" data-tips-x="right"
+                data-tips-text="高级设置" data-tips-text-en="Advanced setting" style="--xx:40px;">
+                  <btn-set></btn-set>
+                </label>
             </div>
-            <div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
+            <div class="df-ffc w100 gap4" data-retable-moreset style="display: none;">
+              <div class="w100 df-lc gap4">
+                <div class="df-lc pos-r fl1 upload-set gap4" style="height: 40px;">
+                  <div data-tips="auto" class="fl0 df-cc pos-r wh-20" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                    data-tips-text="设置换行转义符, 用于兼容需要换行的数据" data-tips-text-en="Set a character to represent line feed">
+                    <input-regexpenter></input-regexpenter>      
+                  </div>
+                  <input id="input-linefeed" data-input class="nobod fl1" type="text" 
+                  value="\n"> 
+                  <!--重置-->
+                  <div data-input-reset data-btn="reset">
+                    <btn-reset></btn-reset>
+                  </div>  
+                </div>
+                <div class="df-lc pos-r fl1 upload-set gap4" style="height: 40px;">
+                  <div data-tips="auto" class="fl0 df-cc pos-r wh-20" data-tips-y="top" data-tips-x="center" style="--tips-w: 8ch; "
+                    data-tips-text="设置空数据占位符, 可避免潜在的错误" data-tips-text-en="Set a character to replace null data">
+                    <input-regexpnull></input-regexpnull>       
+                  </div>
+                  <input id="input-nulldata" data-input class="nobod fl1" type="text"
+                  value="--">  
+                  <!--重置-->
+                  <div data-input-reset data-btn="reset">
+                    <btn-reset></btn-reset>
+                  </div> 
+                </div>
+              </div>
+              <div class="df-ffc w100 bod-d pad4 gap4 bsb mar-b4">
+                <div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one auto-layout with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个自动布局 时生效</div>
+                <div class="df-lc w100 font-s10 gap4 mar-b4" data-skill-more style="flex-wrap: wrap; white-space: nowrap;">
+                  <div class="fl1 df-lc gap4" style="min-width: 160px;">
+                    <div class="df ovh noscrollbar" data-scroll data-en-text="· Clone instance by data quantity">· 数据数量&gt;实例数量时, 复制最末实列</div>
+                    <div style="width: 1%;"></div>
+                    <div class="df-rc" style="min-width: 36px;">
+                      <input id="switch-autoclone" type="checkbox" checked>
+                      <label for="switch-autoclone" class="switch" style="--swi-h: 16px"></label>
+                    </div>
+                  </div>
+                  <div class="fl1 df-lc gap4" style="min-width: 160px;">
+                    <div class="df ovh noscrollbar" data-scroll data-en-text="· Reduce instance by data quantity">· 数据数量&lt;实例数量时, 从最末实列开始删减</div>
+                    <div style="width: 1%;"></div>
+                    <div class="df-rc" style="min-width: 36px;">
+                      <input id="switch-autoreduce" type="checkbox" checked>
+                      <label for="switch-autoreduce" class="switch" style="--swi-h: 16px"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
               <div class="df-lc w100" data-skill-more data-selects-must>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Names">图层命名映射</div>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Texts">文本数据映射</div>
@@ -1145,7 +998,193 @@
                 <div class="df-cc" data-btn="skill-main" data-en-text="Get Tags">获取标签属性</div>
               </div>
 
+            </div-->
+            
+            <div class="w100 df-cc gap2" >
+              <div data-mapget-get class="w100 df-cc" data-btn="main2" data-en-text="Collect Data">数据获取</div>
+              <div data-mapget-map class="w100 df-cc" data-btn="main2" data-en-text="Mapping Data">数据映射</div>
             </div>
+            <div style="min-height: 4px;"></div>
+
+            <!--步骤1-->
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
+              <span>▼&nbsp;</span>
+              <span data-en-text="Get a basic table" >创建基础表格模板</span>
+              &nbsp;&nbsp;
+              <span data-any="vw300" data-en-text="and make it more diverse" class="op6">并进一步定制化设计</span>
+            </div>
+            <!--预设表格样式-->
+            <div data-tableset-thtd class="df-lc w100">
+              <div class="df-lc gap4 w100 " style="max-width: 100%; flex-wrap: wrap;">
+                <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,290px)">
+                  <div data-any="vw240" id="chk-tablestyle" data-tips="auto" class="fl0 pos-r wh-22" 
+                  data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                  data-tips-text="表格样式预设" 
+                  data-tips-text-en="Table style preset">
+                    <tab-tablestyle></tab-tablestyle>                 
+                  </div>
+                  <span data-any="vw240" >▶</span>
+                  <div data-tablestyle-box class="df-lc gap2 ovx noscrollbar" data-scroll="false" style="height: 60px;">
+                    <div data-tablestyle-set="fill" class="df-lc w100" style="gap:2px;" data-radio-value="2">
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                          </svg>
+                        </div>
+                        <div class="font-s10" style="right: auto;" data-tablestyle-name data-en-text="No Fill">无填充</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="16" height="16" x="2" y="2" rx="3" fill="var(--fill,var(--mainColor))"/>
+                          </svg>
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="All Fill">全填充</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="true">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 14V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V14H3ZM3 10H17V7H3V10Z"/>
+                          </svg>    
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="R-Space">横间隔</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C3.86182 18 3.72697 17.9857 3.59668 17.959C3.46664 17.9324 3.34118 17.8933 3.22168 17.8428C2.50378 17.5392 2 16.8285 2 16V4C2 3.17153 2.50378 2.46081 3.22168 2.15723C3.34118 2.10669 3.46664 2.06765 3.59668 2.04102C3.72697 2.01433 3.86182 2 4 2H16ZM13.7832 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H13.7832V17ZM6.34766 17H9.43555V3H6.34766V17Z"/>
+                          </svg>   
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="C-Space">竖间隔</div>         
+                      </div>
+                    </div>
+                    <div class="fl0" style="width: 1px; height: 30px; background: var(--boxBod);"></div>
+                    <div data-tablestyle-set="bod" class="df-lc w100" style="gap:2px;" data-radio-value="4">
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="true">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                          </svg>
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="No Stroke">无描边</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"/>
+                          </svg>  
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="All Stroke">全描边</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 13V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V13H3ZM3 12H17V8H3V12ZM4 3C3.44772 3 3 3.44772 3 4V7H17V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                          </svg>   
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="R-Stroke">仅横线</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H9.5V3H4ZM10.5 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H10.5V17Z"/>
+                          </svg> 
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="C-Stroke">仅竖线</div>         
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,110px);">
+                  <div data-any="vw240" id="chk-selectcomp" data-tips="auto" class="fl0 pos-r wh-22" 
+                  data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                  data-tips-text="表格组件来源" data-tips-text-en="Table component source">
+                    <btn-getbyselect></btn-getbyselect>                  
+                  </div>
+                  <span data-any="vw240" >▶</span>
+                  <div data-selectcomp-box class="df-lc ovx noscrollbar" data-scroll>
+                    <div data-selectcomp-mix class="df-lc gap4">
+                      <span data-en-text="Data:">数据:</span>
+                      <span data-selectcomp-2 data-en-text="Auto">自动</span>
+                      <div></div>
+                      <div></div>
+                      <input type="checkbox" id="tableheader-chk" checked>
+                      <label for="tableheader-chk" class="df-cc check wh-14">
+                        <btn-check></btn-check>
+                      </label>
+                      <span data-en-text="Header:">表头:</span>
+                      <span data-selectcomp-1 data-en-text="Auto">自动</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
+              <!--div class="df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Only Create @th/td">仅创建组件</div-->
+              <div data-create-table="sample" class="w100 df-cc" data-btn="main2" data-en-text="Sample Table">创建表格(示例)</div>
+              <div data-create-table="data" class="w100 df-cc" data-btn="main2" data-en-text="Data Table">创建表格(数据)</div>
+              <!--div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
+                <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
+                <label for="table-more" data-more-mini class="wh100 df-cc btn-more fl0 pad4">
+                  <btn-more></btn-more>
+                </label>
+              </div-->
+            </div>
+            
+            <div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Make Cell-Comp">单元格化组件</div>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Row Column Swap">反转行列</div>
+              </div>
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-lc w100 gap4">
+                  <div class="df-lc fl1">
+                    <div class="df-cc" style="padding: 0;" data-btn="skill-main">
+                      <input style="text-align: center; border-radius: 3px 0 0 3px;" id="table-row-num" type="text" value="4" data-input data-input-type="int" data-input-must="2,1000">
+                      <input style="text-align: center; border-left: 0; border-radius:0 3px 3px 0;" id="table-column-num" type="text" value="3" data-input data-input-type="int" data-input-must="2,1000">
+                      <span data-en-text="Set R/C" style="margin-left: 4px; min-width: 58px;">设置行/列</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="df-lc w100" >
+                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="Add Row">增加一行</div>
+                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="Reduce Row">减少一行</div>
+                </div>
+                
+              </div>
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-lc w100" >
+                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="All Border">全描边</div>
+                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="None Border">全不描边</div>
+                </div>
+                <div class="df-lc w100" >
+                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="All Fill">全填充</div>
+                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="None Fill">全不填充</div>
+                </div>
+              </div>
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Random Theme">随机主题</div>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Apply Preset">应用样式</div>
+              </div>
+              <div class="w100 df-cc">
+                <span data-skill-gap>
+                  <span>---</span>
+                  <span data-en-text="To xxx@th/td elements"> 基于xxx@th/td元素</span>
+                  <span>---</span>
+                </span>
+              </div>
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Rows of Cells">单元格所在行</div>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Rows of Block">单元格区域行</div>
+              </div>
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Cells Block">单元格框选</div>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Cells Inline">单元格连选</div>
+              </div>
+            </div>
+            
             <div style="min-height: 10px;"></div>
           </div>
         </div>

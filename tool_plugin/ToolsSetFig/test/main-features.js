@@ -5,22 +5,14 @@ const SKILL_STRATEGIES = {
   'Pixel Overwrite': () => sendPixel('Pixel Overwrite'),
   'Split By Conditions': () => sendSplit('tags'),
   'Split By Symbol': () => sendSplit('inputs'),
-  'Mapping Names': () => sendTable('mapName'),
-  'Mapping Texts': () => sendTable('mapText'),
-  'Mapping Properties': () => sendTable('mapPro'),
-  'Mapping Tags': () => sendTable('mapTag'),
-  'Get Names': () => sendTable('getName'),
-  'Get Texts': () => sendTable('getText'),
-  'Get Properties': () => sendTable('getPro'),
-  'Get Tags': () => sendTable('getTag'),
   'Apply Preset': () => sendTableSet('style'),
-  'Add C/R': () => sendTableSet('add'),
-  'Reduce C/R': () => sendTableSet('reduce'),
+  'Add Row': () => sendTableSet('add'),
+  'Reduce Row': () => sendTableSet('reduce'),
   'Random Theme': () => sendTableSet('theme'),
-  'Select a Row': () => sendTablePick('row'),
-  'Select many Rows': () => sendTablePick('allrow'),
-  'Select Block': () => sendTablePick('block'),
-  'Select Inline': () => sendTablePick('inline'),
+  'Rows of Cells': () => sendTablePick('row'),
+  'Rows of Block': () => sendTablePick('allrow'),
+  'Cells Block': () => sendTablePick('block'),
+  'Cells Inline': () => sendTablePick('inline'),
   'Up Export-set': () => upSelect('exportset'),
   'Up Default': () => upSelect('default'),
   'Create New QRcode': () => createNewQRcode(true),
@@ -140,24 +132,38 @@ function sendSplit(type){
   };
 };
 
+DOM.mapGetGet.addEventListener('click',()=>{
+  sendTable('get');
+});
+DOM.mapGetMap.addEventListener('click',()=>{
+  sendTable('map');
+});
+
 // 表单页 > 表格设置-按名称/文本/属性/标签来映射及获取数据
-function sendTable(type){
+function sendTable(mapOrGet){
+  let dataText = getElementMix('upload-tablearea').value.trim();
+  if(dataText === '') return;
+  
   let data = '';
   let clone = true;
   let reduce = false;
   let enters = getElementMix('input-linefeed').value;
   let nulls = getElementMix('input-nulldata').value;
+  let datatype = getElementMix('data-mapget-type').getAttribute('data-radio-value');
+  let type = mapOrGet + datatype;
+  
   if(type == 'mapName' || type == 'mapText' ){
-    data = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
+    data = tableTextToArray(dataText,true);
   };
   if(type == 'mapPro' || type == 'mapTag' ){
-    data = tableArrayToObj(tableTextToArray(getElementMix('upload-tablearea').value.trim()))
+    data = tableArrayToObj(tableTextToArray(dataText))
+    data = tool.convertColorsInJsonData(data);
   };
   if(type.includes('map')){
     clone = getElementMix('switch-autoclone').checked;
     reduce = getElementMix('switch-autoreduce').checked;
   };
-  
+  //console.log(data);
   toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
 };
 
@@ -195,41 +201,22 @@ function applyTableStyleStrategy(){
     td:[...bod,fill],
     th:[...bod,1]
   };
-  if(getElementMix('chk-tablestyle').checked){
-    toolMessage([[styleAll,'style'],'reTable'],PLUGINAPP);
-  }
+
+  toolMessage([[styleAll,'style'],'reTable'],PLUGINAPP);
+
 };
 
-// 表单页 > 添加行列
-function addTableRowColStrategy(){
-  const H = getElementMix('table-column-num');
-  const V = getElementMix('table-row-num');
-  if (H && V) {
-    toolMessage([[[H.value,V.value],'add'],'reTable'],PLUGINAPP);
-    H.value = 0;
-    V.value = 0;
-  } else {
-    console.warn('addTableRowColStrategy: H or V element not found');
-  }
-};
-
-// 表单页 > 减少行列
-function reduceTableRowColStrategy(){
-  const H = getElementMix('table-column-num');
-  const V = getElementMix('table-row-num');
-  if (H && V) {
-    toolMessage([[[H.value * -1,V.value * -1],'reduce'],'reTable'],PLUGINAPP);
-    H.value = 0;
-    V.value = 0;
-  } else {
-    console.warn('reduceTableRowColStrategy: H or V element not found');
-  }
+// 表单页 > 设置行列
+function setTableRowColStrategy(){
+  let [H,V] = getElementMix('table-rcnum').value.split(',').map(item => item * 1);
+  toolMessage([[[H,V],'set'],'setRC'],PLUGINAPP);
 };
 
 const TABLE_SET_FUNCTIONS = {
   'style': applyTableStyleStrategy,
-  'add': addTableRowColStrategy,
-  'reduce': reduceTableRowColStrategy,
+  'set': setTableRowColStrategy,
+  'add': toolMessage([[[0,1],'add'],'reTable'],PLUGINAPP),
+  'reduce': toolMessage([[[0,-1],'reduce'],'reTable'],PLUGINAPP),
   'theme': () => toolMessage([[null,'theme'],'reTable'],PLUGINAPP)
 };
 

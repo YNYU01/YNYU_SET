@@ -1,7 +1,10 @@
 <html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/run.js"></script>
+  <meta name="description" content="网页内容简介，转发时显示">
+  <title data-en-text="『YNYU_SET』 ToolsSet Fig">『云即·工具集（Figma版）』</title>
+  <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -96,7 +99,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -130,6 +133,11 @@ function toolMessage(data,app){
   --w: auto;
   --h: 100%;
   --bg-mask: 20, 20, 20;
+  --mainFontSize: 10px;
+}
+
+html[data-language="Zh"] {
+  --mainFontSize: 11px;
 }
 
 html[data-theme="light"] {
@@ -148,6 +156,10 @@ html{
 
 * {
   cursor: inherit;
+}
+
+*::after,*::before{
+  font-size: 11px !important;
 }
 
 input[type="text"],textarea{
@@ -391,13 +403,6 @@ p [data-highlight]{
 
 
 
-html[data-language="En"] {
-  --mainFontSize: 10px;
-}
-
-html[data-language="Zh"] {
-  --mainFontSize: 11px;
-}
 
 body{
   font-size: var(--mainFontSize);
@@ -825,6 +830,10 @@ input[type="checkbox"]:checked + .tab-top{
 [data-btn="skill-main"]{
   width: 100%;
   background: var(--boxGry);
+}
+
+[data-language="Zh"] [data-btn="skill-main"]{
+  font-size: 11px;
 }
 
 [data-btn="help"]{
@@ -1698,6 +1707,9 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   height: 20px;
   padding: 0.5ch;
 }
+[data-tablestyle-box] [data-radio]{
+  padding: 0;
+}
 
 [data-tableset-more],[data-exportset-more]{
   position: relative;
@@ -1716,9 +1728,25 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   z-index: -1;
 }
 
-[data-tablestyle-name],[data-exporttype-name]{
+[data-exporttype-name]{
   font-size: 10px;
   margin-right: 0.5ch;
+}
+
+[data-tablestyle-name]{
+  font-size: 10px;
+  padding: 1px 2px;
+  border-radius: 4px;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  bottom: calc(100% - 2px);
+  right: 0;
+  display: none;
+  z-index: 1;
+}
+[data-radio]:hover [data-tablestyle-name]{
+  display: flex;
 }
 
 [for="export-more"]{
@@ -2191,11 +2219,6 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 
 [data-selectcomp-1],[data-selectcomp-2]{
   color: var(--themeColor2)
-}
-
-input[type="checkbox"]:checked ~ [data-selectcomp-box],
-input[type="checkbox"]:checked ~ [data-tablestyle-box]{
-  width: 100vw;
 }
 
 [data-skilltype-box]{
@@ -2879,9 +2902,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
 }
 
 @media (min-width:300px) {
-  [data-radio-main="true"] [data-tablestyle-name],
   [data-radio-main="true"] [data-exporttype-name],
-  [data-exporttype-set] [data-radio]:hover [data-exporttype-name]{
+  [data-exporttype-set] [data-radio]:hover [data-exporttype-name],
+  [data-radio-main="true"] [data-mapget-typename],
+  [data-mapget-set] [data-radio]:hover [data-mapget-typename]{
     display: block;
   }
 }
@@ -3539,26 +3563,26 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
           </div>
           <div data-variable-type class="w100 df-lc">
             <div class="fl1 df-lc upload-set gap6">
-              <div class="df-lc gap4 pos-r wh-22"
-              data-tips="auto" data-tips-x="left" data-tips-y="top"
-              data-tips-text="数据类型" data-tips-text-en="Sheet type">
-                <tab-sheettype></tab-sheettype>
-                ▶                
+              <div class="df-lc gap4" data-any="vw240">
+                <div class="df-cc pos-r wh-22"
+                data-tips="auto" data-tips-x="left" data-tips-y="top"
+                data-tips-text="数据类型" data-tips-text-en="Sheet type">
+                  <tab-sheettype></tab-sheettype>
+                </div>
+                ▶ 
               </div>
               <div class="df-lc data-scroll ovx noscrollbar gap6" data-scroll data-radio-value="style">
                 <div class="fl0 df-lc" data-radio data-radio-data="style" data-radio-main="true">
                   <div data-variable-chk>
                     <btn-style></btn-style>
                   </div>
-                  <div data-any="vw240" data-variable-chk-name data-en-text="Style">样式</div>   
-                  <div data-any="vw300" data-en-text="&nbsp;Sheet">表管理</div>        
+                  <div data-any="vw240" data-variable-chk-name data-en-text="Style Sheet">样式表管理</div>   
                 </div>
                 <div class="fl0 df-lc" data-radio data-radio-data="variable" data-radio-main="false">
                   <div data-variable-chk>
                     <btn-variable></btn-variable>                 
                   </div>
-                  <div data-any="vw240" data-variable-chk-name data-en-text="Variable">变量</div>
-                  <div data-any="vw300" data-en-text="&nbsp;Sheet">表管理</div>          
+                  <div data-any="vw240" data-variable-chk-name data-en-text="Variable Sheet">变量表管理</div>
                 </div>
               </div>
             </div>
@@ -3759,204 +3783,14 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100">
         <div class="wh100 df-ffc ovy noscrollbar pad10 bsb" style="max-width: 560px; align-items: center; padding-bottom: 0;">
           <div class="wh100 df-ffc bsb">
-            <!--步骤1-->
-            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
-              <span>▼&nbsp;</span>
-              <span data-en-text="Get a basic table" >创建基础表格模板</span>
-              &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="and make it more diverse" class="op6">并进一步定制化设计</span>
-              <div data-any="vw300" data-help="sheet" class="fl0 df-cc">?</div>
-            </div>
-            <!--预设表格样式-->
-            <div data-tableset-thtd class="df-lc w100">
-              <div class="df-lc gap4 mar-0a" style="max-width: 100%;">
-                <div class="df-lc pos-r upload-set gap4" style="max-width: calc(100% - 44px); height: 40px;">
-                  <input id="chk-tablestyle" checked type="checkbox" >
-                  <label for="chk-tablestyle" data-tips="auto" class="fl0 pos-r wh-22" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
-                  data-tips-text="按预设样式生成组件/修改表格" data-tips-text-en="Create/change from the preset style">
-                    <tab-tablestyle></tab-tablestyle>                 
-                  </label>
-                  <div data-tablestyle-box class="df-lc gap4" style="overflow: auto;">
-                    ▶
-                    <div class="noscrollbar df-lc" data-scroll="false">
-                      <div data-tablestyle-set="fill" class="df-lc" data-radio-value="2">
-                        <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V7H3V16Z"/>
-                            </svg>
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="All Fill">全填充</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="2" data-radio-main="true">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 14V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V14H3ZM3 10H17V7H3V10Z"/>
-                            </svg>    
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Row Space">横间隔</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="3" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C3.86182 18 3.72697 17.9857 3.59668 17.959C3.46664 17.9324 3.34118 17.8933 3.22168 17.8428C2.50378 17.5392 2 16.8285 2 16V4C2 3.17153 2.50378 2.46081 3.22168 2.15723C3.34118 2.10669 3.46664 2.06765 3.59668 2.04102C3.72697 2.01433 3.86182 2 4 2H16ZM13.7832 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H13.7832V17ZM6.34766 17H9.43555V3H6.34766V17Z"/>
-                            </svg>   
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Column Space">竖间隔</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="4" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                            </svg>
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="No Fill">无填充</div>         
-                        </div>
-                      </div>
-                    </div>
-                    <div class="fl0" style="width: 1px; height: 30px; margin: 0 2px; background: var(--mainColor);"></div>
-                    <div class="noscrollbar df-lc" data-scroll="false">
-                      <div data-tablestyle-set="bod" class="df-lc" data-radio-value="4">
-                        <div class="fl0 df-lc" data-radio data-radio-data="1" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"/>
-                            </svg>  
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="All Strokes">全描边</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="2" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 13V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V13H3ZM3 12H17V8H3V12ZM4 3C3.44772 3 3 3.44772 3 4V7H17V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                            </svg>   
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Row Strokes">仅横线</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="3" data-radio-main="false">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H9.5V3H4ZM10.5 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H10.5V17Z"/>
-                            </svg> 
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="Column Strokes">仅竖线</div>         
-                        </div>
-                        <div class="fl0 df-lc" data-radio data-radio-data="4" data-radio-main="true">
-                          <div data-tablestyle-chk>
-                            <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                            </svg>
-                          </div>
-                          <div data-any="vw360" data-tablestyle-name data-en-text="No Strokes">无描边</div>         
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="df-lc pos-r upload-set gap4" style="max-width: calc(100% - 44px);">
-                  <input id="chk-selectcomp" type="checkbox" checked >
-                  <label for="chk-selectcomp" data-tips="auto" class="fl0 pos-r wh-22" data-tips-y="top" data-tips-x="right" style="--tips-w: 8ch;"
-                  data-tips-text="以所选对象为组件" data-tips-text-en="Create from the selected node">
-                    <btn-getbyselect></btn-getbyselect>                  
-                  </label>
-                  <div data-selectcomp-box="false" class="df-lc gap4" style="display: none; overflow: auto;">
-                    ▶
-                    <div class="noscrollbar df-lc">
-                      <div data-selectcomp-no style="padding: 0 10px;" data-en-text="Has not compliant components">未选中有效的组件</div>
-                      <div data-selectcomp-mix class="df-lc gap4">
-                        <span data-any="vw240">
-                          <span data-en-text="Header:">表头:</span>
-                        </span>
-                        <span data-selectcomp-1>none</span>
-                        <div></div>
-                        <div></div>
-                        <span data-any="vw240">
-                          <span data-en-text="Data:">数据:</span>
-                        </span>
-                        <span data-selectcomp-2>none</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> 
-            <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
-              <div data-create-table class="w100 df-cc" data-btn="main2" data-en-text="Create Table">创建表格</div>
-              <div class="w100 df-cc" data-btn="skill-main" data-selects-must data-en-text="Apply Preset" style="border-radius: 20px;">应用预设样式</div>    
-              <div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
-                <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
-                <label for="table-more" data-more-mini class="wh100 df-cc btn-more fl0 pad4">
-                  <btn-more></btn-more>
-                </label>
-              </div>
-            </div>
-            <div class="df-ffc gap4" data-tableset-more data-skill-sec style="margin: 4px 0; display: none;">
-              <div class="df-lc w100" data-skill-more>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Only Create @th/td">仅创建组件</div>
-                <div class="df-cc"  data-selects-must data-btn="skill-main" data-en-text="Make Compliant">合规化组件</div>
-              </div>
-              <div class="w100 df-cc">
-                <span data-skill-gap>
-                  <span>---</span>
-                  <span data-en-text="To xxx@table elements"> 基于xxx@table元素</span>
-                  <span>---</span>
-                </span>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-lc w100 gap4">
-                  <div class="df-lc fl1">
-                    <input id="table-column-num" type="text" value="0" data-input data-input-type="int" data-input-must="0,1000" style="text-align: center;">
-                    <div class="df-cc" data-input-unit="auto" data-en-text=" C ">列</div>
-                  </div>
-                  <div class="df-lc fl1" >
-                    <input id="table-row-num" type="text" value="0" data-input data-input-type="int" data-input-must="0,1000" style="text-align: center;">
-                    <div class="df-cc" data-input-unit="auto" data-en-text=" R ">行</div>
-                  </div>
-                </div>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 10px 0 0 10px;" data-btn="skill-main" data-en-text="Add C/R">增加行列</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 10px 10px 0;" data-btn="skill-main" data-en-text="Reduce C/R">减少行列</div>
-                </div>
-                
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 10px 0 0 10px;" data-btn="skill-main" data-en-text="All Border">全描边</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 10px 10px 0;" data-btn="skill-main" data-en-text="None Border">全不描边</div>
-                </div>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 10px 0 0 10px;" data-btn="skill-main" data-en-text="All Fill">全填充</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 10px 10px 0;" data-btn="skill-main" data-en-text="None Fill">全不填充</div>
-                </div>
-                
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <!--div class="df-cc" data-btn="skill-main" data-btn-important="skill" data-en-text="Apply Preset Style">应用样式</div-->
-                <div class="df-cc" data-btn="skill-main" data-en-text="Random Theme">随机主题</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Row Column Swap">反转行列</div>
-              </div>
-              <div class="w100 df-cc">
-                <span data-skill-gap>
-                  <span>---</span>
-                  <span data-en-text="To xxx@th/td elements"> 基于xxx@th/td元素</span>
-                  <span>---</span>
-                </span>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Select a Row">选中单行</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Select many Rows">选中多行</div>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Select Block">区域选中</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Select Inline">连续选中</div>
-              </div>
-            </div>
-            <div style="min-height: 4px;"></div>
             <!--步骤2-->
             <div class="w100 df-lc op6"  style="padding:4px 0 6px 0;vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
-              <span data-en-text="Control component properties by sheet" >用表格数据批量+参数化控制组件</span>
+              <span data-en-text="Mapping data/attribute" >批量映射数据/属性</span>
+              <span data-any="vw240" class="op6" data-en-text="&nbsp;based on component | tag">&nbsp;基于组件/标签</span>
+              <div data-any="vw300" data-help="sheet" class="fl0 df-cc">?</div>
             </div>
+
             <div class="wh100 df">
               <div id="upload-tablearea-box" data-resize class="pos-r fl1" style="min-height: 120px;">
                 <textarea class="wh100" spellcheck="false" id="upload-tablearea" data-textarea="eg"  style=" min-height: 100%;" 
@@ -3974,54 +3808,99 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
               </div>
             </div>
             <!--更多设置-->
-            <div data-tablearea-moreset class="w100 df-lc gap4" style="flex-wrap: wrap; margin: 4px 0;">
-              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 120px;">
-                <div data-tips="auto" class="fl0 df-cc pos-r wh-20" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
-                  data-tips-text="设置换行转义符, 用于兼容需要换行的数据" data-tips-text-en="Set a character to represent line feed">
-                  <input-regexpenter></input-regexpenter>      
-                </div>
-                <input id="input-linefeed" data-input class="nobod fl1" type="text" 
-                value="\n"> 
-                <!--重置-->
-                <div data-input-reset data-btn="reset">
-                  <btn-reset></btn-reset>
-                </div>  
-              </div>
-              <div class="df-lc fl1 pos-r upload-set gap4" style="min-width: 120px;">
-                <div data-tips="auto" class="fl0 df-cc pos-r wh-20" data-tips-y="top" data-tips-x="center" style="--tips-w: 8ch; "
-                  data-tips-text="设置空数据占位符, 可避免潜在的错误" data-tips-text-en="Set a character to replace null data">
-                  <input-regexpnull></input-regexpnull>       
-                </div>
-                <input id="input-nulldata" data-input class="nobod fl1" type="text"
-                value="--">  
-                <!--重置-->
-                <div data-input-reset data-btn="reset">
-                  <btn-reset></btn-reset>
-                </div> 
-              </div>
-            </div>
-            <div class="df-ffc w100 bod-d pad4 gap4 bsb" data-retable-moreset >
-              <div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one auto-layout with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个自动布局 时生效</div>
-              <div class="df-lc w100 font-s10 gap4 mar-b4" data-skill-more style="flex-wrap: wrap; white-space: nowrap;">
-                <div class="fl1 df-lc gap4" style="min-width: 160px;">
-                  <div class="df ovh noscrollbar" data-scroll data-en-text="· Clone instance by data quantity">· 数据数量&gt;实例数量时, 复制最末实列</div>
-                  <div style="width: 1%;"></div>
-                  <div class="df-rc" style="min-width: 36px;">
-                    <input id="switch-autoclone" type="checkbox" checked>
-                    <label for="switch-autoclone" class="switch" style="--swi-h: 16px"></label>
+            <div data-tablearea-moreset class="w100 df-lc gap4" style="margin: 4px 0;">
+              <div class="df-lc upload-set w100 gap4 fl0" style="height: 40px; width: calc(100% - 44px);">
+                <div class="df-lc gap4" data-any="vw240">
+                  <div class="df-cc pos-r wh-22"
+                  data-tips="auto" data-tips-x="left" data-tips-y="top"
+                  data-tips-text="数据类型" data-tips-text-en="Data type">
+                    <tab-sheettype></tab-sheettype>
                   </div>
+                  ▶ 
                 </div>
-                <div class="fl1 df-lc gap4" style="min-width: 160px;">
-                  <div class="df ovh noscrollbar" data-scroll data-en-text="· Reduce instance by data quantity">· 数据数量&lt;实例数量时, 从最末实列开始删减</div>
-                  <div style="width: 1%;"></div>
-                  <div class="df-rc" style="min-width: 36px;">
-                    <input id="switch-autoreduce" type="checkbox" checked>
-                    <label for="switch-autoreduce" class="switch" style="--swi-h: 16px"></label>
+                <div data-radio-value="Text" data-mapget-type class="wh100 df-lc gap4 ovx noscrollbar" data-scroll="false">
+                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Name" data-radio-main="false">
+                    <div class="df-cc wh-18 mar-l2">
+                      <map-name></map-name>
+                    </div>
+                    <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Layers Name">图层名</div>
+                  </div>
+                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Text" data-radio-main="true">
+                    <div class="df-cc wh-18 mar-l2">
+                      <map-text></map-text>
+                    </div>
+                    <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Text Props">文本(属性)</div>
+                  </div>
+                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Pro" data-radio-main="false">
+                    <div class="df-cc wh-18 mar-l2">
+                      <map-pro></map-pro>
+                    </div>
+                    <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Any Props">组件属性</div>
+                  </div>
+                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Tag" data-radio-main="false">
+                    <div class="df-cc wh-18 mar-l2">
+                      <map-tag></map-tag>
+                    </div>
+                    <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Tags">标签</div>
                   </div>
                 </div>
               </div>
+              <input id="tablearea-moreset" type="checkbox" checked onchange="showNext(this,'data-retable-moreset','flex',true)">
+                <label for="tablearea-moreset" class="btn-moreset pos-r" data-tips="auto" data-tips-y="top" data-tips-x="right"
+                data-tips-text="高级设置" data-tips-text-en="Advanced setting" style="--xx:40px;">
+                  <btn-set></btn-set>
+                </label>
             </div>
-            <div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
+            <div class="df-ffc w100 gap4" data-retable-moreset style="display: none;">
+              <div class="w100 df-lc gap4">
+                <div class="df-lc pos-r fl1 upload-set gap4" style="height: 40px;">
+                  <div data-tips="auto" class="fl0 df-cc pos-r wh-20" data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                    data-tips-text="设置换行转义符, 用于兼容需要换行的数据" data-tips-text-en="Set a character to represent line feed">
+                    <input-regexpenter></input-regexpenter>      
+                  </div>
+                  <input id="input-linefeed" data-input class="nobod fl1" type="text" 
+                  value="\n"> 
+                  <!--重置-->
+                  <div data-input-reset data-btn="reset">
+                    <btn-reset></btn-reset>
+                  </div>  
+                </div>
+                <div class="df-lc pos-r fl1 upload-set gap4" style="height: 40px;">
+                  <div data-tips="auto" class="fl0 df-cc pos-r wh-20" data-tips-y="top" data-tips-x="center" style="--tips-w: 8ch; "
+                    data-tips-text="设置空数据占位符, 可避免潜在的错误" data-tips-text-en="Set a character to replace null data">
+                    <input-regexpnull></input-regexpnull>       
+                  </div>
+                  <input id="input-nulldata" data-input class="nobod fl1" type="text"
+                  value="--">  
+                  <!--重置-->
+                  <div data-input-reset data-btn="reset">
+                    <btn-reset></btn-reset>
+                  </div> 
+                </div>
+              </div>
+              <div class="df-ffc w100 bod-d pad4 gap4 bsb mar-b4">
+                <div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one auto-layout with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个自动布局 时生效</div>
+                <div class="df-lc w100 font-s10 gap4 mar-b4" data-skill-more style="flex-wrap: wrap; white-space: nowrap;">
+                  <div class="fl1 df-lc gap4" style="min-width: 160px;">
+                    <div class="df ovh noscrollbar" data-scroll data-en-text="· Clone instance by data quantity">· 数据数量&gt;实例数量时, 复制最末实列</div>
+                    <div style="width: 1%;"></div>
+                    <div class="df-rc" style="min-width: 36px;">
+                      <input id="switch-autoclone" type="checkbox" checked>
+                      <label for="switch-autoclone" class="switch" style="--swi-h: 16px"></label>
+                    </div>
+                  </div>
+                  <div class="fl1 df-lc gap4" style="min-width: 160px;">
+                    <div class="df ovh noscrollbar" data-scroll data-en-text="· Reduce instance by data quantity">· 数据数量&lt;实例数量时, 从最末实列开始删减</div>
+                    <div style="width: 1%;"></div>
+                    <div class="df-rc" style="min-width: 36px;">
+                      <input id="switch-autoreduce" type="checkbox" checked>
+                      <label for="switch-autoreduce" class="switch" style="--swi-h: 16px"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
               <div class="df-lc w100" data-skill-more data-selects-must>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Names">图层命名映射</div>
                 <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Texts">文本数据映射</div>
@@ -4046,7 +3925,193 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 <div class="df-cc" data-btn="skill-main" data-en-text="Get Tags">获取标签属性</div>
               </div>
 
+            </div-->
+            
+            <div class="w100 df-cc gap2" >
+              <div data-mapget-get class="w100 df-cc" data-btn="main2" data-en-text="Collect Data">数据获取</div>
+              <div data-mapget-map class="w100 df-cc" data-btn="main2" data-en-text="Mapping Data">数据映射</div>
             </div>
+            <div style="min-height: 4px;"></div>
+
+            <!--步骤1-->
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
+              <span>▼&nbsp;</span>
+              <span data-en-text="Get a basic table" >创建基础表格模板</span>
+              &nbsp;&nbsp;
+              <span data-any="vw300" data-en-text="and make it more diverse" class="op6">并进一步定制化设计</span>
+            </div>
+            <!--预设表格样式-->
+            <div data-tableset-thtd class="df-lc w100">
+              <div class="df-lc gap4 w100 " style="max-width: 100%; flex-wrap: wrap;">
+                <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,290px)">
+                  <div data-any="vw240" id="chk-tablestyle" data-tips="auto" class="fl0 pos-r wh-22" 
+                  data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                  data-tips-text="表格样式预设" 
+                  data-tips-text-en="Table style preset">
+                    <tab-tablestyle></tab-tablestyle>                 
+                  </div>
+                  <span data-any="vw240" >▶</span>
+                  <div data-tablestyle-box class="df-lc gap2 ovx noscrollbar" data-scroll="false" style="height: 60px;">
+                    <div data-tablestyle-set="fill" class="df-lc w100" style="gap:2px;" data-radio-value="2">
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                          </svg>
+                        </div>
+                        <div class="font-s10" style="right: auto;" data-tablestyle-name data-en-text="No Fill">无填充</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="16" height="16" x="2" y="2" rx="3" fill="var(--fill,var(--mainColor))"/>
+                          </svg>
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="All Fill">全填充</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="true">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 14V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V14H3ZM3 10H17V7H3V10Z"/>
+                          </svg>    
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="R-Space">横间隔</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C3.86182 18 3.72697 17.9857 3.59668 17.959C3.46664 17.9324 3.34118 17.8933 3.22168 17.8428C2.50378 17.5392 2 16.8285 2 16V4C2 3.17153 2.50378 2.46081 3.22168 2.15723C3.34118 2.10669 3.46664 2.06765 3.59668 2.04102C3.72697 2.01433 3.86182 2 4 2H16ZM13.7832 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H13.7832V17ZM6.34766 17H9.43555V3H6.34766V17Z"/>
+                          </svg>   
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="C-Space">竖间隔</div>         
+                      </div>
+                    </div>
+                    <div class="fl0" style="width: 1px; height: 30px; background: var(--boxBod);"></div>
+                    <div data-tablestyle-set="bod" class="df-lc w100" style="gap:2px;" data-radio-value="4">
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="true">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                          </svg>
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="No Stroke">无描边</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"/>
+                          </svg>  
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="All Stroke">全描边</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 13V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V13H3ZM3 12H17V8H3V12ZM4 3C3.44772 3 3 3.44772 3 4V7H17V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                          </svg>   
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="R-Stroke">仅横线</div>         
+                      </div>
+                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
+                        <div data-tablestyle-chk class="fl0">
+                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H9.5V3H4ZM10.5 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H10.5V17Z"/>
+                          </svg> 
+                        </div>
+                        <div class="font-s10" data-tablestyle-name data-en-text="C-Stroke">仅竖线</div>         
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,110px);">
+                  <div data-any="vw240" id="chk-selectcomp" data-tips="auto" class="fl0 pos-r wh-22" 
+                  data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                  data-tips-text="表格组件来源" data-tips-text-en="Table component source">
+                    <btn-getbyselect></btn-getbyselect>                  
+                  </div>
+                  <span data-any="vw240" >▶</span>
+                  <div data-selectcomp-box class="df-lc ovx noscrollbar" data-scroll>
+                    <div data-selectcomp-mix class="df-lc gap4">
+                      <span data-en-text="Data:">数据:</span>
+                      <span data-selectcomp-2 data-en-text="Auto">自动</span>
+                      <div></div>
+                      <div></div>
+                      <input type="checkbox" id="tableheader-chk" checked>
+                      <label for="tableheader-chk" class="df-cc check wh-14">
+                        <btn-check></btn-check>
+                      </label>
+                      <span data-en-text="Header:">表头:</span>
+                      <span data-selectcomp-1 data-en-text="Auto">自动</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
+              <!--div class="df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Only Create @th/td">仅创建组件</div-->
+              <div data-create-table="sample" class="w100 df-cc" data-btn="main2" data-en-text="Sample Table">创建表格(示例)</div>
+              <div data-create-table="data" class="w100 df-cc" data-btn="main2" data-en-text="Data Table">创建表格(数据)</div>
+              <!--div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
+                <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
+                <label for="table-more" data-more-mini class="wh100 df-cc btn-more fl0 pad4">
+                  <btn-more></btn-more>
+                </label>
+              </div-->
+            </div>
+            
+            <div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Make Cell-Comp">单元格化组件</div>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Row Column Swap">反转行列</div>
+              </div>
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-lc w100 gap4">
+                  <div class="df-lc fl1">
+                    <div class="df-cc" style="padding: 0;" data-btn="skill-main">
+                      <input style="text-align: center; border-radius: 3px 0 0 3px;" id="table-row-num" type="text" value="4" data-input data-input-type="int" data-input-must="2,1000">
+                      <input style="text-align: center; border-left: 0; border-radius:0 3px 3px 0;" id="table-column-num" type="text" value="3" data-input data-input-type="int" data-input-must="2,1000">
+                      <span data-en-text="Set R/C" style="margin-left: 4px; min-width: 58px;">设置行/列</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="df-lc w100" >
+                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="Add Row">增加一行</div>
+                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="Reduce Row">减少一行</div>
+                </div>
+                
+              </div>
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-lc w100" >
+                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="All Border">全描边</div>
+                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="None Border">全不描边</div>
+                </div>
+                <div class="df-lc w100" >
+                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="All Fill">全填充</div>
+                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="None Fill">全不填充</div>
+                </div>
+              </div>
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Random Theme">随机主题</div>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Apply Preset">应用样式</div>
+              </div>
+              <div class="w100 df-cc">
+                <span data-skill-gap>
+                  <span>---</span>
+                  <span data-en-text="To xxx@th/td elements"> 基于xxx@th/td元素</span>
+                  <span>---</span>
+                </span>
+              </div>
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Rows of Cells">单元格所在行</div>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Rows of Block">单元格区域行</div>
+              </div>
+              <div class="df-lc w100" data-skill-more data-selects-must>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Cells Block">单元格框选</div>
+                <div class="df-cc" data-btn="skill-main" data-en-text="Cells Inline">单元格连选</div>
+              </div>
+            </div>
+            
             <div style="min-height: 10px;"></div>
           </div>
         </div>
@@ -4869,7 +4934,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                             </div>
                           </label>
                         </div>
-                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/tool_web/SVdG/index.html" target="_blank">
+                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/tool_web/SVdG/index.html" target="_blank">
                           <div data-autobod-name data-en-text="Custom >" style="text-decoration: underline;">自定义></div>
                         </a>
                       </div>
@@ -4964,23 +5029,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/other/jsQR_correct.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/other/jsQR_correct.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@eeb6a9caf92e497bf29a8de310410c36312374a3/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@8afebfa8e426a58ef053b749745addb58f7a954e/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -5316,14 +5381,25 @@ const DOM = (() => {
     chkSelectcomp: () => getById('chk-selectcomp'),
     createAnyBtn: () => query('[data-create-any]'),
     exportAnyBtn: () => query('[data-export-any]'),
-    createTableBtn: () => query('[data-create-table]'),
+    createSampleTableBtn: () => query('[data-create-table="sample"]'),
+    createDataTableBtn: () => query('[data-create-table="data"]'),
     tableStyleSetFill: () => query('[data-tablestyle-set="fill"]'),
     tableStyleSetBod: () => query('[data-tablestyle-set="bod"]'),
+    tableHeaderChk: () => getById('tableheader-chk'),
     styleTosheet: () => query('[data-en-text="Style To Sheet"]'),
     sheetTostyle: () => query('[data-en-text="Sheet To Style"]'),
     btnLinkstyle: () => query('[data-linkstyle-add]'),
     btnSelectstyle: () => query('[data-selectstyle-add]'),
     btnVariables: () => query('[data-variables-add]'),
+    variableAddStyle: () => query('[data-variable-addstyle]'),
+    variableAddStyleSheet: () => query('[data-variable-addstylesheet]'),
+    variableAddVar: () => query('[data-variable-addvar]'),
+    variableAddVarSheet: () => query('[data-variable-addvarsheet]'),
+    variableReLayout: () => query('[data-variable-relayout]'),
+    variableRefreshStyle: () => query('[data-variable-refresh="style"]'),
+    variableRefreshVar: () => query('[data-variable-refresh="variable"]'),
+    mapGetGet: () => query('[data-mapget-get]'),
+    mapGetMap: () => query('[data-mapget-map]'),
 
     manageLinkstyleList: () => query('[data-manage-linkstyle-list]'),
     manageSelectstyleList: () => query('[data-manage-selectstyle-list]'),
@@ -6325,333 +6401,6 @@ async function handleZyFile(content, createname){
   console.warn('handleZyFile: ZY file format not yet implemented');
 };
 
-function convertGradientColors(gradientString) {
-  if (!gradientString || typeof gradientString !== 'string') {
-    return gradientString;
-  }
-
-  const gradientPattern = /(linear-gradient|radial-gradient|conic-gradient|repeating-linear-gradient|repeating-radial-gradient)\s*\(/gi;
-
-  let convertedGradient = gradientString;
-  let match;
-
-  const gradientMatches = [];
-  while ((match = gradientPattern.exec(gradientString)) !== null) {
-    gradientMatches.push({
-      start: match.index,
-      functionName: match[1],
-      fullMatch: match[0]
-    });
-  }
-
-  if (gradientMatches.length === 0) {
-    return gradientString;
-  }
-
-  for (let i = gradientMatches.length - 1; i >= 0; i--) {
-    const gradMatch = gradientMatches[i];
-    const startPos = gradMatch.start;
-
-    let depth = 0;
-    let endPos = startPos;
-    let inString = false;
-    let stringChar = '';
-
-    for (let j = startPos; j < gradientString.length; j++) {
-      const char = gradientString[j];
-
-      if (char === '"' || char === "'") {
-        if (!inString) {
-          inString = true;
-          stringChar = char;
-        } else if (char === stringChar) {
-          inString = false;
-          stringChar = '';
-        }
-        continue;
-      }
-
-      if (inString) continue;
-
-      if (char === '(') {
-        depth++;
-      } else if (char === ')') {
-        depth--;
-        if (depth === 0) {
-          endPos = j;
-          break;
-        }
-      }
-    }
-
-    const gradientContent = gradientString.substring(startPos + gradMatch.fullMatch.length, endPos);
-
-    const colorPattern = /(rgba?\([^)]+\)|hsla?\([^)]+\)|#[0-9a-fA-F]{3,8}|transparent|currentColor|\b\w+\b)(?:\s+([0-9.]+%?|at\s+[^,)]+))?/gi;
-
-    let processedContent = gradientContent;
-    let colorMatch;
-    const colorMatches = [];
-
-    while ((colorMatch = colorPattern.exec(gradientContent)) !== null) {
-
-      const colorValue = colorMatch[1].trim();
-      const skipKeywords = ['to', 'at', 'circle', 'ellipse', 'closest-side', 'closest-corner', 'farthest-side', 'farthest-corner', 'from', 'deg', 'rad', 'turn', 'grad'];
-
-      if (skipKeywords.includes(colorValue.toLowerCase())) {
-        continue;
-      }
-
-      colorMatches.push({
-        fullMatch: colorMatch[0],
-        colorValue: colorValue,
-        position: colorMatch[2] || null,
-        index: colorMatch.index
-      });
-    }
-
-    for (let j = colorMatches.length - 1; j >= 0; j--) {
-      const colorMatch = colorMatches[j];
-      const colorValue = colorMatch.colorValue.trim();
-
-      if (colorValue.startsWith('var(') ||
-          colorValue === 'none' ||
-          colorValue === 'currentColor' ||
-          colorValue.startsWith('url(')) {
-        continue;
-      }
-
-      const isTransparent = colorValue === 'transparent' ||
-                           colorValue === 'rgba(0, 0, 0, 0)' ||
-                           colorValue === 'rgba(0,0,0,0)' ||
-                           colorValue.toLowerCase() === 'transparent';
-
-      let replacement;
-      if (isTransparent) {
-        replacement = '__TRANSPARENT__';
-      } else {
-
-        try {
-          const hexColor = getcolorTypeOrHex(colorValue);
-          if (hexColor && hexColor !== colorValue) {
-            replacement = hexColor;
-          } else {
-            continue;
-          }
-        } catch (e) {
-
-          console.warn('Failed to convert gradient color:', colorValue, e);
-          continue;
-        }
-      }
-
-      const newColorValue = colorMatch.position ?
-        `${replacement} ${colorMatch.position}` :
-        replacement;
-
-      const beforeMatch = processedContent.substring(0, colorMatch.index);
-      const afterMatch = processedContent.substring(colorMatch.index + colorMatch.fullMatch.length);
-
-      const separatorMatch = beforeMatch.match(/[,\s]*$/);
-      const separator = separatorMatch ? separatorMatch[0] : '';
-      processedContent = beforeMatch.substring(0, beforeMatch.length - separator.length) + separator + newColorValue + afterMatch;
-    }
-
-    const beforeGradient = convertedGradient.substring(0, startPos);
-    const afterGradient = convertedGradient.substring(endPos + 1);
-    convertedGradient = beforeGradient + gradMatch.fullMatch + processedContent + ')' + afterGradient;
-  }
-
-  return convertedGradient;
-}
-
-function convertSvgColors(svgCode) {
-  if (!svgCode || typeof svgCode !== 'string') {
-    return svgCode;
-  }
-
-  const colorAttributes = ['fill', 'stroke', 'stop-color', 'flood-color', 'lighting-color'];
-
-  const opacityAttributes = ['fill-opacity', 'stroke-opacity', 'opacity'];
-
-  let convertedSvg = svgCode;
-
-  colorAttributes.forEach(attr => {
-
-    const escapedAttr = attr.replace(/-/g, '\\-');
-
-    const quotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*(["'])([^"']+)\\2`, 'gi');
-
-    const unquotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*([^\\s>="']+)`, 'gi');
-
-    convertedSvg = convertedSvg.replace(quotedRegex, (match, attrName, quote, colorValue) => {
-      if (!colorValue) return match;
-
-      if (colorValue.startsWith('var(') ||
-          colorValue === 'none' ||
-          colorValue === 'currentColor' ||
-          colorValue.startsWith('url(')) {
-        return match;
-      }
-
-      const isTransparent = colorValue === 'transparent' ||
-                           colorValue === 'rgba(0, 0, 0, 0)' ||
-                           colorValue === 'rgba(0,0,0,0)' ||
-                           colorValue.toLowerCase() === 'transparent';
-
-      if (isTransparent) {
-
-        return `${attrName}=${quote}__TRANSPARENT__${quote}`;
-      } else {
-
-        try {
-          const hexColor = getcolorTypeOrHex(colorValue);
-          if (hexColor && hexColor !== colorValue) {
-            return `${attrName}=${quote}${hexColor}${quote}`;
-          }
-        } catch (e) {
-
-          console.warn('Failed to convert SVG color:', colorValue, e);
-        }
-      }
-
-      return match;
-    });
-
-    convertedSvg = convertedSvg.replace(unquotedRegex, (match, attrName, colorValue) => {
-      if (!colorValue) return match;
-
-      if (colorValue.startsWith('var(') ||
-          colorValue === 'none' ||
-          colorValue === 'currentColor' ||
-          colorValue.startsWith('url(')) {
-        return match;
-      }
-
-      const isTransparent = colorValue === 'transparent' ||
-                           colorValue === 'rgba(0, 0, 0, 0)' ||
-                           colorValue === 'rgba(0,0,0,0)' ||
-                           colorValue.toLowerCase() === 'transparent';
-
-      if (isTransparent) {
-
-        return `${attrName}="__TRANSPARENT__"`;
-      } else {
-
-        try {
-          const hexColor = getcolorTypeOrHex(colorValue);
-          if (hexColor && hexColor !== colorValue) {
-            return `${attrName}="${hexColor}"`;
-          }
-        } catch (e) {
-
-          console.warn('Failed to convert SVG color:', colorValue, e);
-        }
-      }
-
-      return match;
-    });
-  });
-
-  opacityAttributes.forEach(attr => {
-
-    const escapedAttr = attr.replace(/-/g, '\\-');
-    const quotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*(["'])([^"']+)\\2`, 'gi');
-    const unquotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*([^\\s>="']+)`, 'gi');
-
-    convertedSvg = convertedSvg.replace(quotedRegex, (match, attrName, quote, opacityValue) => {
-      if (!opacityValue) return match;
-
-      if (opacityValue.startsWith('var(')) {
-        return match;
-      }
-
-      const opacityNum = parseFloat(opacityValue);
-      if (isNaN(opacityNum) || opacityNum < 0 || opacityNum > 1) {
-
-        return `${attrName}=${quote}1${quote}`;
-      }
-
-      return match;
-    });
-
-    convertedSvg = convertedSvg.replace(unquotedRegex, (match, attrName, opacityValue) => {
-      if (!opacityValue) return match;
-
-      if (opacityValue.startsWith('var(')) {
-        return match;
-      }
-
-      const opacityNum = parseFloat(opacityValue);
-      if (isNaN(opacityNum) || opacityNum < 0 || opacityNum > 1) {
-
-        return `${attrName}="1"`;
-      }
-
-      return match;
-    });
-  });
-
-  return convertedSvg;
-}
-
-function convertColorsInJsonData(data) {
-  if (!data || typeof data !== 'object') {
-    return data;
-  }
-
-  if (Array.isArray(data)) {
-    return data.map(item => convertColorsInJsonData(item));
-  }
-
-  const result = {};
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      const value = data[key];
-
-      const colorKeys = [
-        'backgroundColor', 'borderColor', 'color',
-        'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'
-      ];
-
-      if (colorKeys.includes(key) && typeof value === 'string') {
-
-        const isTransparent = value === 'transparent' ||
-                             value === 'rgba(0, 0, 0, 0)' ||
-                             value === 'rgba(0,0,0,0)' ||
-                             value.toLowerCase() === 'transparent';
-
-        if (isTransparent) {
-
-          result[key] = '__TRANSPARENT__';
-        } else {
-
-          const hexColor = getcolorTypeOrHex(value);
-          result[key] = hexColor || value;
-        }
-      } else if (key === 'svgCode' && typeof value === 'string') {
-
-        result[key] = convertSvgColors(value);
-      } else if (key === 'backgroundImage' && typeof value === 'string') {
-
-        result[key] = convertGradientColors(value);
-      } else if (key === 'styles' && typeof value === 'object') {
-
-        result[key] = convertColorsInJsonData(value);
-      } else if (key === 'children' && Array.isArray(value)) {
-
-        result[key] = value.map(child => convertColorsInJsonData(child));
-      } else if (typeof value === 'object' && value !== null) {
-
-        result[key] = convertColorsInJsonData(value);
-      } else {
-        result[key] = value;
-      }
-    }
-  }
-
-  return result;
-}
-
 async function handleJsonFile(content, createname, shouldCreateTag = true){
   const textarea = DOM.userText;
   if (textarea) {
@@ -6663,7 +6412,7 @@ async function handleJsonFile(content, createname, shouldCreateTag = true){
 
       let jsonData = JSON.parse(content.trim());
 
-      jsonData = convertColorsInJsonData(jsonData);
+      jsonData = tool.convertColorsInJsonData(jsonData);
 
       const jsonZyData = [{
         zyName: createname || 'JSON_NODE',
@@ -6989,7 +6738,7 @@ function executeCreateStrategy(type){
   strategy();
 };
 
-DOM.createAnyBtn?.addEventListener('click',() => {
+DOM.createAnyBtn.addEventListener('click',() => {
   const tagsBox = DOM.createTagsBox;
   if (!tagsBox || !tagsBox.parentNode || !tagsBox.parentNode.parentNode) {
     console.warn('createAnyBtn: createTagsBox structure not found');
@@ -7768,9 +7517,22 @@ DOM.btnVariables.addEventListener('click',()=>{
 
 function tableTextToArray(tableText,isColumn,mustTitle){
   let lines = tableText.split('\n');
+
   lines.forEach((item,index) => {
     lines[index] = item.split('\t');
   });
+
+  if(lines.length){
+    let maxColLen = 0;
+    lines.forEach(row => {
+      if(row.length > maxColLen) maxColLen = row.length;
+    });
+    lines.forEach(row => {
+      for(let i = row.length; i < maxColLen; i++){
+        row[i] = '';
+      }
+    });
+  }
   if(mustTitle){
     let unneed = lines[0].filter(item => !mustTitle.includes(item));
     if(unneed){
@@ -7871,7 +7633,7 @@ DOM.convertTags.addEventListener('click',async ()=>{
       try {
         let jsonData = JSON.parse(trimmedContent);
 
-        jsonData = convertColorsInJsonData(jsonData);
+        jsonData = tool.convertColorsInJsonData(jsonData);
 
         const jsonZyData = [{
           zyName: 'JSON_NODE',
@@ -7994,11 +7756,11 @@ function reTableTitle(text){
   return validateTableTitle(text);
 };
 
-getElementMix('data-variable-refresh="style"').addEventListener('click',()=>{
+DOM.variableRefreshStyle.addEventListener('click',()=>{
   toolMessage(['','getStyleInfo'],PLUGINAPP);
 });
 
-getElementMix('data-variable-refresh="variable"').addEventListener('click',()=>{
+DOM.variableRefreshVar.addEventListener('click',()=>{
   toolMessage(['','getVariableInfo'],PLUGINAPP);
 });
 
@@ -8042,48 +7804,68 @@ function reVariableSheetInfo(info){
   };
 };
 
-getElementMix('data-variable-addstyle').addEventListener('click',()=>{
+DOM.variableAddStyle.addEventListener('click',()=>{
   toolMessage(['','addStyle'],PLUGINAPP);
 });
 
-getElementMix('data-variable-addstylesheet').addEventListener('click',()=>{
+DOM.variableAddStyleSheet.addEventListener('click',()=>{
   toolMessage(['','addStyleSheet'],PLUGINAPP);
 });
 
-getElementMix('data-variable-addvar').addEventListener('click',()=>{
+DOM.variableAddVar.addEventListener('click',()=>{
   toolMessage(['','addVariable'],PLUGINAPP);
 });
 
-getElementMix('data-variable-addvarsheet').addEventListener('click',()=>{
+DOM.variableAddVarSheet.addEventListener('click',()=>{
   toolMessage(['','addVariableSheet'],PLUGINAPP);
 });
 
-getElementMix('data-variable-relayout').addEventListener('click',()=>{
+DOM.variableReLayout.addEventListener('click',()=>{
   toolMessage(['','reVariableLayout'],PLUGINAPP);
 });
-
-DOM.chkTablestyle.addEventListener('change',()=>{
-  DOM.chkTablestyle.checked = true;
-  getElementMix('chk-selectcomp').checked = false;
-  getElementMix('data-selectcomp-box').style.display = 'none';
-  getElementMix('data-tablestyle-box').style.display = 'flex';
-  toolMessage([false,'selectComp'],PLUGINAPP);
+DOM.tableHeaderChk.addEventListener('change',()=>{
+  let lang = ROOT.getAttribute('data-language');
+  let text1 = lang == 'Zh' ? '无' : 'None';
+  let text2 = lang == 'Zh' ? '自动' : 'Auto';
+  if(DOM.tableHeaderChk.checked){
+    getElementMix('data-selectcomp-1').textContent = text2;
+    DOM.tableHeaderChk.nextElementSibling.style.opacity = '1';
+    DOM.tableHeaderChk.nextElementSibling.nextElementSibling.style.opacity = '1';
+  }else{
+    getElementMix('data-selectcomp-1').textContent = text1;
+    DOM.tableHeaderChk.nextElementSibling.style.opacity = '0.5';
+    DOM.tableHeaderChk.nextElementSibling.nextElementSibling.style.opacity = '0.5';
+  };
 });
-DOM.chkSelectcomp.addEventListener('change',()=>{
-  DOM.chkSelectcomp.checked = true;
-  getElementMix('chk-tablestyle').checked = false;
-  getElementMix('data-tablestyle-box').style.display = 'none';
-  getElementMix('data-selectcomp-box').style.display = 'flex';
-  toolMessage([true,'selectComp'],PLUGINAPP);
+
+DOM.createSampleTableBtn.addEventListener('click',()=>{
+  createTable('sample');
 });
 
-DOM.createTableBtn.addEventListener('click',()=>{
+DOM.createDataTableBtn.addEventListener('click',()=>{
+  createTable('data');
+});
+
+function createTable(type){
   let comp1 = getElementMix('data-selectcomp-1').textContent;
   let comp2 = getElementMix('data-selectcomp-2').textContent;
+  let isHeader = DOM.tableHeaderChk.checked;
   comp1 = comp1 == 'none' ? null : comp1;
   comp2 = comp2 == 'none' ? null : comp2;
   let styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
   let styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
+
+  let data = [
+    ["A1","a2","a3","a4"],
+    ["B1","b2","b3","b4"],
+    ["C1","c2","c3","c4"]
+  ];
+  if(type == 'data'){
+    let textArray = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
+    if(textArray.length >= 1 && textArray[0].length >= 2){
+      data = textArray;
+    };
+  };
 
   let fill = 1;
   let bod = [1,1,1,1];
@@ -8113,12 +7895,8 @@ DOM.createTableBtn.addEventListener('click',()=>{
     td:[...bod,fill],
     th:[...bod,1]
   };
-  if(getElementMix('chk-tablestyle').checked){
-    toolMessage([[styleAll],'creTable'],PLUGINAPP);
-  }else{
-    toolMessage([[styleAll,comp1,comp2],'creTable'],PLUGINAPP);
-  };
-});
+  toolMessage([[styleAll,comp1,comp2,isHeader,data],'creTable'],PLUGINAPP);
+}
 
 DOM.btnHelp.forEach(item => {
   item.addEventListener('click',()=>{
@@ -9656,31 +9434,20 @@ DOM.selectstyleClear.addEventListener('click',(e)=>{
 
 function reSelectComp(info){
 
+  let lan = ROOT.getAttribute('data-language');
+  let autoText = lan == 'Zh' ? '自动' : 'Auto';
+  let comp1 = getElementMix('data-selectcomp-1');
+  let comp2 = getElementMix('data-selectcomp-2');
   if(info[0] || info[1] || info[2]){
-    DOM.chkSelectcomp.checked = true;
-    getElementMix('chk-tablestyle').checked = false;
-    getElementMix('for="chk-selectcomp"').setAttribute('data-tips-x','left');
-    getElementMix('chk-tablestyle').parentNode.style.pointerEvents = 'none';
-    getElementMix('chk-tablestyle').parentNode.style.opacity = '0.5';
-    getElementMix('data-tablestyle-box').style.display = 'none';
-    getElementMix('data-selectcomp-box').style.display = 'flex';
-    getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','true')
-    let comp1 = getElementMix('data-selectcomp-1');
-    let comp2 = getElementMix('data-selectcomp-2');
-    comp1.textContent = info[0] ? info[0] : 'none';
-    comp1.style.opacity = info[0] ? '1' : '0.5';
-    comp2.textContent = info[1] ? info[1] : 'none';
-    comp2.style.opacity = info[1] ? '1' : '0.5';
+    comp1.textContent = info[0] ? info[0] : autoText;
+    comp2.textContent = info[1] ? info[1] : autoText;
     if(!info[1] && info[2]){
-      comp2.textContent = info[2] ? info[2] : 'none';
-      comp2.style.opacity = info[2] ? '1' : '0.5';
+      comp2.textContent = info[2] ? info[2] : autoText;
     };
-  } else {
-    getElementMix('for="chk-selectcomp"').setAttribute('data-tips-x','right');
-    getElementMix('chk-tablestyle').parentNode.style.pointerEvents = 'auto';
-    getElementMix('chk-tablestyle').parentNode.style.opacity = '1';
-    getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','false')
-  };
+  }else{
+    comp1.textContent = autoText;
+    comp2.textContent = autoText;
+  }
 
 };
 function reSelectDatas(info){
@@ -9933,6 +9700,17 @@ function getUserRadio(node){
         }
       };
     };
+
+    if(node.getAttribute('data-mapget-type') !== null){
+      let typeEg = {
+        'name':'name1\nname2\nname3',
+        'text':'A1\tB1\tC1\na2\tb2\tc2\na3\tb3\tc3\na4\tb4\tc4',
+        'pro':'--bod-t\t--fill\t--data\nfalse\ttrue\txxx\nfalse\tfalse\txxx\nfalse\ttrue\txxx',
+        'tag':'#xxx.fill\t#xxx.stroke\t#xxx.fontSize\n#ff0000\t#fff\t12\nrgb(255,0,0)\thsl(0,100%,50%)\t14'
+      };
+      getElementMix('upload-tablearea').setAttribute('data-eg',typeEg[userRadio.toLowerCase()]);
+      getElementMix('upload-tablearea').setAttribute('data-eg-en',typeEg[userRadio.toLowerCase()]);
+    };
   };
 };
 
@@ -9946,22 +9724,14 @@ const SKILL_STRATEGIES = {
   'Pixel Overwrite': () => sendPixel('Pixel Overwrite'),
   'Split By Conditions': () => sendSplit('tags'),
   'Split By Symbol': () => sendSplit('inputs'),
-  'Mapping Names': () => sendTable('mapName'),
-  'Mapping Texts': () => sendTable('mapText'),
-  'Mapping Properties': () => sendTable('mapPro'),
-  'Mapping Tags': () => sendTable('mapTag'),
-  'Get Names': () => sendTable('getName'),
-  'Get Texts': () => sendTable('getText'),
-  'Get Properties': () => sendTable('getPro'),
-  'Get Tags': () => sendTable('getTag'),
   'Apply Preset': () => sendTableSet('style'),
-  'Add C/R': () => sendTableSet('add'),
-  'Reduce C/R': () => sendTableSet('reduce'),
+  'Add Row': () => sendTableSet('add'),
+  'Reduce Row': () => sendTableSet('reduce'),
   'Random Theme': () => sendTableSet('theme'),
-  'Select a Row': () => sendTablePick('row'),
-  'Select many Rows': () => sendTablePick('allrow'),
-  'Select Block': () => sendTablePick('block'),
-  'Select Inline': () => sendTablePick('inline'),
+  'Rows of Cells': () => sendTablePick('row'),
+  'Rows of Block': () => sendTablePick('allrow'),
+  'Cells Block': () => sendTablePick('block'),
+  'Cells Inline': () => sendTablePick('inline'),
   'Up Export-set': () => upSelect('exportset'),
   'Up Default': () => upSelect('default'),
   'Create New QRcode': () => createNewQRcode(true),
@@ -10064,17 +9834,31 @@ function sendSplit(type){
   };
 };
 
-function sendTable(type){
+DOM.mapGetGet.addEventListener('click',()=>{
+  sendTable('get');
+});
+DOM.mapGetMap.addEventListener('click',()=>{
+  sendTable('map');
+});
+
+function sendTable(mapOrGet){
+  let dataText = getElementMix('upload-tablearea').value.trim();
+  if(dataText === '') return;
+
   let data = '';
   let clone = true;
   let reduce = false;
   let enters = getElementMix('input-linefeed').value;
   let nulls = getElementMix('input-nulldata').value;
+  let datatype = getElementMix('data-mapget-type').getAttribute('data-radio-value');
+  let type = mapOrGet + datatype;
+
   if(type == 'mapName' || type == 'mapText' ){
-    data = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
+    data = tableTextToArray(dataText,true);
   };
   if(type == 'mapPro' || type == 'mapTag' ){
-    data = tableArrayToObj(tableTextToArray(getElementMix('upload-tablearea').value.trim()))
+    data = tableArrayToObj(tableTextToArray(dataText))
+    data = tool.convertColorsInJsonData(data);
   };
   if(type.includes('map')){
     clone = getElementMix('switch-autoclone').checked;
@@ -10116,39 +9900,21 @@ function applyTableStyleStrategy(){
     td:[...bod,fill],
     th:[...bod,1]
   };
-  if(getElementMix('chk-tablestyle').checked){
-    toolMessage([[styleAll,'style'],'reTable'],PLUGINAPP);
-  }
+
+  toolMessage([[styleAll,'style'],'reTable'],PLUGINAPP);
+
 };
 
-function addTableRowColStrategy(){
-  const H = getElementMix('table-column-num');
-  const V = getElementMix('table-row-num');
-  if (H && V) {
-    toolMessage([[[H.value,V.value],'add'],'reTable'],PLUGINAPP);
-    H.value = 0;
-    V.value = 0;
-  } else {
-    console.warn('addTableRowColStrategy: H or V element not found');
-  }
-};
-
-function reduceTableRowColStrategy(){
-  const H = getElementMix('table-column-num');
-  const V = getElementMix('table-row-num');
-  if (H && V) {
-    toolMessage([[[H.value * -1,V.value * -1],'reduce'],'reTable'],PLUGINAPP);
-    H.value = 0;
-    V.value = 0;
-  } else {
-    console.warn('reduceTableRowColStrategy: H or V element not found');
-  }
+function setTableRowColStrategy(){
+  let [H,V] = getElementMix('table-rcnum').value.split(',').map(item => item * 1);
+  toolMessage([[[H,V],'set'],'setRC'],PLUGINAPP);
 };
 
 const TABLE_SET_FUNCTIONS = {
   'style': applyTableStyleStrategy,
-  'add': addTableRowColStrategy,
-  'reduce': reduceTableRowColStrategy,
+  'set': setTableRowColStrategy,
+  'add': toolMessage([[[0,1],'add'],'reTable'],PLUGINAPP),
+  'reduce': toolMessage([[[0,-1],'reduce'],'reTable'],PLUGINAPP),
   'theme': () => toolMessage([[null,'theme'],'reTable'],PLUGINAPP)
 };
 

@@ -134,14 +134,25 @@ const DOM = (() => {
     chkSelectcomp: () => getById('chk-selectcomp'),
     createAnyBtn: () => query('[data-create-any]'),
     exportAnyBtn: () => query('[data-export-any]'),
-    createTableBtn: () => query('[data-create-table]'),
+    createSampleTableBtn: () => query('[data-create-table="sample"]'),
+    createDataTableBtn: () => query('[data-create-table="data"]'),
     tableStyleSetFill: () => query('[data-tablestyle-set="fill"]'),
     tableStyleSetBod: () => query('[data-tablestyle-set="bod"]'),
+    tableHeaderChk: () => getById('tableheader-chk'),
     styleTosheet: () => query('[data-en-text="Style To Sheet"]'),
     sheetTostyle: () => query('[data-en-text="Sheet To Style"]'),
     btnLinkstyle: () => query('[data-linkstyle-add]'),
     btnSelectstyle: () => query('[data-selectstyle-add]'),
     btnVariables: () => query('[data-variables-add]'),
+    variableAddStyle: () => query('[data-variable-addstyle]'),
+    variableAddStyleSheet: () => query('[data-variable-addstylesheet]'),
+    variableAddVar: () => query('[data-variable-addvar]'),
+    variableAddVarSheet: () => query('[data-variable-addvarsheet]'),
+    variableReLayout: () => query('[data-variable-relayout]'),
+    variableRefreshStyle: () => query('[data-variable-refresh="style"]'),
+    variableRefreshVar: () => query('[data-variable-refresh="variable"]'),
+    mapGetGet: () => query('[data-mapget-get]'),
+    mapGetMap: () => query('[data-mapget-map]'),
     
     // 管理列表
     manageLinkstyleList: () => query('[data-manage-linkstyle-list]'),
@@ -1232,382 +1243,6 @@ async function handleZyFile(content, createname){
   console.warn('handleZyFile: ZY file format not yet implemented');
 };
 
-// 处理渐变字符串中的颜色值，将颜色转换为 hex 格式
-function convertGradientColors(gradientString) {
-  if (!gradientString || typeof gradientString !== 'string') {
-    return gradientString;
-  }
-  
-  // 匹配渐变函数：linear-gradient, radial-gradient, conic-gradient, repeating-linear-gradient, repeating-radial-gradient
-  const gradientPattern = /(linear-gradient|radial-gradient|conic-gradient|repeating-linear-gradient|repeating-radial-gradient)\s*\(/gi;
-  
-  let convertedGradient = gradientString;
-  let match;
-  
-  // 找到所有渐变函数的位置
-  const gradientMatches = [];
-  while ((match = gradientPattern.exec(gradientString)) !== null) {
-    gradientMatches.push({
-      start: match.index,
-      functionName: match[1],
-      fullMatch: match[0]
-    });
-  }
-  
-  // 如果没有找到渐变函数，直接返回
-  if (gradientMatches.length === 0) {
-    return gradientString;
-  }
-  
-  // 从后往前处理，避免位置偏移
-  for (let i = gradientMatches.length - 1; i >= 0; i--) {
-    const gradMatch = gradientMatches[i];
-    const startPos = gradMatch.start;
-    
-    // 找到对应的右括号（需要匹配嵌套的括号）
-    let depth = 0;
-    let endPos = startPos;
-    let inString = false;
-    let stringChar = '';
-    
-    for (let j = startPos; j < gradientString.length; j++) {
-      const char = gradientString[j];
-      
-      // 处理字符串内的字符（跳过引号内的内容）
-      if (char === '"' || char === "'") {
-        if (!inString) {
-          inString = true;
-          stringChar = char;
-        } else if (char === stringChar) {
-          inString = false;
-          stringChar = '';
-        }
-        continue;
-      }
-      
-      if (inString) continue;
-      
-      if (char === '(') {
-        depth++;
-      } else if (char === ')') {
-        depth--;
-        if (depth === 0) {
-          endPos = j;
-          break;
-        }
-      }
-    }
-    
-    // 提取渐变函数的内容（不包括函数名和括号）
-    const gradientContent = gradientString.substring(startPos + gradMatch.fullMatch.length, endPos);
-    
-    // 解析渐变内容中的颜色值
-    // 颜色值可能出现在：
-    // 1. 方向/角度之后：linear-gradient(to right, red, blue)
-    // 2. 位置参数之后：radial-gradient(circle, red 0%, blue 100%)
-    // 3. 直接颜色列表：conic-gradient(red, yellow, green)
-    
-    // 更精确的颜色值匹配模式
-    // 匹配：rgba/rgb/hsla/hsl 函数、hex 颜色、颜色名称、transparent
-    // 可能后面跟着位置（如 "red 50%" 或 "rgba(255,0,0,0.5) 0%")
-    const colorPattern = /(rgba?\([^)]+\)|hsla?\([^)]+\)|#[0-9a-fA-F]{3,8}|transparent|currentColor|\b\w+\b)(?:\s+([0-9.]+%?|at\s+[^,)]+))?/gi;
-    
-    let processedContent = gradientContent;
-    let colorMatch;
-    const colorMatches = [];
-    
-    // 收集所有颜色匹配
-    while ((colorMatch = colorPattern.exec(gradientContent)) !== null) {
-      // 跳过方向关键字和位置关键字
-      const colorValue = colorMatch[1].trim();
-      const skipKeywords = ['to', 'at', 'circle', 'ellipse', 'closest-side', 'closest-corner', 'farthest-side', 'farthest-corner', 'from', 'deg', 'rad', 'turn', 'grad'];
-      
-      if (skipKeywords.includes(colorValue.toLowerCase())) {
-        continue;
-      }
-      
-      colorMatches.push({
-        fullMatch: colorMatch[0],
-        colorValue: colorValue,
-        position: colorMatch[2] || null,
-        index: colorMatch.index
-      });
-    }
-    
-    // 从后往前替换，避免位置偏移
-    for (let j = colorMatches.length - 1; j >= 0; j--) {
-      const colorMatch = colorMatches[j];
-      const colorValue = colorMatch.colorValue.trim();
-      
-      // 跳过 CSS 变量和特殊值
-      if (colorValue.startsWith('var(') || 
-          colorValue === 'none' || 
-          colorValue === 'currentColor' ||
-          colorValue.startsWith('url(')) {
-        continue;
-      }
-      
-      // 检测透明色
-      const isTransparent = colorValue === 'transparent' || 
-                           colorValue === 'rgba(0, 0, 0, 0)' || 
-                           colorValue === 'rgba(0,0,0,0)' ||
-                           colorValue.toLowerCase() === 'transparent';
-      
-      let replacement;
-      if (isTransparent) {
-        replacement = '__TRANSPARENT__';
-      } else {
-        // 使用 getcolorTypeOrHex 转换颜色值
-        try {
-          const hexColor = getcolorTypeOrHex(colorValue);
-          if (hexColor && hexColor !== colorValue) {
-            replacement = hexColor;
-          } else {
-            continue; // 转换失败，保留原值
-          }
-        } catch (e) {
-          // 如果转换失败，保留原值
-          console.warn('Failed to convert gradient color:', colorValue, e);
-          continue;
-        }
-      }
-      
-      // 构建替换字符串（保留位置信息）
-      const newColorValue = colorMatch.position ? 
-        `${replacement} ${colorMatch.position}` : 
-        replacement;
-      
-      // 替换颜色值（需要匹配完整的颜色值，包括前面的逗号或空格）
-      const beforeMatch = processedContent.substring(0, colorMatch.index);
-      const afterMatch = processedContent.substring(colorMatch.index + colorMatch.fullMatch.length);
-      
-      // 确保替换后的格式正确（保留前面的分隔符）
-      const separatorMatch = beforeMatch.match(/[,\s]*$/);
-      const separator = separatorMatch ? separatorMatch[0] : '';
-      processedContent = beforeMatch.substring(0, beforeMatch.length - separator.length) + separator + newColorValue + afterMatch;
-    }
-    
-    // 替换整个渐变函数
-    const beforeGradient = convertedGradient.substring(0, startPos);
-    const afterGradient = convertedGradient.substring(endPos + 1);
-    convertedGradient = beforeGradient + gradMatch.fullMatch + processedContent + ')' + afterGradient;
-  }
-  
-  return convertedGradient;
-}
-
-// 处理 SVG 代码中的颜色值，将颜色转换为 hex 格式
-function convertSvgColors(svgCode) {
-  if (!svgCode || typeof svgCode !== 'string') {
-    return svgCode;
-  }
-  
-  // SVG 中可能包含的颜色属性
-  const colorAttributes = ['fill', 'stroke', 'stop-color', 'flood-color', 'lighting-color'];
-  
-  // SVG 中可能包含的透明度属性
-  const opacityAttributes = ['fill-opacity', 'stroke-opacity', 'opacity'];
-  
-  let convertedSvg = svgCode;
-  
-  // 处理每个颜色属性
-  colorAttributes.forEach(attr => {
-    // 匹配属性值，支持单引号、双引号和无引号，以及可能的空格
-    // 匹配模式：attr="value" 或 attr='value' 或 attr=value
-    // 转义特殊字符
-    const escapedAttr = attr.replace(/-/g, '\\-');
-    // 匹配带引号的：attr="value" 或 attr='value'
-    const quotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*(["'])([^"']+)\\2`, 'gi');
-    // 匹配无引号的：attr=value（值不能包含空格、>、=、引号）
-    const unquotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*([^\\s>="']+)`, 'gi');
-    
-    // 先处理带引号的情况
-    convertedSvg = convertedSvg.replace(quotedRegex, (match, attrName, quote, colorValue) => {
-      if (!colorValue) return match;
-      
-      // 跳过 CSS 变量和特殊值
-      if (colorValue.startsWith('var(') || 
-          colorValue === 'none' || 
-          colorValue === 'currentColor' ||
-          colorValue.startsWith('url(')) {
-        return match;
-      }
-      
-      // 检测透明色
-      const isTransparent = colorValue === 'transparent' || 
-                           colorValue === 'rgba(0, 0, 0, 0)' || 
-                           colorValue === 'rgba(0,0,0,0)' ||
-                           colorValue.toLowerCase() === 'transparent';
-      
-      if (isTransparent) {
-        // 透明色替换为 __TRANSPARENT__
-        return `${attrName}=${quote}__TRANSPARENT__${quote}`;
-      } else {
-        // 使用 getcolorTypeOrHex 转换颜色值
-        try {
-          const hexColor = getcolorTypeOrHex(colorValue);
-          if (hexColor && hexColor !== colorValue) {
-            return `${attrName}=${quote}${hexColor}${quote}`;
-          }
-        } catch (e) {
-          // 如果转换失败，保留原值
-          console.warn('Failed to convert SVG color:', colorValue, e);
-        }
-      }
-      
-      return match;
-    });
-    
-    // 再处理无引号的情况
-    convertedSvg = convertedSvg.replace(unquotedRegex, (match, attrName, colorValue) => {
-      if (!colorValue) return match;
-      
-      // 跳过 CSS 变量和特殊值
-      if (colorValue.startsWith('var(') || 
-          colorValue === 'none' || 
-          colorValue === 'currentColor' ||
-          colorValue.startsWith('url(')) {
-        return match;
-      }
-      
-      // 检测透明色
-      const isTransparent = colorValue === 'transparent' || 
-                           colorValue === 'rgba(0, 0, 0, 0)' || 
-                           colorValue === 'rgba(0,0,0,0)' ||
-                           colorValue.toLowerCase() === 'transparent';
-      
-      if (isTransparent) {
-        // 透明色替换为 __TRANSPARENT__（使用引号）
-        return `${attrName}="__TRANSPARENT__"`;
-      } else {
-        // 使用 getcolorTypeOrHex 转换颜色值
-        try {
-          const hexColor = getcolorTypeOrHex(colorValue);
-          if (hexColor && hexColor !== colorValue) {
-            return `${attrName}="${hexColor}"`;
-          }
-        } catch (e) {
-          // 如果转换失败，保留原值
-          console.warn('Failed to convert SVG color:', colorValue, e);
-        }
-      }
-      
-      return match;
-    });
-  });
-  
-  // 处理透明度属性（fill-opacity, stroke-opacity, opacity）
-  opacityAttributes.forEach(attr => {
-    // 匹配属性值，支持单引号和双引号，以及可能的空格
-    const escapedAttr = attr.replace(/-/g, '\\-');
-    const quotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*(["'])([^"']+)\\2`, 'gi');
-    const unquotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*([^\\s>="']+)`, 'gi');
-    
-    // 先处理带引号的情况
-    convertedSvg = convertedSvg.replace(quotedRegex, (match, attrName, quote, opacityValue) => {
-      if (!opacityValue) return match;
-      
-      // 跳过 CSS 变量
-      if (opacityValue.startsWith('var(')) {
-        return match;
-      }
-      
-      // 验证透明度值（0-1 范围）
-      const opacityNum = parseFloat(opacityValue);
-      if (isNaN(opacityNum) || opacityNum < 0 || opacityNum > 1) {
-        // 值无效，设置为 1
-        return `${attrName}=${quote}1${quote}`;
-      }
-      
-      // 值有效，保持原值
-      return match;
-    });
-    
-    // 再处理无引号的情况
-    convertedSvg = convertedSvg.replace(unquotedRegex, (match, attrName, opacityValue) => {
-      if (!opacityValue) return match;
-      
-      // 跳过 CSS 变量
-      if (opacityValue.startsWith('var(')) {
-        return match;
-      }
-      
-      // 验证透明度值（0-1 范围）
-      const opacityNum = parseFloat(opacityValue);
-      if (isNaN(opacityNum) || opacityNum < 0 || opacityNum > 1) {
-        // 值无效，设置为 1（使用引号）
-        return `${attrName}="1"`;
-      }
-      
-      // 值有效，保持原值
-      return match;
-    });
-  });
-  
-  return convertedSvg;
-}
-
-// 递归处理 JSON 数据中的颜色值，使用 getcolorTypeOrHex 转换为 hex
-function convertColorsInJsonData(data) {
-  if (!data || typeof data !== 'object') {
-    return data;
-  }
-  
-  // 如果是数组，递归处理每个元素
-  if (Array.isArray(data)) {
-    return data.map(item => convertColorsInJsonData(item));
-  }
-  
-  // 如果是对象，处理每个属性
-  const result = {};
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      const value = data[key];
-      
-      // 检查是否是颜色相关的属性
-      const colorKeys = [
-        'backgroundColor', 'borderColor', 'color',
-        'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'
-      ];
-      
-      if (colorKeys.includes(key) && typeof value === 'string') {
-        // 检测透明色：保持记录，不转换为 hex
-        const isTransparent = value === 'transparent' || 
-                             value === 'rgba(0, 0, 0, 0)' || 
-                             value === 'rgba(0,0,0,0)' ||
-                             value.toLowerCase() === 'transparent';
-        
-        if (isTransparent) {
-          // 保持透明色记录，使用特殊标记
-          result[key] = '__TRANSPARENT__';
-        } else {
-          // 使用 getcolorTypeOrHex 转换颜色值（不传 onlyType 参数，返回 hex）
-          const hexColor = getcolorTypeOrHex(value);
-          result[key] = hexColor || value; // 如果转换失败，保留原值
-        }
-      } else if (key === 'svgCode' && typeof value === 'string') {
-        // 处理 svgCode 中的颜色值
-        result[key] = convertSvgColors(value);
-      } else if (key === 'backgroundImage' && typeof value === 'string') {
-        // 处理 backgroundImage 渐变字符串中的颜色值
-        result[key] = convertGradientColors(value);
-      } else if (key === 'styles' && typeof value === 'object') {
-        // 处理 styles 对象中的所有颜色属性
-        result[key] = convertColorsInJsonData(value);
-      } else if (key === 'children' && Array.isArray(value)) {
-        // 递归处理子元素
-        result[key] = value.map(child => convertColorsInJsonData(child));
-      } else if (typeof value === 'object' && value !== null) {
-        // 递归处理嵌套对象
-        result[key] = convertColorsInJsonData(value);
-      } else {
-        result[key] = value;
-      }
-    }
-  }
-  
-  return result;
-}
 
 // JSON 文件处理策略（占位符）
 async function handleJsonFile(content, createname, shouldCreateTag = true){
@@ -1622,7 +1257,7 @@ async function handleJsonFile(content, createname, shouldCreateTag = true){
       let jsonData = JSON.parse(content.trim());
       
       // 转换 JSON 数据中的颜色值为 hex 格式
-      jsonData = convertColorsInJsonData(jsonData);
+      jsonData = tool.convertColorsInJsonData(jsonData);
       
       // 创建符合格式的 ZY 对象结构
       const jsonZyData = [{
@@ -1971,7 +1606,7 @@ function executeCreateStrategy(type){
 };
 
 //创建内容（策略模式重构）
-DOM.createAnyBtn?.addEventListener('click',() => {
+DOM.createAnyBtn.addEventListener('click',() => {
   const tagsBox = DOM.createTagsBox;
   if (!tagsBox || !tagsBox.parentNode || !tagsBox.parentNode.parentNode) {
     console.warn('createAnyBtn: createTagsBox structure not found');
@@ -2782,9 +2417,23 @@ DOM.btnVariables.addEventListener('click',()=>{
 //制表文案转数组, 兼容反转行列
 function tableTextToArray(tableText,isColumn,mustTitle){
   let lines = tableText.split('\n');
+  // 按制表符拆分每一行
   lines.forEach((item,index) => {
     lines[index] = item.split('\t');
   });
+
+  // 根据当前数据的最大列数补齐每一行的空数据，避免列数不一致
+  if(lines.length){
+    let maxColLen = 0;
+    lines.forEach(row => {
+      if(row.length > maxColLen) maxColLen = row.length;
+    });
+    lines.forEach(row => {
+      for(let i = row.length; i < maxColLen; i++){
+        row[i] = '';
+      }
+    });
+  }
   if(mustTitle){
     let unneed = lines[0].filter(item => !mustTitle.includes(item));
     if(unneed){
@@ -2885,7 +2534,7 @@ DOM.convertTags.addEventListener('click',async ()=>{
       try {
         let jsonData = JSON.parse(trimmedContent);
         // 转换 JSON 数据中的颜色值为 hex 格式
-        jsonData = convertColorsInJsonData(jsonData);
+        jsonData = tool.convertColorsInJsonData(jsonData);
         // JSON 格式，创建 JSON 类型的 ZY 对象
         const jsonZyData = [{
           zyName: 'JSON_NODE',
@@ -3019,11 +2668,11 @@ function reTableTitle(text){
   return validateTableTitle(text);
 };
 //刷新样式信息
-getElementMix('data-variable-refresh="style"').addEventListener('click',()=>{
+DOM.variableRefreshStyle.addEventListener('click',()=>{
   toolMessage(['','getStyleInfo'],PLUGINAPP);
 });
 //刷新变量信息
-getElementMix('data-variable-refresh="variable"').addEventListener('click',()=>{
+DOM.variableRefreshVar.addEventListener('click',()=>{
   toolMessage(['','getVariableInfo'],PLUGINAPP);
 });
 //修改样式信息读取状态
@@ -3067,48 +2716,69 @@ function reVariableSheetInfo(info){
   };
 };
 //新建示例样式
-getElementMix('data-variable-addstyle').addEventListener('click',()=>{
+DOM.variableAddStyle.addEventListener('click',()=>{
   toolMessage(['','addStyle'],PLUGINAPP);
 });
 //新建样式表
-getElementMix('data-variable-addstylesheet').addEventListener('click',()=>{
+DOM.variableAddStyleSheet.addEventListener('click',()=>{
   toolMessage(['','addStyleSheet'],PLUGINAPP);
 });
 //新建示例变量
-getElementMix('data-variable-addvar').addEventListener('click',()=>{
+DOM.variableAddVar.addEventListener('click',()=>{
   toolMessage(['','addVariable'],PLUGINAPP);
 });
 //新建示例变量表
-getElementMix('data-variable-addvarsheet').addEventListener('click',()=>{
+DOM.variableAddVarSheet.addEventListener('click',()=>{
   toolMessage(['','addVariableSheet'],PLUGINAPP);
 });
 //整理样式/变量相关组件和表格
-getElementMix('data-variable-relayout').addEventListener('click',()=>{
+DOM.variableReLayout.addEventListener('click',()=>{
   toolMessage(['','reVariableLayout'],PLUGINAPP);
 });
-//设置表格初始样式
-DOM.chkTablestyle.addEventListener('change',()=>{
-  DOM.chkTablestyle.checked = true;
-  getElementMix('chk-selectcomp').checked = false;
-  getElementMix('data-selectcomp-box').style.display = 'none';
-  getElementMix('data-tablestyle-box').style.display = 'flex';
-  toolMessage([false,'selectComp'],PLUGINAPP);
+DOM.tableHeaderChk.addEventListener('change',()=>{
+  let lang = ROOT.getAttribute('data-language');
+  let text1 = lang == 'Zh' ? '无' : 'None';
+  let text2 = lang == 'Zh' ? '自动' : 'Auto';
+  if(DOM.tableHeaderChk.checked){
+    getElementMix('data-selectcomp-1').textContent = text2;
+    DOM.tableHeaderChk.nextElementSibling.style.opacity = '1';
+    DOM.tableHeaderChk.nextElementSibling.nextElementSibling.style.opacity = '1';
+  }else{
+    getElementMix('data-selectcomp-1').textContent = text1;
+    DOM.tableHeaderChk.nextElementSibling.style.opacity = '0.5';
+    DOM.tableHeaderChk.nextElementSibling.nextElementSibling.style.opacity = '0.5';
+  };
 });
-DOM.chkSelectcomp.addEventListener('change',()=>{
-  DOM.chkSelectcomp.checked = true;
-  getElementMix('chk-tablestyle').checked = false;
-  getElementMix('data-tablestyle-box').style.display = 'none';
-  getElementMix('data-selectcomp-box').style.display = 'flex';
-  toolMessage([true,'selectComp'],PLUGINAPP);
+//创建示例表格
+DOM.createSampleTableBtn.addEventListener('click',()=>{
+  createTable('sample');
 });
-//创建表格
-DOM.createTableBtn.addEventListener('click',()=>{
+
+//创建数据表格
+DOM.createDataTableBtn.addEventListener('click',()=>{
+  createTable('data');
+});
+
+function createTable(type){
   let comp1 = getElementMix('data-selectcomp-1').textContent;
   let comp2 = getElementMix('data-selectcomp-2').textContent;
+  let isHeader = DOM.tableHeaderChk.checked;
   comp1 = comp1 == 'none' ? null : comp1;
   comp2 = comp2 == 'none' ? null : comp2;
   let styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
   let styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
+
+  let data = [
+    ["A1","a2","a3","a4"],
+    ["B1","b2","b3","b4"],
+    ["C1","c2","c3","c4"]
+  ];
+  if(type == 'data'){
+    let textArray = tableTextToArray(getElementMix('upload-tablearea').value.trim(),true);
+    if(textArray.length >= 1 && textArray[0].length >= 2){
+      data = textArray;
+    };
+  };
   
   let fill = 1;
   let bod = [1,1,1,1];
@@ -3138,12 +2808,8 @@ DOM.createTableBtn.addEventListener('click',()=>{
     td:[...bod,fill],
     th:[...bod,1]
   };
-  if(getElementMix('chk-tablestyle').checked){
-    toolMessage([[styleAll],'creTable'],PLUGINAPP);
-  }else{
-    toolMessage([[styleAll,comp1,comp2],'creTable'],PLUGINAPP);
-  };
-});
+  toolMessage([[styleAll,comp1,comp2,isHeader,data],'creTable'],PLUGINAPP);
+}
 //上传|拖拽|输入 的规则说明
 DOM.btnHelp.forEach(item => {
   item.addEventListener('click',()=>{
@@ -4864,31 +4530,20 @@ DOM.selectstyleClear.addEventListener('click',(e)=>{
 //处理回传的选中对象的数据
 function reSelectComp(info){//判断是否选中表格组件
   //console.log(info)
+  let lan = ROOT.getAttribute('data-language');
+  let autoText = lan == 'Zh' ? '自动' : 'Auto';
+  let comp1 = getElementMix('data-selectcomp-1');
+  let comp2 = getElementMix('data-selectcomp-2');
   if(info[0] || info[1] || info[2]){
-    DOM.chkSelectcomp.checked = true;
-    getElementMix('chk-tablestyle').checked = false;
-    getElementMix('for="chk-selectcomp"').setAttribute('data-tips-x','left');
-    getElementMix('chk-tablestyle').parentNode.style.pointerEvents = 'none';
-    getElementMix('chk-tablestyle').parentNode.style.opacity = '0.5';
-    getElementMix('data-tablestyle-box').style.display = 'none';
-    getElementMix('data-selectcomp-box').style.display = 'flex';
-    getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','true')
-    let comp1 = getElementMix('data-selectcomp-1');
-    let comp2 = getElementMix('data-selectcomp-2');
-    comp1.textContent = info[0] ? info[0] : 'none';
-    comp1.style.opacity = info[0] ? '1' : '0.5';
-    comp2.textContent = info[1] ? info[1] : 'none';
-    comp2.style.opacity = info[1] ? '1' : '0.5';
+    comp1.textContent = info[0] ? info[0] : autoText;
+    comp2.textContent = info[1] ? info[1] : autoText;
     if(!info[1] && info[2]){
-      comp2.textContent = info[2] ? info[2] : 'none';
-      comp2.style.opacity = info[2] ? '1' : '0.5';
+      comp2.textContent = info[2] ? info[2] : autoText;
     };
-  } else {
-    getElementMix('for="chk-selectcomp"').setAttribute('data-tips-x','right');
-    getElementMix('chk-tablestyle').parentNode.style.pointerEvents = 'auto';
-    getElementMix('chk-tablestyle').parentNode.style.opacity = '1';
-    getElementMix('data-selectcomp-box').setAttribute('data-selectcomp-box','false')
-  };
+  }else{
+    comp1.textContent = autoText;
+    comp2.textContent = autoText;
+  }
  
 };
 function reSelectDatas(info){//显示收集的表格/组件属性数据
@@ -5155,6 +4810,17 @@ function getUserRadio(node){
           qrcodeGridController.hide();
         }
       };
+    };
+
+    if(node.getAttribute('data-mapget-type') !== null){
+      let typeEg = {
+        'name':'name1\nname2\nname3',
+        'text':'A1\tB1\tC1\na2\tb2\tc2\na3\tb3\tc3\na4\tb4\tc4',
+        'pro':'--bod-t\t--fill\t--data\nfalse\ttrue\txxx\nfalse\tfalse\txxx\nfalse\ttrue\txxx',
+        'tag':'#xxx.fill\t#xxx.stroke\t#xxx.fontSize\n#ff0000\t#fff\t12\nrgb(255,0,0)\thsl(0,100%,50%)\t14'
+      };
+      getElementMix('upload-tablearea').setAttribute('data-eg',typeEg[userRadio.toLowerCase()]);
+      getElementMix('upload-tablearea').setAttribute('data-eg-en',typeEg[userRadio.toLowerCase()]);
     };
   };
 };

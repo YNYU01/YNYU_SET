@@ -29,6 +29,11 @@
   --w: auto;
   --h: 100%;
   --bg-mask: 20, 20, 20;
+  --mainFontSize: 10px;
+}
+
+html[data-language="Zh"] {
+  --mainFontSize: 11px;
 }
 
 html[data-theme="light"] {
@@ -47,6 +52,10 @@ html{
 
 * {
   cursor: inherit;
+}
+
+*::after,*::before{
+  font-size: 11px !important;
 }
 
 input[type="text"],textarea{
@@ -290,13 +299,6 @@ p [data-highlight]{
 
 /*组件修改--*/
 
-html[data-language="En"] {
-  --mainFontSize: 10px;
-}
-
-html[data-language="Zh"] {
-  --mainFontSize: 11px;
-}
 
 body{
   font-size: var(--mainFontSize);
@@ -724,6 +726,10 @@ input[type="checkbox"]:checked + .tab-top{
 [data-btn="skill-main"]{
   width: 100%;
   background: var(--boxGry);
+}
+
+[data-language="Zh"] [data-btn="skill-main"]{
+  font-size: 11px;
 }
 
 [data-btn="help"]{
@@ -1597,6 +1603,9 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   height: 20px;
   padding: 0.5ch;
 }
+[data-tablestyle-box] [data-radio]{
+  padding: 0;
+}
 
 [data-tableset-more],[data-exportset-more]{
   position: relative;
@@ -1615,9 +1624,25 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   z-index: -1;
 }
 
-[data-tablestyle-name],[data-exporttype-name]{
+[data-exporttype-name]{
   font-size: 10px;
   margin-right: 0.5ch;
+}
+
+[data-tablestyle-name]{
+  font-size: 10px;
+  padding: 1px 2px;
+  border-radius: 4px;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  bottom: calc(100% - 2px);
+  right: 0;
+  display: none;
+  z-index: 1;
+}
+[data-radio]:hover [data-tablestyle-name]{
+  display: flex;
 }
 
 [for="export-more"]{
@@ -2090,11 +2115,6 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 
 [data-selectcomp-1],[data-selectcomp-2]{
   color: var(--themeColor2)
-}
-
-input[type="checkbox"]:checked ~ [data-selectcomp-box],
-input[type="checkbox"]:checked ~ [data-tablestyle-box]{
-  width: 100vw;
 }
 
 [data-skilltype-box]{
@@ -2690,7 +2710,20 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   [data-transform-center-module]{
     max-width: 72px;
   }
-  
+  /*
+  [data-radio-main="true"] [data-tablestyle-name]{
+    font-size: 10px;
+    padding: 0;
+    margin-right: 0.5ch;
+    border-radius: 0;
+    color: inherit;
+    background: none;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    display: block;
+  }
+    */
 }
 
 @media (max-width:419px) {
@@ -2795,9 +2828,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
 }
 
 @media (min-width:300px) {
-  [data-radio-main="true"] [data-tablestyle-name],
   [data-radio-main="true"] [data-exporttype-name],
-  [data-exporttype-set] [data-radio]:hover [data-exporttype-name]{
+  [data-exporttype-set] [data-radio]:hover [data-exporttype-name],
+  [data-radio-main="true"] [data-mapget-typename],
+  [data-mapget-set] [data-radio]:hover [data-mapget-typename]{
     display: block;
   }
 }

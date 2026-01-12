@@ -1,14 +1,327 @@
-<button id="showToastButton">Say hello</button>
-<button id="closeButton">Close</button>
+<!DOCTYPE html>
+<html data-theme="dark" data-language="En" data-plugin="widget">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_style.css"  >
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/publics/run.js"></script>
+  <style>
+    :root{
+      --mainFontSize:12px;
+      --mainFontSize-mini:10px;
+      --pointer:url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/pointer_24.png'),auto;
+    }
+    html{
+      cursor: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/cursor_16.png'),auto;
+    }
 
-<script>
-  const showToastButton = document.getElementById("showToastButton");
-  showToastButton.onclick = () => {
-    parent.postMessage({ pluginMessage: { type: "showToast" } }, "*");
-  };
+    * {
+      cursor: inherit;
+    }
 
-  const closeButton = document.getElementById("closeButton");
-  closeButton.onclick = () => {
-    parent.postMessage({ pluginMessage: { type: "close" } }, "*");
-  };
-</script>
+    input[type="text"],textarea{
+      cursor: text;
+    }
+     
+    #tableInput-scroll { 
+      font-family: 'Roboto Mono', monospace; 
+    }
+    /*--按钮类*/
+    [data-btn]{
+      max-width: 580px;
+      padding: 2px 0;
+      border: 1px solid var(--boxBod);
+      box-sizing: border-box;
+      cursor: var(--pointer,pointer);
+      position: relative;
+    }
+
+    [data-btn]:disabled{
+      background: var(--boxGry);
+      transform: translateY(1px);
+      cursor: default;
+      opacity: 0.6;
+    }
+
+    [data-btn]:hover{
+      background: var(--boxGry);
+    }
+
+    [data-btn]:active{
+      transform: translateY(1px);
+    }
+
+    [data-btn="op"]{
+      border: none;
+      background: none;
+    }
+
+    [data-btn="op"]:hover{
+      background: none;
+      opacity: 0.5;
+    }
+
+    [data-btn="main"]{
+      border-radius: 20px;
+      background: var(--boxGry);
+    }
+
+    [data-input-unit]{
+      height: 20px;
+      width: 18px;
+      flex: 0 0 auto;
+      padding: 0 0 0 0.5ch;
+      background: var(--boxGry);
+      margin-left: -0.5ch;
+      border-radius: 0 4px 4px 0;
+    }
+
+    [data-input-unit="auto"]{
+      width: fit-content;
+      padding:0 0.5ch 0 1ch;
+    }
+
+    #bottom{
+      border-top: 1px solid var(--boxBod);
+      background-image: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/VI/logo_graph_bod.png'), linear-gradient(rgba(20, 20, 20, 0.2), rgba(20, 20, 20, 0.2));
+      background-size: 300px auto;
+      background-repeat: repeat-x;
+      background-position: 0 0;
+      background-color: var(--boxBak);
+      animation: bgMove 40s linear infinite;
+    }
+    @keyframes bgMove {
+      0% {
+        background-position-x: 0;
+      }
+      100% {
+        background-position-x: -300px;
+      }
+    }
+
+  </style>
+</head>
+<body class="ovy">
+  <div class="df-ffc" style="--boxBak: #171717; padding:12px 12px 6px 12px;">
+    <div class="df-ffc gap8 pad10 bsb">
+      <div class="df-sc gap4 w100">
+        <div class="op6">Table Data:</div>
+      </div>
+      <div id="tableInput-scroll" class="w100 pos-r">
+        <textarea style="height: 200px;" class="w100" spellcheck="false"
+        id="tableInput"
+        ></textarea>
+        <!--清空-->
+        <div class="pos-a wh-12" data-close="clear"  style="right: 4px; top:4px;">
+          <btn-close></btn-close>
+        </div>
+      </div>
+    </div>
+    <div class="df-lc w100 pad10 bsb mar-b10 gap20">
+      <div class="df-lc gap4 fl1">
+        <div class="df-lc fl1" >
+          <input type="text" id="colCountInput" data-input data-input-type="int"  data-input-must="0,1000" placeholder="0" style=" text-align: center; height: 20px;">
+          <div class="df-cc" data-input-unit="auto" >C</div>
+        </div>
+        <div class="df-lc fl1" >
+          <input type="text" id="rowCountInput" data-input data-input-type="int"  data-input-must="0,1000" placeholder="0" style=" text-align: center; height: 20px;">
+          <div class="df-cc" data-input-unit="auto" >R</div>
+        </div>
+        <div class="df-cc bod-r2 pos-r" style="padding: 2px 4px;" data-btn="main" id="autoDetectBtn">
+            AUTO
+        </div>
+      </div>
+      <div class="df-lc gap4" style="width: 80px;">
+        <div class="wh-14 pos-r" data-tips="auto" 
+        data-tips-y="top" data-tips-x="left" 
+        data-tips-text-en="Set font size"
+        style="--tips-w: 8ch;">
+          <input-fontsize></input-fontsize>
+        </div>
+        <div class="df-lc fl1" >
+          <input type="text" id="fontSizeInput" data-input data-input-type="float"  data-input-must="8,72" placeholder="12" style=" text-align: center; height: 20px;">
+          <div class="df-cc" data-input-unit="auto">px</div>
+        </div>
+      </div>
+    </div>
+    <div data-btn="main" id="applyBtn" class="df-cc bod-r8">Apply</div>
+  </div>
+
+  <div id="bottom" class="df-sc pad10 bsb">
+    <div style="height: 18px; --fill: var(--mainColor);">
+      <set-en-home></set-en-home>
+    </div>
+    <div class="font-s10 op6">©2024-2025 @YNYU www.ynyuset.cn</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/publics/graph.js"></script>
+
+  <script>
+    // 解析表格文本，计算行列数
+    function parseTableText(text) {
+      if (!text || !text.trim()) return { rows: 0, cols: 0 };
+      
+      const lines = text.trim().split('\n');
+      const maxCols = Math.max(...lines.map(line => line.split('\t').length));
+      const rows = lines.length;
+      
+      return { rows, cols: maxCols };
+    }
+
+    // 自动识别行列数的函数
+    function autoDetectRowsAndCols() {
+      const tableInput = document.getElementById('tableInput');
+      const { rows, cols } = parseTableText(tableInput.value);
+      document.getElementById('rowCountInput').value = rows || '';
+      document.getElementById('colCountInput').value = cols || '';
+      // 发送自动识别消息
+      parent.postMessage({ 
+        pluginMessage: { 
+          type: 'autoDetect'
+        } 
+      }, '*');
+    }
+
+    window.onmessage = (event) => {
+      const { type, data } = event.data.pluginMessage || {};
+      if (type === 'init') {
+        const tableInput = document.getElementById('tableInput');
+        tableInput.value = data.tableText || '';
+        
+        if (data.fontSize) {
+          document.getElementById('fontSizeInput').value = data.fontSize;
+        }
+        if (data.rowCount) {
+          document.getElementById('rowCountInput').value = data.rowCount;
+        }
+        if (data.colCount) {
+          document.getElementById('colCountInput').value = data.colCount;
+        }
+        
+        // 初始化时自动识别行列（如果有数据）
+        if (data.tableText) {
+          autoDetectRowsAndCols();
+        }
+      }
+    };
+ 
+    // 监听表格输入变化，自动更新行列数（仅更新显示，不发送消息）
+    const tableInput = document.getElementById('tableInput');
+    tableInput.addEventListener('input', () => {
+      const { rows, cols } = parseTableText(tableInput.value);
+      document.getElementById('rowCountInput').value = rows || '';
+      document.getElementById('colCountInput').value = cols || '';
+    });
+    
+    // 监听表格输入变化事件（change），执行自动识别
+    tableInput.addEventListener('change', () => {
+      autoDetectRowsAndCols();
+    });
+    
+    // 自动识别按钮点击事件
+    const autoDetectBtn = document.getElementById('autoDetectBtn');
+    if (autoDetectBtn) {
+      autoDetectBtn.addEventListener('click', () => {
+        autoDetectRowsAndCols();
+      });
+    }
+
+    // 双击填充示例
+    tableInput.addEventListener('dblclick', () => {
+      const eg = tableInput.getAttribute('data-eg');
+      if (eg) {
+        tableInput.value = eg;
+        const { rows, cols } = parseTableText(eg);
+        document.getElementById('rowCountInput').value = rows || '';
+        document.getElementById('colCountInput').value = cols || '';
+      }
+    });
+
+    // 解析表格文本为按列存储的数组
+    function parseTableTextToColumns(text) {
+      if (!text || !text.trim()) return [];
+      
+      const lines = text.trim().split('\n');
+      const rows = [];
+      
+      lines.forEach((line) => {
+        const cells = line.split('\t');
+        rows.push(cells);
+      });
+      
+      // 转置为按列的数组
+      if (rows.length === 0) return [];
+      
+      const maxCols = Math.max(...rows.map(row => row.length));
+      const columns = [];
+      
+      for (let i = 0; i < maxCols; i++) {
+        columns.push(rows.map(row => row[i] || ''));
+      }
+      
+      return columns;
+    }
+    
+    // 按行列数处理数据，生成最终用于渲染的数组
+    function processTableData(tableData, rowCount, colCount) {
+      const processedTableData = [];
+      
+      for (let i = 0; i < colCount; i++) {
+        const column = tableData[i] || [];
+        const processedColumn = [];
+        
+        // 添加表头（如果有）
+        if (column.length > 0) {
+          processedColumn.push(column[0]);
+        } else {
+          processedColumn.push('');
+        }
+        
+        // 处理数据行
+        for (let j = 1; j < rowCount; j++) {
+          if (j < column.length) {
+            processedColumn.push(column[j]);
+          } else {
+            processedColumn.push(''); // 补空
+          }
+        }
+        
+        processedTableData.push(processedColumn);
+      }
+      
+      return processedTableData;
+    }
+
+    function sendData() {
+      const tableText = document.getElementById('tableInput').value;
+      const rowCount = parseInt(document.getElementById('rowCountInput').value) || 0;
+      const colCount = parseInt(document.getElementById('colCountInput').value) || 0;
+      const fontSize = parseFloat(document.getElementById('fontSizeInput').value) || 12;
+      
+      // 解析原始文本为按列存储的数组
+      const tableData = parseTableTextToColumns(tableText);
+      
+      // 按行列数处理数据，生成最终用于渲染的数组
+      const processedTableData = processTableData(tableData, rowCount, colCount);
+      
+      const data = {
+        tableText,
+        processedTableData,
+        fontSize
+      };
+      
+      parent.postMessage({ 
+        pluginMessage: { 
+          type: 'update', 
+          data
+        } 
+      }, '*');
+    }
+    document.getElementById('applyBtn').addEventListener('click', sendData);
+  
+  </script>
+</body>
+</html>

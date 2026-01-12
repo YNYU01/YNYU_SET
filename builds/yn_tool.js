@@ -1195,7 +1195,7 @@ Object.assign(TOOL_JS.prototype, {
     }
   },
 
-/**==========DOM转图片模块==========
+/**========== DOM转图片模块 ==========
  * 将 DOM 节点转换为 Canvas，然后可通过 CompressImage 压缩为不同格式
  * 基于 dom-to-image 实现，修改为返回 imgExportData 格式
 */
@@ -3075,6 +3075,485 @@ Object.assign(TOOL_JS.prototype, {
     // 至少需要检测到两个定位区（考虑到可能被裁剪的情况）
     const foundCount = [hasTopLeft, hasTopRight, hasBottomLeft].filter(Boolean).length;
     return foundCount >= 2;
+  },
+
+  //========== 颜色处理模块 ===========
+
+  /**
+   * 处理渐变字符串中的颜色值，将颜色转换为 hex 格式
+   * @param {string} gradientString - 渐变字符串
+   * @returns {string} 转换后的渐变字符串
+   */
+  convertGradientColors(gradientString) {
+    if (!gradientString || typeof gradientString !== 'string') {
+      return gradientString;
+    }
+    
+    // 匹配渐变函数：linear-gradient, radial-gradient, conic-gradient, repeating-linear-gradient, repeating-radial-gradient
+    const gradientPattern = /(linear-gradient|radial-gradient|conic-gradient|repeating-linear-gradient|repeating-radial-gradient)\s*\(/gi;
+    
+    let convertedGradient = gradientString;
+    let match;
+    
+    // 找到所有渐变函数的位置
+    const gradientMatches = [];
+    while ((match = gradientPattern.exec(gradientString)) !== null) {
+      gradientMatches.push({
+        start: match.index,
+        functionName: match[1],
+        fullMatch: match[0]
+      });
+    }
+    
+    // 如果没有找到渐变函数，直接返回
+    if (gradientMatches.length === 0) {
+      return gradientString;
+    }
+    
+    // 从后往前处理，避免位置偏移
+    for (let i = gradientMatches.length - 1; i >= 0; i--) {
+      const gradMatch = gradientMatches[i];
+      const startPos = gradMatch.start;
+      
+      // 找到对应的右括号（需要匹配嵌套的括号）
+      let depth = 0;
+      let endPos = startPos;
+      let inString = false;
+      let stringChar = '';
+      
+      for (let j = startPos; j < gradientString.length; j++) {
+        const char = gradientString[j];
+        
+        // 处理字符串内的字符（跳过引号内的内容）
+        if (char === '"' || char === "'") {
+          if (!inString) {
+            inString = true;
+            stringChar = char;
+          } else if (char === stringChar) {
+            inString = false;
+            stringChar = '';
+          }
+          continue;
+        }
+        
+        if (inString) continue;
+        
+        if (char === '(') {
+          depth++;
+        } else if (char === ')') {
+          depth--;
+          if (depth === 0) {
+            endPos = j;
+            break;
+          }
+        }
+      }
+      
+      // 提取渐变函数的内容（不包括函数名和括号）
+      const gradientContent = gradientString.substring(startPos + gradMatch.fullMatch.length, endPos);
+      
+      // 解析渐变内容中的颜色值
+      // 颜色值可能出现在：
+      // 1. 方向/角度之后：linear-gradient(to right, red, blue)
+      // 2. 位置参数之后：radial-gradient(circle, red 0%, blue 100%)
+      // 3. 直接颜色列表：conic-gradient(red, yellow, green)
+      
+      // 更精确的颜色值匹配模式
+      // 匹配：rgba/rgb/hsla/hsl 函数、hex 颜色、颜色名称、transparent
+      // 可能后面跟着位置（如 "red 50%" 或 "rgba(255,0,0,0.5) 0%")
+      const colorPattern = /(rgba?\([^)]+\)|hsla?\([^)]+\)|#[0-9a-fA-F]{3,8}|transparent|currentColor|\b\w+\b)(?:\s+([0-9.]+%?|at\s+[^,)]+))?/gi;
+      
+      let processedContent = gradientContent;
+      let colorMatch;
+      const colorMatches = [];
+      
+      // 收集所有颜色匹配
+      while ((colorMatch = colorPattern.exec(gradientContent)) !== null) {
+        // 跳过方向关键字和位置关键字
+        const colorValue = colorMatch[1].trim();
+        const skipKeywords = ['to', 'at', 'circle', 'ellipse', 'closest-side', 'closest-corner', 'farthest-side', 'farthest-corner', 'from', 'deg', 'rad', 'turn', 'grad'];
+        
+        if (skipKeywords.includes(colorValue.toLowerCase())) {
+          continue;
+        }
+        
+        colorMatches.push({
+          fullMatch: colorMatch[0],
+          colorValue: colorValue,
+          position: colorMatch[2] || null,
+          index: colorMatch.index
+        });
+      }
+      
+      // 从后往前替换，避免位置偏移
+      for (let j = colorMatches.length - 1; j >= 0; j--) {
+        const colorMatch = colorMatches[j];
+        const colorValue = colorMatch.colorValue.trim();
+        
+        // 跳过 CSS 变量和特殊值
+        if (colorValue.startsWith('var(') || 
+            colorValue === 'none' || 
+            colorValue === 'currentColor' ||
+            colorValue.startsWith('url(')) {
+          continue;
+        }
+        
+        // 检测透明色
+        const isTransparent = colorValue === 'transparent' || 
+                             colorValue === 'rgba(0, 0, 0, 0)' || 
+                             colorValue === 'rgba(0,0,0,0)' ||
+                             colorValue.toLowerCase() === 'transparent';
+        
+        let replacement;
+        if (isTransparent) {
+          replacement = '__TRANSPARENT__';
+        } else {
+          // 使用 getcolorTypeOrHex 转换颜色值（假设它是全局函数）
+          try {
+            const hexColor = typeof getcolorTypeOrHex === 'function' ? getcolorTypeOrHex(colorValue) : colorValue;
+            if (hexColor && hexColor !== colorValue) {
+              replacement = hexColor;
+            } else {
+              continue; // 转换失败，保留原值
+            }
+          } catch (e) {
+            // 如果转换失败，保留原值
+            console.warn('Failed to convert gradient color:', colorValue, e);
+            continue;
+          }
+        }
+        
+        // 构建替换字符串（保留位置信息）
+        const newColorValue = colorMatch.position ? 
+          `${replacement} ${colorMatch.position}` : 
+          replacement;
+        
+        // 替换颜色值（需要匹配完整的颜色值，包括前面的逗号或空格）
+        const beforeMatch = processedContent.substring(0, colorMatch.index);
+        const afterMatch = processedContent.substring(colorMatch.index + colorMatch.fullMatch.length);
+        
+        // 确保替换后的格式正确（保留前面的分隔符）
+        const separatorMatch = beforeMatch.match(/[,\s]*$/);
+        const separator = separatorMatch ? separatorMatch[0] : '';
+        processedContent = beforeMatch.substring(0, beforeMatch.length - separator.length) + separator + newColorValue + afterMatch;
+      }
+      
+      // 替换整个渐变函数
+      const beforeGradient = convertedGradient.substring(0, startPos);
+      const afterGradient = convertedGradient.substring(endPos + 1);
+      convertedGradient = beforeGradient + gradMatch.fullMatch + processedContent + ')' + afterGradient;
+    }
+    
+    return convertedGradient;
+  },
+
+  /**
+   * 处理 SVG 代码中的颜色值，将颜色转换为 hex 格式
+   * @param {string} svgCode - SVG 代码字符串
+   * @returns {string} 转换后的 SVG 代码
+   */
+  convertSvgColors(svgCode) {
+    if (!svgCode || typeof svgCode !== 'string') {
+      return svgCode;
+    }
+    
+    // SVG 中可能包含的颜色属性
+    const colorAttributes = ['fill', 'stroke', 'stop-color', 'flood-color', 'lighting-color'];
+    
+    // SVG 中可能包含的透明度属性
+    const opacityAttributes = ['fill-opacity', 'stroke-opacity', 'opacity'];
+    
+    let convertedSvg = svgCode;
+    
+    // 处理每个颜色属性
+    colorAttributes.forEach(attr => {
+      // 匹配属性值，支持单引号、双引号和无引号，以及可能的空格
+      // 匹配模式：attr="value" 或 attr='value' 或 attr=value
+      // 转义特殊字符
+      const escapedAttr = attr.replace(/-/g, '\\-');
+      // 匹配带引号的：attr="value" 或 attr='value'
+      const quotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*(["'])([^"']+)\\2`, 'gi');
+      // 匹配无引号的：attr=value（值不能包含空格、>、=、引号）
+      const unquotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*([^\\s>="']+)`, 'gi');
+      
+      // 先处理带引号的情况
+      convertedSvg = convertedSvg.replace(quotedRegex, (match, attrName, quote, colorValue) => {
+        if (!colorValue) return match;
+        
+        // 跳过 CSS 变量和特殊值
+        if (colorValue.startsWith('var(') || 
+            colorValue === 'none' || 
+            colorValue === 'currentColor' ||
+            colorValue.startsWith('url(')) {
+          return match;
+        }
+        
+        // 检测透明色
+        const isTransparent = colorValue === 'transparent' || 
+                             colorValue === 'rgba(0, 0, 0, 0)' || 
+                             colorValue === 'rgba(0,0,0,0)' ||
+                             colorValue.toLowerCase() === 'transparent';
+        
+        if (isTransparent) {
+          // 透明色替换为 __TRANSPARENT__
+          return `${attrName}=${quote}__TRANSPARENT__${quote}`;
+        } else {
+          // 使用 getcolorTypeOrHex 转换颜色值（假设它是全局函数）
+          try {
+            const hexColor = typeof getcolorTypeOrHex === 'function' ? getcolorTypeOrHex(colorValue) : colorValue;
+            if (hexColor && hexColor !== colorValue) {
+              return `${attrName}=${quote}${hexColor}${quote}`;
+            }
+          } catch (e) {
+            // 如果转换失败，保留原值
+            console.warn('Failed to convert SVG color:', colorValue, e);
+          }
+        }
+        
+        return match;
+      });
+      
+      // 再处理无引号的情况
+      convertedSvg = convertedSvg.replace(unquotedRegex, (match, attrName, colorValue) => {
+        if (!colorValue) return match;
+        
+        // 跳过 CSS 变量和特殊值
+        if (colorValue.startsWith('var(') || 
+            colorValue === 'none' || 
+            colorValue === 'currentColor' ||
+            colorValue.startsWith('url(')) {
+          return match;
+        }
+        
+        // 检测透明色
+        const isTransparent = colorValue === 'transparent' || 
+                             colorValue === 'rgba(0, 0, 0, 0)' || 
+                             colorValue === 'rgba(0,0,0,0)' ||
+                             colorValue.toLowerCase() === 'transparent';
+        
+        if (isTransparent) {
+          // 透明色替换为 __TRANSPARENT__（使用引号）
+          return `${attrName}="__TRANSPARENT__"`;
+        } else {
+          // 使用 getcolorTypeOrHex 转换颜色值（假设它是全局函数）
+          try {
+            const hexColor = typeof getcolorTypeOrHex === 'function' ? getcolorTypeOrHex(colorValue) : colorValue;
+            if (hexColor && hexColor !== colorValue) {
+              return `${attrName}="${hexColor}"`;
+            }
+          } catch (e) {
+            // 如果转换失败，保留原值
+            console.warn('Failed to convert SVG color:', colorValue, e);
+          }
+        }
+        
+        return match;
+      });
+    });
+    
+    // 处理透明度属性（fill-opacity, stroke-opacity, opacity）
+    opacityAttributes.forEach(attr => {
+      // 匹配属性值，支持单引号和双引号，以及可能的空格
+      const escapedAttr = attr.replace(/-/g, '\\-');
+      const quotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*(["'])([^"']+)\\2`, 'gi');
+      const unquotedRegex = new RegExp(`(${escapedAttr})\\s*=\\s*([^\\s>="']+)`, 'gi');
+      
+      // 先处理带引号的情况
+      convertedSvg = convertedSvg.replace(quotedRegex, (match, attrName, quote, opacityValue) => {
+        if (!opacityValue) return match;
+        
+        // 跳过 CSS 变量
+        if (opacityValue.startsWith('var(')) {
+          return match;
+        }
+        
+        // 验证透明度值（0-1 范围）
+        const opacityNum = parseFloat(opacityValue);
+        if (isNaN(opacityNum) || opacityNum < 0 || opacityNum > 1) {
+          // 值无效，设置为 1
+          return `${attrName}=${quote}1${quote}`;
+        }
+        
+        // 值有效，保持原值
+        return match;
+      });
+      
+      // 再处理无引号的情况
+      convertedSvg = convertedSvg.replace(unquotedRegex, (match, attrName, opacityValue) => {
+        if (!opacityValue) return match;
+        
+        // 跳过 CSS 变量
+        if (opacityValue.startsWith('var(')) {
+          return match;
+        }
+        
+        // 验证透明度值（0-1 范围）
+        const opacityNum = parseFloat(opacityValue);
+        if (isNaN(opacityNum) || opacityNum < 0 || opacityNum > 1) {
+          // 值无效，设置为 1（使用引号）
+          return `${attrName}="1"`;
+        }
+        
+        // 值有效，保持原值
+        return match;
+      });
+    });
+    
+    return convertedSvg;
+  },
+
+  /**
+   * 从字符串中检测并转换颜色代码为 hex 格式
+   * 支持检测：hex、rgb/rgba、hsl/hsla、颜色名称等格式
+   * @param {string} str - 要处理的字符串
+   * @returns {string} 转换后的字符串
+   */
+  convertColorsInString(str) {
+    if (!str || typeof str !== 'string') {
+      return str;
+    }
+    
+    // 匹配颜色值的模式：
+    // 1. hex: #rgb, #rrggbb, #rrggbbaa
+    // 2. rgb/rgba: rgb(255,0,0), rgba(255,0,0,0.5)
+    // 3. hsl/hsla: hsl(0,100%,50%), hsla(0,100%,50%,0.5)
+    // 4. transparent（作为独立单词）
+    // 使用单词边界和上下文来避免误匹配
+    const colorPattern = /(?:^|[^#\w])(#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)|hsla?\([^)]+\)|\btransparent\b)(?=[^#\w]|$)/gi;
+    
+    let convertedStr = str;
+    const colorMatches = [];
+    let match;
+    
+    // 收集所有颜色匹配（从后往前处理，避免位置偏移）
+    while ((match = colorPattern.exec(str)) !== null) {
+      const colorValue = match[1].trim();
+      
+      // 跳过 CSS 变量和特殊值
+      if (colorValue.startsWith('var(') || 
+          colorValue === 'none' || 
+          colorValue === 'currentColor' ||
+          colorValue.startsWith('url(')) {
+        continue;
+      }
+      
+      // 检测透明色
+      const isTransparent = colorValue === 'transparent' || 
+                           colorValue === 'rgba(0, 0, 0, 0)' || 
+                           colorValue === 'rgba(0,0,0,0)' ||
+                           colorValue.toLowerCase() === 'transparent';
+      
+      let replacement;
+      if (isTransparent) {
+        replacement = '__TRANSPARENT__';
+      } else {
+        // 尝试使用 getcolorTypeOrHex 转换颜色值（假设它是全局函数）
+        try {
+          const hexColor = typeof getcolorTypeOrHex === 'function' ? getcolorTypeOrHex(colorValue) : colorValue;
+          if (hexColor && hexColor !== colorValue) {
+            // 转换成功且结果不同，使用转换后的 hex 值
+            replacement = hexColor;
+          } else {
+            // 转换失败或已经是 hex 格式，跳过（不需要替换）
+            continue;
+          }
+        } catch (e) {
+          // 转换失败，跳过
+          continue;
+        }
+      }
+      
+      // 保存匹配信息
+      colorMatches.push({
+        fullMatch: match[0],
+        colorValue: colorValue,
+        replacement: replacement,
+        index: match.index,
+        prefixLength: match[0].indexOf(colorValue)
+      });
+    }
+    
+    // 从后往前替换，避免位置偏移
+    for (let i = colorMatches.length - 1; i >= 0; i--) {
+      const colorMatch = colorMatches[i];
+      const beforeMatch = convertedStr.substring(0, colorMatch.index);
+      const afterMatch = convertedStr.substring(colorMatch.index + colorMatch.fullMatch.length);
+      
+      // 保留前缀（匹配前的字符，如果有的话）
+      const prefix = colorMatch.fullMatch.substring(0, colorMatch.prefixLength);
+      convertedStr = beforeMatch + prefix + colorMatch.replacement + afterMatch;
+    }
+    
+    return convertedStr;
+  },
+
+  /**
+   * 递归处理 JSON 数据中的颜色值，使用 getcolorTypeOrHex 转换为 hex
+   * @param {*} data - 要处理的数据（可以是对象、数组或基本类型）
+   * @returns {*} 转换后的数据
+   */
+  convertColorsInJsonData(data) {
+    if (!data || typeof data !== 'object') {
+      return data;
+    }
+    
+    // 如果是数组，递归处理每个元素
+    if (Array.isArray(data)) {
+      return data.map(item => this.convertColorsInJsonData(item));
+    }
+    
+    // 如果是对象，处理每个属性
+    const result = {};
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        const value = data[key];
+        
+        // 检查是否是颜色相关的属性
+        const colorKeys = [
+          'backgroundColor', 'borderColor', 'color',
+          'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'
+        ];
+        
+        if (colorKeys.includes(key) && typeof value === 'string') {
+          // 检测透明色：保持记录，不转换为 hex
+          const isTransparent = value === 'transparent' || 
+                               value === 'rgba(0, 0, 0, 0)' || 
+                               value === 'rgba(0,0,0,0)' ||
+                               value.toLowerCase() === 'transparent';
+          
+          if (isTransparent) {
+            // 保持透明色记录，使用特殊标记
+            result[key] = '__TRANSPARENT__';
+          } else {
+            // 使用 getcolorTypeOrHex 转换颜色值（假设它是全局函数）
+            const hexColor = typeof getcolorTypeOrHex === 'function' ? getcolorTypeOrHex(value) : value;
+            result[key] = hexColor || value; // 如果转换失败，保留原值
+          }
+        } else if (key === 'svgCode' && typeof value === 'string') {
+          // 处理 svgCode 中的颜色值
+          result[key] = this.convertSvgColors(value);
+        } else if (key === 'backgroundImage' && typeof value === 'string') {
+          // 处理 backgroundImage 渐变字符串中的颜色值
+          result[key] = this.convertGradientColors(value);
+        } else if (typeof value === 'string') {
+          // 对于所有其他字符串值，检测并转换其中的颜色代码
+          result[key] = this.convertColorsInString(value);
+        } else if (key === 'styles' && typeof value === 'object') {
+          // 处理 styles 对象中的所有颜色属性
+          result[key] = this.convertColorsInJsonData(value);
+        } else if (key === 'children' && Array.isArray(value)) {
+          // 递归处理子元素
+          result[key] = value.map(child => this.convertColorsInJsonData(child));
+        } else if (typeof value === 'object' && value !== null) {
+          // 递归处理嵌套对象
+          result[key] = this.convertColorsInJsonData(value);
+        } else {
+          result[key] = value;
+        }
+      }
+    }
+    
+    return result;
   }
 
 });

@@ -226,7 +226,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量创建节点
     if ( type == "createZy"){
-        console.log(info)
+        //console.log(info)
 
         for (const zy of info) {
             let bg1 = [toRGB('#EEEEEE',true)];
@@ -781,7 +781,7 @@ figma.ui.onmessage = async (message) => {
         unLinkStyle.forEach(item => {
             delete item.paint;
         });
-        console.log(unLinkStyle)
+        //console.log(unLinkStyle)
         postmessage([unLinkStyle,'linkStyleInfo']);
     };
     //管理样式组
@@ -817,7 +817,7 @@ figma.ui.onmessage = async (message) => {
                 themeStyle.push(item);
             };
         });
-        console.log(themeStyle)
+        //console.log(themeStyle)
         postmessage([themeStyle,'styleGroupInfo']);
     };
     //管理变量组
@@ -826,7 +826,7 @@ figma.ui.onmessage = async (message) => {
     };
     //从预设或组件创建表格
     if ( type == "creTable"){
-        console.log(info)
+        //console.log(info)
         let a = figma.currentPage;
         let b = getSelectionMix();
         let th,td;
@@ -844,113 +844,131 @@ figma.ui.onmessage = async (message) => {
             figma.viewport.zoom = figma.viewport.zoom * 0.6;
             return;
         };
-        figma.clientStorage.getAsync('userLanguage')
-        .then (async (language) => {
-            let all = await createTable(th,td,language);
-            let newth = all[0];
-            let newtd = all[1];
-            let table = all[2];
-            //模拟输入的数据，注意是按列记录而不是按行
-            let test = [
-                ["A1","a2","a3","a4"],
-                ["B1","b2","b3","b4"],
-                ["C1","c2","c3","c4"]
-            ];
-            reCompNum(table,2,2);
-            reTableByArray(table,test,'[enter]','--');
-            reTableStyle(table,info[0]);
-            //如果用了自定义组件，则重新排列，避免太分散
-            if(newth == th || newtd == td){
-                let layerIndex = th.parent.children.findIndex(item => item.id == th.id);
-                layoutByRatio(all,true);
-                all.forEach(item => {
-                    th.parent.insertChild((layerIndex - 1),item)
-                });
-            };
-            a.selection = all;
-            figma.viewport.scrollAndZoomIntoView(all);
-            figma.viewport.zoom = figma.viewport.zoom * 0.6;
-        })
-        .catch (error => {
-        }); 
-    };
-    //仅创建表头、表格组件
-    if ( type == 'Only Create @th/td'){
-        figma.clientStorage.getAsync('userLanguage')
-        .then (async (language) => {
-            let th = await addTableCompMust('th',language);
-            let td = await addTableCompMust('td',language);
-            figma.currentPage.selection = [th,td]
-        });
+        let lang = await figma.clientStorage.getAsync('userLanguage')
+        let all = await createTable(th,td,lang,null,info[3]);
+        let newth = all[0];
+        let newtd = all[1];
+        let table = all[2];
+        //模拟输入的数据，注意是按列记录而不是按行
+        let test = [
+            ["A1","a2","a3","a4"],
+            ["B1","b2","b3","b4"],
+            ["C1","c2","c3","c4"]
+        ];
+        let H = 2, V = 2;
+        if(info[4]){
+            test = info[4];
+            H = test.length - 1;
+            V = test[0].length - 2;
+        };
+        
+        reCompNum(table,H,V);
+        reTableByArray(table,test,'[enter]','--');
+        reTableStyle(table,info[0]);
+        //如果用了自定义组件，则重新排列，避免太分散
+        if(newth == th || newtd == td){
+            let layerIndex = th.parent.children.findIndex(item => item.id == th.id);
+            layoutByRatio(all,true);
+            all.forEach(item => {
+                th.parent.insertChild((layerIndex - 1),item)
+            });
+        };
+        a.selection = all;
+        figma.viewport.scrollAndZoomIntoView(all);
+        figma.viewport.zoom = figma.viewport.zoom * 0.6;
     };
     //使所选元素符合表格组件
-    if ( type == 'Make Compliant'){
-        let b = getSelectionMix();
-        let final = b.filter(item => item.type == 'COMPONENT' && item.name.includes('@t'));
-        final.forEach(comp => {
-            let type = comp.name.split('@')[1];
-            //没命名则默认为表格，而不是表头
+    if ( type == 'Make Cell-Comp'){
+        let b = getSelectionMix();  
+
+        b.forEach(node => {
+            let comp,type = '',isComp = false,isAutoLayout = false;
+            let oldPropsKeys = [];
+            let oldPropsText = [];
+            let oldPropsBoolean = [];
+            let absoluteChild = [];
+            let keyWord = ['--bod','描边','--fill','区分']
+
+            //先转为组件，这样即使是单文字也会套上容器，方便处理
+            if(node.type == 'COMPONENT'){
+                comp = node;
+                isComp = true;
+            }else if(node.type == 'INSTANCE'){
+                comp = figma.createComponentFromNode(node.detachInstance());
+            }else {
+                comp = figma.createComponentFromNode(node);
+                type = comp.name.split('@')[1].split(' ')[0].split(':')[0];
+            }
+            let [w,h] = [comp.width,comp.height]
+
+            //没命名则默认为数据表格,没文字则为节点表格
             if(!['th','td','tn'].includes(type)){
                 if(comp.findOne(item => item.type == 'TEXT')){
-                    type = 'td';
-                    comp.name += ' @td';
+                    if(isComp && comp.name.includes('表头')){
+                        type = 'th';
+                        comp.name += ' @th';
+                    }else{
+                        type = 'td';
+                        comp.name += ' @td';
+                    }
                 }else{
                     type = 'tn';
                     comp.name += ' @tn';
-                };
+                }
             };
-            comp.children.forEach(item => {
-                if( !item.name.includes('#') && item.name.includes('--')){
-                    item.remove();
-                };
-            });
-            Object.keys(comp.componentPropertyDefinitions).forEach(item => {
-                comp.deleteComponentProperty(item);
-            });
-            
-            let [w,h] = [comp.width,comp.height]
+
+            //确保是自动布局
             if(comp.layoutMode == 'NONE'){
-                addAutoLayout(comp,['H','CC',0,[0,0]],true)
-            };
-            comp.resize(w,h);
-            comp.itemReverseZIndex = true;//前面堆叠在上
-            makeCompliant(type,comp);
+                addAutoLayout(comp,['H','CC',0,[0,0]],true);
+                comp.resize(w,h);
+                comp.itemReverseZIndex = true;//前面堆叠在上
+            }else{
+                isAutoLayout = true;
+            }
             
-            let texts = comp.findAll(item => item.type == 'TEXT');
-            if(texts.length > 0){
-                let proid = addCompPro(comp,texts[0],'--data','TEXT',texts[0].characters);
-                for(let i = 1; i < texts.length; i++){
-                    texts[i].componentPropertyReferences = {[characters]:proid};
-                };
-            };
+
+            //旧版母组件需要特殊处理，只能修改属性名和修正必要元素
+            if(isComp){
+                //记录原有的组件属性
+                oldPropsKeys = Object.keys(comp.componentPropertyDefinitions);
+                oldPropsText = comp.componentPropertyDefinitions.filter(item => item.type == 'TEXT');
+                oldPropsBoolean = comp.componentPropertyDefinitions.filter(item => item.type == 'BOOLEAN');
+                absoluteChild = comp.children.find(item => item.layoutPositioning && item.layoutPositioning == 'ABSOLUTE');
+            }else{
+                //非母组件不需要考虑对实例造成影响，可以删除无效的必要元素（实例解除但必要元素还在）
+                comp.children.forEach(item => {
+                    if( keyWord.some(key => item.includes(key))){
+                        item.remove();
+                    };
+                });
+                if(isAutoLayout){
+                    comp.children.filter(item => item.layoutPositioning == 'ABSOLUTE').forEach(item => {
+                        //如果只有一个矩形且有描边且无填充，也判定为必要元素
+                        if( item.children && item.children.length == 1 && item.children[0].type == 'RECTANGLE' && item.children[0].strokes.length > 0 && item.children[0].fills.length == 0){
+                            item.remove();
+                        };
+                    });
+                    makeCompliant(type,comp);
+                }else{//原元素不是自动布局，无需要特殊处理，可以直接添加必要元素和属性
+                    
+                    makeCompliant(type,comp);
+            
+                    let texts = comp.findAll(item => item.type == 'TEXT');
+                    if(texts.length > 0){
+                        let proid = addCompPro(comp,texts[0],'--data','TEXT',texts[0].characters);
+                        for(let i = 1; i < texts.length; i++){
+                            texts[i].componentPropertyReferences = {[characters]:proid};
+                        };
+                    };
+                }
+            }
         });
     };
     //便捷选中表格
     if ( type == 'pickTable'){
         let b = getSelectionMix();
         if(b.every(item => item.type == 'INSTANCE') && [...new Set(b.map(item => item.parent.parent))].length == 1){
-            switch (info){
-                case 'row':
-                    if(b.length == 1){
-                        easePickTable(info,[...b,...b]);
-                    };
-                ;break
-                case 'allrow':
-                    if(b.length >= 2){
-                        easePickTable(info,b);
-                    };
-                ;break
-                case 'block':
-                    if(b.length == 2){
-                        easePickTable(info,b);
-                    };
-                ;break
-                case 'inline':
-                    if(b.length == 2){
-                        easePickTable(info,b);
-                    };
-                ;break
-            };
+            easePickTable(info,b);
         };
     };
     //批量填充文本数据
@@ -1149,45 +1167,46 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         let tables = getTablesByNodes(b);
         let setdata = info[0],retype = info[1]
-        //console.log(setdata)
-        tables.forEach(table => {
-            let HH = table.children.length;
-            let VV = table.children[0].children.length;
-            let _H = 0,V = 0;
-            if(typeof setdata == 'object'){
-                _H = setdata[0];
-                V = setdata[1];
-                //行数不能少于2，列数不能少于1
-                _H = _H + HH < 1 ? 1 - HH : _H;
-                V = V + VV < 2 ? 2 - VV : V;
-            };
-            switch (retype){
-                case 'style':
+        //console.log(setdata,retype)
+        if(!tables || tables.length == 0) return;
+        try{
+            tables.forEach(table => {
+                if(retype == 'theme') {
+                        //一个饱和度、明度适中的颜色
+                        let [H,S,L] = [Math.random()*360,(Math.random()*70) + 10,(Math.random()*80) + 10];
+                        S = S <= 30 && L <= 50 ? S*1.2 : S;
+                        L = S >= 50 && L >= 40 ? L*0.8 : L;
+                        let [S2,L2] = [S >= 50 ? S*0.95 : S*1, L >= 50 ? L*0.8 : L*1.2,];
+                        let [S3,L3] = [S >= 50 ? S*0.9 : S*1, L >= 50 ? L*0.7 : L*1.3,];
+                        let textColor = L2 >= 50 ? '#000000' : '#ffffff';
+                        [H,S,L] = [Math.floor(H),Math.floor(S) + '%',Math.floor(L) + '%'];
+                        [S2,L2] = [Math.floor(S2) + '%',Math.floor(L2) + '%'];
+                        [S3,L3] = [Math.floor(S3) + '%',Math.floor(L3) + '%'];  
+                        let [tableBg,tableFill,tableStroke] = [`hsl(${[H,S,L].join(',')})`,`hsl(${[H,S2,L2].join(',')})`,`hsl(${[H,S3,L3].join(',')})`]                
+                        //console.log([toRGB(tableBg,true),toRGB(tableFill,true),toRGB(tableStroke,true)])
+                        reTableTheme(table,[tableBg,tableFill,tableStroke],textColor)
+                    return
+                };
+
+                if(retype == 'style'){
                     reTableStyle(table,setdata);
-                ;break
-                case 'add':
-                    reCompNum(table,_H,V);
-                ;break
-                case 'reduce':
-                    reCompNum(table,_H,V);
-                ;break
-                case 'theme':
-                    //一个饱和度、明度适中的颜色
-                    let [H,S,L] = [Math.random()*360,(Math.random()*50) + 10,(Math.random()*80) + 10];
-                    S = S <= 30 && L <= 50 ? S*1.2 : S;
-                    L = S >= 50 && L >= 40 ? L*0.8 : L;
-                    let [S2,L2] = [S >= 50 ? S*0.95 : S*1, L >= 50 ? L*0.8 : L*1.2,];
-                    let [S3,L3] = [S >= 50 ? S*0.9 : S*1, L >= 50 ? L*0.7 : L*1.3,];
-                    let textColor = L2 >= 50 ? '#000000' : '#ffffff';
-                    [H,S,L] = [Math.floor(H),Math.floor(S) + '%',Math.floor(L) + '%'];
-                    [S2,L2] = [Math.floor(S2) + '%',Math.floor(L2) + '%'];
-                    [S3,L3] = [Math.floor(S3) + '%',Math.floor(L3) + '%'];  
-                    let [tableBg,tableFill,tableStroke] = [`hsl(${[H,S,L].join(',')})`,`hsl(${[H,S2,L2].join(',')})`,`hsl(${[H,S3,L3].join(',')})`]                
-                    //console.log([toRGB(tableBg,true),toRGB(tableFill,true),toRGB(tableStroke,true)])
-                    reTableTheme(table,[tableBg,tableFill,tableStroke],textColor)
-                ;break
-            };
-        });
+                };
+
+                let HH = table.children.length;
+                let VV = table.children[0].children.length;
+                let _H = 0,V = 0;
+                if(typeof setdata == 'object'){
+                    _H = setdata[0];
+                    V = setdata[1];
+                    //行数不能少于2，列数不能少于1
+                    _H = _H + HH < 1 ? 1 - HH : _H;
+                    V = V + VV < 2 ? 2 - VV : V;
+                };
+                reCompNum(table,_H,V);
+            });
+        } catch (error) {
+            console.log(error)
+        }
     };
     //全描边
     if( type == 'All Border'){
@@ -1732,7 +1751,7 @@ figma.ui.onmessage = async (message) => {
                         switch (splitType){
                             case 'tags':
                                 let splitTag = splitKeys.filter(item => splitTags[item]).map(item => splitTags[item]);
-                                console.log(splitTag)
+                                //console.log(splitTag)
                                 splitText(textSafe,oldnode,splitTag,splitKeys);
                             ;break
                             case 'inputs':
@@ -2545,10 +2564,10 @@ figma.ui.onmessage = async (message) => {
             break
             case 'reset':
                 b.forEach(item => {
-                    console.log(num,width)
+                    //console.log(num,width)
                     let oldEffects = Array.from(item.effects).filter(items => items.type !== 'DROP_SHADOW');
                     let newEffects = genDropShadows(num,'node');
-                    console.log(newEffects)
+                    //console.log(newEffects)
                     item.effects = [...oldEffects,...newEffects];
                 });
             break
@@ -2556,7 +2575,7 @@ figma.ui.onmessage = async (message) => {
     };
     //创建样式
     if( type == "createPaintStyle"){
-        console.log(info)
+        //console.log(info)
         //更新样式列表
         await getStyle('paint');
         let localPaintStyles = localStyles.paint.list;
@@ -3189,18 +3208,23 @@ function exportImgInfo(set){
  * @param {string} language - 语言，可选值：'Zh'、'En'
  * @returns {Array} - [表头组件,数据组件,表格组件]
  */
-async function createTable(thComp,tdComp,language,isFill = false){
+async function createTable(thComp,tdComp,language,isFill = false,isHeader = true){
     let th,td;
-    if(thComp){
-        th = thComp;
-    } else {
-        th = await addTableCompMust('th',language);
-    };
+    
     if(tdComp){
         td = tdComp;
     } else {
-        td = await addTableCompMust('td',language);
+        td = await addTableCompMust('td',language,null,isFill,isHeader);
         //console.log(td)
+    };
+    if(isHeader){
+        if(thComp){
+            th = thComp;
+        } else {
+            th = await addTableCompMust('th',language);
+        };
+    } else {
+        th = td;//没有表头则使用数据组件作为表头
     };
     let column = addFrame([176,52,null,null,'@column',[]]);
     addAutoLayout(column,['V','TC']);
@@ -3233,9 +3257,9 @@ async function createTable(thComp,tdComp,language,isFill = false){
     return [th,td,table];
 };
 //创建表格组件
-async function addTableCompMust(type,language,nodes,isFill = false){
+async function addTableCompMust(type,language,nodes,isFill = false,isHeader = true){
     let comp = addFrame([176,52,null,null,'xxx@' + type,[]]);
-    if(type == 'td' || type == 'tn'){
+    if((type == 'td' || type == 'tn') && isHeader){
         comp.y += 72;
     };
     addAutoLayout(comp,['H','CC'],[1,1]);
@@ -4158,15 +4182,21 @@ function easePickTable(type,nodes){
     switch (type){
         case 'row':
             for ( let i = 0; i < LL ; i++ ){
-                picks.push(table.children[i].children[H1]);
+                for ( let ii = 0; ii < Hs.length; ii++){
+                    picks.push(table.children[i].children[Hs[ii]]);
+                };
             };
             a.selection = picks;
         ;break
         case 'allrow':
             //console.log(Hs,LL)
+            //要把Hs里最大和最小值之间所有行都选中
+            let maxH = Math.max(...Hs);
+            let minH = Math.min(...Hs);
+            //console.log(maxH,minH)
             for ( let i = 0; i < LL ; i++ ){
-                for ( let ii = 0; ii < Hs.length; ii++){
-                    picks.push(table.children[i].children[Hs[ii]]);
+                for ( let ii = minH; ii <= maxH; ii++){
+                    picks.push(table.children[i].children[ii]);
                 };
             };
             //console.log(picks)
