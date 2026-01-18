@@ -450,9 +450,9 @@ figma.ui.onmessage = async (message) => {
                                     });
                                     return item;
                                 });
-                                let H = data[0].length;
-                                let L = data.length - 3;
-                                reCompNum(table,H,L)
+                                let C = data[0].length;
+                                let R = data.length - 3;
+                                reCompNum(table,C,R)
                                 reTableByArray(table,data,'[enter]','--');
                                 reTableStyle(table,{th:[1,1,1,1,1],td:[1,1,1,1,'rowSpace']});
                                 reAnyByTags([newth],[{'#table.fill':'#B8B8B8','#table.stroke':'#272727'}]);
@@ -855,14 +855,14 @@ figma.ui.onmessage = async (message) => {
             ["B1","b2","b3","b4"],
             ["C1","c2","c3","c4"]
         ];
-        let H = 2, V = 2;
+        let C = 2, R = 2;
         if(info[4]){
             test = info[4];
-            H = test.length - 1;
-            V = test[0].length - 2;
+            C = test.length - 1;
+            R = test[0].length - 2;
         };
         
-        reCompNum(table,H,V);
+        reCompNum(table,C,R);
         reTableByArray(table,test,'[enter]','--');
         reTableStyle(table,info[0]);
         //如果用了自定义组件，则重新排列，避免太分散
@@ -933,7 +933,51 @@ figma.ui.onmessage = async (message) => {
                 oldPropsKeys = Object.keys(comp.componentPropertyDefinitions);
                 oldPropsText = comp.componentPropertyDefinitions.filter(item => item.type == 'TEXT');
                 oldPropsBoolean = comp.componentPropertyDefinitions.filter(item => item.type == 'BOOLEAN');
-                absoluteChild = comp.children.find(item => item.layoutPositioning && item.layoutPositioning == 'ABSOLUTE');
+                absoluteChild = comp.children.filter(item => item.children && item.children.length > 0 && keyWord.some(key => item.name.includes(key)));
+            
+                comp.children.forEach(item => {
+                    //如果只有一个矩形且有描边且无填充，也判定为必要元素
+                    if( item.children && item.children.length == 1 && item.children[0].type == 'RECTANGLE' && item.children[0].strokes.length > 0 && item.children[0].fills.length == 0){
+                        if(absoluteChild.every(item => item.id != item.id)){
+                            absoluteChild.push(item);
+                        };
+                    };
+                });
+                //如果原组件没有相关属性，直接添加必要元素和属性
+                if(oldPropsKeys.every(item => !keyWord.some(key => item.includes(key)))){
+                    makeCompliant(type,comp);
+                }else{
+                    //先把能判断为必要元素的绑定属性
+                    absoluteChild.forEach(item => {
+                        let keyTop = ['-t','顶','上']
+                        let keyBottom = ['-b','底','下']
+                        let keyLeft = ['-l','左']
+                        let keyRight = ['-r','右']
+                        let keyFill = ['-fill','区分','区分色']
+
+                        if(keyTop.some(key => item.name.includes(key))){
+                            let proid = addCompPro(comp,item,'--bod-t','BOOLEAN',true);
+                            item.componentPropertyReferences = {[visible]:proid};
+                        };
+                        if(keyBottom.some(key => item.name.includes(key))){
+                            let proid = addCompPro(comp,item,'--bod-b','BOOLEAN',true);
+                            item.componentPropertyReferences = {[visible]:proid};
+                        };
+                        if(keyLeft.some(key => item.name.includes(key))){
+                            let proid = addCompPro(comp,item,'--bod-l','BOOLEAN',true);
+                            item.componentPropertyReferences = {[visible]:proid};
+                        };
+                        if(keyRight.some(key => item.name.includes(key))){
+                            let proid = addCompPro(comp,item,'--bod-r','BOOLEAN',true);
+                            item.componentPropertyReferences = {[visible]:proid};
+                        };
+                        if(keyFill.some(key => item.name.includes(key))){
+                            let proid = addCompPro(comp,item,'--fill','BOOLEAN',true);
+                            item.componentPropertyReferences = {[visible]:proid};
+                        };
+                    });
+                }
+            
             }else{
                 //非母组件不需要考虑对实例造成影响，可以删除无效的必要元素（实例解除但必要元素还在）
                 comp.children.forEach(item => {
@@ -986,13 +1030,13 @@ figma.ui.onmessage = async (message) => {
                     comps = b[0].findChildren(item => item.type == 'INSTANCE');
                     //仅自动布局时生效
                     if(b[0].layoutMode && b[0].layoutMode !== 'NONE'){
-                        let HH = comps.length;
-                        let H = Array.length - HH;
+                        let CC = comps.length;
+                        let C = Array.length - CC;
                         if(info.clone == false){
-                            H = H > 0 ? 0 : H;
+                            C = C > 0 ? 0 : C;
                         }
                         if(info.reduce == false){
-                            H = H < 0 ? 0 : H;
+                            C = C < 0 ? 0 : C;
                         };
                         reCompNum(b[0],H);
                         reAnyByArray(b[0].children,Array,false,info.enters,info.nulls);
@@ -1023,20 +1067,20 @@ figma.ui.onmessage = async (message) => {
                     if(table.name.includes('swap')){
                         Array = Array[0].map((_, i) => Array.map(row => row[i]));
                     };
-                    let HH = table.children.length;
-                    let VV = table.children[0].children.length;
-                    let H = Array.length - HH;
-                    let V = Array[0].length - VV;
+                    let CC = table.children.length;
+                    let RR = table.children[0].children.length;
+                    let C = Array.length - CC;
+                    let R = Array[0].length - RR;
                     if(info.clone == false){
-                        H = H > 0 ? 0 : H;
-                        V = V > 0 ? 0 : V;
+                        C = C > 0 ? 0 : C;
+                        R = R > 0 ? 0 : R;
                     }
                     if(info.reduce == false){
-                        H = H < 0 ? 0 : H;
-                        V = V < 0 ? 0 : V;
+                        C = C < 0 ? 0 : C;
+                        R = R < 0 ? 0 : R;
                     };
-                    //console.log(H,V)
-                    reCompNum(table,H,V);
+                    //console.log(C,R)
+                    reCompNum(table,C,R);
                     reTableByArray(table,Array,info.enters,info.nulls);
                 };
             });
@@ -1094,6 +1138,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量获取文本数据
     if( type == 'getText'){
+        console.log(111)
         let b = getSelectionMix();
         let tables = getTablesByNodes(b);
         //没有table就说明是普通的文本数据填充
@@ -1190,19 +1235,25 @@ figma.ui.onmessage = async (message) => {
 
                 if(retype == 'style'){
                     reTableStyle(table,setdata);
+                    return;
                 };
 
-                let HH = table.children.length;
-                let VV = table.children[0].children.length;
-                let _H = 0,V = 0;
+                let CC = table.children.length;
+                let RR = table.children[0].children.length;
+                let C = 0,R = 0;
                 if(typeof setdata == 'object'){
-                    _H = setdata[0];
-                    V = setdata[1];
+                    C = setdata[0];
+                    R = setdata[1];
                     //行数不能少于2，列数不能少于1
-                    _H = _H + HH < 1 ? 1 - HH : _H;
-                    V = V + VV < 2 ? 2 - VV : V;
+                    C = C + CC < 1 ? 1 - CC : C;
+                    R = R + RR < 2 ? 2 - RR : R;
                 };
-                reCompNum(table,_H,V);
+                if(retype == 'set'){
+                    //插件端已限制最小数值，这里只计算差值
+                    C = setdata[0] - CC;
+                    R = setdata[1] - RR;
+                };
+                reCompNum(table,C,R);
             });
         } catch (error) {
             console.log(error)
@@ -2050,10 +2101,84 @@ figma.ui.onmessage = async (message) => {
     if( type == 'To Auto Layout'){
         let b = getSelectionMix();
         b.forEach(item => {
-            if(item.layoutMode && item.layoutMode == 'NONE'){
-                addAutoLayout(item,['H','TL',0,[0,0]],[true,true]);
+            if(item.layoutMode && item.layoutMode !== 'NONE') return;
+            let layoutNode = item;
+            //分析子元素排布，以确定自动布局方式
+            let layoutMode = 'H';
+            let layoutAlign = 'TL';
+            let layoutSpacing = 0;
+            let layoutPadding = [0,0,0,0];
+            let layoutWrap = true;
+            let layoutFix = [true,true];
+            let fills = [],strokes = [],bottomLeftRadius = 0,bottomRightRadius = 0,topLeftRadius = 0,topRightRadius = 0;
+            //模仿原生逻辑，最下方是形状且大小铺满时，转为容器的样式
+            if(item.children.length > 0 && item.children[item.children.length - 1].type == 'RECTANGLE'){
+                let shape = item.children[item.children.length - 1];
+                if(shape.width == item.width && shape.height == item.height){
+                    fills = shape.fills;
+                    strokes = shape.strokes;
+                    bottomLeftRadius = shape.bottomLeftRadius;
+                    bottomRightRadius = shape.bottomRightRadius;
+                    topLeftRadius = shape.topLeftRadius;
+                    topRightRadius = shape.topRightRadius;
+                    //只隐藏处理，方便后续恢复
+                    shape.visible = false;
+                }
+            };
+
+            //确保是容器元素
+            if(!item.layoutMode){
+                if(item.type == 'GROUP' || item.type == 'SECTION'){
+                    let isGroup = item.type == 'GROUP' ? true : false;
+                    let itemX = item.x;
+                    let itemY = item.y;
+                    try{
+                        layoutNode = addFrame([],item);
+                        let childs = sortLRTB(item.children);
+                        childs.forEach(child => {
+                            let x = isGroup ? child.x - itemX : child.x;
+                            let y = isGroup ? child.y - itemY : child.y;
+                            //console.log(x,y)
+                            layoutNode.appendChild(child);
+                            child.x = x;
+                            child.y = y;
+                        });
+                        if(!item.removed) item.remove();
+                    }catch(error){
+                        console.error(error);
+                    }
+                }else{
+                    layoutNode = fullInFrameSafa(item,addFrame([],item));
+                };
+            };
+
+            //分析其他子元素与形状的相对位置
+            let final = [...layoutNode.children];
+            if(final.length > 0){
+                let minX = Math.min(...final.map(items => items.x));
+                let minY = Math.min(...final.map(items => items.y));
+                let maxX = Math.max(...final.map(items => items.x + items.width));
+                let maxY = Math.max(...final.map(items => items.y + items.height));
+                //console.log([minY,layoutNode.width - maxX,layoutNode.height - maxY,minX])
+                layoutPadding = [minY,layoutNode.width - maxX,layoutNode.height - maxY,minX];
             }
-        });
+
+            if([...new Set(layoutPadding.map(item => Math.round(item)))].length == 1){
+                if(layoutPadding[0] !== 0){
+                    layoutPadding = [0,0,0,0];
+                    layoutAlign = 'CC';
+                }
+            }
+
+            addAutoLayout(layoutNode,[layoutMode,layoutAlign,layoutSpacing,layoutPadding],layoutFix,layoutWrap);
+            layoutNode.fills = fills;
+            layoutNode.strokes = strokes;
+            layoutNode.bottomLeftRadius = bottomLeftRadius;
+            layoutNode.bottomRightRadius = bottomRightRadius;
+            layoutNode.topLeftRadius = topLeftRadius;
+            layoutNode.topRightRadius = topRightRadius;
+        
+            });
     };
     //填充组件到容器
     if( type == 'Clone to Fill'){
@@ -2738,6 +2863,8 @@ function setMain(info,node,cloneNode){
         'TEXT','GROUP',
     ]
     if(cloneNode){
+        let  layerIndex = cloneNode.parent.children.findIndex(item => item.id == cloneNode.id);
+        cloneNode.parent.insertChild((layerIndex + 1),node);
         w = cloneNode.width;
         h = cloneNode.height;
         x = cloneNode.x;
@@ -2989,6 +3116,7 @@ function fullInFrameSafa(keynode,frame){
         keynode.x -= keynode.parent.absoluteBoundingBox.x;
         keynode.y -= keynode.parent.absoluteBoundingBox.y;
     };
+    return frame;
 };
 
 //将文字限定在合理范围，并指定省略符
@@ -3465,10 +3593,10 @@ async function reLocalSheet(type, isNew) {
 };
 function reSheetByArray(table,datas){
     //console.log(datas)
-    let HH = table.children.length;
-    let VV = table.children[0].children.length;
-    //console.log(datas.length - HH,datas[0].length - VV)
-    reCompNum(table,datas.length - HH,datas[0].length - VV);
+    let CC = table.children.length;
+    let RR = table.children[0].children.length;
+    //console.log(datas.length - CC,datas[0].length - RR)
+    reCompNum(table,datas.length - CC,datas[0].length - RR);
     datas.forEach((data,num) => {
         try{
             table.children[num].children.forEach((comp,index) => {
@@ -4123,7 +4251,7 @@ function swapTable(table){
     for(let i = 0; i < columns.length; i++){
         datas.push(columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')));    
     };
-    let H = datas[0].length - columns.length;
+    let C = datas[0].length - columns.length;
     //console.log(H)
     let newTable = table.clone();
     setMain([],newTable,table);
@@ -4139,7 +4267,7 @@ function swapTable(table){
         numColum.children.map(node => node.remove())
     };
     
-    reCompNum(newTable,H);
+    reCompNum(newTable,C);
     let newColumns = newTable.children;
     for(let i = 0; i < newColumns.length; i++){
         //console.log(datas[0][i].name)
@@ -4255,7 +4383,7 @@ function easePickTable(type,nodes){
  * - V模式：主轴(垂直)=T(上/MIN)，副轴(水平)=L(左/MIN)
  *   → HTML: flex-direction: column; justify-content: flex-start; align-items: flex-start;
  */
-function addAutoLayout(node,layout,isFixed){
+function addAutoLayout(node,layout,isFixed,isWrap){
     node.layoutPositioning = 'AUTO';
     if(isFixed){
         node.primaryAxisSizingMode = isFixed[0] ? "FIXED" : "AUTO";
@@ -4272,7 +4400,7 @@ function addAutoLayout(node,layout,isFixed){
             // H模式（横向布局）：主轴=水平，副轴=垂直
             // HTML对应: flex-direction: row;
             node.layoutMode = 'HORIZONTAL';
-            
+            if(isWrap) node.layoutWrap = 'WRAP';
             // 主轴对齐（水平方向）：L=左, R=右, C=中, S=间距
             // HTML对应: justify-content（L/C/R/S）
             // 注意：基线对齐(A)仅在H模式的次轴可用，不在主轴
@@ -4307,6 +4435,10 @@ function addAutoLayout(node,layout,isFixed){
                     break;
                 case 'A':
                     node.counterAxisAlignItems = 'BASELINE'; // HTML: align-items: baseline (仅在H模式可用)
+                    break;
+                case 'S':
+                    node.counterAxisAlignItems = 'MIN';
+                    node.counterAxisAlignContent = 'SPACE_BETWEEN'; // HTML: align-items: space-between;
                     break;
             };
             break;
@@ -4740,18 +4872,45 @@ function removeText(node,start,end,isReverse,isInine){
  * @param {Array} nodes - 节点数组
  */
 function sortLRTB(nodes){
-    nodes.sort((a,b) => {
-        let x1 = a.absoluteBoundingBox.x;
-        let x2 = b.absoluteBoundingBox.x;
-        let y1 = a.absoluteBoundingBox.y;
-        let y2 = b.absoluteBoundingBox.y;
-        //节点上下边延长线有重叠的视为同一行
-        if(y1 - (y2 + b.height) >= 0){
-            return y1 - y2;
+    // 创建副本以避免修改只读数组
+    let sorted = [...nodes];
+    sorted.sort((a,b) => {
+        // 支持两种坐标系统：x/y（相对坐标）和 absoluteBoundingBox（绝对坐标）
+        let x1, x2, y1, y2, h1, h2;
+        if (a.absoluteBoundingBox && b.absoluteBoundingBox) {
+            x1 = a.absoluteBoundingBox.x;
+            x2 = b.absoluteBoundingBox.x;
+            y1 = a.absoluteBoundingBox.y;
+            y2 = b.absoluteBoundingBox.y;
+            h1 = a.absoluteBoundingBox.height;
+            h2 = b.absoluteBoundingBox.height;
         } else {
+            x1 = a.x || 0;
+            x2 = b.x || 0;
+            y1 = a.y || 0;
+            y2 = b.y || 0;
+            h1 = a.height || 0;
+            h2 = b.height || 0;
+        }
+        //节点上下边延长线有重叠的视为同一行
+        // 如果 a 的顶部在 b 的底部下方，则 a 在下一行
+        if(y1 - (y2 + h2) >= 0){
+            return y1 - y2; // 按 Y 坐标排序（从上到下）
+        } else if(y2 - (y1 + h1) >= 0){
+            return y1 - y2; // b 在下一行，a 在上
+        } else {
+            // 同一行，按 X 坐标排序（从左到右）
             return x1 - x2;
         };
     });
+    // 如果原数组可写，也更新原数组以保持向后兼容
+    try {
+        nodes.length = 0;
+        nodes.push(...sorted);
+    } catch(e) {
+        // 如果数组是只读的，忽略错误
+    }
+    return sorted;
 };
 //分析文本是同一行的可能性，将同行的文本放进一个数组
 function toSameLine(nodes){

@@ -875,7 +875,7 @@
                   <btn-close></btn-close>
                 </div>
                 <div data-textarea="tips" class="pos-a w100 df-ffc pad10 bsb gap4 font-s10" style="white-space: normal; color: var(--boxBod); bottom: 0; animation: boxUp 0.5s; pointer-events: none;">
-                  <li data-li-style="2" data-en-text="Double click fill sample" >双击填充示例</li>
+                  <li data-li-style="2" data-en-text="Double click fill sample(of data type)" >双击填充示例(对应数据类型)</li>
                   <li data-li-style="2" data-en-text="Copy from a sheet or manually input with tab character(key)" >从表格复制或用制表符（tab键）手动输入</li>
                 </div>
               </div>
@@ -1139,13 +1139,14 @@
                 <div class="df-cc" data-btn="skill-main" data-en-text="Row Column Swap">反转行列</div>
               </div>
               <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-lc w100 gap4">
-                  <div class="df-lc fl1">
-                    <div class="df-cc" style="padding: 0;" data-btn="skill-main">
-                      <input style="text-align: center; border-radius: 3px 0 0 3px;" id="table-row-num" type="text" value="4" data-input data-input-type="int" data-input-must="2,1000">
-                      <input style="text-align: center; border-left: 0; border-radius:0 3px 3px 0;" id="table-column-num" type="text" value="3" data-input data-input-type="int" data-input-must="2,1000">
-                      <span data-en-text="Set R/C" style="margin-left: 4px; min-width: 58px;">设置行/列</span>
-                    </div>
+                <div class="df-lc w100">
+                  <div class="df-lc fl1" style="background: var(--boxGry); border: 1px solid var(--boxBod); border-radius: 4px 0 0 4px;">
+                    <input style="text-align: center; border-radius: 3px 0 0 3px;" id="table-row-num" type="text" value="4" data-input data-input-type="int" data-input-must="2,1000">
+                    <input style="text-align: center; border-left: 0; border-radius:0 3px 3px 0;" id="table-column-num" type="text" value="3" data-input data-input-type="int" data-input-must="2,1000">
+                  </div>
+                  <div class="df-cc fl1" data-btn="skill-main" data-en-text="Set R/C"
+                  style="border-left: 0; border-radius:0 4px 4px 0; min-width: 60px;">
+                    设置行/列
                   </div>
                 </div>
                 <div class="df-lc w100" >

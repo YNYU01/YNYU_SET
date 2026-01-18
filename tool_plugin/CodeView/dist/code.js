@@ -10,7 +10,70 @@
   console.log(message);
   return message;
 }`);
-    const [spanContentArray, setSpanContentArray] = useSyncedState("spanContentArray", []);
+    const defaultSpanContentArray = [
+      {
+        line: 0,
+        indent: 0,
+        spans: [
+          { tagname: "span", color: "#C586C0", text: "function" },
+          { tagname: null, color: null, text: " " },
+          { tagname: "span", color: "#DCDCAA", text: "example" },
+          { tagname: null, color: null, text: "() {" }
+        ]
+      },
+      {
+        line: 1,
+        indent: 1,
+        spans: [
+          { tagname: "span", color: "#6A9955", text: "  // This is an example code" }
+        ]
+      },
+      {
+        line: 2,
+        indent: 1,
+        spans: [
+          { tagname: null, color: null, text: "  " },
+          { tagname: "span", color: "#C586C0", text: "const" },
+          { tagname: null, color: null, text: " " },
+          { tagname: "span", color: null, text: "message" },
+          { tagname: null, color: null, text: " = " },
+          { tagname: "span", color: "#CE9178", text: '"Hello, World!"' },
+          { tagname: null, color: null, text: ";" }
+        ]
+      },
+      {
+        line: 3,
+        indent: 1,
+        spans: [
+          { tagname: null, color: null, text: "  " },
+          { tagname: "span", color: null, text: "console" },
+          { tagname: null, color: null, text: "." },
+          { tagname: "span", color: "#DCDCAA", text: "log" },
+          { tagname: null, color: null, text: "(" },
+          { tagname: "span", color: null, text: "message" },
+          { tagname: null, color: null, text: ");" }
+        ]
+      },
+      {
+        line: 4,
+        indent: 1,
+        spans: [
+          { tagname: null, color: null, text: "  " },
+          { tagname: "span", color: "#C586C0", text: "return" },
+          { tagname: null, color: null, text: " " },
+          { tagname: "span", color: null, text: "message" },
+          { tagname: null, color: null, text: ";" }
+        ]
+      },
+      {
+        line: 5,
+        indent: 0,
+        spans: [
+          { tagname: null, color: null, text: "}" }
+        ]
+      }
+    ];
+    const [spanContentArray, setSpanContentArray] = useSyncedState("spanContentArray", defaultSpanContentArray);
     const [wordWrap, setWordWrap] = useSyncedState("wordWrap", false);
     const [width, setWidth] = useSyncedState("width", 400);
     const [fontSize, setFontSize] = useSyncedState("fontSize", 16);

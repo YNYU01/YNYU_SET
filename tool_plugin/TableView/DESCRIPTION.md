@@ -34,12 +34,14 @@ TableView is a Figma Widget for displaying data tables on the Figma canvas with 
 - **描边样式**：全描边、仅横线、仅竖线、无描边（4 种模式）
 - **表头开关**：可切换显示/隐藏表头样式（表头与数据行的视觉区分）
 - **行列互换**：一键切换表格的行列方向
+- **行列数**：可打开行列数显示，选中可调整行高/列宽
 - **字体大小**：可设置字体大小（8-72px）
 
 **Fill styles**: All fill, Row spacing, Column spacing, No fill (4 modes)  
 **Stroke styles**: All strokes, Row strokes only, Column strokes only, No strokes (4 modes)  
 **Header toggle**: Toggle header style on/off (visual distinction between header and data rows)  
 **Row/column swap**: One-click swap table row and column directions  
+**Row/column index**: Show index of row/column and set row-height/column-width
 **Font size**: Set font size (8-72px)
 
 ### ✏️ 数据输入与编辑 / Data Input & Editing
@@ -47,12 +49,14 @@ TableView is a Figma Widget for displaying data tables on the Figma canvas with 
 - **制表符分隔格式**：支持标准的制表符（Tab）分隔文本格式
 - **多行文本编辑器**：提供多行文本输入框，支持粘贴和直接输入
 - **行列数设置**：可手动设置行列数，或使用自动检测功能
+- **表格宽度设置**：可设置表格宽度，列宽默认为均分
 - **快速清空**：一键清空数据输入框
 - **实时预览**：配置后立即在画布上显示效果
 
 **Tab-separated format**: Supports standard tab-separated text format  
 **Multi-line text editor**: Multi-line text input box, supports paste and direct input  
 **Row/column count settings**: Manually set row/column count, or use auto-detection  
+**Table width**: Set table width, column widths default to equal distribution
 **Quick clear**: One-click clear data input box  
 **Real-time preview**: Immediately displays effects on canvas after configuration
 

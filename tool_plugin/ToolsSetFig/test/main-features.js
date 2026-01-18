@@ -6,6 +6,7 @@ const SKILL_STRATEGIES = {
   'Split By Conditions': () => sendSplit('tags'),
   'Split By Symbol': () => sendSplit('inputs'),
   'Apply Preset': () => sendTableSet('style'),
+  'Set R/C': () => sendTableSet('set'),
   'Add Row': () => sendTableSet('add'),
   'Reduce Row': () => sendTableSet('reduce'),
   'Random Theme': () => sendTableSet('theme'),
@@ -142,7 +143,7 @@ DOM.mapGetMap.addEventListener('click',()=>{
 // 表单页 > 表格设置-按名称/文本/属性/标签来映射及获取数据
 function sendTable(mapOrGet){
   let dataText = getElementMix('upload-tablearea').value.trim();
-  if(dataText === '') return;
+  if(mapOrGet == 'map' && dataText === '') return;
   
   let data = '';
   let clone = true;
@@ -208,15 +209,16 @@ function applyTableStyleStrategy(){
 
 // 表单页 > 设置行列
 function setTableRowColStrategy(){
-  let [H,V] = getElementMix('table-rcnum').value.split(',').map(item => item * 1);
-  toolMessage([[[H,V],'set'],'setRC'],PLUGINAPP);
+  let H = getElementMix('table-column-num').value * 1;
+  let V = getElementMix('table-row-num').value * 1;
+  toolMessage([[[H,V],'set'],'reTable'],PLUGINAPP);
 };
 
 const TABLE_SET_FUNCTIONS = {
   'style': applyTableStyleStrategy,
   'set': setTableRowColStrategy,
-  'add': toolMessage([[[0,1],'add'],'reTable'],PLUGINAPP),
-  'reduce': toolMessage([[[0,-1],'reduce'],'reTable'],PLUGINAPP),
+  'add': () => toolMessage([[[0,1],'add'],'reTable'],PLUGINAPP),
+  'reduce': () => toolMessage([[[0,-1],'reduce'],'reTable'],PLUGINAPP),
   'theme': () => toolMessage([[null,'theme'],'reTable'],PLUGINAPP)
 };
 

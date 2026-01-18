@@ -103,12 +103,12 @@
 </head>
 <body class="ovy">
   <div class="df-ffc" style="--boxBak: #171717; padding:12px 12px 6px 12px;">
-    <div class="df-ffc gap8 pad10 bsb">
+    <div class="df-ffc gap8 pad10 bsb" style="padding-top: 5px;">
       <div class="df-sc gap4 w100">
         <div class="op6">Table Data:</div>
       </div>
       <div id="tableInput-scroll" class="w100 pos-r">
-        <textarea style="height: 200px;" class="w100" spellcheck="false"
+        <textarea data-textarea style="height: 200px; resize: none;" class="w100" spellcheck="false"
         id="tableInput"
         ></textarea>
         <!--清空-->
@@ -117,8 +117,16 @@
         </div>
       </div>
     </div>
-    <div class="df-lc w100 pad10 bsb mar-b10 gap20">
-      <div class="df-lc gap4 fl1">
+    <div class="df-ffc w100 bsb gap4" style="padding: 0 5px 10px 5px;">
+      <div class="df-lc gap4 w100">
+        <div class="wh-14 pos-r" data-tips="auto" 
+        data-tips-y="top" data-tips-x="left" 
+        data-tips-text-en="Set column/row count"
+        style="--tips-w: 8ch;">
+          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill="var(--mainColor)" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"></path>
+          </svg>
+        </div>
         <div class="df-lc fl1" >
           <input type="text" id="colCountInput" data-input data-input-type="int"  data-input-must="0,1000" placeholder="0" style=" text-align: center; height: 20px;">
           <div class="df-cc" data-input-unit="auto" >C</div>
@@ -131,16 +139,34 @@
             AUTO
         </div>
       </div>
-      <div class="df-lc gap4" style="width: 80px;">
-        <div class="wh-14 pos-r" data-tips="auto" 
-        data-tips-y="top" data-tips-x="left" 
-        data-tips-text-en="Set font size"
-        style="--tips-w: 8ch;">
-          <input-fontsize></input-fontsize>
+      <div class="df-lc w100 gap20">
+        <div class="df-lc fl1 gap4" style="width: 80px;">
+          <div class="wh-14 pos-r" data-tips="auto" 
+          data-tips-y="top" data-tips-x="left" 
+          data-tips-text-en="Set font size"
+          style="--tips-w: 8ch;">
+            <input-fontsize></input-fontsize>
+          </div>
+          <div class="df-lc fl1" >
+            <input type="text" id="fontSizeInput" data-input data-input-type="float"  data-input-must="8,72" placeholder="12" style=" text-align: center; height: 20px;">
+            <div class="df-cc" data-input-unit="auto">px</div>
+          </div>
         </div>
-        <div class="df-lc fl1" >
-          <input type="text" id="fontSizeInput" data-input data-input-type="float"  data-input-must="8,72" placeholder="12" style=" text-align: center; height: 20px;">
-          <div class="df-cc" data-input-unit="auto">px</div>
+        <div class="df-lc fl1 gap4" style="width: 60px;">
+          <div class="wh-16 pos-r" data-tips="auto" 
+          data-tips-y="top" data-tips-x="left" 
+          data-tips-text-en="Set wap width"
+          style="--tips-w: 8ch;">
+            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill="var(--mainColor)" d="M20.4001 7.14238L19.2307 7.3287L16.8062 19.2H14.1886L11.8836 10.6293H11.8193L9.81159 19.2H7.20469L4.76945 7.3287L3.6001 7.14238V4.80005H8.8568V7.14238L7.62309 7.43517L8.71734 14.023H8.78171L10.8001 4.80005H12.9028L15.2399 14.0496H15.3043L16.3878 7.44848L15.1434 7.14238V4.80005H20.4001V7.14238Z"/>
+              <rect fill="var(--mainColor)" y="3.6001" width="1.8" height="16.8"/>
+              <rect fill="var(--mainColor)" x="22.2" y="3.6001" width="1.8" height="16.8"/>
+            </svg>          
+          </div>
+          <div class="df-lc fl1" style="width: 60px;" >
+            <input type="text" id="tableWidthInput" data-input data-input-type="float"  data-input-must="100,2000" placeholder="123" style=" text-align: center; height: 20px;">
+            <div class="df-cc" data-input-unit="auto">px</div>
+          </div>
         </div>
       </div>
     </div>
@@ -185,14 +211,30 @@
       }, '*');
     }
 
+    // 保存行列反转状态
+    let isRowColumnSwapped = false;
+
     window.onmessage = (event) => {
       const { type, data } = event.data.pluginMessage || {};
       if (type === 'init') {
         const tableInput = document.getElementById('tableInput');
         tableInput.value = data.tableText || '';
         
+        // 设置示例数据到 data-eg 属性，用于双击填充
+        if (data.exampleTableText) {
+          tableInput.setAttribute('data-eg', data.exampleTableText);
+        }
+        
+        // 保存行列反转状态
+        if (data.isRowColumnSwapped !== undefined) {
+          isRowColumnSwapped = data.isRowColumnSwapped;
+        }
+        
         if (data.fontSize) {
           document.getElementById('fontSizeInput').value = data.fontSize;
+        }
+        if (data.tableWidth) {
+          document.getElementById('tableWidthInput').value = data.tableWidth;
         }
         if (data.rowCount) {
           document.getElementById('rowCountInput').value = data.rowCount;
@@ -295,6 +337,27 @@
       return processedTableData;
     }
 
+    // 反转行列：将按列存储的数据行列互换
+    function swapRowColumn(columns) {
+      if (!columns || columns.length === 0) return columns;
+      
+      // 将按列存储转换为按行存储（转置）
+      const maxRows = Math.max(...columns.map(col => col.length));
+      const rows = [];
+      
+      for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
+        const row = [];
+        for (let colIndex = 0; colIndex < columns.length; colIndex++) {
+          row.push(columns[colIndex][rowIndex] || '');
+        }
+        rows.push(row);
+      }
+      
+      // 现在 rows 是按行存储的，直接作为新的列数据（行列互换）
+      // 原来的第一行变成第一列，原来的第二行变成第二列...
+      return rows;
+    }
+
     function sendData() {
       const tableText = document.getElementById('tableInput').value;
       const rowCount = parseInt(document.getElementById('rowCountInput').value) || 0;
@@ -305,12 +368,20 @@
       const tableData = parseTableTextToColumns(tableText);
       
       // 按行列数处理数据，生成最终用于渲染的数组
-      const processedTableData = processTableData(tableData, rowCount, colCount);
+      let processedTableData = processTableData(tableData, rowCount, colCount);
+      
+      // 如果开启行列反转，需要对数据进行反转处理
+      if (isRowColumnSwapped) {
+        processedTableData = swapRowColumn(processedTableData);
+      }
+      
+      const tableWidth = parseInt(document.getElementById('tableWidthInput').value) || 300;
       
       const data = {
         tableText,
         processedTableData,
-        fontSize
+        fontSize,
+        tableWidth
       };
       
       parent.postMessage({ 
