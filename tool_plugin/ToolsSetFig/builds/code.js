@@ -1038,7 +1038,7 @@ figma.ui.onmessage = async (message) => {
                         if(info.reduce == false){
                             C = C < 0 ? 0 : C;
                         };
-                        reCompNum(b[0],H);
+                        reCompNum(b[0],C);
                         reAnyByArray(b[0].children,Array,false,info.enters,info.nulls);
                     } else {
                         sortLRTB(comps);
