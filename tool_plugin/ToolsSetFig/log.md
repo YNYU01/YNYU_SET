@@ -1,4 +1,12 @@
-### v0.1.1 2026/1/12
+### v0.1.3 2026/1/22
+- 新增：侧边栏可查看当前版本及最后更新时间
+- 修复：表单页>数据获取/映射失灵问题
+- 优化：表单页>应用预设样式，去掉应用按钮，当选中表格时，可以直接点击样式选项来控制填充/描边
+- 优化：表单页>单元格选中操作、反转行列等，转为更方便理解的、带文字提示的图标按钮
+- 新增：表单页>随机主题改未更丰富的表格主题设置，并紧挨着表格样式设置
+- 修复：导出页>渲染队列管理，修复了为显示复选框的问题，目前可以正常地通过复选框选择标签进行删除和重新上传的操作
+
+### v0.1.2 2026/1/12
 - Optimize: Sheet page > Data Get/Map - Changed from 8 buttons for 4 data types to switching data type tabs, then clicking Get/Map；优化：表单页>数据获取/映射，原4种数据类型要8个按钮，现在改为切换数据类型标签，再点击获取/映射
 - Optimize: Sheet page > Double-click to fill sample data - Fill samples based on selected data type；优化：表单页>双击填充示例数据，按所选数据类型填充示例
 - Optimize: Sheet page > Data validation and generation settings - Merged into advanced settings and hidden by default；优化：表单页>数据校验、生成设置，合并到高级设置并默认隐藏

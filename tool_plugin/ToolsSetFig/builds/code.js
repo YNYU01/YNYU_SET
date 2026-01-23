@@ -548,6 +548,10 @@ figma.ui.onmessage = async (message) => {
             break
         };
     };
+    //刷新导出图片所需的信息
+    if( type == "refreshExportImgInfo"){
+        refreshExportImgInfo(info);
+    };
     //修改目标大小
     if ( type == "setFinalSize"){
         figma.getNodeByIdAsync(info[0])
@@ -1138,7 +1142,7 @@ figma.ui.onmessage = async (message) => {
     };
     //批量获取文本数据
     if( type == 'getText'){
-        console.log(111)
+        //console.log(111)
         let b = getSelectionMix();
         let tables = getTablesByNodes(b);
         //没有table就说明是普通的文本数据填充
@@ -1171,9 +1175,14 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         let names = [];
         if(b.length == 1){
-            b[0].children.forEach((node) => {
-                names.push([node.name]);
-            });
+            if(b[0].children){
+                b[0].children.forEach((node) => {
+                    names.push([node.name]);
+                });
+            };
+            if(b[0].type == 'TEXT'){
+                names.push([b[0].characters]);
+            }
         }else{
             b.forEach((node) => {
                 names.push([node.name]);
@@ -1217,6 +1226,7 @@ figma.ui.onmessage = async (message) => {
         try{
             tables.forEach(table => {
                 if(retype == 'theme') {
+                    /*
                         //一个饱和度、明度适中的颜色
                         let [H,S,L] = [Math.random()*360,(Math.random()*70) + 10,(Math.random()*80) + 10];
                         S = S <= 30 && L <= 50 ? S*1.2 : S;
@@ -1230,7 +1240,9 @@ figma.ui.onmessage = async (message) => {
                         let [tableBg,tableFill,tableStroke] = [`hsl(${[H,S,L].join(',')})`,`hsl(${[H,S2,L2].join(',')})`,`hsl(${[H,S3,L3].join(',')})`]                
                         //console.log([toRGB(tableBg,true),toRGB(tableFill,true),toRGB(tableStroke,true)])
                         reTableTheme(table,[tableBg,tableFill,tableStroke],textColor)
-                    return
+                    */
+                   reTableThemeByPreset(table,setdata);
+                   return;
                 };
 
                 if(retype == 'style'){
@@ -1324,7 +1336,7 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         let tables = getTablesByNodes(b);
         tables.forEach(table => {
-            //console.log(666)
+            console.log(666)
             swapTable(table);
         });
     };
@@ -2089,13 +2101,23 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         let selects = [];
         b.forEach(node => {
-            if((!info && !FRAME_TYPE.includes(node.type)) || info){
-                let frame = addFrame([],node);
+            if(node.type == 'SECTION' || FRAME_TYPE.includes(node.type)) return;
+            let frame;
+            if(info){
+                frame = addFrame([],node);
+                frame.fills = [];
+            }else{
+                let safeMain = getSafeMain(node);
+                frame = addFrame([...safeMain,node.name,[]]);
+            }
+            if(frame){
                 fullInFrameSafa(node,frame);
                 selects.push(frame);
-            };
+            }
         });
-        a.selection = selects;
+        if(selects.length > 0){
+            a.selection = selects;
+        }
     };
     //转为自动布局
     if( type == 'To Auto Layout'){
@@ -2753,20 +2775,28 @@ function sendInfo(){
             let skewX = Math.round(Math.atan(transform[0][1])/(Math.PI/180));
             let skewY = Math.round(Math.atan(transform[1][0])/(Math.PI/180));
             //console.log([skewX,skewY])
-            let column = 0;
-            let row = 0;
+            let clipColumn = 0;
+            let clipRow = 0;
             if(node.layoutGrids){
                 let [R,C] = getClipGrids(node)
-                column = C.length
-                row = R.length
+                clipColumn = C.length
+                clipRow = R.length
             };
-            column = column <= 2 ? column : 0;
-            row = row <= 2 ? row : 0;
-            data.push([n,w,h,[skewX,skewY,scaleX,scaleY],[column,row],nodeType]);
+            clipColumn = clipColumn <= 2 ? clipColumn : 0;
+            clipRow = clipRow <= 2 ? clipRow : 0;
+            let tableRow = 2;
+            let tableColumn = 2;
+            if(node.name.includes('@table') && node.children){
+                let columns = node.children.filter(item => item.name.includes('@column'));
+                let rows = columns.length > 0 ? columns[0].children.filter(item => ['@th','@td','@tn'].some(key => item.name.includes(key))) : [];
+                tableColumn = columns.length > 0 ? columns.length : 2;
+                tableRow = rows.length > 0 ? rows.length : 2;
+            }
+            data.push({n:n,w:w,h:h,transform:[skewX,skewY,scaleX,scaleY],clipRC:[clipRow,clipColumn],tableRC:[tableRow,tableColumn],nodeType:nodeType,});
         });
         postmessage([data,'selectInfo']);
     } else {
-        postmessage([[[null,null,null,[0,0,100,100],[0,0]]],'selectInfo']);
+        postmessage([[{n:null,w:null,h:null,transform:[0,0,100,100],clipRC:[0,0],tableRC:[2,2],nodeType:null}],'selectInfo']);
     };
 };
 
@@ -3103,18 +3133,29 @@ function getSafeMain(node){
 function fullInFrameSafa(keynode,frame){
     let layerIndex = keynode.parent.children.findIndex(item => item.id == keynode.id);
     keynode.parent.insertChild((layerIndex + 1),frame);
+    
+    /*frame需自行处理好父级偏移，以免重复计算
     if(frame.parent !== figma.currentPage){
         frame.x -= frame.parent.absoluteBoundingBox.x;
         frame.y -= frame.parent.absoluteBoundingBox.y;
     };
+    */
     frame.appendChild(keynode);
-    
-    if(frame.parent !== figma.currentPage){
-        keynode.x -= keynode.parent.x;
-        keynode.y -= keynode.parent.y;
-    }else{
-        keynode.x -= keynode.parent.absoluteBoundingBox.x;
-        keynode.y -= keynode.parent.absoluteBoundingBox.y;
+    //大小相同直接归零
+    if(keynode.width == frame.width && keynode.height == frame.height){
+        frame.x = keynode.x;
+        frame.y = keynode.y;
+        keynode.x = 0;
+        keynode.y = 0;
+    } else {
+        //大小不同则可能是包裹容器是用的渲染大小，要计算偏移值
+        if(frame.parent !== figma.currentPage){
+            keynode.x -= keynode.parent.x;
+            keynode.y -= keynode.parent.y;
+        }else{
+            keynode.x -= keynode.parent.absoluteBoundingBox.x;
+            keynode.y -= keynode.parent.absoluteBoundingBox.y;
+        };
     };
     return frame;
 };
@@ -3325,6 +3366,32 @@ function exportImgInfo(set){
             };
             postmessage([info,'exportImgInfo']);
         };
+        load.cancel();
+    },200);
+};
+
+//刷新导出图片所需的信息
+function refreshExportImgInfo(info){
+    let load = figma.notify('Refreshing ( ' + info.length + ' layer)',{
+        timeout: 6000,
+    });
+    setTimeout(async ()=>{
+        let infos = [];
+        for(let i = 0; i < info.length; i++){
+            let c = await figma.getNodeByIdAsync([info[i].id]);
+            if(c){
+                let u8a = await c.exportAsync({
+                    format: 'PNG',
+                    constraint: { type: 'WIDTH', value: info[i].width },
+                });
+                infos.push({
+                    id: info[i].id,
+                    index: info[i].index,
+                    u8a: u8a,
+                });
+            }
+        };
+        postmessage([infos,'refreshExportImgInfo']);
         load.cancel();
     },200);
 };
@@ -3840,7 +3907,7 @@ function addCompPro(node,layer,name,type,value){
 };
 //修改表格样式
 function reTableStyle(table,style,comps){
-    
+    //console.log(style)
     if(comps){
         comps[0].forEach(item => {
             //console.log(comps[1])
@@ -3935,6 +4002,656 @@ function reTableTheme(table,hsl,textcolor){
             })
         });
     });
+};
+// ============================================================================
+// 主题系统：颜色转换函数
+// ============================================================================
+/**
+ * HSL转RGB
+ * @param {number} h - 色相 (0-360)
+ * @param {number} s - 饱和度 (0-100)
+ * @param {number} l - 亮度 (0-100)
+ * @returns {{r: number, g: number, b: number}}
+ */
+function hslToRgb(h, s, l) {
+    h = h / 360;
+    s = s / 100;
+    l = l / 100;
+    
+    let r, g, b;
+    
+    if (s === 0) {
+        r = g = b = l;
+    } else {
+        const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        };
+        
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+    
+    return {
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
+    };
+}
+
+/**
+ * RGB转Hex
+ * @param {number} r - 红色 (0-255)
+ * @param {number} g - 绿色 (0-255)
+ * @param {number} b - 蓝色 (0-255)
+ * @returns {string}
+ */
+function rgbToHex(r, g, b) {
+    return '#' + [r, g, b].map(x => {
+        const hex = x.toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+    }).join('');
+}
+
+/**
+ * Hex转RGB（用于处理hex输出转RGB，如设置透明度时）
+ * @param {string} hex - 十六进制颜色字符串（如 '#FF0000'）
+ * @returns {{r: number, g: number, b: number, a: number}|null}
+ */
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16) / 255,
+        g: parseInt(result[2], 16) / 255,
+        b: parseInt(result[3], 16) / 255,
+        a: 1
+    } : null;
+}
+
+/**
+ * 解析HSL颜色（支持HSL对象或HSL字符串）
+ * @param {Object|string} colorInput - HSL颜色对象 {h, s, l} 或HSL字符串 "hsl(360, 100%, 50%)"
+ * @returns {{h: number, s: number, l: number}|null}
+ */
+function parseColorToHsl(colorInput) {
+    if (!colorInput) return null;
+    
+    // 如果已经是HSL对象
+    if (typeof colorInput === 'object' && colorInput.h !== undefined && colorInput.s !== undefined && colorInput.l !== undefined) {
+        return {
+            h: colorInput.h,
+            s: colorInput.s,
+            l: colorInput.l
+        };
+    }
+    
+    // 如果是HSL字符串: hsl(360, 100%, 50%) 或 hsl(360 100% 50%)
+    if (typeof colorInput === 'string') {
+        const hslMatch = colorInput.match(/hsl\(?\s*(\d+)\s*[,\s]\s*(\d+)%\s*[,\s]\s*(\d+)%\s*\)?/i);
+        if (hslMatch) {
+            return {
+                h: parseInt(hslMatch[1]),
+                s: parseInt(hslMatch[2]),
+                l: parseInt(hslMatch[3])
+            };
+        }
+    }
+    
+    return null;
+}
+
+// ============================================================================
+// 主题系统：颜色映射预设配置
+// ============================================================================
+const colorMappingPresets = {
+    'Normal': {
+        primaryTarget: 'bgColor',
+        rgbOffset: { r: 0, g: 0, b: 0 },
+        saturationRange: { min: 10, max: 90 },
+        lightnessRange: { level: [1,2,3,4,11,12,13,14,15] },
+        bgColor: {},
+        headerFillColor: { lightnessOffset: 13, saturationMultiplier: 0.8 },
+        cellFillColor: { lightnessOffset: 13, saturationMultiplier: 0.8 },
+        headerTextColor: { contrastThreshold: 50 },
+        cellTextColor: { contrastThreshold: 50 },
+        strokeColor: { lightnessOffset: 20, relativeTo: 'headerFillColor' },
+        hasHeader: true,
+        fillStyle: 2,
+        strokeStyle: 1
+    },
+    'Soft': {
+        primaryTarget: 'bgColor',
+        rgbOffset: { r: 0, g: 0, b: 0 },
+        saturationRange: { min: 10, max: 80 },
+        lightnessRange: { level: [1,2,3,4,5,11,12,13,14,15] },
+        bgColor: {},
+        headerFillColor: { lightnessOffset: 5, saturationMultiplier: 0.9 },
+        cellFillColor: { lightnessOffset: 5, saturationMultiplier: 0.9 },
+        headerTextColor: { lightnessOffset: 30, relativeTo: 'headerFillColor' },
+        cellTextColor: { lightnessOffset: 30, relativeTo: 'headerFillColor' },
+        strokeColor: { lightnessOffset: 10, relativeTo: 'headerFillColor' },
+        hasHeader: true,
+        fillStyle: 2,
+        strokeStyle: 1
+    },
+    'Fashion': {
+        primaryTarget: 'headerFillColor',
+        rgbOffset: { r: 0, g: 0, b: 0 },
+        saturationRange: { min: 50, max: 90 },
+        lightnessRange: { level: [9,10,11] },
+        bgColor: { lightnessOffset: 405, saturationMultiplier: 0.95 },
+        headerFillColor: {},
+        cellFillColor: { lightnessOffset: 10, saturationMultiplier: 1, opacity: 0.3 },
+        headerTextColor: { contrastThreshold: 50 },
+        cellTextColor: { contrastThreshold: 50 },
+        strokeColor: { lightnessOffset: 0.1, relativeTo: 'headerFillColor' },
+        hasHeader: true,
+        fillStyle: 2,
+        strokeStyle: 4
+    },
+    'Contrast': {
+        primaryTarget: null,
+        rgbOffset: { r: 0, g: 0, b: 0 },
+        saturationRange: { min: 50, max: 90 },
+        lightnessRange: { level: [9,10,11,12,13,14,15] },
+        bgColor: { color: 'white' },
+        headerFillColor: { color: 'black' },
+        cellFillColor: { lightnessOffset: 0, saturationMultiplier: 1, opacity: 0.8 },
+        headerTextColor: { contrastThreshold: 50 },
+        cellTextColor: { contrastThreshold: 50 },
+        strokeColor: { color: 'black' },
+        hasHeader: true,
+        fillStyle: 2,
+        strokeStyle: 1
+    },
+    'Vivid': {
+        primaryTarget: 'bgColor',
+        rgbOffset: { r: 0, g: 0, b: 0 },
+        saturationRange: { min: 80, max: 100 },
+        lightnessRange: { level: [1,2,3,4,5,6,7,8,9,10,11,12,13] },
+        bgColor: {},
+        headerFillColor: { lightnessOffset: 25, saturationMultiplier: 0.9 },
+        cellFillColor: { lightnessOffset: 25, saturationMultiplier: 0.9 },
+        headerTextColor: { contrastThreshold: 50 },
+        cellTextColor: { contrastThreshold: 50 },
+        strokeColor: { lightnessOffset: 10, relativeTo: 'bgColor' },
+        hasHeader: true,
+        fillStyle: 2,
+        strokeStyle: 1
+    },
+    'Pastel': {
+        primaryTarget: 'bgColor',
+        rgbOffset: { r: -10, g: -40, b: 20 },
+        saturationRange: { min: 40, max: 100 },
+        lightnessRange: { level: [12,13,14,15] },
+        bgColor: {},
+        headerFillColor: { lightnessOffset: 15, saturationMultiplier: 0.9 },
+        cellFillColor: { lightnessOffset: 15, saturationMultiplier: 0.9 },
+        headerTextColor: { contrastThreshold: 50 },
+        cellTextColor: { contrastThreshold: 50 },
+        strokeColor: { lightnessOffset: 10, relativeTo: 'bgColor' },
+        hasHeader: true,
+        fillStyle: 2,
+        strokeStyle: 1
+    },
+    'Retro': {
+        primaryTarget: 'bgColor',
+        rgbOffset: { r: 40, g: 30, b: -20 },
+        saturationRange: { min: 10, max: 70 },
+        lightnessRange: { level: [1,2,3,4,5,6,7,8,9,10,11,12,13,14] },
+        bgColor: {},
+        headerFillColor: { lightnessOffset: 30, saturationMultiplier: 0.5 },
+        cellFillColor: { lightnessOffset: 30, saturationMultiplier: 0.5 },
+        headerTextColor: { contrastThreshold: 50 },
+        cellTextColor: { contrastThreshold: 50 },
+        strokeColor: { lightnessOffset: 0, relativeTo: 'bgColor' },
+        hasHeader: true,
+        fillStyle: 2,
+        strokeStyle: 4
+    },
+    'Neon': {
+        primaryTarget: null,
+        rgbOffset: { r: 0, g: 0, b: 0 },
+        saturationRange: { min: 80, max: 100 },
+        lightnessRange: { level: [5,6,7,8,9,10,11,12] },
+        bgColor: { color: 'black' },
+        headerFillColor: { lightnessOffset: 5, saturationMultiplier: 1 },
+        cellFillColor: { lightnessOffset: 5, saturationMultiplier: 0.9 },
+        headerTextColor: { color: 'black' },
+        cellTextColor: { color: 'theme' },
+        strokeColor: { color: 'theme' },
+        hasHeader: true,
+        fillStyle: 2,
+        strokeStyle: 2
+    }
+};
+
+// ============================================================================
+// 主题系统：主题色计算函数
+// ============================================================================
+/**
+ * 计算主题颜色（优化版：支持1%单位的色阶区间和安全范围）
+ * @param {Object|string} themeColor - 主题色（HSL对象 {h, s, l} 或HSL字符串 "hsl(360, 100%, 50%)"）
+ * @param {string} themeName - 主题名称（Normal/Soft/Fashion等）
+ * @param {number} lightnessValue - 可选：亮度值（0-100），如果不提供则从主题色提取
+ * @returns {Object} 各部位颜色值（hex格式）
+ */
+function calculateThemeColors(themeColor, themeName, lightnessValue) {
+    // 获取主题预设配置
+    const mappingConfig = colorMappingPresets[themeName] || colorMappingPresets['Fashion'];
+    
+    // 解析主题色为HSL
+    const themeHsl = parseColorToHsl(themeColor);
+    if (!themeHsl) {
+        // 如果解析失败，使用默认值
+        return {
+            bgColor: '#2D2D2D',
+            headerFillColor: '#3D3D3D',
+            headerTextColor: '#FFFFFF',
+            cellFillColor: '#2D2D2D',
+            cellTextColor: '#D4D4D4',
+            strokeColor: '#666666'
+        };
+    }
+    
+    // 获取亮度值（如果提供了lightnessValue则使用，否则从主题色提取）
+    let lightness = lightnessValue !== undefined ? parseFloat(lightnessValue) : themeHsl.l;
+    
+    // 应用lightnessRange限制（基于level范围）
+    const lightnessRange = mappingConfig.lightnessRange;
+    if (lightnessRange && lightnessRange.level && lightnessRange.level.length > 0) {
+        // level=1 代表范围 0 到 100/15（约 0-6.67）
+        // level=2 代表范围 100/15 到 100*2/15（约 6.67-13.33）
+        // level=n 代表范围 100*(n-1)/15 到 100*n/15
+        const validLevels = lightnessRange.level.sort((a, b) => a - b);
+        
+        // 计算当前lightness属于哪个level
+        // level=1 代表范围 [0, 100/15)，level=2 代表范围 [100/15, 100*2/15)，...
+        // level=15 代表范围 [100*14/15, 100]
+        const getLevelFromLightness = (l) => {
+            if (l <= 0) return 1;
+            if (l >= 100) return 15;
+            // 计算level：level = floor(l * 15 / 100) + 1
+            // 但需要处理边界：l = 100/15 时应该属于 level=2
+            const level = Math.floor(l * 15 / 100) + 1;
+            return Math.min(15, Math.max(1, level));
+        };
+        
+        const currentLevel = getLevelFromLightness(lightness);
+        
+        // 如果当前level不在有效范围内，找到最近的有效level并限制到该范围
+        if (!validLevels.includes(currentLevel)) {
+            // 找到最近的有效level（优先选择较小的level，如果距离相等）
+            let nearestLevel = validLevels[0];
+            let minDiff = Math.abs(currentLevel - nearestLevel);
+            for (let i = 1; i < validLevels.length; i++) {
+                const diff = Math.abs(currentLevel - validLevels[i]);
+                if (diff < minDiff || (diff === minDiff && validLevels[i] < nearestLevel)) {
+                    minDiff = diff;
+                    nearestLevel = validLevels[i];
+                }
+            }
+            
+            // 限制到最近有效level的范围
+            // level=n 的范围是 [100*(n-1)/15, 100*n/15)
+            const levelMin = (nearestLevel - 1) * 100 / 15;
+            const levelMax = nearestLevel * 100 / 15;
+            
+            // 如果lightness小于level的最小值，限制到最小值
+            // 如果lightness大于等于level的最大值，限制到最大值（但不包含，所以用levelMax-0.01）
+            if (lightness < levelMin) {
+                lightness = levelMin;
+            } else if (lightness >= levelMax) {
+                // 限制到levelMax，但不包含（因为levelMax是下一个level的起点）
+                // 对于最后一个level（15），levelMax=100，应该包含
+                if (nearestLevel === 15) {
+                    lightness = levelMax;
+                } else {
+                    lightness = levelMax - 0.01;
+                }
+            }
+        } else {
+            // 如果当前level在有效范围内，确保lightness在该level的范围内
+            const levelMin = (currentLevel - 1) * 100 / 15;
+            const levelMax = currentLevel * 100 / 15;
+            // 确保lightness在[levelMin, levelMax)范围内
+            if (lightness < levelMin) {
+                lightness = levelMin;
+            } else if (lightness >= levelMax && currentLevel < 15) {
+                // 如果不是最后一个level，限制到levelMax（但不包含）
+                lightness = levelMax - 0.01;
+            }
+        }
+    }
+    
+    // 判断是否为灰色（饱和度很低）
+    const isGray = themeHsl.s < 5;
+    const actualHue = themeHsl.h;
+    
+    // 检查是否有RGB偏移（复古样式等）
+    const hasRetroOffset = mappingConfig.rgbOffset && (
+        (mappingConfig.rgbOffset.r !== undefined && mappingConfig.rgbOffset.r !== 0) ||
+        (mappingConfig.rgbOffset.g !== undefined && mappingConfig.rgbOffset.g !== 0) ||
+        (mappingConfig.rgbOffset.b !== undefined && mappingConfig.rgbOffset.b !== 0)
+    );
+    
+    // 应用饱和度阈值范围
+    let baseSaturation = isGray ? 0 : themeHsl.s;
+    if (mappingConfig.saturationRange) {
+        const { min, max } = mappingConfig.saturationRange;
+        baseSaturation = Math.max(min, Math.min(max, baseSaturation));
+    } else {
+        baseSaturation = isGray ? 0 : Math.max(10, Math.min(90, baseSaturation));
+    }
+    
+    // 确定主题色作用在哪个部位
+    let primaryL = lightness;
+    let primaryS = baseSaturation;
+    
+    // 计算各个部位的颜色
+    const calculateColor = (target, config) => {
+        // 如果直接指定了颜色，返回固定颜色
+        if (config && config.color === 'black') {
+            return { l: 0, s: 0, isFixed: true, fixedColor: '#000000' };
+        }
+        if (config && config.color === 'white') {
+            return { l: 100, s: 0, isFixed: true, fixedColor: '#FFFFFF' };
+        }
+        
+        if (mappingConfig.primaryTarget === target) {
+            // 如果这个部位是主题色目标，直接使用主题色
+            return { l: primaryL, s: primaryS };
+        }
+        
+        // 否则根据配置计算（基于主题色计算衍生值）
+        const configL = (config && config.lightnessOffset) || 0;
+        const configS = (config && config.saturationOffset) || 0;
+        const configSMul = (config && config.saturationMultiplier) || 1;
+        
+        let targetL = primaryL + configL;
+        let targetS = (primaryS + configS) * configSMul;
+        
+        // 限制范围（1%单位精度）
+        targetL = Math.max(0, Math.min(100, targetL));
+        targetS = Math.max(0, Math.min(100, targetS));
+        
+        // 如果是灰色，饱和度为0
+        if (isGray) targetS = 0;
+        
+        return { l: targetL, s: targetS };
+    };
+    
+    // 应用RGB偏移的辅助函数
+    const applyRgbOffset = (r, g, b, globalOffset, localOffset) => {
+        let finalR = r;
+        let finalG = g;
+        let finalB = b;
+        
+        // 如果是灰色且不是复古样式，不应用RGB偏移
+        if (isGray && !hasRetroOffset) {
+            return rgbToHex(Math.round(r), Math.round(g), Math.round(b));
+        }
+        
+        // 先应用全局偏移
+        if (globalOffset) {
+            finalR += globalOffset.r || 0;
+            finalG += globalOffset.g || 0;
+            finalB += globalOffset.b || 0;
+        }
+        
+        // 再应用局部偏移（叠加）
+        if (localOffset) {
+            finalR += localOffset.r || 0;
+            finalG += localOffset.g || 0;
+            finalB += localOffset.b || 0;
+        }
+        
+        // 限制在0-255范围内
+        finalR = Math.max(0, Math.min(255, Math.round(finalR)));
+        finalG = Math.max(0, Math.min(255, Math.round(finalG)));
+        finalB = Math.max(0, Math.min(255, Math.round(finalB)));
+        
+        return rgbToHex(finalR, finalG, finalB);
+    };
+    
+    // 计算背景色
+    const bgConfig = calculateColor('bgColor', mappingConfig.bgColor);
+    const bgColor = bgConfig.isFixed ? bgConfig.fixedColor : (() => {
+        const rgb = hslToRgb(actualHue, bgConfig.s, bgConfig.l);
+        return applyRgbOffset(rgb.r, rgb.g, rgb.b, mappingConfig.rgbOffset, mappingConfig.bgColor && mappingConfig.bgColor.rgbOffset);
+    })();
+    
+    // 计算表头填充色
+    const headerConfig = calculateColor('headerFillColor', mappingConfig.headerFillColor);
+    const headerFillColor = headerConfig.isFixed ? headerConfig.fixedColor : (() => {
+        const rgb = hslToRgb(actualHue, headerConfig.s, headerConfig.l);
+        return applyRgbOffset(rgb.r, rgb.g, rgb.b, mappingConfig.rgbOffset, mappingConfig.headerFillColor && mappingConfig.headerFillColor.rgbOffset);
+    })();
+    
+    // 计算单元格填充色
+    const cellConfig = calculateColor('cellFillColor', mappingConfig.cellFillColor);
+    const cellFillColor = cellConfig.isFixed ? cellConfig.fixedColor : (() => {
+        const rgb = hslToRgb(actualHue, cellConfig.s, cellConfig.l);
+        return applyRgbOffset(rgb.r, rgb.g, rgb.b, mappingConfig.rgbOffset, mappingConfig.cellFillColor && mappingConfig.cellFillColor.rgbOffset);
+    })();
+    
+    // 计算文字颜色
+    let headerTextColor;
+    const headerTextConfig = mappingConfig.headerTextColor;
+    if (headerTextConfig && headerTextConfig.color === 'black') {
+        headerTextColor = '#000000';
+    } else if (headerTextConfig && headerTextConfig.color === 'white') {
+        headerTextColor = '#FFFFFF';
+    } else if (headerTextConfig && headerTextConfig.color === 'theme') {
+        const themeRgb = hslToRgb(actualHue, primaryS, primaryL);
+        headerTextColor = applyRgbOffset(themeRgb.r, themeRgb.g, themeRgb.b, mappingConfig.rgbOffset, headerTextConfig && headerTextConfig.rgbOffset);
+    } else if ((headerTextConfig && headerTextConfig.relativeTo) || (headerTextConfig && headerTextConfig.lightnessOffset !== undefined)) {
+        let headerTextL, headerTextS;
+        
+        if (headerTextConfig.relativeTo) {
+            let baseL, baseS;
+            if (headerTextConfig.relativeTo === 'bgColor') {
+                baseL = bgConfig.l;
+                baseS = bgConfig.s;
+            } else if (headerTextConfig.relativeTo === 'headerFillColor') {
+                baseL = headerConfig.l;
+                baseS = headerConfig.s;
+            } else {
+                baseL = cellConfig.l;
+                baseS = cellConfig.s;
+            }
+            
+            const offset = headerTextConfig.lightnessOffset || 15;
+            if (lightness < 50) {
+                headerTextL = Math.min(100, baseL + offset);
+            } else {
+                headerTextL = Math.max(0, baseL - offset);
+            }
+            headerTextS = baseS;
+        } else {
+            const offset = (headerTextConfig && headerTextConfig.lightnessOffset) || 15;
+            if (lightness < 50) {
+                headerTextL = Math.min(100, headerConfig.l + offset);
+            } else {
+                headerTextL = Math.max(0, headerConfig.l - offset);
+            }
+            headerTextS = headerConfig.s;
+        }
+        
+        const headerTextRgb = hslToRgb(actualHue, headerTextS, headerTextL);
+        headerTextColor = applyRgbOffset(headerTextRgb.r, headerTextRgb.g, headerTextRgb.b, mappingConfig.rgbOffset, headerTextConfig && headerTextConfig.rgbOffset);
+    } else {
+        const headerThreshold = (headerTextConfig && headerTextConfig.contrastThreshold) || 50;
+        headerTextColor = headerConfig.l >= headerThreshold ? '#000000' : '#FFFFFF';
+    }
+    
+    let cellTextColor;
+    const cellTextConfig = mappingConfig.cellTextColor;
+    if (cellTextConfig && cellTextConfig.color === 'black') {
+        cellTextColor = '#000000';
+    } else if (cellTextConfig && cellTextConfig.color === 'white') {
+        cellTextColor = '#FFFFFF';
+    } else if (cellTextConfig && cellTextConfig.color === 'theme') {
+        const themeRgb = hslToRgb(actualHue, primaryS, primaryL);
+        cellTextColor = applyRgbOffset(themeRgb.r, themeRgb.g, themeRgb.b, mappingConfig.rgbOffset, cellTextConfig && cellTextConfig.rgbOffset);
+    } else if ((cellTextConfig && cellTextConfig.relativeTo) || (cellTextConfig && cellTextConfig.lightnessOffset !== undefined)) {
+        let cellTextL, cellTextS;
+        
+        if (cellTextConfig.relativeTo) {
+            let baseL, baseS;
+            if (cellTextConfig.relativeTo === 'bgColor') {
+                baseL = bgConfig.l;
+                baseS = bgConfig.s;
+            } else if (cellTextConfig.relativeTo === 'headerFillColor') {
+                baseL = headerConfig.l;
+                baseS = headerConfig.s;
+            } else {
+                baseL = cellConfig.l;
+                baseS = cellConfig.s;
+            }
+            
+            const offset = cellTextConfig.lightnessOffset || 15;
+            if (lightness < 50) {
+                cellTextL = Math.min(100, baseL + offset);
+            } else {
+                cellTextL = Math.max(0, baseL - offset);
+            }
+            cellTextS = baseS;
+        } else {
+            const offset = (cellTextConfig && cellTextConfig.lightnessOffset) || 15;
+            if (lightness < 50) {
+                cellTextL = Math.min(100, cellConfig.l + offset);
+            } else {
+                cellTextL = Math.max(0, cellConfig.l - offset);
+            }
+            cellTextS = cellConfig.s;
+        }
+        
+        const cellTextRgb = hslToRgb(actualHue, cellTextS, cellTextL);
+        cellTextColor = applyRgbOffset(cellTextRgb.r, cellTextRgb.g, cellTextRgb.b, mappingConfig.rgbOffset, cellTextConfig && cellTextConfig.rgbOffset);
+    } else {
+        const cellThreshold = (cellTextConfig && cellTextConfig.contrastThreshold) || 50;
+        cellTextColor = cellConfig.l >= cellThreshold ? '#000000' : '#FFFFFF';
+    }
+    
+    // 计算描边色
+    const strokeConfig = mappingConfig.strokeColor;
+    let strokeColor;
+    
+    if (strokeConfig && strokeConfig.color === 'black') {
+        strokeColor = '#000000';
+    } else if (strokeConfig && strokeConfig.color === 'white') {
+        strokeColor = '#FFFFFF';
+    } else if (strokeConfig && strokeConfig.color === 'theme') {
+        const themeRgb = hslToRgb(actualHue, primaryS, primaryL);
+        strokeColor = applyRgbOffset(themeRgb.r, themeRgb.g, themeRgb.b, mappingConfig.rgbOffset, strokeConfig && strokeConfig.rgbOffset);
+    } else {
+        let strokeL, strokeS;
+        
+        if (strokeConfig && strokeConfig.relativeTo) {
+            let baseL, baseS;
+            if (strokeConfig.relativeTo === 'bgColor') {
+                baseL = bgConfig.l;
+                baseS = bgConfig.s;
+            } else if (strokeConfig.relativeTo === 'headerFillColor') {
+                baseL = headerConfig.l;
+                baseS = headerConfig.s;
+            } else {
+                baseL = cellConfig.l;
+                baseS = cellConfig.s;
+            }
+            
+            const offset = strokeConfig.lightnessOffset || 15;
+            if (lightness < 50) {
+                strokeL = Math.min(100, baseL + offset);
+            } else {
+                strokeL = Math.max(0, baseL - offset);
+            }
+            strokeS = baseS;
+        } else {
+            const offset = (strokeConfig && strokeConfig.lightnessOffset) || 15;
+            if (lightness < 50) {
+                strokeL = Math.min(100, headerConfig.l + offset);
+            } else {
+                strokeL = Math.max(0, headerConfig.l - offset);
+            }
+            strokeS = headerConfig.s;
+        }
+        
+        const strokeRgb = hslToRgb(actualHue, strokeS, strokeL);
+        strokeColor = applyRgbOffset(strokeRgb.r, strokeRgb.g, strokeRgb.b, mappingConfig.rgbOffset, strokeConfig && strokeConfig.rgbOffset);
+    }
+    
+    return {
+        bgColor,
+        headerFillColor,
+        headerTextColor,
+        cellFillColor,
+        cellTextColor,
+        strokeColor
+    };
+}
+
+//按预设应用表格主题
+/**
+ * 按预设应用表格主题
+ * @param {Object} table - 表格节点
+ * @param {Object} setdata - 设置数据 {themeColor: Object|string, themeName: string, lightnessValue?: number}
+ *   themeColor: HSL对象 {h, s, l} 或HSL字符串 "hsl(360, 100%, 50%)"
+ */
+function reTableThemeByPreset(table, setdata) {
+    if (!table || !setdata) return;
+
+    const [themeName,themeColor] = setdata;
+    if (!themeColor || !themeName) return;
+
+    // 计算主题颜色
+    const themeColors = calculateThemeColors(themeColor, themeName);
+    
+    // 应用背景色和描边色
+    if(table.fills.length > 0) table.fills = [toRGB(themeColors.bgColor, true)];
+    if(table.strokes.length > 0) table.strokes = [toRGB(themeColors.strokeColor, true)];
+     
+    //插件设置了隐藏图层会被跳过，要临时开启一下
+    figma.skipInvisibleInstanceChildren = false;
+
+    //利用标签应用主题色
+    let ths = table.findAll(item => item.name.includes('@th'));
+    let tds = table.findAll(item => item.name.includes('@td') || item.name.includes('@tn'));
+
+    //console.log(ths,tds)
+    ths.forEach(item => {
+        reAnyByTags([item],[{
+            '#table.fill': themeColors.headerFillColor,
+            '#table.stroke': themeColors.strokeColor,
+        }]);
+        let datas = item.findAll(item => item.componentPropertyReferences && item.componentPropertyReferences.characters && item.componentPropertyReferences.characters.includes('--data'));
+        datas.forEach(item => {
+            item.fills = [toRGB(themeColors.headerTextColor, true)];
+        });
+    });
+    tds.forEach(item => {
+        reAnyByTags([item], [{
+            '#table.fill': themeColors.cellFillColor,
+            '#table.stroke': themeColors.strokeColor,
+        }]);
+        let datas = item.findAll(item => item.componentPropertyReferences && item.componentPropertyReferences.characters && item.componentPropertyReferences.characters.includes('--data'));
+        datas.forEach(item => {
+            item.fills = [toRGB(themeColors.cellTextColor, true)];
+        });
+    });
+
+   
+    //恢复跳过隐藏图层
+    figma.skipInvisibleInstanceChildren = true;
 };
 //调整实例数量以匹配数据长度
 function reCompNum(nodes,H,V){
@@ -4105,7 +4822,14 @@ function reAnyByObj(comps,obj,enters,nulls){
     };
 };
 //按标签修改对象属性
-function reAnyByTags(nodes,obj){
+/**
+ * @param {Array} nodes - 节点数组
+ * @param {Array} objs - 对象数组 [{tag: value}]
+ * @returns {void} 
+ */
+function reAnyByTags(nodes,objs){
+    if(!nodes || !objs) return;
+    if(nodes.length != objs.length) return;
     for(let i = 0; i < nodes.length; i++){
         let node = nodes[i]
         let hasTags = node.findAll(item => TAGS_KEY.some(key => item.name.includes(key)));
@@ -4119,10 +4843,10 @@ function reAnyByTags(nodes,obj){
             
             tags.forEach(tag => {
                 //console.log(tag,obj[i][tag])
-                if(obj[i][tag]){
+                if(objs[i][tag]){
                     
                     try {
-                        setByTags(layer,tag.split('.')[1],obj[i][tag]);
+                        setByTags(layer,tag.split('.')[1],objs[i][tag]);
                     } catch (error) {
                         console.log(error);
                         figma.clientStorage.getAsync('userLanguage')

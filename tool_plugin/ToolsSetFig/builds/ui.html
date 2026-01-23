@@ -4,7 +4,7 @@
   <meta name="description" content="网页内容简介，转发时显示">
   <title data-en-text="『YNYU_SET』 ToolsSet Fig">『云即·工具集（Figma版）』</title>
   <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -99,7 +99,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -484,7 +484,7 @@ input[type="checkbox"]:checked + .tab-top{
 
 [data-side]{
   left: 0;
-  z-index: 11;
+  z-index: 12;
   
 }
 
@@ -803,7 +803,7 @@ input[type="checkbox"]:checked + .tab-top{
 [data-btn-dblclick]::after{
   content: '●●';
   position: absolute;
-  font-size: 6px;
+  font-size: 6px !important;
   top: 0;
   right: 2px;
 }
@@ -1581,14 +1581,9 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   text-align: center;
 }
 
-[data-export-pickall="false"] [data-export-pick],
-[data-export-pickall="true"] [data-sizeinfo]
+[data-export-pickall="false"] [data-export-pick]
 {
   display: none;
-}
-
-[data-export-pick]{
-  transform: translateY(50%);
 }
 
 [data-export-realsize="true"]{
@@ -1747,6 +1742,48 @@ input[type="checkbox"]:checked + [for="fullimg"]{
 }
 [data-radio]:hover [data-tablestyle-name]{
   display: flex;
+}
+
+[data-cell-moreset]:hover{
+  background: var(--boxGry);
+}
+
+[data-cellpick-rect],
+[data-cell-moreset]:hover [data-cellpick-rect-hold]{
+  display: none;
+}
+
+[data-cell-moreset]:hover [data-cellpick-rect]{
+  display: block;
+}
+
+[data-mapget-type]{
+  height: fit-content;
+}
+
+[data-mapget-type] [data-radio]{
+  height: 18px;
+}
+
+[data-mapget-type] [data-radio-main="false"]{
+  padding-right: 2px;
+}
+
+[data-table-theme]{
+  width: 68px;
+  z-index: 3;
+}
+
+[data-language="Zh"] [data-table-theme]{
+  width: 50px;
+}
+
+[data-table-theme] input{
+  font-size: 11px;
+}
+
+[data-table-theme] [data-option]{
+  padding-left: 4px;
 }
 
 [for="export-more"]{
@@ -3105,31 +3142,41 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
       <div class="h100 df-ffc" style="justify-content: space-between;">
         <div ></div>
-        <div class="df-ffc gap8">
-          <!-- 用户登录入口 -->
-          <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
-            <div data-user-name style="display: none;" data-en-text="USER">用户</div>
-            <div data-user-login-text data-en-text="LOG IN (Beta)">登录（测试）</div>
-            <div class="pad2 mar-l4 wh-16" style=" --fill:#2e2e2e;">
-              <btn-login></btn-login>
+        <div class="df-ffc gap8 ">
+          <div class="df-ffc">
+            <!-- 用户登录入口 -->
+            <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
+              <div data-user-name style="display: none;" data-en-text="USER">用户</div>
+              <div data-user-login-text data-en-text="LOG IN (Beta)">登录（测试）</div>
+              <div class="pad2 mar-l4 wh-16" style=" --fill:#2e2e2e;">
+                <btn-login></btn-login>
+              </div>
             </div>
+            <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" rel="noopener noreferrer" target="_blank" class="df-cc" data-btn="help">
+              <div data-en-text="HELP DOC">帮助文档</div>
+              <div class="wh-20" style=" --mainColor:#2e2e2e; --arrow-w:2; --arrow-ro: -45deg;">
+                <btn-goto-mini></btn-goto-mini>
+              </div>
+            </a>
+        </div>
+          <!--版本信息-->
+          <div data-version-info class="df-sc font-s10 op6" style="transform: skewX(-10deg);">
+            <div class="df-lc">
+              <div>Version&nbsp;</div>
+              <div data-version-text>--</div>
+            </div>
+            <div data-version-time>--</div>
           </div>
-          <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" rel="noopener noreferrer" target="_blank" class="df-cc" data-btn="help">
-            <div data-en-text="HELP DOC">帮助文档</div>
-            <div class="wh-20" style=" --mainColor:#2e2e2e; --arrow-w:2; --arrow-ro: -45deg;">
-              <btn-goto-mini></btn-goto-mini>
-            </div>
-          </a>
         </div>
       </div>
       <div data-mainset-side-box class="df-sc">
         <a href="https://www.ynyuset.cn" rel="noopener noreferrer" target="_blank" class="df-lc fl1 font-s10 gap2 pos-r"
         data-tips="set" data-tips-y="top" data-tips-x="left" 
-        style="--tips-gap: -16px; color: var(--mainColor);"
+        style="--tips-gap: -16px; color: var(--mainColor); flex: 1;"
         data-tips-text="🔗https://www.ynyuset.cn" data-tips-text-en="🔗https://www.ynyuset.cn">
-          ©2024-2025 
-          <set-en data-any="en" class="fl0" style="height: 20px; margin-top: -2px;"></set-en>
-          <set-zh data-any="zh" class="fl0" style="height: 20px; margin-top: -3px;"></set-zh>
+          ©2024-2026 
+          <set-en data-any="en" class="fl0" style="width: fit-content; height: 20px; margin-top: -2px;"></set-en>
+          <set-zh data-any="zh" class="fl0" style="width: fit-content; height: 20px; margin-top: -3px;"></set-zh>
         </a>
         <div data-mainset-side class="df-lc gap4">
           <div id="btn-theme-1" class="pad2 bod-r4 bsb">
@@ -3156,7 +3203,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </div>
   </div>
   <!--侧边栏遮罩-->
-  <div data-side-mask class="wh100 pos-a" style="display: none;  z-index: 10">
+  <div data-side-mask class="wh100 pos-a" style="display: none;  z-index: 11">
     <div class="wh100" style="background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);"></div>
   </div>
   
@@ -3383,8 +3430,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
             </div>
           </div>
           <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (默认)</div>    
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
+            <div class="w100 df-cc" data-skill-btn data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (默认)</div>    
+            <div class="w100 df-cc" data-skill-btn data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
           </div>
           <!--步骤2-->
           <div class="w100 df-lc op6"  style="padding:10px 0 4px 0; vertical-align: baseline;"> 
@@ -3393,18 +3440,21 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
             &nbsp;&nbsp;
             <span data-any="vw300" data-en-text="name/type/size..." class="op6"> 目标格式和文件大小等</span>
           </div>
-          <div class="df-cc fl0" style="width: 120px; height: 12px; border-radius: 8px 8px 0 0;">
-            <input id="export-more" checked type="checkbox" 
+          <div class="df-cc fl0 pos-r" 
+          data-tips="auto" data-tips-x="center" data-tips-y="top"
+          data-tips-text="管理渲染队列" data-tips-text-en="Manage rendering queue"
+          style="--xx: 60px; width: 120px; height: 12px; border-radius: 8px 8px 0 0;">
+            <input id="export-more" type="checkbox" 
             onchange="showNext(this,'data-exportset-more','flex');
             if(this.checked){
-              exportTagsBox.setAttribute('data-export-pickall','true');
+              DOM.exportTagsBox.setAttribute('data-export-pickall','true');
             }else{
-              exportTagsBox.setAttribute('data-export-pickall','false');
+              DOM.exportTagsBox.setAttribute('data-export-pickall','false');
             }">
             <label for="export-more" class="wh100 df-cc show-next pos-r">
             </label>
           </div>
-          <div data-exportset-more class="w100">
+          <div data-exportset-more class="w100" style="display: none;">
             <div class="w100 df-sc">
               <div class="df-lc gap8">
                 <div class="df-lc gap2" data-export-delete data-btn="text">
@@ -3445,9 +3495,9 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
               </div>
             </div>
             <!--清空-->
-            <div data-export-tags-delete class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;">
+            <!--div data-export-tags-delete class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;">
               <btn-close></btn-close>
-            </div>
+            </div-->
           </div>
         </div>
         <div data-export-any data-btn="main" class="df-cc" data-en-text="EXPORT">导出</div>
@@ -3463,8 +3513,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
             <div data-any="vw300" data-help="editor" class="fl0 df-cc">?</div>
           </div>
           <div class="w100 df-cc gap2">
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Editable">上传(可编辑)</div>    
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
+            <div class="w100 df-cc" data-skill-btn data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Editable">上传(可编辑)</div>    
+            <div class="w100 df-cc" data-skill-btn data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
           </div>
           <div data-editor-mix class="df-ffc wh100 pos-r ovy noscrollbar">
             <div data-editor-viewBox data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc wh100 tex-pixelbg"></div>
@@ -3630,8 +3680,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
               </div>
             </div>
             <div class="w100 df-cc gap2 mar-b10">
-              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Variable To Sheet">从变量更新表</div>    
-              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Variable">从表更新变量</div>
+              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Variable To Sheet">从变量更新表</div>    
+              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Variable">从表更新变量</div>
             </div>
             <!--步骤2-->
             <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
@@ -3697,8 +3747,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
               </div>
             </div>
             <div class="w100 df-cc gap2 mar-b10">
-              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Style To Sheet">从样式更新表</div>    
-              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
+              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Style To Sheet">从样式更新表</div>    
+              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
             </div>
             <!--步骤2-->
             <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
@@ -3783,7 +3833,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100">
         <div class="wh100 df-ffc ovy noscrollbar pad10 bsb" style="max-width: 560px; align-items: center; padding-bottom: 0;">
           <div class="wh100 df-ffc bsb">
-            <!--步骤2-->
+            <!--步骤1-->
             <div class="w100 df-lc op6"  style="padding:4px 0 6px 0;vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Mapping data/attribute" >批量映射数据/属性</span>
@@ -3819,25 +3869,25 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   ▶ 
                 </div>
                 <div data-radio-value="Text" data-mapget-type class="wh100 df-lc gap4 ovx noscrollbar" data-scroll="false">
-                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Name" data-radio-main="false">
+                  <div class="df-lc" data-radio data-radio-data="Name" data-radio-main="false">
                     <div class="df-cc wh-18 mar-l2">
                       <map-name></map-name>
                     </div>
                     <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Layers Name">图层名</div>
                   </div>
-                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Text" data-radio-main="true">
+                  <div class="df-lc" data-radio data-radio-data="Text" data-radio-main="true">
                     <div class="df-cc wh-18 mar-l2">
                       <map-text></map-text>
                     </div>
                     <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Text Props">文本(属性)</div>
                   </div>
-                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Pro" data-radio-main="false">
+                  <div class="df-lc" data-radio data-radio-data="Pro" data-radio-main="false">
                     <div class="df-cc wh-18 mar-l2">
                       <map-pro></map-pro>
                     </div>
                     <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Any Props">组件属性</div>
                   </div>
-                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Tag" data-radio-main="false">
+                  <div class="df-lc" data-radio data-radio-data="Tag" data-radio-main="false">
                     <div class="df-cc wh-18 mar-l2">
                       <map-tag></map-tag>
                     </div>
@@ -3900,32 +3950,6 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 </div>
               </div>
             </div>
-            <!--div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Names">图层命名映射</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Texts">文本数据映射</div>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Properties">组件属性映射</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Tags">标签属性映射</div>
-              </div>
-              <div class="w100 df-cc">
-                <span data-skill-gap>
-                  <span>---</span>
-                  <span data-en-text="Get datas from selection">从所选图层返回数据</span>
-                  <span>---</span>
-                </span>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Get Names">获取图层命名</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Get Texts">获取文本数据</div>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Get Properties">获取组件属性</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Get Tags">获取标签属性</div>
-              </div>
-
-            </div-->
             
             <div class="w100 df-cc gap2" >
               <div data-mapget-get class="w100 df-cc" data-btn="main2" data-en-text="Collect Data">数据获取</div>
@@ -3933,98 +3957,19 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
             </div>
             <div style="min-height: 4px;"></div>
 
-            <!--步骤1-->
-            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
+            <!--步骤2-->
+            <div class="w100 df-lc op6 pos-r"  style="padding:10px 0 4px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Get a basic table" >创建基础表格模板</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="and make it more diverse" class="op6">并进一步定制化设计</span>
+              <span data-any="vw300" data-en-text="by data or sample" class="op6">根据上方/示例数据</span>
+              <a href="https://www.figma.com/community/widget/1584862622370729565" target="_blank" class="pos-a pointer font-s10" 
+              style="color: var(--code1); right: 0;" data-en-text="Same widget &gt;">相关小部件 &gt;</a>
             </div>
             <!--预设表格样式-->
             <div data-tableset-thtd class="df-lc w100">
               <div class="df-lc gap4 w100 " style="max-width: 100%; flex-wrap: wrap;">
-                <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,290px)">
-                  <div data-any="vw240" id="chk-tablestyle" data-tips="auto" class="fl0 pos-r wh-22" 
-                  data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
-                  data-tips-text="表格样式预设" 
-                  data-tips-text-en="Table style preset">
-                    <tab-tablestyle></tab-tablestyle>                 
-                  </div>
-                  <span data-any="vw240" >▶</span>
-                  <div data-tablestyle-box class="df-lc gap2 ovx noscrollbar" data-scroll="false" style="height: 60px;">
-                    <div data-tablestyle-set="fill" class="df-lc w100" style="gap:2px;" data-radio-value="2">
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                          </svg>
-                        </div>
-                        <div class="font-s10" style="right: auto;" data-tablestyle-name data-en-text="No Fill">无填充</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="16" height="16" x="2" y="2" rx="3" fill="var(--fill,var(--mainColor))"/>
-                          </svg>
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="All Fill">全填充</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="true">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 14V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V14H3ZM3 10H17V7H3V10Z"/>
-                          </svg>    
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="R-Space">横间隔</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C3.86182 18 3.72697 17.9857 3.59668 17.959C3.46664 17.9324 3.34118 17.8933 3.22168 17.8428C2.50378 17.5392 2 16.8285 2 16V4C2 3.17153 2.50378 2.46081 3.22168 2.15723C3.34118 2.10669 3.46664 2.06765 3.59668 2.04102C3.72697 2.01433 3.86182 2 4 2H16ZM13.7832 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H13.7832V17ZM6.34766 17H9.43555V3H6.34766V17Z"/>
-                          </svg>   
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="C-Space">竖间隔</div>         
-                      </div>
-                    </div>
-                    <div class="fl0" style="width: 1px; height: 30px; background: var(--boxBod);"></div>
-                    <div data-tablestyle-set="bod" class="df-lc w100" style="gap:2px;" data-radio-value="4">
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="true">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                          </svg>
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="No Stroke">无描边</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"/>
-                          </svg>  
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="All Stroke">全描边</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 13V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V13H3ZM3 12H17V8H3V12ZM4 3C3.44772 3 3 3.44772 3 4V7H17V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                          </svg>   
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="R-Stroke">仅横线</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H9.5V3H4ZM10.5 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H10.5V17Z"/>
-                          </svg> 
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="C-Stroke">仅竖线</div>         
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-                <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,110px);">
+                <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px;">
                   <div data-any="vw240" id="chk-selectcomp" data-tips="auto" class="fl0 pos-r wh-22" 
                   data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
                   data-tips-text="表格组件来源" data-tips-text-en="Table component source">
@@ -4033,7 +3978,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   <span data-any="vw240" >▶</span>
                   <div data-selectcomp-box class="df-lc ovx noscrollbar" data-scroll>
                     <div data-selectcomp-mix class="df-lc gap4">
-                      <span data-en-text="Data:">数据:</span>
+                      <span data-any="vw300" data-en-text="Data">数据</span>
+                      <span data-en-text="@td/tn:">@td/tn:</span>
                       <span data-selectcomp-2 data-en-text="Auto">自动</span>
                       <div></div>
                       <div></div>
@@ -4041,76 +3987,339 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       <label for="tableheader-chk" class="df-cc check wh-14">
                         <btn-check></btn-check>
                       </label>
-                      <span data-en-text="Header:">表头:</span>
+                      <span data-any="vw300" data-en-text="Header">表头</span>
+                      <span data-en-text="@th:">@th:</span>
                       <span data-selectcomp-1 data-en-text="Auto">自动</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div> 
-            <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
-              <!--div class="df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Only Create @th/td">仅创建组件</div-->
-              <div data-create-table="sample" class="w100 df-cc" data-btn="main2" data-en-text="Sample Table">创建表格(示例)</div>
-              <div data-create-table="data" class="w100 df-cc" data-btn="main2" data-en-text="Data Table">创建表格(数据)</div>
-              <!--div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
-                <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
-                <label for="table-more" data-more-mini class="wh100 df-cc btn-more fl0 pad4">
-                  <btn-more></btn-more>
-                </label>
-              </div-->
+            <div class="w100 df-cc gap2" style="margin: 4px 0 8px 0;">
+              <div data-create-table class="w100 df-cc" data-btn="main2" data-en-text="Create Table">创建表格</div>
             </div>
-            
-            <div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Make Cell-Comp">单元格化组件</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Row Column Swap">反转行列</div>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-lc w100">
-                  <div class="df-lc fl1" style="background: var(--boxGry); border: 1px solid var(--boxBod); border-radius: 4px 0 0 4px;">
-                    <input style="text-align: center; border-radius: 3px 0 0 3px;" id="table-row-num" type="text" value="4" data-input data-input-type="int" data-input-must="2,1000">
-                    <input style="text-align: center; border-left: 0; border-radius:0 3px 3px 0;" id="table-column-num" type="text" value="3" data-input data-input-type="int" data-input-must="2,1000">
+            <div class="df-lc gap4 w100 " style="max-width: 100%; flex-wrap: wrap;">
+              <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,200px)">
+                <div data-any="vw240" id="chk-tablestyle" data-tips="auto" class="fl0 pos-r wh-22" 
+                data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                data-tips-text="表格样式选项，可选中表格后单击直接应用" 
+                data-tips-text-en="Table style preset options,can click to apply too">
+                  <tab-tablestyle></tab-tablestyle>                 
+                </div>
+                <span data-any="vw240" >▶</span>
+                <div data-tablestyle-box class="df-lc gap2 ovx noscrollbar" data-scroll="false" style="height: 60px;">
+                  <div data-tablestyle-set="fill" class="df-lc w100" style="gap:1px;" data-radio-value="2">
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                        </svg>
+                      </div>
+                      <div class="font-s10" style="right: auto;" data-tablestyle-name data-en-text="No Fill">无填充</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="16" height="16" x="2" y="2" rx="3" fill="var(--fill,var(--mainColor))"/>
+                        </svg>
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="All Fill">全填充</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="true">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 14V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V14H3ZM3 10H17V7H3V10Z"/>
+                        </svg>    
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="R-Space">横间隔</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C3.86182 18 3.72697 17.9857 3.59668 17.959C3.46664 17.9324 3.34118 17.8933 3.22168 17.8428C2.50378 17.5392 2 16.8285 2 16V4C2 3.17153 2.50378 2.46081 3.22168 2.15723C3.34118 2.10669 3.46664 2.06765 3.59668 2.04102C3.72697 2.01433 3.86182 2 4 2H16ZM13.7832 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H13.7832V17ZM6.34766 17H9.43555V3H6.34766V17Z"/>
+                        </svg>   
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="C-Space">竖间隔</div>         
+                    </div>
                   </div>
-                  <div class="df-cc fl1" data-btn="skill-main" data-en-text="Set R/C"
-                  style="border-left: 0; border-radius:0 4px 4px 0; min-width: 60px;">
-                    设置行/列
+                  <div class="fl0" style="width: 1px; height: 30px; background: var(--boxBod);"></div>
+                  <div data-tablestyle-set="bod" class="df-lc w100" style="gap:1px;" data-radio-value="4">
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="true">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                        </svg>
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="No Stroke">无描边</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"/>
+                        </svg>  
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="All Stroke">全描边</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 13V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V13H3ZM3 12H17V8H3V12ZM4 3C3.44772 3 3 3.44772 3 4V7H17V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                        </svg>   
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="R-Stroke">仅横线</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H9.5V3H4ZM10.5 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H10.5V17Z"/>
+                        </svg> 
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="C-Stroke">仅竖线</div>         
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,245px)">
+                <div data-any="vw240" id="chk-tablestyle" data-tips="auto" class="fl0 pos-r wh-22" 
+                data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                data-tips-text="表格主题选项" 
+                data-tips-text-en="Table style preset options,can click to apply too">
+                  <tab-tabletheme></tab-tabletheme>                 
+                </div>
+                <span data-any="vw240" >▶</span>
+                <div data-table-theme-color data-color data-color-hex="#888888" 
+                  data-color-rgb="rgb(136,136,136)" data-color-hsl="hsl(0,0%,53%)" 
+                  data-color-hsv="hsv(0,0%,53%)" data-colorcard-x="left" 
+                  data-colorcard-y="top" class="df-lc fl1 pos-r gap4" style="z-index: 1;">
+                    <div data-any="vw240" data-input="colorpick" class="wh-20 pointer">
+                      <btn-color></btn-color>
+                    </div>
+                    <input id="colorvalue-3" class="fl1" type="text" data-input="hex" value="#888888">
+                    <div data-any="vw300" data-input="colortype" data-colortype-mode="hex" class="colortype"></div>
+                    <card-colorpick></card-colorpick>
+                </div>
+                <div class="fl0" style="width: 1px; height: 30px; background: var(--boxBod);"></div>
+                <div class="df-lc pos-r gap4" data-table-theme data-select data-select-close data-select-value="普通">
+                  <input id="select-value-4" type="text" data-select-input readonly value="普通" data-en-input="Normal">
+                  <input id="select-show-4" data-select-pick=" w×h" type="checkbox">
+                  <label for="select-show-4" class="show-next wh100 pos-a" style="top:0; right: 0;"></label>
+                  <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: normal; display: none; bottom:24px;">
+                    <div data-option="option" data-option-main="true" data-option-value="普通" data-en-text="Normal">普通</div>
+                    <div data-option="option" data-option-main="false" data-option-value="柔和" data-en-text="Soft">柔和</div>
+                    <div data-option="option" data-option-main="false" data-option-value="潮流" data-en-text="Fashion">潮流</div>
+                    <div data-option="option" data-option-main="false" data-option-value="对比" data-en-text="Contrast">对比</div>
+                    <div data-option="option" data-option-main="false" data-option-value="鲜艳" data-en-text="Vivid">鲜艳</div>
+                    <div data-option="option" data-option-main="false" data-option-value="粉嫩" data-en-text="Pastel">粉嫩</div>
+                    <div data-option="option" data-option-main="false" data-option-value="复古" data-en-text="Retro">复古</div>
+                    <div data-option="option" data-option-main="false" data-option-value="霓虹" data-en-text="Neon">霓虹</div>
                   </div>
                 </div>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="Add Row">增加一行</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="Reduce Row">减少一行</div>
+              </div>
+            </div>
+            <div class="w100 df-cc gap2" style="margin: 4px 0 4px 0;">
+              <div data-setheme-table class="w100 df-cc" data-btn="main2" data-en-text="Apply Theme">应用主题</div>
+            </div>
+            <!--步骤3-->
+            <div class="w100 df-lc op6"  style="padding:10px 0 4px 0; vertical-align: baseline;"> 
+              <span>▼&nbsp;</span>
+              <span data-en-text="Convenient features for @table" >表格便捷操作</span>
+            </div>
+            <div class=" df-lc gap4 upload-set mar-b4" style="flex-wrap: wrap;">
+              <div data-cell-moreset="pick-1" data-btn="text" class="df-ffc bod-r4 pos-r" 
+              data-skill-btn data-tips="auto" data-tips-y="top" data-tips-x="left"
+              data-tips-text="单元格所在行" data-tips-text-en="Rows of Cells"
+              style="padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%" viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect data-cellpick-rect-hold="1-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="23" width="36" height="6"/>
+                  <rect data-cellpick-rect="1-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="23" width="36" height="6">
+                    <animate attributeName="width" values="12;12;12;36;36;36;36;36;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="x" values="14;14;14;2;2;2;2;2;14;14;14;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect-hold="1-2" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="36" height="6"/>
+                  <rect data-cellpick-rect="1-2" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="36" height="6">
+                    <animate attributeName="width" values="12;12;12;36;36;36;36;36;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect x="2" y="11" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect x="14" y="23" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect opacity="0.5" x="2" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect data-cellpick-rect-hold="1-1" x="2" y="23" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="1-1" x="2" y="23" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="12;12;12;36;36;36;36;36;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="x" values="14;14;14;2;2;2;2;2;14;14;14;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect-hold="1-2" x="2" y="11" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="1-2" x="2" y="11" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="12;12;12;36;36;36;36;36;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                </svg>                  
+              </div>
+              <div data-cell-moreset="pick-2" data-btn="text" class="df-ffc bod-r4 pos-r"
+              data-skill-btn  data-tips="auto" data-tips-y="top" data-tips-x="center"
+              data-tips-text="单元格区域行" data-tips-text-en="Rows of Block"
+              style="padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%"viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect data-cellpick-rect-hold="2-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="36" height="18"/>
+                  <rect data-cellpick-rect="2-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="36" height="18">
+                    <animate attributeName="width" values="12;12;24;24;36;36;36;36;36;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="6;6;18;18;18;18;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect x="2" y="11" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect x="14" y="23" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect opacity="0.5" x="2" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect data-cellpick-rect-hold="2-1" x="2" y="11" width="36" height="18" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="2-1" x="2" y="11" width="36" height="18" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="12;12;24;24;36;36;36;36;36;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="6;6;18;18;18;18;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                </svg>                  
+              </div>
+              <div data-cell-moreset="pick-3" data-btn="text" class="df-ffc bod-r4 pos-r" 
+              data-skill-btn data-tips="auto" data-tips-y="top" data-tips-x="center"
+              data-tips-text="单元格框选" data-tips-text-en="Cells Block"
+              style="padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%" viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect data-cellpick-rect-hold="3-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="24" height="18"/>
+                  <rect data-cellpick-rect="3-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="24" height="18">
+                    <animate attributeName="width" values="0;0;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="0;0;18;18;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect x="2" y="11" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect x="14" y="23" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect opacity="0.5" x="2" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect data-cellpick-rect-hold="3-1" x="2" y="11" width="24" height="18" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="3-1" x="2" y="11" width="24" height="18" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="0;0;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="0;0;18;18;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                </svg>                  
+              </div>
+              <div data-cell-moreset="pick-4" data-btn="text" class="df-ffc bod-r4 pos-r" 
+              data-skill-btn data-tips="auto" data-tips-y="top" data-tips-x="center"
+              data-tips-text="单元格连选" data-tips-text-en="Cells Inline"
+              style="padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%" viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect data-cellpick-rect-hold="4-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="23" width="24" height="6"/>
+                  <rect data-cellpick-rect-hold="4-2" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="17" width="36" height="6"/>
+                  <rect data-cellpick-rect-hold="4-3" fill="var(--mainColor)" fill-opacity="0.4" x="14" y="11" width="24" height="6"/>
+                  <rect data-cellpick-rect="4-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="23" width="24" height="6">
+                    <animate attributeName="width" values="0;0;0;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect="4-2" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="17" width="36" height="6">
+                    <animate attributeName="width" values="0;0;36;36;36;36;36;36;36;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect="4-3" fill="var(--mainColor)" fill-opacity="0.4" x="14" y="11" width="24" height="6">
+                    <animate attributeName="width" values="12;24;24;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect x="14" y="11" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect x="14" y="23" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect opacity="0.5" x="2" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect data-cellpick-rect-hold="4-1" x="2" y="23" width="24" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect-hold="4-2" x="2" y="17" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect-hold="4-3" x="14" y="11" width="24" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="4-1" x="2" y="23" width="24" height="6" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="0;0;0;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect="4-2" x="2" y="17" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="0;0;36;36;36;36;36;36;36;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect="4-3" x="14" y="11" width="24" height="6" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="12;24;24;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                </svg>                  
+              </div>
+              <div data-cell-moreset="swap" data-btn="text" class="df-ffc bod-r4 pos-r"
+              data-skill-btn  data-tips="auto" data-tips-y="top" data-tips-x="center"
+              data-tips-text="反转行列" data-tips-text-en="Row Column Swap"
+              style="padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%" viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect data-cellpick-rect-hold="5-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="12" height="18"/>
+                  <rect data-cellpick-rect-hold="5-2" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="36" height="6"/>
+                  <rect data-cellpick-rect="5-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="12" height="18">
+                    <animate attributeName="width" values="12;12;12;12;36;36;36;36;36;36;36;36;12;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="18;18;18;18;6;6;6;6;6;6;6;6;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect opacity="0.5" x="2" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect data-cellpick-rect-hold="5-1" x="2" y="11" width="12" height="18" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect-hold="5-2" x="2" y="11" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="5-1" x="2" y="11" width="12" height="18" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="12;12;12;12;36;36;36;36;36;36;36;36;12;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="18;18;18;18;6;6;6;6;6;6;6;6;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <path d="M38 24V25C38 27.2091 36.2091 29 34 29H33" stroke="var(--mainColor)" stroke-width="1.5"/>
+                </svg>                                  
+              </div>
+              <div data-cell-pick="tocomp" data-btn="text" class="df-ffc bod-r4 pos-r" 
+              data-skill-btn data-tips="auto" data-tips-y="top" data-tips-x="right"
+              data-tips-text="单元格化组件" data-tips-text-en="Make Cell-Comp"
+              style="--xx: 40px; padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%" viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect opacity="0.5" x="4" y="13" width="32" height="14" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <path d="M4 11H36" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <path d="M4 29H36" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <path d="M2 13V27" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <path d="M38 13V27" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <path fill="var(--mainColor)" d="M14.0241 17.1502C14.3744 16.8 14.9423 16.7999 15.2926 17.1502C15.6427 17.5005 15.6428 18.0685 15.2926 18.4187L13.6403 20.0701L15.2926 21.7225C15.6428 22.0727 15.6427 22.6407 15.2926 22.991C14.9423 23.3413 14.3744 23.3412 14.0241 22.991L12.3717 21.3387L10.7194 22.991C10.3691 23.3413 9.80113 23.3413 9.45082 22.991C9.10085 22.6407 9.10062 22.0726 9.45082 21.7225L11.1022 20.0701L9.45082 18.4187C9.10061 18.0685 9.1008 17.5005 9.45082 17.1502C9.80113 16.7999 10.3691 16.7999 10.7194 17.1502L12.3717 18.8016L14.0241 17.1502Z" />
+                  <path fill="var(--mainColor)" d="M21.7464 17.1499C22.0967 16.7996 22.6646 16.7996 23.0149 17.1499C23.3652 17.5002 23.3652 18.0682 23.0149 18.4185L21.3626 20.0699L23.0149 21.7232C23.365 22.0735 23.3652 22.6415 23.0149 22.9917C22.6647 23.3417 22.0966 23.3418 21.7464 22.9917L20.094 21.3384L18.4427 22.9908C18.0924 23.3411 17.5244 23.3411 17.1741 22.9908C16.8238 22.6404 16.8238 22.0725 17.1741 21.7222L18.8255 20.0699L17.1741 18.4185C16.8238 18.0682 16.8238 17.5002 17.1741 17.1499C17.5244 16.7998 18.0924 16.7997 18.4427 17.1499L20.094 18.8013L21.7464 17.1499Z" />
+                  <path fill="var(--mainColor)" d="M29.4692 17.1504C29.8195 16.8001 30.3874 16.8001 30.7377 17.1504C31.0877 17.5008 31.0879 18.0688 30.7377 18.419L29.0854 20.0704L30.7377 21.7227C31.0879 22.0729 31.0877 22.6409 30.7377 22.9912C30.3874 23.3415 29.8195 23.3415 29.4692 22.9912L27.8168 21.3389L26.1645 22.9912C25.8142 23.3416 25.2463 23.3416 24.8959 22.9912C24.5458 22.6409 24.5457 22.0729 24.8959 21.7227L26.5473 20.0704L24.8959 18.419C24.5457 18.0687 24.5458 17.5008 24.8959 17.1504C25.2463 16.8001 25.8142 16.8001 26.1645 17.1504L27.8168 18.8018L29.4692 17.1504Z" />
+                </svg>                                                 
+              </div>
+            </div>
+            <div class="df-lc w100" data-skill-more data-selects-must>
+              <div class="df-lc w100">
+                <div class="df-lc fl1">
+                  <input style="text-align: center; border-radius: 3px 0 0 3px;" id="table-row-num" type="text" value="4" data-input data-input-type="int" data-input-must="2,1000">
+                  <input style="text-align: center; border-left: 0; border-radius:0 3px 3px 0;" id="table-column-num" type="text" value="3" data-input data-input-type="int" data-input-must="2,1000">
                 </div>
-                
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="All Border">全描边</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="None Border">全不描边</div>
-                </div>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="All Fill">全填充</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="None Fill">全不填充</div>
+                <div class="df-cc fl1" data-skill-btn data-btn="skill-main" data-en-text="Set R/C">
+                  设置行/列
                 </div>
               </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Random Theme">随机主题</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Apply Preset">应用样式</div>
+              <div class="df-lc w100" >
+                <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-skill-btn data-btn="skill-main" data-en-text="Add Row">增加一行</div>
+                <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-skill-btn data-btn="skill-main" data-en-text="Reduce Row">减少一行</div>
               </div>
-              <div class="w100 df-cc">
-                <span data-skill-gap>
-                  <span>---</span>
-                  <span data-en-text="To xxx@th/td elements"> 基于xxx@th/td元素</span>
-                  <span>---</span>
-                </span>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Rows of Cells">单元格所在行</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Rows of Block">单元格区域行</div>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Cells Block">单元格框选</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Cells Inline">单元格连选</div>
-              </div>
+              
             </div>
             
             <div style="min-height: 10px;"></div>
@@ -4243,8 +4452,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-sc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div data-pixel-copy class="df-cc" data-btn="skill-main" data-en-text="Pixel As Copy">保留原图层</div>
-                      <div data-pixel-overwrite class="df-cc" data-btn="skill-main" data-en-text="Pixel Overwrite">覆写原图层</div>
+                      <div data-pixel-copy class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Pixel As Copy">保留原图层</div>
+                      <div data-pixel-overwrite class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Pixel Overwrite">覆写原图层</div>
                     </div>
                   </div>
                 </div>
@@ -4297,7 +4506,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     <span class="tip1" data-en-text="Edit directly or Ctrl+C copy the layer, then click here~">直接编辑, 或Ctrl+C复制图层, 然后点击此处~</span>
                     <span class="tip2" data-en-text="Ctrl+V paste here and edit the data from clipboard,click again to cancel~">Ctrl+V粘贴, 即可基于剪贴板数据变形,再次点击取消~</span>
                   </label>
-                  <div class="df-cc mar-b4" data-skewscale-copy data-btn="skill-main" data-en-text="Replace Clipboard Data">替换剪贴板数据</div-->
+                  <div class="df-cc mar-b4" data-skewscale-copy data-skill-btn data-btn="skill-main" data-en-text="Replace Clipboard Data">替换剪贴板数据</div-->
 
                   <!--div data-skewscale-view-box class="w100 df-cc pos-r tex-pixelbg mar-0a mar-b8 ovh" style="max-width: 240px;">
                     <div data-skewscale-box class="w100 pos-r fl0 df-cc ">
@@ -4364,8 +4573,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="New Scale Mark">新缩放标记</div>
-                    <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="All Reset">重置全部</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="New Scale Mark">新缩放标记</div>
+                    <div data-reset-all class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="All Reset">重置全部</div>
                   </div>
                 </div>
                 <div class="fl1"  data-skill-sec="ClipByGrid">
@@ -4406,8 +4615,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-sc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Image@2x Clip">栅格化裁切</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Component Clip">组件化裁切</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Image@2x Clip">栅格化裁切</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Component Clip">组件化裁切</div>
                     </div>
                   </div>
                 </div>
@@ -4417,16 +4626,16 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Clear Filter">清除调整</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Raw Size">还原尺寸</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Clear Filter">清除调整</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Raw Size">还原尺寸</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="High Pass">高反差保留</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Extract Edges">提取边缘</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="High Pass">高反差保留</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Extract Edges">提取边缘</div>
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Crop Blank">多余空白裁剪</div>  
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Crop Current Display">当前显示裁剪</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Crop Blank">多余空白裁剪</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Crop Current Display">当前显示裁剪</div>  
                     </div>
                     <div data-skill-gap>
                       <span>----</span>
@@ -4435,11 +4644,11 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       <span>----</span>
                     </div> 
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Same Filter">统一调整参数</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Same Full">统一填充模式</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Same Filter">统一调整参数</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Same Full">统一填充模式</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Same Clip Position">统一裁剪位置</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Same Clip Position">统一裁剪位置</div>
                       <div class="w100" data-any="vw240"></div>  
                     </div>
                   </div>
@@ -4457,7 +4666,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                   <div class="df-sc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By SVG">按SVG拆分</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Split By SVG">按SVG拆分</div>
                   </div>
                   <div class="df-ffc bod-d gap4 pad4 mar-b4" >
                     <div data-split-tags class="w100 df-lc">
@@ -4523,7 +4732,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                   <div class="df-sc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By Conditions">按条件拆分</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Split By Conditions">按条件拆分</div>
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Symbol">分割符</div>
@@ -4535,7 +4744,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                   <div class="df-sc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By Symbol">按关键词拆分</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Split By Symbol">按关键词拆分</div>
                   </div>
                 </div>
                 <div class="fl1"  data-skill-sec="MergeText">
@@ -4563,8 +4772,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Merge Keep Style">保留样式合并</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Merge Character">快速合并</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Merge Keep Style">保留样式合并</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Merge Character">快速合并</div>  
                     </div>
                   </div>
                 </div>
@@ -4574,19 +4783,19 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Arrange By Ratio">自动重排</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Auto Constraints">简单约束</div>  
+                      <div class="df-cc" data-btn-dblclick data-skill-btn data-btn="skill-main" data-en-text="Arrange By Ratio">自动重排</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Auto Constraints">简单约束</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Reversing Index">反转顺序</div>
-                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Exchange Position">调换位置</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Reversing Index">反转顺序</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-en-text="Exchange Position">调换位置</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Divide To Frame">拆分到容器</div>
-                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Put In Frame">包裹到容器</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-en-text="Divide To Frame">拆分到容器</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-en-text="Put In Frame">包裹到容器</div>
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="To Auto Layout">转自动布局</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="To Auto Layout">转自动布局</div>
                       <div class="w100" data-any="vw240"></div>
                     </div>
                     <div data-skill-gap>
@@ -4596,16 +4805,16 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       <span>----</span>
                     </div> 
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Clone to Fill">填充到容器</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Absolute & Fill">自适应容器</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Clone to Fill">填充到容器</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Absolute & Fill">自适应容器</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Heavy Chain">重链组件</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Rebind Style">重绑样式</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Heavy Chain">重链组件</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Rebind Style">重绑样式</div>
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Clone Comp.">复制母组件</div>
-                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Release Comp.">解除母组件</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Clone Comp.">复制母组件</div>
+                      <div class="df-cc" data-btn-dblclick data-skill-btn data-btn="skill-main" data-en-text="Release Comp.">解除母组件</div>  
                     </div>
                   </div>
                 </div>
@@ -4618,8 +4827,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Stroke To Shapes">描边转堆叠层</div>
-                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Break Apart Path">拆分复合路径</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Stroke To Shapes">描边转堆叠层</div>
+                      <div class="df-cc" data-btn-dblclick data-skill-btn data-btn="skill-main" data-en-text="Break Apart Path">拆分复合路径</div>
                     </div>
                   </div>
                 </div>
@@ -4629,8 +4838,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Clone As SVG">以SVG克隆</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Get SVG">获取SVG</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Clone As SVG">以SVG克隆</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Get SVG">获取SVG</div>
                     </div>
                   </div>
                 </div>
@@ -4641,14 +4850,14 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more data-selects-must="false">
                       <input type="file" id="input-qrcode-file" accept="image/*" style="display: none;">
-                      <label for="input-qrcode-file"  data-fileinput="false" data-btn="skill-main" class="h100 df-cc font-12 pos-r">
+                      <label for="input-qrcode-file"  data-fileinput="false" data-skill-btn data-btn="skill-main" class="h100 df-cc font-12 pos-r">
                         <div data-fileinput-text data-en-text="Up Local QR"> 上传本地 </div>
                         <div data-fileinput-filename></div>
                         <div class="df-cc pos-a op6 mar-a0" style="width: 2ch; right: 0.5ch;">
                           <btn-add></btn-add>
                         </div>
                       </label>
-                      <div class="df-cc" data-btn="skill-main" data-selects-must data-en-text="Up QR Layer">上传所选</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-selects-must data-en-text="Up QR Layer">上传所选</div>
                   </div>
                   </div>
                   <div class="df-lc" data-skill-line data-selects-must="false">
@@ -4771,7 +4980,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                   <div class="df-cc" data-skill-more data-selects-must="false">
-                    <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -4818,8 +5027,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-ffc df-cc" data-skill-line data-selects-must="false">
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Shadow-stroke Css">代码示例</div>
-                      <div class="df-cc" data-btn-dblclick data-selects-must data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Shadow-stroke Css">代码示例</div>
+                      <div class="df-cc" data-btn-dblclick data-selects-must data-skill-btn data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
                     </div>
                   </div>
                 </div>
@@ -4935,7 +5144,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                             </div>
                           </label>
                         </div>
-                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/tool_web/SVdG/index.html" target="_blank">
+                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/tool_web/SVdG/index.html" target="_blank">
                           <div data-autobod-name data-en-text="Custom >" style="text-decoration: underline;">自定义></div>
                         </a>
                       </div>
@@ -4943,7 +5152,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     
                   </div>
                   <div class="df-lc" data-skill-line data-selects-must="false">
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Border Example( Coming soon~ )">生成示例（敬请期待~）</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Border Example( Coming soon~ )">生成示例（敬请期待~）</div>
                   </div>
                 </div>
                 <div class="fl1"  data-skill-sec="PaintStyle">
@@ -4965,7 +5174,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                         <li data-li-style="2" data-en-text="Table header must with: name | color " >表头固定用：name,color</li>
                       </ul>
                     </div>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Create Paint Style">创建样式</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Create Paint Style">创建样式</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -5030,27 +5239,27 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/other/jsQR_correct.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/other/jsQR_correct.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@28c1de6344719c18bc361a549a0a19e291afac31/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@5dfe161a80d44a9f116954284c0eb94dcf7cd256/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
-let skillSecInfo = [
+let SKILL_SEC_INFO = [
   {
     id: 'InSituRasterize',
     name: ["原地栅格化","in-situ rasterize"],
@@ -5109,7 +5318,7 @@ let skillSecInfo = [
   },
 ]
 
-let toUserTips = {
+let TO_USER_TIPS_TV = {
   worktime: ["🔒下班时间不建议工作~","🔒You shouldn't work after work!"],
   random: [
     ["椅子说：你该起来走走了~","Your chair says: time to walk~"],
@@ -5125,7 +5334,7 @@ let toUserTips = {
 
 let richDoc = new RICH_DOC();
 
-let helpData = {
+let HELP_DATA = {
   create: richDoc.doc.toolsset.create.help,
   export: richDoc.doc.toolsset.export.help,
   editor: richDoc.doc.toolsset.editor.help,
@@ -5360,7 +5569,7 @@ const DOM = (() => {
     skillStar: () => queryAll('[data-skill-star]'),
     skillAllModel: () => queryAll('[data-skillmodule]'),
     skillStarModel: () => query('[data-skillmodule="Useful & Starts"]'),
-    skillBtnMain: () => queryAll('[data-btn="skill-main"]'),
+    skillBtnMain: () => queryAll('[data-skill-btn]'),
 
     createTagsBox: () => query('[data-create-tags]'),
     cataloguesBox: () => query('[data-create-catalogues]'),
@@ -5382,8 +5591,8 @@ const DOM = (() => {
     chkSelectcomp: () => getById('chk-selectcomp'),
     createAnyBtn: () => query('[data-create-any]'),
     exportAnyBtn: () => query('[data-export-any]'),
-    createSampleTableBtn: () => query('[data-create-table="sample"]'),
-    createDataTableBtn: () => query('[data-create-table="data"]'),
+    createDataTableBtn: () => query('[data-create-table]'),
+    applyThemeTableBtn: () => query('[data-setheme-table]'),
     tableStyleSetFill: () => query('[data-tablestyle-set="fill"]'),
     tableStyleSetBod: () => query('[data-tablestyle-set="bod"]'),
     tableHeaderChk: () => getById('tableheader-chk'),
@@ -5573,28 +5782,6 @@ const State = (() => {
   }
 })();
 
-const getState = (key) => State.get(key);
-
-const setState = (key, value) => State.set(key, value);
-
-let skillModel = State.get('skillModel');
-let isSkillScroll = State.get('isSkillScroll');
-let skillsSearch = State.get('skillsSearch');
-let tableStyle = State.get('tableStyle');
-let CreateImageInfo = State.get('createImageInfo');
-let CreateTableInfo = State.get('createTableInfo');
-let CataloguesInfo = State.get('cataloguesInfo');
-let ExportImageInfo = State.get('exportImageInfo');
-let SelectNodeInfo = State.get('selectNodeInfo');
-let EditorInfo = State.get('editorInfo');
-let isResize = State.get('isResize');
-let textareaLineNum = State.get('textareaLineNum');
-let imageType = State.get('imageType');
-let tableType = State.get('tableType');
-let zyType = State.get('zyType');
-let tableTitleMust = State.get('tableTitleMust');
-let frameNmaeSelect = State.get('frameNmaeSelect');
-
 function createImageObjectURL(data, format = 'png'){
   if (!data) return null;
   const blob = data instanceof Blob ? data : new Blob([data], {type: `image/${format}`});
@@ -5720,6 +5907,7 @@ window.addEventListener('message',(message)=>{
         case 'qrLayerView': addQRLayerView(info);break
         case 'linkStyleInfo': reLinkStyleInfo(info);break
         case 'styleGroupInfo': reStyleGroupInfo(info);break
+        case 'refreshExportImgInfo': refreshExportImgInfo(info);break
       };
     }
   };
@@ -5729,8 +5917,8 @@ function addToUserTips(kind){
   let languge = ROOT.getAttribute('data-language');
   let num = languge == 'Zh' ? 0 : 1;
   let languge2 = languge == 'Zh' ? 'en' : 'zh';
-  let random = toUserTips.random[Math.floor(Math.random()*toUserTips.random.length)]
-  if(kind && kind == 'worktime') random = toUserTips.worktime;
+  let random = TO_USER_TIPS_TV.random[Math.floor(Math.random()*TO_USER_TIPS_TV.random.length)]
+  if(kind && kind == 'worktime') random = TO_USER_TIPS_TV.worktime;
   DOM.TV_text.textContent = random[num];
   DOM.TV_text.setAttribute('data-'+ languge2 +'-text',random[1 - num]);
   DOM.TV_text.setAttribute('data-'+ languge.toLowerCase() +'-text',random[num]);
@@ -5753,8 +5941,8 @@ function addSkillTitle(){
     return;
   }
 
-  if (!skillSecInfo || !Array.isArray(skillSecInfo)) {
-    console.warn('addSkillTitle: skillSecInfo not found or not an array');
+  if (!SKILL_SEC_INFO || !Array.isArray(SKILL_SEC_INFO)) {
+    console.warn('addSkillTitle: SKILL_SEC_INFO not found or not an array');
     return;
   }
 
@@ -5763,7 +5951,7 @@ function addSkillTitle(){
 
     let secid = secnode.getAttribute('data-skill-sec');
     if(secid){
-      let info = skillSecInfo.find(item => item && item.id == secid);
+      let info = SKILL_SEC_INFO.find(item => item && item.id == secid);
 
       if (!info || !info.name) {
         console.warn(`addSkillTitle: info not found for secid: ${secid}`);
@@ -5839,17 +6027,26 @@ function updateClipSettings(clipRC){
       item.setAttribute('data-radio-main','false');
     });
 
-    const clipHItem = clipHSet.querySelector(`[data-radio-data="${clipRC[1]}"]`);
-    const clipWItem = clipWSet.querySelector(`[data-radio-data="${clipRC[0]}"]`);
+    const clipHItem = clipHSet.querySelector(`[data-radio-data="${clipRC[0]}"]`);
+    const clipWItem = clipWSet.querySelector(`[data-radio-data="${clipRC[1]}"]`);
     if (clipHItem) clipHItem.setAttribute('data-radio-main','true');
     if (clipWItem) clipWItem.setAttribute('data-radio-main','true');
   }
 };
 
-function reSelectInfo(info){
-  SelectNodeInfo = info;
+function updateTableSettings(tableRC){
+  const tableRowSet = getElementMix('table-row-num');
+  const tableColumnSet = getElementMix('table-column-num');
+  if (tableRowSet && tableColumnSet) {
+    tableRowSet.value = tableRC[0];
+    tableColumnSet.value = tableRC[1];
+  }
+};
 
-  if(info[0][0] !== null){
+function reSelectInfo(info){
+  State.set('selectNodeInfo',info);
+
+  if(info[0].n !== null){
     ROOT.setAttribute('data-selects','true');
     updateSelectInfoDisplay(info);
   } else{
@@ -5858,12 +6055,15 @@ function reSelectInfo(info){
 
   if(info.length == 1){
 
-    if (info[0][3]) {
-      updateTransformControls(info[0][3]);
+    if (info[0].transform) {
+      updateTransformControls(info[0].transform);
     }
 
-    if (info[0][4]) {
-      updateClipSettings(info[0][4]);
+    if (info[0].clipRC) {
+      updateClipSettings(info[0].clipRC);
+    }
+    if (info[0].tableRC) {
+      updateTableSettings(info[0].tableRC);
     }
   };
 
@@ -5883,11 +6083,11 @@ function reRootSize(info){
 };
 
 function addSearchs(){
-  let skillMain = document.querySelectorAll('[data-btn="skill-main"]')
+  let skillMain = document.querySelectorAll('[data-skill-btn]')
   let language = ROOT.getAttribute('data-language');
   skillMain.forEach(skill => {
-    let zh = language == 'Zh' ? skill.textContent : skill.getAttribute('data-zh-text') || null;
-    let en = skill.getAttribute('data-en-text') || null;
+    let zh = language == 'Zh' ? skill.textContent : skill.getAttribute('data-zh-text') || skill.getAttribute('data-tips-text') || null;
+    let en = skill.getAttribute('data-en-text') || skill.getAttribute('data-tips-text-en') || null;
     if(!en && !zh){
       zh = '保留原图层';
       en = 'Pixel As Copy';
@@ -5905,19 +6105,24 @@ function addSearchs(){
       });
     };
     let path = [`${page[0]} > ... > ${zh}`,`${page[1]} > ... > ${en}`];
-    if(key) skillsSearch.push({name:[zh,en],page:page,key:key,path:path,});
+    if(key) {
+      let newSkillsSearch = [...State.get('skillsSearch'),{name:[zh,en],page:page,key:key,path:path,}];
+      State.set('skillsSearch',newSkillsSearch);
+    };
   });
 
-  skillSecInfo.forEach(sec => {
+  SKILL_SEC_INFO.forEach(sec => {
     let page = ['更多功能','more tools'];
     let key = [...sec.name[0].replace(/[a-z0-9\s]/gi,'').split(''),...sec.name[1].toLowerCase().split(' ')]
     let path = [`更多功能 > ${sec.name[0]}`,`more tools > ${sec.name[1]}`]
-    skillsSearch.push({name:sec.name,page:page,key:key,path:path,});
+    let newSkillsSearch = [...State.get('skillsSearch'),{name:sec.name,page:page,key:key,path:path,}];
+    State.set('skillsSearch',newSkillsSearch);
   });
 
-  skillsSearch = language == 'Zh' ? skillsSearch.sort((a,b) => a.name[0].localeCompare(b.name[0])) : skillsSearch.sort((a,b) => a.name[1].localeCompare(b.name[1]));
+  let newSkillsSearch = language == 'Zh' ? State.get('skillsSearch').sort((a,b) => a.name[0].localeCompare(b.name[0])) : State.get('skillsSearch').sort((a,b) => a.name[1].localeCompare(b.name[1]));
+  State.set('skillsSearch',newSkillsSearch);
 
-  skillsSearch.forEach((list,index) => {
+  newSkillsSearch.forEach((list,index) => {
     let turnto = document.createElement('div');
     turnto.setAttribute('data-search-turnto',index);
     turnto.className = 'df-sc';
@@ -5947,6 +6152,7 @@ function addSearchs(){
       DOM.dailogSearchBox.parentNode.style.display = 'none';
       viewPage(list.page[1]);
       let viewskill = getElementMix('data-page-id="page"').querySelector(`[data-en-text="${list.name[1]}"]`);
+      if(!viewskill) viewskill = getElementMix('data-page-id="page"').querySelector(`[data-tips-text-en="${list.name[1]}"]`);
       if(!viewskill) return;
       viewskill.scrollIntoView({behavior:"smooth",block: "center"});
       setTimeout(()=>{
@@ -6167,7 +6373,7 @@ const saveWindowSize = debounce((w, h) => {
 }, DELAY.RESIZE_SAVE);
 
 DOM.btnResize.addEventListener('mousedown',(event)=>{
-  isResize = true;
+  State.set('isResize',true);
   let reNodeStyle = document.defaultView.getComputedStyle(ROOT);
   reStartW = parseInt(reNodeStyle.width,10);
   reStartH = parseInt(reNodeStyle.height,10);
@@ -6175,7 +6381,7 @@ DOM.btnResize.addEventListener('mousedown',(event)=>{
   reStartY = event.clientY;
 
   document.addEventListener('mousemove',(e)=>{
-    if(isResize){
+    if(State.get('isResize')){
       let w = reStartW + e.clientX - reStartX;
       let h = reStartH + e.clientY - reStartY;
       w = Math.max(w,UI_MINI[0]);
@@ -6186,7 +6392,7 @@ DOM.btnResize.addEventListener('mousedown',(event)=>{
     }
   });
   document.addEventListener('mouseup',()=>{
-    isResize = false;
+    State.set('isResize',false);
   })
 });
 
@@ -6423,7 +6629,8 @@ async function handleJsonFile(content, createname, shouldCreateTag = true){
 
       jsonZyData.forEach(item => {
         if(item && item.zyType){
-          CataloguesInfo.push(item);
+          let newCataloguesInfo = [...State.get('cataloguesInfo'),item];
+          State.set('cataloguesInfo',newCataloguesInfo);
         }
       });
 
@@ -6461,29 +6668,29 @@ async function executeFileFormatStrategy(format, content, createname, shouldCrea
 async function detectFileType(files, filesTypes){
   if (!files || files.length === 0) return null;
 
-  const possibleImageExts = filesTypes.filter(ext => imageType.length > 0 && imageType.includes(ext));
+  const possibleImageExts = filesTypes.filter(ext => State.get('imageType').includes(ext));
   if (possibleImageExts.length > 0 && files.length > 0) {
 
     const realyType = await tool.TrueImageFormat(files[0]);
-    if (realyType && imageType.includes(realyType)) {
+    if (realyType && State.get('imageType').includes(realyType)) {
 
-      if (filesTypes.every(item => imageType.includes(item))) {
+      if (filesTypes.every(item => State.get('imageType').includes(item))) {
         return 'image';
       }
     }
   }
 
-  if (imageType.length > 0 && filesTypes.every(item => imageType.includes(item))) {
+  if (filesTypes.every(item => State.get('imageType').includes(item))) {
     return 'image';
-  } else if (tableType.length > 0 && filesTypes.every(item => tableType.includes(item))) {
+  } else if (filesTypes.every(item => State.get('tableType').includes(item))) {
     return 'table';
-  } else if (zyType.length > 0 && filesTypes.every(item => zyType.includes(item))) {
+  } else if (filesTypes.every(item => State.get('zyType').includes(item))) {
     return 'zy';
   }
 
   if (files.length > 0) {
     const realyType = await tool.TrueImageFormat(files[0]);
-    if (realyType && imageType.length > 0 && imageType.includes(realyType)) {
+    if (realyType && State.get('imageType').includes(realyType)) {
       return 'image';
     }
   }
@@ -6530,7 +6737,7 @@ DOM.userText.parentNode.querySelector('[data-close]').addEventListener('click',(
   DOM.userText.setAttribute('data-textarea-wrap','false');
 
   let linenums = getElementMix('data-textarea-linenum');
-  textareaLineNum = 20;
+
   linenums.innerHTML = `<div>1</div>
   <div>2</div>
   <div>3</div>
@@ -6557,10 +6764,10 @@ DOM.userText.addEventListener('scroll',()=>{
   let numbox = getElementMix('data-textarea-linenum-box');
   let linenums = getElementMix('data-textarea-linenum');
   numbox.scrollTop = DOM.userText.scrollTop;
-  if(textareaLineNum*16 < DOM.userText.scrollTop + DOM.userText.offsetHeight){
+  if(State.get('textareaLineNum')*16 < DOM.userText.scrollTop + DOM.userText.offsetHeight){
     let addnum = 100;
     if (addnum < 0) return;
-    for(let i = textareaLineNum; i < textareaLineNum + addnum; i++){
+    for(let i = State.get('textareaLineNum'); i < State.get('textareaLineNum') + addnum; i++){
       let linenum = document.createElement('div');
       let num = (i + 1)
       linenum.textContent = num;
@@ -6572,7 +6779,8 @@ DOM.userText.addEventListener('scroll',()=>{
       }
       linenums.appendChild(linenum);
     };
-    textareaLineNum += addnum;
+    let newLinenums = State.get('textareaLineNum') + addnum
+    State.set('textareaLineNum',newLinenums);
   };
 });
 
@@ -6613,7 +6821,7 @@ userText_BtnDown.addEventListener('mouseleave',()=>{
 
 getElementMix('data-imgnum-up').addEventListener('click',()=>{
   let oldvalue = DOM.imgnumSet.value * 1;
-  let maxnum = ExportImageInfo.length;
+  let maxnum = State.get('exportImageInfo').length;
   DOM.imgnumSet.value = (oldvalue + 1) <= maxnum ? (oldvalue + 1) : maxnum;
   if(DOM.imgnumSet.value == oldvalue) return;
   DOM.imgnumSet.parentNode.setAttribute('data-int-value',DOM.imgnumSet.value);
@@ -6689,7 +6897,7 @@ function getFinalInfo(info,isname){
 };
 
 function createImageStrategy(){
-  const images = getFinalInfo(CreateImageInfo);
+  const images = getFinalInfo(State.get('createImageInfo'));
   if (images.length === 0) {
     console.warn('createImageStrategy: No images to create');
     return;
@@ -6701,24 +6909,24 @@ function createImageStrategy(){
 };
 
 function createTableStrategy(){
-  const tables = getFinalInfo(CreateTableInfo,true);
+  const tables = getFinalInfo(State.get('createTableInfo'),true);
   if (tables.length === 0) {
     console.warn('createTableStrategy: No tables to create');
     return;
   }
-  tipsAll(MESSAGES.READING, CreateTableInfo.length * 100);
+  tipsAll(MESSAGES.READING, tables.length * 100);
   setTimeout(()=>{
     toolMessage([tables,'createFrame'],PLUGINAPP);
   },100);
 };
 
 function createZyStrategy(){
-  const zys = getFinalInfo(CataloguesInfo,true);
+  const zys = getFinalInfo(State.get('cataloguesInfo'),true);
   if (zys.length === 0) {
     console.warn('createZyStrategy: No catalogues to create');
     return;
   }
-  tipsAll(MESSAGES.READING, CataloguesInfo.length * 100);
+  tipsAll(MESSAGES.READING, zys.length * 100);
   setTimeout(()=>{
     toolMessage([zys,'createZy'],PLUGINAPP);
   },100);
@@ -6760,15 +6968,15 @@ DOM.skillAllModel.forEach(item =>{
   item.appendChild(icon);
 
   item.addEventListener('mouseenter',() => {
-    isSkillScroll = false;
+    State.set('isSkillScroll',false);
     let modelid = item.getAttribute('data-skillmodule');
-    let index = skillModel.findIndex(skill => skill.includes(modelid));
+    let index = State.get('skillModel').findIndex(skill => skill.includes(modelid));
     let tab = DOM.skillTypeBox.querySelector(`[data-radio-data="${(index + 1)}"]`);
     tab.click();
   });
 });
 DOM.skillTypeBox.addEventListener('mouseenter',() => {
-  isSkillScroll = true;
+  State.set('isSkillScroll',true);
 });
 
 function loadImage(file){
@@ -6875,15 +7083,16 @@ async function addImageTags(files,isCreate){
   tipsAll(MESSAGES.READING, sizeAll/1024/1024 * 100);
   for(let i = 0; i < files.length; i++){
     let file = files[i];
-    let name = file.name.split('.').filter(item => !imageType.includes(item.toLowerCase())).join('_');
+    let name = file.name.split('.').filter(item => !State.get('imageType').includes(item.toLowerCase())).join('_');
     try{
       let image = await loadImage(file);
       let cuts = await tool.CUT_IMAGE(image);
-      CreateImageInfo.push({n:name,w:image.width,h:image.height,cuts:cuts});
+      let newCreateImageInfo = [...State.get('createImageInfo'),{n:name,w:image.width,h:image.height,cuts:cuts}];
+      State.set('createImageInfo',newCreateImageInfo);
       if(i == files.length - 1){
-        addTag('image',CreateImageInfo);
+        addTag('image',newCreateImageInfo);
         if(isCreate){
-          toolMessage([CreateImageInfo,'createImage'],PLUGINAPP);
+          toolMessage([newCreateImageInfo,'createImage'],PLUGINAPP);
         }
       }
     } catch (error) {
@@ -6926,7 +7135,7 @@ async function addTableText(files,isTags){
         tipsAll(MESSAGES.TABLE_DATA_ERROR, 3000);
         return;
       }
-      CreateTableInfo = tableObj;
+      State.set('createTableInfo',tableObj);
 
       DOM.convertTags.click();
     } catch (error) {
@@ -6938,11 +7147,11 @@ async function addTableText(files,isTags){
 
     let tableArray = tableTextToArray(tableText);
     let tableObj = tableArrayToObj(tableArray);
-    CreateTableInfo = tableObj;
+    State.set('createTableInfo',tableObj);
   }
 }
 function addTableTags(){
-  addTag('table',CreateTableInfo);
+  addTag('table',State.get('createTableInfo'));
 };
 async function addZyCatalogue(files,codetype){
 
@@ -6962,7 +7171,7 @@ async function addZyCatalogue(files,codetype){
       const lastDotIndex = file.name.lastIndexOf('.');
       const format = lastDotIndex > 0 ? file.name.substring(lastDotIndex + 1).toLowerCase() : '';
 
-      if (!format || !zyType.includes(format)) {
+      if (!format || !State.get('zyType').includes(format)) {
         hasError = true;
         continue;
       }
@@ -7049,12 +7258,12 @@ function addTagMain(tag,index,type){
   return main;
 };
 
-function addSelect(index,options,def){
+function addSelect(index,options,def,width = 72){
   let select = document.createElement('div');
   select.className = 'df-lc pos-r';
   select.setAttribute('data-select','');
   select.setAttribute('data-select-value',def);
-  select.setAttribute('style','gap: 4px; width: 72px;');
+  select.setAttribute('style','gap: 4px; width: ' + width + 'px;');
   let value = document.createElement('input');
   value.setAttribute('data-select-input','');
   value.setAttribute('readonly','');
@@ -7184,15 +7393,16 @@ function createZyTagStrategy(info){
   items.forEach(item => {
     if(item && item.zyType){
 
-      const existingIndex = CataloguesInfo.findIndex(cat =>
+      const existingIndex = State.get('cataloguesInfo').findIndex(cat =>
         cat.zyName === item.zyName && cat.zyType === item.zyType
       );
 
       let index;
       if(existingIndex === -1){
 
-        CataloguesInfo.push(item);
-        index = CataloguesInfo.length - 1;
+        let newCataloguesInfo = [...State.get('cataloguesInfo'),item];
+        State.set('cataloguesInfo',newCataloguesInfo);
+        index = newCataloguesInfo.length - 1;
       } else {
 
         index = existingIndex;
@@ -7211,7 +7421,9 @@ function createZyTagStrategy(info){
       name.className = 'nobod fl1';
       name.addEventListener('change',() => {
         inputMust(name,['text',item.zyName]);
-        CataloguesInfo[index].zyName = name.value;
+        let newCataloguesInfo = State.get('cataloguesInfo');
+        newCataloguesInfo[index].zyName = name.value;
+        State.set('cataloguesInfo',newCataloguesInfo);
       });
       main.appendChild(name);
 
@@ -7245,10 +7457,11 @@ function createZyTagStrategy(info){
 };
 
 function createExportImgTagStrategy(info){
-  ExportImageInfo.push(...info);
-  getElementMix('data-imgnum-max').textContent = ExportImageInfo.length;
+  let newExportImageInfo = [...State.get('exportImageInfo'),...info];
+  State.set('exportImageInfo',newExportImageInfo);
+  getElementMix('data-imgnum-max').textContent = newExportImageInfo.length;
   DOM.exportTagsBox.innerHTML = '<!--动态填充-->';
-  ExportImageInfo.forEach((layer,index) => {
+  newExportImageInfo.forEach((layer,index) => {
     let tag = document.createElement('div');
     let main = addTagMain(tag,index,'export');
     let name = document.createElement('input');
@@ -7294,14 +7507,14 @@ function createExportImgTagStrategy(info){
     let exportset = document.createElement('div');
     exportset.className = 'df-lc';
     exportset.setAttribute('style','gap: 4px; flex-wrap: wrap;');
-    let formatSelect = addSelect(index,['PNG','JPG','JPEG','WEBP'],layer.format)
+    let formatSelect = addSelect(index,['PNG','JPG','JPEG','WEBP'],layer.format,60)
     exportset.appendChild(formatSelect);
 
     let sizesetbox = document.createElement('div');
     sizesetbox.className = 'df-lc';
     sizesetbox.setAttribute('data-int-value','');
     sizesetbox.setAttribute('data-export-size',index);
-    sizesetbox.setAttribute('style','width: 82px;');
+    sizesetbox.setAttribute('style','width: 70px;');
     let sizeset = document.createElement('input');
     sizeset.type = 'text';
     sizeset.id = 'export-size-' + index;
@@ -7345,13 +7558,16 @@ function createExportImgTagStrategy(info){
     view.className = 'btn-op';
     view.addEventListener('click',()=>{
       DOM.imgnumSet.value = index + 1;
-      let img = layer.compressed ? layer.compressed : layer.u8a;
+
+      let currentLayer = State.get('exportImageInfo')[index];
+      if (!currentLayer) return;
+      let img = currentLayer.compressed ? currentLayer.compressed : currentLayer.u8a;
       DOM.dailogImgBox.innerHTML = '';
       DOM.dailogImg.style.display = 'flex';
       let viewimg = document.createElement('img');
-      let ismaxW = layer.width >= layer.height ? 'true' : 'false';
+      let ismaxW = currentLayer.width >= currentLayer.height ? 'true' : 'false';
       viewimg.setAttribute('data-ismaxW',ismaxW);
-      viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
+      viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + currentLayer.format}));
       DOM.dailogImgBox.appendChild(viewimg);
       viewimg.setAttribute('data-imgnum-pick',index + 1);
     });
@@ -7428,7 +7644,7 @@ function addEditorView(info){
 }
 
 document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
-  let picks = exportTagsBox.querySelectorAll('[data-export-pick]');
+  let picks = DOM.exportTagsBox.querySelectorAll('[data-export-pick]');
   picks.forEach(item => {
     let input = item.querySelector('input');
     if(e.target.checked){
@@ -7442,47 +7658,77 @@ document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
 });
 
 getElementMix('data-export-delete').addEventListener('click',()=>{
-  let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
+  let picks = DOM.exportTagsBox.querySelectorAll('[data-export-pick="true"]');
   let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
 
-  picknums.sort((a,b) => b - a).forEach(num => {
-    ExportImageInfo.splice(num,1);
+  let pickall = getElementMix('exportset-pickall');
+  if(pickall.checked || picknums.length == State.get('exportImageInfo').length){
+    State.set('exportImageInfo',[]);
+    pickall.checked = false;
+    DOM.exportTagsBox.innerHTML = '<!--动态填充-->';
+    return;
+  }
 
+  let newExportImageInfo = [...State.get('exportImageInfo')];
+  picknums.sort((a,b) => b - a).forEach(num => {
+    newExportImageInfo.splice(num,1);
   });
+  State.set('exportImageInfo',newExportImageInfo);
   picks.forEach(item => {
-    item.parentNode.parentNode.remove();
+
+    item.closest('[data-export-tag]').remove();
   });
-  let finals = exportTagsBox.querySelectorAll('[data-export-pick]');
-  finals.forEach((item,index) => {
-    item.parentNode.querySelector('[data-tags-index]').textContent = (index + 1) + '. '
-    item.parentNode.parentNode.setAttribute('data-export-tag',index)
+
+  let tags = DOM.exportTagsBox.querySelectorAll('[data-export-tag]');
+  tags.forEach((item,index) => {
+    item.querySelector('[data-tags-index]').textContent = (index + 1) + '. '
+    item.setAttribute('data-export-tag',index)
   });
 });
 
 getElementMix('data-export-reup').addEventListener('click',()=>{
-  let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
-  let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
-
+  let picks = DOM.exportTagsBox.querySelectorAll('[data-export-pick="true"]');
+  let infos = Array.from(picks).map(item => {
+    let index = item.getAttribute('data-export-picknum');
+    let info = State.get('exportImageInfo')[index];
+    let key = {
+      id: info.id,
+      index: index,
+      width: info.width,
+    };
+    return key
+  });
+  toolMessage([infos,'refreshExportImgInfo'],PLUGINAPP);
 });
 
-getElementMix('data-export-tags-delete').addEventListener('click',()=>{
-  ExportImageInfo = [];
-  DOM.exportTagsBox.innerHTML = '<!--动态填充-->';
-});
+function refreshExportImgInfo(infos){
+  infos.forEach(info => {
+    let index = info.index;
+    if(info.id !== State.get('exportImageInfo')[index].id){
+      tipsAll(['错误：ID与缓存顺序不一致','Error: The ID is inconsistent with the cache order'],2000)
+      return;
+    };
+    let newExportImageInfo = [...State.get('exportImageInfo')];
+    newExportImageInfo[index].u8a = info.u8a;
+    newExportImageInfo[index].compressed = null;
+    State.set('exportImageInfo',newExportImageInfo);
+  });
+
+}
 
 DOM.exportAnyBtn.addEventListener('click',()=>{
   let isFinal = []
-  for (let i = 0; i < ExportImageInfo.length; i++) {
+  for (let i = 0; i < State.get('exportImageInfo').length; i++) {
     let finaltag = getElementMix('data-export-tag="'+ i +'"');
     let isExport = finaltag.getAttribute('data-export-final') == 'true' ? true : false;
     isFinal.push(isExport);
   };
-  let zipnames = ExportImageInfo.map(item => item.zipName);
+  let zipnames = State.get('exportImageInfo').map(item => item.zipName);
   let zipName = '';
   if([...new Set(zipnames)].length == 1){
     zipName = zipnames[0];
   };
-  tool.ExportImgByData(reExport,ExportImageInfo,isFinal,zipName);
+  tool.ExportImgByData(reExport,State.get('exportImageInfo'),isFinal,zipName);
 
   function reExport(index,finalSize,quality,isSuccess){
     let sizespan = getElementMix('data-export-tag="'+ index +'"').querySelector('[data-export-realsize]');
@@ -7596,9 +7842,9 @@ function tableObjToText(obj){
 };
 
 DOM.clearCreateTags.addEventListener('click',()=>{
-  CreateImageInfo = [];
-  CreateTableInfo = [];
-  CataloguesInfo = [];
+  State.set('createImageInfo',[]);
+  State.set('createTableInfo',[]);
+  State.set('cataloguesInfo',[]);
   DOM.createTagsBox.innerHTML = '';
   DOM.cataloguesBox.innerHTML = '';
 });
@@ -7610,9 +7856,9 @@ DOM.convertTags.addEventListener('click',async ()=>{
   if(isTableText){
     let tableArray = tableTextToArray(DOM.userText.value.trim(),false,DOM.userTableTitle.value.split(','));
     let tableObj = tableArrayToObj(tableArray);
-    CreateTableInfo = tableObj;
+    State.set('createTableInfo',tableObj);
 
-    if(CreateTableInfo.some(item => item.note || item.s)){
+    if(tableObj.some(item => item.note || item.s)){
       document.getElementById('upload-moreset').checked = true;
       document.querySelector('[for="upload-moreset"]').click();
     };
@@ -7696,7 +7942,7 @@ function reFileInfo(files){
 };
 
 DOM.frameName.addEventListener('input',()=>{
-  if(frameNmaeSelect.includes(DOM.frameName.value)){
+  if(State.get('frameNmaeSelect').includes(DOM.frameName.value)){
     DOM.frameName.nextElementSibling.querySelector(`[data-option-value="${DOM.frameName.value}"]`).click();
   }else{
     DOM.frameName.nextElementSibling.querySelector(`[data-select-input]`).value = '';
@@ -7728,10 +7974,10 @@ function validateTableTitle(text){
 
   let texts = text.split(',').map(item => item.trim());
 
-  const invalidWords = texts.filter(item => !tableTitleMust.includes(item));
+  const invalidWords = texts.filter(item => !State.get('tableTitleMust').includes(item));
   if(invalidWords.length > 0){
     tipsAll(MESSAGES.TABLE_TITLE_WORDS_ERROR, 3000);
-    texts = texts.filter(item => tableTitleMust.includes(item));
+    texts = texts.filter(item => State.get('tableTitleMust').includes(item));
 
     if(texts.length == 0){
       return 'name,w,h';
@@ -7839,12 +8085,17 @@ DOM.tableHeaderChk.addEventListener('change',()=>{
   };
 });
 
-DOM.createSampleTableBtn.addEventListener('click',()=>{
-  createTable('sample');
-});
-
 DOM.createDataTableBtn.addEventListener('click',()=>{
   createTable('data');
+});
+
+DOM.applyThemeTableBtn.addEventListener('click',()=>{
+  let theme = getElementMix('data-table-theme').getAttribute('data-select-value');
+  let option = getElementMix(`data-option-value="${theme}"`);
+  theme = option ? option.getAttribute('data-en-text') : null;
+  let color = getElementMix('data-table-theme-color').getAttribute('data-color-hsl');
+
+  toolMessage([[[theme,color],'theme'],'reTable'],PLUGINAPP);
 });
 
 function createTable(type){
@@ -7902,11 +8153,11 @@ function createTable(type){
 DOM.btnHelp.forEach(item => {
   item.addEventListener('click',()=>{
     let key = item.getAttribute('data-help');
-    if(DOM.dailogBox.innerHTML.split(helpData[key][0][1].split('<')[0]).length == 1){
+    if(DOM.dailogBox.innerHTML.split(HELP_DATA[key][0][1].split('<')[0]).length == 1){
       DOM.dailogBox.innerHTML = '';
       let node = document.createElement('div');
       node.className = 'df-ffc';
-      helpData[key].forEach(item =>{
+      HELP_DATA[key].forEach(item =>{
         let line = document.createElement(item[0]);
         let span =  document.createElement('span');
         span.innerHTML = item[1].replace(/\/\+\+/g,`<span data-highlight>`).replace(/\+\+\//g,'</span>');
@@ -9567,9 +9818,11 @@ function getUserInt(node){
   let int = node.getAttribute('data-int-value');
   if(node.getAttribute('data-export-size') !== null){
     let index = node.getAttribute('data-export-size');
-    ExportImageInfo[index].finalSize = int;
-    ExportImageInfo[index].compressed = null;
-    toolMessage([[ExportImageInfo[index].id,int],'setFinalSize'],PLUGINAPP);
+    let newExportImageInfo = State.get('exportImageInfo');
+    newExportImageInfo[index].finalSize = int;
+    newExportImageInfo[index].compressed = null;
+    State.set('exportImageInfo',newExportImageInfo);
+    toolMessage([[newExportImageInfo[index].id,int],'setFinalSize'],PLUGINAPP);
     let tag = getElementMix('data-export-tag="'+ index +'"');
     let realSize = tag.querySelector('[data-export-realsize]');
     realSize.textContent = '--';
@@ -9578,18 +9831,47 @@ function getUserInt(node){
   };
   if(node.getAttribute('data-imgnum-input') !== null){
     let viewimg = DOM.dailogImgBox.querySelector('img');
-    if(int > ExportImageInfo.length){
-      DOM.imgnumSet.value = viewimg.getAttribute('data-imgnum-pick');
+    if(int > State.get('exportImageInfo').length){
+      DOM.imgnumSet.value = viewimg ? viewimg.getAttribute('data-imgnum-pick') : 1;
       return
     }
-    let layer = ExportImageInfo[int - 1];
+    let layer = State.get('exportImageInfo')[int - 1];
     if(!layer) return;
     let img = layer.compressed ? layer.compressed : layer.u8a;
     let ismaxW = layer.width >= layer.height ? 'true' : 'false';
-    viewimg.setAttribute('data-ismaxW',ismaxW);
-    viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
-    DOM.dailogImgBox.appendChild(viewimg);
-    viewimg.setAttribute('data-imgnum-pick',int);
+
+    let newViewimg = document.createElement('img');
+    newViewimg.setAttribute('data-ismaxW',ismaxW);
+    newViewimg.setAttribute('data-imgnum-pick',int);
+    newViewimg.style.opacity = '0';
+    newViewimg.style.position = 'absolute';
+    newViewimg.style.top = '0';
+    newViewimg.style.left = '0';
+
+    if(viewimg){
+      DOM.dailogImgBox.insertBefore(newViewimg, viewimg);
+    } else {
+      DOM.dailogImgBox.appendChild(newViewimg);
+    }
+
+    newViewimg.onload = () => {
+
+      if(viewimg && viewimg !== newViewimg){
+        viewimg.remove();
+      }
+
+      newViewimg.style.opacity = '1';
+      newViewimg.style.position = '';
+      newViewimg.style.top = '';
+      newViewimg.style.left = '';
+    };
+    newViewimg.onerror = () => {
+      newViewimg.remove();
+      if(viewimg) {
+        DOM.imgnumSet.value = viewimg.getAttribute('data-imgnum-pick');
+      }
+    };
+    newViewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
   }
   if(node.getAttribute('data-qrcode-grid-num') !== null){
     getElementMix('data-qrcode-grid').style.setProperty('--grid',int);
@@ -9627,8 +9909,10 @@ function getUserSelect(node){
   }
   if(node.parentNode.parentNode.getAttribute('data-export-tag') !== null){
     let index = node.parentNode.parentNode.getAttribute('data-export-tag');
-    ExportImageInfo[index].format = userSelect;
-    ExportImageInfo[index].compressed = null;
+    let newExportImageInfo = State.get('exportImageInfo');
+    newExportImageInfo[index].format = userSelect;
+    newExportImageInfo[index].compressed = null;
+    State.set('exportImageInfo',newExportImageInfo);
     let tag = getElementMix('data-export-tag="'+ index +'"');
     let realSize = tag.querySelector('[data-export-realsize]');
     realSize.textContent = '--';
@@ -9654,11 +9938,11 @@ function getUserRadio(node){
     };
 
     if(node.getAttribute('data-skilltype-box') !== null){
-      let modelid = skillModel[userRadio - 1][1];
+      let modelid = State.get('skillModel')[userRadio - 1][1];
 
       let model = DOM.skillAllBox.querySelector(`[data-skillmodule="${modelid}"]`);
       let skillnode = model.querySelector('[data-skill-sec]');
-      if(isSkillScroll){
+      if(State.get('isSkillScroll')){
         skillnode.scrollIntoView({
           behavior: 'smooth',
           block: 'center',
@@ -9729,7 +10013,6 @@ const SKILL_STRATEGIES = {
   'Set R/C': () => sendTableSet('set'),
   'Add Row': () => sendTableSet('add'),
   'Reduce Row': () => sendTableSet('reduce'),
-  'Random Theme': () => sendTableSet('theme'),
   'Rows of Cells': () => sendTablePick('row'),
   'Rows of Block': () => sendTablePick('allrow'),
   'Cells Block': () => sendTablePick('block'),
@@ -9768,11 +10051,12 @@ DOM.skillBtnMain.forEach(btn => {
       } else {
         toolMessage(['',skillname],PLUGINAPP);
       }
+
     };
   });
 
   btn.addEventListener('click',()=>{
-    const skillname = btn.getAttribute('data-en-text');
+    const skillname = btn.getAttribute('data-en-text') || btn.getAttribute('data-tips-text-en');
     if (!skillname) return;
 
     if(clickTimer){
@@ -9788,6 +10072,10 @@ DOM.skillBtnMain.forEach(btn => {
       }
       clickTimer = null;
     }, DELAY.SKILL_CLICK);
+
+    if(btn.getAttribute('data-btn-dblclick') !== null){
+      tipsAll(['带两点的按钮，单/双击时功能有差异',"For btn with 2 dot, the logic of dbl-click is different"],4000,4);
+    }
   });
 });
 
@@ -9870,10 +10158,19 @@ function sendTable(mapOrGet){
   toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
 };
 
-function applyTableStyleStrategy(){
-  let styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
-  let styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
-
+function applyTableStyleStrategy(data){
+  let styleFillId = null;
+  let styleBodId = null;
+  if(data && data[0]){
+    styleFillId = data[0];
+  }else{
+    styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
+  }
+  if(data && data[1]){
+    styleBodId = data[1];
+  }else{
+    styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
+  }
   let fill = 1;
   let bod = [1,1,1,1];
   switch(styleFillId){
@@ -9886,6 +10183,9 @@ function applyTableStyleStrategy(){
     case '4':
       fill = '0';
     break;
+    case null:
+      fill = null;
+    break;
   };
   switch(styleBodId){
     case '2':
@@ -9897,6 +10197,9 @@ function applyTableStyleStrategy(){
     case '4':
       bod = [0,0,0,0];
       break;
+    case null:
+      bod = [null,null,null,null];
+    break;
   }
   let styleAll = {
     td:[...bod,fill],
@@ -9906,6 +10209,23 @@ function applyTableStyleStrategy(){
   toolMessage([[styleAll,'style'],'reTable'],PLUGINAPP);
 
 };
+
+DOM.tableStyleSetFill.querySelectorAll('[data-radio-data]').forEach(item => {
+  let selects = ROOT.getAttribute('data-selects');
+  if(selects == 'true'){
+    item.addEventListener('click',()=>{
+      applyTableStyleStrategy([item.getAttribute('data-radio-data'),null]);
+    });
+  }
+});
+DOM.tableStyleSetBod.querySelectorAll('[data-radio-data]').forEach(item => {
+  let selects = ROOT.getAttribute('data-selects');
+  if(selects == 'true'){
+    item.addEventListener('click',()=>{
+      applyTableStyleStrategy([null,item.getAttribute('data-radio-data')]);
+    });
+  }
+});
 
 function setTableRowColStrategy(){
   let H = getElementMix('table-column-num').value * 1;
@@ -9918,7 +10238,6 @@ const TABLE_SET_FUNCTIONS = {
   'set': setTableRowColStrategy,
   'add': () => toolMessage([[[0,1],'add'],'reTable'],PLUGINAPP),
   'reduce': () => toolMessage([[[0,-1],'reduce'],'reTable'],PLUGINAPP),
-  'theme': () => toolMessage([[null,'theme'],'reTable'],PLUGINAPP)
 };
 
 function sendTableSet(type){
@@ -10997,6 +11316,13 @@ async function initAuthModule() {
 
   await AuthManager.init();
 
+  PublicConfigManager.loadOnce().then(() => {
+
+    updateVersionInfo();
+  }).catch(err => {
+    console.warn('[PublicConfig] Failed to load public config:', err);
+  });
+
   const userLoginBtn = document.querySelector('[data-user-login-btn]');
   if (userLoginBtn) {
     userLoginBtn.addEventListener('click', () => {
@@ -11221,6 +11547,260 @@ if (document.readyState === 'loading') {
 function getLanguageIntime(){
   return ROOT.getAttribute('data-language').toLowerCase();
 };
+
+const PUBLIC_CONFIG_STORAGE_KEY = 'toolsSetFig_publicConfig';
+const PUBLIC_CONFIG_TIMESTAMP_KEY = 'toolsSetFig_publicConfigTimestamp';
+
+const PublicConfigManager = {
+  _loaded: false,
+  _loadingPromise: null,
+  _dataMap: {},
+  _lastFetchAt: null,
+
+  _ensureSupabase() {
+    if (!AUTH_CONFIG.USE_SUPABASE) return false;
+    if (!supabaseClient) {
+      tryInitSupabase();
+    }
+    return !!supabaseClient;
+  },
+
+  _loadFromCache() {
+    try {
+
+      if (typeof localStorage !== 'undefined') {
+        const cachedData = localStorage.getItem(PUBLIC_CONFIG_STORAGE_KEY);
+        const cachedTimestamp = localStorage.getItem(PUBLIC_CONFIG_TIMESTAMP_KEY);
+
+        if (cachedData && cachedTimestamp) {
+          try {
+            const data = JSON.parse(cachedData);
+            const timestamp = parseInt(cachedTimestamp, 10);
+            if (!isNaN(timestamp) && data) {
+              return { data, timestamp };
+            }
+          } catch (e) {
+            console.warn('[PublicConfig] Failed to parse cached data:', e);
+          }
+        }
+      }
+
+      if (PLUGINAPP) {
+
+        return null;
+      }
+    } catch (e) {
+      console.warn('[PublicConfig] Failed to load from cache:', e);
+    }
+    return null;
+  },
+
+  _saveToCache(data, timestamp) {
+    try {
+
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(PUBLIC_CONFIG_STORAGE_KEY, JSON.stringify(data));
+        localStorage.setItem(PUBLIC_CONFIG_TIMESTAMP_KEY, timestamp.toString());
+      }
+
+      if (PLUGINAPP && typeof toolMessage === 'function') {
+        toolMessage([[PUBLIC_CONFIG_STORAGE_KEY, data], 'setlocal'], PLUGINAPP);
+        toolMessage([[PUBLIC_CONFIG_TIMESTAMP_KEY, timestamp], 'setlocal'], PLUGINAPP);
+      }
+    } catch (e) {
+      console.warn('[PublicConfig] Failed to save to cache:', e);
+    }
+  },
+
+  _shouldRefresh(cachedTimestamp) {
+    if (!cachedTimestamp) return true;
+
+    const now = Date.now();
+    const timeDiff = now - cachedTimestamp;
+    const oneHour = 60 * 60 * 1000;
+
+    if (timeDiff > oneHour) {
+      return true;
+    }
+
+    const cachedDate = new Date(cachedTimestamp);
+    const currentDate = new Date(now);
+    if (
+      cachedDate.getFullYear() !== currentDate.getFullYear() ||
+      cachedDate.getMonth() !== currentDate.getMonth() ||
+      cachedDate.getDate() !== currentDate.getDate()
+    ) {
+      return true;
+    }
+
+    return false;
+  },
+
+  async loadOnce() {
+
+    const cached = this._loadFromCache();
+
+    if (cached && !this._shouldRefresh(cached.timestamp)) {
+
+      if (cached.data && cached.data['latest_version'] && !cached.data['latest_version_updated_at']) {
+
+      } else {
+        this._dataMap = cached.data || {};
+        this._loaded = true;
+        this._lastFetchAt = cached.timestamp;
+        return this._dataMap;
+      }
+    }
+
+    if (this._loadingPromise) {
+      return this._loadingPromise;
+    }
+
+    this._loadingPromise = this._loadInternal();
+    return this._loadingPromise;
+  },
+
+  async _loadInternal() {
+    this._dataMap = {};
+    this._loaded = false;
+
+    if (!this._ensureSupabase()) {
+      console.warn('[PublicConfig] Supabase client not available, using cached data if available');
+      const cached = this._loadFromCache();
+      if (cached && cached.data) {
+        this._dataMap = cached.data;
+        this._loaded = true;
+        this._lastFetchAt = cached.timestamp;
+      }
+      this._loadingPromise = null;
+      return this._dataMap;
+    }
+
+    try {
+
+      const { data, error } = await supabaseClient
+        .from('toolset_public_config')
+        .select('key,value,enabled,updated_at')
+        .eq('enabled', true);
+
+      if (error) {
+        console.error('[PublicConfig] fetch error:', error);
+
+        const cached = this._loadFromCache();
+        if (cached && cached.data) {
+          this._dataMap = cached.data;
+          this._loaded = true;
+          this._lastFetchAt = cached.timestamp;
+        }
+        this._loadingPromise = null;
+        return this._dataMap;
+      }
+
+      if (Array.isArray(data)) {
+        data.forEach((row) => {
+          if (!row || !row.key) return;
+          let parsedValue = row.value;
+
+          if (typeof row.value === 'string' && row.value.trim().startsWith('{')) {
+            try {
+              parsedValue = JSON.parse(row.value);
+            } catch (e) {
+
+            }
+          }
+
+          this._dataMap[row.key] = parsedValue;
+
+          if (row.key === 'latest_version' && row.updated_at) {
+            this._dataMap['latest_version_updated_at'] = row.updated_at;
+          }
+        });
+      } else {
+        console.warn('[PublicConfig] No data returned from Supabase');
+      }
+
+      const now = Date.now();
+      this._saveToCache(this._dataMap, now);
+
+      this._loaded = true;
+      this._lastFetchAt = now;
+    } catch (e) {
+      console.warn('[PublicConfig] fetch exception:', e);
+
+      const cached = this._loadFromCache();
+      if (cached && cached.data) {
+        this._dataMap = cached.data;
+        this._loaded = true;
+        this._lastFetchAt = cached.timestamp;
+      }
+    }
+
+    this._loadingPromise = null;
+    return this._dataMap;
+  },
+
+  async get(key) {
+    await this.loadOnce();
+    return this._dataMap[key];
+  },
+
+  async getAnnouncement(lang) {
+    await this.loadOnce();
+    const value = this._dataMap['announcement'];
+    if (!value) return null;
+
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      const currentLang = (lang || (typeof getLanguageIntime === 'function' ? getLanguageIntime() : 'zh')).toLowerCase();
+      return value[currentLang] || value.zh || value.en || null;
+    }
+
+    return value;
+  },
+
+  async getLatestVersion() {
+    await this.loadOnce();
+    return this._dataMap['latest_version'] || null;
+  },
+
+  async getVersionInfo() {
+    await this.loadOnce();
+    return {
+      version: this._dataMap['latest_version'] || null,
+      updatedAt: this._dataMap['latest_version_updated_at'] || null
+    };
+  },
+
+  async getAll() {
+    await this.loadOnce();
+    return { ...this._dataMap };
+  }
+};
+
+async function updateVersionInfo() {
+  try {
+    const versionInfo = await PublicConfigManager.getVersionInfo();
+    const versionTextEl = document.querySelector('[data-version-text]');
+    const versionTimeEl = document.querySelector('[data-version-time]');
+
+    if (versionInfo.version && versionTextEl) {
+      versionTextEl.textContent = versionInfo.version;
+    }
+
+    if (versionInfo.updatedAt && versionTimeEl) {
+
+      const date = new Date(versionInfo.updatedAt);
+
+      const formattedDate = date.toLocaleDateString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).replace(/\//g, '-');
+      versionTimeEl.textContent = formattedDate;
+    }
+  } catch (e) {
+    console.warn('[PublicConfig] Failed to update version info:', e);
+  }
+}
 </script>
 </body>
 </html>

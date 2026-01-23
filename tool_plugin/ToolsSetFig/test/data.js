@@ -1,5 +1,5 @@
 /*初始数据*/
-let skillSecInfo = [
+let SKILL_SEC_INFO = [
   {
     id: 'InSituRasterize',
     name: ["原地栅格化","in-situ rasterize"],
@@ -58,7 +58,7 @@ let skillSecInfo = [
   },
 ]
 
-let toUserTips = {
+let TO_USER_TIPS_TV = {
   worktime: ["🔒下班时间不建议工作~","🔒You shouldn't work after work!"],
   random: [
     ["椅子说：你该起来走走了~","Your chair says: time to walk~"],
@@ -74,7 +74,7 @@ let toUserTips = {
 
 let richDoc = new RICH_DOC();
 
-let helpData = {
+let HELP_DATA = {
   create: richDoc.doc.toolsset.create.help,
   export: richDoc.doc.toolsset.export.help,
   editor: richDoc.doc.toolsset.editor.help,

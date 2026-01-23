@@ -1055,6 +1055,14 @@ async function initAuthModule() {
   // 初始化用户状态（包括检查 Supabase 会话）
   await AuthManager.init();
   
+  // 初始化公共配置（公告、版本检查等）- 后台异步加载，不阻塞主流程
+  PublicConfigManager.loadOnce().then(() => {
+    // 加载完成后更新版本信息
+    updateVersionInfo();
+  }).catch(err => {
+    console.warn('[PublicConfig] Failed to load public config:', err);
+  });
+  
   // 登录按钮点击事件
   const userLoginBtn = document.querySelector('[data-user-login-btn]');
   if (userLoginBtn) {
@@ -1291,3 +1299,284 @@ if (document.readyState === 'loading') {
 function getLanguageIntime(){
   return ROOT.getAttribute('data-language').toLowerCase();
 };
+
+// ==================== 公共配置管理器（公告、版本检查等） ====================
+// 存储键名
+const PUBLIC_CONFIG_STORAGE_KEY = 'toolsSetFig_publicConfig';
+const PUBLIC_CONFIG_TIMESTAMP_KEY = 'toolsSetFig_publicConfigTimestamp';
+
+// 公共配置管理器
+const PublicConfigManager = {
+  _loaded: false,
+  _loadingPromise: null,
+  _dataMap: {},     // { key: valueString | object }
+  _lastFetchAt: null,
+
+  // 初始化 Supabase（如果还没初始化）
+  _ensureSupabase() {
+    if (!AUTH_CONFIG.USE_SUPABASE) return false;
+    if (!supabaseClient) {
+      tryInitSupabase();
+    }
+    return !!supabaseClient;
+  },
+
+  // 从本地存储读取缓存
+  _loadFromCache() {
+    try {
+      // 优先尝试使用 localStorage（在插件环境中也可能可用）
+      if (typeof localStorage !== 'undefined') {
+        const cachedData = localStorage.getItem(PUBLIC_CONFIG_STORAGE_KEY);
+        const cachedTimestamp = localStorage.getItem(PUBLIC_CONFIG_TIMESTAMP_KEY);
+        
+        if (cachedData && cachedTimestamp) {
+          try {
+            const data = JSON.parse(cachedData);
+            const timestamp = parseInt(cachedTimestamp, 10);
+            if (!isNaN(timestamp) && data) {
+              return { data, timestamp };
+            }
+          } catch (e) {
+            console.warn('[PublicConfig] Failed to parse cached data:', e);
+          }
+        }
+      }
+      
+      // 如果 localStorage 不可用，在插件环境中尝试通过 AuthStorage（但通常返回 null）
+      if (PLUGINAPP) {
+        // 插件环境：AuthStorage.get 在插件环境中返回 null
+        // 这里返回 null，让系统从 Supabase 拉取
+        return null;
+      }
+    } catch (e) {
+      console.warn('[PublicConfig] Failed to load from cache:', e);
+    }
+    return null;
+  },
+
+  // 保存到本地存储
+  _saveToCache(data, timestamp) {
+    try {
+      // 优先使用 localStorage（在插件环境中也可能可用）
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(PUBLIC_CONFIG_STORAGE_KEY, JSON.stringify(data));
+        localStorage.setItem(PUBLIC_CONFIG_TIMESTAMP_KEY, timestamp.toString());
+      }
+      
+      // 在插件环境中，同时通过 toolMessage 存储（用于持久化）
+      if (PLUGINAPP && typeof toolMessage === 'function') {
+        toolMessage([[PUBLIC_CONFIG_STORAGE_KEY, data], 'setlocal'], PLUGINAPP);
+        toolMessage([[PUBLIC_CONFIG_TIMESTAMP_KEY, timestamp], 'setlocal'], PLUGINAPP);
+      }
+    } catch (e) {
+      console.warn('[PublicConfig] Failed to save to cache:', e);
+    }
+  },
+
+  // 检查是否需要刷新（超过1小时或跨天）
+  _shouldRefresh(cachedTimestamp) {
+    if (!cachedTimestamp) return true;
+
+    const now = Date.now();
+    const timeDiff = now - cachedTimestamp;
+    const oneHour = 60 * 60 * 1000; // 1小时的毫秒数
+
+    // 检查是否超过1小时
+    if (timeDiff > oneHour) {
+      return true;
+    }
+
+    // 检查是否跨天
+    const cachedDate = new Date(cachedTimestamp);
+    const currentDate = new Date(now);
+    if (
+      cachedDate.getFullYear() !== currentDate.getFullYear() ||
+      cachedDate.getMonth() !== currentDate.getMonth() ||
+      cachedDate.getDate() !== currentDate.getDate()
+    ) {
+      return true;
+    }
+
+    return false;
+  },
+
+  // 运行期拉取一次（带时间间隔检查）
+  async loadOnce() {
+    // 先尝试从缓存加载
+    const cached = this._loadFromCache();
+    
+    if (cached && !this._shouldRefresh(cached.timestamp)) {
+      // 缓存有效，直接使用
+      // 但如果缓存中没有 latest_version_updated_at（旧缓存），需要重新拉取
+      if (cached.data && cached.data['latest_version'] && !cached.data['latest_version_updated_at']) {
+        // 继续执行下面的刷新逻辑
+      } else {
+        this._dataMap = cached.data || {};
+        this._loaded = true;
+        this._lastFetchAt = cached.timestamp;
+        return this._dataMap;
+      }
+    }
+
+    // 如果已经有一个正在进行的加载，复用该 Promise
+    if (this._loadingPromise) {
+      return this._loadingPromise;
+    }
+
+    // 需要刷新，开始加载
+    this._loadingPromise = this._loadInternal();
+    return this._loadingPromise;
+  },
+
+  async _loadInternal() {
+    this._dataMap = {};
+    this._loaded = false;
+
+    // 如果 Supabase 不可用，尝试使用缓存（即使过期）
+    if (!this._ensureSupabase()) {
+      console.warn('[PublicConfig] Supabase client not available, using cached data if available');
+      const cached = this._loadFromCache();
+      if (cached && cached.data) {
+        this._dataMap = cached.data;
+        this._loaded = true;
+        this._lastFetchAt = cached.timestamp;
+      }
+      this._loadingPromise = null;
+      return this._dataMap;
+    }
+
+    try {
+      // 从 Supabase 拉取数据
+      // 注意：这里的表名和字段请根据你的实际数据库结构调整
+      const { data, error } = await supabaseClient
+        .from('toolset_public_config')
+        .select('key,value,enabled,updated_at')
+        .eq('enabled', true);
+
+      if (error) {
+        console.error('[PublicConfig] fetch error:', error);
+        // 拉取失败，尝试使用缓存
+        const cached = this._loadFromCache();
+        if (cached && cached.data) {
+          this._dataMap = cached.data;
+          this._loaded = true;
+          this._lastFetchAt = cached.timestamp;
+        }
+        this._loadingPromise = null;
+        return this._dataMap;
+      }
+
+      if (Array.isArray(data)) {
+        data.forEach((row) => {
+          if (!row || !row.key) return;
+          let parsedValue = row.value;
+          // 如果 value 是 JSON 字符串，尝试解析
+          if (typeof row.value === 'string' && row.value.trim().startsWith('{')) {
+            try {
+              parsedValue = JSON.parse(row.value);
+            } catch (e) {
+              // 解析失败就当普通字符串用
+            }
+          }
+          // 存储值和更新时间
+          this._dataMap[row.key] = parsedValue;
+          // 为版本号单独存储更新时间
+          if (row.key === 'latest_version' && row.updated_at) {
+            this._dataMap['latest_version_updated_at'] = row.updated_at;
+          }
+        });
+      } else {
+        console.warn('[PublicConfig] No data returned from Supabase');
+      }
+
+      // 保存到缓存
+      const now = Date.now();
+      this._saveToCache(this._dataMap, now);
+
+      this._loaded = true;
+      this._lastFetchAt = now;
+    } catch (e) {
+      console.warn('[PublicConfig] fetch exception:', e);
+      // 拉取失败，尝试使用缓存
+      const cached = this._loadFromCache();
+      if (cached && cached.data) {
+        this._dataMap = cached.data;
+        this._loaded = true;
+        this._lastFetchAt = cached.timestamp;
+      }
+    }
+
+    this._loadingPromise = null;
+    return this._dataMap;
+  },
+
+  // 读取指定 key 的公共数据
+  async get(key) {
+    await this.loadOnce();
+    return this._dataMap[key];
+  },
+
+  // 根据语言读取公告（支持多语言结构）
+  async getAnnouncement(lang) {
+    await this.loadOnce();
+    const value = this._dataMap['announcement'];
+    if (!value) return null;
+
+    // 如果 value 是多语言对象 { zh: '...', en: '...' }
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      const currentLang = (lang || (typeof getLanguageIntime === 'function' ? getLanguageIntime() : 'zh')).toLowerCase();
+      return value[currentLang] || value.zh || value.en || null;
+    }
+
+    // 否则当成通用字符串
+    return value;
+  },
+
+  // 检查版本（返回最新版本号字符串）
+  async getLatestVersion() {
+    await this.loadOnce();
+    return this._dataMap['latest_version'] || null;
+  },
+
+  // 获取版本信息和更新时间
+  async getVersionInfo() {
+    await this.loadOnce();
+    return {
+      version: this._dataMap['latest_version'] || null,
+      updatedAt: this._dataMap['latest_version_updated_at'] || null
+    };
+  },
+
+  // 获取所有配置数据（用于调试）
+  async getAll() {
+    await this.loadOnce();
+    return { ...this._dataMap };
+  }
+};
+
+// 更新界面上的版本信息
+async function updateVersionInfo() {
+  try {
+    const versionInfo = await PublicConfigManager.getVersionInfo();
+    const versionTextEl = document.querySelector('[data-version-text]');
+    const versionTimeEl = document.querySelector('[data-version-time]');
+    
+    if (versionInfo.version && versionTextEl) {
+      versionTextEl.textContent = versionInfo.version;
+    }
+    
+    if (versionInfo.updatedAt && versionTimeEl) {
+      // 格式化日期时间
+      const date = new Date(versionInfo.updatedAt);
+      // 格式：YYYY-MM-DD
+      const formattedDate = date.toLocaleDateString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).replace(/\//g, '-');
+      versionTimeEl.textContent = formattedDate;
+    }
+  } catch (e) {
+    console.warn('[PublicConfig] Failed to update version info:', e);
+  }
+}

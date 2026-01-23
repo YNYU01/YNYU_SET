@@ -178,31 +178,41 @@
     <div data-side-mix class="df-ffc" style="height: calc(100vh - 20px)">
       <div class="h100 df-ffc" style="justify-content: space-between;">
         <div ></div>
-        <div class="df-ffc gap8">
-          <!-- 用户登录入口 -->
-          <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
-            <div data-user-name style="display: none;" data-en-text="USER">用户</div>
-            <div data-user-login-text data-en-text="LOG IN (Beta)">登录（测试）</div>
-            <div class="pad2 mar-l4 wh-16" style=" --fill:#2e2e2e;">
-              <btn-login></btn-login>
+        <div class="df-ffc gap8 ">
+          <div class="df-ffc">
+            <!-- 用户登录入口 -->
+            <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
+              <div data-user-name style="display: none;" data-en-text="USER">用户</div>
+              <div data-user-login-text data-en-text="LOG IN (Beta)">登录（测试）</div>
+              <div class="pad2 mar-l4 wh-16" style=" --fill:#2e2e2e;">
+                <btn-login></btn-login>
+              </div>
             </div>
+            <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" rel="noopener noreferrer" target="_blank" class="df-cc" data-btn="help">
+              <div data-en-text="HELP DOC">帮助文档</div>
+              <div class="wh-20" style=" --mainColor:#2e2e2e; --arrow-w:2; --arrow-ro: -45deg;">
+                <btn-goto-mini></btn-goto-mini>
+              </div>
+            </a>
+        </div>
+          <!--版本信息-->
+          <div data-version-info class="df-sc font-s10 op6" style="transform: skewX(-10deg);">
+            <div class="df-lc">
+              <div>Version&nbsp;</div>
+              <div data-version-text>--</div>
+            </div>
+            <div data-version-time>--</div>
           </div>
-          <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" rel="noopener noreferrer" target="_blank" class="df-cc" data-btn="help">
-            <div data-en-text="HELP DOC">帮助文档</div>
-            <div class="wh-20" style=" --mainColor:#2e2e2e; --arrow-w:2; --arrow-ro: -45deg;">
-              <btn-goto-mini></btn-goto-mini>
-            </div>
-          </a>
         </div>
       </div>
       <div data-mainset-side-box class="df-sc">
         <a href="https://www.ynyuset.cn" rel="noopener noreferrer" target="_blank" class="df-lc fl1 font-s10 gap2 pos-r"
         data-tips="set" data-tips-y="top" data-tips-x="left" 
-        style="--tips-gap: -16px; color: var(--mainColor);"
+        style="--tips-gap: -16px; color: var(--mainColor); flex: 1;"
         data-tips-text="🔗https://www.ynyuset.cn" data-tips-text-en="🔗https://www.ynyuset.cn">
-          ©2024-2025 
-          <set-en data-any="en" class="fl0" style="height: 20px; margin-top: -2px;"></set-en>
-          <set-zh data-any="zh" class="fl0" style="height: 20px; margin-top: -3px;"></set-zh>
+          ©2024-2026 
+          <set-en data-any="en" class="fl0" style="width: fit-content; height: 20px; margin-top: -2px;"></set-en>
+          <set-zh data-any="zh" class="fl0" style="width: fit-content; height: 20px; margin-top: -3px;"></set-zh>
         </a>
         <div data-mainset-side class="df-lc gap4">
           <div id="btn-theme-1" class="pad2 bod-r4 bsb">
@@ -229,7 +239,7 @@
     </div>
   </div>
   <!--侧边栏遮罩-->
-  <div data-side-mask class="wh100 pos-a" style="display: none;  z-index: 10">
+  <div data-side-mask class="wh100 pos-a" style="display: none;  z-index: 11">
     <div class="wh100" style="background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);"></div>
   </div>
   
@@ -456,8 +466,8 @@
             </div>
           </div>
           <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (默认)</div>    
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
+            <div class="w100 df-cc" data-skill-btn data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Default">上传 (默认)</div>    
+            <div class="w100 df-cc" data-skill-btn data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Export-set">上传 (导出设置)</div>
           </div>
           <!--步骤2-->
           <div class="w100 df-lc op6"  style="padding:10px 0 4px 0; vertical-align: baseline;"> 
@@ -466,18 +476,21 @@
             &nbsp;&nbsp;
             <span data-any="vw300" data-en-text="name/type/size..." class="op6"> 目标格式和文件大小等</span>
           </div>
-          <div class="df-cc fl0" style="width: 120px; height: 12px; border-radius: 8px 8px 0 0;">
-            <input id="export-more" checked type="checkbox" 
+          <div class="df-cc fl0 pos-r" 
+          data-tips="auto" data-tips-x="center" data-tips-y="top"
+          data-tips-text="管理渲染队列" data-tips-text-en="Manage rendering queue"
+          style="--xx: 60px; width: 120px; height: 12px; border-radius: 8px 8px 0 0;">
+            <input id="export-more" type="checkbox" 
             onchange="showNext(this,'data-exportset-more','flex');
             if(this.checked){
-              exportTagsBox.setAttribute('data-export-pickall','true');
+              DOM.exportTagsBox.setAttribute('data-export-pickall','true');
             }else{
-              exportTagsBox.setAttribute('data-export-pickall','false');
+              DOM.exportTagsBox.setAttribute('data-export-pickall','false');
             }">
             <label for="export-more" class="wh100 df-cc show-next pos-r">
             </label>
           </div>
-          <div data-exportset-more class="w100">
+          <div data-exportset-more class="w100" style="display: none;">
             <div class="w100 df-sc">
               <div class="df-lc gap8">
                 <div class="df-lc gap2" data-export-delete data-btn="text">
@@ -518,9 +531,9 @@
               </div>
             </div>
             <!--清空-->
-            <div data-export-tags-delete class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;">
+            <!--div data-export-tags-delete class="pos-a" style="right: 4px; top:4px; width: 12px; height: 12px;">
               <btn-close></btn-close>
-            </div>
+            </div-->
           </div>
         </div>
         <div data-export-any data-btn="main" class="df-cc" data-en-text="EXPORT">导出</div>
@@ -536,8 +549,8 @@
             <div data-any="vw300" data-help="editor" class="fl0 df-cc">?</div>
           </div>
           <div class="w100 df-cc gap2">
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Editable">上传(可编辑)</div>    
-            <div class="w100 df-cc" data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
+            <div class="w100 df-cc" data-skill-btn data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Editable">上传(可编辑)</div>    
+            <div class="w100 df-cc" data-skill-btn data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
           </div>
           <div data-editor-mix class="df-ffc wh100 pos-r ovy noscrollbar">
             <div data-editor-viewBox data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc wh100 tex-pixelbg"></div>
@@ -703,8 +716,8 @@
               </div>
             </div>
             <div class="w100 df-cc gap2 mar-b10">
-              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Variable To Sheet">从变量更新表</div>    
-              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Variable">从表更新变量</div>
+              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Variable To Sheet">从变量更新表</div>    
+              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Variable">从表更新变量</div>
             </div>
             <!--步骤2-->
             <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
@@ -770,8 +783,8 @@
               </div>
             </div>
             <div class="w100 df-cc gap2 mar-b10">
-              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Style To Sheet">从样式更新表</div>    
-              <div class="w100 df-cc" data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
+              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Style To Sheet">从样式更新表</div>    
+              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
             </div>
             <!--步骤2-->
             <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
@@ -856,7 +869,7 @@
       <div data-page-name="表单" data-page-name-en="sheet" data-page-main="false" data-page-tabclass="tab-top" class="df-ffc df-cc wh100">
         <div class="wh100 df-ffc ovy noscrollbar pad10 bsb" style="max-width: 560px; align-items: center; padding-bottom: 0;">
           <div class="wh100 df-ffc bsb">
-            <!--步骤2-->
+            <!--步骤1-->
             <div class="w100 df-lc op6"  style="padding:4px 0 6px 0;vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Mapping data/attribute" >批量映射数据/属性</span>
@@ -892,25 +905,25 @@
                   ▶ 
                 </div>
                 <div data-radio-value="Text" data-mapget-type class="wh100 df-lc gap4 ovx noscrollbar" data-scroll="false">
-                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Name" data-radio-main="false">
+                  <div class="df-lc" data-radio data-radio-data="Name" data-radio-main="false">
                     <div class="df-cc wh-18 mar-l2">
                       <map-name></map-name>
                     </div>
                     <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Layers Name">图层名</div>
                   </div>
-                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Text" data-radio-main="true">
+                  <div class="df-lc" data-radio data-radio-data="Text" data-radio-main="true">
                     <div class="df-cc wh-18 mar-l2">
                       <map-text></map-text>
                     </div>
                     <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Text Props">文本(属性)</div>
                   </div>
-                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Pro" data-radio-main="false">
+                  <div class="df-lc" data-radio data-radio-data="Pro" data-radio-main="false">
                     <div class="df-cc wh-18 mar-l2">
                       <map-pro></map-pro>
                     </div>
                     <div data-mapget-typename data-any="vw360" class="pad4" data-en-text="Any Props">组件属性</div>
                   </div>
-                  <div class="df-lc" style="height: 20px;" data-radio data-radio-data="Tag" data-radio-main="false">
+                  <div class="df-lc" data-radio data-radio-data="Tag" data-radio-main="false">
                     <div class="df-cc wh-18 mar-l2">
                       <map-tag></map-tag>
                     </div>
@@ -973,32 +986,6 @@
                 </div>
               </div>
             </div>
-            <!--div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Names">图层命名映射</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Texts">文本数据映射</div>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Properties">组件属性映射</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Mapping Tags">标签属性映射</div>
-              </div>
-              <div class="w100 df-cc">
-                <span data-skill-gap>
-                  <span>---</span>
-                  <span data-en-text="Get datas from selection">从所选图层返回数据</span>
-                  <span>---</span>
-                </span>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Get Names">获取图层命名</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Get Texts">获取文本数据</div>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Get Properties">获取组件属性</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Get Tags">获取标签属性</div>
-              </div>
-
-            </div-->
             
             <div class="w100 df-cc gap2" >
               <div data-mapget-get class="w100 df-cc" data-btn="main2" data-en-text="Collect Data">数据获取</div>
@@ -1006,98 +993,19 @@
             </div>
             <div style="min-height: 4px;"></div>
 
-            <!--步骤1-->
-            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
+            <!--步骤2-->
+            <div class="w100 df-lc op6 pos-r"  style="padding:10px 0 4px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Get a basic table" >创建基础表格模板</span>
               &nbsp;&nbsp;
-              <span data-any="vw300" data-en-text="and make it more diverse" class="op6">并进一步定制化设计</span>
+              <span data-any="vw300" data-en-text="by data or sample" class="op6">根据上方/示例数据</span>
+              <a href="https://www.figma.com/community/widget/1584862622370729565" target="_blank" class="pos-a pointer font-s10" 
+              style="color: var(--code1); right: 0;" data-en-text="Same widget &gt;">相关小部件 &gt;</a>
             </div>
             <!--预设表格样式-->
             <div data-tableset-thtd class="df-lc w100">
               <div class="df-lc gap4 w100 " style="max-width: 100%; flex-wrap: wrap;">
-                <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,290px)">
-                  <div data-any="vw240" id="chk-tablestyle" data-tips="auto" class="fl0 pos-r wh-22" 
-                  data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
-                  data-tips-text="表格样式预设" 
-                  data-tips-text-en="Table style preset">
-                    <tab-tablestyle></tab-tablestyle>                 
-                  </div>
-                  <span data-any="vw240" >▶</span>
-                  <div data-tablestyle-box class="df-lc gap2 ovx noscrollbar" data-scroll="false" style="height: 60px;">
-                    <div data-tablestyle-set="fill" class="df-lc w100" style="gap:2px;" data-radio-value="2">
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                          </svg>
-                        </div>
-                        <div class="font-s10" style="right: auto;" data-tablestyle-name data-en-text="No Fill">无填充</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="16" height="16" x="2" y="2" rx="3" fill="var(--fill,var(--mainColor))"/>
-                          </svg>
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="All Fill">全填充</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="true">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 14V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V14H3ZM3 10H17V7H3V10Z"/>
-                          </svg>    
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="R-Space">横间隔</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C3.86182 18 3.72697 17.9857 3.59668 17.959C3.46664 17.9324 3.34118 17.8933 3.22168 17.8428C2.50378 17.5392 2 16.8285 2 16V4C2 3.17153 2.50378 2.46081 3.22168 2.15723C3.34118 2.10669 3.46664 2.06765 3.59668 2.04102C3.72697 2.01433 3.86182 2 4 2H16ZM13.7832 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H13.7832V17ZM6.34766 17H9.43555V3H6.34766V17Z"/>
-                          </svg>   
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="C-Space">竖间隔</div>         
-                      </div>
-                    </div>
-                    <div class="fl0" style="width: 1px; height: 30px; background: var(--boxBod);"></div>
-                    <div data-tablestyle-set="bod" class="df-lc w100" style="gap:2px;" data-radio-value="4">
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="true">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                          </svg>
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="No Stroke">无描边</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"/>
-                          </svg>  
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="All Stroke">全描边</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 13V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V13H3ZM3 12H17V8H3V12ZM4 3C3.44772 3 3 3.44772 3 4V7H17V4C17 3.44772 16.5523 3 16 3H4Z"/>
-                          </svg>   
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="R-Stroke">仅横线</div>         
-                      </div>
-                      <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
-                        <div data-tablestyle-chk class="fl0">
-                          <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H9.5V3H4ZM10.5 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H10.5V17Z"/>
-                          </svg> 
-                        </div>
-                        <div class="font-s10" data-tablestyle-name data-en-text="C-Stroke">仅竖线</div>         
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-                <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,110px);">
+                <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px;">
                   <div data-any="vw240" id="chk-selectcomp" data-tips="auto" class="fl0 pos-r wh-22" 
                   data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
                   data-tips-text="表格组件来源" data-tips-text-en="Table component source">
@@ -1106,7 +1014,8 @@
                   <span data-any="vw240" >▶</span>
                   <div data-selectcomp-box class="df-lc ovx noscrollbar" data-scroll>
                     <div data-selectcomp-mix class="df-lc gap4">
-                      <span data-en-text="Data:">数据:</span>
+                      <span data-any="vw300" data-en-text="Data">数据</span>
+                      <span data-en-text="@td/tn:">@td/tn:</span>
                       <span data-selectcomp-2 data-en-text="Auto">自动</span>
                       <div></div>
                       <div></div>
@@ -1114,76 +1023,339 @@
                       <label for="tableheader-chk" class="df-cc check wh-14">
                         <btn-check></btn-check>
                       </label>
-                      <span data-en-text="Header:">表头:</span>
+                      <span data-any="vw300" data-en-text="Header">表头</span>
+                      <span data-en-text="@th:">@th:</span>
                       <span data-selectcomp-1 data-en-text="Auto">自动</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div> 
-            <div class="w100 df-cc gap2" style="margin: 8px 0 4px 0;">
-              <!--div class="df-cc" data-btn="skill-main" style="border-radius: 20px;" data-en-text="Only Create @th/td">仅创建组件</div-->
-              <div data-create-table="sample" class="w100 df-cc" data-btn="main2" data-en-text="Sample Table">创建表格(示例)</div>
-              <div data-create-table="data" class="w100 df-cc" data-btn="main2" data-en-text="Data Table">创建表格(数据)</div>
-              <!--div class="df-cc fl0" data-btn="main2" style="width: 22px; height: 22px;">
-                <input id="table-more" type="checkbox" onchange="showNext(this,'data-tableset-more','flex')">
-                <label for="table-more" data-more-mini class="wh100 df-cc btn-more fl0 pad4">
-                  <btn-more></btn-more>
-                </label>
-              </div-->
+            <div class="w100 df-cc gap2" style="margin: 4px 0 8px 0;">
+              <div data-create-table class="w100 df-cc" data-btn="main2" data-en-text="Create Table">创建表格</div>
             </div>
-            
-            <div class="df-ffc gap4" data-skill-sec style="margin: 4px 0;">
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Make Cell-Comp">单元格化组件</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Row Column Swap">反转行列</div>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-lc w100">
-                  <div class="df-lc fl1" style="background: var(--boxGry); border: 1px solid var(--boxBod); border-radius: 4px 0 0 4px;">
-                    <input style="text-align: center; border-radius: 3px 0 0 3px;" id="table-row-num" type="text" value="4" data-input data-input-type="int" data-input-must="2,1000">
-                    <input style="text-align: center; border-left: 0; border-radius:0 3px 3px 0;" id="table-column-num" type="text" value="3" data-input data-input-type="int" data-input-must="2,1000">
+            <div class="df-lc gap4 w100 " style="max-width: 100%; flex-wrap: wrap;">
+              <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,200px)">
+                <div data-any="vw240" id="chk-tablestyle" data-tips="auto" class="fl0 pos-r wh-22" 
+                data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                data-tips-text="表格样式选项，可选中表格后单击直接应用" 
+                data-tips-text-en="Table style preset options,can click to apply too">
+                  <tab-tablestyle></tab-tablestyle>                 
+                </div>
+                <span data-any="vw240" >▶</span>
+                <div data-tablestyle-box class="df-lc gap2 ovx noscrollbar" data-scroll="false" style="height: 60px;">
+                  <div data-tablestyle-set="fill" class="df-lc w100" style="gap:1px;" data-radio-value="2">
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                        </svg>
+                      </div>
+                      <div class="font-s10" style="right: auto;" data-tablestyle-name data-en-text="No Fill">无填充</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="16" height="16" x="2" y="2" rx="3" fill="var(--fill,var(--mainColor))"/>
+                        </svg>
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="All Fill">全填充</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="true">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M18 16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16ZM3 14V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V14H3ZM3 10H17V7H3V10Z"/>
+                        </svg>    
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="R-Space">横间隔</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C3.86182 18 3.72697 17.9857 3.59668 17.959C3.46664 17.9324 3.34118 17.8933 3.22168 17.8428C2.50378 17.5392 2 16.8285 2 16V4C2 3.17153 2.50378 2.46081 3.22168 2.15723C3.34118 2.10669 3.46664 2.06765 3.59668 2.04102C3.72697 2.01433 3.86182 2 4 2H16ZM13.7832 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H13.7832V17ZM6.34766 17H9.43555V3H6.34766V17Z"/>
+                        </svg>   
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="C-Space">竖间隔</div>         
+                    </div>
                   </div>
-                  <div class="df-cc fl1" data-btn="skill-main" data-en-text="Set R/C"
-                  style="border-left: 0; border-radius:0 4px 4px 0; min-width: 60px;">
-                    设置行/列
+                  <div class="fl0" style="width: 1px; height: 30px; background: var(--boxBod);"></div>
+                  <div data-tablestyle-set="bod" class="df-lc w100" style="gap:1px;" data-radio-value="4">
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="4" data-radio-main="true">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                        </svg>
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="No Stroke">无描边</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="1" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM10.5 17H16C16.5523 17 17 16.5523 17 16V13H10.5V17ZM3 16C3 16.5523 3.44772 17 4 17H9.5V13H3V16ZM10.5 12H17V8H10.5V12ZM3 12H9.5V8H3V12ZM10.5 7H17V4C17 3.44772 16.5523 3 16 3H10.5V7ZM4 3C3.44772 3 3 3.44772 3 4V7H9.5V3H4Z"/>
+                        </svg>  
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="All Stroke">全描边</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="2" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16L17.9893 16.2041C17.887 17.2128 17.0357 18 16 18H4C2.96435 18 2.113 17.2128 2.01074 16.2041L2 16V4C2 2.89543 2.89543 2 4 2H16ZM3 13V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V13H3ZM3 12H17V8H3V12ZM4 3C3.44772 3 3 3.44772 3 4V7H17V4C17 3.44772 16.5523 3 16 3H4Z"/>
+                        </svg>   
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="R-Stroke">仅横线</div>         
+                    </div>
+                    <div class="fl0 df-lc bsb pos-r" data-radio data-radio-data="3" data-radio-main="false">
+                      <div data-tablestyle-chk class="fl0">
+                        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="var(--fill,var(--mainColor))" d="M16 2C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4C2 2.89543 2.89543 2 4 2H16ZM4 3C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H9.5V3H4ZM10.5 17H16C16.5523 17 17 16.5523 17 16V4C17 3.44772 16.5523 3 16 3H10.5V17Z"/>
+                        </svg> 
+                      </div>
+                      <div class="font-s10" data-tablestyle-name data-en-text="C-Stroke">仅竖线</div>         
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="df-lc pos-r upload-set gap4 fl1" style="height: 40px; min-width: min(100%,245px)">
+                <div data-any="vw240" id="chk-tablestyle" data-tips="auto" class="fl0 pos-r wh-22" 
+                data-tips-y="top" data-tips-x="left" style="--tips-w: 8ch;"
+                data-tips-text="表格主题选项" 
+                data-tips-text-en="Table style preset options,can click to apply too">
+                  <tab-tabletheme></tab-tabletheme>                 
+                </div>
+                <span data-any="vw240" >▶</span>
+                <div data-table-theme-color data-color data-color-hex="#888888" 
+                  data-color-rgb="rgb(136,136,136)" data-color-hsl="hsl(0,0%,53%)" 
+                  data-color-hsv="hsv(0,0%,53%)" data-colorcard-x="left" 
+                  data-colorcard-y="top" class="df-lc fl1 pos-r gap4" style="z-index: 1;">
+                    <div data-any="vw240" data-input="colorpick" class="wh-20 pointer">
+                      <btn-color></btn-color>
+                    </div>
+                    <input id="colorvalue-3" class="fl1" type="text" data-input="hex" value="#888888">
+                    <div data-any="vw300" data-input="colortype" data-colortype-mode="hex" class="colortype"></div>
+                    <card-colorpick></card-colorpick>
+                </div>
+                <div class="fl0" style="width: 1px; height: 30px; background: var(--boxBod);"></div>
+                <div class="df-lc pos-r gap4" data-table-theme data-select data-select-close data-select-value="普通">
+                  <input id="select-value-4" type="text" data-select-input readonly value="普通" data-en-input="Normal">
+                  <input id="select-show-4" data-select-pick=" w×h" type="checkbox">
+                  <label for="select-show-4" class="show-next wh100 pos-a" style="top:0; right: 0;"></label>
+                  <div data-select-options class="df-ffc pos-a w100 noscrollbar" style="white-space: normal; display: none; bottom:24px;">
+                    <div data-option="option" data-option-main="true" data-option-value="普通" data-en-text="Normal">普通</div>
+                    <div data-option="option" data-option-main="false" data-option-value="柔和" data-en-text="Soft">柔和</div>
+                    <div data-option="option" data-option-main="false" data-option-value="潮流" data-en-text="Fashion">潮流</div>
+                    <div data-option="option" data-option-main="false" data-option-value="对比" data-en-text="Contrast">对比</div>
+                    <div data-option="option" data-option-main="false" data-option-value="鲜艳" data-en-text="Vivid">鲜艳</div>
+                    <div data-option="option" data-option-main="false" data-option-value="粉嫩" data-en-text="Pastel">粉嫩</div>
+                    <div data-option="option" data-option-main="false" data-option-value="复古" data-en-text="Retro">复古</div>
+                    <div data-option="option" data-option-main="false" data-option-value="霓虹" data-en-text="Neon">霓虹</div>
                   </div>
                 </div>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="Add Row">增加一行</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="Reduce Row">减少一行</div>
+              </div>
+            </div>
+            <div class="w100 df-cc gap2" style="margin: 4px 0 4px 0;">
+              <div data-setheme-table class="w100 df-cc" data-btn="main2" data-en-text="Apply Theme">应用主题</div>
+            </div>
+            <!--步骤3-->
+            <div class="w100 df-lc op6"  style="padding:10px 0 4px 0; vertical-align: baseline;"> 
+              <span>▼&nbsp;</span>
+              <span data-en-text="Convenient features for @table" >表格便捷操作</span>
+            </div>
+            <div class=" df-lc gap4 upload-set mar-b4" style="flex-wrap: wrap;">
+              <div data-cell-moreset="pick-1" data-btn="text" class="df-ffc bod-r4 pos-r" 
+              data-skill-btn data-tips="auto" data-tips-y="top" data-tips-x="left"
+              data-tips-text="单元格所在行" data-tips-text-en="Rows of Cells"
+              style="padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%" viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect data-cellpick-rect-hold="1-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="23" width="36" height="6"/>
+                  <rect data-cellpick-rect="1-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="23" width="36" height="6">
+                    <animate attributeName="width" values="12;12;12;36;36;36;36;36;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="x" values="14;14;14;2;2;2;2;2;14;14;14;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect-hold="1-2" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="36" height="6"/>
+                  <rect data-cellpick-rect="1-2" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="36" height="6">
+                    <animate attributeName="width" values="12;12;12;36;36;36;36;36;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect x="2" y="11" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect x="14" y="23" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect opacity="0.5" x="2" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect data-cellpick-rect-hold="1-1" x="2" y="23" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="1-1" x="2" y="23" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="12;12;12;36;36;36;36;36;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="x" values="14;14;14;2;2;2;2;2;14;14;14;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect-hold="1-2" x="2" y="11" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="1-2" x="2" y="11" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="12;12;12;36;36;36;36;36;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                </svg>                  
+              </div>
+              <div data-cell-moreset="pick-2" data-btn="text" class="df-ffc bod-r4 pos-r"
+              data-skill-btn  data-tips="auto" data-tips-y="top" data-tips-x="center"
+              data-tips-text="单元格区域行" data-tips-text-en="Rows of Block"
+              style="padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%"viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect data-cellpick-rect-hold="2-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="36" height="18"/>
+                  <rect data-cellpick-rect="2-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="36" height="18">
+                    <animate attributeName="width" values="12;12;24;24;36;36;36;36;36;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="6;6;18;18;18;18;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect x="2" y="11" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect x="14" y="23" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect opacity="0.5" x="2" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect data-cellpick-rect-hold="2-1" x="2" y="11" width="36" height="18" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="2-1" x="2" y="11" width="36" height="18" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="12;12;24;24;36;36;36;36;36;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="6;6;18;18;18;18;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                </svg>                  
+              </div>
+              <div data-cell-moreset="pick-3" data-btn="text" class="df-ffc bod-r4 pos-r" 
+              data-skill-btn data-tips="auto" data-tips-y="top" data-tips-x="center"
+              data-tips-text="单元格框选" data-tips-text-en="Cells Block"
+              style="padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%" viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect data-cellpick-rect-hold="3-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="24" height="18"/>
+                  <rect data-cellpick-rect="3-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="24" height="18">
+                    <animate attributeName="width" values="0;0;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="0;0;18;18;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect x="2" y="11" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect x="14" y="23" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect opacity="0.5" x="2" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect data-cellpick-rect-hold="3-1" x="2" y="11" width="24" height="18" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="3-1" x="2" y="11" width="24" height="18" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="0;0;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="0;0;18;18;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                </svg>                  
+              </div>
+              <div data-cell-moreset="pick-4" data-btn="text" class="df-ffc bod-r4 pos-r" 
+              data-skill-btn data-tips="auto" data-tips-y="top" data-tips-x="center"
+              data-tips-text="单元格连选" data-tips-text-en="Cells Inline"
+              style="padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%" viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect data-cellpick-rect-hold="4-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="23" width="24" height="6"/>
+                  <rect data-cellpick-rect-hold="4-2" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="17" width="36" height="6"/>
+                  <rect data-cellpick-rect-hold="4-3" fill="var(--mainColor)" fill-opacity="0.4" x="14" y="11" width="24" height="6"/>
+                  <rect data-cellpick-rect="4-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="23" width="24" height="6">
+                    <animate attributeName="width" values="0;0;0;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect="4-2" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="17" width="36" height="6">
+                    <animate attributeName="width" values="0;0;36;36;36;36;36;36;36;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect="4-3" fill="var(--mainColor)" fill-opacity="0.4" x="14" y="11" width="24" height="6">
+                    <animate attributeName="width" values="12;24;24;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect x="14" y="11" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect x="14" y="23" width="12" height="6" fill="var(--mainColor)"/>
+                  <rect opacity="0.5" x="2" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="11" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="17" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="23" width="12" height="6"  stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect data-cellpick-rect-hold="4-1" x="2" y="23" width="24" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect-hold="4-2" x="2" y="17" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect-hold="4-3" x="14" y="11" width="24" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="4-1" x="2" y="23" width="24" height="6" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="0;0;0;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect="4-2" x="2" y="17" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="0;0;36;36;36;36;36;36;36;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect data-cellpick-rect="4-3" x="14" y="11" width="24" height="6" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="12;24;24;24;24;24;24;24;24;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                </svg>                  
+              </div>
+              <div data-cell-moreset="swap" data-btn="text" class="df-ffc bod-r4 pos-r"
+              data-skill-btn  data-tips="auto" data-tips-y="top" data-tips-x="center"
+              data-tips-text="反转行列" data-tips-text-en="Row Column Swap"
+              style="padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%" viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect data-cellpick-rect-hold="5-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="12" height="18"/>
+                  <rect data-cellpick-rect-hold="5-2" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="36" height="6"/>
+                  <rect data-cellpick-rect="5-1" fill="var(--mainColor)" fill-opacity="0.4" x="2" y="11" width="12" height="18">
+                    <animate attributeName="width" values="12;12;12;12;36;36;36;36;36;36;36;36;12;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="18;18;18;18;6;6;6;6;6;6;6;6;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <rect opacity="0.5" x="2" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="2" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="14" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="11" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="17" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect opacity="0.5" x="26" y="23" width="12" height="6" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <rect data-cellpick-rect-hold="5-1" x="2" y="11" width="12" height="18" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect-hold="5-2" x="2" y="11" width="36" height="6" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <rect data-cellpick-rect="5-1" x="2" y="11" width="12" height="18" stroke="var(--mainColor)" stroke-width="1.5">
+                    <animate attributeName="width" values="12;12;12;12;36;36;36;36;36;36;36;36;12;12;12;12;" dur="2s" repeatCount="indefinite"></animate>
+                    <animate attributeName="height" values="18;18;18;18;6;6;6;6;6;6;6;6;18;18;18;18;" dur="2s" repeatCount="indefinite"></animate>
+                  </rect>
+                  <path d="M38 24V25C38 27.2091 36.2091 29 34 29H33" stroke="var(--mainColor)" stroke-width="1.5"/>
+                </svg>                                  
+              </div>
+              <div data-cell-pick="tocomp" data-btn="text" class="df-ffc bod-r4 pos-r" 
+              data-skill-btn data-tips="auto" data-tips-y="top" data-tips-x="right"
+              data-tips-text="单元格化组件" data-tips-text-en="Make Cell-Comp"
+              style="--xx: 40px; padding: 5px 2px; opacity: 1; height: 26px; min-width: 40px;">
+                <svg width="100%" height="100%" viewBox="0 10 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect opacity="0.5" x="4" y="13" width="32" height="14" stroke="var(--mainColor)" stroke-width="0.5"/>
+                  <path d="M4 11H36" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <path d="M4 29H36" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <path d="M2 13V27" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <path d="M38 13V27" stroke="var(--mainColor)" stroke-width="1.5"/>
+                  <path fill="var(--mainColor)" d="M14.0241 17.1502C14.3744 16.8 14.9423 16.7999 15.2926 17.1502C15.6427 17.5005 15.6428 18.0685 15.2926 18.4187L13.6403 20.0701L15.2926 21.7225C15.6428 22.0727 15.6427 22.6407 15.2926 22.991C14.9423 23.3413 14.3744 23.3412 14.0241 22.991L12.3717 21.3387L10.7194 22.991C10.3691 23.3413 9.80113 23.3413 9.45082 22.991C9.10085 22.6407 9.10062 22.0726 9.45082 21.7225L11.1022 20.0701L9.45082 18.4187C9.10061 18.0685 9.1008 17.5005 9.45082 17.1502C9.80113 16.7999 10.3691 16.7999 10.7194 17.1502L12.3717 18.8016L14.0241 17.1502Z" />
+                  <path fill="var(--mainColor)" d="M21.7464 17.1499C22.0967 16.7996 22.6646 16.7996 23.0149 17.1499C23.3652 17.5002 23.3652 18.0682 23.0149 18.4185L21.3626 20.0699L23.0149 21.7232C23.365 22.0735 23.3652 22.6415 23.0149 22.9917C22.6647 23.3417 22.0966 23.3418 21.7464 22.9917L20.094 21.3384L18.4427 22.9908C18.0924 23.3411 17.5244 23.3411 17.1741 22.9908C16.8238 22.6404 16.8238 22.0725 17.1741 21.7222L18.8255 20.0699L17.1741 18.4185C16.8238 18.0682 16.8238 17.5002 17.1741 17.1499C17.5244 16.7998 18.0924 16.7997 18.4427 17.1499L20.094 18.8013L21.7464 17.1499Z" />
+                  <path fill="var(--mainColor)" d="M29.4692 17.1504C29.8195 16.8001 30.3874 16.8001 30.7377 17.1504C31.0877 17.5008 31.0879 18.0688 30.7377 18.419L29.0854 20.0704L30.7377 21.7227C31.0879 22.0729 31.0877 22.6409 30.7377 22.9912C30.3874 23.3415 29.8195 23.3415 29.4692 22.9912L27.8168 21.3389L26.1645 22.9912C25.8142 23.3416 25.2463 23.3416 24.8959 22.9912C24.5458 22.6409 24.5457 22.0729 24.8959 21.7227L26.5473 20.0704L24.8959 18.419C24.5457 18.0687 24.5458 17.5008 24.8959 17.1504C25.2463 16.8001 25.8142 16.8001 26.1645 17.1504L27.8168 18.8018L29.4692 17.1504Z" />
+                </svg>                                                 
+              </div>
+            </div>
+            <div class="df-lc w100" data-skill-more data-selects-must>
+              <div class="df-lc w100">
+                <div class="df-lc fl1">
+                  <input style="text-align: center; border-radius: 3px 0 0 3px;" id="table-row-num" type="text" value="4" data-input data-input-type="int" data-input-must="2,1000">
+                  <input style="text-align: center; border-left: 0; border-radius:0 3px 3px 0;" id="table-column-num" type="text" value="3" data-input data-input-type="int" data-input-must="2,1000">
                 </div>
-                
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="All Border">全描边</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="None Border">全不描边</div>
-                </div>
-                <div class="df-lc w100" >
-                  <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-btn="skill-main" data-en-text="All Fill">全填充</div>
-                  <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-btn="skill-main" data-en-text="None Fill">全不填充</div>
+                <div class="df-cc fl1" data-skill-btn data-btn="skill-main" data-en-text="Set R/C">
+                  设置行/列
                 </div>
               </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Random Theme">随机主题</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Apply Preset">应用样式</div>
+              <div class="df-lc w100" >
+                <div class="df-cc" style="border-radius: 4px 0 0 4px;" data-skill-btn data-btn="skill-main" data-en-text="Add Row">增加一行</div>
+                <div class="df-cc" style="border-left: 0; border-radius:0 4px 4px 0;" data-skill-btn data-btn="skill-main" data-en-text="Reduce Row">减少一行</div>
               </div>
-              <div class="w100 df-cc">
-                <span data-skill-gap>
-                  <span>---</span>
-                  <span data-en-text="To xxx@th/td elements"> 基于xxx@th/td元素</span>
-                  <span>---</span>
-                </span>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Rows of Cells">单元格所在行</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Rows of Block">单元格区域行</div>
-              </div>
-              <div class="df-lc w100" data-skill-more data-selects-must>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Cells Block">单元格框选</div>
-                <div class="df-cc" data-btn="skill-main" data-en-text="Cells Inline">单元格连选</div>
-              </div>
+              
             </div>
             
             <div style="min-height: 10px;"></div>
@@ -1316,8 +1488,8 @@
                   </div>
                   <div class="df-sc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div data-pixel-copy class="df-cc" data-btn="skill-main" data-en-text="Pixel As Copy">保留原图层</div>
-                      <div data-pixel-overwrite class="df-cc" data-btn="skill-main" data-en-text="Pixel Overwrite">覆写原图层</div>
+                      <div data-pixel-copy class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Pixel As Copy">保留原图层</div>
+                      <div data-pixel-overwrite class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Pixel Overwrite">覆写原图层</div>
                     </div>
                   </div>
                 </div>
@@ -1370,7 +1542,7 @@
                     <span class="tip1" data-en-text="Edit directly or Ctrl+C copy the layer, then click here~">直接编辑, 或Ctrl+C复制图层, 然后点击此处~</span>
                     <span class="tip2" data-en-text="Ctrl+V paste here and edit the data from clipboard,click again to cancel~">Ctrl+V粘贴, 即可基于剪贴板数据变形,再次点击取消~</span>
                   </label>
-                  <div class="df-cc mar-b4" data-skewscale-copy data-btn="skill-main" data-en-text="Replace Clipboard Data">替换剪贴板数据</div-->
+                  <div class="df-cc mar-b4" data-skewscale-copy data-skill-btn data-btn="skill-main" data-en-text="Replace Clipboard Data">替换剪贴板数据</div-->
 
                   <!--div data-skewscale-view-box class="w100 df-cc pos-r tex-pixelbg mar-0a mar-b8 ovh" style="max-width: 240px;">
                     <div data-skewscale-box class="w100 pos-r fl0 df-cc ">
@@ -1437,8 +1609,8 @@
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="New Scale Mark">新缩放标记</div>
-                    <div data-reset-all class="df-cc" data-btn="skill-main" data-en-text="All Reset">重置全部</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="New Scale Mark">新缩放标记</div>
+                    <div data-reset-all class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="All Reset">重置全部</div>
                   </div>
                 </div>
                 <div class="fl1"  data-skill-sec="ClipByGrid">
@@ -1479,8 +1651,8 @@
                   </div>
                   <div class="df-sc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Image@2x Clip">栅格化裁切</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Component Clip">组件化裁切</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Image@2x Clip">栅格化裁切</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Component Clip">组件化裁切</div>
                     </div>
                   </div>
                 </div>
@@ -1490,16 +1662,16 @@
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Clear Filter">清除调整</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Raw Size">还原尺寸</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Clear Filter">清除调整</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Raw Size">还原尺寸</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="High Pass">高反差保留</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Extract Edges">提取边缘</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="High Pass">高反差保留</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Extract Edges">提取边缘</div>
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Crop Blank">多余空白裁剪</div>  
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Crop Current Display">当前显示裁剪</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Crop Blank">多余空白裁剪</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Crop Current Display">当前显示裁剪</div>  
                     </div>
                     <div data-skill-gap>
                       <span>----</span>
@@ -1508,11 +1680,11 @@
                       <span>----</span>
                     </div> 
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Same Filter">统一调整参数</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Same Full">统一填充模式</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Same Filter">统一调整参数</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Same Full">统一填充模式</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Same Clip Position">统一裁剪位置</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Same Clip Position">统一裁剪位置</div>
                       <div class="w100" data-any="vw240"></div>  
                     </div>
                   </div>
@@ -1530,7 +1702,7 @@
                     </div>
                   </div>
                   <div class="df-sc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By SVG">按SVG拆分</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Split By SVG">按SVG拆分</div>
                   </div>
                   <div class="df-ffc bod-d gap4 pad4 mar-b4" >
                     <div data-split-tags class="w100 df-lc">
@@ -1596,7 +1768,7 @@
                     </div>
                   </div>
                   <div class="df-sc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By Conditions">按条件拆分</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Split By Conditions">按条件拆分</div>
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Symbol">分割符</div>
@@ -1608,7 +1780,7 @@
                     </div>
                   </div>
                   <div class="df-sc" data-skill-line>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Split By Symbol">按关键词拆分</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Split By Symbol">按关键词拆分</div>
                   </div>
                 </div>
                 <div class="fl1"  data-skill-sec="MergeText">
@@ -1636,8 +1808,8 @@
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Merge Keep Style">保留样式合并</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Merge Character">快速合并</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Merge Keep Style">保留样式合并</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Merge Character">快速合并</div>  
                     </div>
                   </div>
                 </div>
@@ -1647,19 +1819,19 @@
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Arrange By Ratio">自动重排</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Auto Constraints">简单约束</div>  
+                      <div class="df-cc" data-btn-dblclick data-skill-btn data-btn="skill-main" data-en-text="Arrange By Ratio">自动重排</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Auto Constraints">简单约束</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Reversing Index">反转顺序</div>
-                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Exchange Position">调换位置</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Reversing Index">反转顺序</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-en-text="Exchange Position">调换位置</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Divide To Frame">拆分到容器</div>
-                      <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-en-text="Put In Frame">包裹到容器</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-en-text="Divide To Frame">拆分到容器</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-en-text="Put In Frame">包裹到容器</div>
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="To Auto Layout">转自动布局</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="To Auto Layout">转自动布局</div>
                       <div class="w100" data-any="vw240"></div>
                     </div>
                     <div data-skill-gap>
@@ -1669,16 +1841,16 @@
                       <span>----</span>
                     </div> 
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Clone to Fill">填充到容器</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Absolute & Fill">自适应容器</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Clone to Fill">填充到容器</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Absolute & Fill">自适应容器</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Heavy Chain">重链组件</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Rebind Style">重绑样式</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Heavy Chain">重链组件</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Rebind Style">重绑样式</div>
                     </div>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Clone Comp.">复制母组件</div>
-                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Release Comp.">解除母组件</div>  
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Clone Comp.">复制母组件</div>
+                      <div class="df-cc" data-btn-dblclick data-skill-btn data-btn="skill-main" data-en-text="Release Comp.">解除母组件</div>  
                     </div>
                   </div>
                 </div>
@@ -1691,8 +1863,8 @@
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Stroke To Shapes">描边转堆叠层</div>
-                      <div class="df-cc" data-btn-dblclick data-btn="skill-main" data-en-text="Break Apart Path">拆分复合路径</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Stroke To Shapes">描边转堆叠层</div>
+                      <div class="df-cc" data-btn-dblclick data-skill-btn data-btn="skill-main" data-en-text="Break Apart Path">拆分复合路径</div>
                     </div>
                   </div>
                 </div>
@@ -1702,8 +1874,8 @@
                   </div>
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Clone As SVG">以SVG克隆</div>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Get SVG">获取SVG</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Clone As SVG">以SVG克隆</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Get SVG">获取SVG</div>
                     </div>
                   </div>
                 </div>
@@ -1714,14 +1886,14 @@
                   <div class="df-ffc df-cc" data-skill-line>
                     <div class="df-lc w100" data-skill-more data-selects-must="false">
                       <input type="file" id="input-qrcode-file" accept="image/*" style="display: none;">
-                      <label for="input-qrcode-file"  data-fileinput="false" data-btn="skill-main" class="h100 df-cc font-12 pos-r">
+                      <label for="input-qrcode-file"  data-fileinput="false" data-skill-btn data-btn="skill-main" class="h100 df-cc font-12 pos-r">
                         <div data-fileinput-text data-en-text="Up Local QR"> 上传本地 </div>
                         <div data-fileinput-filename></div>
                         <div class="df-cc pos-a op6 mar-a0" style="width: 2ch; right: 0.5ch;">
                           <btn-add></btn-add>
                         </div>
                       </label>
-                      <div class="df-cc" data-btn="skill-main" data-selects-must data-en-text="Up QR Layer">上传所选</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-selects-must data-en-text="Up QR Layer">上传所选</div>
                   </div>
                   </div>
                   <div class="df-lc" data-skill-line data-selects-must="false">
@@ -1844,7 +2016,7 @@
                     </div>
                   </div>
                   <div class="df-cc" data-skill-more data-selects-must="false">
-                    <div class="df-cc" data-btn="skill-main" data-btn-dblclick data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
@@ -1891,8 +2063,8 @@
                   </div>
                   <div class="df-ffc df-cc" data-skill-line data-selects-must="false">
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-btn="skill-main" data-en-text="Shadow-stroke Css">代码示例</div>
-                      <div class="df-cc" data-btn-dblclick data-selects-must data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Shadow-stroke Css">代码示例</div>
+                      <div class="df-cc" data-btn-dblclick data-selects-must data-skill-btn data-btn="skill-main" data-en-text="Add Shadow-stroke">生成伪描边</div>
                     </div>
                   </div>
                 </div>
@@ -2016,7 +2188,7 @@
                     
                   </div>
                   <div class="df-lc" data-skill-line data-selects-must="false">
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Border Example( Coming soon~ )">生成示例（敬请期待~）</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Border Example( Coming soon~ )">生成示例（敬请期待~）</div>
                   </div>
                 </div>
                 <div class="fl1"  data-skill-sec="PaintStyle">
@@ -2038,7 +2210,7 @@
                         <li data-li-style="2" data-en-text="Table header must with: name | color " >表头固定用：name,color</li>
                       </ul>
                     </div>
-                    <div class="df-cc" data-btn="skill-main" data-en-text="Create Paint Style">创建样式</div>
+                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Create Paint Style">创建样式</div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>

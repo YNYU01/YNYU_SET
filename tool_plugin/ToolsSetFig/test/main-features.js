@@ -9,7 +9,6 @@ const SKILL_STRATEGIES = {
   'Set R/C': () => sendTableSet('set'),
   'Add Row': () => sendTableSet('add'),
   'Reduce Row': () => sendTableSet('reduce'),
-  'Random Theme': () => sendTableSet('theme'),
   'Rows of Cells': () => sendTablePick('row'),
   'Rows of Block': () => sendTablePick('allrow'),
   'Cells Block': () => sendTablePick('block'),
@@ -58,12 +57,13 @@ DOM.skillBtnMain.forEach(btn => {
       } else {
         toolMessage(['',skillname],PLUGINAPP);
       }
+      
     };
   });
   
   // 单击事件处理（带防抖）
   btn.addEventListener('click',()=>{
-    const skillname = btn.getAttribute('data-en-text');
+    const skillname = btn.getAttribute('data-en-text') || btn.getAttribute('data-tips-text-en');
     if (!skillname) return;
     
     // 清除之前的定时器
@@ -81,6 +81,10 @@ DOM.skillBtnMain.forEach(btn => {
       }
       clickTimer = null;
     }, DELAY.SKILL_CLICK);
+    
+    if(btn.getAttribute('data-btn-dblclick') !== null){
+      tipsAll(['带两点的按钮，单/双击时功能有差异',"For btn with 2 dot, the logic of dbl-click is different"],4000,4);
+    }
   });
 });
 
@@ -169,11 +173,20 @@ function sendTable(mapOrGet){
 };
 
 
-// 表单页 > 应用预设样式-
-function applyTableStyleStrategy(){
-  let styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
-  let styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
-  
+// 表单页 > 应用预设样式
+function applyTableStyleStrategy(data){
+  let styleFillId = null;
+  let styleBodId = null;
+  if(data && data[0]){
+    styleFillId = data[0];
+  }else{
+    styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
+  }
+  if(data && data[1]){
+    styleBodId = data[1];
+  }else{
+    styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
+  }
   let fill = 1;
   let bod = [1,1,1,1];
   switch(styleFillId){
@@ -186,6 +199,9 @@ function applyTableStyleStrategy(){
     case '4':
       fill = '0';
     break;
+    case null:
+      fill = null;
+    break;
   };
   switch(styleBodId){
     case '2':
@@ -197,6 +213,9 @@ function applyTableStyleStrategy(){
     case '4':
       bod = [0,0,0,0];
       break;
+    case null:
+      bod = [null,null,null,null];
+    break;
   }
   let styleAll = {
     td:[...bod,fill],
@@ -206,6 +225,23 @@ function applyTableStyleStrategy(){
   toolMessage([[styleAll,'style'],'reTable'],PLUGINAPP);
 
 };
+//表单页 > 表格样式预设，单击直接应用
+DOM.tableStyleSetFill.querySelectorAll('[data-radio-data]').forEach(item => {
+  let selects = ROOT.getAttribute('data-selects');
+  if(selects == 'true'){
+    item.addEventListener('click',()=>{
+      applyTableStyleStrategy([item.getAttribute('data-radio-data'),null]);
+    });
+  }
+});
+DOM.tableStyleSetBod.querySelectorAll('[data-radio-data]').forEach(item => {
+  let selects = ROOT.getAttribute('data-selects');
+  if(selects == 'true'){
+    item.addEventListener('click',()=>{
+      applyTableStyleStrategy([null,item.getAttribute('data-radio-data')]);
+    });
+  }
+});
 
 // 表单页 > 设置行列
 function setTableRowColStrategy(){
@@ -219,7 +255,6 @@ const TABLE_SET_FUNCTIONS = {
   'set': setTableRowColStrategy,
   'add': () => toolMessage([[[0,1],'add'],'reTable'],PLUGINAPP),
   'reduce': () => toolMessage([[[0,-1],'reduce'],'reTable'],PLUGINAPP),
-  'theme': () => toolMessage([[null,'theme'],'reTable'],PLUGINAPP)
 };
 
 // 表单页 > 执行表格设置功能

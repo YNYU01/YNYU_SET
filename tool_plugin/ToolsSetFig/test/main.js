@@ -109,7 +109,7 @@ const DOM = (() => {
     skillStar: () => queryAll('[data-skill-star]'),
     skillAllModel: () => queryAll('[data-skillmodule]'),
     skillStarModel: () => query('[data-skillmodule="Useful & Starts"]'),
-    skillBtnMain: () => queryAll('[data-btn="skill-main"]'),
+    skillBtnMain: () => queryAll('[data-skill-btn]'),
     
     // 标签相关
     createTagsBox: () => query('[data-create-tags]'),
@@ -134,8 +134,8 @@ const DOM = (() => {
     chkSelectcomp: () => getById('chk-selectcomp'),
     createAnyBtn: () => query('[data-create-any]'),
     exportAnyBtn: () => query('[data-export-any]'),
-    createSampleTableBtn: () => query('[data-create-table="sample"]'),
-    createDataTableBtn: () => query('[data-create-table="data"]'),
+    createDataTableBtn: () => query('[data-create-table]'),
+    applyThemeTableBtn: () => query('[data-setheme-table]'),
     tableStyleSetFill: () => query('[data-tablestyle-set="fill"]'),
     tableStyleSetBod: () => query('[data-tablestyle-set="bod"]'),
     tableHeaderChk: () => getById('tableheader-chk'),
@@ -348,34 +348,6 @@ const State = (() => {
   }
 })();
 
-// ========== 状态变量访问 ==========
-// 注意：状态变量应通过 State.get() 和 State.set() 访问，以保持状态同步
-// 以下提供便捷访问函数，但建议直接使用 State.get/set 以保持一致性
-
-// 获取状态（只读访问）
-const getState = (key) => State.get(key);
-// 设置状态
-const setState = (key, value) => State.set(key, value);
-
-// 常用状态的便捷访问（保持向后兼容，但建议逐步迁移到直接使用 State）
-// 这些变量在代码中会被直接赋值，所以保留为 let 变量
-let skillModel = State.get('skillModel');
-let isSkillScroll = State.get('isSkillScroll');
-let skillsSearch = State.get('skillsSearch');
-let tableStyle = State.get('tableStyle');
-let CreateImageInfo = State.get('createImageInfo');
-let CreateTableInfo = State.get('createTableInfo');
-let CataloguesInfo = State.get('cataloguesInfo');
-let ExportImageInfo = State.get('exportImageInfo');
-let SelectNodeInfo = State.get('selectNodeInfo');
-let EditorInfo = State.get('editorInfo');
-let isResize = State.get('isResize');
-let textareaLineNum = State.get('textareaLineNum');
-let imageType = State.get('imageType');
-let tableType = State.get('tableType');
-let zyType = State.get('zyType');
-let tableTitleMust = State.get('tableTitleMust');
-let frameNmaeSelect = State.get('frameNmaeSelect');
 
 // ========== 工具函数 ==========
 
@@ -525,6 +497,7 @@ window.addEventListener('message',(message)=>{
         case 'qrLayerView': addQRLayerView(info);break
         case 'linkStyleInfo': reLinkStyleInfo(info);break
         case 'styleGroupInfo': reStyleGroupInfo(info);break
+        case 'refreshExportImgInfo': refreshExportImgInfo(info);break
       };
     }
   };
@@ -535,8 +508,8 @@ function addToUserTips(kind){
   let languge = ROOT.getAttribute('data-language');
   let num = languge == 'Zh' ? 0 : 1;
   let languge2 = languge == 'Zh' ? 'en' : 'zh';
-  let random = toUserTips.random[Math.floor(Math.random()*toUserTips.random.length)]
-  if(kind && kind == 'worktime') random = toUserTips.worktime;
+  let random = TO_USER_TIPS_TV.random[Math.floor(Math.random()*TO_USER_TIPS_TV.random.length)]
+  if(kind && kind == 'worktime') random = TO_USER_TIPS_TV.worktime;
   DOM.TV_text.textContent = random[num];
   DOM.TV_text.setAttribute('data-'+ languge2 +'-text',random[1 - num]);
   DOM.TV_text.setAttribute('data-'+ languge.toLowerCase() +'-text',random[num]);
@@ -554,14 +527,14 @@ function addSkillTitle(){
   // 获取技能节点（每次调用时重新查询，确保获取最新元素）
   const skillSecNodes = DOM.skillSecNode;
   
-  // 检查 skillSecNodes 和 skillSecInfo 是否存在
+  // 检查 skillSecNodes 和 SKILL_SEC_INFO 是否存在
   if (!skillSecNodes || skillSecNodes.length === 0) {
     console.warn('addSkillTitle: skillSecNodes not found');
     return;
   }
   
-  if (!skillSecInfo || !Array.isArray(skillSecInfo)) {
-    console.warn('addSkillTitle: skillSecInfo not found or not an array');
+  if (!SKILL_SEC_INFO || !Array.isArray(SKILL_SEC_INFO)) {
+    console.warn('addSkillTitle: SKILL_SEC_INFO not found or not an array');
     return;
   }
   
@@ -570,7 +543,7 @@ function addSkillTitle(){
     
     let secid = secnode.getAttribute('data-skill-sec');
     if(secid){
-      let info = skillSecInfo.find(item => item && item.id == secid);
+      let info = SKILL_SEC_INFO.find(item => item && item.id == secid);
       
       // 检查是否找到对应的信息
       if (!info || !info.name) {
@@ -652,19 +625,29 @@ function updateClipSettings(clipRC){
     });
     
     // 设置新的选中状态
-    const clipHItem = clipHSet.querySelector(`[data-radio-data="${clipRC[1]}"]`);
-    const clipWItem = clipWSet.querySelector(`[data-radio-data="${clipRC[0]}"]`);
+    const clipHItem = clipHSet.querySelector(`[data-radio-data="${clipRC[0]}"]`);
+    const clipWItem = clipWSet.querySelector(`[data-radio-data="${clipRC[1]}"]`);
     if (clipHItem) clipHItem.setAttribute('data-radio-main','true');
     if (clipWItem) clipWItem.setAttribute('data-radio-main','true');
   }
 };
 
+// 更新表格设置
+function updateTableSettings(tableRC){
+  const tableRowSet = getElementMix('table-row-num');
+  const tableColumnSet = getElementMix('table-column-num');
+  if (tableRowSet && tableColumnSet) {
+    tableRowSet.value = tableRC[0];
+    tableColumnSet.value = tableRC[1];
+  }
+};
+
 //处理选中图层的信息（基础）
 function reSelectInfo(info){
-  SelectNodeInfo = info;
+  State.set('selectNodeInfo',info);
   
   // 更新选中状态
-  if(info[0][0] !== null){
+  if(info[0].n !== null){
     ROOT.setAttribute('data-selects','true');
     updateSelectInfoDisplay(info);
   } else{
@@ -674,13 +657,16 @@ function reSelectInfo(info){
   // 单个选中时的特殊处理
   if(info.length == 1){
     // 更新变换控制
-    if (info[0][3]) {
-      updateTransformControls(info[0][3]);
+    if (info[0].transform) {
+      updateTransformControls(info[0].transform);
     }
     
     // 更新裁剪设置
-    if (info[0][4]) {
-      updateClipSettings(info[0][4]);
+    if (info[0].clipRC) {
+      updateClipSettings(info[0].clipRC);
+    }
+    if (info[0].tableRC) {
+      updateTableSettings(info[0].tableRC);
     }
   };
   
@@ -702,11 +688,11 @@ function reRootSize(info){
 };
 //提取功能点用于搜索定位
 function addSearchs(){
-  let skillMain = document.querySelectorAll('[data-btn="skill-main"]')
+  let skillMain = document.querySelectorAll('[data-skill-btn]')
   let language = ROOT.getAttribute('data-language');
   skillMain.forEach(skill => {
-    let zh = language == 'Zh' ? skill.textContent : skill.getAttribute('data-zh-text') || null;
-    let en = skill.getAttribute('data-en-text') || null;
+    let zh = language == 'Zh' ? skill.textContent : skill.getAttribute('data-zh-text') || skill.getAttribute('data-tips-text') || null;
+    let en = skill.getAttribute('data-en-text') || skill.getAttribute('data-tips-text-en') || null;
     if(!en && !zh){
       zh = '保留原图层';
       en = 'Pixel As Copy';
@@ -724,19 +710,24 @@ function addSearchs(){
       });
     };
     let path = [`${page[0]} > ... > ${zh}`,`${page[1]} > ... > ${en}`];
-    if(key) skillsSearch.push({name:[zh,en],page:page,key:key,path:path,});
+    if(key) {
+      let newSkillsSearch = [...State.get('skillsSearch'),{name:[zh,en],page:page,key:key,path:path,}];
+      State.set('skillsSearch',newSkillsSearch);
+    };
   });
 
-  skillSecInfo.forEach(sec => {
+  SKILL_SEC_INFO.forEach(sec => {
     let page = ['更多功能','more tools'];
     let key = [...sec.name[0].replace(/[a-z0-9\s]/gi,'').split(''),...sec.name[1].toLowerCase().split(' ')]
     let path = [`更多功能 > ${sec.name[0]}`,`more tools > ${sec.name[1]}`]
-    skillsSearch.push({name:sec.name,page:page,key:key,path:path,});
+    let newSkillsSearch = [...State.get('skillsSearch'),{name:sec.name,page:page,key:key,path:path,}];
+    State.set('skillsSearch',newSkillsSearch);
   });
 
-  skillsSearch = language == 'Zh' ? skillsSearch.sort((a,b) => a.name[0].localeCompare(b.name[0])) : skillsSearch.sort((a,b) => a.name[1].localeCompare(b.name[1]));
+  let newSkillsSearch = language == 'Zh' ? State.get('skillsSearch').sort((a,b) => a.name[0].localeCompare(b.name[0])) : State.get('skillsSearch').sort((a,b) => a.name[1].localeCompare(b.name[1]));
+  State.set('skillsSearch',newSkillsSearch);
   
-  skillsSearch.forEach((list,index) => {
+  newSkillsSearch.forEach((list,index) => {
     let turnto = document.createElement('div');
     turnto.setAttribute('data-search-turnto',index);
     turnto.className = 'df-sc';
@@ -766,6 +757,7 @@ function addSearchs(){
       DOM.dailogSearchBox.parentNode.style.display = 'none';
       viewPage(list.page[1]);
       let viewskill = getElementMix('data-page-id="page"').querySelector(`[data-en-text="${list.name[1]}"]`);
+      if(!viewskill) viewskill = getElementMix('data-page-id="page"').querySelector(`[data-tips-text-en="${list.name[1]}"]`);
       if(!viewskill) return;
       viewskill.scrollIntoView({behavior:"smooth",block: "center"});
       setTimeout(()=>{
@@ -994,7 +986,7 @@ const saveWindowSize = debounce((w, h) => {
 }, DELAY.RESIZE_SAVE);
 
 DOM.btnResize.addEventListener('mousedown',(event)=>{
-  isResize = true;
+  State.set('isResize',true);
   let reNodeStyle = document.defaultView.getComputedStyle(ROOT);
   reStartW = parseInt(reNodeStyle.width,10);
   reStartH = parseInt(reNodeStyle.height,10);
@@ -1002,7 +994,7 @@ DOM.btnResize.addEventListener('mousedown',(event)=>{
   reStartY = event.clientY;
   //console.log(reStartW,reStartH)
   document.addEventListener('mousemove',(e)=>{
-    if(isResize){
+    if(State.get('isResize')){
       let w = reStartW + e.clientX - reStartX;
       let h = reStartH + e.clientY - reStartY;
       w = Math.max(w,UI_MINI[0]);
@@ -1018,7 +1010,7 @@ DOM.btnResize.addEventListener('mousedown',(event)=>{
     }
   });
   document.addEventListener('mouseup',()=>{
-    isResize = false;
+    State.set('isResize',false);
   })
 });
 //打印所选对象
@@ -1269,7 +1261,8 @@ async function handleJsonFile(content, createname, shouldCreateTag = true){
       // 数据必须存储到 CataloguesInfo（即使不创建标签）
       jsonZyData.forEach(item => {
         if(item && item.zyType){
-          CataloguesInfo.push(item);
+          let newCataloguesInfo = [...State.get('cataloguesInfo'),item];
+          State.set('cataloguesInfo',newCataloguesInfo);
         }
       });
       
@@ -1313,31 +1306,31 @@ async function detectFileType(files, filesTypes){
   
   // 优先检测真实图片格式（对于可能的图片文件）
   // 先检查扩展名是否可能是图片
-  const possibleImageExts = filesTypes.filter(ext => imageType.length > 0 && imageType.includes(ext));
+  const possibleImageExts = filesTypes.filter(ext => State.get('imageType').includes(ext));
   if (possibleImageExts.length > 0 && files.length > 0) {
     // 对第一个可能的图片文件检测真实格式
     const realyType = await tool.TrueImageFormat(files[0]);
-    if (realyType && imageType.includes(realyType)) {
+    if (realyType && State.get('imageType').includes(realyType)) {
       // 如果真实格式是图片，检查所有文件是否都是图片格式
-      if (filesTypes.every(item => imageType.includes(item))) {
+      if (filesTypes.every(item => State.get('imageType').includes(item))) {
         return 'image';
       }
     }
   }
   
   // 通过扩展名判断（需要确保类型数组不为空）
-  if (imageType.length > 0 && filesTypes.every(item => imageType.includes(item))) {
+  if (filesTypes.every(item => State.get('imageType').includes(item))) {
     return 'image';
-  } else if (tableType.length > 0 && filesTypes.every(item => tableType.includes(item))) {
+  } else if (filesTypes.every(item => State.get('tableType').includes(item))) {
     return 'table';
-  } else if (zyType.length > 0 && filesTypes.every(item => zyType.includes(item))) {
+  } else if (filesTypes.every(item => State.get('zyType').includes(item))) {
     return 'zy';
   }
   
   // 如果无法通过扩展名判断，再次尝试检测真实格式（作为兜底）
   if (files.length > 0) {
     const realyType = await tool.TrueImageFormat(files[0]);
-    if (realyType && imageType.length > 0 && imageType.includes(realyType)) {
+    if (realyType && State.get('imageType').includes(realyType)) {
       return 'image';
     }
   }
@@ -1386,7 +1379,7 @@ DOM.userText.parentNode.querySelector('[data-close]').addEventListener('click',(
   DOM.userText.setAttribute('data-textarea-wrap','false');
 
   let linenums = getElementMix('data-textarea-linenum');
-  textareaLineNum = 20;
+ 
   linenums.innerHTML = `<div>1</div>
   <div>2</div>
   <div>3</div>
@@ -1413,10 +1406,10 @@ DOM.userText.addEventListener('scroll',()=>{
   let numbox = getElementMix('data-textarea-linenum-box');
   let linenums = getElementMix('data-textarea-linenum');
   numbox.scrollTop = DOM.userText.scrollTop;
-  if(textareaLineNum*16 < DOM.userText.scrollTop + DOM.userText.offsetHeight){
+  if(State.get('textareaLineNum')*16 < DOM.userText.scrollTop + DOM.userText.offsetHeight){
     let addnum = 100;//Math.min((999 - textareaLineNum),100)
     if (addnum < 0) return;
-    for(let i = textareaLineNum; i < textareaLineNum + addnum; i++){
+    for(let i = State.get('textareaLineNum'); i < State.get('textareaLineNum') + addnum; i++){
       let linenum = document.createElement('div');
       let num = (i + 1) // <= 9999 ? (i + 1) : '···';
       linenum.textContent = num;
@@ -1428,7 +1421,8 @@ DOM.userText.addEventListener('scroll',()=>{
       }
       linenums.appendChild(linenum);
     };
-    textareaLineNum += addnum;
+    let newLinenums = State.get('textareaLineNum') + addnum
+    State.set('textareaLineNum',newLinenums);
   };
 });
 
@@ -1470,7 +1464,7 @@ userText_BtnDown.addEventListener('mouseleave',()=>{
 //切换预览图
 getElementMix('data-imgnum-up').addEventListener('click',()=>{
   let oldvalue = DOM.imgnumSet.value * 1;
-  let maxnum = ExportImageInfo.length;
+  let maxnum = State.get('exportImageInfo').length;
   DOM.imgnumSet.value = (oldvalue + 1) <= maxnum ? (oldvalue + 1) : maxnum;
   if(DOM.imgnumSet.value == oldvalue) return;
   DOM.imgnumSet.parentNode.setAttribute('data-int-value',DOM.imgnumSet.value);
@@ -1551,7 +1545,7 @@ function getFinalInfo(info,isname){
 // ========== 创建内容策略函数 ==========
 // 创建图片策略
 function createImageStrategy(){
-  const images = getFinalInfo(CreateImageInfo);
+  const images = getFinalInfo(State.get('createImageInfo'));
   if (images.length === 0) {
     console.warn('createImageStrategy: No images to create');
     return;
@@ -1564,12 +1558,12 @@ function createImageStrategy(){
 
 // 创建表格策略
 function createTableStrategy(){
-  const tables = getFinalInfo(CreateTableInfo,true);
+  const tables = getFinalInfo(State.get('createTableInfo'),true);
   if (tables.length === 0) {
     console.warn('createTableStrategy: No tables to create');
     return;
   }
-  tipsAll(MESSAGES.READING, CreateTableInfo.length * 100);
+  tipsAll(MESSAGES.READING, tables.length * 100);
   setTimeout(()=>{
     toolMessage([tables,'createFrame'],PLUGINAPP);
   },100);
@@ -1577,12 +1571,12 @@ function createTableStrategy(){
 
 // 创建资源目录策略
 function createZyStrategy(){
-  const zys = getFinalInfo(CataloguesInfo,true);
+  const zys = getFinalInfo(State.get('cataloguesInfo'),true);
   if (zys.length === 0) {
     console.warn('createZyStrategy: No catalogues to create');
     return;
   }
-  tipsAll(MESSAGES.READING, CataloguesInfo.length * 100);
+  tipsAll(MESSAGES.READING, zys.length * 100);
   setTimeout(()=>{
     toolMessage([zys,'createZy'],PLUGINAPP);
   },100);
@@ -1627,15 +1621,15 @@ DOM.skillAllModel.forEach(item =>{
   item.appendChild(icon);
   /**/
   item.addEventListener('mouseenter',() => {
-    isSkillScroll = false;
+    State.set('isSkillScroll',false);
     let modelid = item.getAttribute('data-skillmodule');
-    let index = skillModel.findIndex(skill => skill.includes(modelid));
+    let index = State.get('skillModel').findIndex(skill => skill.includes(modelid));
     let tab = DOM.skillTypeBox.querySelector(`[data-radio-data="${(index + 1)}"]`);
     tab.click();
   });
 });
 DOM.skillTypeBox.addEventListener('mouseenter',() => {
-  isSkillScroll = true;
+  State.set('isSkillScroll',true);
 });
 
 //加载图片
@@ -1744,15 +1738,16 @@ async function addImageTags(files,isCreate){
   tipsAll(MESSAGES.READING, sizeAll/1024/1024 * 100); //加载1M需要100毫秒
   for(let i = 0; i < files.length; i++){
     let file = files[i];
-    let name = file.name.split('.').filter(item => !imageType.includes(item.toLowerCase())).join('_');
+    let name = file.name.split('.').filter(item => !State.get('imageType').includes(item.toLowerCase())).join('_');
     try{
       let image = await loadImage(file);
       let cuts = await tool.CUT_IMAGE(image);
-      CreateImageInfo.push({n:name,w:image.width,h:image.height,cuts:cuts});
+      let newCreateImageInfo = [...State.get('createImageInfo'),{n:name,w:image.width,h:image.height,cuts:cuts}];
+      State.set('createImageInfo',newCreateImageInfo);
       if(i == files.length - 1){
-        addTag('image',CreateImageInfo);
+        addTag('image',newCreateImageInfo);
         if(isCreate){//仅图片类型是在拖拽上传时立即生成
-          toolMessage([CreateImageInfo,'createImage'],PLUGINAPP);
+          toolMessage([newCreateImageInfo,'createImage'],PLUGINAPP);
         }
       }
     } catch (error) {
@@ -1797,7 +1792,7 @@ async function addTableText(files,isTags){
         tipsAll(MESSAGES.TABLE_DATA_ERROR, 3000);
         return;
       }
-      CreateTableInfo = tableObj;
+      State.set('createTableInfo',tableObj);
       // 格式正确，触发转换
       DOM.convertTags.click();
     } catch (error) {
@@ -1809,11 +1804,11 @@ async function addTableText(files,isTags){
     // 手动输入的情况，直接解析（允许用户尝试不同格式）
     let tableArray = tableTextToArray(tableText);
     let tableObj = tableArrayToObj(tableArray);
-    CreateTableInfo = tableObj;
+    State.set('createTableInfo',tableObj);
   }
 }
 function addTableTags(){
-  addTag('table',CreateTableInfo);
+  addTag('table',State.get('createTableInfo'));
 };
 async function addZyCatalogue(files,codetype){
   //log([files,files instanceof FileList , files instanceof File])
@@ -1834,7 +1829,7 @@ async function addZyCatalogue(files,codetype){
       const format = lastDotIndex > 0 ? file.name.substring(lastDotIndex + 1).toLowerCase() : '';
       
       // 检查格式是否支持（md, svg, zy, json...）
-      if (!format || !zyType.includes(format)) {
+      if (!format || !State.get('zyType').includes(format)) {
         hasError = true;
         continue;
       }
@@ -1925,12 +1920,12 @@ function addTagMain(tag,index,type){
 };
 
 //生成下拉选项
-function addSelect(index,options,def){
+function addSelect(index,options,def,width = 72){
   let select = document.createElement('div');
   select.className = 'df-lc pos-r';
   select.setAttribute('data-select','');
   select.setAttribute('data-select-value',def);
-  select.setAttribute('style','gap: 4px; width: 72px;');
+  select.setAttribute('style','gap: 4px; width: ' + width + 'px;');
   let value = document.createElement('input');
   value.setAttribute('data-select-input','');
   value.setAttribute('readonly','');
@@ -2071,15 +2066,16 @@ function createZyTagStrategy(info){
   items.forEach(item => {
     if(item && item.zyType){
       // 检查是否已经存储（避免重复存储，因为 handleJsonFile 可能已经存储了）
-      const existingIndex = CataloguesInfo.findIndex(cat => 
+      const existingIndex = State.get('cataloguesInfo').findIndex(cat => 
         cat.zyName === item.zyName && cat.zyType === item.zyType
       );
       
       let index;
       if(existingIndex === -1){
         // 如果不存在，才存储
-        CataloguesInfo.push(item);
-        index = CataloguesInfo.length - 1;
+        let newCataloguesInfo = [...State.get('cataloguesInfo'),item];
+        State.set('cataloguesInfo',newCataloguesInfo);
+        index = newCataloguesInfo.length - 1;
       } else {
         // 如果已存在，使用现有索引
         index = existingIndex;
@@ -2099,7 +2095,9 @@ function createZyTagStrategy(info){
       name.className = 'nobod fl1';
       name.addEventListener('change',() => {
         inputMust(name,['text',item.zyName]);
-        CataloguesInfo[index].zyName = name.value;
+        let newCataloguesInfo = State.get('cataloguesInfo');
+        newCataloguesInfo[index].zyName = name.value;
+        State.set('cataloguesInfo',newCataloguesInfo);
       });
       main.appendChild(name);
 
@@ -2134,10 +2132,11 @@ function createZyTagStrategy(info){
 
 // 导出图片标签策略
 function createExportImgTagStrategy(info){
-  ExportImageInfo.push(...info);
-  getElementMix('data-imgnum-max').textContent = ExportImageInfo.length;
+  let newExportImageInfo = [...State.get('exportImageInfo'),...info];
+  State.set('exportImageInfo',newExportImageInfo);
+  getElementMix('data-imgnum-max').textContent = newExportImageInfo.length;
   DOM.exportTagsBox.innerHTML = '<!--动态填充-->';
-  ExportImageInfo.forEach((layer,index) => {
+  newExportImageInfo.forEach((layer,index) => {
     let tag = document.createElement('div');
     let main = addTagMain(tag,index,'export');
     let name = document.createElement('input');
@@ -2183,14 +2182,14 @@ function createExportImgTagStrategy(info){
     let exportset = document.createElement('div');
     exportset.className = 'df-lc';
     exportset.setAttribute('style','gap: 4px; flex-wrap: wrap;');
-    let formatSelect = addSelect(index,['PNG','JPG','JPEG','WEBP'],layer.format)
+    let formatSelect = addSelect(index,['PNG','JPG','JPEG','WEBP'],layer.format,60)
     exportset.appendChild(formatSelect);
 
     let sizesetbox = document.createElement('div');
     sizesetbox.className = 'df-lc';
     sizesetbox.setAttribute('data-int-value','');
     sizesetbox.setAttribute('data-export-size',index);
-    sizesetbox.setAttribute('style','width: 82px;');
+    sizesetbox.setAttribute('style','width: 70px;');
     let sizeset = document.createElement('input');
     sizeset.type = 'text';
     sizeset.id = 'export-size-' + index;
@@ -2234,13 +2233,16 @@ function createExportImgTagStrategy(info){
     view.className = 'btn-op';
     view.addEventListener('click',()=>{
       DOM.imgnumSet.value = index + 1;
-      let img = layer.compressed ? layer.compressed : layer.u8a;
+      // 从State中获取最新的layer数据，支持刷新后的u8a
+      let currentLayer = State.get('exportImageInfo')[index];
+      if (!currentLayer) return;
+      let img = currentLayer.compressed ? currentLayer.compressed : currentLayer.u8a;
       DOM.dailogImgBox.innerHTML = '';
       DOM.dailogImg.style.display = 'flex';
       let viewimg = document.createElement('img');
-      let ismaxW = layer.width >= layer.height ? 'true' : 'false';
+      let ismaxW = currentLayer.width >= currentLayer.height ? 'true' : 'false';
       viewimg.setAttribute('data-ismaxW',ismaxW);
-      viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
+      viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + currentLayer.format}));
       DOM.dailogImgBox.appendChild(viewimg);
       viewimg.setAttribute('data-imgnum-pick',index + 1);
     });
@@ -2323,7 +2325,7 @@ function addEditorView(info){
 }
 //选中导出标签进行管理
 document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
-  let picks = exportTagsBox.querySelectorAll('[data-export-pick]');
+  let picks = DOM.exportTagsBox.querySelectorAll('[data-export-pick]');
   picks.forEach(item => {
     let input = item.querySelector('input');
     if(e.target.checked){
@@ -2337,48 +2339,84 @@ document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
 });
 //删除所选导出标签
 getElementMix('data-export-delete').addEventListener('click',()=>{
-  let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
+  let picks = DOM.exportTagsBox.querySelectorAll('[data-export-pick="true"]');
   let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
   //console.log(picknums)
+  //如果全选或删除所有标签，则清空导出信息
+  let pickall = getElementMix('exportset-pickall');
+  if(pickall.checked || picknums.length == State.get('exportImageInfo').length){
+    State.set('exportImageInfo',[]);
+    pickall.checked = false;
+    DOM.exportTagsBox.innerHTML = '<!--动态填充-->';
+    return;
+  }
+  //否则按从后到前顺序删除所选标签
+  let newExportImageInfo = [...State.get('exportImageInfo')];
   picknums.sort((a,b) => b - a).forEach(num => {
-    ExportImageInfo.splice(num,1);
-    //console.log(ExportImageInfo)
+    newExportImageInfo.splice(num,1);
   });
+  State.set('exportImageInfo',newExportImageInfo);
   picks.forEach(item => {
-    item.parentNode.parentNode.remove();
+    //向上找到data-export-tag的父节点并删除
+    item.closest('[data-export-tag]').remove();
   });
-  let finals = exportTagsBox.querySelectorAll('[data-export-pick]');
-  finals.forEach((item,index) => {
-    item.parentNode.querySelector('[data-tags-index]').textContent = (index + 1) + '. '
-    item.parentNode.parentNode.setAttribute('data-export-tag',index)
+  //剩下的标签更新列表序号
+  let tags = DOM.exportTagsBox.querySelectorAll('[data-export-tag]');
+  tags.forEach((item,index) => {
+    item.querySelector('[data-tags-index]').textContent = (index + 1) + '. '
+    item.setAttribute('data-export-tag',index)
   });
+});
+//发起刷新所选导出标签
+getElementMix('data-export-reup').addEventListener('click',()=>{
+  let picks = DOM.exportTagsBox.querySelectorAll('[data-export-pick="true"]');
+  let infos = Array.from(picks).map(item => {
+    let index = item.getAttribute('data-export-picknum');
+    let info = State.get('exportImageInfo')[index];
+    let key = {
+      id: info.id,
+      index: index,
+      width: info.width,
+    };
+    return key
+  });
+  toolMessage([infos,'refreshExportImgInfo'],PLUGINAPP);
 });
 //刷新所选导出标签
-getElementMix('data-export-reup').addEventListener('click',()=>{
-  let picks = exportTagsBox.querySelectorAll('[data-export-pick="true"]');
-  let picknums = Array.from(picks).map(item => item.getAttribute('data-export-picknum'));
-  //console.log(picknums)
-});
+function refreshExportImgInfo(infos){
+  infos.forEach(info => {
+    let index = info.index;
+    if(info.id !== State.get('exportImageInfo')[index].id){
+      tipsAll(['错误：ID与缓存顺序不一致','Error: The ID is inconsistent with the cache order'],2000)
+      return;
+    };
+    let newExportImageInfo = [...State.get('exportImageInfo')];
+    newExportImageInfo[index].u8a = info.u8a;
+    newExportImageInfo[index].compressed = null;
+    State.set('exportImageInfo',newExportImageInfo);
+  });
+
+}
 //移除所有导出标签
-getElementMix('data-export-tags-delete').addEventListener('click',()=>{
-  ExportImageInfo = [];
+/*getElementMix('data-export-tags-delete').addEventListener('click',()=>{
+  State.set('exportImageInfo',[]);
   DOM.exportTagsBox.innerHTML = '<!--动态填充-->';
-});
+});*/
 
 //导出内容
 DOM.exportAnyBtn.addEventListener('click',()=>{
   let isFinal = []
-  for (let i = 0; i < ExportImageInfo.length; i++) {
+  for (let i = 0; i < State.get('exportImageInfo').length; i++) {
     let finaltag = getElementMix('data-export-tag="'+ i +'"');
     let isExport = finaltag.getAttribute('data-export-final') == 'true' ? true : false;
     isFinal.push(isExport);
   };
-  let zipnames = ExportImageInfo.map(item => item.zipName);
+  let zipnames = State.get('exportImageInfo').map(item => item.zipName);
   let zipName = '';
   if([...new Set(zipnames)].length == 1){
     zipName = zipnames[0];
   };
-  tool.ExportImgByData(reExport,ExportImageInfo,isFinal,zipName);
+  tool.ExportImgByData(reExport,State.get('exportImageInfo'),isFinal,zipName);
   //处理返回的压缩导出状态
   function reExport(index,finalSize,quality,isSuccess){
     let sizespan = getElementMix('data-export-tag="'+ index +'"').querySelector('[data-export-realsize]');
@@ -2496,9 +2534,9 @@ function tableObjToText(obj){
 };
 //移除所有创建标签
 DOM.clearCreateTags.addEventListener('click',()=>{
-  CreateImageInfo = [];
-  CreateTableInfo = [];
-  CataloguesInfo = [];
+  State.set('createImageInfo',[]);
+  State.set('createTableInfo',[]);
+  State.set('cataloguesInfo',[]);
   DOM.createTagsBox.innerHTML = '';
   DOM.cataloguesBox.innerHTML = '';
 });
@@ -2510,9 +2548,9 @@ DOM.convertTags.addEventListener('click',async ()=>{
   if(isTableText){
     let tableArray = tableTextToArray(DOM.userText.value.trim(),false,DOM.userTableTitle.value.split(','));
     let tableObj = tableArrayToObj(tableArray);
-    CreateTableInfo = tableObj;
+    State.set('createTableInfo',tableObj);
 
-    if(CreateTableInfo.some(item => item.note || item.s)){
+    if(tableObj.some(item => item.note || item.s)){
       document.getElementById('upload-moreset').checked = true;
       document.querySelector('[for="upload-moreset"]').click();
     };
@@ -2601,7 +2639,7 @@ function reFileInfo(files){
 };
 //设置画板命名格式
 DOM.frameName.addEventListener('input',()=>{
-  if(frameNmaeSelect.includes(DOM.frameName.value)){
+  if(State.get('frameNmaeSelect').includes(DOM.frameName.value)){
     DOM.frameName.nextElementSibling.querySelector(`[data-option-value="${DOM.frameName.value}"]`).click();
   }else{
     DOM.frameName.nextElementSibling.querySelector(`[data-select-input]`).value = '';
@@ -2636,10 +2674,10 @@ function validateTableTitle(text){
   let texts = text.split(',').map(item => item.trim());
   
   // 检查是否包含无效单词
-  const invalidWords = texts.filter(item => !tableTitleMust.includes(item));
+  const invalidWords = texts.filter(item => !State.get('tableTitleMust').includes(item));
   if(invalidWords.length > 0){
     tipsAll(MESSAGES.TABLE_TITLE_WORDS_ERROR, 3000);
-    texts = texts.filter(item => tableTitleMust.includes(item));
+    texts = texts.filter(item => State.get('tableTitleMust').includes(item));
     
     if(texts.length == 0){
       return 'name,w,h';
@@ -2749,14 +2787,20 @@ DOM.tableHeaderChk.addEventListener('change',()=>{
     DOM.tableHeaderChk.nextElementSibling.nextElementSibling.style.opacity = '0.5';
   };
 });
-//创建示例表格
-DOM.createSampleTableBtn.addEventListener('click',()=>{
-  createTable('sample');
-});
 
 //创建数据表格
 DOM.createDataTableBtn.addEventListener('click',()=>{
   createTable('data');
+});
+
+//应用表格主题
+DOM.applyThemeTableBtn.addEventListener('click',()=>{
+  let theme = getElementMix('data-table-theme').getAttribute('data-select-value');
+  let option = getElementMix(`data-option-value="${theme}"`);
+  theme = option ? option.getAttribute('data-en-text') : null;
+  let color = getElementMix('data-table-theme-color').getAttribute('data-color-hsl');
+  //console.log(theme,color)
+  toolMessage([[[theme,color],'theme'],'reTable'],PLUGINAPP);
 });
 
 function createTable(type){
@@ -2810,15 +2854,15 @@ function createTable(type){
   };
   toolMessage([[styleAll,comp1,comp2,isHeader,data],'creTable'],PLUGINAPP);
 }
-//上传|拖拽|输入 的规则说明
+//规则说明
 DOM.btnHelp.forEach(item => {
   item.addEventListener('click',()=>{
     let key = item.getAttribute('data-help');
-    if(DOM.dailogBox.innerHTML.split(helpData[key][0][1].split('<')[0]).length == 1){
+    if(DOM.dailogBox.innerHTML.split(HELP_DATA[key][0][1].split('<')[0]).length == 1){
       DOM.dailogBox.innerHTML = '';
       let node = document.createElement('div');
       node.className = 'df-ffc';
-      helpData[key].forEach(item =>{
+      HELP_DATA[key].forEach(item =>{
         let line = document.createElement(item[0]);
         let span =  document.createElement('span');
         span.innerHTML = item[1].replace(/\/\+\+/g,`<span data-highlight>`).replace(/\+\+\//g,'</span>');
@@ -4677,9 +4721,11 @@ function getUserInt(node){
   let int = node.getAttribute('data-int-value');
   if(node.getAttribute('data-export-size') !== null){
     let index = node.getAttribute('data-export-size');
-    ExportImageInfo[index].finalSize = int;
-    ExportImageInfo[index].compressed = null;
-    toolMessage([[ExportImageInfo[index].id,int],'setFinalSize'],PLUGINAPP);
+    let newExportImageInfo = State.get('exportImageInfo');
+    newExportImageInfo[index].finalSize = int;
+    newExportImageInfo[index].compressed = null;
+    State.set('exportImageInfo',newExportImageInfo);
+    toolMessage([[newExportImageInfo[index].id,int],'setFinalSize'],PLUGINAPP);
     let tag = getElementMix('data-export-tag="'+ index +'"');
     let realSize = tag.querySelector('[data-export-realsize]');
     realSize.textContent = '--';
@@ -4688,18 +4734,50 @@ function getUserInt(node){
   };
   if(node.getAttribute('data-imgnum-input') !== null){
     let viewimg = DOM.dailogImgBox.querySelector('img');
-    if(int > ExportImageInfo.length){
-      DOM.imgnumSet.value = viewimg.getAttribute('data-imgnum-pick');
+    if(int > State.get('exportImageInfo').length){
+      DOM.imgnumSet.value = viewimg ? viewimg.getAttribute('data-imgnum-pick') : 1;
       return
     }
-    let layer = ExportImageInfo[int - 1];
+    let layer = State.get('exportImageInfo')[int - 1];
     if(!layer) return;
     let img = layer.compressed ? layer.compressed : layer.u8a;
     let ismaxW = layer.width >= layer.height ? 'true' : 'false';
-    viewimg.setAttribute('data-ismaxW',ismaxW);
-    viewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
-    DOM.dailogImgBox.appendChild(viewimg);
-    viewimg.setAttribute('data-imgnum-pick',int);
+    
+    // 预加载新图片，避免切换时闪烁
+    let newViewimg = document.createElement('img');
+    newViewimg.setAttribute('data-ismaxW',ismaxW);
+    newViewimg.setAttribute('data-imgnum-pick',int);
+    newViewimg.style.opacity = '0'; // 先隐藏新图片
+    newViewimg.style.position = 'absolute'; // 绝对定位，避免影响布局
+    newViewimg.style.top = '0';
+    newViewimg.style.left = '0';
+    
+    // 如果有旧图片，将新图片插入到旧图片位置；否则直接添加
+    if(viewimg){
+      DOM.dailogImgBox.insertBefore(newViewimg, viewimg);
+    } else {
+      DOM.dailogImgBox.appendChild(newViewimg);
+    }
+    
+    // 等新图片加载完成后再显示，避免尺寸为0导致的闪烁
+    newViewimg.onload = () => {
+      // 移除旧图片
+      if(viewimg && viewimg !== newViewimg){
+        viewimg.remove();
+      }
+      // 显示新图片并恢复定位
+      newViewimg.style.opacity = '1';
+      newViewimg.style.position = '';
+      newViewimg.style.top = '';
+      newViewimg.style.left = '';
+    };
+    newViewimg.onerror = () => {
+      newViewimg.remove();
+      if(viewimg) {
+        DOM.imgnumSet.value = viewimg.getAttribute('data-imgnum-pick');
+      }
+    };
+    newViewimg.src = URL.createObjectURL(new Blob([img],{type:'image/' + layer.format}));
   }
   if(node.getAttribute('data-qrcode-grid-num') !== null){
     getElementMix('data-qrcode-grid').style.setProperty('--grid',int);
@@ -4737,8 +4815,10 @@ function getUserSelect(node){
   }
   if(node.parentNode.parentNode.getAttribute('data-export-tag') !== null){
     let index = node.parentNode.parentNode.getAttribute('data-export-tag');
-    ExportImageInfo[index].format = userSelect;
-    ExportImageInfo[index].compressed = null;
+    let newExportImageInfo = State.get('exportImageInfo');
+    newExportImageInfo[index].format = userSelect;
+    newExportImageInfo[index].compressed = null;
+    State.set('exportImageInfo',newExportImageInfo);
     let tag = getElementMix('data-export-tag="'+ index +'"');
     let realSize = tag.querySelector('[data-export-realsize]');
     realSize.textContent = '--';
@@ -4764,11 +4844,11 @@ function getUserRadio(node){
     };
     
     if(node.getAttribute('data-skilltype-box') !== null){
-      let modelid = skillModel[userRadio - 1][1];
+      let modelid = State.get('skillModel')[userRadio - 1][1];
       //console.log(modelid);
       let model = DOM.skillAllBox.querySelector(`[data-skillmodule="${modelid}"]`);
       let skillnode = model.querySelector('[data-skill-sec]');
-      if(isSkillScroll){
+      if(State.get('isSkillScroll')){
         skillnode.scrollIntoView({
           behavior: 'smooth',
           block: 'center',

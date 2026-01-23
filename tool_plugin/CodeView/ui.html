@@ -192,6 +192,8 @@
   <!-- PHP 需要 markup-templating 依赖 -->
   <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-markup-templating.min.js"></script>
   <!-- 基础语言 -->
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-css.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-css-extras.min.js"></script>
   <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-json.min.js"></script>
   <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-sql.min.js"></script>
   <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-bash.min.js"></script>
@@ -207,6 +209,7 @@
   <script src="https://cdn.jsdelivr.net.cn/npm/prismjs@1.23.0/components/prism-typescript.min.js"></script>
 
   <script>
+    console.clear();
     window.onmessage = (event) => {
       const { type, data } = event.data.pluginMessage || {};
       if (type === 'init') {
@@ -370,6 +373,7 @@
     }
 
     const themeColors = {
+      // 通用 token（适用于所有语言）
       'keyword': '#C586C0',        // 关键字（紫色）
       'string': '#CE9178',         // 字符串（橙色）
       'number': '#B5CEA8',         // 数字（浅绿色）
@@ -381,19 +385,47 @@
       'punctuation': '#D4D4D4',    // 标点（白色）
       'operator': '#D4D4D4',       // 运算符（白色）
       'bracket': '#D4D4D4',        // 括号（白色）
+      'boolean': '#569CD6',        // 布尔值（蓝色）
+      'symbol': '#DCDCAA',         // 符号（黄色）
+      'regex': '#CE9178',          // 正则（橙色）
+      'url': '#CE9178',            // URL（橙色）
+      'constant': '#4FC1FF',       // 常量（亮蓝色）
+      'builtin': '#4EC9B0',        // 内置函数/类型（青色）
+      'char': '#CE9178',           // 字符（橙色）
+      'namespace': '#4EC9B0',      // 命名空间（青色）
+      'important': '#C586C0',      // 重要标记（紫色）
+      
+      // HTML/XML token
       'tag': '#569CD6',            // HTML 标签（蓝色）
       'attr-name': '#92C5F7',      // 属性名（浅蓝色）
       'attr-value': '#CE9178',     // 属性值（橙色）
-      'directive': '#C586C0',      // 指令（紫色）
       'entity': '#CE9178',         // 实体（橙色）
-      'url': '#CE9178',            // URL（橙色）
-      'symbol': '#DCDCAA',         // 符号（黄色）
-      'regex': '#CE9178',          // 正则（橙色）
-      'boolean': '#569CD6',        // 布尔值（蓝色）
+      'prolog': '#6A9955',         // XML/HTML 声明（绿色）
+      'doctype': '#6A9955',        // DOCTYPE（绿色）
+      'cdata': '#6A9955',          // CDATA（绿色）
+      
+      // CSS token
+      'attribute': '#92C5F7',      // CSS 属性选择器（浅蓝色）
+      'selector': '#DCDCAA',       // CSS 选择器（黄色）
+      'selector-id': '#569CD6',    // ID 选择器（蓝色）
+      'selector-class': '#D4D4D4', // 类选择器（白色）
+      'selector-attr': '#92C5F7',  // 属性选择器（浅蓝色）
+      'selector-pseudo': '#C586C0', // 伪类/伪元素（紫色）
+      'pseudo-class': '#C586C0',   // 伪类（紫色）
+      'pseudo-element': '#C586C0', // 伪元素（紫色）
+      'atrule': '#4EC9B0',         // @规则（如 @media）（青色）
+      'combinator': '#D4D4D4',     // 组合器（> + ~）（白色）
+      'color': '#D4D4D4',          // 颜色（白色）
+      'unit': '#DCDCAA',           // 单位（黄色）
+      
+      // JavaScript/TypeScript token
       'template-string': '#CE9178',// 模板字符串（橙色）
       'interpolation': '#9CDCFE',  // 插值（浅蓝色）
       'parameter': '#9CDCFE',      // 参数（浅蓝色）
-      'constant': '#4FC1FF',       // 常量（亮蓝色）
+      
+      // 其他语言 token
+      'directive': '#C586C0',      // 指令（紫色，如 PHP、C/C++）
+      'identifier': '#9CDCFE',     // 标识符（浅蓝色，如 SQL）
     };
 
     function sendData() {
@@ -449,7 +481,8 @@
           codePrism = codeContent; // 如果高亮失败，使用原始代码
         }
       }
-      
+
+      //console.log(codePrism);
       // 将 Prism 高亮后的 HTML 转换为数组格式
       // 格式: [{tagname:'span',color:'#xxxxxx',text:'...'},...]
       function convertPrismToSpanArray(html) {
@@ -679,19 +712,49 @@
               const classes = Array.from(node.classList).filter(c => c !== 'token');
               let color = codeColor.mainColor; // 默认颜色
               
-              // 查找匹配的类名
-              for (const cls of classes) {
-                if (themeColors[cls]) {
-                  color = themeColors[cls];
+              // 定义 token 优先级：更具体的 token 优先于通用的 token
+              // 例如：selector-id > selector-class > selector-attr > selector-pseudo > selector
+              const specificTokens = [
+                'selector-id', 'selector-class', 'selector-attr', 'selector-pseudo',
+                'pseudo-class', 'pseudo-element', 'attribute'
+              ];
+              
+              // 检查是否存在更具体的 token
+              const hasSpecificToken = classes.some(c => specificTokens.includes(c));
+              
+              // 先按优先级匹配（更具体的优先）
+              for (const specificToken of specificTokens) {
+                if (classes.includes(specificToken) && themeColors[specificToken]) {
+                  color = themeColors[specificToken];
                   break;
                 }
               }
               
-              // 如果没有找到匹配的，尝试匹配部分类名
+              // 如果优先级匹配失败，按长度降序匹配其他 token（但跳过通用 selector，如果存在更具体的 token）
               if (color === codeColor.mainColor) {
-                for (const [key, value] of Object.entries(themeColors)) {
+                const sortedClasses = classes.sort((a, b) => b.length - a.length);
+                for (const cls of sortedClasses) {
+                  // 如果存在更具体的 token，跳过通用的 selector
+                  if (hasSpecificToken && cls === 'selector') {
+                    continue;
+                  }
+                  if (themeColors[cls]) {
+                    color = themeColors[cls];
+                    break;
+                  }
+                }
+              }
+              
+              // 如果还是没有找到，尝试部分匹配（按 themeColors key 长度降序，优先匹配更具体的）
+              if (color === codeColor.mainColor) {
+                const sortedThemeKeys = Object.keys(themeColors).sort((a, b) => b.length - a.length);
+                for (const key of sortedThemeKeys) {
+                  // 跳过通用 token，如果存在更具体的 token
+                  if (hasSpecificToken && key === 'selector') {
+                    continue;
+                  }
                   if (classes.some(c => c.includes(key) || key.includes(c))) {
-                    color = value;
+                    color = themeColors[key];
                     break;
                   }
                 }
@@ -700,9 +763,13 @@
               // 处理子节点，收集所有数组项
               const childArrays = [];
               Array.from(node.childNodes).forEach(child => {
-                const childResult = processNode(child);
-                if (Array.isArray(childResult) && childResult.length > 0) {
-                  childArrays.push(...childResult);
+                if (child.nodeType === Node.TEXT_NODE) {
+                  childArrays.push({ tagname: null, color: null, text: child.textContent });
+                } else {
+                  const childResult = processNode(child);
+                  if (Array.isArray(childResult) && childResult.length > 0) {
+                    childArrays.push(...childResult);
+                  }
                 }
               });
               
@@ -710,7 +777,7 @@
               if (childArrays.length === 0) {
                 return [];
               } else {
-                // 处理子节点数组：颜色方块保留，其他文本用 token 颜色包装
+                // 处理子节点数组：保留所有已有颜色的 span，普通文本用当前 token 颜色包装
                 const result = [];
                 let currentText = '';
                 
@@ -724,20 +791,20 @@
                     // 添加颜色方块（保留原有颜色）
                     result.push(item);
                   } else if (item.tagname === 'span' && item.color) {
-                    // 已经有颜色的 span，先保存之前的文本（如果有）
+                    // 已经有颜色的 span（嵌套的 token，如 attribute、pseudo-element 等），先保存之前的文本（如果有）
                     if (currentText) {
                       result.push({ tagname: 'span', color: color, text: currentText });
                       currentText = '';
                     }
-                    // 保留原有的 span（可能是嵌套的）
+                    // 保留原有的 span（保留嵌套 token 的颜色，不覆盖）
                     result.push(item);
                   } else {
-                    // 普通文本，累积
+                    // 普通文本，累积（这些文本会用当前 token 的颜色包装）
                     currentText += item.text || '';
                   }
                 });
                 
-                // 添加剩余的文本
+                // 添加剩余的文本（用当前 token 的颜色包装）
                 if (currentText) {
                   result.push({ tagname: 'span', color: color, text: currentText });
                 }
