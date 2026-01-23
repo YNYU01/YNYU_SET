@@ -884,14 +884,14 @@ figma.ui.onmessage = async (message) => {
     //使所选元素符合表格组件
     if ( type == 'Make Cell-Comp'){
         let b = getSelectionMix();  
-
+        let selects = [];
         b.forEach(node => {
             let comp,type = '',isComp = false,isAutoLayout = false;
             let oldPropsKeys = [];
             let oldPropsText = [];
             let oldPropsBoolean = [];
             let absoluteChild = [];
-            let keyWord = ['--bod','描边','--fill','区分']
+            let keyWord = ['--bod','描边','--fill','--fills','区分']
 
             //先转为组件，这样即使是单文字也会套上容器，方便处理
             if(node.type == 'COMPONENT'){
@@ -901,14 +901,26 @@ figma.ui.onmessage = async (message) => {
                 comp = figma.createComponentFromNode(node.detachInstance());
             }else {
                 comp = figma.createComponentFromNode(node);
-                type = comp.name.split('@')[1].split(' ')[0].split(':')[0];
             }
             let [w,h] = [comp.width,comp.height]
-
-            //没命名则默认为数据表格,没文字则为节点表格
-            if(!['th','td','tn'].includes(type)){
+            
+            //尝试获取类型
+            if(!type){
+                const nameParts = comp.name.split('@');
+                if(nameParts.length > 1){
+                    type = nameParts[1].split(' ')[0].split(':')[0];
+                } else {
+                    type = '';
+                }
+                if(['th','td','tn'].every(item => type !== item)){
+                    type = '';
+                };
+            }
+            
+            //继续尝试获取类型,并最终确定类型+矫正命名
+            if(!type){
                 if(comp.findOne(item => item.type == 'TEXT')){
-                    if(isComp && comp.name.includes('表头')){
+                    if(['表头','header'].some(item => comp.name.toLowerCase().includes(item))){
                         type = 'th';
                         comp.name += ' @th';
                     }else{
@@ -929,63 +941,326 @@ figma.ui.onmessage = async (message) => {
             }else{
                 isAutoLayout = true;
             }
+            //临时开启隐藏元素可查找
+            figma.skipInvisibleInstanceChildren = false;
             
-
             //旧版母组件需要特殊处理，只能修改属性名和修正必要元素
             if(isComp){
                 //记录原有的组件属性
-                oldPropsKeys = Object.keys(comp.componentPropertyDefinitions);
-                oldPropsText = comp.componentPropertyDefinitions.filter(item => item.type == 'TEXT');
-                oldPropsBoolean = comp.componentPropertyDefinitions.filter(item => item.type == 'BOOLEAN');
-                absoluteChild = comp.children.filter(item => item.children && item.children.length > 0 && keyWord.some(key => item.name.includes(key)));
+                oldPropsKeys = Object.keys(comp.componentPropertyDefinitions || {});
+                // componentPropertyDefinitions 是对象，需要转换为数组再过滤
+                let allProps = Object.values(comp.componentPropertyDefinitions || {});
+                oldPropsText = allProps.filter(item => item.type == 'TEXT');
+                oldPropsBoolean = allProps.filter(item => item.type == 'BOOLEAN');
+                
+                //使用工具函数找出所有关键元素
+                absoluteChild = comp.children.filter(item => isKeyElement(item, keyWord));
             
-                comp.children.forEach(item => {
-                    //如果只有一个矩形且有描边且无填充，也判定为必要元素
-                    if( item.children && item.children.length == 1 && item.children[0].type == 'RECTANGLE' && item.children[0].strokes.length > 0 && item.children[0].fills.length == 0){
-                        if(absoluteChild.every(item => item.id != item.id)){
-                            absoluteChild.push(item);
-                        };
-                    };
-                });
                 //如果原组件没有相关属性，直接添加必要元素和属性
-                if(oldPropsKeys.every(item => !keyWord.some(key => item.includes(key)))){
+                let hasKeyProps = oldPropsKeys.some(key => keyWord.some(keyword => key.includes(keyword)));
+                
+                if(!hasKeyProps){
+                    //没有关键属性，直接添加所有必要元素
                     makeCompliant(type,comp);
                 }else{
-                    //先把能判断为必要元素的绑定属性
+                    //有组件属性的情况：从找特定元素开始，修正属性名称和元素命名，不新增属性
+                    //逻辑：找特定元素 -> 检查绑定 -> 检查属性名是否最新版 -> 修改属性名和绑定
+                    
+                    //获取所有已有的组件属性
+                    //componentPropertyDefinitions 的结构是 {name#id: {type:, defaultValue:,}}
+                    let allProps = comp.componentPropertyDefinitions || {};
+                    
+                    //辅助函数：根据属性ID找到属性键（name#id格式）
+                    function getPropKeyById(propId){
+                        for(let propKey in allProps){
+                            //propKey 是 name#id 格式，提取ID部分
+                            let parts = propKey.split('#');
+                            if(parts.length > 1 && parts[1] === propId){
+                                return propKey;
+                            }
+                        }
+                        return null;
+                    }
+                    
+                    //辅助函数：从属性键（name#id）中提取属性名
+                    function getPropNameFromKey(propKey){
+                        if(propKey){
+                            let parts = propKey.split('#');
+                            return parts[0]; // 返回name部分
+                        }
+                        return null;
+                    }
+                    
+                    //辅助函数：判断属性名是否是最新版标准命名
+                    function isLatestPropName(propName){
+                        return ['--bod-t', '--bod-r', '--bod-b', '--bod-l', '--fills'].includes(propName);
+                    }
+                    
+                    //辅助函数：根据旧属性名判断应该使用的正确属性名
+                    function getCorrectPropName(oldPropName){
+                        let oldPropNameLower = oldPropName.toLowerCase();
+                        if(oldPropNameLower.includes('-t') || oldPropNameLower.includes('顶') || oldPropNameLower.includes('上') || oldPropNameLower.includes('top')){
+                            return '--bod-t';
+                        } else if(oldPropNameLower.includes('-b') || oldPropNameLower.includes('底') || oldPropNameLower.includes('下') || oldPropNameLower.includes('bottom')){
+                            return '--bod-b';
+                        } else if(oldPropNameLower.includes('-l') || oldPropNameLower.includes('左') || oldPropNameLower.includes('left')){
+                            return '--bod-l';
+                        } else if(oldPropNameLower.includes('-r') || oldPropNameLower.includes('右') || oldPropNameLower.includes('right')){
+                            return '--bod-r';
+                        } else if(oldPropNameLower.includes('fill') || oldPropNameLower.includes('区分') || oldPropNameLower.includes('区分色')){
+                            return '--fills';
+                        }
+                        return null;
+                    }
+                    
+                    //从找特定元素开始
                     absoluteChild.forEach(item => {
-                        let keyTop = ['-t','顶','上']
-                        let keyBottom = ['-b','底','下']
-                        let keyLeft = ['-l','左']
-                        let keyRight = ['-r','右']
-                        let keyFill = ['-fill','区分','区分色']
-
-                        if(keyTop.some(key => item.name.includes(key))){
-                            let proid = addCompPro(comp,item,'--bod-t','BOOLEAN',true);
-                            item.componentPropertyReferences = {[visible]:proid};
-                        };
-                        if(keyBottom.some(key => item.name.includes(key))){
-                            let proid = addCompPro(comp,item,'--bod-b','BOOLEAN',true);
-                            item.componentPropertyReferences = {[visible]:proid};
-                        };
-                        if(keyLeft.some(key => item.name.includes(key))){
-                            let proid = addCompPro(comp,item,'--bod-l','BOOLEAN',true);
-                            item.componentPropertyReferences = {[visible]:proid};
-                        };
-                        if(keyRight.some(key => item.name.includes(key))){
-                            let proid = addCompPro(comp,item,'--bod-r','BOOLEAN',true);
-                            item.componentPropertyReferences = {[visible]:proid};
-                        };
-                        if(keyFill.some(key => item.name.includes(key))){
-                            let proid = addCompPro(comp,item,'--fill','BOOLEAN',true);
-                            item.componentPropertyReferences = {[visible]:proid};
-                        };
+                        let correctPropName = getKeyElementPropName(item, keyWord);
+                        if(correctPropName){
+                            //检查是否有绑定属性
+                            if(item.componentPropertyReferences && item.componentPropertyReferences.visible){
+                                //有绑定属性，获取绑定的属性引用（可能是ID或name#id格式）
+                                let boundPropRef = item.componentPropertyReferences.visible;
+                                let boundPropKey = null;
+                                
+                                //如果 boundPropRef 本身就是 name#id 格式，直接使用
+                                if(typeof boundPropRef === 'string' && boundPropRef.includes('#')){
+                                    boundPropKey = boundPropRef;
+                                } else {
+                                    //否则是ID，需要找到对应的属性键
+                                    boundPropKey = getPropKeyById(boundPropRef);
+                                }
+                                
+                                if(boundPropKey){
+                                    //从属性键中提取属性名
+                                    let boundPropName = getPropNameFromKey(boundPropKey);
+                                    
+                                    if(boundPropName){
+                                        //检查属性名是否是最新版
+                                        if(!isLatestPropName(boundPropName)){
+                                            //不是最新版，需要修改属性名
+                                            let newPropName = getCorrectPropName(boundPropName);
+                                            if(newPropName && newPropName !== boundPropName){
+                                                //检查新属性名是否已存在（查找是否有以 newPropName# 开头的键）
+                                                let existingPropKey = Object.keys(allProps).find(key => {
+                                                    let name = getPropNameFromKey(key);
+                                                    return name === newPropName;
+                                                });
+                                                
+                                                if(!existingPropKey){
+                                                    try {
+                                                        //使用 editComponentProperty 修改属性名
+                                                        //传入的是属性键（name#id格式）
+                                                        let updatedPropKey = comp.editComponentProperty(boundPropKey, {
+                                                            name: newPropName
+                                                        });
+                                                        //editComponentProperty 返回新的 name#id 格式，直接用于绑定
+                                                        item.componentPropertyReferences = {
+                                                            'visible': updatedPropKey
+                                                        };
+                                                        //更新 allProps 以反映重命名后的属性
+                                                        allProps = comp.componentPropertyDefinitions || {};
+                                                         
+                                                    } catch(e) {
+                                                        console.log('重命名属性失败:', boundPropKey, '->', newPropName, e);
+                                                    }
+                                                } else {
+                                                    //新属性名已存在，直接绑定到已存在的属性
+                                                    item.componentPropertyReferences = {'visible': existingPropKey};
+                                                }
+                                            }
+                                        } else {
+                                            //已经是最新版，确保绑定正确（使用 name#id 格式）
+                                            if(item.componentPropertyReferences.visible !== boundPropKey){
+                                                item.componentPropertyReferences = {'visible': boundPropKey};
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            //修正元素命名（如果名称不正确）
+                            if(!item.name.includes(correctPropName)){
+                                let baseName = item.name.split('@')[0].trim();
+                                if(!item.name.includes('--')){
+                                    item.name = baseName + ' ' + correctPropName;
+                                }
+                            }
+                        }
                     });
+                    
+                    //对于已有关键元素但还没有正确绑定的，尝试绑定到已有属性
+                    comp.children.forEach(item => {
+                        if(!absoluteChild.some(existing => existing.id === item.id) && isKeyElement(item, keyWord)){
+                            let propName = getKeyElementPropName(item, keyWord);
+                            if(propName){
+                                //查找是否有以该属性名开头的属性键（name#id格式）
+                                let existingPropKey = Object.keys(allProps).find(key => {
+                                    let name = getPropNameFromKey(key);
+                                    return name === propName;
+                                });
+                                
+                                if(existingPropKey){
+                                    //只绑定到已存在的属性，不创建新属性
+                                    if(!item.componentPropertyReferences || !item.componentPropertyReferences.visible){
+                                        item.componentPropertyReferences = {'visible': existingPropKey};
+                                    }
+                                    absoluteChild.push(item);
+                                }
+                            }
+                        }
+                    });
+                    
+                    //检查必要元素是否不足，如果不足则添加缺失的必要元素
+                    //所有必要的属性：--bod-t, --bod-r, --bod-b, --bod-l, --fills
+                    let allRequiredProps = ['--bod-t', '--bod-r', '--bod-b', '--bod-l', '--fills'];
+                    
+                    //辅助函数：检查属性是否存在（支持name#id格式）
+                    function hasPropertyByName(propName){
+                        //检查组件属性定义中是否存在（查找name部分匹配的）
+                        let propKey = Object.keys(allProps).find(key => {
+                            let name = getPropNameFromKey(key);
+                            return name === propName;
+                        });
+                        if(propKey){
+                            return true;
+                        }
+                        //检查子元素中是否有使用该属性名的
+                        if(comp.children && comp.children.some(child => child.name.includes(propName))){
+                            return true;
+                        }
+                        //对于 --fills，同时检查 --fill（兼容旧版本）
+                        if(propName === '--fills'){
+                            let fillKey = Object.keys(allProps).find(key => {
+                                let name = getPropNameFromKey(key);
+                                return name === '--fill';
+                            });
+                            if(fillKey || (comp.children && comp.children.some(child => child.name.includes('--fill')))){
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    
+                    //找出缺失的必要属性
+                    let missingProps = allRequiredProps.filter(prop => !hasPropertyByName(prop));
+                    
+                    if(missingProps.length > 0){
+                        //使用 makeCompliant 添加缺失的必要元素并绑定属性
+                        makeCompliant(type, comp, missingProps);
+                    }
+                    
+                    //处理文字元素和文字类组件属性
+                    //1. 收集绑定了同一文字类组件属性的文字元素
+                    let allTexts = comp.findAll(item => item.type === 'TEXT');
+                    let textPropsMap = {}; // {propKey: [textNodes]}
+                    
+                    //按属性分组文字元素
+                    allTexts.forEach(textNode => {
+                        if(textNode.componentPropertyReferences && textNode.componentPropertyReferences.characters){
+                            let propRef = textNode.componentPropertyReferences.characters;
+                            //propRef 可能是ID或name#id格式
+                            let propKey = null;
+                            if(typeof propRef === 'string' && propRef.includes('#')){
+                                propKey = propRef;
+                            } else {
+                                propKey = getPropKeyById(propRef);
+                            }
+                            
+                            if(propKey){
+                                if(!textPropsMap[propKey]){
+                                    textPropsMap[propKey] = [];
+                                }
+                                textPropsMap[propKey].push(textNode);
+                            }
+                        }
+                    });
+                    
+                    //检查每个文字属性是否需要重命名为--data
+                    Object.keys(textPropsMap).forEach(propKey => {
+                        let textNodes = textPropsMap[propKey];
+                        let propName = getPropNameFromKey(propKey);
+                        let shouldRename = false;
+                        
+                        //检查属性名是否含有'字段''数据''text'等
+                        if(propName){
+                            let propNameLower = propName.toLowerCase();
+                            if(propNameLower.includes('字段') || propNameLower.includes('数据') || 
+                               propNameLower.includes('text') || propNameLower.includes('data')){
+                                shouldRename = true;
+                            }
+                        }
+                        
+                        //检查文本内容是否带'表头''数据''文案''123'等
+                        if(!shouldRename){
+                            for(let textNode of textNodes){
+                                let textContent = textNode.characters.toLowerCase();
+                                if(textContent.includes('表头') || textContent.includes('数据') || 
+                                   textContent.includes('文案') || /123/.test(textContent)){
+                                    shouldRename = true;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        //如果需要重命名且不是--data，则重命名
+                        if(shouldRename && propName !== '--data'){
+                            try {
+                                //使用 editComponentProperty 修改属性名为--data
+                                let updatedPropKey = comp.editComponentProperty(propKey, {
+                                    name: '--data'
+                                });
+                                
+                                //更新所有绑定到该属性的文字元素
+                                textNodes.forEach(textNode => {
+                                    textNode.componentPropertyReferences = {'characters': updatedPropKey};
+                                });
+                                
+                                //更新 allProps
+                                allProps = comp.componentPropertyDefinitions || {};
+                            } catch(e) {
+                                console.log('重命名文字属性失败:', propKey, '->', '--data', e);
+                            }
+                        }
+                    });
+                    
+                    //2. 如果有文字元素但是没有文字类组件属性，直接新建--data属性并给文字元素绑定
+                    //重新获取 allProps，因为可能已经重命名了属性
+                    allProps = comp.componentPropertyDefinitions || {};
+                    
+                    let unboundTexts = allTexts.filter(textNode => {
+                        return !textNode.componentPropertyReferences || !textNode.componentPropertyReferences.characters;
+                    });
+                    
+                    if(unboundTexts.length > 0){
+                        //检查是否已有--data属性
+                        let dataPropKey = Object.keys(allProps).find(key => {
+                            let name = getPropNameFromKey(key);
+                            return name === '--data';
+                        });
+                        
+                        if(!dataPropKey){
+                            //没有--data属性，创建新属性并绑定
+                            let firstText = unboundTexts[0];
+                            let proid = addCompPro(comp, firstText, '--data', 'TEXT', firstText.characters);
+                            
+                            //绑定其他文字元素到同一个属性
+                            for(let i = 1; i < unboundTexts.length; i++){
+                                unboundTexts[i].componentPropertyReferences = {'characters': proid};
+                            }
+                        } else {
+                            //已有--data属性，直接绑定所有未绑定的文字元素
+                            unboundTexts.forEach(textNode => {
+                                textNode.componentPropertyReferences = {'characters': dataPropKey};
+                            });
+                        }
+                    }
                 }
             
             }else{
                 //非母组件不需要考虑对实例造成影响，可以删除无效的必要元素（实例解除但必要元素还在）
                 comp.children.forEach(item => {
-                    if( keyWord.some(key => item.includes(key))){
+                    if( keyWord.some(key => item.name.includes(key))){
                         item.remove();
                     };
                 });
@@ -998,19 +1273,28 @@ figma.ui.onmessage = async (message) => {
                     });
                     makeCompliant(type,comp);
                 }else{//原元素不是自动布局，无需要特殊处理，可以直接添加必要元素和属性
-                    
                     makeCompliant(type,comp);
-            
                     let texts = comp.findAll(item => item.type == 'TEXT');
                     if(texts.length > 0){
                         let proid = addCompPro(comp,texts[0],'--data','TEXT',texts[0].characters);
                         for(let i = 1; i < texts.length; i++){
-                            texts[i].componentPropertyReferences = {[characters]:proid};
+                            texts[i].componentPropertyReferences = {'characters':proid};
                         };
                     };
                 }
+                let texts = comp.findAll(item => item.type == 'TEXT');
+                if(texts.length > 0){
+                    let proid = addCompPro(comp,texts[0],'--data','TEXT',texts[0].characters);
+                    for(let i = 1; i < texts.length; i++){
+                        texts[i].componentPropertyReferences = {'characters':proid};
+                    };
+                };
             }
+
+            figma.skipInvisibleInstanceChildren = true;
+            selects.push(comp);
         });
+        figma.currentPage.selection = selects;
     };
     //便捷选中表格
     if ( type == 'pickTable'){
@@ -1336,7 +1620,6 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         let tables = getTablesByNodes(b);
         tables.forEach(table => {
-            console.log(666)
             swapTable(table);
         });
     };
@@ -3498,18 +3781,134 @@ async function addTableCompMust(type,language,nodes,isFill = false,isHeader = tr
     
     return comp;
 };
+//判断是否是关键元素（用于描边/填充的容器）
+//优先级：组件属性绑定 > 绝对定位元素 > 单侧描边矩形
+function isKeyElement(item, keyWord){
+    // 1. 检查是否有组件属性绑定（控制显隐）
+    if(item.componentPropertyReferences && Object.keys(item.componentPropertyReferences).length > 0){
+        // 检查绑定的属性名是否与关键属性相关
+        let propRefs = Object.values(item.componentPropertyReferences);
+        // 如果绑定了visible属性，说明是用来控制显隐的关键元素
+        if(item.componentPropertyReferences.visible){
+            return true;
+        }
+    }
+    
+    // 2. 检查是否是绝对定位元素且名称包含关键词
+    if(item.layoutPositioning === 'ABSOLUTE' && keyWord.some(key => item.name.includes(key))){
+        return true;
+    }
+    
+    // 3. 检查是否是单侧描边的矩形容器
+    if(item.children && item.children.length === 1 && item.children[0].type === 'RECTANGLE'){
+        let rect = item.children[0];
+        // 有描边且无填充，且描边只有一侧
+        if(rect.strokes && rect.strokes.length > 0 && (!rect.fills || rect.fills.length === 0)){
+            // 检查描边是否只有一侧（通过strokeAlign或其他方式判断）
+            // 这里简化处理：有描边无填充的矩形容器通常用于描边
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+//获取关键元素应该使用的属性名
+function getKeyElementPropName(item, keyWord){
+    let keyTop = ['-t','顶','上','top'];
+    let keyBottom = ['-b','底','下','bottom'];
+    let keyLeft = ['-l','左','left'];
+    let keyRight = ['-r','右','right'];
+    let keyFill = ['-fill','区分','区分色','fill'];
+    
+    let name = item.name.toLowerCase();
+    
+    if(keyTop.some(key => name.includes(key))){
+        return '--bod-t';
+    }
+    if(keyBottom.some(key => name.includes(key))){
+        return '--bod-b';
+    }
+    if(keyLeft.some(key => name.includes(key))){
+        return '--bod-l';
+    }
+    if(keyRight.some(key => name.includes(key))){
+        return '--bod-r';
+    }
+    if(keyFill.some(key => name.includes(key))){
+        return '--fills';
+    }
+    
+    return null;
+}
+
+//检查某个属性是否已经存在（通过属性定义或子元素名称）
+//支持 componentPropertyDefinitions 的 name#id 格式
+function hasProperty(comp, propName){
+    let allProps = comp.componentPropertyDefinitions || {};
+    
+    //检查组件属性定义中是否存在（查找name部分匹配的）
+    let propKey = Object.keys(allProps).find(key => {
+        //从 name#id 格式中提取 name 部分
+        let parts = key.split('#');
+        let name = parts[0];
+        return name === propName;
+    });
+    if(propKey){
+        return true;
+    }
+    
+    //对于 --fills，同时检查 --fill（兼容旧版本）
+    if(propName === '--fills'){
+        let fillKey = Object.keys(allProps).find(key => {
+            let parts = key.split('#');
+            let name = parts[0];
+            return name === '--fill';
+        });
+        if(fillKey){
+            return true;
+        }
+    }
+    
+    //检查子元素中是否有使用该属性名的
+    if(comp.children && comp.children.some(child => child.name.includes(propName))){
+        return true;
+    }
+    
+    //对于 --fills，同时检查子元素中的 --fill
+    if(propName === '--fills'){
+        if(comp.children && comp.children.some(child => child.name.includes('--fill'))){
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 //表格初始化
-function makeCompliant(type,comp){
-    let adds = [
+//可以传入需要添加的属性数组，如果不传则添加所有必要属性
+function makeCompliant(type, comp, specificProps = null){
+    let allAdds = [
         [`#table.stroke`,[],[null,[1,0,0,0]],'--bod-t'],
         [`#table.stroke`,[],[null,[0,1,0,0]],'--bod-r'],
         [`#table.stroke`,[],[null,[0,0,1,0]],'--bod-b'],
         [`#table.stroke`,[],[null,[0,0,0,1]],'--bod-l'],
         [`#table.fill`,[toRGB('#666666',true)],null,'--fills'],
     ];
-    for(let i = 0; i < adds.length; i++){
+    
+    //如果指定了特定属性，只添加这些属性
+    let addsToAdd = [];
+    if(specificProps && Array.isArray(specificProps)){
+        //只添加指定的属性
+        addsToAdd = allAdds.filter(add => specificProps.includes(add[3]));
+    } else {
+        //如果没有指定，检查缺失的属性并只添加缺失的
+        addsToAdd = allAdds.filter(add => !hasProperty(comp, add[3]));
+    }
+    
+    for(let i = 0; i < addsToAdd.length; i++){
         //添加描边、填充并绑定组件属性
-        addBodFill(comp,adds[i],type);
+        addBodFill(comp, addsToAdd[i], type);
     };
 };
 //添加描边/区分色
