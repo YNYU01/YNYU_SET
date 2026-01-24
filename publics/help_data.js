@@ -1648,8 +1648,12 @@ class RICH_DOC {
       radio.innerHTML = language == 'Zh' ? textZh : textEn;
       radioBox.appendChild(radio);
       radio.addEventListener('click',()=>{
-        let path = card.getAttribute('data-search-path');
-        this.viewCard(path)
+        //let path = card.getAttribute('data-search-path');
+        //this.viewCard(path)
+        card.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest'
+        });
       });
     };
   };
@@ -1797,6 +1801,7 @@ class RICH_DOC {
     //log(paths);
     let input1 = getElementMix(`tab_${paths[0]}_0`);
     let input2 = getElementMix(`tab_${paths[1]}_0`);
+    if(!input1 || !input2) return;
     let inputEvent1 = new Event('change',{bubbles:true});
     let inputEvent2 = new Event('change',{bubbles:true});
     input1.dispatchEvent(inputEvent1);
@@ -1829,8 +1834,46 @@ class RICH_DOC {
       date.setAttribute('data-doc-date','');
       date.innerHTML = log.date;
       logBox.appendChild(date);
+
+      // code blocks need safe escaping (language switch uses innerHTML)
+      const escapeHTML = (text) => {
+        return String(text ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      };
       
       log.items.forEach(item => {
+        // 结构约定：['code', lang, codeText]
+        // code 块不参与中英文切换
+        // （兼容旧结构：['code', lang, zhCode, enCode]）
+        if(item[0] == 'code'){
+          let lang = item[1] || '';
+          let codeText = item[2] ?? '';
+
+          let codeCard = document.createElement('div');
+          codeCard.setAttribute('data-codecard','');
+          
+          let box = document.createElement('div');
+          box.setAttribute('data-resize','pre');
+
+          let pre = document.createElement('pre');
+          pre.setAttribute('data-doc-line','code');
+          let code = document.createElement('code');
+          if(lang){
+            code.className = `language-${lang}`;
+          }
+          // 用 textContent 保证内容安全，Prism 会自行写入高亮后的 innerHTML
+          code.textContent = String(codeText ?? '');
+          pre.appendChild(code);
+          box.appendChild(pre);
+          codeCard.appendChild(box);
+          logBox.appendChild(codeCard);
+          return;
+        }
+
         let line = document.createElement(item[0]);
         line.setAttribute('data-doc-line',item[0]);
         if(item[0] == 'li'){

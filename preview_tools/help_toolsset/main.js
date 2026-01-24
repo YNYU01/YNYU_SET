@@ -4,58 +4,79 @@ const btnMore = document.getElementById('btn-more');
 const skillSearchInput = document.getElementById('skillsearch');
 const logBox = document.querySelector('[data-page-name-en="log"]');
 
-let logs = [
-  {
-    title:['版本V1.0.0（首发版本）','Version V1.0.0 (First version)'],
-    date:'2025.11',
-    items:[
-      ['li','新增功能1','New feature 1'],
-      ['li','新增功能2','New feature 2'],
-      ['li','新增功能3','New feature 3'],
-      ['li','新增功能4','New feature 4'],
-      ['li','新增功能5','New feature 5'],
-      ['li','新增功能6','New feature 6'],
-      ['li','新增功能7','New feature 7'],
-      ['li','新增功能8','New feature 8'],
-      ['li','新增功能9','New feature 9'],
-      ['li','新增功能10','New feature 10'],
-    ]
-  },
-  {
-    title:['内测版本','Beta version'],
-    date:'2024.7 ~ 2025.11',
-    items:[
-      ['li','新增功能1','New feature 1'],
-      ['li','新增功能2','New feature 2'],
-      ['li','新增功能3','New feature 3'],
-      ['li','新增功能4','New feature 4'],
-      ['li','新增功能5','New feature 5'],
-      ['li','新增功能6','New feature 6'],
-      ['li','新增功能7','New feature 7'],
-      ['li','新增功能8','New feature 8'],
-      ['li','新增功能9','New feature 9'],
-      ['li','新增功能10','New feature 10'],
-    ]
-  },
-];
+/**
+ * 日志数据来自构建产物 `logs.generated.js`
+ * - 由 `preview_tools/help_toolsset/build_logs.js` 从 `tool_plugin/ToolsSetFig/log.md` 生成
+ * - 在页面中注入：window.__TOOLSSET_HELP_LOGS__
+ */
+const logs = Array.isArray(window.__TOOLSSET_HELP_LOGS__) ? window.__TOOLSSET_HELP_LOGS__ : null;
 
 window.addEventListener('DOMContentLoaded', () => {
-  if(window.innerWidth < 450){
+  if(window.innerWidth < 550){
+    btnMore.checked = false;
+    let inputEvent = new Event('change',{bubbles:true});
+    btnMore.dispatchEvent(inputEvent);
+  }
+  if(QUERY_PARAMS && QUERY_PARAMS.sec){
+    log(QUERY_PARAMS)
+    let tabPick = 'function'
+    let secPick = QUERY_PARAMS.sec.replace('_',' ').toLowerCase();
+
+    if(secPick == 'log'){
+      tabPick = 'algorithm'
+    }else{
+      let sec = richDoc.doc.toolsset[QUERY_PARAMS.sec];
+      if(sec){
+        tabPick = sec.type[1];
+      }else{
+        secPick = 'create';
+      }
+    }
+
+    
+    richDoc.viewPage([tabPick,secPick]);
+  }
+});
+
+window.addEventListener('resize', () => {
+  if(window.innerWidth < 550){
     btnMore.checked = false;
     let inputEvent = new Event('change',{bubbles:true});
     btnMore.dispatchEvent(inputEvent);
   }
 });
 
-window.addEventListener('resize', () => {
-  if(window.innerWidth < 450){
-    btnMore.checked = false;
-    let inputEvent = new Event('change',{bubbles:true});
-    btnMore.dispatchEvent(inputEvent);
-  }else{
-    btnMore.checked = true;
-    let inputEvent = new Event('change',{bubbles:true});
-    btnMore.dispatchEvent(inputEvent);
+getElementMix('data-doc-search').addEventListener('click',()=>{
+  getElementMix('data-dailogsearch').style.display = 'flex'
+});
+
+window.addEventListener('keydown', (event) => {
+  // Ctrl+K 打开搜索
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+    event.preventDefault();
+    getElementMix('data-dailogsearch').style.display = 'flex';
+    try {
+      // 尝试聚焦输入框（如有）
+      const input = getElementMix('data-dailogsearch').querySelector('input, textarea');
+      if (input) input.focus();
+    } catch (e) {}
+  }
+  // Escape 关闭搜索
+  if (event.key === 'Escape') {
+    getElementMix('data-dailogsearch').style.display = 'none';
+  }
+
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'b') {
+    event.preventDefault();
+    if(btnMore.checked){
+      btnMore.checked = false;
+      let inputEvent = new Event('change',{bubbles:true});
+      btnMore.dispatchEvent(inputEvent);
+    }else{
+      btnMore.checked = true;
+      let inputEvent = new Event('change',{bubbles:true});
+      btnMore.dispatchEvent(inputEvent);
+    }
   }
 });
 
@@ -63,11 +84,33 @@ let richDoc = new RICH_DOC();
 let skillsSearch = richDoc.allSearchPath['toolsset'];
 richDoc.creDocAll(content1,'toolsset','function',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
 richDoc.creDocAll(content2,'toolsset','algorithm',{isSearch:true, parentSearch:document.querySelector('[data-dailogsearch-box]')});
-richDoc.addLog(logBox,logs);
+// 日志改为读取构建产物 logs.generated.js（支持 ['code', ...] / 后续可扩展 ['table', ...]）
+if(logs){
+  richDoc.addLog(logBox, logs);
+}else{
+  console.warn('[help_toolsset] logs.generated.js missing or invalid: window.__TOOLSSET_HELP_LOGS__');
+  richDoc.addLog(logBox, [
+    {
+      title: ['日志加载失败', 'Failed to load changelog'],
+      date: '',
+      items: [
+        ['li', '未检测到 logs.generated.js，请先运行 build_logs.js 生成。', 'logs.generated.js not found. Please run build_logs.js first.'],
+      ],
+    },
+  ]);
+}
+let logBoxCode = logBox.querySelectorAll('code');
+logBoxCode.forEach(item => {
+  Prism.highlightElement(item);
+});
+
 richDoc.creDocList();
 
 getElementMix('language-2').addEventListener('change',()=>{
   richDoc.reSortSearch();
+  logBoxCode.forEach(item => {
+    Prism.highlightElement(item);
+  });
 });
 
 //搜索功能

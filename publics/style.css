@@ -852,8 +852,56 @@ input[type="checkbox"]:checked + label + [data-doc-radiobox]{
   color: var(--code2);
 }
 
+[data-doc-log]{
+  position: relative;
+  padding: 0 0 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5ch;
+}
 
+[data-doc-log]::after{
+  content: '';
+  position: absolute;
+  width: 2ch;
+  height: 2ch;
+  top: 1.5ch;
+  left: calc(10px - 1ch);
+  background: var(--boxBod);
+  border-radius: 50%;
+}
 
+[data-doc-log]::before{
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  top: 1.5ch;
+  left: 10px;
+  border-left: 1px dashed var(--boxBod);
+}
+
+[data-doc-log] [data-doc-title]{
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+ 
+[data-doc-date]{
+  margin: 0 0 10px 1ch;
+}
+
+[data-doc-key]{
+  font-weight: 700;
+}
+
+[data-codecard]{
+  padding: 10px;
+  background: var(--boxGry);
+  border-radius: 4px;
+}
+[data-codecard] pre{
+  max-height: 20vh;
+}
 
 #tips-all{
   display: none;

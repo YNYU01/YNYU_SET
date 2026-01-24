@@ -1393,7 +1393,6 @@ TAB_AUTO.forEach((item) => {
       input.type = 'checkbox'
       input.id = id;
       input.checked = checked;
-      input.style.display = 'none';
       if(checked){
         items.parentNode.setAttribute('data-tab-pick',keyid);
         items.setAttribute('data-page-main','true');

@@ -105,21 +105,13 @@
         </div>
       </div>
       
-      <div class="df-cc" style="width: 40px; height: 40px; background: var(--boxGry);">
+      <div class="df-cc pos-r" 
+      data-tips="auto" data-tips-x="left" data-tips-y="bottom"
+      data-tips-text="Ctrl + B" data-tips-text-en="Ctrl + B"
+      style="width: 40px; height: 40px; background: var(--boxGry);">
         <input id="btn-more" type="checkbox" checked onchange="showNext(this,'data-doc-list-mix','flex');showNext(this,'data-doc-list-mix-mask','block')">
-        <label for="btn-more" style="width: 20px; height: 20px;">
-          <svg data-icon-more width="100%" height="100%" viewBox="0 0 20 20">
-            <g data-icon-more-path="1" >
-              <path fill="none" d="M18 0L0 0"></path>
-            </g>
-            <g data-icon-more-path="2">
-              <path fill="none" d="M18 0L0 0"></path>
-            </g>
-            <g data-icon-more-path="3">
-              <path fill="none" d="M18 0L0 0"></path>
-            </g>
-          </svg>
-          
+        <label for="btn-more" class="wh-20 pointer">
+          <btn-more></btn-more>
         </label>
           
       </div>
@@ -168,6 +160,7 @@
   <script src="../../publics/test.js"></script>
   <script src="../../publics/graph.js"></script>
   <script src="../../publics/help_data.js"></script>
+  <script src="logs.generated.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
