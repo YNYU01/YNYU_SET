@@ -1,6 +1,6 @@
 /* AUTO-GENERATED FILE. DO NOT EDIT. */
 /* Source: tool_plugin/ToolsSetFig/log.md */
-/* Built: 2026-01-24T15:32:45.640Z */
+/* Built: 2026-01-24T15:45:59.349Z */
 
 (function () {
   'use strict';
@@ -122,42 +122,42 @@
       "v0.1.0",
       "v0.1.0"
     ],
-    "date": "",
+    "date": "2025/12/22",
     "items": [
       [
         "li",
-        "首发版本, 已开放70%的功能",
-        "First release version - 70% of features available"
+        "🎉 首发版本, 已开放70%的功能",
+        "🎉 First release version - 70% of features available"
       ],
       [
         "li",
-        "创建页>基本满足批量导入大图和创建画板需要, 兼容格式未完整开放, 会陆续更新",
-        "Create page > Basically meets the needs of batch importing large images and creating artboards. Compatible formats are not fully available yet and will be updated gradually"
+        "🎨 创建页>基本满足批量导入大图和创建画板需要, 兼容格式未完整开放, 会陆续更新",
+        "🎨 Create page > Basically meets the needs of batch importing large images and creating artboards. Compatible formats are not fully available yet and will be updated gradually"
       ],
       [
         "li",
-        "导出页>基本满足批量导出图片需求, 并指定预期大小来压缩图片, 为追求轻量化, 尺寸和后缀等建议使用原生功能管理, 并在上传时选择按导出设置上传, 按默认则只上传一倍图及PNG格式, 其他兼容格式的导出功能暂未开放, 预计0.2.0版本发布",
-        "Export page > Basically meets batch image export needs, and supports compressing images by specifying the target size. For a lightweight workflow, it is recommended to manage dimensions and file formats with native features. When uploading, choose upload-by-export-settings; by default it uploads only 1x PNG. Other compatible export formats are not yet available and are expected in v0.2.0"
+        "📤 导出页>基本满足批量导出图片需求, 并指定预期大小来压缩图片, 为追求轻量化, 尺寸和后缀等建议使用原生功能管理, 并在上传时选择按导出设置上传, 按默认则只上传一倍图及PNG格式, 其他兼容格式的导出功能暂未开放, 预计0.2.0版本发布",
+        "📤 Export page > Basically meets batch image export needs, and supports compressing images by specifying the target size. For a lightweight workflow, it is recommended to manage dimensions and file formats with native features. When uploading, choose upload-by-export-settings; by default it uploads only 1x PNG. Other compatible export formats are not yet available and are expected in v0.2.0"
       ],
       [
         "li",
-        "编辑页>仅开放了基本UI布局, 完整功能预计0.2.0版本发布",
-        "Editor page > Only basic UI layout is available. Full features are expected in v0.2.0"
+        "✏️ 编辑页>仅开放了基本UI布局, 完整功能预计0.2.0版本发布",
+        "✏️ Editor page > Only basic UI layout is available. Full features are expected in v0.2.0"
       ],
       [
         "li",
-        "变量页>仅开放了基本UI布局, 完整功能预计0.2.0版本发布",
-        "Variables page > Only basic UI layout is available. Full features are expected in v0.2.0"
+        "🎯 变量页>仅开放了基本UI布局, 完整功能预计0.2.0版本发布",
+        "🎯 Variables page > Only basic UI layout is available. Full features are expected in v0.2.0"
       ],
       [
         "li",
-        "表单页>创建特定组件以实现定制化表格, 并基于表格数据记录的组件属性和标签等批量管理文案和样式, 同时提供必要的类似excel表格操作的功能, 会陆续优化表格样式和深入探索可通过二维数据批量操作的情景",
-        "Sheet page > Create dedicated components for customized tables, and batch-manage copy and styles based on component properties and tags recorded in table data. Also provides essential Excel-like table operations. Table styles will be continuously optimized, and we will further explore scenarios where 2D data can drive batch operations"
+        "📊 表单页>创建特定组件以实现定制化表格, 并基于表格数据记录的组件属性和标签等批量管理文案和样式, 同时提供必要的类似excel表格操作的功能, 会陆续优化表格样式和深入探索可通过二维数据批量操作的情景",
+        "📊 Sheet page > Create dedicated components for customized tables, and batch-manage copy and styles based on component properties and tags recorded in table data. Also provides essential Excel-like table operations. Table styles will be continuously optimized, and we will further explore scenarios where 2D data can drive batch operations"
       ],
       [
         "li",
-        "更多功能页>集齐大量常用功能, 如指定大小栅格化 | 批量缩放/斜切 | 拆分/合并文本 | 识别/矢量化/生成二维码 | 批量转自动布局 | 批量将子元素拆分到容器 | 调换图层顺序/位置 | 自动设置约束 | 。。。",
-        "More Features page > Includes many commonly used tools, such as fixed-size rasterize | batch scale/skew | split/merge text | recognize/vectorize/generate QR codes | batch convert to auto layout | batch split children into containers | swap layer order/position | auto set constraints | ..."
+        "🛠️ 更多功能页>集齐大量常用功能, 如指定大小栅格化 | 批量缩放/斜切 | 拆分/合并文本 | 识别/矢量化/生成二维码 | 批量转自动布局 | 批量将子元素拆分到容器 | 调换图层顺序/位置 | 自动设置约束 | 。。。",
+        "🛠️ More Features page > Includes many commonly used tools, such as fixed-size rasterize | batch scale/skew | split/merge text | recognize/vectorize/generate QR codes | batch convert to auto layout | batch split children into containers | swap layer order/position | auto set constraints | ..."
       ]
     ]
   }
