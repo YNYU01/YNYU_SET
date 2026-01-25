@@ -52,6 +52,7 @@
           <div data-tab="auto" data-tab-for="list" data-tab-pick="false"
           class="df" style="width: calc(100% + 40px); gap: 1px; background: var(--boxBod);"></div>
           <div data-page-id="list" class="h100 ovy noscrollbar" style="padding:0 10px 20px 10px; width: calc(100% + 20px);">
+            
             <div data-page-name="功能" data-page-name-en="function" data-page-main="true"
             data-page-tabclass="tab-tag w100 df-cc" class="df-ffc wh100">
               <div data-tab="auto" data-tab-sec data-tab-for="content1" data-tab-pick="false" class="df-ffc gap8"></div>
@@ -118,7 +119,6 @@
     </div>
     <div data-doc-list-mix-mask class="h100 fl0" style="width: 220px; border-right: 1px solid var(--boxBod);"></div>
     <div class="fl1 h100 df-ffc pos-r">
-      
       <div data-doc-content data-page-id="content1" class="ovy wh100 fl1 noscrollbar">
         <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
         <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
@@ -145,11 +145,35 @@
         <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
         <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
       </div>
-      <div data-doc-content-top class="df pos-a" style="right: 0; min-height: 40px; padding:10px; box-sizing: border-box;">
+      <div data-doc-content-top class="df pos-a" style="right: 40px; min-height: 40px; padding:10px; box-sizing: border-box;">
         <div data-doc-search class="df-lc gap4" data-btn onclick="getElementMix('data-dailogsearch').style.display = 'flex'">
           Ctrl+K
           <btn-search></btn-search>
         </div>
+      </div>
+      <div class="df pos-a df-cc" 
+      data-tips="auto" data-tips-x="right" data-tips-y="bottom"
+      data-tips-text="Figma文档预览" data-tips-text-en="Figma document preview"
+      style="right: 20px; height: 48px;">
+        <div data-doc-figma-show class="df-cc wh-20" data-btn="op" 
+        onclick="getElementMix('data-doc-figma').style.display = 'flex'">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path stroke="var(--mainColor)" d="M6 6C6 3.23858 8.23858 1 11 1H16V11H11C8.23858 11 6 8.76142 6 6V6Z" stroke-width="2"/>
+          <path stroke="var(--mainColor)" d="M6 16C6 13.2386 8.23858 11 11 11H16V21H11C8.23858 21 6 18.7614 6 16V16Z" stroke-width="2"/>
+          <path stroke="var(--mainColor)" d="M6 26C6 23.2386 8.23858 21 11 21H16V26C16 28.7614 13.7614 31 11 31V31C8.23858 31 6 28.7614 6 26V26Z" stroke-width="2"/>
+          <path stroke="var(--mainColor)" d="M16 1H21C23.7614 1 26 3.23858 26 6V6C26 8.76142 23.7614 11 21 11H16V1Z" stroke-width="2"/>
+          <rect stroke="var(--mainColor)" x="16" y="11" width="10" height="10" rx="5" stroke-width="2"/>
+        </svg>          
+        </div>
+      </div>
+      <div data-doc-figma data-close-id="doc-figma" class="wh100 df-cc pos-a">
+        <div data-close="close" data-close-for="doc-figma" class="df-cc wh-20 pos-a"
+        style="top: 10px; right: 10px;">
+          <btn-close></btn-close>
+        </div>
+        <iframe width="90%" height="80%" 
+        src="https://embed.figma.com/design/4hPBssSR3tPw2xmQb0KThV/YN--Tools-Playground-File?node-id=0-1&embed-host=share&mode=design" 
+        allowfullscreen></iframe>
       </div>
     </div>
   </div>

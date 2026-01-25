@@ -366,12 +366,10 @@ function revokeImageObjectURL(url){
 };
 
 // ========== 初始化事件 ==========
-
+let tabs = ['create','export','editor','variable','sheet','more tools']
 // 窗口加载事件
 window.addEventListener('load',()=>{
   let time = getTime('HH')[0];
-  let tabs = ['create','export','editor','variable','sheet','more tools']
-
   /*
   if(time*1 > 20 && IS_PLUGIN_ENV){
     nullPage();
@@ -759,7 +757,7 @@ function addSearchs(){
       let viewskill = getElementMix('data-page-id="page"').querySelector(`[data-en-text="${list.name[1]}"]`);
       if(!viewskill) viewskill = getElementMix('data-page-id="page"').querySelector(`[data-tips-text-en="${list.name[1]}"]`);
       if(!viewskill) return;
-      viewskill.scrollIntoView({behavior:"smooth",block: "center"});
+      viewskill.scrollIntoView({behavior:"smooth",block: "nearest",inline: "nearest"});
       setTimeout(()=>{
         addFindBox(viewskill,list);
       },500);
@@ -2914,13 +2912,6 @@ DOM.skillStar.forEach(item =>{
           moveSkillStar([skillId]);
           userSkillStar.push(skillId);
           storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
-          /*
-          skillNode.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-            inline: 'nearest',
-          });
-          */
         };
       };
     };
@@ -4851,7 +4842,7 @@ function getUserRadio(node){
       if(State.get('isSkillScroll')){
         skillnode.scrollIntoView({
           behavior: 'smooth',
-          block: 'center',
+          block: 'nearest',
           inline: 'nearest',
         });
       };

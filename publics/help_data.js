@@ -1479,26 +1479,31 @@ class RICH_DOC {
       vfontx:{},
   };
     
-    // 设置 about 属性（需要在对象构建完成后）
-    this.doc.toolsset.create.about = this.doc.toolsset.create.help[0];
-    this.doc.toolsset.export.about = this.doc.toolsset.export.help[0];
-    this.doc.toolsset.editor.about = this.doc.toolsset.editor.help[0];
-    this.doc.toolsset.variable.about = this.doc.toolsset.variable.help[0];
-    this.doc.toolsset.sheet.about = this.doc.toolsset.sheet.help[0];
-    this.doc.toolsset.more_tools.about = this.doc.toolsset.more_tools.help[0];
-    this.doc.toolsset.layout_organization.about = this.doc.toolsset.layout_organization.help[0];
-    this.doc.toolsset.file_export.about = this.doc.toolsset.file_export.help[0];
-    this.doc.toolsset.data_to_layer.about = this.doc.toolsset.data_to_layer.help[0];
-    this.doc.toolsset.batch_modify.about = this.doc.toolsset.batch_modify.help[0];
-    this.doc.toolsset.compatible_format.about = this.doc.toolsset.compatible_format.help[0];
-    this.doc.toolsset.batch_transform.about = this.doc.toolsset.batch_transform.help[0];
-    this.doc.toolsset.text_processing.about = this.doc.toolsset.text_processing.help[0];
-    this.doc.toolsset.vector_processing.about = this.doc.toolsset.vector_processing.help[0];
     this.allSearchPath = {
       toolsset:[],
       listease:[],
       vfontx:[],
     };
+    // `toolsset` 是对象（key -> item），不能直接用 `map`
+    Object.keys(this.doc.toolsset).forEach(key => {
+      const items = this.doc.toolsset[key];
+      if(!items) return;
+      items.about = (items.help && items.help[0]) || ['p','',''];
+      /*
+      let preview = {
+        title:['界面预览','Interface preview'],
+        layout:[
+          {set:[['class','df-cc'],['data-doc-iframe','']],items:[
+            ["div",
+            `<iframe src='../../tool_plugin/ToolsSetFig/test/index.html?page=${items.name[1]}&lan=zh'></iframe>`,
+            `<iframe src='../../tool_plugin/ToolsSetFig/test/index.html?page=${items.name[1]}&lan=en'></iframe>`,
+          ],
+          ]}
+        ]
+      }
+      items.list = [preview,...items.list]
+      */
+    });
   }
 
   //======直接修改======//
@@ -1680,14 +1685,24 @@ class RICH_DOC {
       item.items.forEach(items => {
         let line = document.createElement(items[0]);
         line.setAttribute('data-doc-line',items[0]);
+        item.set.forEach(set => {
+          line.setAttribute(set[0],set[1]);
+        });
+        let span;
+        if(items[0] == 'div'){
+          span = line;
+        }else{
+          span = document.createElement('span');
+          line.appendChild(span);
+        }
         if(items[0] == 'li'){
           line.setAttribute('data-li-style','2');
         }
-        let span = document.createElement('span');
+        
         span.innerHTML = this.toHighlight(items[1]);
         span.setAttribute('data-zh-text', this.toHighlight(items[1]));
         span.setAttribute('data-en-text', this.toHighlight(items[2]));
-        line.appendChild(span);
+        
         linemix.appendChild(line);
       });
       card.appendChild(linemix);
