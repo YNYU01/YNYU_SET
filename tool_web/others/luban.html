@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鲁班尺查询工具 (含细分小格)</title>
+    <title>鲁班尺查询工具</title>
     <style>
         body {
             font-family: "Microsoft YaHei", sans-serif;
@@ -19,16 +19,21 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         .control-panel {
+            width: 100%;
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
             align-items: center;
-            flex-wrap: wrap;
         }
         select, input, button {
             padding: 8px;
+            box-sizing: box-border;
             border: 1px solid #ccc;
             border-radius: 4px;
+        }
+        input {
+            min-width: 20px;
+            flex: 1;
         }
         button {
             background-color: #222;
@@ -38,15 +43,9 @@
             border: none;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #ef2222;
         }
-        .result {
-            margin: 15px 0;
-            padding: 10px;
-            background-color: #e9ecef;
-            border-left: 4px solid #222;
-            font-weight: bold;
-        }
+        
         .ruler-container {
             width: 100%;
             max-width: 800px;
@@ -57,23 +56,30 @@
             background-color: #ffdd44;
             position: relative;
             margin-top: 20px;
-            height: 140px; /* 增加了总高度以容纳双层尺子 */
+            height: 360px;
             overflow-y: hidden;
         }
         .ruler {
             position: relative;
             white-space: nowrap;
-            font-size: 0;
             width: max-content;
             margin-left: 10px;
+        }
+        
+        .ruler-title{
+            padding-left: var(--lineleft,0);
+            height: 20px;
+            text-align: left;
+            line-height: 20px;
+            font-weight: bold;
         }
 
         /* --- 大格子样式 (上层) --- */
         .ruler-segment {
             display: inline-block;
-            height: 40px; /* 变矮，作为背景 */
+            height: 20px; /* 变矮，作为背景 */
             text-align: center;
-            line-height: 40px;
+            line-height: 20px;
             font-weight: bold;
             box-sizing: border-box;
             border-right: 1px solid rgba(255,255,255,0.3);
@@ -87,16 +93,16 @@
         /* --- 小格子样式 (下层) --- */
         .sub-ruler {
             position: relative;
-            height: 50px; /* 变高，作为信息主体 */
+            height: 20px; /* 变高，作为信息主体 */
             font-size: 0;
             border-top: 1px solid #000;
             border-bottom: 1px solid #000;
-            margin-top: 5px;
+            
         }
         .sub-segment {
             display: inline-block;
-            height: 50px;
-            line-height: 50px;
+            height: 20px;
+            line-height: 20px;
             font-size: 13px;
             text-align: center;
             box-sizing: border-box;
@@ -112,6 +118,7 @@
         .marks-container {
             position: relative;
             height: 30px;
+            margin-bottom: 30px;
         }
         .mark {
             position: absolute;
@@ -151,7 +158,7 @@
             position: absolute;
             top: 0;
             width: 2px;
-            height: 130px;
+            height: 100%;
             z-index: 10;
             border-left: 1px dashed #000;
             margin-left: 10px;
@@ -160,23 +167,17 @@
 </head>
 <body>
     <div class="container">
-        <h1 style="text-align: center; color: #333;">鲁班尺查询工具</h1>
         
-        <div class="control-pan">
-            <select id="rulerType">
-                <option value="50.4">台湾/赣南尺 (50.4cm)</option>
-                <option value="46.08">北京尺 (46.08cm)</option>
-                <option value="42.9">广东/香港(42.9cm)</option>
-            </select>
-            <input style="flex: 1;" type="number" id="inputLength" placeholder="输入尺寸 (cm)" min="0" step="0.1" value="0">
+        <div class="control-panel">
+          
+            <input type="number" id="inputLength" placeholder="输入尺寸 (cm)" min="0" step="0.1" value="6">
             <button onclick="queryLength()">查询</button>
         </div>
 
-        <div id="resultBox" class="result">结果将显示在这里...</div>
 
         <div class="ruler-container" id="rulerContainer">
             <div id="ruler" class="ruler"></div>
-            <div id="indicator" class="indicator" style="display: none;"></div>
+            <div id="indicator" class="indicator" ></div>
         </div>
     </div>
 
@@ -198,9 +199,7 @@
         ];
 
         // DOM元素
-        const rulerTypeSelect = document.getElementById('rulerType');
         const inputLength = document.getElementById('inputLength');
-        const resultBox = document.getElementById('resultBox');
         const rulerContainer = document.getElementById('rulerContainer');
         const ruler = document.getElementById('ruler');
         const indicator = document.getElementById('indicator');
@@ -210,13 +209,24 @@
         const TOTAL_CM = 600; 
 
         // 初始化
-        generateRuler();
+        generateRuler(50.4,1);
+        generateRuler(46.08,2);
+        generateRuler(42.9,3);
         queryLength();
 
-        function generateRuler() {
-            const unitLen = parseFloat(rulerTypeSelect.value);
-            ruler.innerHTML = '';
-
+        function generateRuler(data,type = 1) {
+            const unitLen = data ||  parseFloat(rulerTypeSelect.value);
+            
+            //ruler.innerHTML = '';
+            let typetitle = [
+                "台湾/赣南尺（50.4）",
+                "北京尺（46.08）",
+                "广东/香港尺（42.9）",
+            ]
+          let title = document.createElement('div');
+          title.className = "ruler-title"
+          title.innerHTML = typetitle[type - 1];
+ruler.appendChild(title);
             // 1. 生成大格子 (上层)
             const bigSegmentWidthPx = (unitLen / 8) * PX_PER_CM;
             for (let i = 0; i < TOTAL_CM * 8 / unitLen; i++) {
@@ -291,71 +301,32 @@
             return map[word] || "";
         }
 
-        function queryLength() {
-            const unitLen = parseFloat(rulerTypeSelect.value);
+        function queryLength(left) {
+            
             const length = parseFloat(inputLength.value);
 
-            if (isNaN(length) || length < 0) {
-                alert("请输入有效的尺寸！");
-                return;
-            }
-
-            // 核心计算逻辑
-            const posInUnit = length % unitLen;
-            let mainWord, subWord, isLucky;
-
-            if (posInUnit === 0 && length > 0) {
-                // 整除情况，落在最后一个"本"字
-                mainWord = "本";
-                // 计算是"本"字下的第几个小格 (本字宽 unitLen/8)
-                const subIndex = Math.floor((unitLen) / (unitLen / 8 / 4)) % 4;
-                subWord = SUB_WORDS[subIndex]; // 7是本字的索引
-                isLucky = true;
-            } else {
-                const segmentLen = unitLen / 8; // 大格长度
-                const subSegmentLen = unitLen / 32; // 小格长度
-                
-                const mainIndex = Math.floor(posInUnit / segmentLen);
-                mainWord = LUBAN_WORDS[mainIndex];
-                isLucky = LUCKY_WORDS.includes(mainWord);
-
-                // 计算在大格内的偏移，确定小格
-                const offsetInMain = posInUnit % segmentLen;
-                const subIndex = Math.floor(offsetInMain / subSegmentLen);
-                subWord = SUB_WORDS[mainIndex][subIndex];
-            }
-
-            // 显示结果
-            resultBox.innerHTML = `
-                <strong>查询尺寸：</strong> ${length} cm
-                <br>
-                <strong>对应吉凶：</strong> 
-                <span style="color: ${isLucky ? '#d42222' : '#666'}; font-size: 1.5em;">
-                    ${mainWord}
-                </span> (${isLucky ? '吉' : '凶'})
-                <br>
-                <strong>细分含义：</strong> <span style="color: ${isLucky ? '#d42222' : '#666'};">${subWord}</span>
-            `;
 
             // 移动红线
             const leftPosPx = length * PX_PER_CM;
-            indicator.style.display = 'block';
-            indicator.style.left = `${leftPosPx}px`;
-
+            document.documentElement.style.setProperty("--lineleft",left + "px");
+            indicator.style.left = leftPosPx  + "px";
             // 滚动
+            if(left) return;
             setTimeout(() => {
                 rulerContainer.scrollTo({
-                    left: leftPosPx - (rulerContainer.offsetWidth / 2),
+                    left: leftPosPx -  rulerContainer.offsetWidth/3*2,
                     behavior: 'smooth'
                 });
             }, 100);
         }
+        rulerContainer.addEventListener('scroll', function() {
+    // 获取该元素的滚动距离
+    
+    const scrollLeft = rulerContainer.scrollLeft || 0.1;
+    queryLength(scrollLeft)
+});
 
-        // 尺子类型切换
-        rulerTypeSelect.addEventListener('change', function() {
-            generateRuler();
-            if (inputLength.value) queryLength();
-        });
+        
     </script>
 </body>
 </html>
