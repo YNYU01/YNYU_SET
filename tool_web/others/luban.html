@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鲁班尺查询工具</title>
+    <style>
+    body {
+        font-family: "Microsoft YaHei", sans-serif;
+        padding: 20px;
+        background-color: #f5f5f5;
+    }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .control-panel {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    select, input, button {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    button {
+        background-color: #222;
+        color: white;
+        cursor: pointer;
+        min-width: 80px;
+        border: none;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    .result {
+        margin: 15px 0;
+        padding: 10px;
+        background-color: #e9ecef;
+        border-left: 4px solid #222;
+        font-weight: bold;
+    }
+    .ruler-container {
+        width: 100%;
+        max-width: 760px;
+        overflow-x: auto;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px 0;
+        background-color: #ffdd44;
+        position: relative;
+        margin-top: 20px;
+        height: 140px;
+        overflow-y: hidden;
+    }
+    .ruler {
+        position: relative;
+        white-space: nowrap;
+        font-size: 0;
+        width: max-content;
+        margin-left: 10px;
+    }
+    .ruler-segment {
+        display: inline-block;
+        height: 60px;
+        text-align: center;
+        line-height: 60px;
+        font-weight: bold;
+        box-sizing: border-box;
+        border-right: 1px solid rgb(255,255,255);
+        font-size: 14px;
+        vertical-align: top;
+    }
+    .bing, .li, .jie, .hai { background: #222; color:#eee}
+    .cai, .yi , .guan, .ben { background:#ee4422; color: #fff; }
+    .marks-container {
+        position: relative;
+        height: 30px;
+    }
+    .mark {
+        position: absolute;
+        width: 1px;
+        background-color: black;
+        bottom: 0;
+    }
+    .mark.minor { height: 10px; }
+    .mark.major { height: 20px; }
+    .mark-text {
+        position: absolute;
+        bottom: -20px;
+        left: -10px;
+        font-size: 12px;
+        color: #000;
+        width: 20px;
+        text-align: center;
+    }
+    .indicator {
+        position: absolute;
+        top: 0;
+        width: 2px;
+        height: 100%;
+        z-index: 10;
+        border-left: 1px dashed red;
+        margin-left: 10px;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #333;">鲁班尺查询工具</h1>
+        
+        <div class="control-panel">
+            <select id="rulerType">
+                <option value="50.4">台湾/赣南尺 (50.4cm)</option>
+                <option value="46.08">北京尺 (46.08cm)</option>
+                <option value="42.9">广东/香港(42.9cm)</option>
+            </select>
+            <input style="flex: 1;" type="number" id="inputLength" placeholder="输入尺寸 (cm)" min="0" step="0.1" value="0">
+            <button onclick="queryLength()">查询</button>
+        </div>
+
+        <div id="resultBox" class="result">结果将显示在这里...</div>
+
+        <div class="ruler-container" id="rulerContainer">
+            <div id="ruler" class="ruler"></div>
+            <div id="indicator" class="indicator" style="display: none;"></div>
+        </div>
+    </div>
+
+<script>
+        const LUBAN_WORDS = ["财", "病", "离", "义", "官", "劫", "害", "本"];
+        const LUCKY_WORDS = ["财", "义", "官", "本"];
+
+        const rulerTypeSelect = document.getElementById('rulerType');
+        const inputLength = document.getElementById('inputLength');
+        const resultBox = document.getElementById('resultBox');
+        const rulerContainer = document.getElementById('rulerContainer');
+        const ruler = document.getElementById('ruler');
+        const indicator = document.getElementById('indicator');
+
+        const PX_PER_CM = 15; 
+        const TOTAL_CM = 300;
+
+        // 生成尺子
+        function generateRuler() {
+            const unitLen = parseFloat(rulerTypeSelect.value);
+            ruler.innerHTML = '';
+
+            // --- 生成八字条 ---
+            const segmentWidthPx = (unitLen / 8) * PX_PER_CM;
+            for (let i = 0; i < TOTAL_CM * 8 / unitLen; i++) {
+                const wordIndex = i % 8;
+                const word = LUBAN_WORDS[wordIndex];
+                const seg = document.createElement('div');
+                seg.className = `ruler-segment ${getWordClass(word)}`;
+                seg.style.width = `${segmentWidthPx}px`;
+                seg.textContent = word;
+                ruler.appendChild(seg);
+            }
+
+            // --- 生成刻度条 ---
+            const marksDiv = document.createElement('div');
+            marksDiv.className = 'marks-container';
+            marksDiv.style.width = `${TOTAL_CM * PX_PER_CM}px`;
+            for (let cm = 0; cm <= TOTAL_CM; cm++) {
+                const isMajor = (cm % 5 === 0);
+                const leftPosPx = cm * PX_PER_CM;
+                const mark = document.createElement('div');
+                mark.className = `mark ${isMajor ? 'major' : 'minor'}`;
+                mark.style.left = `${leftPosPx}px`;
+                marksDiv.appendChild(mark);
+                if (isMajor) {
+                    const text = document.createElement('div');
+                    text.className = 'mark-text';
+                    text.style.left = `${leftPosPx - 10}px`;
+                    text.textContent = cm;
+                    marksDiv.appendChild(text);
+                }
+            }
+            ruler.appendChild(marksDiv);
+        }
+
+        function getWordClass(word) {
+            const map = { "财": "cai", "病": "bing", "离": "li", "义": "yi", 
+                         "官": "guan", "劫": "jie", "害": "hai", "本": "ben" };
+            return map[word] || "";
+        }
+
+        // 核心查询函数 (使用纯公式计算)
+        function queryLength() {
+            const unitLen = parseFloat(rulerTypeSelect.value);
+            const length = parseFloat(inputLength.value);
+
+            if (isNaN(length) || length < 0) {
+                alert("请输入有效的尺寸！");
+                return;
+            }
+
+            // --- 1. 核心公式计算 ---
+            let word, isLucky;
+            
+            // 计算在当前尺子内的位置
+            const posInUnit = length % unitLen;
+            
+            // 如果正好整除，说明在尺子的末端，对应最后一个字 "本"
+            if (posInUnit === 0 && length > 0) {
+                word = "本";
+                isLucky = true; // 本是吉
+            } else {
+                // 计算每格的长度
+                const segmentLen = unitLen / 8;
+                
+                // 计算属于第几格 (0-7)
+                // 注意：这里使用 < 进行比较，确保边界归入下一格
+                // 例如：segmentLen=6.3, posInUnit=6.3，应该属于第1格(病)，而不是第0格(财)
+                const index = Math.floor(posInUnit / segmentLen);
+                
+                // 修正：如果 posInUnit 正好等于 (index+1)*segmentLen，说明在格子的右边界，应该属于下一个格子
+                // 但由于浮点数，我们用一个极小值来辅助判断
+                // 更简单：直接用 posInUnit / segmentLen 然后取整，JS的Math.floor对于整除是准确的
+                // 例如：6.3 / 6.3 = 1, Math.floor(1) = 1 -> 对应 LUBAN_WORDS[1] = "病"
+                // 但 6.29999 / 6.3 = 0.999... -> floor=0 -> "财" (这是正确的)
+                // 所以直接用 index 即可
+                word = LUBAN_WORDS[index];
+                isLucky = LUCKY_WORDS.includes(word);
+            }
+
+            // --- 2. 显示结果 ---
+            resultBox.innerHTML = `
+                <strong>查询尺寸：</strong> ${length} cm
+                <br>
+                <strong>对应区域：</strong> 
+                <span style="color: ${isLucky ? '#ee4422' : '#666'}; font-size: 1.5em;">
+                    ${word}
+                </span>
+                <span style="color: ${isLucky ? '#ee4422' : '#666'};"> ( ${isLucky ? '吉' : '凶'} )</span>
+            `;
+
+            // --- 3. 移动红线 (仅用于视觉展示) ---
+            const leftPosPx = length * PX_PER_CM;
+            indicator.style.display = 'block';
+            indicator.style.left = `${leftPosPx}px`;
+
+            // 滚动
+            setTimeout(() => {
+                rulerContainer.scrollTo({
+                    left: leftPosPx - (rulerContainer.offsetWidth / 2),
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
+
+        rulerTypeSelect.addEventListener('change', function() {
+            generateRuler();
+            if (inputLength.value) queryLength();
+        });
+
+        // 初始化
+        generateRuler();
+        queryLength();
+    </script>
+
+</body>
+</html>
