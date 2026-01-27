@@ -3,120 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鲁班尺查询工具</title>
+    <title>鲁班尺查询工具 (含细分小格)</title>
     <style>
-    body {
-        font-family: "Microsoft YaHei", sans-serif;
-        padding: 20px;
-        background-color: #f5f5f5;
-    }
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .control-panel {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-    select, input, button {
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-    button {
-        background-color: #222;
-        color: white;
-        cursor: pointer;
-        min-width: 80px;
-        border: none;
-    }
-    button:hover {
-        background-color: #0056b3;
-    }
-    .result {
-        margin: 15px 0;
-        padding: 10px;
-        background-color: #e9ecef;
-        border-left: 4px solid #222;
-        font-weight: bold;
-    }
-    .ruler-container {
-        width: 100%;
-        max-width: 760px;
-        overflow-x: auto;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px 0;
-        background-color: #ffdd44;
-        position: relative;
-        margin-top: 20px;
-        height: 140px;
-        overflow-y: hidden;
-    }
-    .ruler {
-        position: relative;
-        white-space: nowrap;
-        font-size: 0;
-        width: max-content;
-        margin-left: 10px;
-    }
-    .ruler-segment {
-        display: inline-block;
-        height: 60px;
-        text-align: center;
-        line-height: 60px;
-        font-weight: bold;
-        box-sizing: border-box;
-        border-right: 1px solid rgb(255,255,255);
-        font-size: 14px;
-        vertical-align: top;
-    }
-    .bing, .li, .jie, .hai { background: #222; color:#eee}
-    .cai, .yi , .guan, .ben { background:#ee4422; color: #fff; }
-    .marks-container {
-        position: relative;
-        height: 30px;
-    }
-    .mark {
-        position: absolute;
-        width: 1px;
-        background-color: black;
-        bottom: 0;
-    }
-    .mark.minor { height: 10px; }
-    .mark.major { height: 20px; }
-    .mark-text {
-        position: absolute;
-        bottom: -20px;
-        left: -10px;
-        font-size: 12px;
-        color: #000;
-        width: 20px;
-        text-align: center;
-    }
-    .indicator {
-        position: absolute;
-        top: 0;
-        width: 2px;
-        height: 100%;
-        z-index: 10;
-        border-left: 1px dashed red;
-        margin-left: 10px;
-    }
-</style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .control-panel {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        select, input, button {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #222;
+            color: white;
+            cursor: pointer;
+            min-width: 80px;
+            border: none;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-left: 4px solid #222;
+            font-weight: bold;
+        }
+        .ruler-container {
+            width: 100%;
+            max-width: 800px;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px 0;
+            background-color: #ffdd44;
+            position: relative;
+            margin-top: 20px;
+            height: 140px; /* 增加了总高度以容纳双层尺子 */
+            overflow-y: hidden;
+        }
+        .ruler {
+            position: relative;
+            white-space: nowrap;
+            font-size: 0;
+            width: max-content;
+            margin-left: 10px;
+        }
+
+        /* --- 大格子样式 (上层) --- */
+        .ruler-segment {
+            display: inline-block;
+            height: 40px; /* 变矮，作为背景 */
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            box-sizing: border-box;
+            border-right: 1px solid rgba(255,255,255,0.3);
+            font-size: 14px;
+            vertical-align: top;
+        }
+        /* 大格颜色 */
+        .cai, .yi, .guan, .ben { background:#d42222; color: #fff; }
+        .bing, .li, .jie, .hai { background: #222; color:#eee}
+
+        /* --- 小格子样式 (下层) --- */
+        .sub-ruler {
+            position: relative;
+            height: 50px; /* 变高，作为信息主体 */
+            font-size: 0;
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+            margin-top: 5px;
+        }
+        .sub-segment {
+            display: inline-block;
+            height: 50px;
+            line-height: 50px;
+            font-size: 13px;
+            text-align: center;
+            box-sizing: border-box;
+            border-right: 1px solid #000;
+            overflow: hidden;
+            font-weight: normal;
+        }
+        /* 小格颜色：吉(橙色系), 凶(灰色系) */
+        .sub-segment.lucky { background-color: #f89d66; color: #333; }
+        .sub-segment.unlucky { background-color: #444; color: #ccc; }
+
+        /* --- 刻度条 --- */
+        .marks-container {
+            position: relative;
+            height: 30px;
+        }
+        .mark {
+            position: absolute;
+            width: 1px;
+            background-color: black;
+            top: 0;
+        }
+        .mark.minor { height: 14px; }
+        .mark.major { height: 20px; }
+        .mark.mini { height: 7px; }
+        .mark.mini.center { height: 10px; }
+        
+        .mark-text {
+            position: absolute;
+            top: 70%;
+            left: -10px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #ef2222;
+            width: fit-content;
+            text-align: center;
+            transform: translateX(-50%)
+        }
+        .mark-text-mini {
+            position: absolute;
+            bottom: -10px;
+            left: -10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #000;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* --- 红线 --- */
+        .indicator {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 130px;
+            z-index: 10;
+            border-left: 1px dashed #000;
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1 style="text-align: center; color: #333;">鲁班尺查询工具</h1>
         
-        <div class="control-panel">
+        <div class="control-pan">
             <select id="rulerType">
                 <option value="50.4">台湾/赣南尺 (50.4cm)</option>
                 <option value="46.08">北京尺 (46.08cm)</option>
@@ -134,10 +180,24 @@
         </div>
     </div>
 
-<script>
+    <script>
+        // 主星 (大格)
         const LUBAN_WORDS = ["财", "病", "离", "义", "官", "劫", "害", "本"];
         const LUCKY_WORDS = ["财", "义", "官", "本"];
 
+        // 辅星 (小格) - 每个数组对应上面一个大格的4个细分
+        const SUB_WORDS = [
+            ["财德", "宝库", "六合", "迎福"], // 财
+            ["退财", "公事", "孤寡", "牢执"], // 病
+            ["长库", "劫财", "官鬼", "失脱"], // 离
+            ["添丁", "益利", "贵子", "大吉"], // 义
+            ["顺科", "横财", "进益", "富贵"], // 官
+            ["死别", "退口", "离乡", "财失"], // 劫
+            ["灾至", "死绝", "病临", "口舌"], // 害
+            ["财至", "登科", "兴旺", "福寿"]  // 本
+        ];
+
+        // DOM元素
         const rulerTypeSelect = document.getElementById('rulerType');
         const inputLength = document.getElementById('inputLength');
         const resultBox = document.getElementById('resultBox');
@@ -145,42 +205,80 @@
         const ruler = document.getElementById('ruler');
         const indicator = document.getElementById('indicator');
 
-        const PX_PER_CM = 15; 
-        const TOTAL_CM = 300;
+        // 配置：增加每厘米像素值，确保小格子文字能显示全
+        const PX_PER_CM = 30; 
+        const TOTAL_CM = 600; 
 
-        // 生成尺子
+        // 初始化
+        generateRuler();
+        queryLength();
+
         function generateRuler() {
             const unitLen = parseFloat(rulerTypeSelect.value);
             ruler.innerHTML = '';
 
-            // --- 生成八字条 ---
-            const segmentWidthPx = (unitLen / 8) * PX_PER_CM;
+            // 1. 生成大格子 (上层)
+            const bigSegmentWidthPx = (unitLen / 8) * PX_PER_CM;
             for (let i = 0; i < TOTAL_CM * 8 / unitLen; i++) {
                 const wordIndex = i % 8;
                 const word = LUBAN_WORDS[wordIndex];
                 const seg = document.createElement('div');
                 seg.className = `ruler-segment ${getWordClass(word)}`;
-                seg.style.width = `${segmentWidthPx}px`;
+                seg.style.width = `${bigSegmentWidthPx}px`;
                 seg.textContent = word;
                 ruler.appendChild(seg);
             }
 
-            // --- 生成刻度条 ---
+            // 2. 生成小格子 (中层)
+            const subRuler = document.createElement('div');
+            subRuler.className = 'sub-ruler';
+            const subSegmentWidthPx = (unitLen / 32) * PX_PER_CM; // 32格
+
+            for (let i = 0; i < TOTAL_CM * 32 / unitLen; i++) {
+                const bigIndex = Math.floor(i / 4) % 8; // 找到对应的大格索引
+                const subIndex = i % 4; // 小格在大格内的索引
+                
+                const word = SUB_WORDS[bigIndex][subIndex];
+                const seg = document.createElement('div');
+                // 根据对应的大格颜色决定小格分类
+                seg.className = `sub-segment ${LUCKY_WORDS.includes(LUBAN_WORDS[bigIndex]) ? 'lucky' : 'unlucky'}`;
+                seg.style.width = `${subSegmentWidthPx}px`;
+                seg.textContent = word;
+                subRuler.appendChild(seg);
+            }
+            ruler.appendChild(subRuler);
+
+            // 3. 生成刻度条 (下层)
             const marksDiv = document.createElement('div');
             marksDiv.className = 'marks-container';
             marksDiv.style.width = `${TOTAL_CM * PX_PER_CM}px`;
+            
             for (let cm = 0; cm <= TOTAL_CM; cm++) {
-                const isMajor = (cm % 5 === 0);
+                const isMajor = (cm % 10 === 0);
                 const leftPosPx = cm * PX_PER_CM;
                 const mark = document.createElement('div');
                 mark.className = `mark ${isMajor ? 'major' : 'minor'}`;
                 mark.style.left = `${leftPosPx}px`;
                 marksDiv.appendChild(mark);
+                for (let mm = 0; mm <= 10; mm++){
+                    const leftMm = leftPosPx + PX_PER_CM/10*mm;
+                    const markMm = document.createElement('div');
+                markMm.className = 'mark mini';
+                if(mm == 5) markMm.className = 'mark mini center';
+                markMm.style.left = `${leftMm}px`;
+                marksDiv.appendChild(markMm);
+                }
                 if (isMajor) {
                     const text = document.createElement('div');
                     text.className = 'mark-text';
-                    text.style.left = `${leftPosPx - 10}px`;
+                    text.style.left = `${leftPosPx}px`;
                     text.textContent = cm;
+                    marksDiv.appendChild(text);
+                }else{
+                    const text = document.createElement('div');
+                    text.className = 'mark-text-mini';
+                    text.style.left = `${leftPosPx - 10}px`;
+                    text.textContent = cm%10;
                     marksDiv.appendChild(text);
                 }
             }
@@ -193,7 +291,6 @@
             return map[word] || "";
         }
 
-        // 核心查询函数 (使用纯公式计算)
         function queryLength() {
             const unitLen = parseFloat(rulerTypeSelect.value);
             const length = parseFloat(inputLength.value);
@@ -203,47 +300,44 @@
                 return;
             }
 
-            // --- 1. 核心公式计算 ---
-            let word, isLucky;
-            
-            // 计算在当前尺子内的位置
+            // 核心计算逻辑
             const posInUnit = length % unitLen;
-            
-            // 如果正好整除，说明在尺子的末端，对应最后一个字 "本"
+            let mainWord, subWord, isLucky;
+
             if (posInUnit === 0 && length > 0) {
-                word = "本";
-                isLucky = true; // 本是吉
+                // 整除情况，落在最后一个"本"字
+                mainWord = "本";
+                // 计算是"本"字下的第几个小格 (本字宽 unitLen/8)
+                const subIndex = Math.floor((unitLen) / (unitLen / 8 / 4)) % 4;
+                subWord = SUB_WORDS[subIndex]; // 7是本字的索引
+                isLucky = true;
             } else {
-                // 计算每格的长度
-                const segmentLen = unitLen / 8;
+                const segmentLen = unitLen / 8; // 大格长度
+                const subSegmentLen = unitLen / 32; // 小格长度
                 
-                // 计算属于第几格 (0-7)
-                // 注意：这里使用 < 进行比较，确保边界归入下一格
-                // 例如：segmentLen=6.3, posInUnit=6.3，应该属于第1格(病)，而不是第0格(财)
-                const index = Math.floor(posInUnit / segmentLen);
-                
-                // 修正：如果 posInUnit 正好等于 (index+1)*segmentLen，说明在格子的右边界，应该属于下一个格子
-                // 但由于浮点数，我们用一个极小值来辅助判断
-                // 更简单：直接用 posInUnit / segmentLen 然后取整，JS的Math.floor对于整除是准确的
-                // 例如：6.3 / 6.3 = 1, Math.floor(1) = 1 -> 对应 LUBAN_WORDS[1] = "病"
-                // 但 6.29999 / 6.3 = 0.999... -> floor=0 -> "财" (这是正确的)
-                // 所以直接用 index 即可
-                word = LUBAN_WORDS[index];
-                isLucky = LUCKY_WORDS.includes(word);
+                const mainIndex = Math.floor(posInUnit / segmentLen);
+                mainWord = LUBAN_WORDS[mainIndex];
+                isLucky = LUCKY_WORDS.includes(mainWord);
+
+                // 计算在大格内的偏移，确定小格
+                const offsetInMain = posInUnit % segmentLen;
+                const subIndex = Math.floor(offsetInMain / subSegmentLen);
+                subWord = SUB_WORDS[mainIndex][subIndex];
             }
 
-            // --- 2. 显示结果 ---
+            // 显示结果
             resultBox.innerHTML = `
                 <strong>查询尺寸：</strong> ${length} cm
                 <br>
-                <strong>对应区域：</strong> 
-                <span style="color: ${isLucky ? '#ee4422' : '#666'}; font-size: 1.5em;">
-                    ${word}
-                </span>
-                <span style="color: ${isLucky ? '#ee4422' : '#666'};"> ( ${isLucky ? '吉' : '凶'} )</span>
+                <strong>对应吉凶：</strong> 
+                <span style="color: ${isLucky ? '#d42222' : '#666'}; font-size: 1.5em;">
+                    ${mainWord}
+                </span> (${isLucky ? '吉' : '凶'})
+                <br>
+                <strong>细分含义：</strong> <span style="color: ${isLucky ? '#d42222' : '#666'};">${subWord}</span>
             `;
 
-            // --- 3. 移动红线 (仅用于视觉展示) ---
+            // 移动红线
             const leftPosPx = length * PX_PER_CM;
             indicator.style.display = 'block';
             indicator.style.left = `${leftPosPx}px`;
@@ -257,15 +351,11 @@
             }, 100);
         }
 
+        // 尺子类型切换
         rulerTypeSelect.addEventListener('change', function() {
             generateRuler();
             if (inputLength.value) queryLength();
         });
-
-        // 初始化
-        generateRuler();
-        queryLength();
     </script>
-
 </body>
 </html>
