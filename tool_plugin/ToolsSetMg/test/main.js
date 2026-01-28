@@ -471,34 +471,31 @@ window.addEventListener('resize',/*防抖*/debounce(()=>{
 
 //========== 通信处理 ==========
 window.addEventListener('message',(message)=>{
-  let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
-  if(!isPluginMessge){
-    let messages = message.data.pluginMessage.pluginMessage || ['',''];
-    let info = messages[0];
-    let type = messages[1];
-    if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
-      info = JSON.parse(info);
-    }
-    if(ISWORK_TIME && info){
-      switch (type){
-        case 'selectInfo': reSelectInfo(info);break
-        case 'selectInfoMain': addTableText(tableObjToText(info));break
-        case 'selectComp': reSelectComp(info);break
-        case 'selectDatas': reSelectDatas(info);break
-        case 'exportImgInfo': addTag('export-img',info);break
-        case 'editorView': addEditorView(info);break
-        case 'styleInfo': reStyleInfo(info);break
-        case 'styleSheetInfo': reStyleSheetInfo(info);break
-        case 'variableInfo': reVariableInfo(info);break
-        case 'variableSheetInfo': reVariableSheetInfo(info);break
-        case 'editImage': editImage(info);break
-        case 'qrLayerView': addQRLayerView(info);break
-        case 'linkStyleInfo': reLinkStyleInfo(info);break
-        case 'styleGroupInfo': reStyleGroupInfo(info);break
-        case 'refreshExportImgInfo': refreshExportImgInfo(info);break
-      };
-    }
-  };
+  let messages = message.data.pluginMessage || ['',''];
+  let info = messages[0];
+  let type = messages[1];
+  if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
+    info = JSON.parse(info);
+  }
+  if(ISWORK_TIME && info){
+    switch (type){
+      case 'selectInfo': reSelectInfo(info);break
+      case 'selectInfoMain': addTableText(tableObjToText(info));break
+      case 'selectComp': reSelectComp(info);break
+      case 'selectDatas': reSelectDatas(info);break
+      case 'exportImgInfo': addTag('export-img',info);break
+      case 'editorView': addEditorView(info);break
+      case 'styleInfo': reStyleInfo(info);break
+      case 'styleSheetInfo': reStyleSheetInfo(info);break
+      case 'variableInfo': reVariableInfo(info);break
+      case 'variableSheetInfo': reVariableSheetInfo(info);break
+      case 'editImage': editImage(info);break
+      case 'qrLayerView': addQRLayerView(info);break
+      case 'linkStyleInfo': reLinkStyleInfo(info);break
+      case 'styleGroupInfo': reStyleGroupInfo(info);break
+      case 'refreshExportImgInfo': refreshExportImgInfo(info);break
+    };
+  }
 });
 
 //动态变化公屏文案
@@ -582,8 +579,8 @@ function updateSelectInfoDisplay(info){
     const main = item.querySelector('[data-selects-info="main"]');
     const sec = item.querySelector('[data-selects-info="sec"]');
     const num = item.querySelector('[data-selects-info="num"]');
-    if (main) main.textContent = info[0][0];
-    if (sec) sec.textContent = info[1] ? info[1][0] : '';
+    if (main) main.textContent = info[0].n;
+    if (sec) sec.textContent = info[1] ? info[1].n : '';
     if (num) num.textContent = info.length;
   });
 };
@@ -1013,15 +1010,6 @@ DOM.btnResize.addEventListener('mousedown',(event)=>{
 });
 //打印所选对象
 document.getElementById('bottom').addEventListener('dblclick',()=>{
-  //仅管理员可用
-  // 首先检查是否登录
-  if(typeof AuthManager === 'undefined' || !AuthManager.currentUser){
-    return;
-  }
-  // 检查是否是管理员
-  if(!AuthManager.currentUser.isAdmin){
-    return;
-  }
   toolMessage(['','getnode'],PLUGINAPP)
 });
 //空内容提醒
@@ -2797,7 +2785,7 @@ DOM.applyThemeTableBtn.addEventListener('click',()=>{
   let option = getElementMix(`data-option-value="${theme}"`);
   theme = option ? option.getAttribute('data-en-text') : theme;
   let color = getElementMix('data-table-theme-color').getAttribute('data-color-hsl');
-  //console.log(theme,color)
+  console.log(theme,color)
   toolMessage([[[theme,color],'theme'],'reTable'],PLUGINAPP);
 });
 
@@ -2901,7 +2889,7 @@ DOM.skillStar.forEach(item =>{
         item.setAttribute('data-skill-star','false');
         cover.parentNode.insertBefore(skillNode,cover);
         userSkillStar = userSkillStar.filter(id => id !== skillId);
-        storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
+        storageMix.set('userSkillStar_mg',JSON.stringify(userSkillStar));
         cover.remove();
         reSkillNum();
       } else {
@@ -2911,7 +2899,7 @@ DOM.skillStar.forEach(item =>{
         }else{
           moveSkillStar([skillId]);
           userSkillStar.push(skillId);
-          storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
+          storageMix.set('userSkillStar_mg',JSON.stringify(userSkillStar));
         };
       };
     };
@@ -4638,7 +4626,7 @@ function getUserTab(node){
   let tabPick = node.getAttribute('data-tab-pick').split('tab_')[1]
   if(tabPick){
     if(typeof storageMix !== 'undefined' && storageMix && typeof storageMix.set === 'function'){
-      storageMix.set('tabPick',tabPick);
+      storageMix.set('tabPick_mg',tabPick);
     }
     if(tabPick == 'more tools'){
       toolMessage(['','selectInfo'],PLUGINAPP);

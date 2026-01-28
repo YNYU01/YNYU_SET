@@ -11,3 +11,6 @@ bundle.js
 tool_web/Html2zy/builds/
 tool_web/Html2zy/publics/
 tool_web/Html2zy/VI/
+
+# 主线程工程化重构目录（渐进式迁移，不上传）
+tool_plugin/core/

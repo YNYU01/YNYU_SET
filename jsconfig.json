@@ -1,5 +1,7 @@
 {
-  "typeAcquisition": {
-    "include": ["@figma/plugin-typings"]
+  "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
   }
 }

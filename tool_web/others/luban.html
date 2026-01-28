@@ -27,7 +27,7 @@
         }
         select, input, button {
             padding: 8px;
-            box-sizing: box-border;
+            box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
@@ -48,7 +48,6 @@
         
         .ruler-container {
             width: 100%;
-            max-width: 800px;
             overflow-x: auto;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -63,11 +62,17 @@
             position: relative;
             white-space: nowrap;
             width: max-content;
-            margin-left: 10px;
+            margin:20px 0 0 10px;
         }
-        
+        #ruler-title{
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-flow: column;
+            gap: 93px;
+        }
         .ruler-title{
-            padding-left: var(--lineleft,0);
             height: 20px;
             text-align: left;
             line-height: 20px;
@@ -118,7 +123,7 @@
         .marks-container {
             position: relative;
             height: 30px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
         .mark {
             position: absolute;
@@ -173,14 +178,15 @@
             <input type="number" id="inputLength" placeholder="输入尺寸 (cm)" min="0" step="0.1" value="6">
             <button onclick="queryLength()">查询</button>
         </div>
-
-
-        <div class="ruler-container" id="rulerContainer">
-            <div id="ruler" class="ruler"></div>
-            <div id="indicator" class="indicator" ></div>
+        <div style="position: relative;">
+            <div class="ruler-container" id="rulerContainer">
+                <div id="ruler" class="ruler"></div>
+                <div id="indicator" class="indicator" ></div>
+            </div>
+            <div id="ruler-title" class="ruler-title"></div>
         </div>
         
-        <div style="display:flex; flex-wrap: wrap; gap:10px; margin-top:10px; font-size: 12px; ">
+        <div style="display:flex; flex-flow: column; gap:10px; margin-top:10px; font-size: 12px; ">
             <li>
                 台湾/赣南尺又叫春秋尺，遵循古法或者客家流派的工匠常用，粤东地区也有用；
             </li>
@@ -217,6 +223,7 @@
         const inputLength = document.getElementById('inputLength');
         const rulerContainer = document.getElementById('rulerContainer');
         const ruler = document.getElementById('ruler');
+        const rulerTitle = document.getElementById('ruler-title');
         const indicator = document.getElementById('indicator');
 
         // 配置：增加每厘米像素值，确保小格子文字能显示全
@@ -241,7 +248,7 @@
           let title = document.createElement('div');
           title.className = "ruler-title"
           title.innerHTML = typetitle[type - 1];
-ruler.appendChild(title);
+          rulerTitle.appendChild(title);
             // 1. 生成大格子 (上层)
             const bigSegmentWidthPx = (unitLen / 8) * PX_PER_CM;
             for (let i = 0; i < TOTAL_CM * 8 / unitLen; i++) {

@@ -1,10 +1,10 @@
-<html data-plugin="fig" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
+<html data-plugin="mg" data-selects="true" data-selects-more="false" data-theme="none" data-language="Zh" data-mobile="false">
 <head>
   <meta charset="UTF-8">
   <meta name="description" content="网页内容简介，转发时显示">
-  <title data-en-text="『YNYU_SET』 ToolsSet Fig">『云即·工具集（Figma版）』</title>
+  <title data-en-text="『YNYU_SET』 ToolsSet Mg">『云即·工具集（Mastergo版）』</title>
   <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -14,12 +14,12 @@ if (!IS_PLUGIN_ENV) {
 
   window.addEventListener('load', () => {
 
-    const savedTabPick = storageMix.get('tabPick');
+    const savedTabPick = storageMix.get('tabPick_mg');
     if (savedTabPick && typeof viewPage === 'function') {
       viewPage(savedTabPick);
     }
 
-    const savedUserSkillStar = storageMix.get('userSkillStar');
+    const savedUserSkillStar = storageMix.get('userSkillStar_mg');
     if (savedUserSkillStar) {
       try {
         userSkillStar = JSON.parse(savedUserSkillStar);
@@ -34,59 +34,54 @@ if (!IS_PLUGIN_ENV) {
   });
 } else {
 
-  toolMessage(['tabPick','getlocal'],PLUGINAPP);
-  toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
+  toolMessage(['tabPick_mg','getlocal'],PLUGINAPP);
+  toolMessage(['userSkillStar_mg','getlocal'],PLUGINAPP);
 }
-toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
-toolMessage(['toolsSetFig_users','getlocal'],PLUGINAPP);
 
 window.addEventListener('message',(message)=>{
-  let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
-  if(!isPluginMessge){
-    let messages = message.data.pluginMessage.pluginMessage || ['',''];
-    let info = messages[0];
-    let type = messages[1];
-    if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
-      info = JSON.parse(info);
-    }
-    switch (type){
-      case 'userTheme': info == 'light' ? setTheme(true) : setTheme(false);break
-      case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
-      case 'userResize': reRootSize(info);break
-      case 'userInfo':
+  let messages = message.data.pluginMessage || ['',''];
+  let info = messages[0];
+  let type = messages[1];
+  if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
+    info = JSON.parse(info);
+  }
+  switch (type){
+    case 'userTheme': info == 'light' ? setTheme(true) : setTheme(false);break
+    case 'userLanguage': info == 'Zh' ? setLanguage(true) : setLanguage(false);break
+    case 'userResize': reRootSize(info);break
+    case 'userInfo':
 
-          let isLoggedIn = false;
-          if (info && info.name) {
-            const userName = info.name.trim();
-            isLoggedIn = userName !== '' && userName !== 'Anonymous' && userName !== '匿名';
-          }
-          const loginBtn = document.querySelector('[data-user-login-btn]');
-          if (loginBtn) loginBtn.style.display = isLoggedIn ? 'flex' : 'none';
-        break
-    };
-    if(ISWORK_TIME){
-      switch (type){
-        case 'tabPick': viewPage(info);break
-        case 'userSkillStar':userSkillStar = info || []; moveSkillStar(userSkillStar);break
-
-        case 'toolsSetFig_user':
-          if(typeof AuthManager !== 'undefined') {
-            AuthManager.setCurrentUser(info);
-            AuthManager.updateUI();
-
-            if(typeof State !== 'undefined') {
-              State.set('userInfo', info);
-            }
-          };
-        break
-        case 'toolsSetFig_users':
-          if(typeof AuthManager !== 'undefined') {
-            AuthManager.setUsersList(info);
-          };
-        break
-      };
-    }
+        let isLoggedIn = false;
+        if (info && info.name) {
+          const userName = info.name.trim();
+          isLoggedIn = userName !== '' && userName !== 'Anonymous' && userName !== '匿名';
+        }
+        const loginBtn = document.querySelector('[data-user-login-btn]');
+        if (loginBtn) loginBtn.style.display = isLoggedIn ? 'flex' : 'none';
+      break
   };
+  if(ISWORK_TIME){
+    switch (type){
+      case 'tabPick_mg': viewPage(info);break
+      case 'userSkillStar_mg':userSkillStar = info || []; moveSkillStar(userSkillStar);break
+
+      case 'toolsSetFig_user':
+        if(typeof AuthManager !== 'undefined') {
+          AuthManager.setCurrentUser(info);
+          AuthManager.updateUI();
+
+          if(typeof State !== 'undefined') {
+            State.set('userInfo', info);
+          }
+        };
+      break
+      case 'toolsSetFig_users':
+        if(typeof AuthManager !== 'undefined') {
+          AuthManager.setUsersList(info);
+        };
+      break
+    };
+  }
 });
 
 function toolMessage(data,app){
@@ -99,7 +94,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1786,6 +1781,15 @@ input[type="checkbox"]:checked + [for="fullimg"]{
   padding-left: 4px;
 }
 
+[for="setheme-intime"]{
+  --mainColor: var(--boxBod);
+}
+
+input[type="checkbox"]:checked + [for="setheme-intime"]{
+  --check: var(--code9);
+  --mainColor: #242424;
+}
+
 [for="export-more"]{
   transform: rotate(180deg) rotateX(45deg);
   background: var(--boxGry);
@@ -3144,14 +3148,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
         <div ></div>
         <div class="df-ffc gap8 ">
           <div class="df-ffc">
-            <!-- 用户登录入口 -->
-            <div data-user-login-btn class="df-cc" data-btn="help" style="cursor: pointer;">
-              <div data-user-name style="display: none;" data-en-text="USER">用户</div>
-              <div data-user-login-text data-en-text="LOG IN (Beta)">登录（测试）</div>
-              <div class="pad2 mar-l4 wh-16" style=" --fill:#2e2e2e;">
-                <btn-login></btn-login>
-              </div>
-            </div>
+            
             <a href="https://www.ynyuset.cn/preview_tools/help_toolsset" rel="noopener noreferrer" target="_blank" class="df-cc" data-btn="help">
               <div data-en-text="HELP DOC">帮助文档</div>
               <div class="wh-20" style=" --mainColor:#2e2e2e; --arrow-w:2; --arrow-ro: -45deg;">
@@ -3161,11 +3158,12 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
         </div>
           <!--版本信息-->
           <div data-version-info class="df-sc font-s10 op6" style="transform: skewX(-10deg);">
-            <a href="https://www.ynyuset.cn/preview_tools/help_toolsset?sec=log" rel="noopener noreferrer" target="_blank" class="df-lc">
+            <a href="https://www.ynyuset.cn/preview_tools/help_toolsset?sec=log" rel="noopener noreferrer" target="_blank" 
+            class="df-lc pointer style="color: var(--themeColor2);">
               <div>Version&nbsp;</div>
-              <div data-version-text>--</div>
+              <div data-version-text>0.1.3</div>
             </a>
-            <div data-version-time>--</div>
+            <div data-version-time>2026-01-25</div>
           </div>
         </div>
       </div>
@@ -3621,7 +3619,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 </div>
                 ▶ 
               </div>
-              <div class="df-lc data-scroll ovx noscrollbar gap6" data-scroll data-radio-value="style">
+              <div class="df-lc ovx noscrollbar gap6" data-scroll data-radio-value="style">
                 <div class="fl0 df-lc" data-radio data-radio-data="style" data-radio-main="true">
                   <div data-variable-chk>
                     <btn-style></btn-style>
@@ -4119,6 +4117,20 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
             </div>
             <div class="w100 df-cc gap2" style="margin: 4px 0 4px 0;">
               <div data-setheme-table class="w100 df-cc" data-btn="main2" data-en-text="Apply Theme">应用主题</div>
+              <div class="df-cc pos-r" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
+              data-tips-text="实时应用" data-tips-text-en="Apply real-time">
+                <input type="checkbox" id="setheme-intime" />
+                <label for="setheme-intime" class="check">
+                  <div class="df-cc wh-20 bod-r4" data-btn data-setheme-intime
+                   style="background: var(--check,transparent);">
+                    <svg width="100%" height="100%" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke="var(--bod,var(--mainColor))" d="M3.62775 3.99177C5.29058 1.78712 8.42578 1.34789 10.6304 3.01071C12.8351 4.67353 13.2743 7.80874 11.6115 10.0134C9.94867 12.218 6.81346 12.6573 4.60881 10.9945C3.34699 10.0427 2.66348 8.60869 2.62141 7.14286" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path stroke="var(--bod,var(--mainColor))" d="M3.19662 1.83858L3.39969 4.30505" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path stroke="var(--bod,var(--mainColor))" d="M7.1411 5L7 7.47079L9.45857 7.66005" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                      
+                  </div>
+                </label>
+              </div>
             </div>
             <!--步骤3-->
             <div class="w100 df-lc op6"  style="padding:10px 0 4px 0; vertical-align: baseline;"> 
@@ -5144,7 +5156,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                             </div>
                           </label>
                         </div>
-                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/tool_web/SVdG/index.html" target="_blank">
+                        <a class="df-cc pointer" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/tool_web/SVdG/index.html" target="_blank">
                           <div data-autobod-name data-en-text="Custom >" style="text-decoration: underline;">自定义></div>
                         </a>
                       </div>
@@ -5205,7 +5217,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   </div>
   <!--底部-->
   <div id="bottom" class="df-sc w100 pos-a">
-    <div data-scroll class="df noscrollbar" data-tab="auto" data-tab-for="page" style="padding: 6px 4px;">
+    <div data-scroll="false" class="df noscrollbar" data-tab="auto" data-tab-for="page" style="padding: 6px 4px;">
       <!--自动填充tab-->
     </div>
     <div data-mainset-bottom class="df-lc gap4 mar-l2">
@@ -5239,23 +5251,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/other/jsQR_correct.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/other/jsQR_correct.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@e8616dff812283285fba6735df0ce8727ded556a/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@df2feadf33c8d50b00f8fe483530283fbd18d490/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -5794,9 +5806,10 @@ function revokeImageObjectURL(url){
   }
 };
 
+let tabs = ['create','export','editor','variable','sheet','more tools']
+
 window.addEventListener('load',()=>{
   let time = getTime('HH')[0];
-  let tabs = ['create','export','editor','variable','sheet','more tools']
 
   if(QUERY_PARAMS.page){
     let page = QUERY_PARAMS.page.toLowerCase().replace('_',' ');
@@ -5883,34 +5896,31 @@ window.addEventListener('resize',debounce(()=>{
 }, DELAY.DEBOUNCE, true));
 
 window.addEventListener('message',(message)=>{
-  let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
-  if(!isPluginMessge){
-    let messages = message.data.pluginMessage.pluginMessage || ['',''];
-    let info = messages[0];
-    let type = messages[1];
-    if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
-      info = JSON.parse(info);
-    }
-    if(ISWORK_TIME && info){
-      switch (type){
-        case 'selectInfo': reSelectInfo(info);break
-        case 'selectInfoMain': addTableText(tableObjToText(info));break
-        case 'selectComp': reSelectComp(info);break
-        case 'selectDatas': reSelectDatas(info);break
-        case 'exportImgInfo': addTag('export-img',info);break
-        case 'editorView': addEditorView(info);break
-        case 'styleInfo': reStyleInfo(info);break
-        case 'styleSheetInfo': reStyleSheetInfo(info);break
-        case 'variableInfo': reVariableInfo(info);break
-        case 'variableSheetInfo': reVariableSheetInfo(info);break
-        case 'editImage': editImage(info);break
-        case 'qrLayerView': addQRLayerView(info);break
-        case 'linkStyleInfo': reLinkStyleInfo(info);break
-        case 'styleGroupInfo': reStyleGroupInfo(info);break
-        case 'refreshExportImgInfo': refreshExportImgInfo(info);break
-      };
-    }
-  };
+  let messages = message.data.pluginMessage || ['',''];
+  let info = messages[0];
+  let type = messages[1];
+  if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
+    info = JSON.parse(info);
+  }
+  if(ISWORK_TIME && info){
+    switch (type){
+      case 'selectInfo': reSelectInfo(info);break
+      case 'selectInfoMain': addTableText(tableObjToText(info));break
+      case 'selectComp': reSelectComp(info);break
+      case 'selectDatas': reSelectDatas(info);break
+      case 'exportImgInfo': addTag('export-img',info);break
+      case 'editorView': addEditorView(info);break
+      case 'styleInfo': reStyleInfo(info);break
+      case 'styleSheetInfo': reStyleSheetInfo(info);break
+      case 'variableInfo': reVariableInfo(info);break
+      case 'variableSheetInfo': reVariableSheetInfo(info);break
+      case 'editImage': editImage(info);break
+      case 'qrLayerView': addQRLayerView(info);break
+      case 'linkStyleInfo': reLinkStyleInfo(info);break
+      case 'styleGroupInfo': reStyleGroupInfo(info);break
+      case 'refreshExportImgInfo': refreshExportImgInfo(info);break
+    };
+  }
 });
 
 function addToUserTips(kind){
@@ -5989,8 +5999,8 @@ function updateSelectInfoDisplay(info){
     const main = item.querySelector('[data-selects-info="main"]');
     const sec = item.querySelector('[data-selects-info="sec"]');
     const num = item.querySelector('[data-selects-info="num"]');
-    if (main) main.textContent = info[0][0];
-    if (sec) sec.textContent = info[1] ? info[1][0] : '';
+    if (main) main.textContent = info[0].n;
+    if (sec) sec.textContent = info[1] ? info[1].n : '';
     if (num) num.textContent = info.length;
   });
 };
@@ -6154,7 +6164,7 @@ function addSearchs(){
       let viewskill = getElementMix('data-page-id="page"').querySelector(`[data-en-text="${list.name[1]}"]`);
       if(!viewskill) viewskill = getElementMix('data-page-id="page"').querySelector(`[data-tips-text-en="${list.name[1]}"]`);
       if(!viewskill) return;
-      viewskill.scrollIntoView({behavior:"smooth",block: "center"});
+      viewskill.scrollIntoView({behavior:"smooth",block: "nearest",inline: "nearest"});
       setTimeout(()=>{
         addFindBox(viewskill,list);
       },500);
@@ -6397,14 +6407,6 @@ DOM.btnResize.addEventListener('mousedown',(event)=>{
 });
 
 document.getElementById('bottom').addEventListener('dblclick',()=>{
-
-  if(typeof AuthManager === 'undefined' || !AuthManager.currentUser){
-    return;
-  }
-
-  if(!AuthManager.currentUser.isAdmin){
-    return;
-  }
   toolMessage(['','getnode'],PLUGINAPP)
 });
 
@@ -8094,7 +8096,7 @@ DOM.applyThemeTableBtn.addEventListener('click',()=>{
   let option = getElementMix(`data-option-value="${theme}"`);
   theme = option ? option.getAttribute('data-en-text') : theme;
   let color = getElementMix('data-table-theme-color').getAttribute('data-color-hsl');
-
+  console.log(theme,color)
   toolMessage([[[theme,color],'theme'],'reTable'],PLUGINAPP);
 });
 
@@ -8198,7 +8200,7 @@ DOM.skillStar.forEach(item =>{
         item.setAttribute('data-skill-star','false');
         cover.parentNode.insertBefore(skillNode,cover);
         userSkillStar = userSkillStar.filter(id => id !== skillId);
-        storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
+        storageMix.set('userSkillStar_mg',JSON.stringify(userSkillStar));
         cover.remove();
         reSkillNum();
       } else {
@@ -8208,8 +8210,7 @@ DOM.skillStar.forEach(item =>{
         }else{
           moveSkillStar([skillId]);
           userSkillStar.push(skillId);
-          storageMix.set('userSkillStar',JSON.stringify(userSkillStar));
-
+          storageMix.set('userSkillStar_mg',JSON.stringify(userSkillStar));
         };
       };
     };
@@ -9744,7 +9745,7 @@ function getUserTab(node){
   let tabPick = node.getAttribute('data-tab-pick').split('tab_')[1]
   if(tabPick){
     if(typeof storageMix !== 'undefined' && storageMix && typeof storageMix.set === 'function'){
-      storageMix.set('tabPick',tabPick);
+      storageMix.set('tabPick_mg',tabPick);
     }
     if(tabPick == 'more tools'){
       toolMessage(['','selectInfo'],PLUGINAPP);
@@ -9761,6 +9762,15 @@ function getUserColor(node){
   }
   if(node.parentNode.getAttribute('data-color-mix') !== null){
     DOM.editorViewbox.style.setProperty('--bg',color.HEX);
+  }
+  if(node.getAttribute('data-table-theme-color') !== null){
+    let intime = getElementMix('setheme-intime');
+    if(intime.checked){
+      let theme = getElementMix('data-table-theme').getAttribute('data-select-value');
+      let option = getElementMix(`data-option-value="${theme}"`);
+      theme = option ? option.getAttribute('data-en-text') : theme;
+      toolMessage([[[theme,color.HSL],'theme'],'reTable'],PLUGINAPP);
+    }
   }
 
 };
@@ -9919,6 +9929,16 @@ function getUserSelect(node){
     realSize.setAttribute('data-export-realsize','');
     realSize.nextElementSibling.textContent = '10';
   };
+  if(node.getAttribute('data-table-theme') !== null){
+    let intime = getElementMix('setheme-intime');
+    if(intime.checked){
+      let theme = userSelect;
+      let option = getElementMix(`data-option-value="${theme}"`);
+      theme = option ? option.getAttribute('data-en-text') : theme;
+      let color = getElementMix('data-table-theme-color').getAttribute('data-color-hsl');
+      toolMessage([[[theme,color],'theme'],'reTable'],PLUGINAPP);
+    }
+  }
 };
 
 function getUserRadio(node){
@@ -9945,7 +9965,7 @@ function getUserRadio(node){
       if(State.get('isSkillScroll')){
         skillnode.scrollIntoView({
           behavior: 'smooth',
-          block: 'center',
+          block: 'nearest',
           inline: 'nearest',
         });
       };
@@ -10341,1466 +10361,6 @@ function createPaintStyle(){
   if(styleAll.length === 0) return;
   toolMessage([styleAll,'createPaintStyle'],PLUGINAPP);
 };
-
-  
-
-
-function getAuthText(key, ...args) {
-  const lang = getLanguageIntime() || 'zh';
-  const langMap = AUTH_I18N[lang] || AUTH_I18N.zh;
-  let text = langMap[key] || key;
-
-  if (args && args.length > 0) {
-    args.forEach((arg, index) => {
-      text = text.replace(`{${index}}`, arg);
-    });
-  }
-
-  return text;
-}
-
-const AuthStorage = {
-
-  get(key) {
-    if (!PLUGINAPP) {
-
-      try {
-        const stored = localStorage.getItem(key);
-        return stored ? JSON.parse(stored) : null;
-      } catch (e) {
-        return null;
-      }
-    }
-
-    return null;
-  },
-
-  set(key, value) {
-    if (PLUGINAPP) {
-
-      toolMessage([[key, value], 'setlocal'], PLUGINAPP);
-    } else {
-
-      try {
-        localStorage.setItem(key, JSON.stringify(value));
-      } catch (e) {
-        console.error('Failed to save to localStorage:', e);
-      }
-    }
-  },
-
-  remove(key) {
-    if (PLUGINAPP) {
-
-      toolMessage([[key, null], 'setlocal'], PLUGINAPP);
-    } else {
-
-      try {
-        localStorage.removeItem(key);
-      } catch (e) {
-        console.error('Failed to remove from localStorage:', e);
-      }
-    }
-  }
-};
-
-let supabaseClient = null;
-function initSupabaseClient() {
-  if (AUTH_CONFIG.USE_SUPABASE) {
-
-    if (typeof supabase !== 'undefined' && supabase.createClient) {
-      try {
-        supabaseClient = supabase.createClient(
-          AUTH_CONFIG.SUPABASE_URL,
-          AUTH_CONFIG.SUPABASE_ANON_KEY
-        );
-        return true;
-      } catch (e) {
-        console.error('Failed to initialize Supabase:', e);
-        return false;
-      }
-    } else {
-      console.warn('Supabase SDK not loaded');
-      return false;
-    }
-  }
-  return false;
-}
-
-function tryInitSupabase() {
-  if (AUTH_CONFIG.USE_SUPABASE && !supabaseClient) {
-
-    if (typeof supabase !== 'undefined' && supabase.createClient) {
-      return initSupabaseClient();
-    } else {
-
-      let retries = 0;
-      const maxRetries = 5;
-      const checkInterval = setInterval(() => {
-        retries++;
-        if (typeof supabase !== 'undefined' && supabase.createClient) {
-          clearInterval(checkInterval);
-          initSupabaseClient();
-        } else if (retries >= maxRetries) {
-          clearInterval(checkInterval);
-          console.error('Supabase SDK failed to load after multiple retries');
-        }
-      }, 200);
-    }
-  }
-}
-
-var AuthManager = {
-  currentUser: null,
-  usersList: [],
-  refreshTimer: null,
-
-  setCurrentUser(user) {
-    this.currentUser = user;
-
-    if (typeof State !== 'undefined') {
-      State.set('userInfo', user);
-    }
-
-    if (AUTH_CONFIG.USE_SUPABASE && supabaseClient && user && user.id) {
-      this.refreshUserProfile();
-      this.startRefreshTimer();
-    } else {
-
-      this.stopRefreshTimer();
-    }
-  },
-
-  async refreshUserProfile() {
-    if (!AUTH_CONFIG.USE_SUPABASE || !supabaseClient || !this.currentUser) {
-      return;
-    }
-
-    try {
-
-      const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
-      if (sessionError || !session?.user || session.user.id !== this.currentUser.id) {
-
-        this.stopRefreshTimer();
-        return;
-      }
-
-      const { data: profileData, error: profileError } = await supabaseClient
-        .from('user_profiles')
-        .select('username,is_premium,is_admin')
-        .eq('id', this.currentUser.id)
-        .maybeSingle();
-
-      if (profileError) {
-        console.warn('Failed to refresh user profile:', profileError);
-        return;
-      }
-
-      if (profileData) {
-
-        const updatedUser = {
-          ...this.currentUser,
-          username: profileData.username || this.currentUser.username,
-          isPremium: profileData.is_premium || false,
-          isAdmin: profileData.is_admin || false
-        };
-
-        const hasChanges =
-          this.currentUser.isPremium !== updatedUser.isPremium ||
-          this.currentUser.isAdmin !== updatedUser.isAdmin ||
-          this.currentUser.username !== updatedUser.username;
-
-        if (hasChanges) {
-          this.currentUser = updatedUser;
-          AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
-
-          if (typeof State !== 'undefined') {
-            State.set('userInfo', this.currentUser);
-          }
-
-          this.updateUI();
-        }
-      }
-    } catch (e) {
-      console.warn('Failed to refresh user profile:', e);
-    }
-  },
-
-  startRefreshTimer() {
-
-    this.stopRefreshTimer();
-
-    if (!AUTH_CONFIG.USE_SUPABASE || !supabaseClient || !this.currentUser) {
-      return;
-    }
-
-    this.refreshTimer = setInterval(() => {
-      this.refreshUserProfile();
-    }, 5 * 60 * 1000);
-  },
-
-  stopRefreshTimer() {
-    if (this.refreshTimer) {
-      clearInterval(this.refreshTimer);
-      this.refreshTimer = null;
-    }
-  },
-
-  setUsersList(users) {
-    this.usersList = users || [];
-  },
-
-  async init() {
-    try {
-
-      if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
-        try {
-          const { data: { session }, error } = await supabaseClient.auth.getSession();
-          if (!error && session?.user) {
-
-            const cachedUser = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USER);
-            if (cachedUser && cachedUser.id === session.user.id) {
-              this.currentUser = cachedUser;
-              this.updateUI();
-            }
-
-            let profile = null;
-            try {
-              const { data: profileData, error: profileError } = await supabaseClient
-                .from('user_profiles')
-                .select('username,is_premium,is_admin')
-                .eq('id', session.user.id)
-                .maybeSingle();
-
-              if (profileError) {
-                console.warn('Failed to fetch user profile in init:', profileError.message);
-
-                if (!this.currentUser && cachedUser) {
-                  this.currentUser = cachedUser;
-                  this.updateUI();
-                }
-                return;
-              } else if (profileData) {
-                profile = profileData;
-              }
-            } catch (e) {
-              console.warn('Failed to fetch user profile in init:', e);
-
-              if (!this.currentUser && cachedUser) {
-                this.currentUser = cachedUser;
-                this.updateUI();
-              }
-              return;
-            }
-
-            const updatedUser = {
-              id: session.user.id,
-              email: session.user.email,
-              username: profile?.username || session.user.email.split('@')[0],
-              isPremium: profile?.is_premium || false,
-              isAdmin: profile?.is_admin || false
-            };
-
-            const hasChanges = !this.currentUser ||
-              this.currentUser.isPremium !== updatedUser.isPremium ||
-              this.currentUser.isAdmin !== updatedUser.isAdmin ||
-              this.currentUser.username !== updatedUser.username;
-
-            this.currentUser = updatedUser;
-            AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
-
-            if (hasChanges) {
-              this.updateUI();
-            }
-
-            this.startRefreshTimer();
-            return;
-          }
-        } catch (e) {
-          console.warn('Supabase session check failed:', e);
-        }
-      }
-
-      if (!PLUGINAPP) {
-        const user = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USER);
-        if (user) {
-          this.currentUser = user;
-          this.updateUI();
-        }
-        const users = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USERS);
-        if (users) {
-          this.usersList = users;
-        }
-      }
-
-    } catch (e) {
-      console.error('Failed to load user data:', e);
-    }
-  },
-
-  validateUsername(username) {
-    if (!username) {
-      return {
-        valid: false,
-        error: AUTH_I18N.zh.usernameTooShort,
-        errorEn: AUTH_I18N.en.usernameTooShort
-      };
-    }
-
-    if (/^\d+$/.test(username) || /^-+$/.test(username)) {
-      return {
-        valid: false,
-        error: AUTH_I18N.zh.usernameInvalidChars,
-        errorEn: AUTH_I18N.en.usernameInvalidChars
-      };
-    }
-    const usernameRegex = /^[a-zA-Z0-9_-]{2,20}$/;
-    if (!usernameRegex.test(username)) {
-      if (username.length < 2 || username.length > 20) {
-        return {
-          valid: false,
-          error: AUTH_I18N.zh.usernameInvalidLength,
-          errorEn: AUTH_I18N.en.usernameInvalidLength
-        };
-      }
-      return {
-        valid: false,
-        error: AUTH_I18N.zh.usernameInvalidChars,
-        errorEn: AUTH_I18N.en.usernameInvalidChars
-      };
-    }
-    return { valid: true };
-  },
-
-  validatePassword(password) {
-    if (!password) {
-      return {
-        valid: false,
-        error: AUTH_I18N.zh.passwordTooShort,
-        errorEn: AUTH_I18N.en.passwordTooShort
-      };
-    }
-
-    const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{6,50}$/;
-    if (!passwordRegex.test(password)) {
-      if (password.length < 6 || password.length > 50) {
-        return {
-          valid: false,
-          error: AUTH_I18N.zh.passwordInvalidLength,
-          errorEn: AUTH_I18N.en.passwordInvalidLength
-        };
-      }
-      return {
-        valid: false,
-        error: AUTH_I18N.zh.passwordInvalidChars,
-        errorEn: AUTH_I18N.en.passwordInvalidChars
-      };
-    }
-    return { valid: true };
-  },
-
-  async register(email, username, password) {
-
-    if (!email || !email.includes('@')) {
-      return { success: false, error: getAuthText('invalidEmail') };
-    }
-
-    const usernameValidation = this.validateUsername(username);
-    if (!usernameValidation.valid) {
-      return { success: false, error: usernameValidation.error };
-    }
-
-    const passwordValidation = this.validatePassword(password);
-    if (!passwordValidation.valid) {
-      return { success: false, error: passwordValidation.error };
-    }
-
-    if (AUTH_CONFIG.USE_SUPABASE) {
-
-      if (!supabaseClient) {
-        const initResult = tryInitSupabase();
-
-        await new Promise(resolve => setTimeout(resolve, 100));
-
-        if (!supabaseClient) {
-          console.error('Supabase client initialization failed');
-          return { success: false, error: getAuthText('supabaseNotInitialized') };
-        }
-      }
-
-      try {
-
-        const { data, error } = await supabaseClient.auth.signUp({
-          email: email,
-          password: password,
-          options: {
-            data: {
-              username: username
-            },
-          }
-        });
-
-        if (error) {
-          console.error('Supabase registration error:', error.message);
-
-          let errorMsg = error.message;
-
-          const isAlreadyRegistered =
-            error.message?.toLowerCase().includes('already registered') ||
-            error.message?.toLowerCase().includes('user already registered') ||
-            error.message?.toLowerCase().includes('email already registered') ||
-            error.status === 422 && error.message?.toLowerCase().includes('exists') ||
-            error.code === '23505' ||
-            error.message?.toLowerCase().includes('duplicate') ||
-            error.message?.toLowerCase().includes('already exists');
-
-          if (isAlreadyRegistered) {
-            errorMsg = getAuthText('emailAlreadyRegistered');
-          } else if (error.status === 429 || error.code === 'over_email_send_rate_limit') {
-
-            const waitTime = error.message.match(/(\d+)\s*seconds?/i)?.[1] || '7';
-            errorMsg = getAuthText('rateLimitError', waitTime);
-          } else if (error.message?.toLowerCase().includes('invalid')) {
-            errorMsg = getAuthText('invalidEmailFormat');
-          } else {
-
-            errorMsg = getAuthText('registrationFailed', error.message || getAuthText('unknownError'));
-          }
-          return { success: false, error: errorMsg };
-        }
-
-        if (!data.user) {
-          return { success: false, error: getAuthText('registrationFailedRetry') };
-        }
-
-        const now = new Date();
-        const createdAt = data.user.created_at ? new Date(data.user.created_at) : null;
-        const timeDiff = createdAt ? (now - createdAt) / 1000 : null; // 秒
-        const { data: { session } } = await supabaseClient.auth.getSession();
-
-        try {
-          const { data: existingProfile } = await supabaseClient
-            .from('user_profiles')
-            .select('id')
-            .eq('id', data.user.id)
-            .maybeSingle();
-
-          if (existingProfile) {
-            if (session) await supabaseClient.auth.signOut();
-            return { success: false, error: getAuthText('emailAlreadyRegistered') };
-          }
-        } catch (e) {
-
-        }
-
-        if (timeDiff !== null && timeDiff > 10) {
-          if (session) await supabaseClient.auth.signOut();
-          return { success: false, error: getAuthText('emailAlreadyRegistered') };
-        }
-
-        if (data.user.email_confirmed_at && timeDiff !== null && timeDiff > 3) {
-          if (session) await supabaseClient.auth.signOut();
-          return { success: false, error: getAuthText('emailAlreadyRegistered') };
-        }
-
-        if (data.user.last_sign_in_at && timeDiff !== null && timeDiff > 5) {
-          const lastSignIn = new Date(data.user.last_sign_in_at);
-          if ((now - lastSignIn) / 1000 > 5) {
-            if (session) await supabaseClient.auth.signOut();
-            return { success: false, error: getAuthText('emailAlreadyRegistered') };
-          }
-        }
-
-        if (session) {
-          try {
-              const { data: profileData, error: profileError } = await supabaseClient
-                .from('user_profiles')
-                .insert({
-                  id: data.user.id,
-                  username: username,
-                  is_premium: false,
-                  is_admin: false
-                })
-                .select()
-                .single();
-
-            if (profileError) {
-              console.error('Failed to create user profile:', profileError);
-
-              const isDuplicateError =
-                profileError.code === '23505' ||
-                profileError.message?.toLowerCase().includes('duplicate') ||
-                profileError.message?.toLowerCase().includes('already exists') ||
-                profileError.message?.toLowerCase().includes('unique constraint');
-
-              if (isDuplicateError) {
-
-                await supabaseClient.auth.signOut();
-                return { success: false, error: getAuthText('emailAlreadyRegistered') };
-              }
-
-            }
-          } catch (e) {
-            console.error('User profile creation failed:', e);
-
-          }
-        } else {
-
-        }
-
-        this.currentUser = {
-          id: data.user.id,
-          email: data.user.email,
-          username: username,
-          isPremium: false,
-          isAdmin: false
-        };
-
-        if (session) {
-          AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
-          this.updateUI();
-          return { success: true, user: this.currentUser };
-        } else {
-
-          return {
-            success: true,
-            user: this.currentUser,
-            needsConfirmation: true,
-            message: getAuthText('registrationSuccess')
-          };
-        }
-      } catch (e) {
-        console.error('Supabase registration failed:', e);
-        return { success: false, error: getAuthText('registrationFailedRetry') };
-      }
-    }
-
-    if (AUTH_CONFIG.USE_SUPABASE) {
-
-      return { success: false, error: getAuthText('registrationFailedConfig') };
-    }
-
-    const existingUsers = this.getUsersList();
-    if (existingUsers && existingUsers.length > 0 && existingUsers.find(u => u.email === email)) {
-      return { success: false, error: getAuthText('emailAlreadyRegisteredLocal') };
-    }
-
-    const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    const user = {
-      id: userId,
-      email: email,
-      username: username,
-      password: this.hashPassword(password),
-      createdAt: new Date().toISOString(),
-      isPremium: false,
-      isAdmin: false
-    };
-
-    existingUsers.push(user);
-    this.usersList = existingUsers;
-    AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USERS, existingUsers);
-
-    this.currentUser = { ...user };
-    delete this.currentUser.password;
-    AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
-
-    this.updateUI();
-    return { success: true, user: this.currentUser };
-  },
-
-  async login(email, password) {
-    if (!email || !password) {
-      return { success: false, error: getAuthText('enterEmailPassword') };
-    }
-
-    if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
-      try {
-
-        if (!email || !email.includes('@') || !email.includes('.')) {
-          return { success: false, error: getAuthText('invalidEmailFormat') || '邮箱格式不正确' };
-        }
-
-        if (!password || password.trim() === '') {
-          return { success: false, error: getAuthText('enterEmailPassword') || '请输入邮箱和密码' };
-        }
-
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-          email: email.trim(),
-          password: password
-        });
-
-        if (error) {
-
-          console.error('Supabase login error:', {
-            message: error.message,
-            status: error.status,
-            code: error.code
-          });
-
-          let errorMessage = getAuthText('emailPasswordIncorrect');
-
-          if (error.code === 'email_not_confirmed') {
-            errorMessage = getAuthText('emailNotConfirmed') || '邮箱未确认，请检查邮箱并点击确认链接';
-
-            const resendLink = document.querySelector('[data-resend-email-link]');
-            if (resendLink) {
-              resendLink.style.display = 'block';
-              resendLink.onclick = async () => {
-                const emailInput = document.getElementById('login-email');
-                if (emailInput && emailInput.value) {
-                  const result = await AuthManager.resendConfirmationEmail(emailInput.value);
-                  if (result.success) {
-                    AuthManager.showError('login', result.message);
-                    resendLink.style.display = 'none';
-                  } else {
-                    AuthManager.showError('login', result.error);
-                  }
-                }
-              };
-            }
-          } else if (error.code === 'invalid_credentials') {
-            errorMessage = getAuthText('emailPasswordIncorrect') || '邮箱或密码错误，请检查后重试';
-          } else if (error.message) {
-            const errorMsg = error.message.toLowerCase();
-            if (errorMsg.includes('invalid login credentials') || errorMsg.includes('invalid_credentials')) {
-              errorMessage = getAuthText('emailPasswordIncorrect') || '邮箱或密码错误，请检查后重试';
-            } else if (errorMsg.includes('email not confirmed')) {
-              errorMessage = getAuthText('emailNotConfirmed') || '邮箱未确认，请检查邮箱并点击确认链接';
-            } else if (errorMsg.includes('email')) {
-              errorMessage = getAuthText('invalidEmailFormat') || '邮箱格式不正确';
-            } else if (errorMsg.includes('password')) {
-              errorMessage = '密码错误';
-            } else {
-
-              errorMessage = error.message || getAuthText('loginFailedRetry') || '登录失败，请重试';
-            }
-          }
-
-          return { success: false, error: errorMessage };
-        }
-
-        if (!data.user) {
-          return { success: false, error: getAuthText('loginFailedRetry') };
-        }
-
-        let profile = null;
-        try {
-
-          const { data: profileData, error: profileError } = await supabaseClient
-            .from('user_profiles')
-            .select('username,is_premium,is_admin')
-            .eq('id', data.user.id)
-            .maybeSingle();
-
-          if (profileError) {
-            console.warn('Failed to fetch user profile:', profileError.message);
-
-          } else if (profileData) {
-            profile = profileData;
-          } else {
-
-            try {
-              const { data: newProfileData, error: createError } = await supabaseClient
-                .from('user_profiles')
-                .insert({
-                  id: data.user.id,
-                  username: data.user.email.split('@')[0],
-                  is_premium: false,
-                  is_admin: false
-                })
-                .select()
-                .maybeSingle();
-
-              if (!createError && newProfileData) {
-                profile = newProfileData;
-              } else if (createError) {
-                console.warn('Failed to create user profile during login:', createError);
-              }
-            } catch (e) {
-              console.warn('Exception while creating user profile during login:', e);
-            }
-          }
-        } catch (e) {
-          console.warn('Failed to fetch user profile:', e);
-        }
-
-        this.currentUser = {
-          id: data.user.id,
-          email: data.user.email,
-          username: profile?.username || data.user.email.split('@')[0],
-          isPremium: profile?.is_premium || false,
-          isAdmin: profile?.is_admin || false
-        };
-
-        AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
-        this.updateUI();
-
-        this.startRefreshTimer();
-
-        return { success: true, user: this.currentUser };
-      } catch (e) {
-        console.error('Supabase login failed:', e);
-        return { success: false, error: getAuthText('loginFailedRetry') };
-      }
-    }
-
-    const existingUsers = this.getUsersList();
-    const user = existingUsers.find(u => u.email === email);
-
-    if (!user) {
-      return { success: false, error: getAuthText('emailPasswordIncorrect') };
-    }
-
-    if (!this.verifyPassword(password, user.password)) {
-      return { success: false, error: getAuthText('emailPasswordIncorrect') };
-    }
-
-    this.currentUser = { ...user };
-    delete this.currentUser.password;
-    AuthStorage.set(AUTH_CONFIG.STORAGE_KEY_USER, this.currentUser);
-
-    this.updateUI();
-    return { success: true, user: this.currentUser };
-  },
-
-  async logout() {
-
-    if (AUTH_CONFIG.USE_SUPABASE && supabaseClient) {
-      try {
-        await supabaseClient.auth.signOut();
-      } catch (e) {
-        console.warn('Supabase sign out failed:', e);
-      }
-    }
-
-    this.stopRefreshTimer();
-
-    this.currentUser = null;
-    AuthStorage.remove(AUTH_CONFIG.STORAGE_KEY_USER);
-    this.updateUI();
-    this.showLoginForm();
-  },
-
-  clearLocalCache() {
-    this.currentUser = null;
-    this.usersList = [];
-
-    AuthStorage.remove(AUTH_CONFIG.STORAGE_KEY_USER);
-    AuthStorage.remove(AUTH_CONFIG.STORAGE_KEY_USERS);
-
-    if (typeof localStorage !== 'undefined') {
-      try {
-        localStorage.removeItem(AUTH_CONFIG.STORAGE_KEY_USER);
-        localStorage.removeItem(AUTH_CONFIG.STORAGE_KEY_USERS);
-      } catch (e) {
-        console.warn('Failed to clear localStorage:', e);
-      }
-    }
-    this.updateUI();
-  },
-
-  getUsersList() {
-    if (this.usersList.length > 0 || PLUGINAPP) {
-      return this.usersList;
-    }
-
-    const users = AuthStorage.get(AUTH_CONFIG.STORAGE_KEY_USERS);
-    this.usersList = users || [];
-    return this.usersList;
-  },
-
-  hashPassword(password, salt = null) {
-
-    const defaultSalt = 'ynyuset_toolsetfig_2024';
-    const usedSalt = salt || defaultSalt;
-
-    const saltedPassword = password + usedSalt + password.length;
-
-    let hash = 5381;
-    for (let i = 0; i < saltedPassword.length; i++) {
-      const char = saltedPassword.charCodeAt(i);
-      hash = ((hash << 5) + hash) + char;
-    }
-
-    const hashStr = Math.abs(hash).toString(36);
-    let secondHash = 0;
-    for (let i = 0; i < hashStr.length; i++) {
-      secondHash = ((secondHash << 5) - secondHash) + hashStr.charCodeAt(i);
-      secondHash = secondHash & secondHash;
-    }
-
-    return `h_${Math.abs(secondHash).toString(36)}_${hashStr}`;
-  },
-
-  verifyPassword(password, storedHash) {
-    if (!password || !storedHash) {
-      return false;
-    }
-
-    if (storedHash.startsWith('h_')) {
-      return storedHash === this.hashPassword(password);
-    }
-
-    let hash = 0;
-    for (let i = 0; i < password.length; i++) {
-      const char = password.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash;
-    }
-    return storedHash === hash.toString();
-  },
-
-  updateUI() {
-    const loginBtn = document.querySelector('[data-user-login-btn]');
-    const userName = document.querySelector('[data-user-name]');
-    const loginText = document.querySelector('[data-user-login-text]');
-
-    if (this.currentUser) {
-
-      if (userName) userName.style.display = 'flex';
-      if (loginText) loginText.style.display = 'none';
-
-      let [username,emailname] = [this.currentUser.username,this.currentUser.email.split('@')[0]];
-
-      if (userName) {
-        let displayName = username || emailname;
-        displayName = displayName.length > 8 ? displayName.substring(0, 8) + '...' : displayName;
-        userName.setAttribute('data-en-text',displayName);
-        userName.setAttribute('data-zh-text',displayName);
-        userName.textContent = displayName;
-      }
-    } else {
-
-      if (userName) userName.style.display = 'none';
-      if (loginText) loginText.style.display = 'block';
-    }
-  },
-
-  showLoginForm() {
-    const loginForm = document.querySelector('[data-login-form]');
-    const registerForm = document.querySelector('[data-register-form]');
-    const userInfo = document.querySelector('[data-user-info]');
-
-    if (loginForm) loginForm.style.display = 'flex';
-    if (registerForm) registerForm.style.display = 'none';
-    if (userInfo) userInfo.style.display = 'none';
-
-    const loginEmail = document.getElementById('login-email');
-    const loginPassword = document.getElementById('login-password');
-    if (loginEmail) loginEmail.value = '';
-    if (loginPassword) loginPassword.value = '';
-    this.hideError('login');
-
-    const resendLink = document.querySelector('[data-resend-email-link]');
-    if (resendLink) resendLink.style.display = 'none';
-  },
-
-  showRegisterForm() {
-    const loginForm = document.querySelector('[data-login-form]');
-    const registerForm = document.querySelector('[data-register-form]');
-    const userInfo = document.querySelector('[data-user-info]');
-
-    if (loginForm) loginForm.style.display = 'none';
-    if (registerForm) registerForm.style.display = 'flex';
-    if (userInfo) userInfo.style.display = 'none';
-
-    const registerEmail = document.getElementById('register-email');
-    const registerUsername = document.getElementById('register-username');
-    const registerPassword = document.getElementById('register-password');
-    const registerPasswordConfirm = document.getElementById('register-password-confirm');
-    if (registerEmail) registerEmail.value = '';
-    if (registerUsername) registerUsername.value = '';
-    if (registerPassword) registerPassword.value = '';
-    if (registerPasswordConfirm) registerPasswordConfirm.value = '';
-    this.hideError('register');
-
-    const registerUsernameError = document.getElementById('register-username-error');
-    const registerPasswordError = document.getElementById('register-password-error');
-    if (registerUsernameError) registerUsernameError.style.display = 'none';
-    if (registerPasswordError) registerPasswordError.style.display = 'none';
-  },
-
-  showUserInfo() {
-    const loginForm = document.querySelector('[data-login-form]');
-    const registerForm = document.querySelector('[data-register-form]');
-    const userInfo = document.querySelector('[data-user-info]');
-
-    if (loginForm) loginForm.style.display = 'none';
-    if (registerForm) registerForm.style.display = 'none';
-    if (userInfo) userInfo.style.display = 'flex';
-
-    if (this.currentUser && userInfo) {
-      const displayName = document.querySelector('[data-user-display-name]');
-      const displayEmail = document.querySelector('[data-user-display-email]');
-      const userAvatar = document.querySelector('[data-user-avatar]');
-      const userId = document.querySelector('[data-user-id]');
-      const userPremium = document.querySelector('[data-user-premium]');
-      const userAdmin = document.querySelector('[data-user-admin]');
-      let [username,emailname,useremail] = [this.currentUser.username,this.currentUser.email.split('@')[0],this.currentUser.email];
-
-      let iconname = username.slice(-2) || emailname.slice(-2);
-
-      if(iconname.replace(/[^\u4e00-\u9fa5]/g,'').length > 0){
-        iconname = iconname[1];
-      }
-      if (displayName) displayName.textContent = username || emailname;
-      if (displayEmail) displayEmail.textContent = useremail;
-      if (userAvatar) userAvatar.textContent = iconname.toUpperCase();
-      if (userId) userId.textContent = this.currentUser.id;
-      if (userPremium) userPremium.style.display = this.currentUser.isPremium ? 'block' : 'none';
-      if (userAdmin) userAdmin.style.display = this.currentUser.isAdmin ? 'block' : 'none';
-    }
-  },
-
-  showError(type, message) {
-    const errorEl = document.querySelector(`[data-${type}-error]`);
-    if (errorEl) {
-      errorEl.textContent = message;
-      errorEl.style.display = 'block';
-    }
-  },
-
-  hideError(type) {
-    const errorEl = document.querySelector(`[data-${type}-error]`);
-    if (errorEl) {
-      errorEl.style.display = 'none';
-    }
-  },
-
-  isPremium() {
-    return this.currentUser && this.currentUser.isPremium === true;
-  },
-
-  async resendConfirmationEmail(email) {
-    if (!AUTH_CONFIG.USE_SUPABASE || !supabaseClient) {
-      return { success: false, error: getAuthText('supabaseNotInitialized') || 'Supabase 未初始化' };
-    }
-
-    if (!email || !email.includes('@')) {
-      return { success: false, error: getAuthText('invalidEmailFormat') || '邮箱格式不正确' };
-    }
-
-    try {
-      const { data, error } = await supabaseClient.auth.resend({
-        type: 'signup',
-        email: email.trim()
-      });
-
-      if (error) {
-        console.error('Resend confirmation email error:', error);
-        return {
-          success: false,
-          error: getAuthText('resendConfirmationEmailFailed') || '发送失败，请稍后重试'
-        };
-      }
-
-      return {
-        success: true,
-        message: getAuthText('resendConfirmationEmailSuccess') || '确认邮件已发送，请检查邮箱'
-      };
-    } catch (e) {
-      console.error('Resend confirmation email failed:', e);
-      return {
-        success: false,
-        error: getAuthText('resendConfirmationEmailFailed') || '发送失败，请稍后重试'
-      };
-    }
-  }
-};
-
-async function initAuthModule() {
-
-  if (AUTH_CONFIG.USE_SUPABASE) {
-    tryInitSupabase();
-  }
-
-  await AuthManager.init();
-
-  PublicConfigManager.loadOnce().then(() => {
-
-    updateVersionInfo();
-  }).catch(err => {
-    console.warn('[PublicConfig] Failed to load public config:', err);
-  });
-
-  const userLoginBtn = document.querySelector('[data-user-login-btn]');
-  if (userLoginBtn) {
-    userLoginBtn.addEventListener('click', () => {
-      if (AuthManager.currentUser) {
-
-        AuthManager.showUserInfo();
-        if (DOM.dailogLogin) DOM.dailogLogin.style.display = 'flex';
-      } else {
-
-        AuthManager.showLoginForm();
-        if (DOM.dailogLogin) DOM.dailogLogin.style.display = 'flex';
-      }
-    });
-  }
-}
-
-const btnShowRegister = document.querySelector('[data-btn-show-register]');
-if (btnShowRegister) {
-  btnShowRegister.addEventListener('click', () => {
-    AuthManager.showRegisterForm();
-  });
-}
-
-const btnShowLogin = document.querySelector('[data-btn-show-login]');
-if (btnShowLogin) {
-  btnShowLogin.addEventListener('click', () => {
-    AuthManager.showLoginForm();
-  });
-}
-
-const btnLogin = document.querySelector('[data-btn-login]');
-if (btnLogin) {
-  btnLogin.addEventListener('click', async () => {
-    const email = document.getElementById('login-email')?.value.trim();
-    const password = document.getElementById('login-password')?.value;
-
-    AuthManager.hideError('login');
-
-    const result = await AuthManager.login(email, password);
-    if (result.success) {
-      AuthManager.showUserInfo();
-    } else {
-      AuthManager.showError('login', result.error || getAuthText('loginFailedRetry'));
-    }
-  });
-}
-
-const btnRegister = document.querySelector('[data-btn-register]');
-let isRegistering = false;
-if (btnRegister) {
-  btnRegister.addEventListener('click', async () => {
-
-    if (isRegistering) {
-      return;
-    }
-
-    const email = document.getElementById('register-email')?.value.trim();
-    const username = document.getElementById('register-username')?.value.trim();
-    const password = document.getElementById('register-password')?.value;
-    const passwordConfirm = document.getElementById('register-password-confirm')?.value;
-
-    AuthManager.hideError('register');
-
-    if (!email || !username || !password) {
-      AuthManager.showError('register', getAuthText('fillAllRequired'));
-      return;
-    }
-
-    if (password !== passwordConfirm) {
-      AuthManager.showError('register', getAuthText('passwordsNotMatch'));
-      return;
-    }
-
-    isRegistering = true;
-    const originalText = btnRegister.textContent;
-    btnRegister.disabled = true;
-    btnRegister.style.opacity = '0.6';
-    btnRegister.style.pointerEvents = 'none';
-    btnRegister.textContent = getAuthText('registering');
-
-    let result = null;
-    let shouldKeepDisabled = false;
-
-    try {
-      result = await AuthManager.register(email, username, password);
-      if (result.success) {
-        if (result.needsConfirmation) {
-
-          AuthManager.showError('register', result.message || getAuthText('registrationSuccessShort'));
-
-          setTimeout(() => {
-            AuthManager.showLoginForm();
-            AuthManager.hideError('register');
-
-            document.getElementById('login-email').value = email;
-          }, 3000);
-        } else {
-
-          AuthManager.showUserInfo();
-        }
-      } else {
-        AuthManager.showError('register', result.error || getAuthText('registrationFailedRetry'));
-
-        const lang = getLanguageIntime() || 'zh';
-        const waitPattern = lang === 'zh' ? /(\d+)\s*秒/ : /(\d+)\s*seconds?/i;
-        const rateLimitKeywords = lang === 'zh' ? ['等待', '秒'] : ['wait', 'seconds'];
-        const isRateLimitError = rateLimitKeywords.some(keyword =>
-          result.error?.toLowerCase().includes(keyword.toLowerCase())
-        );
-        if (isRateLimitError) {
-          shouldKeepDisabled = true;
-          const waitTime = parseInt(result.error.match(waitPattern)?.[1] || '7') * 1000;
-          setTimeout(() => {
-            isRegistering = false;
-            btnRegister.disabled = false;
-            btnRegister.style.opacity = '1';
-            btnRegister.style.pointerEvents = 'auto';
-            btnRegister.textContent = originalText;
-          }, waitTime);
-          return;
-        }
-      }
-    } catch (e) {
-      console.error('Registration error:', e);
-      AuthManager.showError('register', getAuthText('registrationFailedRetry'));
-    } finally {
-
-      if (!shouldKeepDisabled) {
-        isRegistering = false;
-        btnRegister.disabled = false;
-        btnRegister.style.opacity = '1';
-        btnRegister.style.pointerEvents = 'auto';
-        btnRegister.textContent = originalText;
-      }
-    }
-  });
-}
-
-const registerUsername = document.getElementById('register-username');
-const registerUsernameError = document.getElementById('register-username-error');
-if (registerUsername && registerUsernameError) {
-  const updateUsernameValidation = () => {
-    const username = registerUsername.value.trim();
-    if (username) {
-      const validation = AuthManager.validateUsername(username);
-      if (!validation.valid) {
-
-        registerUsernameError.style.display = 'block';
-        registerUsernameError.textContent = getLanguageIntime() === 'zh' ? validation.error : validation.errorEn || validation.error;
-        registerUsernameError.setAttribute('data-zh-text', validation.error);
-        registerUsernameError.setAttribute('data-en-text', validation.errorEn || validation.error);
-      } else {
-
-        registerUsernameError.style.display = 'none';
-      }
-    } else {
-
-      registerUsernameError.style.display = 'none';
-    }
-  };
-
-  registerUsername.addEventListener('input', updateUsernameValidation);
-  registerUsername.addEventListener('blur', updateUsernameValidation);
-}
-
-const registerPassword = document.getElementById('register-password');
-const registerPasswordError = document.getElementById('register-password-error');
-if (registerPassword && registerPasswordError) {
-  const updatePasswordValidation = () => {
-    const password = registerPassword.value;
-    if (password) {
-      const validation = AuthManager.validatePassword(password);
-      if (!validation.valid) {
-
-        registerPasswordError.style.display = 'block';
-        registerPasswordError.textContent = getLanguageIntime() === 'zh' ? validation.error : validation.errorEn || validation.error;
-        registerPasswordError.setAttribute('data-zh-text', validation.error);
-        registerPasswordError.setAttribute('data-en-text', validation.errorEn || validation.error);
-      } else {
-
-        registerPasswordError.style.display = 'none';
-      }
-    } else {
-
-      registerPasswordError.style.display = 'none';
-    }
-  };
-
-  registerPassword.addEventListener('input', updatePasswordValidation);
-  registerPassword.addEventListener('blur', updatePasswordValidation);
-}
-
-const btnLogout = document.querySelector('[data-btn-logout]');
-if (btnLogout) {
-  btnLogout.addEventListener('click', () => {
-    AuthManager.logout();
-  });
-};
-
-function setupLoginDialogClose() {
-  if (DOM.dailogLogin) {
-
-    DOM.dailogLogin.addEventListener('click', (e) => {
-      if (e.target === DOM.dailogLogin) {
-        DOM.dailogLogin.style.display = 'none';
-      }
-    });
-  };
-};
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    initAuthModule();
-    setupLoginDialogClose();
-  });
-} else {
-
-  initAuthModule();
-  setupLoginDialogClose();
-};
-
-function getLanguageIntime(){
-  return ROOT.getAttribute('data-language').toLowerCase();
-};
-
-const PUBLIC_CONFIG_STORAGE_KEY = 'toolsSetFig_publicConfig';
-const PUBLIC_CONFIG_TIMESTAMP_KEY = 'toolsSetFig_publicConfigTimestamp';
-
-const PublicConfigManager = {
-  _loaded: false,
-  _loadingPromise: null,
-  _dataMap: {},
-  _lastFetchAt: null,
-
-  _ensureSupabase() {
-    if (!AUTH_CONFIG.USE_SUPABASE) return false;
-    if (!supabaseClient) {
-      tryInitSupabase();
-    }
-    return !!supabaseClient;
-  },
-
-  _loadFromCache() {
-    try {
-
-      if (typeof localStorage !== 'undefined') {
-        const cachedData = localStorage.getItem(PUBLIC_CONFIG_STORAGE_KEY);
-        const cachedTimestamp = localStorage.getItem(PUBLIC_CONFIG_TIMESTAMP_KEY);
-
-        if (cachedData && cachedTimestamp) {
-          try {
-            const data = JSON.parse(cachedData);
-            const timestamp = parseInt(cachedTimestamp, 10);
-            if (!isNaN(timestamp) && data) {
-              return { data, timestamp };
-            }
-          } catch (e) {
-            console.warn('[PublicConfig] Failed to parse cached data:', e);
-          }
-        }
-      }
-
-      if (PLUGINAPP) {
-
-        return null;
-      }
-    } catch (e) {
-      console.warn('[PublicConfig] Failed to load from cache:', e);
-    }
-    return null;
-  },
-
-  _saveToCache(data, timestamp) {
-    try {
-
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(PUBLIC_CONFIG_STORAGE_KEY, JSON.stringify(data));
-        localStorage.setItem(PUBLIC_CONFIG_TIMESTAMP_KEY, timestamp.toString());
-      }
-
-      if (PLUGINAPP && typeof toolMessage === 'function') {
-        toolMessage([[PUBLIC_CONFIG_STORAGE_KEY, data], 'setlocal'], PLUGINAPP);
-        toolMessage([[PUBLIC_CONFIG_TIMESTAMP_KEY, timestamp], 'setlocal'], PLUGINAPP);
-      }
-    } catch (e) {
-      console.warn('[PublicConfig] Failed to save to cache:', e);
-    }
-  },
-
-  _shouldRefresh(cachedTimestamp) {
-    if (!cachedTimestamp) return true;
-
-    const now = Date.now();
-    const timeDiff = now - cachedTimestamp;
-    const oneHour = 60 * 60 * 1000;
-
-    if (timeDiff > oneHour) {
-      return true;
-    }
-
-    const cachedDate = new Date(cachedTimestamp);
-    const currentDate = new Date(now);
-    if (
-      cachedDate.getFullYear() !== currentDate.getFullYear() ||
-      cachedDate.getMonth() !== currentDate.getMonth() ||
-      cachedDate.getDate() !== currentDate.getDate()
-    ) {
-      return true;
-    }
-
-    return false;
-  },
-
-  async loadOnce() {
-
-    const cached = this._loadFromCache();
-
-    if (cached && !this._shouldRefresh(cached.timestamp)) {
-
-      if (cached.data && cached.data['latest_version'] && !cached.data['latest_version_updated_at']) {
-
-      } else {
-        this._dataMap = cached.data || {};
-        this._loaded = true;
-        this._lastFetchAt = cached.timestamp;
-        return this._dataMap;
-      }
-    }
-
-    if (this._loadingPromise) {
-      return this._loadingPromise;
-    }
-
-    this._loadingPromise = this._loadInternal();
-    return this._loadingPromise;
-  },
-
-  async _loadInternal() {
-    this._dataMap = {};
-    this._loaded = false;
-
-    if (!this._ensureSupabase()) {
-      console.warn('[PublicConfig] Supabase client not available, using cached data if available');
-      const cached = this._loadFromCache();
-      if (cached && cached.data) {
-        this._dataMap = cached.data;
-        this._loaded = true;
-        this._lastFetchAt = cached.timestamp;
-      }
-      this._loadingPromise = null;
-      return this._dataMap;
-    }
-
-    try {
-
-      const { data, error } = await supabaseClient
-        .from('toolset_public_config')
-        .select('key,value,enabled,updated_at')
-        .eq('enabled', true);
-
-      if (error) {
-        console.error('[PublicConfig] fetch error:', error);
-
-        const cached = this._loadFromCache();
-        if (cached && cached.data) {
-          this._dataMap = cached.data;
-          this._loaded = true;
-          this._lastFetchAt = cached.timestamp;
-        }
-        this._loadingPromise = null;
-        return this._dataMap;
-      }
-
-      if (Array.isArray(data)) {
-        data.forEach((row) => {
-          if (!row || !row.key) return;
-          let parsedValue = row.value;
-
-          if (typeof row.value === 'string' && row.value.trim().startsWith('{')) {
-            try {
-              parsedValue = JSON.parse(row.value);
-            } catch (e) {
-
-            }
-          }
-
-          this._dataMap[row.key] = parsedValue;
-
-          if (row.key === 'latest_version' && row.updated_at) {
-            this._dataMap['latest_version_updated_at'] = row.updated_at;
-          }
-        });
-      } else {
-        console.warn('[PublicConfig] No data returned from Supabase');
-      }
-
-      const now = Date.now();
-      this._saveToCache(this._dataMap, now);
-
-      this._loaded = true;
-      this._lastFetchAt = now;
-    } catch (e) {
-      console.warn('[PublicConfig] fetch exception:', e);
-
-      const cached = this._loadFromCache();
-      if (cached && cached.data) {
-        this._dataMap = cached.data;
-        this._loaded = true;
-        this._lastFetchAt = cached.timestamp;
-      }
-    }
-
-    this._loadingPromise = null;
-    return this._dataMap;
-  },
-
-  async get(key) {
-    await this.loadOnce();
-    return this._dataMap[key];
-  },
-
-  async getAnnouncement(lang) {
-    await this.loadOnce();
-    const value = this._dataMap['announcement'];
-    if (!value) return null;
-
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      const currentLang = (lang || (typeof getLanguageIntime === 'function' ? getLanguageIntime() : 'zh')).toLowerCase();
-      return value[currentLang] || value.zh || value.en || null;
-    }
-
-    return value;
-  },
-
-  async getLatestVersion() {
-    await this.loadOnce();
-    return this._dataMap['latest_version'] || null;
-  },
-
-  async getVersionInfo() {
-    await this.loadOnce();
-    return {
-      version: this._dataMap['latest_version'] || null,
-      updatedAt: this._dataMap['latest_version_updated_at'] || null
-    };
-  },
-
-  async getAll() {
-    await this.loadOnce();
-    return { ...this._dataMap };
-  }
-};
-
-async function updateVersionInfo() {
-  try {
-    const versionInfo = await PublicConfigManager.getVersionInfo();
-    const versionTextEl = document.querySelector('[data-version-text]');
-    const versionTimeEl = document.querySelector('[data-version-time]');
-
-    if (versionInfo.version && versionTextEl) {
-      versionTextEl.textContent = versionInfo.version;
-    }
-
-    if (versionInfo.updatedAt && versionTimeEl) {
-
-      const date = new Date(versionInfo.updatedAt);
-
-      const formattedDate = date.toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      }).replace(/\//g, '-');
-      versionTimeEl.textContent = formattedDate;
-    }
-  } catch (e) {
-    console.warn('[PublicConfig] Failed to update version info:', e);
-  }
-}
 </script>
 </body>
 </html>

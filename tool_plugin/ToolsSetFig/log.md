@@ -1,3 +1,9 @@
+### v0.1.4 2026/1/30
+- 修复：创建页>md格式转图层，宽度异常回退为100px的问题
+- 新增：表单页>应用主题，可以开启实时模式，切换色值和主题风格时会直接应用，但相对卡顿，仅适用于必要的效果预览对比，慎用
+- 优化：创建页>从图层获取画板信息，宽高仅保留两个小数点，避免浮点数精度问题
+- 优化：表单页>主题设置，主题色为灰色系时不会再生成带饱和度的配色
+
 ### v0.1.3 2026/1/23
 - ✨ New: Sidebar - Can view current version and last update time；✨ 新增: 侧边栏可查看当前版本及最后更新时间
 - 🐞 Fix: Sheet page > Data Get/Map - Fixed issue where data get/map functionality was not working properly；🐞 修复: 表单页>数据获取/映射失灵问题

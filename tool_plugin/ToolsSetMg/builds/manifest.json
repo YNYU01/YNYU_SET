@@ -1,0 +1,9 @@
+{
+  "name": "YN+ ToolsSet",
+  "id": 183514892403740,
+  "main": "code.js",
+  "ui": "ui.html",
+  "editor_type": [
+    "canvas"
+  ]
+}
