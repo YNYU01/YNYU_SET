@@ -1044,7 +1044,7 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
   height: 100dvh;
   box-sizing: border-box;
   padding: 30px 0 100px 0;
-  z-index: 12;
+  z-index: 20;
 }
 
 [data-dailog],[data-dailogimg]{
@@ -1968,9 +1968,11 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   border: 1px solid var(--boxBod);
   box-sizing: border-box;
   border-radius: 4px;
+  min-width: 100%;
   min-height: 70px;
+  max-width: 100%;
   max-height: 80dvh;
-  margin: -4px 0 10px 0;
+  margin: -4px 0 0 0;
 }
 
 [data-manage-linkstyle],[data-manage-selectstyle],[data-manage-variables]{

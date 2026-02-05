@@ -582,8 +582,8 @@ function updateSelectInfoDisplay(info){
     const main = item.querySelector('[data-selects-info="main"]');
     const sec = item.querySelector('[data-selects-info="sec"]');
     const num = item.querySelector('[data-selects-info="num"]');
-    if (main) main.textContent = info[0][0];
-    if (sec) sec.textContent = info[1] ? info[1][0] : '';
+    if (main) main.textContent = info[0].n;
+    if (sec) sec.textContent = info[1] ? info[1].n : '';
     if (num) num.textContent = info.length;
   });
 };

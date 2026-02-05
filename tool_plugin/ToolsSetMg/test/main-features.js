@@ -94,15 +94,13 @@ function sendPixel(name){
   let mix = DOM.skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
   let s = DOM.pixelScale.value;
   let cuts = [];
-  tipsAll(MESSAGES.READING, SelectNodeInfo.length * 800);
+  tipsAll(MESSAGES.READING, State.get('selectNodeInfo').length * 800);
   setTimeout(()=>{
-    SelectNodeInfo.forEach((item) => {
-    let w = item[1];
-    let h = item[2];
-    let cut = tool.CUT_AREA({w:w,h:h,x:0,y:0,s:s},mix);
+    State.get('selectNodeInfo').forEach((item) => {
+    let cut = tool.CUT_AREA({w:item.w,h:item.h,x:0,y:0,s:s},mix);
     cuts.push(cut);
   });
-  //console.log(cuts);
+
   toolMessage([cuts,name],PLUGINAPP);
   },100);
 };

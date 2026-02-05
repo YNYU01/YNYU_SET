@@ -637,9 +637,10 @@ mg.ui.onmessage = async (message) => {
             {name:'eg/color5',paint:[toRGB('#444444',true)]},
         ];
         styles.forEach(item => {
-           let style = mg.createPaintStyle();
-           style.name = item.name;
-           style.paints = item.paint;
+            let box = mg.createRectangle();
+            box.fills = item.paint;
+            mg.createFillStyle({id:box.id,name:item.name,description:''});
+            box.remove();
         });
         postmessage([true,'styleInfo']);
         getStyle('paint');
@@ -692,42 +693,37 @@ mg.ui.onmessage = async (message) => {
     };
     //整理样式/变量相关组件和表格
     if( type == "reVariableLayout"){
-        let a = mg.document.currentPage;
-        const variablePages = mg.root.findChildren(item => item.name.includes('@localsheet'));
+        const variablePages = mg.document.children.filter(item => item.name.includes('@localsheet'));
+        console.log(variablePages)
         variablePages.forEach(page => {
-            mg.setCurrentPageAsync(page)
-            .then(()=>{
-                let variableNode = page.findChildren(item => item.name.includes(':variable'));
-                let styleNode = page.findChildren(item => item.name.includes(':style'));
-                let variableNodeGroup = {};
-                let styleNodeGroup = {};
-                let allGroup = [];
-                //console.log(variableNode,styleNode)
-                for(let node of variableNode){
-                    let key = node.name.split('@')[0];
-                    if(!variableNodeGroup[key]) variableNodeGroup[key] = [];
-                    variableNodeGroup[key].push(node);
-                };
-                for(let node of styleNode){
-                    let key = node.name.split('@')[0];
-                    if(!styleNodeGroup[key]) styleNodeGroup[key] = [];
-                    styleNodeGroup[key].push(node);
-                };
-                [...Object.values(variableNodeGroup),...Object.values(styleNodeGroup)].forEach(item => {
-                    layoutByRatio(item,true);
-                    let group = mg.group(item,a);
-                    allGroup.push(group);
-                });
-                layoutByRatio(allGroup,true);
-                mg.document.currentPage.selection = allGroup;
-                mg.viewport.scrollAndZoomIntoView(allGroup);
-                mg.viewport.zoom = mg.viewport.zoom * 0.6;
-                allGroup.forEach(item => {
-                    mg.ungroup(item);
-                });
-            })
-            .catch(error => {
-                console.log(error);
+            mg.document.currentPage = page
+            let variableNode = page.findChildren(item => item.name.includes(':variable'));
+            let styleNode = page.findChildren(item => item.name.includes(':style'));
+            let variableNodeGroup = {};
+            let styleNodeGroup = {};
+            let allGroup = [];
+            //console.log(variableNode,styleNode)
+            for(let node of variableNode){
+                let key = node.name.split('@')[0];
+                if(!variableNodeGroup[key]) variableNodeGroup[key] = [];
+                variableNodeGroup[key].push(node);
+            };
+            for(let node of styleNode){
+                let key = node.name.split('@')[0];
+                if(!styleNodeGroup[key]) styleNodeGroup[key] = [];
+                styleNodeGroup[key].push(node);
+            };
+            [...Object.values(variableNodeGroup),...Object.values(styleNodeGroup)].forEach(item => {
+                layoutByRatio(item,true);
+                let group = mg.group(item,a);
+                allGroup.push(group);
+            });
+            layoutByRatio(allGroup,true);
+            mg.document.currentPage.selection = allGroup;
+            mg.viewport.scrollAndZoomIntoView(allGroup);
+            mg.viewport.zoom = mg.viewport.zoom * 0.6;
+            allGroup.forEach(item => {
+                mg.ungroup(item);
             });
                 
         });
@@ -2956,7 +2952,7 @@ mg.ui.onmessage = async (message) => {
     if( type == "createPaintStyle"){
         //console.log(info)
         //更新样式列表
-        await getStyle('paint');
+        getStyle('paint');
         let localPaintStyles = localStyles.paint.list;
         let names = localPaintStyles.map(item => item.name);
         info.forEach(item => {
@@ -2983,7 +2979,7 @@ setTimeout(()=>{
     console.log(`- [YNYU_SET] OPEN DESIGN & SOURCE
 - © 2024-6 YNYU lvynyu2@gmail.com;`);
     //console.log(localStyles)
-
+    //console.log(mg.getLocalPaintStyles())
 },50)
 
 //sendInfo();
@@ -3073,35 +3069,19 @@ function postmessage(data){
 /**
  * @param {[object] | null} info -新建页面的设置项，命名、背景色、页码
  */
-function addPageMix(info = [{name: null,fill: null,index: null}]){
-    let safaPage = mg.document.currentPage.clone();
-    safaPage.children.forEach(item => {
-        item.remove();
-    });
+function addPageMix(info = [{name: null,fill: null}]){
     let finals = [];
     info.forEach( (item)=> {
         let newpage;
         try{
             newpage = mg.createPage();
         } catch(e){
-            newpage = safaPage.clone();
+            console.error(e);
         }
-        newpage.name = item.name ? item.name : 'New Page';
-        if(item.fill) newpage.fills = [toRGB(item.fill,true)];
-        if(item.index) {
-            let num = item.index;
-            num >= 0 ? num : 0;
-            let max = mg.root.children.length - 1;
-            num >= max ? max : num;
-            mg.root.insertChild(num,newpage);
-        }else{
-            let num = mg.root.children.findIndex(item => item == mg.document.currentPage);
-            mg.root.insertChild(num + 1,newpage);
-            //mg.setCurrentPageAsync(newpage);
-            finals.push(newpage)
-        };
+        if(item.name) newpage.name = item.name;
+        if(item.fill) newpage.bgColor = toRGB(item.fill);
+        finals.push(newpage)
     });
-    safaPage.remove();
     return finals;
 };
 
@@ -4018,7 +3998,8 @@ async function addLocalSheetMust(type,comps = [null,null,null]){
 async function reLocalSheet(type, isNew) {
     if (isNew) postmessage([true, type + 'SheetInfo']);
     
-    const variablePages = mg.root.findChildren(item => item.name.includes('@localsheet'));
+    const variablePages = mg.document.children.filter(item => item.name.includes('@localsheet'));
+    
     const datas = type === 'style' ? localStyleToArray() : localVariableToArray();
 
     for (let [index, data] of datas.entries()) {
@@ -4027,7 +4008,9 @@ async function reLocalSheet(type, isNew) {
             finalpage = variablePages.length === 0 
                 ? (() => { 
                     const page = addPageMix()[0];
-                    page.name = 'xxx@localsheet';
+                    console.log(page)
+                    page.name = 'xxx@localsheet/颜色样式表';
+                    page.label = 'PURPLE';
                     return page;
                 })()
                 : variablePages[0];
@@ -4043,7 +4026,7 @@ async function reLocalSheet(type, isNew) {
             if (!finalpage) finalpage = variablePages[0];
         };
         
-        await mg.setCurrentPageAsync(finalpage);
+        mg.document.currentPage = finalpage;
         
         if (!finaltable) {
             const oldth = finalpage.findOne(item => item.name.includes('@th:' + type));
@@ -4101,13 +4084,12 @@ function reSheetByArray(table,datas){
 };
 
 getStyle('paint',true);
-async function getStyle(type,isSend){
+function getStyle(type,isSend){
     let info = {list:[],nodes:[]}
     switch (type){
         case "paint":
-            let styles = await mg.getLocalPaintStyles()
+            let styles = mg.getLocalPaintStyles()
             //有哪些样式
-            //console.log(styles)
             info.list = styles.map(item =>{
                 return {
                     id: item.id,
@@ -4116,14 +4098,9 @@ async function getStyle(type,isSend){
                 }
             });
             if(isSend){
-                let hasStyle = info.list.some(item => item.name.includes('@set:')) ? true : false;
+                let hasStyle = info.list.some(node => node.name.includes('@set:')) ? true : false;
                 postmessage([hasStyle,'styleInfo']);
             };
-            let promises = styles.map(item => item.getStyleConsumersAsync());
-            let consumers = await Promise.all(promises)
-            //应用在什么节点
-            //console.log(consumers)
-            info.nodes = consumers.flat();
             localStyles.paint = info;
         break
         case "text":
@@ -4138,10 +4115,9 @@ async function getStyle(type,isSend){
     }
 }
 getStyleSheet();
-async function getStyleSheet(){
-    let pages = mg.root.findChildren(item => item.name.includes('@localsheet'));
+function getStyleSheet(){
+    let pages = mg.document.children.filter(item => item.name.includes('@localsheet'));
     for(let page of pages){
-        await page.loadAsync();
         let sheet = page.findOne(item => item.name.includes('@table:style'));
         if(sheet) {
             postmessage([true,'styleSheetInfo']);
@@ -4152,10 +4128,10 @@ async function getStyleSheet(){
     postmessage([false,'styleSheetInfo']);
 };
 getVariableSheet();
-async function getVariableSheet(){
-    let pages = mg.root.findChildren(item => item.name.includes('@localsheet'));
+function getVariableSheet(){
+    let pages = mg.document.children.filter(item => item.name.includes('@localsheet'));
     for(let page of pages){
-        await page.loadAsync();
+        page.loadAsync();
         let sheet = page.findOne(item => item.name.includes('@table:variable'));
         if(sheet) {
             postmessage([true,'variableSheetInfo']);
