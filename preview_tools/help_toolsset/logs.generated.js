@@ -1,10 +1,59 @@
 /* AUTO-GENERATED FILE. DO NOT EDIT. */
 /* Source: tool_plugin/ToolsSetFig/log.md */
-/* Built: 2026-01-24T15:45:59.349Z */
+/* Built: 2026-02-05T02:40:36.434Z */
 
 (function () {
   'use strict';
   window.__TOOLSSET_HELP_LOGS__ = [
+  {
+    "title": [
+      "v0.1.4",
+      "v0.1.4"
+    ],
+    "date": "2026/2/5",
+    "items": [
+      [
+        "li",
+        "<span data-doc-key>🐞 修复：</span>更多功能页>选中图层时未显示对应信息的问题",
+        "<span data-doc-key>🐞 Fix:</span> More Tools page > Selected layer info not displayed"
+      ],
+      [
+        "li",
+        "<span data-doc-key>🐞 修复：</span>更多功能页>原地栅格化失效问题",
+        "<span data-doc-key>🐞 Fix:</span> More Tools page > In-place rasterize not working"
+      ],
+      [
+        "li",
+        "<span data-doc-key>🐞 修复：</span>更多功能页>斜切拉伸对文字无效以及点击重置全部会导致错误崩溃的问题",
+        "<span data-doc-key>🐞 Fix:</span> More Tools page > Skew/stretch had no effect on text, and clicking the All Reset button caused crash"
+      ],
+      [
+        "li",
+        "<span data-doc-key>🐞 修复：</span>创建页>md格式转图层，宽度异常回退为100px的问题",
+        "<span data-doc-key>🐞 Fix:</span> Create page > MD to layer - width incorrectly falling back to 100px"
+      ],
+      [
+        "li",
+        "<span data-doc-key>✨ 新增：</span>表单页>应用主题，可以开启实时模式，切换色值和主题风格时会直接应用，但相对卡顿，仅适用于必要的效果预览对比，慎用",
+        "<span data-doc-key>✨ New:</span> Sheet page > Apply theme - can enable live mode; color/theme changes apply immediately (may be laggy, use only for preview when needed)"
+      ],
+      [
+        "li",
+        "<span data-doc-key>✨ 新增：</span>侧边栏>点击版本号可直达版本日志",
+        "<span data-doc-key>✨ New:</span> Sidebar > Click version number to jump to changelog"
+      ],
+      [
+        "li",
+        "<span data-doc-key>⚡ 优化：</span>创建页>从图层获取画板信息，宽高仅保留两个小数点，避免浮点数精度问题",
+        "<span data-doc-key>⚡ Optimize:</span> Create page > Get artboard info from layer - width/height rounded to 2 decimals to avoid float precision"
+      ],
+      [
+        "li",
+        "<span data-doc-key>⚡ 优化：</span>表单页>主题设置，主题色为灰色系时不会再生成带饱和度的配色",
+        "<span data-doc-key>⚡ Optimize:</span> Sheet page > Theme settings - gray theme colors no longer generate saturated palette"
+      ]
+    ]
+  },
   {
     "title": [
       "v0.1.3",
@@ -113,7 +162,7 @@
       [
         "li",
         "<span data-doc-key>✨ 新增:</span> 更多功能页>从制表数据创建样式",
-        "<span data-doc-key>✨ New:</span> More Features page > Create Style from Table Data - Create styles from tabular data"
+        "<span data-doc-key>✨ New:</span> More Tools page > Create Style from Table Data - Create styles from tabular data"
       ]
     ]
   },
@@ -157,7 +206,7 @@
       [
         "li",
         "🛠️ 更多功能页>集齐大量常用功能, 如指定大小栅格化 | 批量缩放/斜切 | 拆分/合并文本 | 识别/矢量化/生成二维码 | 批量转自动布局 | 批量将子元素拆分到容器 | 调换图层顺序/位置 | 自动设置约束 | 。。。",
-        "🛠️ More Features page > Includes many commonly used tools, such as fixed-size rasterize | batch scale/skew | split/merge text | recognize/vectorize/generate QR codes | batch convert to auto layout | batch split children into containers | swap layer order/position | auto set constraints | ..."
+        "🛠️ More Tools page > Includes many commonly used tools, such as fixed-size rasterize | batch scale/skew | split/merge text | recognize/vectorize/generate QR codes | batch convert to auto layout | batch split children into containers | swap layer order/position | auto set constraints | ..."
       ]
     ]
   }
