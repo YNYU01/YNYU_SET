@@ -1659,11 +1659,9 @@ figma.ui.onmessage = async (message) => {
     //斜切拉伸
     if( type == 'transformMix'){
         let b = getSelectionMix();
-        //console.log(info)
+        
         b.forEach(item => {
-            if(item.type == 'TEXT'){
-                return;
-            };
+            
             let oldWH;
             if(!item.getPluginData('oldWH')){
                 item.setPluginData('oldWH',JSON.stringify([item.width,item.height]));
@@ -1676,7 +1674,11 @@ figma.ui.onmessage = async (message) => {
             let skewY = Math.tan(info.y*(Math.PI/180));
             let scaleY = item.relativeTransform[1][1];
             let y = item.relativeTransform[1][2];
-            item.resize(oldWH[0] * info.w/100,oldWH[1] * info.h/100);
+            if(item.type !== 'TEXT'){
+                if(info.w !== oldWH[0] * info.w/100 && info.h !== oldWH[1] * info.h/100){
+                    item.resize(oldWH[0] * info.w/100,oldWH[1] * info.h/100);
+                }
+            };
             //console.log(scaleX,scaleY)
             if(skewX !== item.relativeTransform[0][1] || skewY !== item.relativeTransform[1][0]){
                 //console.log(666)
