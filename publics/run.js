@@ -254,7 +254,14 @@ let USER_VISITOR = null;
 
 // 获取用户位置信息的函数
 function fetchUserLocation() {
-  // 使用 AbortController 实现超时控制（兼容性更好）
+  // 本地/插件等 origin 为 null 或 file: 时，ipapi.co 无 CORS 头会报错，直接跳过不发起请求
+  try {
+    const origin = typeof location !== 'undefined' ? location.origin : '';
+    if (origin === 'null' || origin === '' || (typeof location !== 'undefined' && location.protocol === 'file:')) {
+      return;
+    }
+  } catch (_) { return; }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
 
@@ -310,13 +317,13 @@ function fetchUserLocation() {
     })
     .catch(e => {
       clearTimeout(timeoutId); // 确保在错误时也清除超时定时器
-      // 区分不同类型的错误
+      // 区分不同类型的错误（注：CORS 被拦时浏览器往往只抛出 "Failed to fetch"，e.message 里没有 "CORS"）
       if (e.name === 'AbortError') {
         console.warn('IP定位请求超时，已跳过。');
       } else if (e.message && e.message.includes('CORS')) {
         console.warn('IP定位请求被CORS策略阻止（可能是本地文件环境），已跳过。');
       } else if (e.message && e.message.includes('Failed to fetch')) {
-        console.warn('IP定位请求失败（网络错误或服务不可用），已跳过。');
+        console.warn('IP定位请求失败（网络错误、服务不可用或CORS限制），已跳过。');
       } else {
         console.warn('IP定位请求出错：', e.message || e);
       }
