@@ -1584,46 +1584,17 @@ mg.ui.onmessage = async (message) => {
             };
         });
     };
-    //斜切拉伸（用 relativeTransform 实现目标绝对变换，避免直接设 absoluteTransform 导致叠加）
+    //斜切拉伸
     if( type == 'transformMix'){
-        function inv23(m){
-            let a = m[0][0], b = m[0][1], tx = m[0][2], c = m[1][0], d = m[1][1], ty = m[1][2];
-            let det = a*d - b*c;
-            if(Math.abs(det) < 1e-10) return null;
-            return [[d/det,-b/det,(b*ty-d*tx)/det],[-c/det,a/det,(c*tx-a*ty)/det]];
-        }
-        function mul23(a,b){
-            return [
-                [a[0][0]*b[0][0]+a[0][1]*b[1][0], a[0][0]*b[0][1]+a[0][1]*b[1][1], a[0][0]*b[0][2]+a[0][1]*b[1][2]+a[0][2]],
-                [a[1][0]*b[0][0]+a[1][1]*b[1][0], a[1][0]*b[0][1]+a[1][1]*b[1][1], a[1][0]*b[0][2]+a[1][1]*b[1][2]+a[1][2]]
-            ];
-        }
         let b = getSelectionMix();
         b.forEach(item => {
-            if(!item.getPluginData('oldWH')){
-                item.setPluginData('oldWH',JSON.stringify([item.width,item.height]));
-            }
+            let x = item.x;
+            let y = item.y;
             let skewX = Math.tan(info.x*(Math.PI/180));
-            let scaleX = info.w/100;
             let skewY = Math.tan(info.y*(Math.PI/180));
+            let scaleX = info.w/100;
             let scaleY = info.h/100;
-            let abs = item.absoluteTransform;
-            let tx = abs[0][2], ty = abs[1][2];
-            // 先记录当前旋转角，再按「无旋转时斜切缩放 → 再旋回去」处理，便于理解
-            let theta = Math.atan2(abs[1][0], abs[0][0]);
-            let cos = Math.cos(theta), sin = Math.sin(theta);
-            let noRot00 = scaleX, noRot01 = skewX, noRot10 = skewY, noRot11 = scaleY;
-            let rotBack00 = cos*noRot00 - sin*noRot10, rotBack01 = cos*noRot01 - sin*noRot11;
-            let rotBack10 = sin*noRot00 + cos*noRot10, rotBack11 = sin*noRot01 + cos*noRot11;
-            let desiredAbs = [[rotBack00,rotBack01,tx],[rotBack10,rotBack11,ty]];
-            let parent = item.parent;
-            if(!parent || parent.type === 'PAGE'){
-                item.relativeTransform = desiredAbs;
-            } else {
-                let parentInv = inv23(parent.absoluteTransform);
-                if(!parentInv){ item.relativeTransform = desiredAbs; return; }
-                item.relativeTransform = mul23(parentInv, desiredAbs);
-            }
+            item.relativeTransform = [[scaleX,skewX,x],[skewY,scaleY,y]];
         });
     };
     //保留伸缩重置
@@ -3006,15 +2977,10 @@ function sendInfo(){
             let w = node.absoluteRenderBounds ? node.absoluteRenderBounds.width : node.absoluteBoundingBox.width;
             let h = node.absoluteRenderBounds ? node.absoluteRenderBounds.height : node.absoluteBoundingBox.height;
             let transform = node.absoluteTransform;
-            let scaleX = node.getPluginData('oldWH') ? Math.round(node.width/JSON.parse(node.getPluginData('oldWH'))[0]*100) : 100;// Math.floor(transform[0][0] * 100);
-            let scaleY = node.getPluginData('oldWH') ? Math.round(node.height/JSON.parse(node.getPluginData('oldWH'))[1]*100) : 100;//Math.floor(transform[1][1] * 100);
-            // 除去旋转后再取斜切，发到 UI 的才是真实斜切值（否则旋转会混进 atan(transform[0][1]) 等）
-            let transformA = transform[0][0], transformB = transform[0][1], transformC = transform[1][0], transformD = transform[1][1];
-            let theta = Math.atan2(transformC, transformA);
-            let cos = Math.cos(theta), sin = Math.sin(theta);
-            let s01 = transformB*cos + transformD*sin, s10 = -transformA*sin + transformC*cos;
-            let skewX = Math.round(Math.atan(s01)/(Math.PI/180));
-            let skewY = Math.round(Math.atan(s10)/(Math.PI/180));
+            let scaleX = Math.floor(transform[0][0] * 100);
+            let scaleY = Math.floor(transform[1][1] * 100);
+            let skewX = Math.round(Math.atan(transform[0][1])/(Math.PI/180));
+            let skewY = Math.round(node.rotation);
             let clipColumn = 0;
             let clipRow = 0;
             if(node.layoutGrids){

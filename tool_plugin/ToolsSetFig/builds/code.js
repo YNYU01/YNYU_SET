@@ -3063,7 +3063,7 @@ function sendInfo(){
             let scaleX = node.getPluginData('oldWH') ? Math.round(node.width/JSON.parse(node.getPluginData('oldWH'))[0]*100) : 100;// Math.floor(transform[0][0] * 100);
             let scaleY = node.getPluginData('oldWH') ? Math.round(node.height/JSON.parse(node.getPluginData('oldWH'))[1]*100) : 100;//Math.floor(transform[1][1] * 100);
             let skewX = Math.round(Math.atan(transform[0][1])/(Math.PI/180));
-            let skewY = Math.round(Math.atan(transform[1][0])/(Math.PI/180));
+            let skewY = Math.round(node.rotation);
             //console.log([skewX,skewY])
             let clipColumn = 0;
             let clipRow = 0;

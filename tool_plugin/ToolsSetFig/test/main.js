@@ -234,6 +234,7 @@ const State = (() => {
     reStartX: null,
     reStartY: null,
     textareaLineNum: 20,
+    allReset: false,
     
     // 文件类型
     imageType: [],
@@ -2944,10 +2945,13 @@ function reSkillNum(){
 //重置全部
 document.querySelectorAll('[data-reset-all]').forEach(reall => {
   reall.addEventListener('click',()=>{
+    State.set('allReset',true);
     let btnReAll = reall.parentNode.parentNode.querySelectorAll('[data-input-reset]');
     btnReAll.forEach(item =>{
       item.click();
     });
+    State.set('allReset',false);
+    sendTransform();
   });
 });
 //栅格化像素倍率绑定
@@ -4671,19 +4675,23 @@ function getUserColor(node){
 function getUserNumber(node){
   let number = node.getAttribute('data-number-value');
   if(node.getAttribute('data-skewset-x') !== null){
-    node.parentNode.parentNode.parentNode.style.setProperty('--skewX',number)
+    //node.parentNode.parentNode.parentNode.style.setProperty('--skewX',number)
+    if(State.get('allReset')) return;
     sendTransform();
   };
   if(node.getAttribute('data-skewset-y') !== null){
-    node.parentNode.parentNode.parentNode.style.setProperty('--skewY',number)
+    //node.parentNode.parentNode.parentNode.style.setProperty('--skewY',number)
+    if(State.get('allReset')) return;
     sendTransform();
   };
   if(node.getAttribute('data-scaleset-x') !== null){
-    node.parentNode.parentNode.parentNode.style.setProperty('--scaleX',number)
+    //node.parentNode.parentNode.parentNode.style.setProperty('--scaleX',number)
+    if(State.get('allReset')) return;
     sendTransform();
   };
   if(node.getAttribute('data-scaleset-y') !== null){
-    node.parentNode.parentNode.parentNode.style.setProperty('--scaleY',number)
+    //node.parentNode.parentNode.parentNode.style.setProperty('--scaleY',number)
+    if(State.get('allReset')) return;
     sendTransform();
   };
   if(node.getAttribute('data-qrcode-brightness') !== null){

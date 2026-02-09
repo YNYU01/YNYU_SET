@@ -195,12 +195,13 @@
               </div>
             </a>
         </div>
-          <!--版本信息-->
+          <!--版本信息：显示本地版本，若与拉取的最新版本不符则显示「待更新」-->
           <div data-version-info class="df-sc font-s10" style="transform: skewX(-10deg);">
             <a href="https://www.ynyuset.cn/preview_tools/help_toolsset?sec=log" rel="noopener noreferrer" target="_blank" 
             class="df-lc pointer " style="color: var(--themeColor2);">
               <div>Version&nbsp;</div>
               <div data-version-text>--</div>
+              <span data-version-pending class="mar-l4 op6" style="display:none; color: var(--mainColor);" data-en-text="(Old)">(旧版本)</span>
             </a>
             <div class="op6" data-version-time>--</div>
           </div>

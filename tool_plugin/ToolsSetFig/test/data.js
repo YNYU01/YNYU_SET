@@ -83,6 +83,9 @@ let HELP_DATA = {
 };
 
 // ========== 常量定义 ==========
+// 当前插件构建版本号（构建时会从 log.md 首行 ### vX.Y.Z 自动注入；未构建时用下方默认值；与拉取的最新版本不符时界面显示「待更新」）
+const LOCAL_PLUGIN_VERSION = '0.1.4';
+
 const UI_SIZES = {
   MINI: [208, 460],
   NORMAL: [300, 660],

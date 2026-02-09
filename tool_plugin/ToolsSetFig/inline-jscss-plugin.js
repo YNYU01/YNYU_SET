@@ -158,6 +158,7 @@ class InlineJsCssPlugin {
       const mainCssPath = path.join(outputDir, 'style.css');
       const mainRunPath = path.join(outputDir, 'run.js');
       const mainDataPath = path.join(outputDir, 'data.js');
+      const logMdPath = path.resolve(__dirname, 'log.md');
 
       // 读取 JS 和 CSS 内容
       let jsContent = '';
@@ -171,6 +172,18 @@ class InlineJsCssPlugin {
         jsContent = fs.readFileSync(mainJsPath, 'utf-8');
         dataContent = fs.readFileSync(mainDataPath, 'utf-8');
         jsContent = jsContent.replace(/clear\*\//g,'');
+        // 构建时从 log.md 取最新版号注入到 data 中的 LOCAL_PLUGIN_VERSION（仅影响内联结果，不修改源文件）
+        try {
+          const logContent = fs.readFileSync(logMdPath, 'utf-8');
+          const verMatch = logContent.match(/^###\s+v(\d+\.\d+\.\d+)/m);
+          if (verMatch && verMatch[1]) {
+            const versionFromLog = verMatch[1];
+            dataContent = dataContent.replace(
+              /const\s+LOCAL_PLUGIN_VERSION\s*=\s*'[^']*';/,
+              `const LOCAL_PLUGIN_VERSION = '${versionFromLog}';`
+            );
+          }
+        } catch (_) {}
         // 清理注释
         if (this.removeComments) {
           jsContent = this.removeJsComments(jsContent);

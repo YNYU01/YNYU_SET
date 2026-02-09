@@ -1301,7 +1301,7 @@ function getLanguageIntime(){
 };
 
 // ==================== 公共配置管理器（公告、版本检查等） ====================
-// 存储键名
+// 存储键名（版本号常量在 data.js 的 LOCAL_PLUGIN_VERSION）
 const PUBLIC_CONFIG_STORAGE_KEY = 'toolsSetFig_publicConfig';
 const PUBLIC_CONFIG_TIMESTAMP_KEY = 'toolsSetFig_publicConfigTimestamp';
 
@@ -1311,6 +1311,19 @@ const PublicConfigManager = {
   _loadingPromise: null,
   _dataMap: {},     // { key: valueString | object }
   _lastFetchAt: null,
+  // 插件环境（data: URL 等）下 localStorage 不可用，用内存缓存（与 run.js 的 IS_PLUGIN_ENV 一致）
+  _memoryCache: null,
+  _isStorageSafe() {
+    if (typeof IS_PLUGIN_ENV !== 'undefined' && IS_PLUGIN_ENV) return false;
+    try {
+      const k = '__storage_test__';
+      localStorage.setItem(k, '1');
+      localStorage.removeItem(k);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  },
 
   // 初始化 Supabase（如果还没初始化）
   _ensureSupabase() {
@@ -1321,55 +1334,54 @@ const PublicConfigManager = {
     return !!supabaseClient;
   },
 
-  // 从本地存储读取缓存
+  // 从本地存储读取缓存（插件/ data: URL 下 localStorage 会报 SecurityError，改用内存缓存）
   _loadFromCache() {
-    try {
-      // 优先尝试使用 localStorage（在插件环境中也可能可用）
-      if (typeof localStorage !== 'undefined') {
-        const cachedData = localStorage.getItem(PUBLIC_CONFIG_STORAGE_KEY);
-        const cachedTimestamp = localStorage.getItem(PUBLIC_CONFIG_TIMESTAMP_KEY);
-        
-        if (cachedData && cachedTimestamp) {
-          try {
-            const data = JSON.parse(cachedData);
-            const timestamp = parseInt(cachedTimestamp, 10);
-            if (!isNaN(timestamp) && data) {
-              return { data, timestamp };
-            }
-          } catch (e) {
-            console.warn('[PublicConfig] Failed to parse cached data:', e);
-          }
-        }
+    if (!this._isStorageSafe()) {
+      if (this._memoryCache && this._memoryCache.data) {
+        return { data: this._memoryCache.data, timestamp: this._memoryCache.timestamp };
       }
-      
-      // 如果 localStorage 不可用，在插件环境中尝试通过 AuthStorage（但通常返回 null）
-      if (PLUGINAPP) {
-        // 插件环境：AuthStorage.get 在插件环境中返回 null
-        // 这里返回 null，让系统从 Supabase 拉取
-        return null;
+      return null;
+    }
+    try {
+      const cachedData = localStorage.getItem(PUBLIC_CONFIG_STORAGE_KEY);
+      const cachedTimestamp = localStorage.getItem(PUBLIC_CONFIG_TIMESTAMP_KEY);
+      if (cachedData && cachedTimestamp) {
+        const data = JSON.parse(cachedData);
+        const timestamp = parseInt(cachedTimestamp, 10);
+        if (!isNaN(timestamp) && data) return { data, timestamp };
       }
     } catch (e) {
-      console.warn('[PublicConfig] Failed to load from cache:', e);
+      if (e.name !== 'SecurityError' && !(e.message && e.message.includes('Storage'))) {
+        console.warn('[PublicConfig] Failed to load from cache:', e);
+      }
+      if (this._memoryCache && this._memoryCache.data) {
+        return { data: this._memoryCache.data, timestamp: this._memoryCache.timestamp };
+      }
     }
     return null;
   },
 
-  // 保存到本地存储
+  // 保存到本地存储（插件环境下只写内存 + 可选 toolMessage，不访问 localStorage 避免 SecurityError）
   _saveToCache(data, timestamp) {
-    try {
-      // 优先使用 localStorage（在插件环境中也可能可用）
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(PUBLIC_CONFIG_STORAGE_KEY, JSON.stringify(data));
-        localStorage.setItem(PUBLIC_CONFIG_TIMESTAMP_KEY, timestamp.toString());
+    this._memoryCache = { data, timestamp };
+    if (!this._isStorageSafe()) {
+      if (PLUGINAPP && typeof toolMessage === 'function') {
+        toolMessage([[PUBLIC_CONFIG_STORAGE_KEY, data], 'setlocal'], PLUGINAPP);
+        toolMessage([[PUBLIC_CONFIG_TIMESTAMP_KEY, timestamp], 'setlocal'], PLUGINAPP);
       }
-      
-      // 在插件环境中，同时通过 toolMessage 存储（用于持久化）
+      return;
+    }
+    try {
+      localStorage.setItem(PUBLIC_CONFIG_STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(PUBLIC_CONFIG_TIMESTAMP_KEY, timestamp.toString());
       if (PLUGINAPP && typeof toolMessage === 'function') {
         toolMessage([[PUBLIC_CONFIG_STORAGE_KEY, data], 'setlocal'], PLUGINAPP);
         toolMessage([[PUBLIC_CONFIG_TIMESTAMP_KEY, timestamp], 'setlocal'], PLUGINAPP);
       }
     } catch (e) {
-      console.warn('[PublicConfig] Failed to save to cache:', e);
+      if (e.name !== 'SecurityError' && !(e.message && e.message.includes('Storage'))) {
+        console.warn('[PublicConfig] Failed to save to cache:', e);
+      }
     }
   },
 
@@ -1554,27 +1566,30 @@ const PublicConfigManager = {
   }
 };
 
-// 更新界面上的版本信息
+// 更新界面上的版本信息（显示本地版本号；若与拉取的最新版本不符则显示「待更新」）
 async function updateVersionInfo() {
   try {
     const versionInfo = await PublicConfigManager.getVersionInfo();
     const versionTextEl = document.querySelector('[data-version-text]');
     const versionTimeEl = document.querySelector('[data-version-time]');
-    
-    if (versionInfo.version && versionTextEl) {
-      versionTextEl.textContent = versionInfo.version;
+    const versionPendingEl = document.querySelector('[data-version-pending]');
+
+    if (versionTextEl) {
+      versionTextEl.textContent = LOCAL_PLUGIN_VERSION;
     }
-    
-    if (versionInfo.updatedAt && versionTimeEl) {
-      // 格式化日期时间
+    if (versionTimeEl && versionInfo.updatedAt) {
       const date = new Date(versionInfo.updatedAt);
-      // 格式：YYYY-MM-DD
       const formattedDate = date.toLocaleDateString('zh-CN', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit'
       }).replace(/\//g, '-');
       versionTimeEl.textContent = formattedDate;
+    }
+    if (versionPendingEl) {
+      const remoteVersion = (versionInfo.version || '').trim();
+      const showPending = remoteVersion && remoteVersion !== LOCAL_PLUGIN_VERSION;
+      versionPendingEl.style.display = showPending ? '' : 'none';
     }
   } catch (e) {
     console.warn('[PublicConfig] Failed to update version info:', e);

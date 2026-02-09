@@ -1,3 +1,6 @@
+### TODO
+- 修复：更多功能页>斜切拉伸会导致旋转值重置的问题
+
 ### v0.1.4 2026/2/5
 - 🐞 Fix: More Tools page > Selected layer info not displayed；🐞 修复：更多功能页>选中图层时未显示对应信息的问题
 - 🐞 Fix: More Tools page > In-place rasterize not working；🐞 修复：更多功能页>原地栅格化失效问题
