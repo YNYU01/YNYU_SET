@@ -48,7 +48,7 @@
       </div>
   </div>
   <div data-page-id="html2zy" class="wh100 df-ffc gap4 bsb">
-    <div data-list-section class="pad10 df-ffc gap4 bsb">
+    <div data-list-section class="pad10 pos-r df-ffc gap4 bsb h100 ovh">
       <!-- 元素选择器 -->
       <div class="w100 df-ffc gap4 fl0">
         <div class="df-lc gap4">
@@ -56,10 +56,20 @@
           data-en-placeholder="Input CSS selector"
           data-input data-input-type="text" value="[data-h2zy]">
           <div id="scanButton" data-btn="main" class="df-cc" data-en-text="Scan">扫描</div>
-        </div>
+          <input type="checkbox" id="show-rule">
+          <label for="show-rule" class="fl0 df-cc wh-22 bod-r6 pad2 bsb" >
+            <btn-set></btn-set>
+          </label>
+          </div>
       </div>
       <!--操作说明-->
-      <div class="bod-d df-ffc pad4 bsb bod-r4">
+      <div class="bod-d df-ffc pad4 bsb bod-r4" data-rule-box style="display: none;">
+        <div class="df-lc gap4 font-s10" style="padding-left: 10px;">
+          <div data-en-text="Filter hidden elements">过滤隐藏元素</div>
+          <input type="checkbox" checked id="ignoreDisplayNone">
+          <label for="ignoreDisplayNone" class="switch pos-a" style="--swi-h:14px;">
+          </label>
+        </div>
         <li data-li-style="2" style="transform: skew(-8deg); white-space: normal;" 
           data-en-text="Elements are cached after first scan, cache persists until page refresh" 
           class="font-s10 op6">
@@ -77,7 +87,7 @@
         </li>
       </div>
       <!-- 元素列表 -->
-      <div data-elementslist-box class="df-ffc">
+      <div data-elementslist-box class="df-ffc h100">
         <div data-elementslist-set class="df-sc bsb pos-r bod-r4">
           <div class="df-lc gap2">
             <input type="checkbox" id="elements-tickall" checked="true">
@@ -107,7 +117,7 @@
         </div>
       </div>
       <!-- 状态提示和导出按钮 -->
-      <div class="w100 df-ffc pos-r fl0">
+      <div class="df-ffc fl0 pos-a bsb" style="bottom: 10px; width: 378px;">
         <div data-status class="status" id="status"></div>
         <div id="exportButton" data-btn="export" class="df-cc w100" data-en-text="Export Selected Elements">导出选中元素</div>
       </div>

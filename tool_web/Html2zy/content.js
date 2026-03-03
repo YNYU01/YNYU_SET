@@ -1260,6 +1260,7 @@
                        computed.opacity === '0' ||
                        computed.opacity === '0.0';
     
+    // 当不包含隐藏元素时，在遍历阶段直接跳过 display:none 的节点（整棵子树不会进入 snapshot）
     if (isHidden && !includeHidden) {
       return null;
     }
@@ -1719,55 +1720,99 @@
   }
 
   /**
+   * 快速扫描用：元素自身及所有祖先的 display 均不为 none 时才视为可见（避免扫到不可见元素的子元素）
+   */
+  function isElementAndAncestorsVisible(element) {
+    let el = element;
+    while (el && el !== document.body) {
+      if (getComputedStyle(el).display === 'none') return false;
+      el = el.parentElement;
+    }
+    return true;
+  }
+
+  /**
    * 通过选择器快照元素（扫描时调用）
    * 如果元素已有data-h2zy，从全局数据获取；如果没有，创建新的
+   * options.ignoreDisplayNone 为 true 时仅处理自身及祖先均非 display:none 的元素（快速扫描）
    */
   function snapshotBySelector(selector, options = {}) {
     try {
-      const elements = document.querySelectorAll(selector);
-      if (elements.length === 0) {
+      const allElements = document.querySelectorAll(selector);
+      if (allElements.length === 0) {
         throw new Error(getMessage([`未找到匹配选择器 "${selector}" 的元素`,`No elements found matching selector "${selector}"`]));
       }
 
       // 读取到匹配元素时自动注入data-h2zy属性，方便后续定位和截图
-      // 不注入任何UI，只注入属性
       if (options.injectDataH2zy !== false) {
         injectDataH2zyToElements(selector);
       }
 
-      // 处理每个元素，如果已有data-h2zy，从全局数据获取；如果没有，创建新的
+      // 快速扫描：仅保留自身及所有祖先都非 display:none 的元素（避免扫到不可见元素的子元素）
+      const indicesToProcess = [];
+      for (let i = 0; i < allElements.length; i++) {
+        const el = allElements[i];
+        const tagName = el.tagName.toLowerCase();
+
+        // 全局剔除：永远不需要解析的标签
+        if (['script', 'style', 'meta', 'link', 'noscript', 'template'].includes(tagName)) {
+          continue;
+        }
+
+        // 剔除“空 SVG”：宽高为 0 且只有 <defs>（或完全没有子元素）
+        if (tagName === 'svg') {
+          const rect = el.getBoundingClientRect();
+          const children = el.children || [];
+          const onlyDefs = children.length > 0 && Array.from(children).every(child => {
+            return child.tagName && child.tagName.toLowerCase() === 'defs';
+          });
+
+          if ((rect.width === 0 || rect.height === 0) &&
+              (children.length === 0 || onlyDefs)) {
+            continue;
+          }
+        }
+
+        if (!options.ignoreDisplayNone || isElementAndAncestorsVisible(el)) {
+          indicesToProcess.push(i);
+        }
+      }
+      if (indicesToProcess.length === 0) {
+        throw new Error(getMessage(['未找到可见元素（快速扫描已忽略 display:none）','No visible elements found (quick scan ignores display:none)']));
+      }
+
       const result = [];
-      for (let i = 0; i < elements.length; i++) {
-        const element = elements[i];
+      for (let resultIndex = 0; resultIndex < indicesToProcess.length; resultIndex++) {
+        const i = indicesToProcess[resultIndex];
+        const element = allElements[i];
         const dataH2zy = element.getAttribute('data-h2zy');
-        
+        const selectorIndex = i; // 在完整选择器结果中的索引，供后续定位/截图使用
+
         if (dataH2zy && globalElementsData[dataH2zy]) {
-          // 元素已有data-h2zy且全局数据中存在，使用全局数据
           const existingData = globalElementsData[dataH2zy];
-          // 更新selector和index（可能变化）
           existingData.selector = selector;
-          existingData.index = i;
-          // 保留customName（用户编辑的名称）
+          existingData.index = selectorIndex;
           result.push({
             ...existingData.snapshot,
             dataH2zy: dataH2zy,
             selector: selector,
-            index: i
+            index: resultIndex,
+            selectorIndex: selectorIndex
           });
         } else {
-          // 元素没有data-h2zy或全局数据中不存在，创建新的snapshot
           const snapshot = snapshotElement(element, options);
           if (snapshot) {
-            const dataH2zy = snapshot.dataH2zy || element.getAttribute('data-h2zy');
-            if (dataH2zy) {
-              // 保存到全局数据
-              setElementData(dataH2zy, {
+            const snapDataH2zy = snapshot.dataH2zy || element.getAttribute('data-h2zy');
+            if (snapDataH2zy) {
+              setElementData(snapDataH2zy, {
                 snapshot: snapshot,
                 selector: selector,
-                index: i,
-                customName: null // 初始没有自定义名称
+                index: selectorIndex,
+                customName: null
               });
             }
+            snapshot.index = resultIndex;
+            snapshot.selectorIndex = selectorIndex;
             result.push(snapshot);
           }
         }
@@ -1795,34 +1840,43 @@
     }
 
     try {
-      // 1. 检查元素是否可见
+      // 1. 检查元素是否可见（有有效尺寸）
       if (!isElementVisible(element)) {
         console.warn(`元素 ${dataH2zy || 'unknown'} 不可见`);
         return false;
       }
 
-      // 2. 检查元素是否可以通过滚动定位来显示
-      if (!canElementBeScrolledIntoView(element)) {
-        console.warn(`元素 ${dataH2zy || 'unknown'} 无法通过滚动定位`);
-        return false;
-      }
+      // 2. 判断当前是否至少有一部分在视口内
+      const visibleRect = getElementVisibleRect(element);
+      const hasIntersection = visibleRect.width > 0 && visibleRect.height > 0;
 
-      // 3. 判断元素有没有完全显示在窗口
+      // 3. 如果当前完全在视口内，直接返回成功（不需要滚动）
       if (isElementFullyVisible(element)) {
         // 完全显示，无需滚动
         return true;
       }
 
-      // 4. 未完全显示，滚动到顶部
+      // 4. 如果当前已有部分在视口内，但页面/容器不可滚动，也视为可用
+      if (hasIntersection && !canElementBeScrolledIntoView(element)) {
+        // 例如固定在视口中的元素、或页面本身不可滚动
+        return true;
+      }
+
+      // 5. 其余情况：需要且可以通过滚动来尝试定位
+      if (!canElementBeScrolledIntoView(element)) {
+        console.warn(`元素 ${dataH2zy || 'unknown'} 无法通过滚动定位`);
+        return false;
+      }
+
       await scrollElementToTop(element);
       
-      // 5. 滚动后再次判断元素有没有完全展示
+      // 6. 滚动后再次判断元素有没有完全展示
       if (isElementFullyVisible(element)) {
         // 完全展示
         return true;
       }
 
-      // 6. 仍未完全展示，但至少部分可见，也算成功
+      // 7. 仍未完全展示，但至少部分可见，也算成功
       const rect = element.getBoundingClientRect();
       if (rect.width > 0 && rect.height > 0) {
         return true;
@@ -1836,8 +1890,39 @@
   }
 
   /**
+   * 在 body 顶部生成整页（视口）定位线框（无法定位到元素时的兜底，与“预览至少返回完整截图”对应）
+   */
+  function createWholePagePositionFrame() {
+    if (highlightOverlay) {
+      highlightOverlay.remove();
+      highlightOverlay = null;
+    }
+    const frame = document.createElement('div');
+    frame.style.position = 'fixed';
+    frame.style.left = '0';
+    frame.style.top = '0';
+    frame.style.width = '100vw';
+    frame.style.height = '100vh';
+    frame.style.border = '2px solid #1cc992';
+    frame.style.boxSizing = 'border-box';
+    frame.style.pointerEvents = 'none';
+    frame.style.zIndex = '2147483647';
+    frame.style.backgroundColor = 'rgba(28, 201, 146, 0.08)';
+    frame.id = 'html2zy-position-frame';
+    frame.title = getMessage(['当前为整页定位（元素无法单独定位时与预览完整截图一致）','Whole page highlight (same as full screenshot when element cannot be located)']);
+    document.body.insertBefore(frame, document.body.firstChild);
+    highlightOverlay = frame;
+    setTimeout(() => {
+      if (highlightOverlay && highlightOverlay.id === 'html2zy-position-frame') {
+        highlightOverlay.remove();
+        highlightOverlay = null;
+      }
+    }, 3000);
+  }
+
+  /**
    * 在 body 顶部生成定位线框
-   * 使用共用的元素定位逻辑，确保元素正常显示后再生成定位框
+   * 使用共用的元素定位逻辑，确保元素正常显示后再生成定位框；无法定位时改为高亮整页（与预览“至少返回完整截图”一致）
    */
   async function createPositionFrame(element) {
     // 移除旧的线框
@@ -1846,26 +1931,20 @@
       highlightOverlay = null;
     }
 
-    // 获取元素的data-h2zy属性（用于日志和定位）
     const dataH2zy = element.getAttribute('data-h2zy') || '';
-
-    // 使用共用的元素定位逻辑，确保元素正常显示
     const positioned = await ensureElementVisibleAndPositioned(element, dataH2zy);
-    
+
     if (!positioned) {
-      console.warn(`无法定位元素 ${dataH2zy || 'unknown'}，无法生成定位框`);
-      return false;
+      console.warn(`无法定位元素 ${dataH2zy || 'unknown'}，改为高亮整页（与预览完整截图一致）`);
+      createWholePagePositionFrame();
+      return true;
     }
 
-    // 等待一下确保滚动完全稳定
     await new Promise(resolve => setTimeout(resolve, 200));
-    
-    // 获取元素位置并创建定位框
     const rect = element.getBoundingClientRect();
     const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
     const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-    
-    // 创建线框元素
+
     const frame = document.createElement('div');
     frame.style.position = 'absolute';
     frame.style.left = (rect.left + scrollX) + 'px';
@@ -1878,12 +1957,10 @@
     frame.style.zIndex = '2147483647';
     frame.style.backgroundColor = 'rgba(28, 201, 146, 0.1)';
     frame.id = 'html2zy-position-frame';
-    
-    // 插入到 body 最顶部
+
     document.body.insertBefore(frame, document.body.firstChild);
     highlightOverlay = frame;
 
-    // 延长显示时间（5秒），确保用户能看到定位框
     setTimeout(() => {
       if (highlightOverlay && highlightOverlay.id === 'html2zy-position-frame') {
         highlightOverlay.remove();
@@ -1896,37 +1973,36 @@
 
   /**
    * 高亮指定索引的元素（在 body 顶部生成线框）
-   * 优先使用data-h2zy查找元素，确保获取实时的准确的元素状态
+   * 优先使用data-h2zy查找元素；无法定位或找不到元素时高亮整页（与预览“至少返回完整截图”一致）
    */
   async function highlightElementByIndex(selector, index, dataH2zy = null) {
     try {
       let element = null;
 
-      // 优先通过data-h2zy查找元素（确保获取实时的准确的元素状态）
       if (dataH2zy) {
         element = document.querySelector(`[data-h2zy="${dataH2zy}"]`);
         if (element) {
-          // 找到元素，使用共用的定位逻辑生成定位框
           const success = await createPositionFrame(element);
           return success;
         }
-        // 如果通过data-h2zy找不到，fallback到selector+index
         console.warn(`通过data-h2zy="${dataH2zy}"未找到元素，尝试使用selector+index`);
       }
 
-      // 使用selector+index查找元素（fallback）
       const elements = document.querySelectorAll(selector);
       if (index >= 0 && index < elements.length) {
         element = elements[index];
-        // 使用共用的定位逻辑生成定位框
         const success = await createPositionFrame(element);
         return success;
       }
 
-      return false;
+      // 找不到元素时也高亮整页，与“预览至少返回完整截图”一致
+      console.warn('未找到目标元素，高亮整页');
+      createWholePagePositionFrame();
+      return true;
     } catch (error) {
       console.error('高亮元素失败:', error);
-      return false;
+      createWholePagePositionFrame();
+      return true;
     }
   }
 
@@ -2051,6 +2127,7 @@
 
   /**
    * 从完整页面截图中裁切元素区域（使用指定的位置信息）
+   * 元素宽高等于视口时易因浮点精度导致 source 超出截图边界而裁切失败，故内部用 floor + 严格夹在 [0,img] 内。
    * @param {HTMLElement} element - 要截图的元素（用于验证，实际使用传入的位置）
    * @param {string} fullScreenshotDataUrl - 完整页面截图
    * @param {DOMRect} rect - 元素的位置信息（截图时获取的）
@@ -2111,55 +2188,54 @@
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
           
+          // 元素宽高等于视口时易因浮点精度导致 source 超出 img 边界，故用 floor 并严格夹在 [0, img] 内
+          const clamp = (v, minVal, maxVal) => Math.max(minVal, Math.min(maxVal, v));
+          const floor = (v) => Math.floor(v);
+
           if (preserveFullSize) {
-            // 保持元素完整尺寸，未显示区域透明
-            canvas.width = Math.max(Math.round(rect.width * scaleX), 1);
-            canvas.height = Math.max(Math.round(rect.height * scaleY), 1);
-            
-            // 计算可见区域在截图中的位置
-            const visibleX = Math.max(0, visibleRect.left * scaleX);
-            const visibleY = Math.max(0, visibleRect.top * scaleY);
-            const visibleWidth = Math.min(visibleRect.width * scaleX, img.width - visibleX);
-            const visibleHeight = Math.min(visibleRect.height * scaleY, img.height - visibleY);
-            
-            // 计算可见区域在画布中的位置（相对于元素）
-            const offsetX = (visibleRect.left - rect.left) * scaleX;
-            const offsetY = (visibleRect.top - rect.top) * scaleY;
-            
-            // 绘制可见区域到画布
+            // 保持元素完整尺寸：画布为元素大小，先填充灰色背景，未能绘制到的区域用灰色而不是透明
+            canvas.width = Math.max(floor(rect.width * scaleX), 1);
+            canvas.height = Math.max(floor(rect.height * scaleY), 1);
+            ctx.fillStyle = '#f5f5f5';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const visibleX = clamp(floor(visibleRect.left * scaleX), 0, img.width - 1);
+            const visibleY = clamp(floor(visibleRect.top * scaleY), 0, img.height - 1);
+            const visibleWidth = clamp(floor(visibleRect.width * scaleX), 1, img.width - visibleX);
+            const visibleHeight = clamp(floor(visibleRect.height * scaleY), 1, img.height - visibleY);
+
+            const offsetX = floor((visibleRect.left - rect.left) * scaleX);
+            const offsetY = floor((visibleRect.top - rect.top) * scaleY);
+
             if (visibleWidth > 0 && visibleHeight > 0) {
               ctx.drawImage(
                 img,
-                Math.round(visibleX), Math.round(visibleY),
-                Math.round(visibleWidth), Math.round(visibleHeight),
-                Math.round(offsetX), Math.round(offsetY),
-                Math.round(visibleWidth), Math.round(visibleHeight)
+                visibleX, visibleY, visibleWidth, visibleHeight,
+                offsetX, offsetY, visibleWidth, visibleHeight
               );
             }
-            // 其他区域保持透明（默认）
           } else {
-            // 只裁剪可见区域
-            const elementX = Math.max(0, rect.left * scaleX);
-            const elementY = Math.max(0, rect.top * scaleY);
-            const elementWidth = Math.min(rect.width * scaleX, img.width - elementX);
-            const elementHeight = Math.min(rect.height * scaleY, img.height - elementY);
-            
-            // 验证裁剪区域
+            // 只裁剪可见区域，尺寸精度上严格夹在截图范围内（避免元素宽高等于视口时裁切失败）
+            const elementX = clamp(floor(rect.left * scaleX), 0, img.width - 1);
+            const elementY = clamp(floor(rect.top * scaleY), 0, img.height - 1);
+            const elementWidth = clamp(floor(rect.width * scaleX), 1, img.width - elementX);
+            const elementHeight = clamp(floor(rect.height * scaleY), 1, img.height - elementY);
+
             if (elementWidth <= 0 || elementHeight <= 0) {
               reject(new Error(getMessage(['裁剪区域无效','Invalid crop area'])));
               return;
             }
-            
-            canvas.width = Math.max(Math.round(elementWidth), 1);
-            canvas.height = Math.max(Math.round(elementHeight), 1);
-            
-            // 绘制裁剪后的区域
+
+            canvas.width = Math.max(elementWidth, 1);
+            canvas.height = Math.max(elementHeight, 1);
+            // 非 preserveFullSize 分支通常没有透明边，但仍先填充灰色，保证兜底一致
+            ctx.fillStyle = '#f5f5f5';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
             ctx.drawImage(
               img,
-              Math.round(elementX), Math.round(elementY),
-              Math.round(elementWidth), Math.round(elementHeight),
-              0, 0,
-              canvas.width, canvas.height
+              elementX, elementY, elementWidth, elementHeight,
+              0, 0, canvas.width, canvas.height
             );
           }
           
@@ -2258,6 +2334,35 @@
       width: Math.min(viewportWidth, rect.right) - Math.max(0, rect.left),
       height: Math.min(viewportHeight, rect.bottom) - Math.max(0, rect.top)
     };
+  }
+
+  /**
+   * 将完整（视口）截图放进元素尺寸的画布：目前简化为直接返回元素尺寸的灰色占位图（不做模糊或边缘拉伸）
+   * @param {string} fullScreenshotDataUrl - 视口截图 data URL（当前实现不使用）
+   * @param {DOMRect} rect - 元素 getBoundingClientRect()
+   * @param {Object} visibleRect - getElementVisibleRect(element)（当前实现不使用）
+   * @returns {Promise<string|null>} 元素尺寸的 data URL，失败返回 null
+   */
+  function drawViewportScreenshotIntoElementCanvas(fullScreenshotDataUrl, rect, visibleRect) {
+    return new Promise((resolve) => {
+      if (!rect || rect.width <= 0 || rect.height <= 0) {
+        resolve(null);
+        return;
+      }
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const cw = Math.max(Math.round(rect.width), 1);
+        const ch = Math.max(Math.round(rect.height), 1);
+        canvas.width = cw;
+        canvas.height = ch;
+        ctx.fillStyle = '#f5f5f5';
+        ctx.fillRect(0, 0, cw, ch);
+        resolve(canvas.toDataURL('image/png'));
+      } catch (e) {
+        resolve(null);
+      }
+    });
   }
 
   /**
@@ -2390,78 +2495,71 @@
       const rect = element.getBoundingClientRect();
       const width = rect.width;
       const height = rect.height;
-      
-      // 第二步：立即生成占位图（基于宽高信息）
+      // 不可见/无宽高元素：无缓存时直接用 100*100 灰色块，不做完整截图兜底
+      if ((width <= 0 || height <= 0)) {
+        return generateSimplePlaceholder(100, 100);
+      }
       const placeholder = generateSimplePlaceholder(width, height);
-      
-      // 第三步：按照新策略尝试截图
+
+      // 简化逻辑：默认使用与元素尺寸一致的灰色占位图，只有截图裁切成功时才替换
       try {
-        let croppedImage = null;
-        
-        // 使用共用的元素定位逻辑，确保元素正常显示（与定位框生成共用）
+        // 确保元素可见并可滚动到合适位置
         const positioned = await ensureElementVisibleAndPositioned(element, dataH2zy);
-        
         if (!positioned) {
-          // 无法定位元素，返回占位图
-          console.warn(`元素 ${dataH2zy || index} 无法定位，返回占位图`);
+          console.warn(`元素 ${dataH2zy || index} 无法定位，使用占位图`);
           return placeholder;
         }
 
-        // 元素已定位，等待一下确保位置稳定
+        // 等待位置稳定后再截图
         await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // 在截图前立即获取元素位置（确保位置和截图对应）
         const rectBeforeScreenshot = element.getBoundingClientRect();
         const visibleRectBeforeScreenshot = getElementVisibleRect(element);
-        
-        // 判断是否完全可见
+
+        // 获取完整页面截图并裁切元素区域
+        const fullScreenshot = await getFullPageScreenshot(!useCachedScreenshot);
+        if (!fullScreenshot || !fullScreenshot.startsWith('data:image')) {
+          return placeholder;
+        }
+
+        let croppedImage = null;
         if (isElementFullyVisible(element)) {
-          // 完全显示，直接截图并裁剪
-          const fullScreenshot = await getFullPageScreenshot(!useCachedScreenshot);
-          // 使用截图前获取的位置信息进行裁切
           croppedImage = await cropElementFromScreenshotWithPosition(
-            element, 
-            fullScreenshot, 
-            rectBeforeScreenshot, 
+            element,
+            fullScreenshot,
+            rectBeforeScreenshot,
             visibleRectBeforeScreenshot,
             false
           );
         } else {
-          // 部分可见，只截取展示的部分，但画布保持元素大小，未能截取的区域保持透明
-          const fullScreenshot = await getFullPageScreenshot(!useCachedScreenshot);
-          // 使用截图前获取的位置信息进行裁切
           croppedImage = await cropElementFromScreenshotWithPosition(
-            element, 
-            fullScreenshot, 
-            rectBeforeScreenshot, 
+            element,
+            fullScreenshot,
+            rectBeforeScreenshot,
             visibleRectBeforeScreenshot,
             true
           );
         }
-        
-        // 验证截图内容
+
         if (croppedImage && croppedImage.startsWith('data:image')) {
-          // 截图成功，保存到缓存
           if (dataH2zy) {
             saveScreenshotToCache(dataH2zy, croppedImage);
           }
           return croppedImage;
         }
+
+        // 裁切无效：保持占位图，不再使用完整截图兜底
+        return placeholder;
       } catch (screenshotError) {
-        // 截图失败，尝试使用缓存（仅在useCachedScreenshot为true时）
+        console.warn(`元素 ${index} 截图失败，使用占位图:`, screenshotError);
+        // 截图失败时，若允许用缓存则尝试返回缓存，否则仍然用占位图
         if (useCachedScreenshot && dataH2zy) {
           const cachedScreenshot = getCachedScreenshot(dataH2zy);
           if (cachedScreenshot) {
-            console.warn(`元素 ${index} 截图失败，使用缓存:`, screenshotError);
             return cachedScreenshot;
           }
         }
-        // 没有缓存或不允许使用缓存，静默处理，返回占位图
-        console.warn(`元素 ${index} 截图失败:`, screenshotError);
+        return placeholder;
       }
-      
-      // 返回占位图
-      return placeholder;
       
     } catch (error) {
       console.error('生成预览图过程中出错:', error);

@@ -12,6 +12,28 @@ input[type="text"],textarea{
   background: rgba(49, 207, 154, 0.24);
 }
 
+input[type="checkbox"]:checked +.switch {
+  --swi-af: var(--themeColor);
+  opacity: 1;
+}
+
+.switch {
+  --swi-af: var(--mainColor);
+  opacity: 0.5;
+}
+
+[for="show-rule"]{
+  border: 1px solid var(--boxBod);
+  background: var(--boxGry);
+}
+
+input[type="checkbox"]:checked + [for="show-rule"]{
+  --fill: #252525;
+  --bod: #252525;
+  background: var(--themeColor);
+  border: 1px solid transparent;
+}
+
 [data-page-id="html2zy"] [data-btn="main"]{
   background: var(--boxGry);
   border-radius: 6px;
@@ -58,10 +80,6 @@ input[type="text"],textarea{
 /* 元素列表样式 */
 [data-list-section]{
   height: calc(100dvh - 68px);
-}
-
-[data-elementslist-box]{
-  height: calc(100% - 108px);
 }
 
 [data-elementslist-set]{

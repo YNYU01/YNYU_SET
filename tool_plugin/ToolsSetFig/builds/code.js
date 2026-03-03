@@ -5145,15 +5145,52 @@ function reAnyByObj(comps,obj,enters,nulls){
         let rePros = Object.keys(comp.componentProperties).filter(pro => keyPros.includes(pro.split('#')[0]));
         setPro(comp,rePros,obj[i])
 
-        //内嵌组件时，也要替换
+        //内嵌组件时，也要替换（支持 key 与 key[n]）
         let compChilds = comp.findAll(items => items.type == 'INSTANCE');// && items.componentProperties.length > 0
         //console.log(compChilds)
-        for(let ii = 0; ii < compChilds.length; ii++){
-            let compChild = compChilds[ii];
-            //console.log(compChild)
-            let childRePros = Object.keys(compChild.componentProperties).filter(pro => keyPros.includes(pro.split('#')[0]));
-            //console.log(childRePros)
-            setPro(compChild,childRePros,obj[i]);
+        let rowData = obj[i];
+        if(rowData && compChilds.length > 0){
+            let dataKeys = Object.keys(rowData);
+            dataKeys.forEach(k => {
+                let baseKey = k;
+                let targetIndex = -1; // -1 表示全部
+
+                // 判断是否带 [n] 后缀
+                let match = k.match(/^(.*)\[(\d+)\]$/);
+                if(match){
+                    baseKey = match[1];
+                    let n = parseInt(match[2],10);
+                    // 后缀有效：数字且不超过 compChilds 数量
+                    if(!isNaN(n) && n >= 1 && n <= compChilds.length){
+                        targetIndex = n - 1;
+                    }else{
+                        // 后缀无效，当作无后缀处理 => 全部替换
+                        targetIndex = -1;
+                    };
+                };
+
+                // 构造只包含当前 baseKey 的临时数据对象
+                let tempData = {};
+                tempData[baseKey] = rowData[k];
+
+                if(targetIndex >= 0){
+                    // 只对第 n 个内嵌组件生效
+                    let child = compChilds[targetIndex];
+                    let childRePros = Object.keys(child.componentProperties).filter(pro => pro.split('#')[0] == baseKey);
+                    if(childRePros.length > 0){
+                        setPro(child,childRePros,tempData);
+                    };
+                }else{
+                    // 对所有包含该属性名的内嵌组件生效
+                    for(let ii = 0; ii < compChilds.length; ii++){
+                        let compChild = compChilds[ii];
+                        let childRePros = Object.keys(compChild.componentProperties).filter(pro => pro.split('#')[0] == baseKey);
+                        if(childRePros.length > 0){
+                            setPro(compChild,childRePros,tempData);
+                        };
+                    };
+                };
+            });
         };
     };
 
@@ -5831,7 +5868,7 @@ async function addText(info){
     //console.log(info);
     text.characters = info[1];
     text.fontSize = info[2];
-    let fills = info[3] ? info[3] : [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 ,a:1} }];
+    let fills = info[3] ? info[3] : [{ type: 'SOLID', color: { r: 0, g: 0, b: 0} }];
     text.fills = fills;
     return text;
 };

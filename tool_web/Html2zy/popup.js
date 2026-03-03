@@ -13,6 +13,8 @@
   const elements = {
     cssSelector: document.getElementById('cssSelector'),
     scanButton: document.getElementById('scanButton'),
+    showRule: document.getElementById('show-rule'),
+    ignoreDisplayNone: document.getElementById('ignoreDisplayNone'),
     elementsList: document.getElementById('elementsList'),
     exportButton: document.getElementById('exportButton'),
     status: document.getElementById('status'),
@@ -83,12 +85,15 @@
 
   /**
    * 获取当前选项
+   * 由“过滤隐藏元素”复选框控制是否忽略 display:none 等隐藏元素
    */
   function getOptions() {
+    const ignoreHidden = !!(elements.ignoreDisplayNone && elements.ignoreDisplayNone.checked);
     return {
-      includeHidden: false,
-      includeInvisible: false,
-      includeOverflow: false
+      includeHidden: !ignoreHidden,     // 未勾选时包含隐藏元素
+      includeInvisible: !ignoreHidden,  // 未勾选时包含不可见元素
+      includeOverflow: false,
+      ignoreDisplayNone: ignoreHidden   // 勾选时在 content.js 侧忽略 display:none
     };
   }
 
@@ -160,6 +165,7 @@
 
   /**
    * 扫描元素
+   * 是否过滤隐藏元素由全局复选框控制
    */
   async function scanElements() {
     const selector = elements.cssSelector.value.trim();
@@ -298,7 +304,7 @@
       //创建预览图
       const previewbox = document.createElement('div');
       previewbox.setAttribute('data-previewbox', '');
-      previewbox.className = 'w100 tex-pixelbg ovy noscrollbar';
+      previewbox.className = 'w100 tex-pixelbg ovy scrollbar';
 
       const preview = document.createElement('img');
       preview.src = previewUrl;
@@ -402,7 +408,8 @@
       locateBtn.className = 'df-cc wh-20 pos-r';
       locateBtn.innerHTML = '<btn-locate data-btn="op"></btn-locate>';
       locateBtn.addEventListener('click', () => {
-        locateElement(item.selector, i, h2zyValue);
+        const selectorIndex = (item.snapshot && item.snapshot.selectorIndex !== undefined) ? item.snapshot.selectorIndex : (item.index !== undefined ? item.index : i);
+        locateElement(item.selector, selectorIndex, h2zyValue);
       });
       infoline.appendChild(locateBtn);
 
@@ -502,16 +509,18 @@
           listItem.setAttribute('data-h2zy-picking', 'picking');
         }
         
-        // 先显示定位框，让用户知道正在截取元素
-        await sendMessageToContent({
-          type: 'highlightElement',
-          selector: item.selector,
-          index: item.index !== undefined ? item.index : i,
-          dataH2zy: dataH2zy
-        });
-        
-        // 等待定位框显示稳定后截图（缩短等待时间，定位框显示1秒后开始截图）
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // 仅当扫描元素多于一个时才显示高亮，避免高亮被截进预览图；单个元素或刷新单条时不显示
+        if (elementSnapshots.length > 1) {
+          await sendMessageToContent({
+            type: 'highlightElement',
+            selector: item.selector,
+            index: (item.snapshot && item.snapshot.selectorIndex !== undefined) ? item.snapshot.selectorIndex : (item.index !== undefined ? item.index : i),
+            dataH2zy: dataH2zy
+          });
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        } else {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
         
         // 调用刷新函数生成预览图（与刷新按钮调用的函数相同）
         const refreshResponse = await sendMessageToContent({
@@ -597,7 +606,29 @@
     }
 
     try {
-      const snapshot = elementSnapshots[index].snapshot;
+      let snapshot = elementSnapshots[index].snapshot;
+
+      // 如果当前勾选了“过滤隐藏元素”，复制前也剔除 display:none 子节点
+      if (elements.ignoreDisplayNone && elements.ignoreDisplayNone.checked) {
+        const pruneHiddenChildrenForCopy = (node) => {
+          if (!node || !Array.isArray(node.children)) return node;
+          node.children = node.children
+            .filter(child => {
+              const childDisplay = child.styles && child.styles.display;
+              if (childDisplay === 'none') {
+                return false;
+              }
+              return true;
+            })
+            .map(child => pruneHiddenChildrenForCopy(child));
+          return node;
+        };
+
+        // 深拷贝一份，避免污染内存中的快照
+        snapshot = JSON.parse(JSON.stringify(snapshot));
+        snapshot = pruneHiddenChildrenForCopy(snapshot);
+      }
+
       const json = JSON.stringify(snapshot, null, 2);
       await navigator.clipboard.writeText(json);
       showStatus([`已复制第 ${index + 1} 个元素的 JSON`,`Copied the JSON of the ${index + 1}th element`], 'success');
@@ -710,16 +741,23 @@
 
     let lang = ROOT.getAttribute('data-language');
     
-    // 更新标题（保留customName或使用默认名称）
+    // 更新标题（保留customName或使用默认名称；与初始渲染一致不加序号；若 customName 带历史序号则 strip 并回写存储）
     const title = listItem.querySelector(`input[data-h2zy-name="${index}"]`);
     if (title) {
       const tagName = snapshot.tagName || 'unknown';
       const id = snapshot.id || '';
       const classes = snapshot.classes || [];
       const h2zyValue = snapshot.dataH2zy || '';
-      const defaultName = `${index + 1}.${h2zyValue ? h2zyValue : tagName} ${id ? `#${id}` : ''} ${classes.length > 0 ? `.${classes[0]}` : ''}`;
-      // 保留customName或使用默认名称
-      title.value = item.customName || defaultName;
+      const defaultName = `${h2zyValue ? h2zyValue : tagName} ${id ? `#${id}` : ''} ${classes.length > 0 ? `.${classes[0]}` : ''}`;
+      let displayName = item.customName || defaultName;
+      if (item.customName && /^\d+\.\s*/.test(item.customName)) {
+        displayName = item.customName.replace(/^\d+\.\s*/, '').trim() || item.customName;
+        item.customName = displayName;
+        if (h2zyValue) {
+          sendMessageToContent({ type: 'setElementData', dataH2zy: h2zyValue, data: { customName: displayName || null } }).catch(() => {});
+        }
+      }
+      title.value = displayName;
     }
 
     // 更新预览图
@@ -832,7 +870,29 @@
           return cleaned;
         }
         
-        const elementForExport = removeDataH2zyFromElement(snapshot);
+        // 根据当前导出设置，深度过滤掉 display:none 的子节点
+        function pruneHiddenChildrenForExport(node) {
+          if (!node || !Array.isArray(node.children)) return node;
+          node.children = node.children
+            .filter(child => {
+              const childDisplay = child.styles && child.styles.display;
+              // 只有当用户勾选了“过滤隐藏元素”时，才剔除 display:none 的子节点
+              if (elements.ignoreDisplayNone && elements.ignoreDisplayNone.checked && childDisplay === 'none') {
+                return false;
+              }
+              return true;
+            })
+            .map(child => pruneHiddenChildrenForExport(child));
+          return node;
+        }
+
+        let elementForExport = removeDataH2zyFromElement(snapshot);
+        // 如果当前开启了“过滤隐藏元素”，在导出前再对快照树做一遍 display:none 剔除
+        if (elements.ignoreDisplayNone && elements.ignoreDisplayNone.checked) {
+          // 深拷贝一份，避免影响内存中的快照
+          elementForExport = JSON.parse(JSON.stringify(elementForExport));
+          elementForExport = pruneHiddenChildrenForExport(elementForExport);
+        }
         
         const elementData = {
           timestamp: new Date().toISOString(),
@@ -1046,13 +1106,25 @@
     showStatus([`批量刷新完成：成功 ${successCount} 个，失败 ${failCount} 个`,`Batch refresh completed: ${successCount} succeeded, ${failCount} failed`], 'success');
   });
 
-  // 事件监听
-  elements.scanButton.addEventListener('click', scanElements);
+  // 事件监听：扫描按钮与回车键触发扫描
+  elements.scanButton.addEventListener('click', () => scanElements());
   elements.cssSelector.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       scanElements();
     }
   });
+  // 显示/隐藏规则面板
+  if (elements.showRule) {
+    elements.showRule.addEventListener('change', (e) => {
+      try {
+        if (typeof showNext === 'function') {
+          showNext(e.target, 'data-rule-box', 'flex');
+        }
+      } catch (err) {
+        console.warn('toggle rule box failed', err);
+      }
+    });
+  }
   elements.exportButton.addEventListener('click', exportElements);
 
   // 页面加载完成后自动扫描
