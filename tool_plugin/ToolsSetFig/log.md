@@ -1,18 +1,18 @@
-### v0.1.5 2026/3/4
+### v0.1.5 2026/3/3
 - 🐞 Fix: More Tools page > Skew/Stretch caused rotation value to reset；🐞 修复：更多功能页>斜切拉伸会导致旋转值重置的问题
-- ⚡ Optimize: Sheet page > Get/Map component properties now supports nested repeated instances and index-based suffixes (e.g. xxx[1] for the first occurrence)；⚡ 优化：表单页>获取/映射组件属性支持内嵌重复实例，并按图层顺序标识，如xxx表示所有xxx属性，而xxx[1]表示第一个出现的xxx属性
+- ⚡ Optimize: Sheet page > Get/Map component properties now supports nested repeated instances and index-based suffixes (e.g. xxx[1] for the first occurrence)；⚡ 优化：表单页>获取/映射组件属性支持内嵌重复实例, 并按图层顺序标识, 如xxx表示所有xxx属性, 而xxx[1]表示第一个出现的xxx属性
 - ✨ New: Sheet page > Get/Map tag properties now supports variant properties using header #xxx.instance；✨ 新增：表单页>获取/映射标签属性支持变体属性,表头使用#xxx.instance
-- ⚡ Optimize: Create page > .xls format is no longer supported, related description removed；⚡ 优化：创建页>不支持.xls格式，已删除相关说明
+- ⚡ Optimize: Create page > .xls format is no longer supported, related description removed；⚡ 优化：创建页>不支持.xls格式, 已删除相关说明
 
 ### v0.1.4 2026/2/5
 - 🐞 Fix: More Tools page > Selected layer info not displayed；🐞 修复：更多功能页>选中图层时未显示对应信息的问题
 - 🐞 Fix: More Tools page > In-place rasterize not working；🐞 修复：更多功能页>原地栅格化失效问题
 - 🐞 Fix: More Tools page > Skew/stretch had no effect on text, and clicking the All Reset button caused crash；🐞 修复：更多功能页>斜切拉伸对文字无效以及点击重置全部会导致错误崩溃的问题
-- 🐞 Fix: Create page > MD to layer - width incorrectly falling back to 100px；🐞 修复：创建页>md格式转图层，宽度异常回退为100px的问题
-- ✨ New: Sheet page > Apply theme - can enable live mode; color/theme changes apply immediately (may be laggy, use only for preview when needed)；✨ 新增：表单页>应用主题，可以开启实时模式，切换色值和主题风格时会直接应用，但相对卡顿，仅适用于必要的效果预览对比，慎用
+- 🐞 Fix: Create page > MD to layer - width incorrectly falling back to 100px；🐞 修复：创建页>md格式转图层, 宽度异常回退为100px的问题
+- ✨ New: Sheet page > Apply theme - can enable live mode; color/theme changes apply immediately (may be laggy, use only for preview when needed)；✨ 新增：表单页>应用主题, 可以开启实时模式, 切换色值和主题风格时会直接应用, 但相对卡顿, 仅适用于必要的效果预览对比, 慎用
 - ✨ New: Sidebar > Click version number to jump to changelog；✨ 新增：侧边栏>点击版本号可直达版本日志
-- ⚡ Optimize: Create page > Get artboard info from layer - width/height rounded to 2 decimals to avoid float precision；⚡ 优化：创建页>从图层获取画板信息，宽高仅保留两个小数点，避免浮点数精度问题
-- ⚡ Optimize: Sheet page > Theme settings - gray theme colors no longer generate saturated palette；⚡ 优化：表单页>主题设置，主题色为灰色系时不会再生成带饱和度的配色
+- ⚡ Optimize: Create page > Get artboard info from layer - width/height rounded to 2 decimals to avoid float precision；⚡ 优化：创建页>从图层获取画板信息, 宽高仅保留两个小数点, 避免浮点数精度问题
+- ⚡ Optimize: Sheet page > Theme settings - gray theme colors no longer generate saturated palette；⚡ 优化：表单页>主题设置, 主题色为灰色系时不会再生成带饱和度的配色
 
 ### v0.1.3 2026/1/23
 - ✨ New: Sidebar - Can view current version and last update time；✨ 新增: 侧边栏可查看当前版本及最后更新时间

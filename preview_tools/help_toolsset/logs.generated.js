@@ -1,6 +1,6 @@
 /* AUTO-GENERATED FILE. DO NOT EDIT. */
 /* Source: tool_plugin/ToolsSetFig/log.md */
-/* Built: 2026-03-03T15:26:42.604Z */
+/* Built: 2026-03-03T15:33:55.139Z */
 
 (function () {
   'use strict';
@@ -10,7 +10,7 @@
       "v0.1.5",
       "v0.1.5"
     ],
-    "date": "2026/3/4",
+    "date": "2026/3/3",
     "items": [
       [
         "li",
@@ -19,7 +19,7 @@
       ],
       [
         "li",
-        "<span data-doc-key>⚡ 优化：</span>表单页>获取/映射组件属性支持内嵌重复实例，并按图层顺序标识，如xxx表示所有xxx属性，而xxx[1]表示第一个出现的xxx属性",
+        "<span data-doc-key>⚡ 优化：</span>表单页>获取/映射组件属性支持内嵌重复实例, 并按图层顺序标识, 如xxx表示所有xxx属性, 而xxx[1]表示第一个出现的xxx属性",
         "<span data-doc-key>⚡ Optimize:</span> Sheet page > Get/Map component properties now supports nested repeated instances and index-based suffixes (e.g. xxx[1] for the first occurrence)"
       ],
       [
@@ -29,7 +29,7 @@
       ],
       [
         "li",
-        "<span data-doc-key>⚡ 优化：</span>创建页>不支持.xls格式，已删除相关说明",
+        "<span data-doc-key>⚡ 优化：</span>创建页>不支持.xls格式, 已删除相关说明",
         "<span data-doc-key>⚡ Optimize:</span> Create page > .xls format is no longer supported, related description removed"
       ]
     ]
@@ -58,12 +58,12 @@
       ],
       [
         "li",
-        "<span data-doc-key>🐞 修复：</span>创建页>md格式转图层，宽度异常回退为100px的问题",
+        "<span data-doc-key>🐞 修复：</span>创建页>md格式转图层, 宽度异常回退为100px的问题",
         "<span data-doc-key>🐞 Fix:</span> Create page > MD to layer - width incorrectly falling back to 100px"
       ],
       [
         "li",
-        "<span data-doc-key>✨ 新增：</span>表单页>应用主题，可以开启实时模式，切换色值和主题风格时会直接应用，但相对卡顿，仅适用于必要的效果预览对比，慎用",
+        "<span data-doc-key>✨ 新增：</span>表单页>应用主题, 可以开启实时模式, 切换色值和主题风格时会直接应用, 但相对卡顿, 仅适用于必要的效果预览对比, 慎用",
         "<span data-doc-key>✨ New:</span> Sheet page > Apply theme - can enable live mode; color/theme changes apply immediately (may be laggy, use only for preview when needed)"
       ],
       [
@@ -73,12 +73,12 @@
       ],
       [
         "li",
-        "<span data-doc-key>⚡ 优化：</span>创建页>从图层获取画板信息，宽高仅保留两个小数点，避免浮点数精度问题",
+        "<span data-doc-key>⚡ 优化：</span>创建页>从图层获取画板信息, 宽高仅保留两个小数点, 避免浮点数精度问题",
         "<span data-doc-key>⚡ Optimize:</span> Create page > Get artboard info from layer - width/height rounded to 2 decimals to avoid float precision"
       ],
       [
         "li",
-        "<span data-doc-key>⚡ 优化：</span>表单页>主题设置，主题色为灰色系时不会再生成带饱和度的配色",
+        "<span data-doc-key>⚡ 优化：</span>表单页>主题设置, 主题色为灰色系时不会再生成带饱和度的配色",
         "<span data-doc-key>⚡ Optimize:</span> Sheet page > Theme settings - gray theme colors no longer generate saturated palette"
       ]
     ]
