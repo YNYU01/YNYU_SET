@@ -1650,7 +1650,7 @@ function loadTable(file){
   return new Promise((resolve,reject) => {
     const reader = new FileReader();
     let type = file.name.split('.')[file.name.split('.').length - 1].toLowerCase();
-     if(type == 'xls' || type == 'xlsx'){
+     if(type == 'xlsx'){
       reader.onload = (e)=>{
         let zip = new JSZip();
         zip.loadAsync(reader.result)
@@ -1737,7 +1737,9 @@ async function addImageTags(files,isCreate){
   tipsAll(MESSAGES.READING, sizeAll/1024/1024 * 100); //加载1M需要100毫秒
   for(let i = 0; i < files.length; i++){
     let file = files[i];
-    let name = file.name.split('.').filter(item => !State.get('imageType').includes(item.toLowerCase())).join('_');
+    // 只去掉末尾的图片扩展名，保留文件名中的点（如 "my.image.png" → "my.image"）
+    let ext = file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : '';
+    let name = State.get('imageType').includes(ext) ? file.name.slice(0, -(ext.length + 1)) : file.name;
     try{
       let image = await loadImage(file);
       let cuts = await tool.CUT_IMAGE(image);

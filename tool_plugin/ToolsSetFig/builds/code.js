@@ -54,7 +54,7 @@ if(userInfo){
 //let isSendComp = true;
 let TRUES = ['true',true,'1',1,'show','是','有'];
 let FALSES = ['false',false,'0',0,'hide','否','无'];
-let TAGS_KEY = ['.fill','.stroke','.fillStyle','.strokeStyle','.visible','.opacity','.fontSize','.xywh'];
+let TAGS_KEY = ['.fill','.stroke','.fillStyle','.strokeStyle','.visible','.opacity','.fontSize','.xywh','.instance'];
 let FRAME_TYPE = ['FRAME','COMPONENT']
 let CLIP_NAME = [
     ['@T?','@C?','@B?'],
@@ -1399,10 +1399,9 @@ figma.ui.onmessage = async (message) => {
                     for(let i = 1; i < info.data.length; i++){
                         b[0].appendChild(c.clone());
                     };
+                    nodes = b[0].children;
                 };
-                nodes = b[0].children;
             };
-            nodes = nodes.filter(node => node.type == 'INSTANCE');
             //console.log(info)
             reAnyByObj(nodes,info.data,info.enters,info.nulls);
         };
@@ -1411,15 +1410,15 @@ figma.ui.onmessage = async (message) => {
     if( type == 'mapTag'){
         let b = getSelectionMix();
         let nodes = b;
-        if(info.data[0] && info.data[0].length > 0){
+        if(info.data[0]){
             if(b.length == 1){
-                if(b[0].layoutMode && b[0].layoutMode !== 'NONE' && b[0].children.length == 1 && b[0].children[0].type == 'INSTANCE'){
+                if(b[0].layoutMode && b[0].layoutMode !== 'NONE' && b[0].children.length == 1){
                     let c = b[0].children[0];
                     for(let i = 1; i < info.data.length; i++){
                         b[0].appendChild(c.clone());
                     };
+                    nodes = b[0].children;
                 };
-                nodes = b[0].children;
             };
             //nodes = nodes.filter(node => node.type == 'INSTANCE');
             reAnyByTags(nodes,info.data);
@@ -1503,7 +1502,14 @@ figma.ui.onmessage = async (message) => {
     };
     //批量获取标签属性
     if( type == 'getTag'){
-
+        let b = getSelectionMix();
+        
+        let tagNodes = b.filter(node => hasTag(node) || node.findAll(child => hasTag(child)).length > 0);
+        await getStyle('paint',false);
+        if(tagNodes.length > 0){
+            let datas = getTagObj(tagNodes);
+            postmessage([datas,'selectDatas'])
+        };
     };
     //更新表格样式、行列
     if( type == 'reTable'){
@@ -5282,22 +5288,19 @@ function reAnyByObj(comps,obj,enters,nulls){
  */
 function reAnyByTags(nodes,objs){
     if(!nodes || !objs) return;
-    if(nodes.length != objs.length) return;
-    for(let i = 0; i < nodes.length; i++){
+    //console.log(nodes);
+    for(let i = 0; i < Math.min(nodes.length,objs.length); i++){
         let node = nodes[i]
-        let hasTags = node.findAll(item => TAGS_KEY.some(key => item.name.includes(key)));
-        
-        if(TAGS_KEY.some(key => node.name.includes(key))){
-            hasTags = [node,...hasTags]
+        let hasTags = []
+        if(hasTag(node)){
+            hasTags.push(node);
         };
-        
+        hasTags.push(...node.findAll(item => hasTag(item)));
         hasTags.forEach(layer => {
-            let tags = layer.name.split(' ').filter(item => TAGS_KEY.some(key => item.includes(key)));
-            
+            let tags = hasTag(layer,true);
             tags.forEach(tag => {
                 //console.log(tag,obj[i][tag])
                 if(objs[i][tag]){
-                    
                     try {
                         setByTags(layer,tag.split('.')[1],objs[i][tag]);
                     } catch (error) {
@@ -5370,6 +5373,17 @@ function reAnyByTags(nodes,objs){
                 main[3] = main[3] == 'null' ? layer.height : main[3];
                 setMain(main,layer);
             ;break
+            case 'instance':
+                if(layer.type == 'INSTANCE'){
+                    let id = Object.entries(layer.componentProperties).find(item => item[1].type == 'VARIANT')[0];
+                    if(!id) return;
+                    try {
+                        layer.setProperties({[id]: value});
+                    } catch (error) {
+                        console.log(error);
+                    };
+                };
+            ;break
         }
     };
     
@@ -5409,16 +5423,153 @@ function getProObj(comps,enters,nulls){
     for(let i = 0; i < comps.length; i++){
         let comp = comps[i];
         let pros = {};
+
+        // 当前实例自身的组件属性（不带 [n]）
         Object.entries(comp.componentProperties).sort().forEach(item => {
-            pros[item[0].split('#')[0]] = item[1].value
+            pros[item[0].split('#')[0]] = item[1].value;
         });
-        datas.push(pros)
+
+        // 内嵌组件的属性，使用 key[n] 形式
+        let compChilds = comp.findAll(items => items.type == 'INSTANCE');
+        for(let ci = 0; ci < compChilds.length; ci++){
+            let child = compChilds[ci];
+            Object.entries(child.componentProperties).sort().forEach(item => {
+                let baseKey = item[0].split('#')[0];
+                let keyWithIndex = `${baseKey}[${ci + 1}]`;
+                pros[keyWithIndex] = item[1].value;
+            });
+        };
+
+        datas.push(pros);
     };
-    return datas
+    return datas;
 };
 //获取所有标签属性值
-function getTagObj(comps,enters,nulls){
+function getTagObj(tagNodes){
+    let datas = [];
+    tagNodes.forEach(node => {
+        let data = {};
+        data = getTagData(node);
+        if(node.children && node.children.length > 0){
+            let childs = node.findAll(item => hasTag(item));
+            childs.forEach(child => {
+                let childData = getTagData(child);
+                Object.keys(childData).forEach(key => {
+                    data[key] = childData[key];
+                });
+            });
+        };
+        datas.push(data);
+    });
     
+    // 收集所有出现过的标签 key
+    let tagkeys = datas.map(item => Object.keys(item));
+    tagkeys = [...new Set(tagkeys.flat())];
+
+    // 按原始节点顺序，把缺失的 key 用 null 补齐
+    let finalDatas = datas.map(item => {
+        let row = {};
+        tagkeys.forEach(key => {
+            row[key] = item.hasOwnProperty(key) ? item[key] : null;
+        });
+        return row;
+    });
+
+    return finalDatas;
+
+    function getTagData(node){
+        let tagNames = hasTag(node,true);
+        let tagData = {};
+        tagNames.forEach(name => {
+            let prop = name.split('.')[1];
+            switch (prop){
+                case 'fill':
+                    let fill = node.fills[0];
+                    if(fill){
+                        let color = fill.color;
+                        tagData[name] = rgbToHex(
+                            Math.round(color.r * 255),
+                            Math.round(color.g * 255),
+                            Math.round(color.b * 255),
+                        );
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+                case 'stroke':
+                    let stroke = node.strokes[0];
+                    if(stroke){
+                        let color = stroke.color;
+                        tagData[name] = rgbToHex(
+                            Math.round(color.r * 255),
+                            Math.round(color.g * 255),
+                            Math.round(color.b * 255),
+                        );
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+                case 'fillStyle':
+                    let fillStyleId = node.fillStyleId;
+                    if(fillStyleId){
+                        tagData[name] = localStyles.paint.list.find(item => item.id == fillStyleId).name;
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+                case 'strokeStyle':
+                    let strokeStyleId = node.strokeStyleId;
+                    if(strokeStyleId){
+                        tagData[name] = localStyles.paint.list.find(item => item.id == strokeStyleId).name;
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+                case 'visible':
+                    tagData[name] = node.visible;
+                    break;
+                case 'opacity':
+                    tagData[name] = node.opacity;
+                    break;
+                case 'fontSize':
+                    if(node.type == 'TEXT'){
+                        tagData[name] = typeof node.fontSize == 'number' ? node.fontSize : null;
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+                case 'xywh':
+                    tagData[name] = [node.x,node.y,node.width,node.height];
+                    break;
+                case 'instance':
+                    if(node.type == 'INSTANCE'){
+                        let variant = Object.values(node.componentProperties).find(item => item.type == 'VARIANT');
+                        if(variant){
+                            tagData[name] = variant.value;
+                        } else {
+                            tagData[name] = null;
+                        };
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+                };
+        });
+        return tagData;
+    };
+        
+}
+//判断节点是否含有标签
+function hasTag(node,isGet = false){
+    let tagProps = TAGS_KEY.map(key => key.slice(1)).join('|'); // fill|stroke|...
+    let tagReg = new RegExp(`(^|\\s)#[^\\s#.]+\\.(${tagProps})(?=\\s|$)`);
+    if(isGet){
+        let extractReg = new RegExp(`(?:^|\\s)(#[^\\s#.]+\\.(?:${tagProps}))(?=\\s|$)`, 'g');
+        let matches = [...node.name.matchAll(extractReg)];
+        return [...new Set(matches.map(m => m[1]))];
+    } else {
+        return tagReg.test(node.name);
+    };
 };
 //反转表格行列
 function swapTable(table){
