@@ -1,10 +1,39 @@
 /* AUTO-GENERATED FILE. DO NOT EDIT. */
 /* Source: tool_plugin/ToolsSetFig/log.md */
-/* Built: 2026-02-05T02:40:36.434Z */
+/* Built: 2026-03-03T15:26:42.604Z */
 
 (function () {
   'use strict';
   window.__TOOLSSET_HELP_LOGS__ = [
+  {
+    "title": [
+      "v0.1.5",
+      "v0.1.5"
+    ],
+    "date": "2026/3/4",
+    "items": [
+      [
+        "li",
+        "<span data-doc-key>🐞 修复：</span>更多功能页>斜切拉伸会导致旋转值重置的问题",
+        "<span data-doc-key>🐞 Fix:</span> More Tools page > Skew/Stretch caused rotation value to reset"
+      ],
+      [
+        "li",
+        "<span data-doc-key>⚡ 优化：</span>表单页>获取/映射组件属性支持内嵌重复实例，并按图层顺序标识，如xxx表示所有xxx属性，而xxx[1]表示第一个出现的xxx属性",
+        "<span data-doc-key>⚡ Optimize:</span> Sheet page > Get/Map component properties now supports nested repeated instances and index-based suffixes (e.g. xxx[1] for the first occurrence)"
+      ],
+      [
+        "li",
+        "<span data-doc-key>✨ 新增：</span>表单页>获取/映射标签属性支持变体属性,表头使用#xxx.instance",
+        "<span data-doc-key>✨ New:</span> Sheet page > Get/Map tag properties now supports variant properties using header #xxx.instance"
+      ],
+      [
+        "li",
+        "<span data-doc-key>⚡ 优化：</span>创建页>不支持.xls格式，已删除相关说明",
+        "<span data-doc-key>⚡ Optimize:</span> Create page > .xls format is no longer supported, related description removed"
+      ]
+    ]
+  },
   {
     "title": [
       "v0.1.4",

@@ -1,8 +1,8 @@
 ### v0.1.5 2026/3/4
-- 修复：更多功能页>斜切拉伸会导致旋转值重置的问题
-- 优化：表单页>获取/映射组件属性支持内嵌重复实例，并按图层顺序标识，如xxx表示所有xxx属性，而xxx[1]表示第一个出现的xxx属性
-- 新增：表单页>获取/映射标签属性支持变体属性,表头使用#xxx.instance
-- 优化：创建页>不支持.xls格式，已删除相关说明
+- 🐞 Fix: More Tools page > Skew/Stretch caused rotation value to reset；🐞 修复：更多功能页>斜切拉伸会导致旋转值重置的问题
+- ⚡ Optimize: Sheet page > Get/Map component properties now supports nested repeated instances and index-based suffixes (e.g. xxx[1] for the first occurrence)；⚡ 优化：表单页>获取/映射组件属性支持内嵌重复实例，并按图层顺序标识，如xxx表示所有xxx属性，而xxx[1]表示第一个出现的xxx属性
+- ✨ New: Sheet page > Get/Map tag properties now supports variant properties using header #xxx.instance；✨ 新增：表单页>获取/映射标签属性支持变体属性,表头使用#xxx.instance
+- ⚡ Optimize: Create page > .xls format is no longer supported, related description removed；⚡ 优化：创建页>不支持.xls格式，已删除相关说明
 
 ### v0.1.4 2026/2/5
 - 🐞 Fix: More Tools page > Selected layer info not displayed；🐞 修复：更多功能页>选中图层时未显示对应信息的问题
