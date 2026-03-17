@@ -2397,7 +2397,7 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         let selects = [];
         b.forEach(node => {
-            if(node.type == 'SECTION' || FRAME_TYPE.includes(node.type)) return;
+            if(node.type == 'SECTION') return;
             let frame;
             if(info){
                 frame = addFrame([],node);
