@@ -220,6 +220,20 @@ figma.ui.onmessage = async (message) => {
             };
             selects.push(node);
         };
+        
+        let a = figma.currentPage;
+        let b = getSelectionMix();
+        if(b.length == 1){
+            let comp = b[0];
+            selects.forEach(item => {
+                let clone = comp.type == 'COMPONENT' ? comp.createInstance() : comp.clone();
+                clone.unlockAspectRatio();
+                let scale = Math.min(item.width,item.height)/Math.max(clone.width,clone.height)
+                clone.rescale(scale);
+                item.appendChild(clone);
+                asFillChild(clone,true)
+            });
+        };
         figma.currentPage.selection = selects;
         //console.log(selects)
         layoutByRatio(selects,false,true);
@@ -756,7 +770,10 @@ figma.ui.onmessage = async (message) => {
             }else{
                 let name2 = item.name.split('/');
                 //路径长度小于3，可直接认为是不同样式（难以判断是否同一路径）
-                if(name2.length < 3) return;
+                if(name2.length < 3) {
+                    item.iscreate = true;
+                    return
+                };
                 let sameLastName = localStyleList.find(items => items.name.split('/').reverse()[0] == item.name.split('/').reverse()[0] && items.name.split('/').reverse()[1] == item.name.split('/').reverse()[1])
                 if(sameLastName){
                     //如果lastName相同，就判断是不是路径类似
@@ -1316,8 +1333,9 @@ figma.ui.onmessage = async (message) => {
             //没有实例可能要自动填充
             if(!comps || comps.length == 0){
                 if(b.length == 1 && Array.length > 1){
-                    comps = b[0].findChildren(item => item.type == 'INSTANCE');
-                    //仅自动布局时生效
+                    comps = b[0].children.filter(item => item.type == 'INSTANCE');
+                    //按道理仅自动布局时生效，但figma目前bug,开着插件添加的自动布局无法识别，存在数据延迟
+                    /*
                     if(b[0].layoutMode && b[0].layoutMode !== 'NONE'){
                         let CC = comps.length;
                         let C = Array.length - CC;
@@ -1333,6 +1351,52 @@ figma.ui.onmessage = async (message) => {
                         sortLRTB(comps);
                         reAnyByArray(comps,Array,false,info.enters,info.nulls);
                     };
+                    */
+                    let CC = comps.length;
+                    let C = Array.length - CC;
+                    if(info.clone == false){
+                        C = C > 0 ? 0 : C;
+                    }
+                    if(info.reduce == false){
+                        C = C < 0 ? 0 : C;
+                    };
+                    //如果是实例，则不能增减子实例数量
+                    if(b[0].type == 'INSTANCE'){
+                        C = 0;
+                    }
+                    if(b[0].layoutMode && b[0].layoutMode !== 'NONE'){
+                        reCompNum(b[0],C);
+                        reAnyByArray(b[0].children,Array,false,info.enters,info.nulls);
+                    } else {
+                        sortLRTB(comps);
+                        //强制增减实例数量
+                        try {
+                            let oldlength = comps.length;
+                            let oldindex = oldlength - 1;
+                            if(C > 0){
+                                //克隆最后一个
+                                for(let i = 0; i < C; i++){
+                                    let clone = comps[oldindex].clone();
+                                    let safaMain = getSafeMain(comps[oldindex]);
+                                    clone.x = safaMain[2];
+                                    clone.y = safaMain[3] + (safaMain[1] * 1.2 * (i + 1));
+                                    b[0].appendChild(clone);
+                                    
+                                    comps.push(clone);
+                                };
+                            } else {
+                                //从后往前删掉超出的实例
+                                for(let i = 0; i < -C; i++){
+                                    comps[oldindex + i].remove();
+                                };
+                                comps = comps.slice(0,oldlength + C);
+                            };
+                        } catch(e){
+                            console.log(e);
+                        };
+                        reAnyByArray(comps,Array,false,info.enters,info.nulls);
+                    };
+
                 };
             } else {
                 if(Array.length > 1){
@@ -5149,7 +5213,7 @@ function reAnyByObj(comps,obj,enters,nulls){
     for(let i = 0; i < comps.length; i++){
         let comp = comps[i];
         let rePros = Object.keys(comp.componentProperties).filter(pro => keyPros.includes(pro.split('#')[0]));
-        setPro(comp,rePros,obj[i])
+        setPro(comp,rePros,obj[i],enters,nulls)
 
         //内嵌组件时，也要替换（支持 key 与 key[n]）
         let compChilds = comp.findAll(items => items.type == 'INSTANCE');// && items.componentProperties.length > 0
@@ -5184,7 +5248,7 @@ function reAnyByObj(comps,obj,enters,nulls){
                     let child = compChilds[targetIndex];
                     let childRePros = Object.keys(child.componentProperties).filter(pro => pro.split('#')[0] == baseKey);
                     if(childRePros.length > 0){
-                        setPro(child,childRePros,tempData);
+                        setPro(child,childRePros,tempData,enters,nulls);
                     };
                 }else{
                     // 对所有包含该属性名的内嵌组件生效
@@ -5192,7 +5256,7 @@ function reAnyByObj(comps,obj,enters,nulls){
                         let compChild = compChilds[ii];
                         let childRePros = Object.keys(compChild.componentProperties).filter(pro => pro.split('#')[0] == baseKey);
                         if(childRePros.length > 0){
-                            setPro(compChild,childRePros,tempData);
+                            setPro(compChild,childRePros,tempData,enters,nulls);
                         };
                     };
                 };
@@ -5215,7 +5279,7 @@ function reAnyByObj(comps,obj,enters,nulls){
         figma.currentPage.selection = errornode.map(item => item[0]);
     };
 
-    function setPro(node,pros,data){
+    function setPro(node,pros,data,enters,nulls){
         pros.forEach(pro => {
             //console.log(pro,data[pro.split('#')[0]]);
             if(data){
@@ -5223,6 +5287,7 @@ function reAnyByObj(comps,obj,enters,nulls){
                 let value = data[pro.split('#')[0]];
                 //console.log(pro,value)
                 if(node.componentProperties[pro].type !== 'BOOLEAN'){
+                    //序号映射变体
                     if(typeof value == 'number' && node.componentProperties[pro].type == "VARIANT"){
                         node.getMainComponentAsync()
                         .then(compset => {
@@ -5231,14 +5296,6 @@ function reAnyByObj(comps,obj,enters,nulls){
                             //console.log(findByNum)
                             value = findByNum ? findByNum : value;
                             value = value.toString();
-                            if(value == ''){
-                                value = nulls;
-                            } else {
-                                if(enters){
-                                    let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&')
-                                    value = value.replace(new RegExp(reg,'g'),'\n');
-                                };
-                            };
                             try {
                                 node.setProperties({[pro]: value});
                             } catch (error) {
@@ -5409,11 +5466,7 @@ function getProArray(comps,istable,enters,nulls){
             textPros = dataPros
         };
         let value = comp.componentProperties[textPros[0]].value;
-        if(value == nulls){
-            Array.push('');
-        } else {
-            Array.push(value.replace(/[\r\n]/g,enters));
-        };
+        Array.push(value.replace(/[\r\n]/g,enters));
     };
     return Array;
 };
@@ -5426,7 +5479,20 @@ function getProObj(comps,enters,nulls){
 
         // 当前实例自身的组件属性（不带 [n]）
         Object.entries(comp.componentProperties).sort().forEach(item => {
-            pros[item[0].split('#')[0]] = item[1].value;
+            if(item[1].type !== 'BOOLEAN'){
+                let value = item[1].value;
+                if(value == ''){
+                    value = nulls;
+                } else {
+                    if(enters){
+                        let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&')
+                        value = value.replace(new RegExp(reg,'g'),'\n');
+                    };
+                };
+                pros[item[0].split('#')[0]] = value;
+            } else {
+                pros[item[0].split('#')[0]] = item[1].value;
+            };
         });
 
         // 内嵌组件的属性，使用 key[n] 形式
@@ -5436,7 +5502,21 @@ function getProObj(comps,enters,nulls){
             Object.entries(child.componentProperties).sort().forEach(item => {
                 let baseKey = item[0].split('#')[0];
                 let keyWithIndex = `${baseKey}[${ci + 1}]`;
-                pros[keyWithIndex] = item[1].value;
+                if(item[i].type !== 'BOOLEAN'){
+                    let value = item[1].value;
+                    if(value == ''){
+                        value = nulls;
+                    } else {
+                        if(enters){
+                            let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&')
+                            value = value.replace(new RegExp(reg,'g'),'\n');
+                        };
+                    };
+                    pros[keyWithIndex] = value;
+                }else{
+                    pros[keyWithIndex] = item[1].value;
+                };
+                
             });
         };
 

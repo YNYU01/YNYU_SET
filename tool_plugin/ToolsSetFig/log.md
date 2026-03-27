@@ -1,3 +1,9 @@
+### v0.1.6 2026/3/27
+- 🐞 Fix: Sheet page > Data mapping > Settings - fixed incorrect placeholder behavior for empty values when mapping text properties；🐞 修复：表单页>数据映射>高级设置，修复文本属性映射时空值占位符异常问题
+- ⚡ Optimize: Sheet page > Data mapping > Settings - non-auto-layout instances now also clone/reduce based on data length；⚡ 优化：表单页>数据映射>高级设置，非自动布局也支持根据数据长短增减实例
+- ⚡ Optimize: Variables page > Added tabs to switch and manage styles set vs unlink styles；⚡ 优化：变量页>新增标签以切换管理样式组和断链样式
+- ✨ New: Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame 新增：创建页>创建画布时如选中一个元素，会填充到画布中
+
 ### v0.1.5 2026/3/3
 - 🐞 Fix: More Tools page > Skew/Stretch caused rotation value to reset；🐞 修复：更多功能页>斜切拉伸会导致旋转值重置的问题
 - ⚡ Optimize: Sheet page > Get/Map component properties now supports nested repeated instances and index-based suffixes (e.g. xxx[1] for the first occurrence)；⚡ 优化：表单页>获取/映射组件属性支持内嵌重复实例, 并按图层顺序标识, 如xxx表示所有xxx属性, 而xxx[1]表示第一个出现的xxx属性

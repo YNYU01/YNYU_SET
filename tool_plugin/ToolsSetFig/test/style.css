@@ -2000,7 +2000,6 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   padding: 6px;
   box-sizing: border-box;
   gap: 6px;
-  max-height: 60dvh;
 }
 
 [data-linkstyle-tag]{

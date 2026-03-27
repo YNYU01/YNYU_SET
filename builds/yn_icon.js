@@ -1071,3 +1071,24 @@ class maptag extends HTMLElement {
   }
 };
 customElements.define('map-tag', maptag);
+
+let btnunlinkPS = pathS(null,'auto',1.8,'round','round')
+class btnunlink extends HTMLElement {
+  constructor() {
+    super();
+    this.className = 'df-cc wh100';
+    this.innerHTML = `
+    ${icon(20)}
+<path ${btnunlinkPS} d="M14.3703 9.71844L16.1922 6.56283C17.1984 4.82003 16.6013 2.59153 14.8585 1.58532C13.1157 0.579118 10.8872 1.17624 9.88099 2.91904L8.05909 6.07465"/>
+<path ${btnunlinkPS} d="M5.62988 10.282L3.80799 13.4376C2.80178 15.1804 3.39891 17.4089 5.14171 18.4151C6.8845 19.4213 9.11301 18.8242 10.1192 17.0814L11.9411 13.9258"/>
+<path ${btnunlinkPS} d="M11.8472 6.85889L8.20338 13.1701"/>
+<path ${btnunlinkPS} d="M1.33813 4.99878L2.96219 5.93643"/>
+<path ${btnunlinkPS} d="M1 9L3 9"/>
+<path ${btnunlinkPS} d="M4.74805 2.63672L5.49816 3.93596"/>
+<path ${btnunlinkPS} d="M18.6626 15.0007L17.0385 14.0631"/>
+<path ${btnunlinkPS} d="M19 11L17 11"/>
+<path ${btnunlinkPS} d="M15.2527 17.3625L14.5026 16.0633"/>
+    `;
+  }
+};
+customElements.define('btn-unlink', btnunlink);

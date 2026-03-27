@@ -2500,7 +2500,11 @@ function tableArrayToObj(tableArray){
   for(let i = 1; i < tableArray.length; i++){
     let obj = {};
     tableArray[i].forEach((item,index) => {
-      obj[keys[index]] = isNaN(item * 1) ? item : item * 1;;
+      if(item === ''){
+        obj[keys[index]] = item;
+      }else{
+        obj[keys[index]] = isNaN(item * 1) ? item : item * 1;
+      }
     });
     objs.push(obj);
   };
@@ -4885,12 +4889,19 @@ function getUserRadio(node){
     if(node.parentNode.parentNode.getAttribute('data-variable-type') !== null){
       let vars = getElementMix('data-variable-varmix');
       let styles = getElementMix('data-variable-stylemix');
+      let unlink = getElementMix('data-variable-unlink')
       if( userRadio == 'variable'){
         vars.style.display = 'flex';
         styles.style.display = 'none';
+        unlink.style.display = 'none';
+      }else if(userRadio == 'unlinkstyle'){
+        vars.style.display = 'none';
+        styles.style.display = 'none';
+        unlink.style.display = 'flex';
       }else{
         vars.style.display = 'none';
         styles.style.display = 'flex';
+        unlink.style.display = 'none';
       };
     };
 

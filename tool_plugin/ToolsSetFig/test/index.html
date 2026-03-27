@@ -664,13 +664,19 @@
                   <div data-variable-chk>
                     <btn-style></btn-style>
                   </div>
-                  <div data-any="vw240" data-variable-chk-name data-en-text="Style Sheet">样式表管理</div>   
+                  <div data-any="vw240" data-variable-chk-name data-en-text="Style">样式表</div>   
+                </div>
+                <div class="fl0 df-lc" data-radio data-radio-data="unlinkstyle" data-radio-main="false">
+                  <div data-variable-chk>
+                    <btn-unlink></btn-unlink>
+                  </div>
+                  <div data-any="vw240" data-variable-chk-name data-en-text="Unlink Style">断链样式</div>   
                 </div>
                 <div class="fl0 df-lc" data-radio data-radio-data="variable" data-radio-main="false">
                   <div data-variable-chk>
                     <btn-variable></btn-variable>                 
                   </div>
-                  <div data-any="vw240" data-variable-chk-name data-en-text="Variable Sheet">变量表管理</div>
+                  <div data-any="vw240" data-variable-chk-name data-en-text="Variable">变量表</div>
                 </div>
               </div>
             </div>
@@ -750,44 +756,8 @@
               </div>
             </div>
           </div>
-          <!--样式组管理-->
-          <div data-variable-stylemix class="wh100 df-ffc" style="height: calc(100% - 74px);">
-            <div data-variable-styleinfo-box class="w100 fl0 bod-d df-ffc pos-r">
-              <div data-variable-styleinfo data-variable-hasstyle="false" class="df-lc pos-r">
-                <div data-variable-hasnot class="df-lc">
-                  <div data-en-text="Find not style-set">未读取到样式集</div>
-                  <div data-variable-addstyle data-btn="main2" data-en-text="Sample">示例</div>
-                </div>
-                <div data-variable-has class="df-lc">
-                  <div data-variable-style data-en-text="Had style-set" >已检测到样式集</div>
-                  <div data-variable-has-icon style="--bod: transparent; --check: var(--mainColor);">
-                    <btn-check-tick></btn-check-tick>
-                  </div>
-                </div>
-              </div>
-              <div data-variable-styleinfo data-variable-hasstylesheet="false" class="df-lc pos-r">
-                <div data-variable-hasnot class="df-lc">
-                  <div data-en-text="Find not local sheet">未读取到样式表</div>
-                  <div data-variable-addstylesheet data-btn="main2" data-en-text="New">新建</div>
-                </div>
-                <div data-variable-has class="df-lc">
-                  <div data-variable-sheet  data-en-text="Had local-style sheet">已检测到管理表</div>
-                  <div data-variable-has-icon style="--bod: transparent; --check: var(--mainColor);">
-                    <btn-check-tick></btn-check-tick>
-                  </div>
-                </div>
-              </div>
-              <div data-variable-refresh="style" class="df-cc fl0 pos-a"
-              data-tips="auto" data-tips-x="right" data-tips-y="top" data-tips-text="刷新" data-tips-text-en="Refresh">
-                <div data-btn>
-                  <btn-reup></btn-reup>
-                </div>
-              </div>
-            </div>
-            <div class="w100 df-cc gap2 mar-b10">
-              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Style To Sheet">从样式更新表</div>    
-              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
-            </div>
+          <!--断链样式管理-->
+          <div data-variable-unlink class="wh100 df-ffc" style="display: none;height: calc(100% - 74px);">
             <!--步骤2-->
             <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
@@ -839,8 +809,47 @@
                 <btn-close></btn-close>
               </div>
             </div>
+          </div>
+          <!--样式组管理-->
+          <div data-variable-stylemix class="wh100 df-ffc" style="height: calc(100% - 74px);">
+            <div data-variable-styleinfo-box class="w100 fl0 bod-d df-ffc pos-r">
+              <div data-variable-styleinfo data-variable-hasstyle="false" class="df-lc pos-r">
+                <div data-variable-hasnot class="df-lc">
+                  <div data-en-text="Find not style-set">未读取到样式集</div>
+                  <div data-variable-addstyle data-btn="main2" data-en-text="Sample">示例</div>
+                </div>
+                <div data-variable-has class="df-lc">
+                  <div data-variable-style data-en-text="Had style-set" >已检测到样式集</div>
+                  <div data-variable-has-icon style="--bod: transparent; --check: var(--mainColor);">
+                    <btn-check-tick></btn-check-tick>
+                  </div>
+                </div>
+              </div>
+              <div data-variable-styleinfo data-variable-hasstylesheet="false" class="df-lc pos-r">
+                <div data-variable-hasnot class="df-lc">
+                  <div data-en-text="Find not local sheet">未读取到样式表</div>
+                  <div data-variable-addstylesheet data-btn="main2" data-en-text="New">新建</div>
+                </div>
+                <div data-variable-has class="df-lc">
+                  <div data-variable-sheet  data-en-text="Had local-style sheet">已检测到管理表</div>
+                  <div data-variable-has-icon style="--bod: transparent; --check: var(--mainColor);">
+                    <btn-check-tick></btn-check-tick>
+                  </div>
+                </div>
+              </div>
+              <div data-variable-refresh="style" class="df-cc fl0 pos-a"
+              data-tips="auto" data-tips-x="right" data-tips-y="top" data-tips-text="刷新" data-tips-text-en="Refresh">
+                <div data-btn>
+                  <btn-reup></btn-reup>
+                </div>
+              </div>
+            </div>
+            <div class="w100 df-cc gap2 mar-b10">
+              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Style To Sheet">从样式更新表</div>    
+              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
+            </div>
             <!--步骤3-->
-            <div class="w100 df-lc op6"  style="padding:14px 0 10px 0; vertical-align: baseline;"> 
+            <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
               <span data-en-text="Manage thematic style" >管理主题性样式组</span>
               &nbsp;&nbsp;
@@ -968,7 +977,7 @@
                 </div>
               </div>
               <div class="df-ffc w100 bod-d pad4 gap4 bsb mar-b4">
-                <div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one auto-layout with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个自动布局 时生效</div>
+                <!--div data-text-mini data-en-text="* Run when selected: xxx@table | sone frames/groups have xxx@table | one auto-layout with only instances">* 当选中@table | 包含@table的多个画板/组 | 仅包含实例的单个自动布局 时生效</div-->
                 <div class="df-lc w100 font-s10 gap4 mar-b4" data-skill-more style="flex-wrap: wrap; white-space: nowrap;">
                   <div class="fl1 df-lc gap4" style="min-width: 160px;">
                     <div class="df ovh noscrollbar" data-scroll data-en-text="· Clone instance by data quantity">· 数据数量&gt;实例数量时, 复制最末实列</div>

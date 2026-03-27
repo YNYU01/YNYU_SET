@@ -1,10 +1,39 @@
 /* AUTO-GENERATED FILE. DO NOT EDIT. */
 /* Source: tool_plugin/ToolsSetFig/log.md */
-/* Built: 2026-03-03T15:33:55.139Z */
+/* Built: 2026-03-27T08:41:48.294Z */
 
 (function () {
   'use strict';
   window.__TOOLSSET_HELP_LOGS__ = [
+  {
+    "title": [
+      "v0.1.6",
+      "v0.1.6"
+    ],
+    "date": "2026/3/27",
+    "items": [
+      [
+        "li",
+        "<span data-doc-key>🐞 修复：</span>表单页>数据映射>高级设置，修复文本属性映射时空值占位符异常问题",
+        "<span data-doc-key>🐞 Fix:</span> Sheet page > Data mapping > Settings - fixed incorrect placeholder behavior for empty values when mapping text properties"
+      ],
+      [
+        "li",
+        "<span data-doc-key>⚡ 优化：</span>表单页>数据映射>高级设置，非自动布局也支持根据数据长短增减实例",
+        "<span data-doc-key>⚡ Optimize:</span> Sheet page > Data mapping > Settings - non-auto-layout instances now also clone/reduce based on data length"
+      ],
+      [
+        "li",
+        "<span data-doc-key>⚡ 优化：</span>变量页>新增标签以切换管理样式组和断链样式",
+        "<span data-doc-key>⚡ Optimize:</span> Variables page > Added tabs to switch and manage styles set vs unlink styles"
+      ],
+      [
+        "li",
+        "<span data-doc-key>✨ New:</span> Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame 新增：创建页>创建画布时如选中一个元素，会填充到画布中",
+        "<span data-doc-key>✨ New:</span> Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame 新增：创建页>创建画布时如选中一个元素，会填充到画布中"
+      ]
+    ]
+  },
   {
     "title": [
       "v0.1.5",
