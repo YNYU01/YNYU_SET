@@ -497,6 +497,7 @@ window.addEventListener('message',(message)=>{
         case 'linkStyleInfo': reLinkStyleInfo(info);break
         case 'styleGroupInfo': reStyleGroupInfo(info);break
         case 'refreshExportImgInfo': refreshExportImgInfo(info);break
+        case 'hasManageStyle': reManageStyleTag(info);break
       };
     }
   };
@@ -1025,7 +1026,7 @@ document.getElementById('bottom').addEventListener('dblclick',()=>{
   }
   toolMessage(['','getnode'],PLUGINAPP)
 });
-//空内容提醒
+//强制空内容
 function nullPage(){
   getElementMix('data-page-id').innerHTML = '';
   getElementMix('data-tab').style.pointerEvents = 'none'
@@ -2370,17 +2371,7 @@ getElementMix('data-export-delete').addEventListener('click',()=>{
 });
 //发起刷新所选导出标签
 getElementMix('data-export-reup').addEventListener('click',()=>{
-  let picks = DOM.exportTagsBox.querySelectorAll('[data-export-pick="true"]');
-  let infos = Array.from(picks).map(item => {
-    let index = item.getAttribute('data-export-picknum');
-    let info = State.get('exportImageInfo')[index];
-    let key = {
-      id: info.id,
-      index: index,
-      width: info.width,
-    };
-    return key
-  });
+  let infos = getSelectedExportImgInfo();
   toolMessage([infos,'refreshExportImgInfo'],PLUGINAPP);
 });
 //刷新所选导出标签
@@ -2398,11 +2389,30 @@ function refreshExportImgInfo(infos){
   });
 
 }
-//移除所有导出标签
-/*getElementMix('data-export-tags-delete').addEventListener('click',()=>{
-  State.set('exportImageInfo',[]);
-  DOM.exportTagsBox.innerHTML = '<!--动态填充-->';
-});*/
+//按标签覆盖设置
+getElementMix('data-export-overset').addEventListener('click',()=>{
+  let infos = getSelectedExportImgInfo();
+  toolMessage([infos,'oversetExportImgInfo'],PLUGINAPP);
+});
+
+//获取所选导出标签
+function getSelectedExportImgInfo(){
+  let picks = DOM.exportTagsBox.querySelectorAll('[data-export-pick="true"]');
+  let infos = Array.from(picks).map(item => {
+    let index = item.getAttribute('data-export-picknum');
+    let info = State.get('exportImageInfo')[index];
+    let key = {
+      id: info.id,
+      index: index,
+      width: info.width,
+      name: info.fileName,
+      format: info.format,
+      size: info.finalSize,
+    };
+    return key
+  });
+  return infos;
+}
 
 //导出内容
 DOM.exportAnyBtn.addEventListener('click',()=>{
@@ -2441,15 +2451,15 @@ getElementMix('data-editor-setbg').addEventListener('change',(e)=>{
 
 //管理断链样式
 DOM.btnLinkstyle.addEventListener('click',()=>{
-  toolMessage(['','manageLinkStyle'],PLUGINAPP);
+  toolMessage(['','getUnLinkStyle'],PLUGINAPP);
 });
 //管理样式组
 DOM.btnSelectstyle.addEventListener('click',()=>{
-  toolMessage(['','manageStyleGroup'],PLUGINAPP);
+  toolMessage(['','getStyleGroup'],PLUGINAPP);
 });
 //管理变量组
 DOM.btnVariables.addEventListener('click',()=>{
-  toolMessage(['','manageVariableGroup'],PLUGINAPP);
+  toolMessage(['','getVariableGroup'],PLUGINAPP);
 });
 
 
@@ -4373,8 +4383,8 @@ function addQRLayerView(info){
     convertImageToQRCode(img, 'upload');
   };
   img.src = URL.createObjectURL(new Blob([info],{type:'image/png'}));
-}
-
+};
+//处理回传的断链样式信息
 function reLinkStyleInfo(info){
   //console.log(info)
   if(!info || info.length == 0) return;
@@ -4388,14 +4398,19 @@ function reLinkStyleInfo(info){
   listBox.innerHTML = '';
   for(let i = 0; i < info.length; i++){
     let data = info[i]
-    let {name,islink,iscreate,isreset,isname} = data;
+    let {id,name,islink,iscreate,isreset,isname} = data;
+    let tagbox = document.createElement('div');
+    tagbox.className = 'df-cc w100 pos-r'
+    tagbox.setAttribute('data-linkstyle-tagbox','');
+    tagbox.setAttribute('data-linkstyle-haslink','');
     let tag = document.createElement('div');
-    tag.className = 'df-sc w100';
-    tag.setAttribute('data-linkstyle-tag','');
+    tag.className = 'df-sc wh100 ovh';
+    tag.setAttribute('data-linkstyle-tag',id);
     tag.setAttribute('data-linkstyle-islink',islink);
     tag.setAttribute('data-linkstyle-iscreate',iscreate);
     tag.setAttribute('data-linkstyle-isreset',isreset);
     tag.setAttribute('data-linkstyle-isname',isname ? 'true' : 'false');
+    tag.setAttribute('data-selects-must','')
 
     let title = document.createElement('div');
     title.className = 'df-ffc fl1 h100 gap10 pos-r';
@@ -4440,7 +4455,9 @@ function reLinkStyleInfo(info){
     path2.setAttribute('data-linkstyle-path','maybe');
     pathS2.appendChild(path2);
     pathBoxS.appendChild(pathS2);
-
+    path2.setAttribute('style','pointer-events: none;')//先禁用逻辑
+    //有漏洞，不能用i来指向最终的styleinfo,必须靠id
+    /*
     path2.addEventListener('change',(e)=>{
       let value = e.target.value;
       if(value && value.trim() !== ''){
@@ -4461,22 +4478,32 @@ function reLinkStyleInfo(info){
           }else{
             colorname.textContent = setName + lastName;
           }
+          console.log(State.get('linkstyleInfoFinal'));
           linkstyleInfoFinal[i].changename = value;
+          linkstyleInfoFinal[i].islink = true;
+          linkstyleInfoFinal[i].iscreate = true;
+          linkstyleInfoFinal[i].isreset = true;
+
         }else{
           tag.setAttribute('data-linkstyle-islink',islink);
           tag.setAttribute('data-linkstyle-iscreate',iscreate);
-          tag.setAttribute('data-linkstyle-isreset',isreset);
+          tag.setAttribute('data-linkstyle-isreset',c);
           tag.setAttribute('data-linkstyle-isname',value);
           tag.setAttribute('data-linkstyle-haschange','false');
           colorname.textContent = setName + lastName;
           linkstyleInfoFinal[i].changename = value;
+          linkstyleInfoFinal[i].islink = islink;
+          linkstyleInfoFinal[i].iscreate = iscreate;
+          linkstyleInfoFinal[i].isreset = isreset;
           if(value == isname){
             delete linkstyleInfoFinal[i].changename;
           }
         }
+        State.set('linkstyleInfoFinal',linkstyleInfoFinal)
         console.log(State.get('linkstyleInfoFinal'));
       }
     });
+    */
 
     if(isname){
       path2.setAttribute('data-input-must',isname);
@@ -4495,7 +4522,7 @@ function reLinkStyleInfo(info){
     tag.appendChild(title);
 
     let btnbox = document.createElement('div');
-    btnbox.setAttribute('data-linkstyle-btnbox','');
+    btnbox.setAttribute('data-linkstyle-btnbox','btn');
     btnbox.className = 'df-rc gap4';
     let btn = document.createElement('div');
     btn.setAttribute('data-linkstyle-btn','relink');
@@ -4520,10 +4547,95 @@ function reLinkStyleInfo(info){
     btnbox.appendChild(btn2);
     tag.appendChild(btnbox);
 
-    listBox.appendChild(tag);
+    let btnbox2 = document.createElement('div');
+    btnbox2.setAttribute('data-linkstyle-managebox','true');
+    btnbox2.className = "df-cc h100 bod-r4";
+    btnbox2.innerHTML = `<div class="wh-20 mar-0a" style="--bod: transparent; --check: var(--mainColor);"><btn-check-tick></btn-check-tick></div>`;
+    tag.appendChild(btnbox2);
+    let btnbox3 = document.createElement('div');
+    btnbox3.setAttribute('data-linkstyle-managebox','false');
+    btnbox3.className = "df-ffc df-cc h100 bod-r4 gap12";
+    btnbox3.innerHTML = `<div class="wh-20 mar-0a" style="--bod-op: 0; pointer-events: none;"><btn-close></btn-close></div>`;
+    let btn3 = document.createElement('div');
+    btn3.setAttribute('data-linkstyle-btn','back');
+    btn3.setAttribute('data-btn','icon');
+    btn3.setAttribute('data-en-text','Back'); 
+    btn3.setAttribute('data-zh-text','返回');
+    btn3.textContent = lan == 'Zh' ? '返回' : 'Back';
+    btnbox3.appendChild(btn3);
+    tag.appendChild(btnbox3);
+
+    tagbox.appendChild(tag);
+    listBox.appendChild(tagbox);
+
+    btn.addEventListener('click',()=>{
+      tagbox.setAttribute('data-linkstyle-haslink','load');
+      toolMessage([[[data],'relink'],'manageUnLinkStyle'],PLUGINAPP)
+    });
+    btn1.addEventListener('click',()=>{
+      tagbox.setAttribute('data-linkstyle-haslink','load');
+      toolMessage([[[data],'create'],'manageUnLinkStyle'],PLUGINAPP)
+    });
+    btn2.addEventListener('click',()=>{
+      tagbox.setAttribute('data-linkstyle-haslink','load');
+      toolMessage([[[data],'reset'],'manageUnLinkStyle'],PLUGINAPP)
+    });
+    btn3.addEventListener('click',()=>{
+      tagbox.setAttribute('data-linkstyle-haslink','')
+    });
     
   }
 };
+setTimeout(()=>{
+  getElementMix('data-radio-data="unlinkstyle"').click();//优先推流
+},200)
+//处理管理断链样式后的标签
+function reManageStyleTag(info){
+  //console.log(info)
+  let linkstyleInfoFinal = State.get('linkstyleInfoFinal');
+  for(let i = 0; i < info.length; i++){
+    let style = info[i];
+    let tag = getElementMix(`data-linkstyle-tag="${style.id}"`);
+    tag.parentNode.setAttribute('data-linkstyle-haslink','true');
+    setTimeout(()=>{
+      tag.parentNode.remove();
+    },1500)
+  };
+  let styleid = info.map(item => item.id);
+  linkstyleInfoFinal = linkstyleInfoFinal.filter(item => !styleid.includes(item.id));
+  State.set('linkstyleInfoFinal',linkstyleInfoFinal);
+  //找到还在等待反馈但没返回成功的tag
+  let hasnots = document.querySelectorAll('[data-linkstyle-haslink="load"]');
+  hasnots.forEach(tag => {
+    tag.setAttribute('data-linkstyle-haslink','false');
+    tipsAll(['未找到带断链样式的对象', "Can't find any unlink-style layers"],3000)
+    setTimeout(()=>{
+      tag.setAttribute('data-linkstyle-haslink','');
+    },3000)
+  });
+};
+//全部重链/覆盖/创建
+getElementMix('data-linkstyle-all="relink"').addEventListener('click',()=>{
+  let tags = document.querySelectorAll('[data-linkstyle-tag]');
+  tags.forEach(tag => {
+    tag.parentNode.setAttribute('data-linkstyle-haslink','load');
+  });
+  toolMessage([[State.get('linkstyleInfoFinal').filter(item => item.islink == true),'relink'],'manageUnLinkStyle'],PLUGINAPP)
+});
+getElementMix('data-linkstyle-all="create"').addEventListener('click',()=>{
+  let tags = document.querySelectorAll('[data-linkstyle-tag]');
+  tags.forEach(tag => {
+    tag.parentNode.setAttribute('data-linkstyle-haslink','load');
+  });
+  toolMessage([[State.get('linkstyleInfoFinal').filter(item => item.iscreate == true),'create'],'manageUnLinkStyle'],PLUGINAPP)
+});
+getElementMix('data-linkstyle-all="reset"').addEventListener('click',()=>{
+  let tags = document.querySelectorAll('[data-linkstyle-tag]');
+  tags.forEach(tag => {
+    tag.parentNode.setAttribute('data-linkstyle-haslink','load');
+  });
+  toolMessage([[State.get('linkstyleInfoFinal').filter(item => item.isreset == true),'reset'],'manageUnLinkStyle'],PLUGINAPP)
+});
 
 let testStyleGroupInfo = [
   {

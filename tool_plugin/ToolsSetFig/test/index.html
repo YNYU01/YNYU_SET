@@ -505,7 +505,13 @@
                   <div class="wh-14">
                     <btn-reup></btn-reup>                    
                   </div>
-                  <div data-en-text="Re-Upload">重新上传</div>                
+                  <div data-en-text="ReUpload">重新上传</div>                
+                </div>
+                <div class="df-lc gap2" data-export-overset data-btn="text">
+                  <div class="wh-14">
+                    <btn-hasselect></btn-hasselect>                    
+                  </div>
+                  <div data-en-text="OverSet">覆盖设置</div>                
                 </div>
               </div>
               <div class="df-lc gap4">
@@ -761,7 +767,7 @@
             <!--步骤2-->
             <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
               <span>▼&nbsp;</span>
-              <span data-en-text="Manage broken-link style" >管理断链样式</span>
+              <span data-en-text="Manage unlink-style" >管理断链样式</span>
               &nbsp;&nbsp;
               <span data-any="vw300" data-en-text="Reapply | Create | Override..." class="op6"> 重链 | 新建 | 覆盖</span>
             </div>
@@ -775,7 +781,7 @@
                   </div>
                 </div>
                 <div class="df-lc gap4">
-                  <div class="pos-r" data-linkstyle-all="reapply" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
+                  <div class="pos-r" data-linkstyle-all="relink" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
                   data-tips-text="全部重链" data-tips-text-en="Relink all">
                     <div data-btn="icon">
                       <svg width="100%" height="100%" viewBox="0 0 20 20">
@@ -791,7 +797,7 @@
                       </svg>
                     </div>
                   </div>
-                  <div class="pos-r" data-linkstyle-all="override" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
+                  <div class="pos-r" data-linkstyle-all="reset" data-tips="auto" data-tips-x="right" data-tips-y="bottom"
                   data-tips-text="全部覆盖" data-tips-text-en="Reset all">
                     <div data-btn="icon">
                       <svg width="100%" height="100%" viewBox="0 0 20 20">
@@ -802,7 +808,7 @@
                 </div>
               </div>
               <div data-manage-linkstyle-list class="wh100 df-ffc ovy noscrollbar">
-                <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
+                <!--div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div-->
               </div>
               <!--清空-->
               <div data-linkstyle-clear class="pos-a" style="right: 4px; top:28px; width: 12px; height: 12px;">
@@ -889,7 +895,7 @@
             </div>
 
             <div class="wh100 df">
-              <div id="upload-tablearea-box" data-resize class="pos-r fl1" style="min-height: 120px;">
+              <div id="upload-tablearea-box" data-resize class="pos-r fl1" style="min-height: 120px; white-space: nowrap">
                 <textarea class="wh100" spellcheck="false" id="upload-tablearea" data-textarea="eg"  
                 style=" min-height: 100%; white-space: nowrap;" 
                 data-eg="A1\tB1\tC1\na2\tb2\tc2\na3\tb3\tc3\na4\tb4\tc4"

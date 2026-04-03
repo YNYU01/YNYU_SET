@@ -88,6 +88,7 @@ let CLIP_NAME = [
 ];
 let localStyles = {paint:null,text:null,effect:null,grid:null};
 let localVariable;
+let IMG_TYPE = ['png','jpg','jpeg','webp'];
 
 //==========核心功能==========
 
@@ -539,7 +540,58 @@ figma.ui.onmessage = async (message) => {
     };
     //反传画板数据
     if ( type == "getTableBySelects"){
-        let data = getMain(figma.currentPage.selection);
+        //let data = getMain(figma.currentPage.selection);
+        let b = getSelectionMix();
+        let data = [];
+        b.forEach(node => {
+            let type = node.getPluginData('exportType').toLowerCase();
+            if(!type){
+                let exportSettings = node.exportSettings;
+                if(exportSettings.length > 0){
+                    type = exportSettings[0].format.toLowerCase();
+                    if(!IMG_TYPE.includes(type)){
+                        type = null;
+                    }
+                }
+            }
+            let size = node.getPluginData('exportSize');
+            let w = node.width;
+            let h = node.height;
+            let name = node.name;
+            name = name.replace(' ' + w,'')
+            .replace('×' + h,'')
+            .replace('_' + h,'')
+            .replace('x' + h,'')
+            if(type){
+                name = name.replace(' ' + type + '','');
+            };
+            if(size){
+                name = name.replace(' ' + size + 'k','')
+                .replace(' ' + size + 'K','');
+            };
+            data.push(
+                {name:name,w:w,h:h,s:size,type:type}
+            )
+        });
+        
+        let allType = data.map(item => item.type);
+        let allSize = data.map(item => item.s);
+        let types = data.map(item => item.type).filter(item => item !== null && item !== undefined && item !== '');
+        let sizes = data.map(item => item.s).filter(item => item !== null && item !== undefined && item !== '');
+        data = data.map((item,index) => {
+            let final = {name:item.name,w:item.w,h:item.h};
+            console.log(final)
+            if(sizes.length > 0){
+                console.log(allSize[index])
+                final.s = allSize[index];
+            }
+            if(types.length > 0){
+                console.log(allType[index])
+                final.type = allType[index];
+            }
+            return final;
+        });
+
         postmessage([data,'selectInfoMain']);
     };
     //反传组件信息
@@ -566,6 +618,10 @@ figma.ui.onmessage = async (message) => {
     //刷新导出图片所需的信息
     if( type == "refreshExportImgInfo"){
         refreshExportImgInfo(info);
+    };
+    //按标签覆盖设置
+    if( type == "oversetExportImgInfo"){
+        overSetExportImgInfo(info);
     };
     //修改目标大小
     if ( type == "setFinalSize"){
@@ -723,15 +779,19 @@ figma.ui.onmessage = async (message) => {
         });
     };
     //管理断链样式
-    if( type == "manageLinkStyle"){
+    if( type == "getUnLinkStyle"){
         let b = getSelectionMix();
         let final = [];
         b.forEach(item => {
             if(item.fillStyleId || item.strokeStyleId){
                 final.push(item);
             };
-            final = [...final,...item.findAll(items => items.fillStyleId || items.strokeStyleId)];
+            if(item.children){
+                let childrens = item.findAll(items => items.fillStyleId || items.strokeStyleId)
+                final.push(...childrens);
+            };
         });
+        if(final.length == 0) return;
         //收集所有样式id
         let allStyleId = [];
         final.forEach(item => {
@@ -806,8 +866,100 @@ figma.ui.onmessage = async (message) => {
         //console.log(unLinkStyle)
         postmessage([unLinkStyle,'linkStyleInfo']);
     };
+    if( type == "manageUnLinkStyle"){
+        //console.log(info)
+        await getStyle('paint');
+        let localStyleList = localStyles.paint.list;
+        let b = getSelectionMix();
+        let final = [];
+        b.forEach(item => {
+            if(item.fillStyleId || item.strokeStyleId){
+                final.push(item);
+            };
+            if(item.children){
+                let children = item.findAll(node => node.fillStyleId || node.strokeStyleId);
+                if (children.length > 0) {
+                    final.push(...children);
+                };  
+            };
+        });
+        let [stylesInfo,manageType] = info;
+        switch (manageType) {
+            case 'create':
+                let nodeStyleMap = {}; 
+                final.forEach(node => {
+                    if (node.fillStyleId) nodeStyleMap[node.fillStyleId] = node;
+                    if (node.strokeStyleId) nodeStyleMap[node.strokeStyleId] = node;
+                });
+                stylesInfo.forEach(style => {
+                    let styleNode = nodeStyleMap[style.id];
+                    if(styleNode){
+                        let paintStyle = figma.createPaintStyle();
+                        paintStyle.name = style.name;
+                        if(styleNode.fillStyleId == style.id){
+                            paintStyle.paints = styleNode.fills;
+                        } else {
+                            paintStyle.paints = styleNode.strokes;
+                        };
+                    };
+                });
+            break;
+            case 'reset':
+                let realLocalStyles = await figma.getLocalPaintStylesAsync();
+                let styleIdMap = {};
+                realLocalStyles.forEach(item => {
+                    styleIdMap[item.name] = item;
+                });
+                stylesInfo.forEach(style => {
+                    let finalname = style.isname ? style.isname : style.name
+                    let oldstyle = styleIdMap[finalname];
+                    if(!oldstyle) return
+                    final.forEach(node => {
+                        if(node.fillStyleId && node.fillStyleId == style.id){
+                            oldstyle.paints = node.fills;
+                        }
+                        if(node.strokeStyleId && node.strokeStyleId == style.id){
+                            oldstyle.paints = node.strokes;
+                        };
+                    });
+                });
+            break;
+        };
+        await getStyle('paint');
+        localStyleList = localStyles.paint.list;
+        let styleIdMap = {};
+        localStyleList.forEach(item => {
+            styleIdMap[item.name] = item.id;
+        });
+        
+        let manageMessage = [];
+        stylesInfo.forEach(style => {
+            let hasuse = false;
+            let finalname = style.isname ? style.isname : style.name
+            if(manageType == 'create'){
+                finalname = style.name
+            }
+            let styleid = styleIdMap[finalname];
+            
+            if(!styleid) return
+            final.forEach(node => {
+                if(node.fillStyleId && node.fillStyleId == style.id){
+                    hasuse = true
+                    node.setFillStyleIdAsync(styleid);
+                };
+                if(node.strokeStyleId && node.strokeStyleId == style.id){
+                    hasuse = true
+                    node.setStrokeStyleIdAsync(styleid);
+                };
+            });
+            if (hasuse) {
+                manageMessage.push(style);
+            };
+        });
+        postmessage([manageMessage,'hasManageStyle']);
+    };
     //管理样式组
-    if( type == "manageStyleGroup"){
+    if( type == "getStyleGroup"){
         let b = getSelectionMix();
         let final = [];
         b.forEach(item => {
@@ -843,7 +995,7 @@ figma.ui.onmessage = async (message) => {
         postmessage([themeStyle,'styleGroupInfo']);
     };
     //管理变量组
-    if( type == "manageVariableGroup"){
+    if( type == "getVariableGroup"){
         
     };
     //从预设或组件创建表格
@@ -1454,6 +1606,8 @@ figma.ui.onmessage = async (message) => {
     };
     //批量设置组件属性
     if( type == 'mapPro'){
+        //临时开启隐藏元素可查找
+        figma.skipInvisibleInstanceChildren = false;
         let b = getSelectionMix();
         let nodes = b;
         if(info.data[0]){
@@ -1469,9 +1623,12 @@ figma.ui.onmessage = async (message) => {
             //console.log(info)
             reAnyByObj(nodes,info.data,info.enters,info.nulls);
         };
+        figma.skipInvisibleInstanceChildren = true;
     };
     //批量设置标签属性
     if( type == 'mapTag'){
+        //临时开启隐藏元素可查找
+        figma.skipInvisibleInstanceChildren = false;
         let b = getSelectionMix();
         let nodes = b;
         if(info.data[0]){
@@ -1487,10 +1644,13 @@ figma.ui.onmessage = async (message) => {
             //nodes = nodes.filter(node => node.type == 'INSTANCE');
             reAnyByTags(nodes,info.data);
         };
+        figma.skipInvisibleInstanceChildren = true;
     };
     //批量获取文本数据
     if( type == 'getText'){
         //console.log(111)
+        //临时开启隐藏元素可查找
+        figma.skipInvisibleInstanceChildren = false;
         let b = getSelectionMix();
         let tables = getTablesByNodes(b);
         //没有table就说明是普通的文本数据填充
@@ -1517,6 +1677,7 @@ figma.ui.onmessage = async (message) => {
             //console.log(data);
             postmessage([data,'selectDatas'])
         };
+        figma.skipInvisibleInstanceChildren = true;
     };
     //批量获取命名
     if( type == 'getName'){
@@ -1540,6 +1701,8 @@ figma.ui.onmessage = async (message) => {
     };
     //批量获取组件属性
     if( type == 'getPro'){
+        //临时开启隐藏元素可查找
+        figma.skipInvisibleInstanceChildren = false;
         let b = getSelectionMix();
         let comps = b.filter(node => node.type == 'INSTANCE');
         if(!comps  || comps.length == 0){
@@ -1551,29 +1714,46 @@ figma.ui.onmessage = async (message) => {
                 }
             };
         };
+        console.log(comps,(comps  && comps.length > 0))
         if(comps  && comps.length > 0){
             let proKeys = comps.map(item => Object.keys(item.componentProperties).map(key => key.split('#')[0]).sort());
             let proNames = [...new Set(proKeys.map(item => JSON.stringify(item)))].map(item => JSON.parse(item))
-            //console.log(proKeys,proNames)
             //必须有相同的组件属性才能提取
             if(proNames.length == 1){
                 let datas = getProObj(comps,info.enters,info.nulls);
                 //console.log(datas)
                 //console.log(typeof datas[0])
                 postmessage([datas,'selectDatas'])
+            }else{
+                let lang = await figma.clientStorage.getAsync('userLanguage');
+                let text = lang == 'Zh' ? '仅组件属性相同时可获取' : 'Properties should be identical';
+                figma.notify(text,{
+                    error:true,
+                    timeout: 3000,
+                });
             };
         };
+        figma.skipInvisibleInstanceChildren = true;
     };
     //批量获取标签属性
     if( type == 'getTag'){
+        //临时开启隐藏元素可查找
+        figma.skipInvisibleInstanceChildren = false;
         let b = getSelectionMix();
-        
         let tagNodes = b.filter(node => hasTag(node) || node.findAll(child => hasTag(child)).length > 0);
         await getStyle('paint',false);
         if(tagNodes.length > 0){
-            let datas = getTagObj(tagNodes);
+            let datas = await getTagObj(tagNodes);
             postmessage([datas,'selectDatas'])
+        }else{
+            let lang = await figma.clientStorage.getAsync('userLanguage');
+            let text = lang == 'Zh' ? '仅组件属性相同时可获取' : 'Properties should be identical';
+            figma.notify(text,{
+                error:true,
+                timeout: 3000,
+            });
         };
+        figma.skipInvisibleInstanceChildren = true;
     };
     //更新表格样式、行列
     if( type == 'reTable'){
@@ -3658,13 +3838,26 @@ function exportImgInfo(set){
     setTimeout(async ()=>{
         for(let i = 0; i < b.length; i++){
             let c = b[i];
-            let format = c.getPluginData('exportType');
-            if(!format){
-                format = 'PNG';
+            let format;
+            if(c.name.toLowerCase().includes('jpg')){
+                format = 'JPG';
+            }else if(c.name.toLowerCase().includes('jpeg')){
+                format = 'JPEG';
+            }else if(c.name.toLowerCase().includes('webp')){
+                format = 'WEBP';
+            }else{
+                format = 'PNG'
             };
-            let size = c.getPluginData('exportSize');
+            if(!format){
+                format = c.getPluginData('exportType');
+            };
+            let size = null; 
+            let sizeMatch = c.name.match(/\D*(\d+)[kK]/);
+            if(sizeMatch){
+                size = sizeMatch[1];
+            }
             if(!size){
-                size = null;
+                size = c.getPluginData('exportSize');
             };
             let zipName = '';//a.parent.name.replace(/\//g,'_');
             if(c.parent.type == 'SECTION'){
@@ -3679,7 +3872,7 @@ function exportImgInfo(set){
                 let settings = c.exportSettings;
                 for(let ii = 0; ii < settings.length; ii++){
                     let setting = settings[ii];
-                    let exportsizeset = setting.constraint;
+                    let exportsizeset = setting.constraint || { type: 'SCALE', value: 1 };
                     switch (exportsizeset.type){
                         case 'SCALE':
                             [w,h] = [w*exportsizeset.value,h*exportsizeset.value];
@@ -3691,12 +3884,21 @@ function exportImgInfo(set){
                             [w,h] = [w*(exportsizeset.value/h),exportsizeset.value];
                         break
                     };
+                    let format = setting.format;
+                    if(!IMG_TYPE.includes(format.toLowerCase())){
+                        format = 'PNG';
+                        setting = {
+                            format: 'PNG',
+                            constraint: { type: 'SCALE', value: 1 },
+                            suffix: '',
+                        }
+                    }
                     info.push(
                         {
                             zipName: zipName,
                             fileName:c.name + setting.suffix,
                             id:c.id,
-                            format:setting.format,
+                            format:format,
                             u8a: await c.exportAsync(setting),
                             finalSize:size,
                             width: Math.round(w),
@@ -3760,6 +3962,45 @@ function refreshExportImgInfo(info){
         postmessage([infos,'refreshExportImgInfo']);
         load.cancel();
     },200);
+};
+//按标签覆盖设置
+async function overSetExportImgInfo(info){
+    let mixExports = [];
+    for(let i = 0; i < info.length; i++){
+        let c = await figma.getNodeByIdAsync([info[i].id]);
+        if(c){
+            let format = info[i].format;
+            if (format == 'JPEG' || format == 'WEBP'){
+                format = 'JPG'
+            };
+            if(mixExports.includes(c)){
+                let exportSettings = JSON.parse(JSON.stringify(c.exportSettings));
+                c.exportSettings = [...exportSettings,{
+                    format: format,
+                    constraint: { type: 'SCALE', value: info[i].width / c.width },
+                }];
+            }else{
+                c.setPluginData('exportType',info[i].format);
+                if(info[i].size){
+                    c.setPluginData('exportSize',info[i].size.toString());
+                }
+                c.exportSettings = [{
+                    format: format,
+                    constraint: { type: 'SCALE', value: info[i].width / c.width },
+                }];
+            }
+            
+            mixExports.push(c);
+        }
+    }
+    for(let i = 0; i < info.length; i++){
+        let c = await figma.getNodeByIdAsync([info[i].id]);
+        if(c){
+            if(c.exportSettings && c.exportSettings.length < 2){
+                c.name = info[i].name || c.name;
+            }
+        }
+    }
 };
 
 //创建表格
@@ -5525,7 +5766,7 @@ function getProObj(comps,enters,nulls){
     return datas;
 };
 //获取所有标签属性值
-function getTagObj(tagNodes){
+function getTagObj2(tagNodes){
     let datas = [];
     tagNodes.forEach(node => {
         let data = {};
@@ -5592,7 +5833,11 @@ function getTagObj(tagNodes){
                 case 'fillStyle':
                     let fillStyleId = node.fillStyleId;
                     if(fillStyleId){
-                        tagData[name] = localStyles.paint.list.find(item => item.id == fillStyleId).name;
+                        let fillStyle = localStyles.paint.list.find(item => item.id == fillStyleId)
+                        if(!fillStyle){
+                            fillStyle = figma.getStyleByIdAsync(fillStyleId)
+                        }
+                        tagData[name] = fillStyle.name || null;
                     } else {
                         tagData[name] = null;
                     };
@@ -5600,7 +5845,11 @@ function getTagObj(tagNodes){
                 case 'strokeStyle':
                     let strokeStyleId = node.strokeStyleId;
                     if(strokeStyleId){
-                        tagData[name] = localStyles.paint.list.find(item => item.id == strokeStyleId).name;
+                        let strokeStyle = localStyles.paint.list.find(item => item.id == strokeStyleId)
+                        if(!strokeStyle){
+                            strokeStyle = figma.getStyleByIdAsync(strokeStyleId)
+                        }
+                        tagData[name] = strokeStyle.name || null;
                     } else {
                         tagData[name] = null;
                     };
@@ -5638,6 +5887,132 @@ function getTagObj(tagNodes){
         return tagData;
     };
         
+};
+//将函数改为 async
+async function getTagObj(tagNodes) {
+    let datas = [];
+    
+    await Promise.all(tagNodes.map(async (node) => {
+        let data = {};
+        // 等待当前节点数据
+        data = await getTagData(node);
+        
+        if (node.children && node.children.length > 0) {
+            let childs = node.findAll(item => hasTag(item));
+            await Promise.all(childs.map(async (child) => {
+                let childData = await getTagData(child);
+                Object.keys(childData).forEach(key => {
+                    data[key] = childData[key];
+                });
+            }));
+        }
+        datas.push(data);
+    }));
+
+    // 收集所有出现过的标签 key
+    let tagkeys = datas.map(item => Object.keys(item));
+    tagkeys = [...new Set(tagkeys.flat())];
+
+    // 按原始节点顺序，把缺失的 key 用 null 补齐
+    let finalDatas = datas.map(item => {
+        let row = {};
+        tagkeys.forEach(key => {
+            row[key] = item.hasOwnProperty(key) ? item[key] : null;
+        });
+        return row;
+    });
+    return finalDatas;
+
+    async function getTagData(node) {
+        let tagNames = hasTag(node, true);
+        let tagData = {};
+        
+        await Promise.all(tagNames.map(async (name) => {
+            let prop = name.split('.')[1];
+            switch (prop) {
+                case 'fill':
+                    let fill = node.fills[0];
+                    if (fill) {
+                        let color = fill.color;
+                        tagData[name] = rgbToHex(
+                            Math.round(color.r * 255),
+                            Math.round(color.g * 255),
+                            Math.round(color.b * 255),
+                        );
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+                case 'stroke':
+                    let stroke = node.strokes[0];
+                    if (stroke) {
+                        let color = stroke.color;
+                        tagData[name] = rgbToHex(
+                            Math.round(color.r * 255),
+                            Math.round(color.g * 255),
+                            Math.round(color.b * 255),
+                        );
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+                case 'fillStyle':
+                    let fillStyleId = node.fillStyleId;
+                    if (fillStyleId) {
+                        let fillStyle = localStyles.paint.list.find(item => item.id == fillStyleId);
+                        if (!fillStyle) {
+                            // 这里是耗时的异步操作
+                            fillStyle = await figma.getStyleByIdAsync(fillStyleId);
+                        }
+                        tagData[name] = fillStyle ? fillStyle.name : null;
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+                case 'strokeStyle':
+                    let strokeStyleId = node.strokeStyleId;
+                    if (strokeStyleId) {
+                        let strokeStyle = localStyles.paint.list.find(item => item.id == strokeStyleId);
+                        if (!strokeStyle) {
+                            strokeStyle = await figma.getStyleByIdAsync(strokeStyleId);
+                        }
+                        tagData[name] = strokeStyle ? strokeStyle.name : null;
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+                case 'visible':
+                    tagData[name] = node.visible;
+                    break;
+                case 'opacity':
+                    tagData[name] = node.opacity;
+                    break;
+                case 'fontSize':
+                    if (node.type == 'TEXT') {
+                        tagData[name] = typeof node.fontSize == 'number' ? node.fontSize : null;
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+                case 'xywh':
+                    tagData[name] = [node.x, node.y, node.width, node.height];
+                    break;
+                case 'instance':
+                    if (node.type == 'INSTANCE') {
+                        let variant = Object.values(node.componentProperties).find(item => item.type == 'VARIANT');
+                        if (variant) {
+                            tagData[name] = variant.value;
+                        } else {
+                            tagData[name] = null;
+                        };
+                    } else {
+                        tagData[name] = null;
+                    };
+                    break;
+            };
+        }));
+        return tagData;
+    };
 }
 //判断节点是否含有标签
 function hasTag(node,isGet = false){
@@ -6212,33 +6587,34 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
             let lines2length = splitnodes[i].characters.split(splitKeys[0]).map(item => item.length);
             let lines2 = []
             let start2 = 0;
+            let keyLength = splitKeys[0].length
             for (let ii = 0; ii < lines2length.length; ii++) {
                 let length = lines2length[ii];
                 let end2;
                 let keyMove = 0;
                 switch(splitKeys[1]){
                     case 'Suf':
-                        end2 = start2 + length + 1;
+                        end2 = start2 + length + keyLength;
                         if(ii == lines2length.length - 1){
                             end2 = start2 + length;
                         };
                     break
                     case 'Pre':
-                        end2 = start2 + length + 1;
+                        end2 = start2 + length + keyLength;
                         if(ii == 0){
                             end2 = start2 + length;
                         };
                     break
                     case 'Null':
                         end2 = start2 + length;
-                        keyMove = 1;
+                        keyMove = keyLength;
                     break
                 }
                 lines2.push([start2, end2]);
                 start2 = end2 + keyMove;
             };
 
-            //console.log(lines2length,lines2)
+            console.log(lines2length,lines2)
             try {
                 for(let ii = 0; ii < lines2.length; ii++){
                     let splitnode2 = splitnodes[i].clone();

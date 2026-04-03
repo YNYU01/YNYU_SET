@@ -1,10 +1,49 @@
 /* AUTO-GENERATED FILE. DO NOT EDIT. */
 /* Source: tool_plugin/ToolsSetFig/log.md */
-/* Built: 2026-03-27T08:41:48.294Z */
+/* Built: 2026-04-03T14:56:47.772Z */
 
 (function () {
   'use strict';
   window.__TOOLSSET_HELP_LOGS__ = [
+  {
+    "title": [
+      "v0.1.7",
+      "v0.1.7"
+    ],
+    "date": "2026/4/3",
+    "items": [
+      [
+        "li",
+        "<span data-doc-key>优化：</span>导出页>按导出设置上传，当不存在支持格式时回退默认设置",
+        "<span data-doc-key>⚡ Optimize:</span> Export page > Upload by export settings, fallback to default settings when no supported format exists"
+      ],
+      [
+        "li",
+        "<span data-doc-key>优化：</span>导出页>上传，尝试从命名中获取目标文件格式和目标文件大小，如jpg/1234k，且优先级高于缓存",
+        "<span data-doc-key>⚡ Optimize:</span> Export page > Upload, attempt to get target file format and size from naming (e.g. jpg/1234k), priority higher than cache"
+      ],
+      [
+        "li",
+        "<span data-doc-key>新增：</span>导出页>管理渲染队列，当目标文件格式和目标文件大小是从命名中获取时不会触发缓存，或者想将修改过的导出设置和命名同步到本地设置，此时可以点击覆盖设置，需谨慎使用",
+        "<span data-doc-key>✨ New:</span> Export page > Manage render queue, clicking \"Override Settings\" syncs modified export settings and naming to local settings (won't trigger cache if format/size is from naming), use with caution"
+      ],
+      [
+        "li",
+        "<span data-doc-key>新增：</span>变量页>断链样式管理，现已开放测试，可用于跨文件迁移样式，将断开链接的样式与当前文件样式名比对并重新建立关联",
+        "<span data-doc-key>✨ New:</span> Variables page > Unlink styles management (Beta), now open for testing, allows migrating styles across files by comparing unlinked styles with current file style names and re-establishing associations"
+      ],
+      [
+        "li",
+        "<span data-doc-key>修复：</span>更多功能页>拆分文本，修复按关键词拆分时分段错位的问题",
+        "<span data-doc-key>🐞 Fix:</span> More Tools page > Split text, fixed segmentation misalignment when splitting by keywords"
+      ],
+      [
+        "li",
+        "<span data-doc-key>修复：</span>表单页>数据获取>标签属性，当存在远程样式时会导致获取失败，现已支持获取，通过标签属性修改远程样式为本地样式约等于变量页的断链样式管理",
+        "<span data-doc-key>🐞 Fix:</span> Sheet page > Data get > Tag attributes, fixed failure to get when remote styles exist, now supported; modifying remote styles to local via tag attributes is roughly equivalent to unlink styles management in Variables page"
+      ]
+    ]
+  },
   {
     "title": [
       "v0.1.6",

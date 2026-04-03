@@ -1999,16 +1999,19 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 [data-manage-variables-list]{
   padding: 6px;
   box-sizing: border-box;
-  gap: 6px;
 }
 
 [data-linkstyle-tag]{
   background: var(--boxGry);
-  gap: 4px;
+  gap: 8px;
   padding: 6px 10px 10px 10px;
   box-sizing: border-box;
   border-radius: 4px;
   align-items: end;
+}
+
+[data-linkstyle-tagbox]{
+  margin-bottom: 6px;
 }
 
 [data-linkstyle-haschange="true"] [data-linkstyle-colorname] {
@@ -2102,6 +2105,19 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   width: 24ch;
 }
 
+[data-linkstyle-haslink="load"]{
+  pointer-events: none;
+}
+
+[data-linkstyle-managebox="true"],
+[data-linkstyle-managebox="false"]{
+  display: none;
+  background: var(--boxBak);
+  animation: boxUp 0.3s;
+  padding: 4px 4px 2px 4px;
+  box-sizing: border-box;
+}
+
 [data-linkstyle-btn]{
   width: 7ch;
   height: 2.5ch;
@@ -2112,6 +2128,11 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   padding: 0 0.5ch;
   box-sizing: border-box;
   color: #2e2e2e;
+  background: var(--boxGry);
+}
+
+[data-linkstyle-btn]:hover{
+  background: var(--boxGry);
 }
 
 [data-linkstyle-btn="relink"],[data-linkstyle-btn="relink"]:hover{
@@ -2130,6 +2151,43 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   pointer-events: none;
   opacity: 0.4;
 }
+
+[data-linkstyle-haslink="true"] [data-linkstyle-managebox="true"],
+[data-linkstyle-haslink="false"] [data-linkstyle-managebox="false"]{
+  display: flex;
+}
+[data-linkstyle-haslink="false"] [data-linkstyle-managebox="true"],
+[data-linkstyle-haslink="true"] [data-linkstyle-managebox="false"],
+[data-linkstyle-haslink="false"] [data-linkstyle-btnbox],
+[data-linkstyle-haslink="true"] [data-linkstyle-btnbox]{
+  display: none;
+}
+
+[data-linkstyle-haslink="true"] [data-linkstyle-tag]{
+  animation: moveTag 0.2s ease-in forwards;
+  animation-delay: 1s;
+}
+
+@keyframes moveTag {
+  to{
+    transform: translateX(80px);
+    opacity: 0;
+  }
+}
+
+[data-linkstyle-haslink="true"]{
+  animation: closeTag 0.3s ease-in forwards;
+  animation-delay: 1.3s;
+}
+
+@keyframes closeTag {
+  to{
+    height: 0;
+    pointer-events: none;
+    margin-bottom: 0;
+  }
+}
+
 
 [data-text-mini]{
   font-size: 8px;

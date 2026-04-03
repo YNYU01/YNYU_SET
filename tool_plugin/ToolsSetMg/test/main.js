@@ -4871,12 +4871,19 @@ function getUserRadio(node){
     if(node.parentNode.parentNode.getAttribute('data-variable-type') !== null){
       let vars = getElementMix('data-variable-varmix');
       let styles = getElementMix('data-variable-stylemix');
+      let unlink = getElementMix('data-variable-unlink')
       if( userRadio == 'variable'){
         vars.style.display = 'flex';
         styles.style.display = 'none';
+        unlink.style.display = 'none';
+      }else if(userRadio == 'unlinkstyle'){
+        vars.style.display = 'none';
+        styles.style.display = 'none';
+        unlink.style.display = 'flex';
       }else{
         vars.style.display = 'none';
         styles.style.display = 'flex';
+        unlink.style.display = 'none';
       };
     };
 

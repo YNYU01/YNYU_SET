@@ -260,8 +260,7 @@ mg.ui.onmessage = async (message) => {
                 case 'md':
                     addAutoLayout(box,['V','TL',0,[40,48,40,28]]);
                     box.fills = bg1;
-                    box.layoutSizingHorizontal = 'HUG';
-                    box.layoutSizingVertical = 'HUG';
+                    box.width = 750;
                 break
                 case 'svg':
                 break
@@ -273,8 +272,8 @@ mg.ui.onmessage = async (message) => {
                                 box.appendChild(rootNode);
                                 // 调整 box 尺寸以适应内容
                                 addAutoLayout(box,['V','TL',0,[0,0,0,0]],[false,false,false,false]);
-                                box.layoutSizingHorizontal = 'HUG';
-                                box.layoutSizingVertical = 'HUG';
+                                box.mainAxisSizingMode = 'AUTO';
+                                box.crossAxisSizingMode = 'AUTO';
                             }
                         } catch(error) {
                             console.error('JSON to Node error:', error);
@@ -291,9 +290,11 @@ mg.ui.onmessage = async (message) => {
                             let line = addFrame([100,100,null,null,'@h' + level,[]]);
                             addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
                             line.appendChild(text);
-                            text.layoutSizingHorizontal = 'FILL';
+                            line.flexWrap = "NO_WRAP"
+                            text.alignSelf = "STRETCH";
+                            text.textAutoResize = "HEIGHT"
                             box.appendChild(line);
-                            line.layoutSizingHorizontal = 'FILL';
+                            line.alignSelf = "STRETCH";
                         },
                         h1: function(cre){
                             return CreateZyNode.h(cre,1);
@@ -319,48 +320,52 @@ mg.ui.onmessage = async (message) => {
                             let line = addFrame([100,100,null,null,'@p',[]]);
                             addAutoLayout(line,['V','TL',0,[6,0,6,28]]);
                             line.appendChild(text);
-                            text.layoutSizingHorizontal = 'FILL';
+                            text.alignSelf = "STRETCH";
+                            text.textAutoResize = "HEIGHT"
                             box.appendChild(line);
-                            line.layoutSizingHorizontal = 'FILL';
+                            line.alignSelf = "STRETCH";
                         },
                         br: function(cre){
                             let line = addFrame([100,24,null,null,'@br',[]]);
                             box.appendChild(line);
-                            line.layoutSizingHorizontal = 'FILL';
+                            line.alignSelf = "STRETCH";
                         },
                         hr: function(cre){
                             let line = addFrame([100,24,null,null,'@hr',[]]);
                             addAutoLayout(line,['V','CC',0,[20,10,20,10]]);
-                            let path = mg.createVector();
-                            path.vectorPaths = [{
-                                windingRule: "NONE",
+                            let path = mg.createPen();
+                            path.penPaths = [{
+                                windingRule: "Nonzero",
                                 data: "M 0 0 L 100 0",
                             }]
                             path.dashPattern = [4,4];
                             path.strokeWeight = 1;
                             path.strokes = color1;
                             line.appendChild(path);
-                            path.layoutSizingHorizontal = 'FILL';
+                            path.alignSelf = "STRETCH";
                             box.appendChild(line);
-                            line.layoutSizingHorizontal = 'FILL';
+                            line.alignSelf = "STRETCH";
                         },
                         code: async function(cre){
                             let characters = cre.content.join('\n');
                             //text.textAutoResize = 'HEIGHT';
-                            //text.layoutSizingVertical = 'HUG';
+                            //text.crossAxisSizingMode = 'AUTO';
                             let line = addFrame([100,100,null,null,'@code:' + cre.language,[]]);
                             addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
                             if(!preComp){
                                 let pre = addFrame([626,100,null,null,'@pre',[]]);
-                                addAutoLayout(pre,['H','TL',0,[10,20,10,0]]);
-                                //pre.itemReverseZIndex = true;//前面堆叠在上
+                                addAutoLayout(pre,['H','TL',-26,[10,20,10,0]],[false,false]);
+                                pre.crossAxisSizingMode = 'AUTO';
+                                pre.itemReverseZIndex = true;//前面堆叠在上
                                 pre.fills = [toRGB('#272727',true)];
                                 [pre.bottomLeftRadius,pre.bottomRightRadius,pre.topLeftRadius,pre.topRightRadius] = [10,10,10,10];
 
                                 let mask = addFrame([100,100,null,null,'mask',[]]);
                                 addAutoLayout(mask,['V','TL',0,[0,10,0,20]]);
                                 mask.strokes = [toRGB('#272727',true)];
-                                mask.fills = [toRGB('#27272799',true)];
+                                let maskfill = toRGB('#272727',true);
+                                maskfill.color['a'] = 0.6
+                                mask.fills = [maskfill];
                                 [mask.strokeTopWeight,mask.strokeRightWeight,mask.strokeBottomWeight,mask.strokeLeftWeight] = [0,14,0,0];
                                 let num = await addText([{family:'Roboto Mono',style:'Regular'},'4',20,color4]);
                                 num.autoRename = false;
@@ -372,13 +377,14 @@ mg.ui.onmessage = async (message) => {
                                 let eg = `function any(){\n\t/*somthing there*/\n}\n//Remember to change the value of 'last-line-num', it must be 4 here`;
                                 let code = await addText([{family:'Roboto Mono',style:'Regular'},eg,20,color4]);    
                                 //"ORDERED" | "BULLETED" | "NONE"
-                                code.listStyles = [{type: 'ORDERED',start: 0,end: eg.length}];
-                                code.hangingList = true;
+                                //code.listStyles = [{type: 'ORDERED',start: 0,end: eg.length,level:cre.level | 0}];
+                                code.setRangeListStyle(0,eg.length,'ORDERED');
+                                console.log(eg.length)
                                 pre.appendChild(code);
-                                code.layoutSizingHorizontal = 'FILL';
-
-                                mask.layoutSizingHorizontal = 'HUG';
-                                mask.layoutSizingVertical = 'FILL';
+                                code.flexGrow = 1;
+                                code.textAutoResize = 'HEIGHT'
+                                mask.alignSelf = "STRETCH";
+                                mask.flexGrow = 0;
                                 preComp = createCompByNode(pre);
                                 
                                 addCompPro(preComp,num,'--last-line-num','TEXT','4');
@@ -387,44 +393,48 @@ mg.ui.onmessage = async (message) => {
                                 preComp.y = box.y + 120;
                                 preComp.width = 426;
                                 preComp.height = 100;
-                                preComp.layoutSizingVertical = 'HUG';
+                                preComp.alignSelf = "INHERIT";
                                 allComp.push(preComp);
                             };
                             let newPre = preComp.createInstance();
                             line.appendChild(newPre);
-                            newPre.layoutSizingHorizontal = 'FILL';
-                            newPre.layoutSizingVertical = 'HUG';
+                            newPre.alignSelf = "STRETCH";
+                            newPre.alignSelf = "INHERIT";
                             newPre.children[1].characters = characters;
                             let proId = newPre.componentProperties.find(item => item.name == '--last-line-num').id;
                             newPre.setProperties({[proId]: (cre.content.length).toString()});
                             box.appendChild(line);
-                            line.layoutSizingHorizontal = 'FILL';
+                            line.alignSelf = "STRETCH";
                         },
                         ul: async function(cre){
                             let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
                             let text = await addText([{family:'Source Han Sans',style:'Regular'},characters,24,color3]);
                             //"ORDERED" | "BULLETED" | "NONE"                            
-                            text.listStyles = [{type: 'BULLETED',start: 0,end: characters.length}];
+                            //text.listStyles = [{type: 'BULLETED',start: 0,end: characters.length,level:cre.level | 0}];
+                            text.setRangeListStyle(0,characters.length,'BULLETED')
                             text.listSpacing = 6;
                             let line = addFrame([100,100,null,null,'@ul',[]]);
                             addAutoLayout(line,['V','TL',0,[0,0,6,0]]);
                             line.appendChild(text);
-                            text.layoutSizingHorizontal = 'FILL';
+                            text.alignSelf = "STRETCH";
+                            text.textAutoResize = "HEIGHT"
                             box.appendChild(line);
-                            line.layoutSizingHorizontal = 'FILL';
+                            line.alignSelf = "STRETCH";
                         },
                         ol: async function(cre){
                             let characters = cre.items.map(item => {return typeof item.content == 'string' ? item.content : item.content.map(item => item.content).join('')}).join('\n');
                             let text = await addText([{family:'Source Han Sans',style:'Regular'},characters,24,color3]);
                             //"ORDERED" | "BULLETED" | "NONE"
-                            text.listStyles = [{type: 'ORDERED',start: 0,end: characters.length}];
+                            //text.listStyles = [{type: 'ORDERED',start: 0,end: characters.length,level:cre.level | 0}];
+                            text.setRangeListStyle(0,characters.length,'BULLETED')
                             text.listSpacing = 6;
                             let line = addFrame([100,100,null,null,'@ol',[]]);
                             addAutoLayout(line,['V','TL',0,[0,0,6,28]]);
                             line.appendChild(text);
-                            text.layoutSizingHorizontal = 'FILL';
+                            text.alignSelf = "STRETCH";
+                            text.textAutoResize = "HEIGHT"
                             box.appendChild(line);
-                            line.layoutSizingHorizontal = 'FILL';
+                            line.alignSelf = "STRETCH";
                         },
                         blockquote: async function(cre){
                             let characters = typeof cre.content == 'string' ? cre.content : cre.content.map(item => item.content).join('');
@@ -439,11 +449,12 @@ mg.ui.onmessage = async (message) => {
                             [pre.strokeTopWeight,pre.strokeRightWeight,pre.strokeBottomWeight,pre.strokeLeftWeight] = [1,1,4,1];
                             [pre.bottomLeftRadius,pre.bottomRightRadius,pre.topLeftRadius,pre.topRightRadius] = [10,10,10,10];
                             pre.appendChild(text);
-                            text.layoutSizingHorizontal = 'FILL';
+                            text.alignSelf = "STRETCH";
+                            text.textAutoResize = "HEIGHT"
                             line.appendChild(pre);
-                            pre.layoutSizingHorizontal = 'FILL';
+                            pre.alignSelf = "STRETCH";
                             box.appendChild(line);
-                            line.layoutSizingHorizontal = 'FILL';
+                            line.alignSelf = "STRETCH";
                         },
                         table:async function(cre){
                             await mg.clientStorage.getAsync('userLanguage')
@@ -484,7 +495,7 @@ mg.ui.onmessage = async (message) => {
                                 let line = addFrame([100,100,null,null,'@sheet',[]]);
                                 addAutoLayout(line,['V','TL',0,[12,0,12,28]]);
                                 line.appendChild(table);
-                                table.layoutSizingHorizontal = 'FILL';
+                                table.alignSelf = "STRETCH";
                                 table.clipsContent = true;
                                 table.fills = [];
                                 table.strokes = [toRGB('#272727',true)];
@@ -495,7 +506,7 @@ mg.ui.onmessage = async (message) => {
                                 newth.y = box.y;
                                 newtd.y = box.y + 60;
                                 
-                                line.layoutSizingHorizontal = 'FILL';
+                                line.alignSelf = "STRETCH";
                             })
                             .catch (error => {
                                 console.log(error);
@@ -507,21 +518,18 @@ mg.ui.onmessage = async (message) => {
                             let img = mg.createRectangle();
                             line.appendChild(img);
                             box.appendChild(line);
-                            let image = await mg.createImageAsync(cre.src);
-                            let { width, height } = await image.getSizeAsync();
-                            img.width = width;
-                            img.height = height;
+                            let image =  await mg.createImage(cre.src);
                             img.fills = [
                                 {
                                     type: 'IMAGE',
-                                    imageHash: image.hash,
+                                    imageRef: image.href,
                                     scaleMode: 'FILL'
                                 }
                             ];
                             img.name = cre.alt || 'image';
                             img.lockAspectRatio();
-                            img.layoutSizingHorizontal = 'FILL';
-                            line.layoutSizingHorizontal = 'FILL';
+                            img.alignSelf = "STRETCH";
+                            line.alignSelf = "STRETCH";
                         },
                     };
                     try {
@@ -1321,20 +1329,44 @@ mg.ui.onmessage = async (message) => {
             if(!comps || comps.length == 0){
                 if(b.length == 1 && Array.length > 1){
                     comps = b[0].findChildren(item => item.type == 'INSTANCE');
-                    //仅自动布局时生效
+                    let CC = comps.length;
+                    let C = Array.length - CC;
+                    if(info.clone == false){
+                        C = C > 0 ? 0 : C;
+                    }
+                    if(info.reduce == false){
+                        C = C < 0 ? 0 : C;
+                    };
+                    //如果是实例，则不能增减子实例数量
+                    if(b[0].type == 'INSTANCE'){
+                        C = 0;
+                    };
                     if(b[0].flexMode && b[0].flexMode !== 'NONE'){
-                        let CC = comps.length;
-                        let C = Array.length - CC;
-                        if(info.clone == false){
-                            C = C > 0 ? 0 : C;
-                        }
-                        if(info.reduce == false){
-                            C = C < 0 ? 0 : C;
-                        };
                         reCompNum(b[0],C);
                         reAnyByArray(b[0].children,Array,false,info.enters,info.nulls);
                     } else {
                         sortLRTB(comps);
+                        //强制增减实例数量
+                        try {
+                            let oldlength = comps.length;
+                            let oldindex = oldlength - 1;
+                            if(C > 0){
+                                //克隆最后一个
+                                for(let i = 0; i < C; i++){
+                                    let clone = comps[oldindex].clone();
+                                    clone.y = clone.y + (clone.height * 1.2 * (i + 1));
+                                    comps.push(clone);
+                                };
+                            } else {
+                                //从后往前删掉超出的实例
+                                for(let i = 0; i < -C; i++){
+                                    comps[oldindex + i].remove();
+                                };
+                                comps = comps.slice(0,oldlength + C);
+                            };
+                        } catch(e){
+                            console.log(e);
+                        };
                         reAnyByArray(comps,Array,false,info.enters,info.nulls);
                     };
                 };
@@ -2889,22 +2921,27 @@ mg.ui.onmessage = async (message) => {
 
                 let code = await addText([{family:'Roboto Mono',style:'Regular'},css,16,[toRGB('#aeaeae',true)]]);    
                 //"ORDERED" | "BULLETED" | "NONE"
+                /*
                 code.listStyles = [
-                    {type: 'ORDERED',start: 0,end: 1 },
-                    {type: 'ORDERED',start: 1,end: tips.length + 1 },
-                    {type: 'ORDERED',start: tips.length + 2,end: css.length}
+                    {type: 'ORDERED',start: 0,end: 1 ,level:cre.level | 0},
+                    {type: 'ORDERED',start: 1,end: tips.length + 1 ,level:cre.level | 0},
+                    {type: 'ORDERED',start: tips.length + 2,end: css.length,level:cre.level | 0}
                 ];
+                */
+                code.setRangeListStyle(0,1,'ORDERED')
+                code.setRangeListStyle(1,tips.length + 1,'ORDERED')
+                code.setRangeListStyle(tips.length + 2,css.length,'ORDERED')
                 code.setRangeFills(1,tips.length + 1,[toRGB('#565656',true)]);
                 if(lan == 'Zh' && isLoadFontTipsZh){
                     code.setRangeFontName(1,tips.length + 1,fontNameTipsZh);
                 }
                 code.hangingList = true;
                 pre.appendChild(code);
-                code.layoutSizingHorizontal = 'FILL';
+                code.alignSelf = "STRETCH";
 
-                mask.layoutSizingHorizontal = 'HUG';
-                mask.layoutSizingVertical = 'FILL';
-                pre.layoutSizingVertical = 'HUG';
+                mask.mainAxisSizingMode = 'AUTO';
+                mask.flexGrow = 1;
+                pre.crossAxisSizingMode = 'AUTO';
                 mg.document.currentPage.selection = [pre];
                 mg.viewport.scrollAndZoomIntoView(pre);
                 mg.viewport.zoom = mg.viewport.zoom * 0.6;
@@ -3672,7 +3709,7 @@ async function createTable(thComp,tdComp,language,isFill = false,isHeader = true
     };
 
     column.children.forEach(item => {
-        item.layoutSizingHorizontal = 'FILL';
+        item.alignSelf = "STRETCH";
     });
     
     let table = addFrame([528,208,null,null,'xxx@table',[toRGB('#2D2D2D',true)],[null,null,[toRGB('#666666',true)]]]);
@@ -3680,11 +3717,11 @@ async function createTable(thComp,tdComp,language,isFill = false,isHeader = true
 
     if(isFill){
         addAutoLayout(table,['H','TL'],[true,false]);
-        column.layoutSizingHorizontal = 'FILL';
+        column.alignSelf = "STRETCH";
     }else{
         addAutoLayout(table,['H','TL']);
     };
-    table.layoutSizingVertical = 'HUG';
+    table.crossAxisSizingMode = 'AUTO';
     table.x += 200;
     return [th,td,table];
 };
@@ -3715,7 +3752,8 @@ async function addTableCompMust(type,language,nodes,isFill = false,isHeader = tr
         let text = await addText([{family:'Source Han Sans',style:egtext[type][0]},egtext[type][1],16]);
         comp.appendChild(text);
         if(isFill){
-            text.layoutSizingHorizontal = 'FILL';
+            text.alignSelf = "STRETCH";
+            text.textAutoResize = "HEIGHT"
             if(type == 'th') text.textAlignHorizontal = 'CENTER';
             //text.textAlignHorizontal = 'CENTER';
             comp.paddingLeft = 16;
@@ -3902,7 +3940,7 @@ async function createLocalSheet(type,comps){
     column1.appendChild(th.createInstance());
     column1.appendChild(td.createInstance());
     column1.children.forEach(item => {
-        item.layoutSizingHorizontal = 'FILL';
+        item.alignSelf = "STRETCH";
     });
     let column2;
     switch (type){
@@ -3912,7 +3950,7 @@ async function createLocalSheet(type,comps){
             column2.appendChild(th.createInstance());
             column2.appendChild(tn.createInstance());
             column2.children.forEach(item => {
-                item.layoutSizingHorizontal = 'FILL';
+                item.alignSelf = "STRETCH";
             });
         break
         case 'variable':
@@ -4473,131 +4511,7 @@ function parseColorToHsl(colorInput) {
     return null;
 }
 
-// ============================================================================
-// 主题系统：颜色映射预设配置
-// ============================================================================
-const colorMappingPresets = {
-    'Normal': {
-        primaryTarget: 'bgColor',
-        rgbOffset: { r: 0, g: 0, b: 0 },
-        saturationRange: { min: 10, max: 90 },
-        lightnessRange: { level: [1,2,3,4,11,12,13,14,15] },
-        bgColor: {},
-        headerFillColor: { lightnessOffset: 13, saturationMultiplier: 0.8 },
-        cellFillColor: { lightnessOffset: 13, saturationMultiplier: 0.8 },
-        headerTextColor: { contrastThreshold: 50 },
-        cellTextColor: { contrastThreshold: 50 },
-        strokeColor: { lightnessOffset: 20, relativeTo: 'headerFillColor' },
-        hasHeader: true,
-        fillStyle: 2,
-        strokeStyle: 1
-    },
-    'Soft': {
-        primaryTarget: 'bgColor',
-        rgbOffset: { r: 0, g: 0, b: 0 },
-        saturationRange: { min: 10, max: 80 },
-        lightnessRange: { level: [1,2,3,4,5,11,12,13,14,15] },
-        bgColor: {},
-        headerFillColor: { lightnessOffset: 5, saturationMultiplier: 0.9 },
-        cellFillColor: { lightnessOffset: 5, saturationMultiplier: 0.9 },
-        headerTextColor: { lightnessOffset: 30, relativeTo: 'headerFillColor' },
-        cellTextColor: { lightnessOffset: 30, relativeTo: 'headerFillColor' },
-        strokeColor: { lightnessOffset: 10, relativeTo: 'headerFillColor' },
-        hasHeader: true,
-        fillStyle: 2,
-        strokeStyle: 1
-    },
-    'Fashion': {
-        primaryTarget: 'headerFillColor',
-        rgbOffset: { r: 0, g: 0, b: 0 },
-        saturationRange: { min: 50, max: 90 },
-        lightnessRange: { level: [9,10,11] },
-        bgColor: { lightnessOffset: 405, saturationMultiplier: 0.95 },
-        headerFillColor: {},
-        cellFillColor: { lightnessOffset: 10, saturationMultiplier: 1, opacity: 0.3 },
-        headerTextColor: { contrastThreshold: 50 },
-        cellTextColor: { contrastThreshold: 50 },
-        strokeColor: { lightnessOffset: 0.1, relativeTo: 'headerFillColor' },
-        hasHeader: true,
-        fillStyle: 2,
-        strokeStyle: 4
-    },
-    'Contrast': {
-        primaryTarget: null,
-        rgbOffset: { r: 0, g: 0, b: 0 },
-        saturationRange: { min: 50, max: 90 },
-        lightnessRange: { level: [9,10,11,12,13,14,15] },
-        bgColor: { color: 'white' },
-        headerFillColor: { color: 'black' },
-        cellFillColor: { lightnessOffset: 0, saturationMultiplier: 1, opacity: 0.8 },
-        headerTextColor: { color: 'white' },
-        cellTextColor: { color: 'black' },
-        strokeColor: { color: 'black' },
-        hasHeader: true,
-        fillStyle: 2,
-        strokeStyle: 1
-    },
-    'Vivid': {
-        primaryTarget: 'bgColor',
-        rgbOffset: { r: 0, g: 0, b: 0 },
-        saturationRange: { min: 80, max: 100 },
-        lightnessRange: { level: [1,2,3,4,5,6,7,8,9,10,11,12,13] },
-        bgColor: {},
-        headerFillColor: { lightnessOffset: 25, saturationMultiplier: 0.9 },
-        cellFillColor: { lightnessOffset: 25, saturationMultiplier: 0.9 },
-        headerTextColor: { contrastThreshold: 50 },
-        cellTextColor: { contrastThreshold: 50 },
-        strokeColor: { lightnessOffset: 10, relativeTo: 'bgColor' },
-        hasHeader: true,
-        fillStyle: 2,
-        strokeStyle: 1
-    },
-    'Pastel': {
-        primaryTarget: 'bgColor',
-        rgbOffset: { r: -10, g: -40, b: 20 },
-        saturationRange: { min: 40, max: 100 },
-        lightnessRange: { level: [12,13,14,15] },
-        bgColor: {},
-        headerFillColor: { lightnessOffset: 15, saturationMultiplier: 0.9 },
-        cellFillColor: { lightnessOffset: 15, saturationMultiplier: 0.9 },
-        headerTextColor: { contrastThreshold: 50 },
-        cellTextColor: { contrastThreshold: 50 },
-        strokeColor: { lightnessOffset: 10, relativeTo: 'bgColor' },
-        hasHeader: true,
-        fillStyle: 2,
-        strokeStyle: 1
-    },
-    'Retro': {
-        primaryTarget: 'bgColor',
-        rgbOffset: { r: 40, g: 30, b: -20 },
-        saturationRange: { min: 10, max: 70 },
-        lightnessRange: { level: [1,2,3,4,5,6,7,8,9,10,11,12,13,14] },
-        bgColor: {},
-        headerFillColor: { lightnessOffset: 30, saturationMultiplier: 0.5 },
-        cellFillColor: { lightnessOffset: 30, saturationMultiplier: 0.5 },
-        headerTextColor: { contrastThreshold: 50 },
-        cellTextColor: { contrastThreshold: 50 },
-        strokeColor: { lightnessOffset: 0, relativeTo: 'bgColor' },
-        hasHeader: true,
-        fillStyle: 2,
-        strokeStyle: 4
-    },
-    'Neon': {
-        primaryTarget: null,
-        rgbOffset: { r: 0, g: 0, b: 0 },
-        saturationRange: { min: 80, max: 100 },
-        lightnessRange: { level: [5,6,7,8,9,10,11,12] },
-        bgColor: { color: 'black' },
-        headerFillColor: { lightnessOffset: 5, saturationMultiplier: 1 },
-        cellFillColor: { lightnessOffset: 5, saturationMultiplier: 0.9 },
-        headerTextColor: { color: 'black' },
-        cellTextColor: { color: 'theme' },
-        strokeColor: { color: 'theme' },
-        hasHeader: true,
-        fillStyle: 2,
-        strokeStyle: 2
-    }
-};
+
 
 // ============================================================================
 // 主题系统：主题色计算函数
@@ -4610,6 +4524,129 @@ const colorMappingPresets = {
  * @returns {Object} 各部位颜色值（hex格式）
  */
 function calculateThemeColors(themeColor, themeName, lightnessValue) {
+    // 主题系统：颜色映射预设配置
+    const colorMappingPresets = {
+        'Normal': {
+            primaryTarget: 'bgColor',
+            rgbOffset: { r: 0, g: 0, b: 0 },
+            saturationRange: { min: 10, max: 90 },
+            lightnessRange: { level: [1,2,3,4,11,12,13,14,15] },
+            bgColor: {},
+            headerFillColor: { lightnessOffset: 13, saturationMultiplier: 0.8 },
+            cellFillColor: { lightnessOffset: 13, saturationMultiplier: 0.8 },
+            headerTextColor: { contrastThreshold: 50 },
+            cellTextColor: { contrastThreshold: 50 },
+            strokeColor: { lightnessOffset: 20, relativeTo: 'headerFillColor' },
+            hasHeader: true,
+            fillStyle: 2,
+            strokeStyle: 1
+        },
+        'Soft': {
+            primaryTarget: 'bgColor',
+            rgbOffset: { r: 0, g: 0, b: 0 },
+            saturationRange: { min: 10, max: 80 },
+            lightnessRange: { level: [1,2,3,4,5,11,12,13,14,15] },
+            bgColor: {},
+            headerFillColor: { lightnessOffset: 5, saturationMultiplier: 0.9 },
+            cellFillColor: { lightnessOffset: 5, saturationMultiplier: 0.9 },
+            headerTextColor: { lightnessOffset: 30, relativeTo: 'headerFillColor' },
+            cellTextColor: { lightnessOffset: 30, relativeTo: 'headerFillColor' },
+            strokeColor: { lightnessOffset: 10, relativeTo: 'headerFillColor' },
+            hasHeader: true,
+            fillStyle: 2,
+            strokeStyle: 1
+        },
+        'Fashion': {
+            primaryTarget: 'headerFillColor',
+            rgbOffset: { r: 0, g: 0, b: 0 },
+            saturationRange: { min: 50, max: 90 },
+            lightnessRange: { level: [9,10,11] },
+            bgColor: { lightnessOffset: 405, saturationMultiplier: 0.95 },
+            headerFillColor: {},
+            cellFillColor: { lightnessOffset: 10, saturationMultiplier: 1, opacity: 0.3 },
+            headerTextColor: { contrastThreshold: 50 },
+            cellTextColor: { contrastThreshold: 50 },
+            strokeColor: { lightnessOffset: 0.1, relativeTo: 'headerFillColor' },
+            hasHeader: true,
+            fillStyle: 2,
+            strokeStyle: 4
+        },
+        'Contrast': {
+            primaryTarget: null,
+            rgbOffset: { r: 0, g: 0, b: 0 },
+            saturationRange: { min: 50, max: 90 },
+            lightnessRange: { level: [9,10,11,12,13,14,15] },
+            bgColor: { color: 'white' },
+            headerFillColor: { color: 'black' },
+            cellFillColor: { lightnessOffset: 0, saturationMultiplier: 1, opacity: 0.8 },
+            headerTextColor: { color: 'white' },
+            cellTextColor: { color: 'black' },
+            strokeColor: { color: 'black' },
+            hasHeader: true,
+            fillStyle: 2,
+            strokeStyle: 1
+        },
+        'Vivid': {
+            primaryTarget: 'bgColor',
+            rgbOffset: { r: 0, g: 0, b: 0 },
+            saturationRange: { min: 80, max: 100 },
+            lightnessRange: { level: [1,2,3,4,5,6,7,8,9,10,11,12,13] },
+            bgColor: {},
+            headerFillColor: { lightnessOffset: 25, saturationMultiplier: 0.9 },
+            cellFillColor: { lightnessOffset: 25, saturationMultiplier: 0.9 },
+            headerTextColor: { contrastThreshold: 50 },
+            cellTextColor: { contrastThreshold: 50 },
+            strokeColor: { lightnessOffset: 10, relativeTo: 'bgColor' },
+            hasHeader: true,
+            fillStyle: 2,
+            strokeStyle: 1
+        },
+        'Pastel': {
+            primaryTarget: 'bgColor',
+            rgbOffset: { r: -10, g: -40, b: 20 },
+            saturationRange: { min: 40, max: 100 },
+            lightnessRange: { level: [12,13,14,15] },
+            bgColor: {},
+            headerFillColor: { lightnessOffset: 15, saturationMultiplier: 0.9 },
+            cellFillColor: { lightnessOffset: 15, saturationMultiplier: 0.9 },
+            headerTextColor: { contrastThreshold: 50 },
+            cellTextColor: { contrastThreshold: 50 },
+            strokeColor: { lightnessOffset: 10, relativeTo: 'bgColor' },
+            hasHeader: true,
+            fillStyle: 2,
+            strokeStyle: 1
+        },
+        'Retro': {
+            primaryTarget: 'bgColor',
+            rgbOffset: { r: 40, g: 30, b: -20 },
+            saturationRange: { min: 10, max: 70 },
+            lightnessRange: { level: [1,2,3,4,5,6,7,8,9,10,11,12,13,14] },
+            bgColor: {},
+            headerFillColor: { lightnessOffset: 30, saturationMultiplier: 0.5 },
+            cellFillColor: { lightnessOffset: 30, saturationMultiplier: 0.5 },
+            headerTextColor: { contrastThreshold: 50 },
+            cellTextColor: { contrastThreshold: 50 },
+            strokeColor: { lightnessOffset: 0, relativeTo: 'bgColor' },
+            hasHeader: true,
+            fillStyle: 2,
+            strokeStyle: 4
+        },
+        'Neon': {
+            primaryTarget: null,
+            rgbOffset: { r: 0, g: 0, b: 0 },
+            saturationRange: { min: 80, max: 100 },
+            lightnessRange: { level: [5,6,7,8,9,10,11,12] },
+            bgColor: { color: 'black' },
+            headerFillColor: { lightnessOffset: 5, saturationMultiplier: 1 },
+            cellFillColor: { lightnessOffset: 5, saturationMultiplier: 0.9 },
+            headerTextColor: { color: 'black' },
+            cellTextColor: { color: 'theme' },
+            strokeColor: { color: 'theme' },
+            hasHeader: true,
+            fillStyle: 2,
+            strokeStyle: 2
+        }
+    };
     // 获取主题预设配置
     const mappingConfig = colorMappingPresets[themeName] || colorMappingPresets['Fashion'];
     
@@ -4980,11 +5017,11 @@ function calculateThemeColors(themeColor, themeName, lightnessValue) {
  */
 function reTableThemeByPreset(table, setdata) {
     if (!table || !setdata) return;
-
+    
     const [themeName,themeColor] = setdata;
     if (!themeColor || !themeName) return;
-
-    // 计算主题颜色
+    
+     // 计算主题颜色
     const themeColors = calculateThemeColors(themeColor, themeName);
     
     // 应用背景色和描边色
@@ -5099,7 +5136,7 @@ function reAnyByObj(comps,obj,enters,nulls){
     for(let i = 0; i < comps.length; i++){
         let comp = comps[i];
         let rePros = comp.componentProperties.filter(item => keyPros.includes(item.name));
-        setPro(comp,rePros,obj[i])
+        setPro(comp,rePros,obj[i],enters,nulls)
 
         //内嵌组件时，也要替换
         let compChilds = comp.findAll(items => items.type == 'INSTANCE');// && items.componentProperties.length > 0
@@ -5109,7 +5146,7 @@ function reAnyByObj(comps,obj,enters,nulls){
             //console.log(compChild)
             let childRePros = (compChild.componentProperties.filter(pro => keyPros.includes(pro.name)));
             //console.log(childRePros)
-            setPro(compChild,childRePros,obj[i]);
+            setPro(compChild,childRePros,obj[i],enters,nulls);
         };
     };
 
@@ -5128,7 +5165,7 @@ function reAnyByObj(comps,obj,enters,nulls){
         mg.document.currentPage.selection = errornode.map(item => item[0]);
     };
 
-    function setPro(node,pros,data){
+    function setPro(node,pros,data,enters,nulls){
         pros.forEach(pro => {
             //console.log(pro,data[pro.split('#')[0]]);
             if(data){
@@ -5472,7 +5509,7 @@ function easePickTable(type,nodes){
  * - V模式：主轴(垂直)=T(上/FLEX_START)，副轴(水平)=L(左/FLEX_START)
  *   → HTML: flex-direction: column; justify-content: flex-start; align-items: flex-start;
  */
-function addAutoLayout(node,layout,isFixed,isWrap){
+function addAutoLayout(node,layout,isFixed,isWrap = false){
     node.layoutPositioning = 'AUTO';
     if(isFixed){
         node.mainAxisSizingMode = isFixed[0] ? "FIXED" : "AUTO";
@@ -5489,7 +5526,7 @@ function addAutoLayout(node,layout,isFixed,isWrap){
             // H模式（横向布局）：主轴=水平，副轴=垂直
             // HTML对应: flex-direction: row;
             node.flexMode = 'HORIZONTAL';
-            if(isWrap) node.flexWrap = 'WRAP';
+            node.flexWrap = isWrap ? 'WRAP' : 'NO_WRAP';
             // 主轴对齐（水平方向）：L=左, R=右, C=中, S=间距
             // HTML对应: justify-content（L/C/R/S）
             // 注意：基线对齐(A)仅在H模式的次轴可用，不在主轴
@@ -5535,6 +5572,7 @@ function addAutoLayout(node,layout,isFixed,isWrap){
         case 'V':
             // V模式（纵向布局）：主轴=垂直，副轴=水平
             // HTML对应: flex-direction: column;
+            //console.log('纵向布局')
             node.flexMode = 'VERTICAL';
             
             // 主轴对齐（垂直方向）：T=上, B=下, C=中, S=间距
@@ -5571,9 +5609,7 @@ function addAutoLayout(node,layout,isFixed,isWrap){
             };
             break;
     };
-    
-    
-    
+
     node.itemSpacing = layout[2] ? layout[2]  : 0;
     if(layout[3] && layout[3].length > 0){
         if(layout[3].length == 2){
@@ -6249,13 +6285,13 @@ function creAutoClip(clips,clipsbox,image,comp){
                 switch (Layout){
                     case 'H':
                         addAutoLayout(clipsbox,['H','CC']);
-                        clipsbox.children[1].layoutSizingHorizontal = 'FILL';
-                        clipsbox.children[3].layoutSizingHorizontal = 'FILL';
+                        clipsbox.children[1].alignSelf = "STRETCH";
+                        clipsbox.children[3].alignSelf = "STRETCH";
                     ;break
                     case 'V':
                         addAutoLayout(clipsbox,['V','CC']);
-                        clipsbox.children[1].layoutSizingVertical = 'FILL';
-                        clipsbox.children[3].layoutSizingVertical = 'FILL';
+                        clipsbox.children[1].flexGrow = 1;
+                        clipsbox.children[3].flexGrow = 1;
                     ;break
                     case 'HV':
                         let clipnodes = clipsbox.children;
@@ -6277,24 +6313,24 @@ function creAutoClip(clips,clipsbox,image,comp){
                             row.forEach((items,CNum)=> {
                                 rownode.appendChild(items);
                                 if(RNum%2 == 1){
-                                    items.layoutSizingVertical = 'FILL';
+                                    items.flexGrow = 1;
                                     if(CNum%2 == 1){
-                                        items.layoutSizingHorizontal = 'FILL';
+                                        items.alignSelf = "STRETCH";
                                     };
                                 }else{
                                     if(CNum%2 == 1){
-                                        items.layoutSizingHorizontal = 'FILL';
+                                        items.alignSelf = "STRETCH";
                                     };
                                 };
                             });
                         });
                         addAutoLayout(clipsbox,['V','CC'],true);
-                        clipsbox.layoutSizingHorizontal = 'FIXED';
-                        clipsbox.layoutSizingVertical = 'FIXED';
+                        clipsbox.mainAxisSizingMode = 'FIXED';
+                        clipsbox.crossAxisSizingMode = 'FIXED';
                         clipsbox.children.forEach((row,RNum) => {
-                            row.layoutSizingHorizontal = 'FILL';
+                            row.alignSelf = "STRETCH";
                             if(RNum%2 == 1){
-                                row.layoutSizingVertical = 'FILL';
+                                row.flexGrow = 1;
                             };
                         });
                         clipsbox.width = w;
