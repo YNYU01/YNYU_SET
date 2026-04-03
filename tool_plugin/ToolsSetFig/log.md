@@ -1,10 +1,10 @@
 ### v0.1.7 2026/4/3
-- ⚡ Optimize: Export page > Upload by export settings, fallback to default settings when no supported format exists； 优化：导出页>按导出设置上传，当不存在支持格式时回退默认设置
-- ⚡ Optimize: Export page > Upload, attempt to get target file format and size from naming (e.g. jpg/1234k), priority higher than cache； 优化：导出页>上传，尝试从命名中获取目标文件格式和目标文件大小，如jpg/1234k，且优先级高于缓存
-- ✨ New: Export page > Manage render queue, clicking "Override Settings" syncs modified export settings and naming to local settings (won't trigger cache if format/size is from naming), use with caution； 新增：导出页>管理渲染队列，当目标文件格式和目标文件大小是从命名中获取时不会触发缓存，或者想将修改过的导出设置和命名同步到本地设置，此时可以点击覆盖设置，需谨慎使用
-- ✨ New: Variables page > Unlink styles management (Beta), now open for testing, allows migrating styles across files by comparing unlinked styles with current file style names and re-establishing associations； 新增：变量页>断链样式管理，现已开放测试，可用于跨文件迁移样式，将断开链接的样式与当前文件样式名比对并重新建立关联
-- 🐞 Fix: More Tools page > Split text, fixed segmentation misalignment when splitting by keywords； 修复：更多功能页>拆分文本，修复按关键词拆分时分段错位的问题
-- 🐞 Fix: Sheet page > Data get > Tag attributes, fixed failure to get when remote styles exist, now supported; modifying remote styles to local via tag attributes is roughly equivalent to unlink styles management in Variables page； 修复：表单页>数据获取>标签属性，当存在远程样式时会导致获取失败，现已支持获取，通过标签属性修改远程样式为本地样式约等于变量页的断链样式管理
+- ⚡ Optimize: Export page > Upload by export settings, fallback to default settings when no supported format exists；⚡ 优化：导出页>按导出设置上传，当不存在支持格式时回退默认设置
+- ⚡ Optimize: Export page > Upload, attempt to get target file format and size from naming (e.g. jpg/1234k), priority higher than cache；⚡ 优化：导出页>上传，尝试从命名中获取目标文件格式和目标文件大小，如jpg/1234k，且优先级高于缓存
+- ✨ New: Export page > Manage render queue, clicking "Override Settings" syncs modified export settings and naming to local settings (won't trigger cache if format/size is from naming), use with caution；✨ 新增：导出页>管理渲染队列，当目标文件格式和目标文件大小是从命名中获取时不会触发缓存，或者想将修改过的导出设置和命名同步到本地设置，此时可以点击覆盖设置，需谨慎使用
+- ✨ New: Variables page > Unlink styles management (Beta), now open for testing, allows migrating styles across files by comparing unlinked styles with current file style names and re-establishing associations；✨ 新增：变量页>断链样式管理，现已开放测试，可用于跨文件迁移样式，将断开链接的样式与当前文件样式名比对并重新建立关联
+- 🐞 Fix: More Tools page > Split text, fixed segmentation misalignment when splitting by keywords；🐞 修复：更多功能页>拆分文本，修复按关键词拆分时分段错位的问题
+- 🐞 Fix: Sheet page > Data get > Tag attributes, fixed failure to get when remote styles exist, now supported; modifying remote styles to local via tag attributes is roughly equivalent to unlink styles management in Variables page；🐞 修复：表单页>数据获取>标签属性，当存在远程样式时会导致获取失败，现已支持获取，通过标签属性修改远程样式为本地样式约等于变量页的断链样式管理
 
 ### v0.1.6 2026/3/27
 - 🐞 Fix: Sheet page > Data mapping > Settings - fixed incorrect placeholder behavior for empty values when mapping text properties；🐞 修复：表单页>数据映射>高级设置，修复文本属性映射时空值占位符异常问题
