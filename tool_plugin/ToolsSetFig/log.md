@@ -1,3 +1,6 @@
+### v0.1.8
+- 修复：表单页>标签属性读取/映射，修复读取顺序和映射顺序不匹配的问题
+
 ### v0.1.7 2026/4/3
 - ⚡ Optimize: Export page > Upload by export settings, fallback to default settings when no supported format exists；⚡ 优化：导出页>按导出设置上传，当不存在支持格式时回退默认设置
 - ⚡ Optimize: Export page > Upload, attempt to get target file format and size from naming (e.g. jpg/1234k), priority higher than cache；⚡ 优化：导出页>上传，尝试从命名中获取目标文件格式和目标文件大小，如jpg/1234k，且优先级高于缓存
