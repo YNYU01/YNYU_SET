@@ -156,10 +156,10 @@ const DOM = (() => {
     
     // 管理列表
     manageLinkstyleList: () => query('[data-manage-linkstyle-list]'),
-    manageSelectstyleList: () => query('[data-manage-selectstyle-list]'),
+    manageStyleGroupList: () => query('[data-manage-selectstyle-list]'),
     manageVariablesList: () => query('[data-manage-variables-list]'),
     linkstyleClear: () => query('[data-linkstyle-clear]'),
-    selectstyleClear: () => query('[data-selectstyle-clear]'),
+    styleGroupClear: () => query('[data-selectstyle-clear]'),
     variablesClear: () => query('[data-variables-clear]'),
     
     // 选择信息
@@ -214,10 +214,10 @@ const State = (() => {
     
     // 回传样式、变量数据
     linkstyleInfo: [],
-    selectstyleInfo: [],
+    styleGroupInfo: [],
     variablesInfo: [],
     linkstyleInfoFinal: [],
-    selectstyleInfoFinal: [],
+    styleGroupInfoFinal: [],
     variablesInfoFinal: [],
 
     // 编辑器信息
@@ -1922,7 +1922,7 @@ function addTagMain(tag,index,type){
 };
 
 //生成下拉选项
-function addSelect(index,options,def,width = 72){
+function addSelect(index,options,def,width = 72,valueid,showid){
   let select = document.createElement('div');
   select.className = 'df-lc pos-r';
   select.setAttribute('data-select','');
@@ -1932,7 +1932,7 @@ function addSelect(index,options,def,width = 72){
   value.setAttribute('data-select-input','');
   value.setAttribute('readonly','');
   value.type = 'text'
-  value.id = 'export-format-' + index;
+  value.id = valueid + index;
   //console.log(def)
   value.value = def;
   
@@ -1940,9 +1940,9 @@ function addSelect(index,options,def,width = 72){
   let show = document.createElement('input');
   show.setAttribute('data-select-pick','');
   show.type = 'checkbox'
-  show.id = 'format-show-' + index;
+  show.id = showid + index;
   let showlabel =  document.createElement('label');
-  showlabel.setAttribute('for','format-show-' + index);
+  showlabel.setAttribute('for',showid + index);
   showlabel.className = 'show-next wh100';
   showlabel.setAttribute('style','position: absolute; top: 0; right: 0;')
   select.appendChild(show);
@@ -2184,7 +2184,7 @@ function createExportImgTagStrategy(info){
     let exportset = document.createElement('div');
     exportset.className = 'df-lc';
     exportset.setAttribute('style','gap: 4px; flex-wrap: wrap;');
-    let formatSelect = addSelect(index,['PNG','JPG','JPEG','WEBP'],layer.format,60)
+    let formatSelect = addSelect(index,['PNG','JPG','JPEG','WEBP'],layer.format,60,'export-format-','format-show-')
     exportset.appendChild(formatSelect);
 
     let sizesetbox = document.createElement('div');
@@ -4400,7 +4400,7 @@ function reLinkStyleInfo(info){
     let data = info[i]
     let {id,name,islink,iscreate,isreset,isname} = data;
     let tagbox = document.createElement('div');
-    tagbox.className = 'df-cc w100 pos-r'
+    tagbox.className = 'df-cc w100 pos-r';
     tagbox.setAttribute('data-linkstyle-tagbox','');
     tagbox.setAttribute('data-linkstyle-haslink','');
     let tag = document.createElement('div');
@@ -4586,9 +4586,11 @@ function reLinkStyleInfo(info){
     
   }
 };
+/*
 setTimeout(()=>{
   getElementMix('data-radio-data="unlinkstyle"').click();//优先推流
 },200)
+*/
 //处理管理断链样式后的标签
 function reManageStyleTag(info){
   //console.log(info)
@@ -4638,50 +4640,123 @@ getElementMix('data-linkstyle-all="reset"').addEventListener('click',()=>{
 });
 
 let testStyleGroupInfo = [
-  {
-      "id": "S:62266f76f31778b5593bf69af9be06bb1b8b272b,",
-      "name": "eg/xxx@set:theme1/color1"
-  },
-  {
-      "id": "S:dea68fcec9c7297a015c9e149340348985e0b75a,",
-      "name": "eg/xxx@set:theme1/color2"
-  },
-  {
-      "id": "S:371a69830542868e2c8e5eac5ae666edf8dc3a8b,",
-      "name": "eg/xxx@set:theme1/color3"
-  },
-  {
-      "id": "S:915a43061a59b540c764341214b90d24388ee91e,",
-      "name": "eg/xxx@set:theme2/color1"
-  },
-  {
-      "id": "S:775c1f2b4a72c7c9f1d9a02115d99a0805eb8261,",
-      "name": "eg/xxx@set:theme2/color2"
-  },
-  {
-      "id": "S:cb9ca0527758d7be282a0f28412761f9250e6388,",
-      "name": "eg/xxx@set:theme2/color3"
-  }
-];
+  [
+      "eg/xxx",
+      {
+          "theme1": {
+              "color1": "S:4b9bf571af1f3b22c0d3bc9b32fd68c5be3fa2a5,",
+              "color2": "S:bfbf0eccf4b6b0d45c26a5ef360a5a7539f3adb2,",
+              "color3": "S:aa05d93b99fcf702dbec30e207d65418ac273c72,"
+          },
+          "theme2": {
+              "color1": "S:72c6e4e85ddaa9b1547918d5cb5a2b68d2d67432,",
+              "color2": "S:05ca69d31477e544cc241842576e51bf0521b706,",
+              "color3": "S:3d9df77c1e2a8e31ce0e5f365b0a8a615bb26e57,"
+          }
+      }
+  ]
+]
 //reStyleGroupInfo(testStyleGroupInfo)
 function reStyleGroupInfo(info){
   //console.log(info)
   if(!info || info.length == 0) return;
 
   State.set('styleGroupInfo',info);
-  let listBox = DOM.manageSelectstyleList;
+  let listBox = DOM.manageStyleGroupList;
   let lan = ROOT.getAttribute('data-language');
+  //深拷贝一份写入State，后续可记录修改值，避免修改原始数据
+  let finalInfo = JSON.parse(JSON.stringify(info));
+  State.set('styleGroupInfoFinal',finalInfo);
+  listBox.innerHTML = '';
+
+  for(let i = 0; i < info.length; i++){
+    let mode = info[i];
+    let modename = mode[0];
+    let themes = Object.keys(mode[1]);
+    let groupBox = document.createElement('div');
+    groupBox.setAttribute('data-stylegroup-tag',modename);
+    groupBox.className = 'df-ffc w100 pos-r'
+
+    let groupinfo = document.createElement('div');
+    groupinfo.className = 'df-lc w100';
+    
+    let modenamebox = document.createElement('div');
+    modenamebox.setAttribute('data-stylegroup-modename','');
+    modenamebox.textContent = modename;
+    modenamebox.className = 'fl1 pos-r';
+    groupinfo.appendChild(modenamebox);
+
+    let groupselect =  addSelect(i,themes,themes[0],90,'stylegroup','stylegroup-show');
+    groupselect.setAttribute('data-stylegroup-select','');
+    groupinfo.appendChild(groupselect);
+
+    let stylebox = document.createElement('div');
+    stylebox.className = 'w100 df-lc gap8 bsb';
+    stylebox.setAttribute('data-stylegroup-stylebox','')
+
+    let colors = Object.keys(mode[1][themes[0]])
+
+    for(let ii = 0; ii < colors.length; ii++){
+      let colorname = colors[ii]
+      let pathtag = document.createElement('div');
+      pathtag.className = 'df-lc gap4 pad2 bod-r4';
+      pathtag.setAttribute('style','border: 1px solid rgba(255,255,255,0.2);')
+  
+      /*
+      let btnlocate = document.createElement('div');
+      btnlocate.className = 'wh-14 df-cc';
+      btnlocate.setAttribute('style','--bod:var(--boxBod);')
+      btnlocate.setAttribute('data-btn','icon')
+      btnlocate.innerHTML = '<btn-locate></btn-locate>';
+      pathtag.appendChild(btnlocate);
+      */
+
+      let chk = document.createElement('input');
+      chk.type = 'checkbox';
+      chk.setAttribute('checked','true');
+      chk.id = 'stylegroup-pick_' + i + '_' + ii;
+      pathtag.appendChild(chk);
+      let label = document.createElement('label');
+      label.className = 'wh-14 df-cc check';
+      label.innerHTML = '<btn-check></btn-check>';
+      label.setAttribute('style','--mainColor: rgba(255,255,255,0.4)');
+      label.setAttribute('for',chk.id )
+      pathtag.appendChild(label);
+  
+      let path = document.createElement('div');
+      path.setAttribute('data-stylegroup-path','');
+      path.innerHTML = modename + '@set:' +`<span data-stylegroup-themename="true">${themes[0]}</span>`+ '/' +  colorname;
+      pathtag.appendChild(path);
+      stylebox.appendChild(pathtag);
+
+      chk.addEventListener('change' ,()=> {
+        let themespan = path.querySelector('[data-stylegroup-themename]')
+        if(chk.checked){
+          themespan.setAttribute('data-stylegroup-themename','true');
+        }else{
+          themespan.setAttribute('data-stylegroup-themename','false');
+        }
+      })
+    }
+
+    groupBox.appendChild(groupinfo);
+    groupBox.appendChild(stylebox);
+    listBox.appendChild(groupBox);
+
+  }
 
 };
 
 DOM.linkstyleClear.addEventListener('click',(e)=>{
-  State.reset('selectstyleInfo');
+  State.reset('linkstyleInfo');
+  State.reset('linkstyleInfoFinal');
   DOM.manageLinkstyleList.innerHTML = '';
 });
 
-DOM.selectstyleClear.addEventListener('click',(e)=>{
-  State.reset('selectstyleInfo');
-  DOM.manageSelectstyleList.innerHTML = '';
+DOM.styleGroupClear.addEventListener('click',(e)=>{
+  State.reset('styleGroupInfo');
+  State.reset('styleGroupInfoFinal');
+  DOM.manageStyleGroupList.innerHTML = '';
 });
 
 //处理回传的选中对象的数据
@@ -4960,7 +5035,14 @@ function getUserSelect(node){
       let color = getElementMix('data-table-theme-color').getAttribute('data-color-hsl');
       toolMessage([[[theme,color],'theme'],'reTable'],PLUGINAPP);
     }
-  }
+  };
+  if(node.getAttribute('data-stylegroup-select') !== null){
+    let stylegroup = node.parentNode.parentNode;
+    let themespans = stylegroup.querySelectorAll('[data-stylegroup-themename = "true"]');
+    themespans.forEach(item => {
+      item.textContent = userSelect
+    });
+  };
 };
 
 function getUserRadio(node){

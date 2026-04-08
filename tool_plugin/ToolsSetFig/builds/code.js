@@ -966,25 +966,30 @@ figma.ui.onmessage = async (message) => {
             if(item.fillStyleId || item.strokeStyleId){
                 final.push(item);
             };
-            final = [...final,...item.findAll(items => items.fillStyleId || items.strokeStyleId)];
+            if(item.children){
+                let childrens = item.findAll(items => items.fillStyleId || items.strokeStyleId)
+                final.push(...childrens);
+            };
         });
+        if(final.length == 0) return;
         //收集所有样式id
         let allStyleId = [];
         final.forEach(item => {
-            if(item.fillStyleId){
+            if(item.fillStyleId && item.fillStyleId.split(':').length == 2){
                 allStyleId.push(item.fillStyleId);
             };
-            if(item.strokeStyleId){
+            if(item.strokeStyleId && item.strokeStyleId.split(':').length == 2){
                 allStyleId.push(item.strokeStyleId);
             };
         });
         allStyleId = [...new Set(allStyleId)];
-        //获取样式,以找到可能存在远程情况的样式
+        //获取样式
         let promises = allStyleId.map(item => figma.getStyleByIdAsync(item));
         let allStyle = await Promise.all(promises);
         allStyle = allStyle.map(item => {return {id:item.id,name:item.name};});
         //console.log(allStyle)
         let themeStyle = [];
+        //找到带分组的样式
         let localThemeStyle = localStyles.paint.list.filter(item => item.name.includes('@set:'));
         allStyle.forEach(item => {
             if(localThemeStyle.some(items => items.id == item.id)){
@@ -992,7 +997,23 @@ figma.ui.onmessage = async (message) => {
             };
         });
         //console.log(themeStyle)
-        postmessage([themeStyle,'styleGroupInfo']);
+        postmessage([stylesToGroup(themeStyle),'styleGroupInfo']);
+
+        function stylesToGroup(styles){
+            const tree = {};
+            styles.forEach(item => {
+                let [mode, path] = item.name.split('@set:');
+                let theme = path.split('/')[0];
+                let colorName = path.replace(theme + '/', ''); 
+
+                if (!tree[mode]) tree[mode] = {};
+                if (!tree[mode][theme]) tree[mode][theme] = {};
+
+                tree[mode][theme][colorName] = item.id;
+            });
+            console.log(Object.entries(tree))
+            return Object.entries(tree);
+        }
     };
     //管理变量组
     if( type == "getVariableGroup"){
@@ -1633,7 +1654,14 @@ figma.ui.onmessage = async (message) => {
         let nodes = b;
         if(info.data[0]){
             if(b.length == 1){
-                if(b[0].layoutMode && b[0].layoutMode !== 'NONE' && b[0].children.length == 1){
+                if(b[0].name.includes('@table')){
+                    let tagNodes = [];
+                    b[0].children.forEach(children => {
+                        let childs =  children.findAll(item => ['@th', '@td', '@tn'].some(tag => item.name.includes(tag)))
+                        tagNodes.push(...childs);
+                    });
+                    nodes = tagNodes;
+                }else if(b[0].layoutMode && b[0].layoutMode !== 'NONE' && b[0].children.length == 1){
                     let c = b[0].children[0];
                     for(let i = 1; i < info.data.length; i++){
                         b[0].appendChild(c.clone());
@@ -1641,7 +1669,6 @@ figma.ui.onmessage = async (message) => {
                     nodes = b[0].children;
                 };
             };
-            //nodes = nodes.filter(node => node.type == 'INSTANCE');
             reAnyByTags(nodes,info.data);
         };
         figma.skipInvisibleInstanceChildren = true;
@@ -1740,7 +1767,24 @@ figma.ui.onmessage = async (message) => {
         //临时开启隐藏元素可查找
         figma.skipInvisibleInstanceChildren = false;
         let b = getSelectionMix();
-        let tagNodes = b.filter(node => hasTag(node) || node.findAll(child => hasTag(child)).length > 0);
+        let tagNodes;
+        if(b.length == 1){
+            tagNodes = b[0].children ? b[0].children : [];
+            if(b[0].name.includes('@table')){
+                tagNodes = [];
+                b[0].children.forEach(children => {
+                    let childs =  children.findAll(item => ['@th', '@td', '@tn'].some(tag => item.name.includes(tag)))
+                    tagNodes.push(...childs);
+                });
+            };
+        }else{
+            tagNodes = b.filter(node => hasTag(node));
+            if(tagNodes.length == 0){
+                tagNodes = b.filter(node => {
+                    return node.findChildren(child => hasTag(child));
+                });
+            };
+        };
         await getStyle('paint',false);
         if(tagNodes.length > 0){
             let datas = await getTagObj(tagNodes);
@@ -1815,13 +1859,13 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         b.forEach(item => {
             if(item.type == 'INSTANCE'){
-                if(item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')){
+                if(['@th', '@td', '@tn'].some(tag => item.name.includes(tag))){
                     reTableStyle(null,null,[[item],[1,1,1,1,null]]);
                 }
                 return;
             };
             let comps = item.findAll(items => items.type == 'INSTANCE' );
-            comps = comps.filter(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn'));
+            comps = comps.filter(item => ['@th', '@td', '@tn'].some(tag => item.name.includes(tag)));
             reTableStyle(null,null,[comps,[1,1,1,1,null]]);
         });
     };
@@ -1830,13 +1874,13 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         b.forEach(item => {
             if(item.type == 'INSTANCE'){
-                if(item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')){
+                if(['@th', '@td', '@tn'].some(tag => item.name.includes(tag))){
                     reTableStyle(null,null,[[item],[0,0,0,0,null]]);
                 }
                 return;
             };
             let comps = item.findAll(items => items.type == 'INSTANCE' );
-            comps = comps.filter(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn'));
+            comps = comps.filter(item => ['@th', '@td', '@tn'].some(tag => item.name.includes(tag)));
             reTableStyle(null,null,[comps,[0,0,0,0,null]]);
         });
     };
@@ -1845,13 +1889,13 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         b.forEach(item => {
             if(item.type == 'INSTANCE'){
-                if(item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')){
+                if(['@th', '@td', '@tn'].some(tag => item.name.includes(tag))){
                     reTableStyle(null,null,[[item],[null,null,null,null,1]]);
                 }
                 return;
             };
             let comps = item.findAll(items => items.type == 'INSTANCE' );
-            comps = comps.filter(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn'));
+            comps = comps.filter(item => ['@th', '@td', '@tn'].some(tag => item.name.includes(tag)));
             reTableStyle(null,null,[comps,[null,null,null,null,1]]);
         });
     };
@@ -1860,13 +1904,13 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         b.forEach(item => {
             if(item.type == 'INSTANCE'){
-                if(item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')){
+                if(['@th', '@td', '@tn'].some(tag => item.name.includes(tag))){
                     reTableStyle(null,null,[[item],[null,null,null,null,0]]);
                 }
                 return;
             };
             let comps = item.findAll(items => items.type == 'INSTANCE' );
-            comps = comps.filter(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn'));
+            comps = comps.filter(item => ['@th', '@td', '@tn'].some(tag => item.name.includes(tag)));
             reTableStyle(null,null,[comps,[null,null,null,null,0]]);
         });
     };
@@ -3328,7 +3372,7 @@ function sendInfo(){
             let tableColumn = 2;
             if(node.name.includes('@table') && node.children){
                 let columns = node.children.filter(item => item.name.includes('@column'));
-                let rows = columns.length > 0 ? columns[0].children.filter(item => ['@th','@td','@tn'].some(key => item.name.includes(key))) : [];
+                let rows = columns.length > 0 ? columns[0].children.filter(item => ['@th', '@td', '@tn'].some(tag => item.name.includes(tag))) : [];
                 tableColumn = columns.length > 0 ? columns.length : 2;
                 tableRow = rows.length > 0 ? rows.length : 2;
             }
@@ -5416,7 +5460,7 @@ function reCompNum(nodes,H,V){
 function reTableByArray(table,Array,enters,nulls){
     let columns = table.findChildren(item => item.name.includes('@column'));
     for(let i = 0; i < columns.length; i++){
-        let datas  = columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td'));
+        let datas  = columns[i].findChildren(item => ['@th', '@td'].some(tag => item.name.includes(tag)));
         if(Array[i]){
             reAnyByArray(datas,Array[i],true,enters,nulls);
         };
@@ -5588,8 +5632,9 @@ function reAnyByTags(nodes,objs){
     if(!nodes || !objs) return;
     //console.log(nodes);
     for(let i = 0; i < Math.min(nodes.length,objs.length); i++){
-        let node = nodes[i]
-        let hasTags = []
+        let node = nodes[i];
+        let data = objs[i]
+        let hasTags = [];
         if(hasTag(node)){
             hasTags.push(node);
         };
@@ -5598,9 +5643,9 @@ function reAnyByTags(nodes,objs){
             let tags = hasTag(layer,true);
             tags.forEach(tag => {
                 //console.log(tag,obj[i][tag])
-                if(objs[i][tag]){
+                if(data[tag]){
                     try {
-                        setByTags(layer,tag.split('.')[1],objs[i][tag]);
+                        setByTags(layer,tag.split('.')[1],data[tag]);
                     } catch (error) {
                         console.log(error);
                         figma.clientStorage.getAsync('userLanguage')
@@ -5691,7 +5736,7 @@ function getTableText(table,enters,nulls){
     let Array = [];
     let columns = table.findChildren(item => item.name.includes('@column'));
     for(let i = 0; i < columns.length; i++){
-        let datas  = columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td'));
+        let datas  = columns[i].findChildren(item => ['@th', '@td'].some(tag => item.name.includes(tag)));
         Array.push(getProArray(datas,true,enters,nulls));
     };
     return Array;
@@ -5892,8 +5937,9 @@ function getTagObj2(tagNodes){
 async function getTagObj(tagNodes) {
     let datas = [];
     
-    await Promise.all(tagNodes.map(async (node) => {
+    for (const node of tagNodes) {
         let data = {};
+        
         // 等待当前节点数据
         data = await getTagData(node);
         
@@ -5906,8 +5952,9 @@ async function getTagObj(tagNodes) {
                 });
             }));
         }
+        
         datas.push(data);
-    }));
+    }
 
     // 收集所有出现过的标签 key
     let tagkeys = datas.map(item => Object.keys(item));
@@ -6032,7 +6079,7 @@ function swapTable(table){
     let columns = table.findChildren(item => item.name.includes('@column'));
     let datas = []
     for(let i = 0; i < columns.length; i++){
-        datas.push(columns[i].findChildren(item => item.name.includes('@th') || item.name.includes('@td') || item.name.includes('@tn')));    
+        datas.push(columns[i].findChildren(item => ['@th', '@td', '@tn'].some(tag => item.name.includes(tag))));    
     };
     let C = datas[0].length - columns.length;
     //console.log(H)

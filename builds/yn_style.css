@@ -1572,7 +1572,7 @@ input[type="checkbox"]:checked + label [data-path="3"]{
   }
   100%{
     transform: translate(var(--x,0),0);
-    opacity: 1
+    opacity: var(--op,1);
   }
 }
 
