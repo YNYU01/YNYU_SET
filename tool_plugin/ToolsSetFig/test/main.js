@@ -472,15 +472,20 @@ window.addEventListener('resize',/*防抖*/debounce(()=>{
 
 //========== 通信处理 ==========
 window.addEventListener('message',(message)=>{
-  let isPluginMessge = message.data && message.data.type && message.data.type == 'figma-ex-page-info';
+  let data = message.data;
+  let isPluginMessge = data && data.type && data.type == 'figma-ex-page-info';
   if(!isPluginMessge){
-    let messages = message.data.pluginMessage.pluginMessage || ['',''];
+    let messages = data.pluginMessage.pluginMessage || ['',''];
     let info = messages[0];
     let type = messages[1];
     if(typeof(info) == 'string' && (info.split('[').length > 1 || info.split('{').length > 1)){
-      info = JSON.parse(info);
+      try {
+        info = JSON.parse(info);
+      } catch (e) {
+        console.error(e);
+      }
     }
-    if(ISWORK_TIME && info){
+    if(ISWORK_TIME && type){
       switch (type){
         case 'selectInfo': reSelectInfo(info);break
         case 'selectInfoMain': addTableText(tableObjToText(info));break
@@ -691,15 +696,19 @@ function addSearchs(){
   let skillMain = document.querySelectorAll('[data-skill-btn]')
   let language = ROOT.getAttribute('data-language');
   skillMain.forEach(skill => {
-    let zh = language == 'Zh' ? skill.textContent : skill.getAttribute('data-zh-text') || skill.getAttribute('data-tips-text') || null;
+    let zh;
+    if(language == 'Zh'){
+      zh = skill.getAttribute('data-en-text') ?  skill.textContent.trim() : skill.getAttribute('data-zh-text') || skill.getAttribute('data-tips-text') || null
+    }else{
+      zh = skill.getAttribute('data-zh-text') || skill.getAttribute('data-tips-text') || null
+    }
     let en = skill.getAttribute('data-en-text') || skill.getAttribute('data-tips-text-en') || null;
     if(!en && !zh){
       zh = '保留原图层';
       en = 'Pixel As Copy';
-    }
+    };
     let ens = en ? en.toLowerCase().split(' ') : [];
     let zhs = zh ? zh.replace(/[a-z0-9\s]/gi,'').split('') : [];
-    let key = [...zhs,...ens];
     let page = ['更多功能','more tools'];
     if(!getElementMix('data-page-name-en="more tools"').contains(skill)){
       let pages = document.querySelectorAll('[data-page-name-en]');
@@ -709,6 +718,8 @@ function addSearchs(){
         };
       });
     };
+    let key = [...new Set([...zhs,...ens,...page[0],...page[1].split(' ')])];
+
     let path = [`${page[0]} > ... > ${zh}`,`${page[1]} > ... > ${en}`];
     if(key) {
       let newSkillsSearch = [...State.get('skillsSearch'),{name:[zh,en],page:page,key:key,path:path,}];
@@ -726,7 +737,7 @@ function addSearchs(){
 
   let newSkillsSearch = language == 'Zh' ? State.get('skillsSearch').sort((a,b) => a.name[0].localeCompare(b.name[0])) : State.get('skillsSearch').sort((a,b) => a.name[1].localeCompare(b.name[1]));
   State.set('skillsSearch',newSkillsSearch);
-  
+  //console.log(newSkillsSearch)
   newSkillsSearch.forEach((list,index) => {
     let turnto = document.createElement('div');
     turnto.setAttribute('data-search-turnto',index);
@@ -1054,6 +1065,8 @@ function handleSearchInput(){
   });
   values = [].concat(...values);
   values = [...new Set(values)];
+
+  let skillsSearch = State.get('skillsSearch');
 
   skillsSearch.forEach((skill,index) => {
     let list = getElementMix(`data-search-turnto="${index}"`);
@@ -2156,7 +2169,7 @@ function createExportImgTagStrategy(info){
     let checksetbox = document.createElement('div');
     checksetbox.setAttribute('data-export-pick','false');
     checksetbox.setAttribute('data-export-picknum',index);
-    checksetbox.setAttribute('style','width: 14px; height: 14px;');
+    checksetbox.className = 'wh-14'
     let checksetid = 'export_pick_' + index;
     let checkset = document.createElement('input');
     checkset.type = 'checkbox';
@@ -4403,6 +4416,8 @@ function reLinkStyleInfo(info){
     tagbox.className = 'df-cc w100 pos-r';
     tagbox.setAttribute('data-linkstyle-tagbox','');
     tagbox.setAttribute('data-linkstyle-haslink','');
+    tagbox.setAttribute('style','opacity: 0; animation: boxUp 0.5s forwards; animation-delay: ' + 0.1 * i +'s;');
+    
     let tag = document.createElement('div');
     tag.className = 'df-sc wh100 ovh';
     tag.setAttribute('data-linkstyle-tag',id);
@@ -4410,7 +4425,6 @@ function reLinkStyleInfo(info){
     tag.setAttribute('data-linkstyle-iscreate',iscreate);
     tag.setAttribute('data-linkstyle-isreset',isreset);
     tag.setAttribute('data-linkstyle-isname',isname ? 'true' : 'false');
-    tag.setAttribute('data-selects-must','')
 
     let title = document.createElement('div');
     title.className = 'df-ffc fl1 h100 gap10 pos-r';
@@ -4657,25 +4671,36 @@ let testStyleGroupInfo = [
   ]
 ]
 //reStyleGroupInfo(testStyleGroupInfo)
+//管理样式组
 function reStyleGroupInfo(info){
   //console.log(info)
-  if(!info || info.length == 0) return;
+  let [trees,missing] = info;
+  let tree = Object.entries(trees);
+  if(!tree || tree.length == 0) return;
 
-  State.set('styleGroupInfo',info);
+  State.set('styleGroupInfo',trees);
   let listBox = DOM.manageStyleGroupList;
   let lan = ROOT.getAttribute('data-language');
+
+  if(missing[0] == false){
+    tipsAll(['同颜色名应被包含在所有主题里','The same color(name) should be included in all themes'],4000)
+  }
+
   //深拷贝一份写入State，后续可记录修改值，避免修改原始数据
-  let finalInfo = JSON.parse(JSON.stringify(info));
+  let finalInfo = JSON.parse(JSON.stringify(trees));
   State.set('styleGroupInfoFinal',finalInfo);
   listBox.innerHTML = '';
 
-  for(let i = 0; i < info.length; i++){
-    let mode = info[i];
+  for(let i = 0; i < tree.length; i++){
+    let mode = tree[i];
     let modename = mode[0];
+    let missColors = [...new Set(Object.values(missing[1][modename]).flat())];
+    //console.log(missColors)
     let themes = Object.keys(mode[1]);
     let groupBox = document.createElement('div');
     groupBox.setAttribute('data-stylegroup-tag',modename);
-    groupBox.className = 'df-ffc w100 pos-r'
+    groupBox.className = 'df-ffc w100 pos-r';
+    groupBox.setAttribute('style','animation-delay: ' + 0.1 * i +'s;');
 
     let groupinfo = document.createElement('div');
     groupinfo.className = 'df-lc w100';
@@ -4699,8 +4724,8 @@ function reStyleGroupInfo(info){
     for(let ii = 0; ii < colors.length; ii++){
       let colorname = colors[ii]
       let pathtag = document.createElement('div');
-      pathtag.className = 'df-lc gap4 pad2 bod-r4';
-      pathtag.setAttribute('style','border: 1px solid rgba(255,255,255,0.2);')
+      pathtag.className = 'df-lc gap4 pad2 bod-r6';
+      pathtag.setAttribute('style','border: 1px solid rgba(255,255,255,0.2); height: 18px;')
   
       /*
       let btnlocate = document.createElement('div');
@@ -4727,6 +4752,23 @@ function reStyleGroupInfo(info){
       path.setAttribute('data-stylegroup-path','');
       path.innerHTML = modename + '@set:' +`<span data-stylegroup-themename="true">${themes[0]}</span>`+ '/' +  colorname;
       pathtag.appendChild(path);
+
+      if(missColors.includes(colorname)){
+        path.setAttribute('data-stylegroup-path','miss');
+        let btnreset = document.createElement('div');
+        btnreset.setAttribute('data-stylegroup-reset','');
+        btnreset.setAttribute('data-btn','');
+        btnreset.setAttribute('data-zh-text','修复');
+        btnreset.setAttribute('data-en-text','Fix');
+        btnreset.innerHTML = lan == 'Zh' ? '修复' : 'Fix';
+        pathtag.appendChild(btnreset);
+        btnreset.addEventListener('click',() => {
+          path.setAttribute('data-stylegroup-path','');
+          toolMessage([[modename,themes,colorname],'fixMissStyle'],PLUGINAPP);
+          btnreset.remove()
+        });
+      };
+
       stylebox.appendChild(pathtag);
 
       chk.addEventListener('change' ,()=> {
@@ -5040,8 +5082,11 @@ function getUserSelect(node){
     let stylegroup = node.parentNode.parentNode;
     let themespans = stylegroup.querySelectorAll('[data-stylegroup-themename = "true"]');
     themespans.forEach(item => {
-      item.textContent = userSelect
+      item.textContent = userSelect;
     });
+    let styleMode = stylegroup.getAttribute('data-stylegroup-tag')
+    let styleGroupInfoFinal = State.get('styleGroupInfoFinal');
+    toolMessage([[userSelect,styleGroupInfoFinal[styleMode]],'setStyleGroup'],PLUGINAPP)
   };
 };
 
@@ -5077,7 +5122,13 @@ function getUserRadio(node){
 
     if(node.getAttribute('data-exporttype-set') !== null){
       let type = ['image','zy','rich'];
-      getElementMix('data-export-tags-box').setAttribute('data-export-tags-box',type[(userRadio - 1)]);
+      let exporttype = type[(userRadio - 1)];
+      getElementMix('data-export-tags-box').setAttribute('data-export-tags-box',exporttype);
+      if(exporttype !== 'image'){
+        getElementMix('data-export-overset').style.display = 'none';
+      }else{
+        getElementMix('data-export-overset').style.display = 'flex';
+      }
     };
 
     if(node.parentNode.parentNode.getAttribute('data-variable-type') !== null){

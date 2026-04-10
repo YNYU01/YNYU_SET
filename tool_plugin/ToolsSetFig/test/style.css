@@ -2004,10 +2004,25 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 [data-linkstyle-tag],[data-stylegroup-tag]{
   background: var(--boxGry);
   gap: 8px;
+  row-gap: 4px;
   padding: 6px 10px 10px 10px;
   box-sizing: border-box;
   border-radius: 4px;
   align-items: end;
+}
+
+[data-stylegroup-tag]{
+  opacity: 0;
+  animation: boxUp 0.5s forwards; 
+  margin-bottom: 6px;
+}
+
+[data-stylegroup-reset]{
+  padding: 0 1ch;
+  font-size: 10px;
+  height: 16px;
+  border-radius: 3px;
+  margin-left: 0.5ch;
 }
 
 [data-linkstyle-tagbox]{
@@ -2070,15 +2085,18 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   background: var(--mainColor);
 }
 
+[data-stylegroup-path="miss"]{
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+
 [data-linkstyle-pathbox] > div{
   width: fit-content;
 }
 
 [data-linkstyle-path]{
   min-width: fit-content;
-  --op: 0.6;
-  opacity: var(--op);
-  animation: boxUp 0.5s;
+  opacity: 0.6;
 }
 
 [data-stylegroup-themename]{
@@ -2958,6 +2976,12 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   [data-radio-main="true"] [data-mapget-typename],
   [data-mapget-set] [data-radio]:hover [data-mapget-typename]{
     display: block;
+  }
+}
+
+@media (max-width:259px) {
+  [data-any="vw260"]{
+    display: none;
   }
 }
 

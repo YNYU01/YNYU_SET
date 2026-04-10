@@ -1,10 +1,54 @@
 /* AUTO-GENERATED FILE. DO NOT EDIT. */
 /* Source: tool_plugin/ToolsSetFig/log.md */
-/* Built: 2026-04-03T15:06:59.979Z */
+/* Built: 2026-04-10T07:38:04.778Z */
 
 (function () {
   'use strict';
   window.__TOOLSSET_HELP_LOGS__ = [
+  {
+    "title": [
+      "v0.1.8",
+      "v0.1.8"
+    ],
+    "date": "2026/4/10",
+    "items": [
+      [
+        "li",
+        "<span data-doc-key>🐞 修复：</span>表单页>标签属性读取/映射, 修复读取顺序和映射顺序不匹配的问题",
+        "<span data-doc-key>🐞 Fix:</span> Sheet page > Tag attributes, fixed mismatch between reading order and mapping order"
+      ],
+      [
+        "li",
+        "<span data-doc-key>⚡ 优化：</span>顶部栏>功能搜索, 优化了匹配逻辑, 还可以匹配页面名称",
+        "<span data-doc-key>⚡ Optimize:</span> Top > Function search, optimized matching logic, can also match the page name"
+      ],
+      [
+        "li",
+        "<span data-doc-key>⚡ 优化：</span>创建页>创建画板>填充选中元素到画板时, 不再强制修改尺寸, 会等比缩放以充满画板",
+        "<span data-doc-key>⚡ Optimize:</span> Create page > Create frame > When filling selected elements into frame, no longer forcibly modifies dimensions, but scales proportionally to fit"
+      ],
+      [
+        "li",
+        "<span data-doc-key>✨ 新增：</span>更多功能页>图层&布局, 克隆元素到多个画板分为“填充”和“适应”两种模式, 与图片的填充模式类似",
+        "<span data-doc-key>✨ New:</span> More Tools page > Layers & Layout, cloning elements to multiple frames now has \"Fill\" and \"Fit\" modes, similar to image fill modes"
+      ],
+      [
+        "li",
+        "<span data-doc-key>✨ 新增：</span>变量页>样式（表）管理现已开放测试, 可基于@set标签实现类似变量组的样式分组功能, 快速切换样式主题",
+        "<span data-doc-key>✨ New:</span> Variables page > Styles sheet Management is now open for testing, allows style grouping via @set tag for quick theme switching"
+      ],
+      [
+        "li",
+        "<span data-doc-key>✨ 新增：</span>变量页>样式（表）管理>从表更新样式, 可根据选中的@table:style样式表, 更新样式, 方便批量添加样式组",
+        "<span data-doc-key>✨ New:</span> Variables page > Styles sheet Management > Sheet to Styles, based on selected @table:style for batch adding style groups"
+      ],
+      [
+        "li",
+        "<span data-doc-key>✨ 新增：</span>变量页>样式（表）管理>识别并切换样式组, 可识别带@set样式组的样式, 并排查是否存在未包含在所有主题的颜色进行修复, 以保证顺利切换样式组",
+        "<span data-doc-key>✨ New:</span> Variables page > Styles sheet Management > Identify and switch style groups, identifies @set style groups and checks for colors not included in all themes to ensure smooth switching"
+      ]
+    ]
+  },
   {
     "title": [
       "v0.1.7",
@@ -14,32 +58,32 @@
     "items": [
       [
         "li",
-        "<span data-doc-key>⚡ 优化：</span>导出页>按导出设置上传，当不存在支持格式时回退默认设置",
+        "<span data-doc-key>⚡ 优化：</span>导出页>按导出设置上传, 当不存在支持格式时回退默认设置",
         "<span data-doc-key>⚡ Optimize:</span> Export page > Upload by export settings, fallback to default settings when no supported format exists"
       ],
       [
         "li",
-        "<span data-doc-key>⚡ 优化：</span>导出页>上传，尝试从命名中获取目标文件格式和目标文件大小，如jpg/1234k，且优先级高于缓存",
+        "<span data-doc-key>⚡ 优化：</span>导出页>上传, 尝试从命名中获取目标文件格式和目标文件大小, 如jpg/1234k, 且优先级高于缓存",
         "<span data-doc-key>⚡ Optimize:</span> Export page > Upload, attempt to get target file format and size from naming (e.g. jpg/1234k), priority higher than cache"
       ],
       [
         "li",
-        "<span data-doc-key>✨ 新增：</span>导出页>管理渲染队列，当目标文件格式和目标文件大小是从命名中获取时不会触发缓存，或者想将修改过的导出设置和命名同步到本地设置，此时可以点击覆盖设置，需谨慎使用",
+        "<span data-doc-key>✨ 新增：</span>导出页>管理渲染队列, 当目标文件格式和目标文件大小是从命名中获取时不会触发缓存, 或者想将修改过的导出设置和命名同步到本地设置, 此时可以点击覆盖设置, 需谨慎使用",
         "<span data-doc-key>✨ New:</span> Export page > Manage render queue, clicking \"Override Settings\" syncs modified export settings and naming to local settings (won't trigger cache if format/size is from naming), use with caution"
       ],
       [
         "li",
-        "<span data-doc-key>✨ 新增：</span>变量页>断链样式管理，现已开放测试，可用于跨文件迁移样式，将断开链接的样式与当前文件样式名比对并重新建立关联",
+        "<span data-doc-key>✨ 新增：</span>变量页>断链样式管理, 现已开放测试, 可用于跨文件迁移样式, 将断开链接的样式与当前文件样式名比对并重新建立关联",
         "<span data-doc-key>✨ New:</span> Variables page > Unlink styles management (Beta), now open for testing, allows migrating styles across files by comparing unlinked styles with current file style names and re-establishing associations"
       ],
       [
         "li",
-        "<span data-doc-key>🐞 修复：</span>更多功能页>拆分文本，修复按关键词拆分时分段错位的问题",
+        "<span data-doc-key>🐞 修复：</span>更多功能页>拆分文本, 修复按关键词拆分时分段错位的问题",
         "<span data-doc-key>🐞 Fix:</span> More Tools page > Split text, fixed segmentation misalignment when splitting by keywords"
       ],
       [
         "li",
-        "<span data-doc-key>🐞 修复：</span>表单页>数据获取>标签属性，当存在远程样式时会导致获取失败，现已支持获取，通过标签属性修改远程样式为本地样式约等于变量页的断链样式管理",
+        "<span data-doc-key>🐞 修复：</span>表单页>数据获取>标签属性, 当存在远程样式时会导致获取失败, 现已支持获取, 通过标签属性修改远程样式为本地样式约等于变量页的断链样式管理",
         "<span data-doc-key>🐞 Fix:</span> Sheet page > Data get > Tag attributes, fixed failure to get when remote styles exist, now supported; modifying remote styles to local via tag attributes is roughly equivalent to unlink styles management in Variables page"
       ]
     ]
@@ -53,12 +97,12 @@
     "items": [
       [
         "li",
-        "<span data-doc-key>🐞 修复：</span>表单页>数据映射>高级设置，修复文本属性映射时空值占位符异常问题",
+        "<span data-doc-key>🐞 修复：</span>表单页>数据映射>高级设置, 修复文本属性映射时空值占位符异常问题",
         "<span data-doc-key>🐞 Fix:</span> Sheet page > Data mapping > Settings - fixed incorrect placeholder behavior for empty values when mapping text properties"
       ],
       [
         "li",
-        "<span data-doc-key>⚡ 优化：</span>表单页>数据映射>高级设置，非自动布局也支持根据数据长短增减实例",
+        "<span data-doc-key>⚡ 优化：</span>表单页>数据映射>高级设置, 非自动布局也支持根据数据长短增减实例",
         "<span data-doc-key>⚡ Optimize:</span> Sheet page > Data mapping > Settings - non-auto-layout instances now also clone/reduce based on data length"
       ],
       [
@@ -68,8 +112,8 @@
       ],
       [
         "li",
-        "<span data-doc-key>✨ New:</span> Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame 新增：创建页>创建画布时如选中一个元素，会填充到画布中",
-        "<span data-doc-key>✨ New:</span> Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame 新增：创建页>创建画布时如选中一个元素，会填充到画布中"
+        "<span data-doc-key>✨ New:</span> Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame 新增：创建页>创建画布时如选中一个元素, 会填充到画布中",
+        "<span data-doc-key>✨ New:</span> Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame 新增：创建页>创建画布时如选中一个元素, 会填充到画布中"
       ]
     ]
   },

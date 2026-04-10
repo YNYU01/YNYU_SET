@@ -321,8 +321,8 @@
                 </div>
                 <div id="upload-textarea-scroll" class="ovx scrollbar fl1 h100 pos-r">
                   <textarea class="wh100" data-textarea-wrap="false" spellcheck="false" id="upload-textarea" data-textarea="eg" 
-                  data-eg="name\tw\th\nkv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
-                  data-eg-en="name\tw\th\nkv\t1920\t1080\nbanner\t1200\t300\nload\t1080\t1640\nicon\t256\t256"
+                  data-eg="name\tw\th\ts\ttype\nkv\t1920\t1080\t\tjpg\nbanner\t1200\t300\t500\tjpg\nload\t1080\t1640\t500\tjpg\nicon\t256\t256\t100\tpng"
+                  data-eg-en="name\tw\th\ts\ttype\nkv\t1920\t1080\t\tjpg\nbanner\t1200\t300\t500\tjpg\nload\t1080\t1640\t500\tjpg\nicon\t256\t256\t100\tpng"
                   ></textarea>
                   <!--清空-->
                   <div class="pos-a" data-close="clear" style="right: 4px; top:4px; width: 12px; height: 12px;">
@@ -450,19 +450,19 @@
                   <div data-exporttype-chk>
                     <export-img></export-img>
                   </div>
-                  <div data-any="vw360" data-exporttype-name data-en-text="Image(Pixel)">普通图片</div>         
+                  <div data-any="vw260" data-exporttype-name data-en-text="Image(Pixel)">普通图片</div>         
                 </div>
                 <div class="fl0 df-lc" data-radio data-radio-data="2" data-radio-main="false">
                   <div data-exporttype-chk>
                     <export-zy></export-zy>
                   </div>
-                  <div data-any="vw360" data-exporttype-name data-en-text=".zy(Plugin)">系列兼容格式</div>         
+                  <div data-any="vw260" data-exporttype-name data-en-text=".zy(Plugin)">兼容格式</div>         
                 </div>
                 <div class="fl0 df-lc" data-radio data-radio-data="3" data-radio-main="false">
                   <div data-exporttype-chk>
                     <export-text></export-text>                        
                   </div>
-                  <div data-any="vw360" data-exporttype-name data-en-text="Rich Text">复合文本内容</div>         
+                  <div data-any="vw260" data-exporttype-name data-en-text="Rich Text">复合文本</div>         
                 </div>
               </div>
             </div>
@@ -482,7 +482,7 @@
           data-tips="auto" data-tips-x="center" data-tips-y="top"
           data-tips-text="管理渲染队列" data-tips-text-en="Manage rendering queue"
           style="--xx: 60px; width: 120px; height: 12px; border-radius: 8px 8px 0 0;">
-            <input id="export-more" type="checkbox" 
+            <input id="export-more" type="checkbox" checked
             onchange="showNext(this,'data-exportset-more','flex');
             if(this.checked){
               DOM.exportTagsBox.setAttribute('data-export-pickall','true');
@@ -492,7 +492,7 @@
             <label for="export-more" class="wh100 df-cc show-next pos-r">
             </label>
           </div>
-          <div data-exportset-more class="w100" style="display: none;">
+          <div data-exportset-more class="w100">
             <div class="w100 df-sc">
               <div class="df-lc gap8">
                 <div class="df-lc gap2" data-export-delete data-btn="text">
@@ -507,7 +507,7 @@
                   </div>
                   <div data-en-text="ReUpload">重新上传</div>                
                 </div>
-                <div class="df-lc gap2" data-export-overset data-btn="text">
+                <div data-any="vw260" class="df-lc gap2" data-export-overset data-btn="text">
                   <div class="wh-14">
                     <btn-hasselect></btn-hasselect>                    
                   </div>
@@ -526,14 +526,14 @@
           
           <div data-export-tags-box="image" class="wh100 upload-set pos-r">
             <div class="wh100 ovy noscrollbar">
-              <div data-export-tags="image" data-export-pickall="false" class="w100 df-ffc">
+              <div data-export-tags="image" data-export-pickall="true" class="w100 df-ffc">
                 <!--动态填充-->
               </div>
-              <div data-export-tags="zy" data-export-pickall="false" class="wh100 df-ffc">
+              <div data-export-tags="zy" data-export-pickall="true" class="wh100 df-ffc">
                 <!--动态填充-->
                 <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
               </div>
-              <div data-export-tags="rich" data-export-pickall="false" class="wh100 df-ffc">
+              <div data-export-tags="rich" data-export-pickall="true" class="wh100 df-ffc">
                 <!--动态填充-->
                 <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
               </div>
@@ -731,7 +731,7 @@
             </div>
             <div class="w100 df-cc gap2 mar-b10">
               <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Variable To Sheet">从变量更新表</div>    
-              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Variable">从表更新变量</div>
+              <div class="w100 df-cc" data-skill-btn data-selects-must data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Variable">从表更新变量</div>
             </div>
             <!--步骤2-->
             <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
@@ -807,7 +807,7 @@
                   </div>
                 </div>
               </div>
-              <div data-manage-linkstyle-list class="wh100 df-ffc ovy noscrollbar">
+              <div data-manage-linkstyle-list data-selects-must class="wh100 df-ffc ovy noscrollbar">
                 <!--div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div-->
               </div>
               <!--清空-->
@@ -852,7 +852,7 @@
             </div>
             <div class="w100 df-cc gap2 mar-b10">
               <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Style To Sheet">从样式更新表</div>    
-              <div class="w100 df-cc" data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
+              <div class="w100 df-cc"  data-selects-must data-skill-btn data-btn="skill-main" style="border-radius: 20px;" data-any data-en-text="Sheet To Style">从表更新样式</div>
             </div>
             <!--步骤3-->
             <div class="w100 df-lc op6"  style="padding:4px 0 10px 0; vertical-align: baseline;"> 
@@ -871,8 +871,8 @@
                   </div>
                 </div>
               </div>
-              <div data-manage-selectstyle-list class="wh100 df-ffc ovy noscrollbar">
-                <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
+              <div data-manage-selectstyle-list data-selects-must class="wh100 df-ffc ovy noscrollbar">
+                <!--div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div-->
               </div>
               <!--清空-->
               <div data-selectstyle-clear class="pos-a" style="right: 4px; top:28px; width: 12px; height: 12px;">
@@ -1864,21 +1864,17 @@
                     </div>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="To Auto Layout">转自动布局</div>
-                      <div class="w100" data-any="vw240"></div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Absolute & Fill">自适应容器</div>  
                     </div>
                     <div data-skill-gap>
                       <span>----</span>
                       <span data-any="vw240" data-en-text="For components(may with auto layout)">
-                        基于组件(部分需在自动布局中)</span>
+                        基于组件</span>
                       <span>----</span>
                     </div> 
                     <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Clone to Fill">填充到容器</div>
-                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Absolute & Fill">自适应容器</div>  
-                    </div>
-                    <div class="df-lc w100" data-skill-more>
-                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Heavy Chain">重链组件</div>
-                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Rebind Style">重绑样式</div>
+                      <div class="df-cc" data-btn-dblclick data-skill-btn data-btn="skill-main" data-en-text="Clone to Fill">填充到容器</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Clone to Fit">适应到容器</div>  
                     </div>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Clone Comp.">复制母组件</div>

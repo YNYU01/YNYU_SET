@@ -219,6 +219,7 @@ figma.ui.onmessage = async (message) => {
                 //console.log(info[i].s)
                 node.setPluginData('exportSize',info[i].s.toString());
             };
+            node.clipsContent = true;
             selects.push(node);
         };
         
@@ -226,14 +227,7 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         if(b.length == 1){
             let comp = b[0];
-            selects.forEach(item => {
-                let clone = comp.type == 'COMPONENT' ? comp.createInstance() : comp.clone();
-                clone.unlockAspectRatio();
-                let scale = Math.min(item.width,item.height)/Math.max(clone.width,clone.height)
-                clone.rescale(scale);
-                item.appendChild(clone);
-                asFillChild(clone,true)
-            });
+            cloneToFill(selects,comp);
         };
         figma.currentPage.selection = selects;
         //console.log(selects)
@@ -698,6 +692,9 @@ figma.ui.onmessage = async (message) => {
     if( type == 'Style To Sheet'){
         reLocalSheet('style');
     };
+    if( type == 'Sheet To Style'){
+        reStyleBySheet();
+    };
     //创建示例变量
     if( type == "addVariable"){
         let variables = [
@@ -985,35 +982,88 @@ figma.ui.onmessage = async (message) => {
         allStyleId = [...new Set(allStyleId)];
         //获取样式
         let promises = allStyleId.map(item => figma.getStyleByIdAsync(item));
-        let allStyle = await Promise.all(promises);
-        allStyle = allStyle.map(item => {return {id:item.id,name:item.name};});
-        //console.log(allStyle)
-        let themeStyle = [];
-        //找到带分组的样式
-        let localThemeStyle = localStyles.paint.list.filter(item => item.name.includes('@set:'));
-        allStyle.forEach(item => {
-            if(localThemeStyle.some(items => items.id == item.id)){
-                themeStyle.push(item);
+        let selectedStyles  = await Promise.all(promises);
+        selectedStyles  = selectedStyles .map(item => {return {id:item.id,name:item.name};});
+        //console.log(selectedStyles )
+        let activeModes = new Set();
+        selectedStyles.forEach(style => {
+            if (style.name.includes('@set:')) {
+                let mode = style.name.split('@set:')[0];
+                activeModes.add(mode);
+            }
+        });
+        let groupStyles = localStyles.paint.list.filter(localStyle => {
+            if (!localStyle.name.includes('@set:')) return false;
+            let mode = localStyle.name.split('@set:')[0];
+            return activeModes.has(mode);
+        });
+        //console.log(groupStyles)
+        let [tree, colorSet] = stylesToGroup(groupStyles);
+        postmessage([[tree,missingStyle(tree,colorSet)],'styleGroupInfo']);
+    };
+    if( type == "fixMissStyle"){
+        await getStyle('paint');
+        let localPaintStyles = localStyles.paint.list;
+        let names = localPaintStyles.map(item => item.name);
+        let [modename,themes,colorname] = info;
+        themes.forEach(theme => {
+            let path = modename + '@set:' + theme + '/' + colorname;
+            if(!names.includes(path)){
+                let newstyle = figma.createPaintStyle();
+                newstyle.name = path;
+                newstyle.paints = [toRGB('#888888',true)];
             };
         });
-        //console.log(themeStyle)
-        postmessage([stylesToGroup(themeStyle),'styleGroupInfo']);
-
-        function stylesToGroup(styles){
-            const tree = {};
-            styles.forEach(item => {
-                let [mode, path] = item.name.split('@set:');
-                let theme = path.split('/')[0];
-                let colorName = path.replace(theme + '/', ''); 
-
-                if (!tree[mode]) tree[mode] = {};
-                if (!tree[mode][theme]) tree[mode][theme] = {};
-
-                tree[mode][theme][colorName] = item.id;
-            });
-            console.log(Object.entries(tree))
-            return Object.entries(tree);
-        }
+    };
+    if( type == "setStyleGroup"){
+        let b = getSelectionMix();
+        let final = [];
+        b.forEach(item => {
+            if(item.fillStyleId || item.strokeStyleId){
+                final.push(item);
+            };
+            if(item.children){
+                let childrens = item.findAll(items => items.fillStyleId || items.strokeStyleId)
+                final.push(...childrens);
+            };
+        });
+        if(final.length == 0) return;
+        let [targetTheme, map] = info;
+        //console.log(targetTheme,map)
+        let idMap = [];
+        for (const themeKey in map) {
+            if (themeKey === targetTheme) continue; 
+            
+            const oldThemeColors = map[themeKey];
+            const targetThemeColors = map[targetTheme];
+            
+            for (const colorKey in oldThemeColors) {
+                const oldId = oldThemeColors[colorKey];
+                const newId = targetThemeColors[colorKey];
+                if (oldId && newId) {
+                    idMap.push([oldId, newId]);
+                };
+            };
+        };
+        //console.log(idMap)
+        final.forEach(node => {
+            try{
+                if (node.fillStyleId) {
+                    let match = idMap.find(pair => pair[0] === node.fillStyleId);
+                    if (match) {
+                        node.setFillStyleIdAsync(match[1]);
+                    };
+                };
+                if (node.strokeStyleId) {
+                    let match = idMap.find(pair => pair[0] === node.strokeStyleId);
+                    if (match) {
+                        node.setStrokeStyleIdAsync(match[1]);
+                    };
+                };
+            } catch(e){
+                console.log(e)
+            }
+        })
     };
     //管理变量组
     if( type == "getVariableGroup"){
@@ -1809,21 +1859,6 @@ figma.ui.onmessage = async (message) => {
         try{
             tables.forEach(table => {
                 if(retype == 'theme') {
-                    /*
-                        //一个饱和度、明度适中的颜色
-                        let [H,S,L] = [Math.random()*360,(Math.random()*70) + 10,(Math.random()*80) + 10];
-                        S = S <= 30 && L <= 50 ? S*1.2 : S;
-                        L = S >= 50 && L >= 40 ? L*0.8 : L;
-                        let [S2,L2] = [S >= 50 ? S*0.95 : S*1, L >= 50 ? L*0.8 : L*1.2,];
-                        let [S3,L3] = [S >= 50 ? S*0.9 : S*1, L >= 50 ? L*0.7 : L*1.3,];
-                        let textColor = L2 >= 50 ? '#000000' : '#ffffff';
-                        [H,S,L] = [Math.floor(H),Math.floor(S) + '%',Math.floor(L) + '%'];
-                        [S2,L2] = [Math.floor(S2) + '%',Math.floor(L2) + '%'];
-                        [S3,L3] = [Math.floor(S3) + '%',Math.floor(L3) + '%'];  
-                        let [tableBg,tableFill,tableStroke] = [`hsl(${[H,S,L].join(',')})`,`hsl(${[H,S2,L2].join(',')})`,`hsl(${[H,S3,L3].join(',')})`]                
-                        //console.log([toRGB(tableBg,true),toRGB(tableFill,true),toRGB(tableStroke,true)])
-                        reTableTheme(table,[tableBg,tableFill,tableStroke],textColor)
-                    */
                    reTableThemeByPreset(table,setdata);
                    return;
                 };
@@ -2792,16 +2827,18 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         let comp = b.find(item => item.type == 'COMPONENT' || item.type == 'INSTANCE');
         let frames = b.filter(item => item.type == 'FRAME' && item.layoutMode == 'NONE');
-        let selects = []
-        frames.forEach(item => {
-            let clone = comp.type == 'COMPONENT' ? comp.createInstance() : comp.clone();
-            clone.unlockAspectRatio();
-            let scale = Math.min(item.width,item.height)/Math.max(clone.width,clone.height)
-            clone.rescale(scale);
-            item.appendChild(clone);
-            asFillChild(clone,true)
-            selects.push(clone)
-        });
+        let selects = cloneToFill(frames,comp,info);
+
+        a.selection = selects;
+    };
+    //填充组件到容器
+    if( type == 'Clone to Fit'){
+        let a = figma.currentPage;
+        let b = getSelectionMix();
+        let comp = b.find(item => item.type == 'COMPONENT' || item.type == 'INSTANCE');
+        let frames = b.filter(item => item.type == 'FRAME' && item.layoutMode == 'NONE');
+        let selects = cloneToFill(frames,comp,false,true);
+
         a.selection = selects;
     };
     //作为自适应底框
@@ -4366,7 +4403,7 @@ async function addLocalSheetMust(type,comps = [null,null,null]){
     box2.name = '#sheet.strokeStyle';
     box2.fills = [];
     box2.strokes = [toRGB('#ffffff',true)];
-    box2.strokeWeight = 7;
+    box2.strokeWeight = 6;
     box2.strokeAlign = "INSIDE";
     let tn = await addTableCompMust('tn','En',[box1,box2]);
     tn.name += ':' + type;
@@ -4374,23 +4411,24 @@ async function addLocalSheetMust(type,comps = [null,null,null]){
     tn.y += 72;
     return [th,td,tn];
 };
-//更新本地表格数据
+// 更新本地表格数据
 async function reLocalSheet(type, isNew) {
     if (isNew) postmessage([true, type + 'SheetInfo']);
-    
     const variablePages = figma.root.findChildren(item => item.name.includes('@localsheet'));
     const datas = type === 'style' ? localStyleToArray() : localVariableToArray();
+    let createdTables = [];
 
     for (let [index, data] of datas.entries()) {
         let finaltable, finalpage;
+
         if (isNew) {
-            finalpage = variablePages.length === 0 
-                ? (() => { 
+            finalpage = variablePages.length === 0 ?
+                (() => {
                     const page = addPageMix()[0];
                     page.name = 'xxx@localsheet';
                     return page;
-                })()
-                : variablePages[0];
+                })() :
+                variablePages[0];
         } else {
             for (const page of variablePages) {
                 const table = page.findOne(item => item.name === data[0][0] + '@table:' + type);
@@ -4402,9 +4440,9 @@ async function reLocalSheet(type, isNew) {
             };
             if (!finalpage) finalpage = variablePages[0];
         };
-        
+
         await figma.setCurrentPageAsync(finalpage);
-        
+
         if (!finaltable) {
             const oldth = finalpage.findOne(item => item.name.includes('@th:' + type));
             const oldtd = finalpage.findOne(item => item.name.includes('@td:' + type));
@@ -4416,14 +4454,17 @@ async function reLocalSheet(type, isNew) {
         } else {
             reSheetByArray(finaltable, data);
         };
-        
-        if (isNew && index > 0) {
-            const table2 = finaltable.clone();
-            table2.x += finaltable.width + 60;
-            table2.name = data[0][0] + '@table:' + type;
-            reSheetByArray(table2, data);
-        };
+
+        createdTables.push(finaltable);
     };
+
+    if (isNew) {
+        let xPosition = 0;
+        createdTables.forEach(table => {
+            table.x = xPosition;
+            xPosition += table.width + 60;
+        });
+    }
 };
 function reSheetByArray(table,datas){
     //console.log(datas)
@@ -4444,13 +4485,48 @@ function reSheetByArray(table,datas){
                     }else{
                         let boxFill = comp.findChild(item => item.name == '#sheet.fillStyle');
                         let boxBod = comp.findChild(item => item.name == '#sheet.strokeStyle');
-                        try{
-                            boxFill.fillStyleId = value.id;
-                            boxBod.strokeStyleId = value.id;
-                        }catch(e){
+
+                        if(value && value.id){
                             boxFill.setFillStyleIdAsync(value.id);
                             boxBod.setStrokeStyleIdAsync(value.id);
-                        };
+                        }else{
+                            let tex = [
+                                {
+                                  type: "GRADIENT_LINEAR",
+                                  opacit: 1,
+                                  gradientStop: [
+                                    { color: { r: 0.16, "g": 0.16, b: 0.16, a:1}, position: 0.2 },
+                                    { color: { r: 0.56, "g": 0.56, b: 0.56, a:1}, position: 0.2 },
+                                    { color: { r: 0.56, "g": 0.56, b: 0.56, a:1}, position: 0.4 },
+                                    { color: { r: 0.16, "g": 0.16, b: 0.16, a:1}, position: 0.4 },
+                                    { color: { r: 0.16, "g": 0.16, b: 0.16, a:1}, position: 0.6 },
+                                    { color: { r: 0.56, "g": 0.56, b: 0.56, a:1}, position: 0.6 },
+                                    { color: { r: 0.56, "g": 0.56, b: 0.56, a:1}, position: 0.8 },
+                                    { color: { r: 0.16, "g": 0.16, b: 0.16, a:1}, position: 0.8 },
+                                    { color: { r: 0.16, "g": 0.16, b: 0.16, a:1}, position: 1 }
+                                  ],
+                                  gradientTransform: [ [ 6.123234262925839e-17, 1, 0 ], [ -1, 6.123234262925839e-17, 1 ] ]
+                                },
+                                {
+                                  type: "GRADIENT_LINEAR",
+                                  opacity: 1,
+                                  gradientStops: [
+                                    { color: { r: 0.16, "g": 0.16, b: 0.16, a: 0}, position: 0.2 },
+                                    { color: { r: 0.56, "g": 0.56, b: 0.56, a: 1}, position: 0.2 },
+                                    { color: { r: 0.56, "g": 0.56, b: 0.56, a: 1}, position: 0.4 },
+                                    { color: { r: 0.16, "g": 0.16, b: 0.16, a: 0}, position: 0.4 },
+                                    { color: { r: 0.16, "g": 0.16, b: 0.16, a: 0}, position: 0.6 },
+                                    { color: { r: 0.56, "g": 0.56, b: 0.56, a: 1}, position: 0.6 },
+                                    { color: { r: 0.56, "g": 0.56, b: 0.56, a: 1}, position: 0.8 },
+                                    { color: { r: 0.16, "g": 0.16, b: 0.16, a: 0}, position: 0.8 },
+                                    { color: { r: 0.16, "g": 0.16, b: 0.16, a: 0}, position: 1 }
+                                  ],
+                                  gradientTransform: [ [ -1, 6.123234262925839e-17, 1 ], [ -6.123234262925839e-17, -1, 1 ] ]
+                                }
+                              ]
+                            boxFill.fills = tex;
+                            boxBod.strokes = tex;
+                        }
                     };
                 };
             });
@@ -4458,6 +4534,95 @@ function reSheetByArray(table,datas){
             console.log(e)
         };
     });
+};
+//从表更新样式
+async function reStyleBySheet(){
+    let localStyleList = await figma.getLocalPaintStylesAsync();
+    //console.log(localStyleList)
+    let styleMap = {};
+    localStyleList.forEach(item => {
+        styleMap[item.name] = item
+    })
+    let a = figma.currentPage;
+    let b = a.selection;
+    let styleTable = b.filter(item => item.name.includes('@table:style'))
+    for(let e = 0; e < styleTable.length; e++){
+        let table = styleTable[e];
+        let datas = getTableText(table);
+        //console.log(datas)
+        let columns = table.children.filter(item => item.name.includes('@column'));
+        //console.log(columns,columns.length)
+        for(let i = 0; i < columns.length; i++){
+            let column = columns[i];
+            let colorboxs = column.children.filter(item => item.name.includes('@tn:style'));
+            //console.log('column' + i,colorboxs)
+            for(let ii = 0; ii < colorboxs.length; ii++){ 
+                let colorbox = colorboxs[ii];
+                let boxFill = colorbox.findChild(item => item.name == '#sheet.fillStyle');
+                let boxBod = colorbox.findChild(item => item.name == '#sheet.strokeStyle');
+                if(!boxFill.fillStyleId && !boxBod.strokeStyleId){
+                    boxBod.strokes = boxFill.fills;
+                    let namepath = datas[0][0] + '@set:' + datas[i][0] + '/' + datas[0][(ii + 1)]
+                    //console.log(namepath);return
+                    let style = styleMap[namepath];
+                    if(style){
+                        style.paints = boxFill.fills;
+                        boxFill.setFillStyleIdAsync(style.id);
+                        boxBod.setStrokeStyleIdAsync(style.id);
+                    }else{
+                        let newstyle = figma.createPaintStyle();
+                        newstyle.name = namepath
+                        newstyle.paints = boxFill.fills;
+                        boxFill.setFillStyleIdAsync(newstyle.id);
+                        boxBod.setStrokeStyleIdAsync(newstyle.id);
+                    }
+                };
+            };
+        };
+    };
+};
+//样式组转树结构
+function stylesToGroup(styles){
+    let tree = {};
+    let colorSet = {}
+    styles.forEach(item => {
+        let [mode, path] = item.name.split('@set:');
+        let theme = path.split('/')[0];
+        let colorName = path.replace(theme + '/', ''); 
+
+        if (!tree[mode]) {
+            tree[mode] = {};
+            colorSet[mode] = new Set();
+        };
+        if (!tree[mode][theme]) tree[mode][theme] = {};
+
+        tree[mode][theme][colorName] = item.id;
+        colorSet[mode].add(colorName)
+    });
+    //console.log(Object.entries(tree),colorSet,missingStyle(tree,colorSet))
+    return [tree,colorSet];
+};
+//定位缺失样式
+function missingStyle(tree,colorSet){
+    let missing  = {};
+    let isValid = true;
+    for(const mode in tree){
+        let colors = Array.from(colorSet[mode]);
+        let themes = tree[mode];
+        if(!missing[mode]) missing[mode] = {};
+
+        for(const theme in themes){
+            let thisColors = Object.keys(themes[theme]);
+            let diff = colors.filter(item => !thisColors.includes(item));
+            if(!missing[mode][theme]) missing[mode][theme] = [];
+
+            if(diff.length > 0) {
+                isValid = false;
+                missing[mode][theme] = diff;
+            };
+        };
+    };
+    return [isValid,missing]
 };
 
 getStyle('paint',true);
@@ -4500,16 +4665,28 @@ async function getStyle(type,isSend){
 getStyleSheet();
 async function getStyleSheet(){
     let pages = figma.root.findChildren(item => item.name.includes('@localsheet'));
-    for(let page of pages){
+    if(!pages){
+        postmessage([false,'styleSheetInfo']);
+        return
+    };
+    let foundValidSheet = false;
+
+    for(let i = 0; i < pages.length; i++){
+        let page = pages[i];
         await page.loadAsync();
         let sheet = page.findOne(item => item.name.includes('@table:style'));
-        if(sheet) {
-            postmessage([true,'styleSheetInfo']);
-            getSheetData(sheet)
-            return;
-        };
+        if (sheet) {
+            foundValidSheet = true;
+            break; 
+        }
     };
-    postmessage([false,'styleSheetInfo']);
+
+    if (foundValidSheet) {
+        postmessage([true, 'styleSheetInfo']);
+    } else {
+        postmessage([false, 'styleSheetInfo']);
+    }
+    
 };
 getVariableSheet();
 async function getVariableSheet(){
@@ -4600,28 +4777,47 @@ function getSheetData(table){
 };
 
 //样式数据转列数据
-function localStyleToArray(){
+function localStyleToArray() {
     let list = localStyles.paint.list.filter(item => item.name.includes('@set:'));
-    let styleObj = {};
+    let styleObj = {}; 
     list.forEach(item => {
         let { id, name, paints } = item;
         let keys = name.split('/').filter(str => str.includes('@set:'))[0];
-        let [setname, themename] = keys.split('@set:');
+        let [setname, themename] = [name.split('@set:')[0], keys.split('@set:')[1]];
         let colorname = name.split(keys + '/')[1];
-        
+
         if (!styleObj[setname]) styleObj[setname] = {};
-        if(!styleObj[setname][themename]) styleObj[setname][themename] = [];
-        styleObj[setname][themename].push({ id, name: colorname, paints });
+        if (!styleObj[setname][themename]) styleObj[setname][themename] = {};
+        
+        styleObj[setname][themename][colorname] = { id, name: colorname, paints };
     });
-    let styleSheets = Object.entries(styleObj).map(([key, themes]) => {
-        let themeEntries = Object.entries(themes);
-        let column1 = [key, ...themeEntries[0][1].map(item => item.name)];
-        let column2 = themeEntries.map(item => item.flat());
-        return [column1, ...column2];
-    });
-    //console.log(styleSheets)
+
+    let styleSheets = [];
+
+    for (const [setname, themes] of Object.entries(styleObj)) {
+        let allColors = new Set();
+        Object.values(themes).forEach(themeData => {
+            Object.keys(themeData).forEach(color => allColors.add(color));
+        });
+        let standardHeader = Array.from(allColors).sort();
+        let column1 = [setname, ...standardHeader];
+        let themeColumns = Object.entries(themes).map(([themeName, colorMap]) => {
+            let column = [themeName];
+            standardHeader.forEach(colorName => {
+                if (colorMap[colorName]) {
+                    column.push(colorMap[colorName]);
+                } else {
+                    column.push(null); 
+                }
+            });
+            return column;
+        });
+
+        styleSheets.push([column1, ...themeColumns]);
+    }
+
     return styleSheets;
-};
+}
 //变量数据转列数据
 function localVariableToArray(){
     let list = localVariable.filter(item => item.name.includes('@set:'))
@@ -5811,129 +6007,6 @@ function getProObj(comps,enters,nulls){
     return datas;
 };
 //获取所有标签属性值
-function getTagObj2(tagNodes){
-    let datas = [];
-    tagNodes.forEach(node => {
-        let data = {};
-        data = getTagData(node);
-        if(node.children && node.children.length > 0){
-            let childs = node.findAll(item => hasTag(item));
-            childs.forEach(child => {
-                let childData = getTagData(child);
-                Object.keys(childData).forEach(key => {
-                    data[key] = childData[key];
-                });
-            });
-        };
-        datas.push(data);
-    });
-    
-    // 收集所有出现过的标签 key
-    let tagkeys = datas.map(item => Object.keys(item));
-    tagkeys = [...new Set(tagkeys.flat())];
-
-    // 按原始节点顺序，把缺失的 key 用 null 补齐
-    let finalDatas = datas.map(item => {
-        let row = {};
-        tagkeys.forEach(key => {
-            row[key] = item.hasOwnProperty(key) ? item[key] : null;
-        });
-        return row;
-    });
-
-    return finalDatas;
-
-    function getTagData(node){
-        let tagNames = hasTag(node,true);
-        let tagData = {};
-        tagNames.forEach(name => {
-            let prop = name.split('.')[1];
-            switch (prop){
-                case 'fill':
-                    let fill = node.fills[0];
-                    if(fill){
-                        let color = fill.color;
-                        tagData[name] = rgbToHex(
-                            Math.round(color.r * 255),
-                            Math.round(color.g * 255),
-                            Math.round(color.b * 255),
-                        );
-                    } else {
-                        tagData[name] = null;
-                    };
-                    break;
-                case 'stroke':
-                    let stroke = node.strokes[0];
-                    if(stroke){
-                        let color = stroke.color;
-                        tagData[name] = rgbToHex(
-                            Math.round(color.r * 255),
-                            Math.round(color.g * 255),
-                            Math.round(color.b * 255),
-                        );
-                    } else {
-                        tagData[name] = null;
-                    };
-                    break;
-                case 'fillStyle':
-                    let fillStyleId = node.fillStyleId;
-                    if(fillStyleId){
-                        let fillStyle = localStyles.paint.list.find(item => item.id == fillStyleId)
-                        if(!fillStyle){
-                            fillStyle = figma.getStyleByIdAsync(fillStyleId)
-                        }
-                        tagData[name] = fillStyle.name || null;
-                    } else {
-                        tagData[name] = null;
-                    };
-                    break;
-                case 'strokeStyle':
-                    let strokeStyleId = node.strokeStyleId;
-                    if(strokeStyleId){
-                        let strokeStyle = localStyles.paint.list.find(item => item.id == strokeStyleId)
-                        if(!strokeStyle){
-                            strokeStyle = figma.getStyleByIdAsync(strokeStyleId)
-                        }
-                        tagData[name] = strokeStyle.name || null;
-                    } else {
-                        tagData[name] = null;
-                    };
-                    break;
-                case 'visible':
-                    tagData[name] = node.visible;
-                    break;
-                case 'opacity':
-                    tagData[name] = node.opacity;
-                    break;
-                case 'fontSize':
-                    if(node.type == 'TEXT'){
-                        tagData[name] = typeof node.fontSize == 'number' ? node.fontSize : null;
-                    } else {
-                        tagData[name] = null;
-                    };
-                    break;
-                case 'xywh':
-                    tagData[name] = [node.x,node.y,node.width,node.height];
-                    break;
-                case 'instance':
-                    if(node.type == 'INSTANCE'){
-                        let variant = Object.values(node.componentProperties).find(item => item.type == 'VARIANT');
-                        if(variant){
-                            tagData[name] = variant.value;
-                        } else {
-                            tagData[name] = null;
-                        };
-                    } else {
-                        tagData[name] = null;
-                    };
-                    break;
-                };
-        });
-        return tagData;
-    };
-        
-};
-//将函数改为 async
 async function getTagObj(tagNodes) {
     let datas = [];
     
@@ -6503,6 +6576,30 @@ function autoConstraints(parent,child){
         horizontal:axisX,
         vertical:axisY,
     };
+};
+//将组件填充到容器
+function cloneToFill(frames,comp,isResize,isFit){
+    let selects = [];
+    frames.forEach(item => {
+        let clone = comp.type == 'COMPONENT' ? comp.createInstance() : comp.clone();
+        let imgRatio = clone.width / clone.height;
+        let frameRatio = item.width / item.height;
+        let scale;
+        let ratioW = item.width / clone.width;
+        let ratioH = item.height / clone.height;
+        if (imgRatio > frameRatio) {
+            scale = isFit ? ratioW : ratioH;
+        } else {
+            scale = isFit ? ratioH : ratioW;
+        };
+        clone.rescale(scale);
+        
+        item.appendChild(clone);
+        asFillChild(clone,isResize);
+
+        selects.push(clone);
+    });
+    return selects;
 };
 //添加文字内容
 /**
@@ -9314,6 +9411,7 @@ const BASIC_PROPS = [
     "numberOfFixedChildren",//固定子元素数量
     "opacity",//透明度
     "offset",//偏移
+    "position",
     "paddingBottom",//下内边距
     "paddingLeft",//左内边距
     "paddingRight",//右内边距
