@@ -1,3 +1,8 @@
+### v0.1.9
+- 修复：表单页>修复获取组件属性时无法正确获取嵌套实例的属性的问题
+- 修复：表单页>修复映射内嵌重复实例组件属性时错位问题
+- 优化：表单页>应用表格主题时，插件会记录色值和风格，便于再次选中修改，但需注意，手动修改的色值不会缓存
+
 ### v0.1.8 2026/4/10
 - 🐞 Fix: Sheet page > Tag attributes, fixed mismatch between reading order and mapping order; 🐞 修复：表单页>标签属性读取/映射, 修复读取顺序和映射顺序不匹配的问题
 - ⚡ Optimize: Top > Function search, optimized matching logic, can also match the page name; ⚡ 优化：顶部栏>功能搜索, 优化了匹配逻辑, 还可以匹配页面名称

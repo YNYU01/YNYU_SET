@@ -212,6 +212,32 @@ figma.ui.onmessage = async (message) => {
                                 node.guides = guides;
                             };
                         ;break
+                        case 'safes'://[x,y,w,h,name]
+                        //随机颜色，按安全区数量调用，用完再重复，一般够用，同名用同色
+                            let areaFills = [
+                                toRGB('#ff550033',true),
+                                toRGB('#00FF0033',true),
+                                toRGB('#0000FF33',true),
+                                toRGB('#FFFF0033',true),
+                                toRGB('#FF00FF33',true),
+                                toRGB('#00FFFF33',true)
+                            ];
+                            let safes = setobj.safes;
+                            let allFills = {};
+                            safes.forEach(safa => {
+                                let [x,y,w,h,name] = safa;
+                                let key = name;
+                                if(key && !allFills[key]) allFills[key] = areaFills[Object.keys(allFills).length % areaFills.length];
+                                name = name + '@safe';
+                                let safe = figma.createFrame();
+                                safe.resize(w, h);
+                                safe.name = name;
+                                safe.fills = allFills[key] ? allFills[key] : areaFills[Math.floor(Math.random() * (areaFills.length - 1))];
+                                node.appendChild(safe);
+                                safe.x = x;
+                                safe.y = y;
+                            })
+                        ;break 
                     };
                 });
             };
@@ -1681,20 +1707,34 @@ figma.ui.onmessage = async (message) => {
         figma.skipInvisibleInstanceChildren = false;
         let b = getSelectionMix();
         let nodes = b;
+        //console.log(info)
         if(info.data[0]){
-            if(b.length == 1){
-                if(b[0].layoutMode && b[0].layoutMode !== 'NONE' && b[0].children.length == 1 && b[0].children[0].type == 'INSTANCE'){
-                    let c = b[0].children[0];
-                    for(let i = 1; i < info.data.length; i++){
-                        b[0].appendChild(c.clone());
-                    };
-                    nodes = b[0].children;
+            if(b.length == 1 && b[0].type !== 'INSTANCE' && b[0].type !== 'COMPONENT'){
+               if(b[0].layoutMode && b[0].layoutMode !== 'NONE' && b[0].children && b[0].children.length > 0){
+                    let c = b[0].children.filter(item => hasChildWithCompPro(item));
+                    //console.log(c)
+                    if(c && c.length > 0){
+                        let addnum = info.data.length - c.length;
+                        if(info.clone && addnum > 0){
+                            for(let i = 0; i < addnum; i++){
+                                let layerIndex = c[c.length - 1].parent.children.findIndex(item => item.id == c[c.length - 1].id);
+                                b[0].insertChild((layerIndex + 1),c[c.length - 1].clone());
+                            }
+                        };
+                        if(info.reduce && addnum < 0){
+                            for(let i = addnum; i < 0; i++){
+                                c[c.length + i].remove();
+                            };
+                        };
+                        nodes = b[0].children;
+                    }
                 };
             };
             //console.log(info)
             reAnyByObj(nodes,info.data,info.enters,info.nulls);
         };
         figma.skipInvisibleInstanceChildren = true;
+        
     };
     //批量设置标签属性
     if( type == 'mapTag'){
@@ -1791,24 +1831,21 @@ figma.ui.onmessage = async (message) => {
                 }
             };
         };
-        console.log(comps,(comps  && comps.length > 0))
+        //console.log(comps,(comps  && comps.length > 0))
         if(comps  && comps.length > 0){
-            let proKeys = comps.map(item => Object.keys(item.componentProperties).map(key => key.split('#')[0]).sort());
-            let proNames = [...new Set(proKeys.map(item => JSON.stringify(item)))].map(item => JSON.parse(item))
-            //必须有相同的组件属性才能提取
-            if(proNames.length == 1){
+           try{
                 let datas = getProObj(comps,info.enters,info.nulls);
-                //console.log(datas)
-                //console.log(typeof datas[0])
-                postmessage([datas,'selectDatas'])
-            }else{
+                if(datas){
+                    postmessage([datas,'selectDatas']);
+                }
+           }catch(e){
                 let lang = await figma.clientStorage.getAsync('userLanguage');
                 let text = lang == 'Zh' ? '仅组件属性相同时可获取' : 'Properties should be identical';
                 figma.notify(text,{
                     error:true,
                     timeout: 3000,
                 });
-            };
+           };
         };
         figma.skipInvisibleInstanceChildren = true;
     };
@@ -5689,6 +5726,7 @@ function reAnyByArray(comps,Array,istable,enters,nulls){
 };
 //按对象修改组件属性
 function reAnyByObj(comps,obj,enters,nulls){
+    //console.log(comps,obj)
     let keyPros = Object.keys(obj[0]);
     let errornode = []
     for(let i = 0; i < comps.length; i++){
@@ -5697,10 +5735,27 @@ function reAnyByObj(comps,obj,enters,nulls){
         setPro(comp,rePros,obj[i],enters,nulls)
 
         //内嵌组件时，也要替换（支持 key 与 key[n]）
-        let compChilds = comp.findAll(items => items.type == 'INSTANCE');// && items.componentProperties.length > 0
+        let compChilds = comp.findAll(items => items.type == 'INSTANCE' );
         //console.log(compChilds)
         let rowData = obj[i];
         if(rowData && compChilds.length > 0){
+            // 只保留那些组件属性中包含对应 baseKey 的实例
+            let groupedChilds = {};
+            compChilds.forEach(child => {
+                // 提取该子组件所有属性的 baseKey（去掉 # 后缀）
+                let childPropKeys = Object.keys(child.componentProperties)
+                    .map(pro => pro.split('#')[0]);
+                
+                // 按 baseKey 分组
+                childPropKeys.forEach(propKey => {
+                    if(!groupedChilds[propKey]) groupedChilds[propKey] = [];
+                    // 避免重复添加同一组件
+                    if(!groupedChilds[propKey].includes(child)) {
+                        groupedChilds[propKey].push(child);
+                    }
+                });
+            });
+
             let dataKeys = Object.keys(rowData);
             dataKeys.forEach(k => {
                 let baseKey = k;
@@ -5711,8 +5766,9 @@ function reAnyByObj(comps,obj,enters,nulls){
                 if(match){
                     baseKey = match[1];
                     let n = parseInt(match[2],10);
-                    // 后缀有效：数字且不超过 compChilds 数量
-                    if(!isNaN(n) && n >= 1 && n <= compChilds.length){
+                    // 后缀有效：数字且不超过实际实例数量
+                    let filteredChilds = groupedChilds[baseKey] || [];
+                    if(!isNaN(n) && n >= 1 && n <= filteredChilds.length){
                         targetIndex = n - 1;
                     }else{
                         // 后缀无效，当作无后缀处理 => 全部替换
@@ -5724,20 +5780,24 @@ function reAnyByObj(comps,obj,enters,nulls){
                 let tempData = {};
                 tempData[baseKey] = rowData[k];
 
-                if(targetIndex >= 0){
-                    // 只对第 n 个内嵌组件生效
-                    let child = compChilds[targetIndex];
-                    let childRePros = Object.keys(child.componentProperties).filter(pro => pro.split('#')[0] == baseKey);
+                let targetChilds = groupedChilds[baseKey] || [];
+
+                if(targetIndex >= 0 && targetChilds[targetIndex]){
+                    // 只对第 n 个「支持该属性」的内嵌组件生效
+                    let child = targetChilds[targetIndex];
+                    let childRePros = Object.keys(child.componentProperties)
+                        .filter(pro => pro.split('#')[0] == baseKey);
                     if(childRePros.length > 0){
-                        setPro(child,childRePros,tempData,enters,nulls);
+                        setPro(child, childRePros, tempData, enters, nulls);
                     };
                 }else{
                     // 对所有包含该属性名的内嵌组件生效
-                    for(let ii = 0; ii < compChilds.length; ii++){
-                        let compChild = compChilds[ii];
-                        let childRePros = Object.keys(compChild.componentProperties).filter(pro => pro.split('#')[0] == baseKey);
+                    for(let ii = 0; ii < targetChilds.length; ii++){
+                        let compChild = targetChilds[ii];
+                        let childRePros = Object.keys(compChild.componentProperties)
+                            .filter(pro => pro.split('#')[0] == baseKey);
                         if(childRePros.length > 0){
-                            setPro(compChild,childRePros,tempData,enters,nulls);
+                            setPro(compChild, childRePros, tempData, enters, nulls);
                         };
                     };
                 };
@@ -5818,6 +5878,16 @@ function reAnyByObj(comps,obj,enters,nulls){
         });
     };
 };
+//判断是否含有组件属性
+function hasChildWithCompPro(node){
+    if(node.type == 'INSTANCE' && Object.keys(node.componentProperties).length > 0){
+        return true;
+    } else if(node.children && node.children.length > 0){
+        return node.children.some(child => hasChildWithCompPro(child));
+    } else {
+        return false;
+    }
+}
 //按标签修改对象属性
 /**
  * @param {Array} nodes - 节点数组
@@ -5959,32 +6029,42 @@ function getProObj(comps,enters,nulls){
         let comp = comps[i];
         let pros = {};
 
-        // 当前实例自身的组件属性（不带 [n]）
-        Object.entries(comp.componentProperties).sort().forEach(item => {
-            if(item[1].type !== 'BOOLEAN'){
-                let value = item[1].value;
-                if(value == ''){
-                    value = nulls;
-                } else {
-                    if(enters){
-                        let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&')
-                        value = value.replace(new RegExp(reg,'g'),'\n');
+        // 当前实例自身的组件属性
+        if(comp.componentProperties && comp.componentProperties.length > 0){
+            Object.entries(comp.componentProperties).sort().forEach(item => {
+                if(item[1].type !== 'BOOLEAN'){
+                    let value = item[1].value;
+                    if(value == ''){
+                        value = nulls;
+                    } else {
+                        if(enters){
+                            let reg = enters.replace(/[-[${}()*+?.,\\^$|#\s]/g, '\\$&')
+                            value = value.replace(new RegExp(reg,'g'),'\n');
+                        };
                     };
+                    pros[item[0].split('#')[0]] = value;
+                } else {
+                    pros[item[0].split('#')[0]] = item[1].value;
                 };
-                pros[item[0].split('#')[0]] = value;
-            } else {
-                pros[item[0].split('#')[0]] = item[1].value;
-            };
-        });
+            });
+        }
+        //console.log(666)
 
         // 内嵌组件的属性，使用 key[n] 形式
-        let compChilds = comp.findAll(items => items.type == 'INSTANCE');
+        let compChilds = comp.findAll(items => items.type == 'INSTANCE' && Object.keys(items.componentProperties).length > 0);
+        //console.log(compChilds)
+        let allBaseKey = {};
         for(let ci = 0; ci < compChilds.length; ci++){
             let child = compChilds[ci];
-            Object.entries(child.componentProperties).sort().forEach(item => {
+            let allpro = Object.entries(child.componentProperties).sort();
+            for(let pi = 0; pi < allpro.length; pi++){
+                let item = allpro[pi];
                 let baseKey = item[0].split('#')[0];
-                let keyWithIndex = `${baseKey}[${ci + 1}]`;
-                if(item[i].type !== 'BOOLEAN'){
+                if(!allBaseKey[baseKey]) allBaseKey[baseKey] = 0;
+                let keyWithIndex = `${baseKey}[${allBaseKey[baseKey] + 1}]`;// 这里的索引从1开始，更符合用户习惯
+                allBaseKey[baseKey]++;
+                //console.log(baseKey,keyWithIndex);
+                if(item[1].type !== 'BOOLEAN'){
                     let value = item[1].value;
                     if(value == ''){
                         value = nulls;
@@ -5999,12 +6079,32 @@ function getProObj(comps,enters,nulls){
                     pros[keyWithIndex] = item[1].value;
                 };
                 
-            });
+            };
         };
-
         datas.push(pros);
     };
-    return datas;
+    function reduceProIndex(obj){
+        //console.log(obj)
+        let keys= obj.map(item => Object.keys(item).map(key => key.split('[')[0]));
+        keys = keys.map(item => item.filter(key => item.indexOf(key) === item.lastIndexOf(key)));// 只保留没有重复的 key
+        const finalObj = obj.map((singleObj, rowIdx) => {
+            const uniqueKeys = keys[rowIdx]; // 🎯 当前行的不重复 baseKey 数组
+            
+            return Object.fromEntries(
+                Object.entries(singleObj).map(([key, val]) => {  // ✅ 遍历的是 singleObj（对象），不是外层数组
+                let match = key.match(/^([^\[]+)\[\d+\]$/);
+                let base = match ? match[1] : null;
+                // ✅ 用当前行的 uniqueKeys 判断
+                return (base && uniqueKeys.includes(base)) ? [base, val] : [key, val];
+                })
+            );
+        });
+
+        return Object.values(finalObj);
+
+    };
+    //console.log(reduceProIndex(datas))
+    return reduceProIndex(datas);
 };
 //获取所有标签属性值
 async function getTagObj(tagNodes) {
