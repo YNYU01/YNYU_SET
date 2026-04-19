@@ -12,7 +12,6 @@
 - ✨ New: Variables page > Styles sheet Management > Sheet to Styles, based on selected @table:style for batch adding style groups; ✨ 新增：变量页>样式（表）管理>从表更新样式, 可根据选中的@table:style样式表, 更新样式, 方便批量添加样式组
 - ✨ New: Variables page > Styles sheet Management > Identify and switch style groups, identifies @set style groups and checks for colors not included in all themes to ensure smooth switching; ✨ 新增：变量页>样式（表）管理>识别并切换样式组, 可识别带@set样式组的样式, 并排查是否存在未包含在所有主题的颜色进行修复, 以保证顺利切换样式组
 
-
 ### v0.1.7 2026/4/3
 - ⚡ Optimize: Export page > Upload by export settings, fallback to default settings when no supported format exists; ⚡ 优化：导出页>按导出设置上传, 当不存在支持格式时回退默认设置
 - ⚡ Optimize: Export page > Upload, attempt to get target file format and size from naming (e.g. jpg/1234k), priority higher than cache; ⚡ 优化：导出页>上传, 尝试从命名中获取目标文件格式和目标文件大小, 如jpg/1234k, 且优先级高于缓存

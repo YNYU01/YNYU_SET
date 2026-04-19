@@ -561,16 +561,17 @@
             <div class="w100 df-cc" data-skill-btn data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
           </div>
           <div data-editor-mix class="df-ffc wh100 pos-r ovy noscrollbar">
-            <div data-editor-viewBox data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc wh100 tex-pixelbg"></div>
+            <div data-editor-viewBox data-isfull="false" data-scroll 
+            class="ovy ovx noscrollbar df-lc w100 tex-pixelbg"></div>
             <div data-editor-setbox class="w100 df-ffc">
               <div class="w100 df-lc">
-                <div data-editor-setlist-title class="df-sc pos-r">
+                <div data-editor-setlist-title class="df-sc bsb pos-r">
                   <div data-en-text="Filter" class="op6">调整</div>
                   <div data-btn="icon" data-editor-addset>
                     <btn-add></btn-add>
                   </div>
                 </div>
-                <div class="w100 df-sc">
+                <div class="w100 df-sc" style="height: 16px;">
                   <div class="df-lc gap4" style="padding-left: 4px; --fill-op: 0.6;">
                     <input type="file" id="edito-upset" accept=".json" style="display: none;">
                     <label for="edito-upset" class="pos-r" data-tips="auto" data-tips-x="center" data-tips-y="top"
@@ -596,12 +597,10 @@
                   <div data-en-text="Value" class="op6" >属性</div>
                 </div>
               </div>
-              <div class="wh100 df-lc">
-                <div data-editor-setlist class="h100 df-ffc">
-                  <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
+              <div class="w100 df-lc" style="height: calc(100% - 16px);">
+                <div data-editor-setlist class="h100 bsb df-ffc ovy noscrollbar">
                 </div>
                 <div data-editor-setvalue class="wh100 df-ffc">
-                  <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
                 </div>
                 <div data-editor-setcode class="wh100 ovx scrollbar pos-r">
                   <textarea class="wh100" data-textarea-wrap="false" spellcheck="false" id="inputset-textarea" data-textarea="eg" ></textarea>

@@ -349,6 +349,544 @@ const State = (() => {
   }
 })();
 
+class EDITOR_TAB {
+  constructor() {
+    this.addset = getElementMix('data-editor-addset');//添加按钮
+    this.setlist = getElementMix('data-editor-setlist');//调整列表
+    this.setvalue = getElementMix('data-editor-setvalue');//属性窗口
+    this.setcode = getElementMix('inputset-textarea');//代码编辑文本框
+    //调整项
+    this.editors = [
+      {
+        type:['色彩','Color'],
+        options:[
+          {
+            name:['HSL','HSL'],
+            editable:true,
+            pixel:true,
+            num: 3,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:'H'},
+                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'°'}
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:'S'},
+                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'%'}
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:'L'},
+                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'%'}
+                ]
+              }
+            ]
+          },
+          {
+            name:['反相','Invert'],
+            editable:true,
+            pixel:true,
+            num:1,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'RANG_NUM',min:0,max:100,default:100,unit:'%'}
+                ]
+              },
+            ]
+          },
+          {
+            name:['色彩平衡','Balance'],
+            editable:true,
+            pixel:true,
+            num:9,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'RADIO',
+                  option:[
+                    {main:false,text:['高光','Highlight'],value:'highlight'},
+                    {main:true,text:['中间调','Midtones'],value:'midtones'},
+                    {main:false,text:['阴影','Shadow'],value:'shadow'},
+                  ]}
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['青-红','C-R']},
+                  {type:'RANG_NUM',min:-100,max:100,default:0,unit:'%'}
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['品-绿','M-G']},
+                  {type:'RANG_NUM',min:-100,max:100,default:0,unit:'%'}
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['黄-蓝','Y-B']},
+                  {type:'RANG_NUM',min:-100,max:100,default:0,unit:'%'}
+                ]
+              },
+            ]
+          },
+        ]
+      },
+      {
+        type:['质感','Texture'],
+        options:[
+          {
+            name:['颗粒','Graininess'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'RADIO',
+                  option:[
+                    {main:false,text:['单色','Mono'],value:'mono'},
+                    {main:true,text:['彩色','Multi'],value:'multi'},
+                  ]},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['大小','Size']},
+                  {type:'RANG_NUM',min:0,max:10,default:0,unit:'x'},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['密度','Density']},
+                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                ]
+              }
+            ]
+          },
+          {
+            name:['降噪','Denoise'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['强度','Intensity']},
+                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                ]
+              }
+            ]
+          },
+          {
+            name:['清晰度','Sharpen'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['强度','Intensity']},
+                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                ]
+              }
+            ]
+          },
+        ]
+      },
+      {
+        type:['通道','Channel'],
+        options:[
+          {
+            name:['叠印','Ghosting'], 
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['色调','Hue']},
+                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'°'},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['强度','Intensity']},
+                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['角度','Angle']},
+                  {type:'RANG_NUM',min:0,max:360,default:90,unit:'°'},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['偏移','Shift']},
+                  {type:'RANG_NUM',min:0,max:100,default:2,unit:'px'},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['模糊','Blur']},
+                  {type:'RANG_NUM',min:0,max:100,default:2,unit:'px'},
+                ]
+              },
+            ]
+          },
+          {
+            name:['渐变映射','GradientMap'],
+            editable:false,
+            pixel:true,
+            num:3,
+            layout:[]
+          },
+          {
+            name:['LUT','LUT'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[]
+          },
+          {
+            name:['通道提取','RGBA'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[]
+          },
+        ]
+      },
+      {
+        type:['变形','Transform'],
+        options:[
+          {
+            name:['贝塞尔曲线','Bezier'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[]
+          },
+          {
+            name:['透视','Perspective'],
+            editable:true,
+            pixel:true,
+            num:1,
+            layout:[]
+          },
+        ]
+      },
+      
+    ]
+    this.editorsObj = this.buildTree();
+    //已添加的调整项
+    this.finalEditors = []
+  }
+
+  buildTree() {
+    const tree = {};
+    this.editors.forEach(category => {
+      const categoryKey = category.type[1]; 
+      
+      tree[categoryKey] = {
+        typeInfo: category.type,
+        options: {}
+      };
+
+      category.options.forEach(option => {
+        const optionKey = option.name[1];
+        tree[categoryKey][optionKey] = option;
+        tree[categoryKey][optionKey]['addnum'] = 0;
+        tree[categoryKey][optionKey]['reducenum'] = 0;
+      });
+    });
+
+    return tree;
+  }
+
+  buildDataCode() {
+    let data = [...Object.values(this.finalEditors)].sort((a, b) => a.index - b.index).map(({ index, ...rest }) => rest);
+    data = data.filter(item => item.checked == true).map(({ checked, ...rest }) => rest)
+    this.setcode.value = JSON.stringify(data,null,2);
+    return data
+  }
+
+  init(){
+    //绑定添加按钮和可选项
+    let addlistbox = document.createElement('div');
+    addlistbox.setAttribute('data-editor-addlist','');
+    addlistbox.setAttribute('data-select-options','');
+    addlistbox.className = 'df-ffc pos-a noscrollbar';
+
+    this.editors.forEach(editor => {
+      let type = this.addDiffLanguage(addlistbox,editor.type,'div',true);
+      type.setAttribute('data-option','type');
+      editor.options.forEach(info => {
+        let option = this.addDiffLanguage(addlistbox,info.name,'div',true);
+        option.setAttribute('data-option','option');
+        option.setAttribute('data-editor-editable',info.pixel);
+        option.setAttribute('data-editor-pixel',info.editable);
+        option.addEventListener('click',()=>{
+          let tree = this.editorsObj[editor.type[1]][info.name[1]]
+          if(tree.addnum - tree.reducenum < info.num){
+            this.addEditorTag(info,editor.type[1]);
+          }else{
+            tipsAll(['超出限定数量','Exceeding the limit quantity'],2000);
+          }
+        });
+      });
+
+    });
+
+    let editorSetBox = this.addset.parentNode;
+    editorSetBox.appendChild(addlistbox);
+
+    let draggedItem = null; 
+    let afterElement = null;
+    this.setlist.addEventListener('dragstart', (e) => {
+      draggedItem = e.target;
+      e.target.classList.add('op2');
+    });
+    this.setlist.addEventListener('dragend', (e) => {
+      e.target.classList.remove('op2');
+      Array.from(this.setlist.children).forEach(child => {
+        child.classList.remove('dragTop');
+        child.classList.remove('dragBottom');
+      });
+      draggedItem = null;
+      afterElement = null;
+    });
+    this.setlist.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      Array.from(this.setlist.children).forEach(child => {
+        child.classList.remove('dragTop');
+        child.classList.remove('dragBottom');
+      });
+      afterElement = this.getDragAfterElement(e.clientY);
+      if(afterElement){
+        afterElement.classList.add('dragTop');
+      }else{
+        this.setlist.lastElementChild.classList.add('dragBottom');
+      }
+    });
+    this.setlist.addEventListener('drop', (e) => {
+      if (afterElement == null) {
+          this.setlist.appendChild(draggedItem);
+      } else {
+          this.setlist.insertBefore(draggedItem, afterElement);
+      }
+    });
+
+    this.addset.addEventListener('click',()=>{
+      addlistbox.style.display = 'flex';
+    });
+    document.addEventListener('mousedown',(e)=>{
+      if(!editorSetBox.contains(e.target)){
+        addlistbox.style.display = 'none';
+      };
+    });
+    window.addEventListener('resize',(e)=>{
+      addlistbox.style.display = 'none';
+    });
+  }
+
+  getDragAfterElement(y) {
+    const draggableElements = [...this.setlist.querySelectorAll('[data-editor-tag]')];
+
+    return draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      // 计算鼠标 Y 坐标与元素中心的偏移量
+      // offset < 0 表示鼠标在元素中心上方
+      const offset = y - box.top - box.height / 2;
+      
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closest;
+      }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+  }
+
+  addEditorTag(info,type){
+    //console.log(info)
+    let id = info.name[1] + '#' + this.editorsObj[type][info.name[1]].addnum
+    this.finalEditors[id] = {type:info.name[1],value:null,index:null,checked:true}
+    let editorTag = document.createElement('div');
+    editorTag.className = 'w100 df-lc bod-r4 bsb pad2 pos-r gap2';
+    editorTag.setAttribute('data-editor-tag',id);
+    editorTag.setAttribute('draggable','true');
+    editorTag.setAttribute('data-editor-tag-more','false');
+    editorTag.setAttribute('data-editor-tag-view','true');
+    this.editorsObj[type][info.name[1]].addnum++
+    editorTag.setAttribute('data-editor-editable',info.pixel);
+    editorTag.setAttribute('data-editor-pixel',info.editable);
+
+    let btnMore = document.createElement('div');
+    btnMore.className = 'df-cc fl0 wh-14 op6';
+    btnMore.setAttribute('data-any','vw300');
+    btnMore.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="6.4" cy="6.4" r="2.4" fill-opacity="var(--fill-op,0.5)" fill="var(--fill,var(--mainColor))"/>
+    <circle cx="6.4" cy="13.6" r="2.4" fill-opacity="var(--fill-op,0.5)" fill="var(--fill,var(--mainColor))"/>
+    <circle cx="13.6" cy="6.4" r="2.4" fill-opacity="var(--fill-op,0.5)" fill="var(--fill,var(--mainColor))"/>
+    <circle cx="13.6" cy="13.6" r="2.4" fill-opacity="var(--fill-op,0.5)" fill="var(--fill,var(--mainColor))"/>
+    </svg>
+    `
+
+    editorTag.appendChild(btnMore);
+
+    let btnviewchk = document.createElement('input');
+    btnviewchk.type = 'checkbox';
+    btnviewchk.setAttribute('checked','')
+    btnviewchk.setAttribute('data-input','');
+    btnviewchk.id = 'chk_' + id;
+    let btnview = document.createElement('label');
+    btnview.setAttribute('for',btnviewchk.id);
+    btnview.className = 'df-cc fl0 wh-14 op6 pointer';
+    btnview.setAttribute('data-any','vw300');
+    btnview.innerHTML = `<svg class="view" width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path stroke="var(--bod,var(--mainColor))" d="M17 10C17 11.25 14.8125 15 10 15C5.1875 15 3 11.25 3 10C3 8.75 5.1875 5 10 5C14.8125 5 17 8.75 17 10Z" stroke-width="2"/>
+    <circle stroke="var(--bod,var(--mainColor))" cx="10" cy="10" r="2" stroke-width="2"/>
+    </svg>
+    <svg class="unview" width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path stroke="var(--bod,var(--mainColor))" d="M17 6C17 7.25 14.8125 11 10 11C5.1875 11 3 7.25 3 6" stroke-width="2" stroke-linecap="round"/>
+    <path stroke="var(--bod,var(--mainColor))" d="M12 11L13.5 13.5981" stroke-width="2" stroke-linecap="round"/>
+    <path stroke="var(--bod,var(--mainColor))" d="M16.15 8.78583L18.5 10.5" stroke-width="2" stroke-linecap="round"/>
+    <path stroke="var(--bod,var(--mainColor))" d="M8 11L6.5 13.5981" stroke-width="2" stroke-linecap="round"/>
+    <path stroke="var(--bod,var(--mainColor))" d="M3.85001 8.78583L1.5 10.5" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    `
+    
+    editorTag.appendChild(btnviewchk);
+    editorTag.appendChild(btnview);
+
+    let editorName = this.addDiffLanguage(editorTag,info.name,'div');
+    editorName.setAttribute('data-editor-tag-name','');
+    editorName.className = 'fl1 ovh bod-r4';
+    editorTag.appendChild(editorName);
+
+    let btnreduce = document.createElement('div');
+    btnreduce.className = 'df-cc fl0 wh-14 op6 pointer';
+    btnreduce.setAttribute('data-any','vw300');
+    btnreduce.innerHTML = `<svg width="80%" height="80%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="10" cy="10" r="8" stroke="var(--bod,var(--mainColor))" stroke-width="2.5"/>
+    <path d="M6 10H14" stroke="var(--bod,var(--mainColor))" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    `
+    editorTag.appendChild(btnreduce);
+    btnMore.addEventListener('click',(e)=>{
+      if(editorTag.getAttribute('data-editor-tag-more') == 'false'){
+        Array.from(this.setlist.querySelectorAll('[data-editor-tag-more]')).forEach( item => {
+          item.setAttribute('data-editor-tag-more','false');
+        })
+        editorTag.setAttribute('data-editor-tag-more','true');
+        this.addEditorSet(info,id);
+      }
+    });
+    editorName.addEventListener('click',(e)=>{
+      if(editorTag.getAttribute('data-editor-tag-more') == 'false'){
+        Array.from(this.setlist.querySelectorAll('[data-editor-tag-more]')).forEach( item => {
+          item.setAttribute('data-editor-tag-more','false');
+        })
+        editorTag.setAttribute('data-editor-tag-more','true');
+        this.addEditorSet(info,id);
+      }
+    });
+    btnviewchk.addEventListener('change',()=>{
+      if(btnviewchk.checked){
+        editorTag.setAttribute('data-editor-tag-view','true');
+        this.finalEditors[id].checked = true;
+      }else{
+        editorTag.setAttribute('data-editor-tag-view','false');
+        this.finalEditors[id].checked = false;
+      }
+    });
+    btnreduce.addEventListener('click',()=>{
+      editorTag.remove();
+      delete this.finalEditors[id];
+      this.editorsObj[type][info.name[1]].reducenum++;
+      this.reTagIndex()
+      //console.log(this.finalEditors)
+    });
+    
+    this.setlist.prepend(editorTag);
+    this.reTagIndex();
+    setTimeout(()=>{
+      btnMore.click();
+    },10)
+    //console.log(this.finalEditors)
+  }
+
+  addEditorSet(info,id){
+    console.log(info,id)
+    info.layout.forEach(line => {
+      let setline = document.createElement('div');
+      setline.className = line.class;
+
+    })
+  }
+
+  reTagIndex(){
+    let tags = this.setlist.querySelectorAll('[data-editor-tag]');
+    for(let i = 0; i < tags.length; i++){
+      this.finalEditors[tags[i].getAttribute('data-editor-tag')].index = tags.length - i;//倒序
+    };
+    this.buildDataCode();
+  }
+
+  addDiffLanguage(parent,texts,tagname,isRun){
+    let language = ROOT.getAttribute('data-language');
+    tagname = tagname ? tagname : 'div';
+    let diff = document.createElement(tagname);
+    let type = 'text';
+    //初始化时不需要考虑语言
+    let text = isRun ? texts[0] : language == 'Zh' ? texts[0] : texts[1] ;
+    switch (tagname){
+      case 'div': 
+      diff.textContent = text;
+      diff.setAttribute('data-zh-' + type,texts[0]);
+      diff.setAttribute('data-en-' + type,texts[1]);
+      break
+      case 'input': 
+      diff.value = text;
+      diff.setAttribute('data-input-must',texts[0]);
+      diff.setAttribute('data-input-must-en',texts[1]);
+      break
+      default :
+      diff.textContent = text;
+      diff.setAttribute('data-zh-' + type,texts[0]);
+      diff.setAttribute('data-en-' + type,texts[1]);
+    };
+    parent.appendChild(diff);
+    return diff;
+  };
+}
+
+let Editor = new EDITOR_TAB();
+Editor.init();
 
 // ========== 工具函数 ==========
 
@@ -782,161 +1320,6 @@ function addSearchs(){
   //重置文字样式
   loadFont(DOM.dailogSearchBox);
 };
-
-class EDITOR_TAB {
-  constructor() {
-    this.addset = getElementMix('data-editor-addset');//添加按钮
-    this.setlist = getElementMix('data-editor-setlist');//调整列表
-    this.setvalue = getElementMix('data-editor-setvalue');//属性窗口
-    this.setcode = getElementMix('data-editor-setcode').querySelector('textarea');//代码编辑文本框
-    //调整项
-    this.editors = [
-      {
-        type:['色彩','Color'],
-        options:[
-          {
-            name:['HSL','HSL'],
-            editable:true,
-            pixel:true,
-          },
-          {
-            name:['反转','Invert'],
-            editable:true,
-            pixel:true,
-          },
-          {
-            name:['色彩平衡','Balance'],
-            editable:true,
-            pixel:true,
-          },
-        ]
-      },
-      {
-        type:['质感','Texture'],
-        options:[
-          {
-            name:['颗粒','Graininess'],
-            editable:false,
-            pixel:true,
-          },
-          {
-            name:['降噪','Denoise'],
-            editable:false,
-            pixel:true,
-          },
-          {
-            name:['清晰度','noise'],
-            editable:false,
-            pixel:true,
-          },
-        ]
-      },
-      {
-        type:['通道','Texture'],
-        options:[
-          {
-            name:['色散','Dispersion'],
-            editable:false,
-            pixel:true,
-          },
-          {
-            name:['渐变映射','noise'],
-            editable:true,
-            pixel:true,
-          },
-          {
-            name:['LUT','LUT'],
-            editable:true,
-            pixel:true,
-          },
-          {
-            name:['通道提取','RGBA'],
-            editable:true,
-            pixel:true,
-          },
-        ]
-      },
-      {
-        type:['变形','Transform'],
-        options:[
-          {
-            name:['贝塞尔曲线','Bessel'],
-            editable:true,
-            pixel:true,
-          },
-          {
-            name:['透视','Perspective'],
-            editable:true,
-            pixel:true,
-          },
-        ]
-      },
-      
-    ]
-  }
-
-  init(){
-    //绑定添加按钮和可选项
-    let addlistbox = document.createElement('div');
-    addlistbox.setAttribute('data-editor-addlist','');
-    addlistbox.setAttribute('data-select-options','');
-    addlistbox.className = 'df-ffc pos-a noscrollbar';
-
-    this.editors.forEach(editor => {
-      let type = this.addDiffLanguage(addlistbox,editor.type,'div',true);
-      type.setAttribute('data-option','type');
-      editor.options.forEach(item => {
-        let option = this.addDiffLanguage(addlistbox,item.name,'div',true);
-        option.setAttribute('data-option','option');
-        option.setAttribute('data-editor-editable',item.pixel);
-        option.setAttribute('data-editor-pixel',item.editable);
-      });
-
-    });
-
-    let editorSetBox = getElementMix('data-editor-setlist-title');
-    editorSetBox.appendChild(addlistbox);
-
-    this.addset.addEventListener('click',()=>{
-      addlistbox.style.display = 'flex';
-    });
-    document.addEventListener('mousedown',(e)=>{
-      if(!editorSetBox.contains(e.target)){
-        addlistbox.style.display = 'none';
-      };
-    });
-  }
-
-  addDiffLanguage(parent,texts,tagname,isRun){
-    let language = ROOT.getAttribute('data-language');
-    tagname = tagname ? tagname : 'div';
-    let diff = document.createElement(tagname);
-    let type = 'text';
-    //初始化时不需要考虑语言
-    let text = isRun ? texts[0] : language == 'Zh' ? texts[0] : texts[1] ;
-    switch (tagname){
-      case 'div': 
-      diff.textContent = text;
-      diff.setAttribute('data-zh-' + type,texts[0]);
-      diff.setAttribute('data-en-' + type,texts[1]);
-      break
-      case 'input': 
-      diff.value = text;
-      diff.setAttribute('data-input-must',texts[0]);
-      diff.setAttribute('data-input-must-en',texts[1]);
-      break
-      default :
-      diff.textContent = text;
-      diff.setAttribute('data-zh-' + type,texts[0]);
-      diff.setAttribute('data-en-' + type,texts[1]);
-    };
-    parent.appendChild(diff);
-    return diff;
-  };
-}
-
-let Editor = new EDITOR_TAB();
-Editor.init();
 
 //========== 界面交互 ==========
 
