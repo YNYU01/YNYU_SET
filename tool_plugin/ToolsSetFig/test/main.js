@@ -361,7 +361,7 @@ class EDITOR_TAB {
         type:['色彩','Color'],
         options:[
           {
-            name:['HSL','HSL'],
+            name:['色相饱和度','HSL'],
             editable:true,
             pixel:true,
             num: 3,
@@ -369,22 +369,22 @@ class EDITOR_TAB {
               {
                 class:'df-lc',
                 content:[
-                  {type:'TEXT',text:'H'},
-                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'°'}
+                  {type:'TEXT',text:['色相','H']},
+                  {type:'RANGE_NUM',min:-180,max:180,default:0,unit:'°'}
                 ]
               },
               {
                 class:'df-lc',
                 content:[
-                  {type:'TEXT',text:'S'},
-                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'%'}
+                  {type:'TEXT',text:['纯度','S']},
+                  {type:'RANGE_NUM',min:-180,max:180,default:0,unit:'%'}
                 ]
               },
               {
                 class:'df-lc',
                 content:[
-                  {type:'TEXT',text:'L'},
-                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'%'}
+                  {type:'TEXT',text:['亮度','L']},
+                  {type:'RANGE_NUM',min:-180,max:180,default:0,unit:'%'}
                 ]
               }
             ]
@@ -398,7 +398,7 @@ class EDITOR_TAB {
               {
                 class:'df-lc',
                 content:[
-                  {type:'RANG_NUM',min:0,max:100,default:100,unit:'%'}
+                  {type:'RANGE_NUM',min:0,max:100,default:100,unit:'%'}
                 ]
               },
             ]
@@ -424,21 +424,21 @@ class EDITOR_TAB {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['青-红','C-R']},
-                  {type:'RANG_NUM',min:-100,max:100,default:0,unit:'%'}
+                  {type:'RANGE_NUM',min:-100,max:100,default:0,unit:'%'}
                 ]
               },
               {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['品-绿','M-G']},
-                  {type:'RANG_NUM',min:-100,max:100,default:0,unit:'%'}
+                  {type:'RANGE_NUM',min:-100,max:100,default:0,unit:'%'}
                 ]
               },
               {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['黄-蓝','Y-B']},
-                  {type:'RANG_NUM',min:-100,max:100,default:0,unit:'%'}
+                  {type:'RANGE_NUM',min:-100,max:100,default:0,unit:'%'}
                 ]
               },
             ]
@@ -468,14 +468,14 @@ class EDITOR_TAB {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['大小','Size']},
-                  {type:'RANG_NUM',min:0,max:10,default:0,unit:'x'},
+                  {type:'RANGE_NUM',min:0,max:10,default:0,unit:'x'},
                 ]
               },
               {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['密度','Density']},
-                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                  {type:'RANGE_NUM',min:0,max:100,default:50,unit:'%'},
                 ]
               }
             ]
@@ -490,7 +490,7 @@ class EDITOR_TAB {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['强度','Intensity']},
-                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                  {type:'RANGE_NUM',min:0,max:100,default:50,unit:'%'},
                 ]
               }
             ]
@@ -505,7 +505,7 @@ class EDITOR_TAB {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['强度','Intensity']},
-                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                  {type:'RANGE_NUM',min:0,max:100,default:50,unit:'%'},
                 ]
               }
             ]
@@ -525,35 +525,35 @@ class EDITOR_TAB {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['色调','Hue']},
-                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'°'},
+                  {type:'RANGE_NUM',min:-180,max:180,default:0,unit:'°'},
                 ]
               },
               {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['强度','Intensity']},
-                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                  {type:'RANGE_NUM',min:0,max:100,default:50,unit:'%'},
                 ]
               },
               {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['角度','Angle']},
-                  {type:'RANG_NUM',min:0,max:360,default:90,unit:'°'},
+                  {type:'RANGE_NUM',min:0,max:360,default:90,unit:'°'},
                 ]
               },
               {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['偏移','Shift']},
-                  {type:'RANG_NUM',min:0,max:100,default:2,unit:'px'},
+                  {type:'RANGE_NUM',min:0,max:100,default:2,unit:'px'},
                 ]
               },
               {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['模糊','Blur']},
-                  {type:'RANG_NUM',min:0,max:100,default:2,unit:'px'},
+                  {type:'RANGE_NUM',min:0,max:100,default:2,unit:'px'},
                 ]
               },
             ]
@@ -604,7 +604,8 @@ class EDITOR_TAB {
     ]
     this.editorsObj = this.buildTree();
     //已添加的调整项
-    this.finalEditors = []
+    this.finalEditors = [];
+    this.allFilter = Object.values(this.editorsObj).flatMap(item => Object.keys(item))
   }
 
   buildTree() {
@@ -612,10 +613,7 @@ class EDITOR_TAB {
     this.editors.forEach(category => {
       const categoryKey = category.type[1]; 
       
-      tree[categoryKey] = {
-        typeInfo: category.type,
-        options: {}
-      };
+      tree[categoryKey] = {};
 
       category.options.forEach(option => {
         const optionKey = option.name[1];
@@ -652,7 +650,7 @@ class EDITOR_TAB {
         option.setAttribute('data-editor-pixel',info.editable);
         option.addEventListener('click',()=>{
           let tree = this.editorsObj[editor.type[1]][info.name[1]]
-          if(tree.addnum - tree.reducenum < info.num){
+          if(tree.addnum - tree.reducenum < info.num && Object.values(this.finalEditors).length < this.allFilter.length){
             this.addEditorTag(info,editor.type[1]);
           }else{
             tipsAll(['超出限定数量','Exceeding the limit quantity'],2000);
@@ -698,7 +696,8 @@ class EDITOR_TAB {
           this.setlist.appendChild(draggedItem);
       } else {
           this.setlist.insertBefore(draggedItem, afterElement);
-      }
+      };
+      this.reTagIndex();
     });
 
     this.addset.addEventListener('click',()=>{
@@ -785,7 +784,7 @@ class EDITOR_TAB {
 
     let editorName = this.addDiffLanguage(editorTag,info.name,'div');
     editorName.setAttribute('data-editor-tag-name','');
-    editorName.className = 'fl1 ovh bod-r4';
+    editorName.className = 'fl1 df-cc ovh bod-r4';
     editorTag.appendChild(editorName);
 
     let btnreduce = document.createElement('div');
@@ -798,23 +797,26 @@ class EDITOR_TAB {
     `
     editorTag.appendChild(btnreduce);
     btnMore.addEventListener('click',(e)=>{
-      if(editorTag.getAttribute('data-editor-tag-more') == 'false'){
-        Array.from(this.setlist.querySelectorAll('[data-editor-tag-more]')).forEach( item => {
-          item.setAttribute('data-editor-tag-more','false');
-        })
-        editorTag.setAttribute('data-editor-tag-more','true');
-        this.addEditorSet(info,id);
-      }
+      pickTag();
     });
     editorName.addEventListener('click',(e)=>{
+      pickTag();
+    });
+
+    let pickTag = ()=>{
       if(editorTag.getAttribute('data-editor-tag-more') == 'false'){
         Array.from(this.setlist.querySelectorAll('[data-editor-tag-more]')).forEach( item => {
           item.setAttribute('data-editor-tag-more','false');
-        })
-        editorTag.setAttribute('data-editor-tag-more','true');
+        });
+        Array.from(this.setvalue.querySelectorAll('[data-editor-set-for]')).forEach( item => {
+          item.style.display = 'none';
+        });
         this.addEditorSet(info,id);
+        this.setvalue.querySelector(`[data-editor-set-for="${id}"]`).display = 'flex';
+        editorTag.setAttribute('data-editor-tag-more','true');
       }
-    });
+    }
+
     btnviewchk.addEventListener('change',()=>{
       if(btnviewchk.checked){
         editorTag.setAttribute('data-editor-tag-view','true');
@@ -826,6 +828,7 @@ class EDITOR_TAB {
     });
     btnreduce.addEventListener('click',()=>{
       editorTag.remove();
+      this.setvalue.querySelector(`[data-editor-set-for="${id}"]`).remove();
       delete this.finalEditors[id];
       this.editorsObj[type][info.name[1]].reducenum++;
       this.reTagIndex()
@@ -833,7 +836,7 @@ class EDITOR_TAB {
     });
     
     this.setlist.prepend(editorTag);
-    this.reTagIndex();
+    
     setTimeout(()=>{
       btnMore.click();
     },10)
@@ -841,12 +844,92 @@ class EDITOR_TAB {
   }
 
   addEditorSet(info,id){
-    console.log(info,id)
+    //console.log(info,id)
+    let setbox = document.createElement('div');
+    setbox.setAttribute('data-editor-set-for',id);
+    setbox.className = 'wh100 df-ffc gap4 pad4 bsb ovy noscrollbar'
+
     info.layout.forEach(line => {
       let setline = document.createElement('div');
       setline.className = line.class;
+      setline.setAttribute('data-editor-setline','');
 
-    })
+      line.content.forEach(node => {
+        if(!this.finalEditors[id].value) this.finalEditors[id].value = [];
+        switch (node.type){
+          case 'TEXT':
+            let text;
+            
+            if(typeof node.text == 'string'){
+              text = document.createElement('div');
+              text.innerHTML = node.text;
+              setline.appendChild(text);
+            }else{
+              text = this.addDiffLanguage(setline,node.text,'div');
+            }
+            text.setAttribute('data-editor-setline-title','');
+            text.setAttribute('data-any','vw300');
+          ;break
+          case 'RADIO':
+            let radiobox = document.createElement('div');
+            radiobox.className = 'df-lc gap2'
+            radiobox.setAttribute('data-radio-value','');
+
+            node.option.forEach(option => {
+              let radio = this.addDiffLanguage(radiobox,option.text,'div');
+              radio.className = 'df-cc';
+              radio.setAttribute('style','border: 1px solid var(--boxBod);')
+              radio.setAttribute('data-radio','');
+              radio.setAttribute('data-radio-data',option.value);
+              radio.setAttribute('data-radio-main',option.main ? 'true' : 'false');
+            });
+            setline.appendChild(radiobox)
+          ;break
+          case 'RANGE_NUM':
+            this.finalEditors[id].value.push(node.default);
+            let range = document.createElement('input');
+            range.type = 'range'
+            range.setAttribute('data-input','range');
+            range.setAttribute('min',node.min);
+            range.setAttribute('max',node.max);
+            range.setAttribute('value',node.default);
+            range.setAttribute('data-input-default',node.default);
+            setline.appendChild(range);
+
+            let input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'txt-cc mar-l4';
+            input.setAttribute('data-input','value');
+            input.setAttribute('data-input-type','int');
+            input.setAttribute('data-input-must',node.min + ',' + node.max);
+            input.setAttribute('value',node.default);
+            input.setAttribute('data-input-default',node.default);
+            input.setAttribute('style','width: 30px; flex: 0 0 auto;');
+            setline.appendChild(input);
+
+            let unit = document.createElement('div');
+            unit.innerHTML = node.unit;
+            unit.className = 'df-cc'
+            unit.setAttribute('data-input-unit','');
+            setline.appendChild(unit);
+
+            let btnreset = document.createElement('div');
+            btnreset.innerHTML = '<btn-reset></btn-reset>';
+            btnreset.setAttribute('data-input-reset','')
+            btnreset.setAttribute('data-btn','reset');
+            btnreset.setAttribute('data-any','vw300');
+            setline.appendChild(btnreset);
+
+          ;break
+
+        }
+      });
+
+      setbox.appendChild(setline);
+
+    });
+    this.setvalue.appendChild(setbox);
+    this.reTagIndex();
   }
 
   reTagIndex(){
