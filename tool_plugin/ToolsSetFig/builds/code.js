@@ -1732,6 +1732,9 @@ figma.ui.onmessage = async (message) => {
             };
             //console.log(info)
             reAnyByObj(nodes,info.data,info.enters,info.nulls);
+            if(Object.keys(info.data[0]).some(key => key.includes('#'))){
+                reAnyByTags(nodes,info.data);
+            }
         };
         figma.skipInvisibleInstanceChildren = true;
         
@@ -1751,15 +1754,22 @@ figma.ui.onmessage = async (message) => {
                         tagNodes.push(...childs);
                     });
                     nodes = tagNodes;
-                }else if(b[0].layoutMode && b[0].layoutMode !== 'NONE' && b[0].children.length == 1){
-                    let c = b[0].children[0];
-                    for(let i = 1; i < info.data.length; i++){
-                        b[0].appendChild(c.clone());
-                    };
-                    nodes = b[0].children;
+                }else if(b[0].layoutMode && b[0].layoutMode !== 'NONE'){
+                    if(!b[0].children || b[0].children.length == 0) return;
+                    let c = b[0].findOne(item => hasTag(item) || item.children && item.findChild(child => hasTag(child)));
+                    if(c){
+                        for(let i = 1; i < info.data.length; i++){
+                            b[0].appendChild(c.clone());
+                        };
+                        nodes = b[0].children;
+                    }
+                    
                 };
             };
             reAnyByTags(nodes,info.data);
+            if(Object.keys(info.data[0]).some(key => !key.includes('#'))){
+                reAnyByTags(nodes,info.data);
+            }
         };
         figma.skipInvisibleInstanceChildren = true;
     };
@@ -3444,13 +3454,24 @@ function sendInfo(){
             clipRow = clipRow <= 2 ? clipRow : 0;
             let tableRow = 2;
             let tableColumn = 2;
+            let tableStyle = null;
+            let tableTheme = null;
             if(node.name.includes('@table') && node.children){
                 let columns = node.children.filter(item => item.name.includes('@column'));
                 let rows = columns.length > 0 ? columns[0].children.filter(item => ['@th', '@td', '@tn'].some(tag => item.name.includes(tag))) : [];
                 tableColumn = columns.length > 0 ? columns.length : 2;
                 tableRow = rows.length > 0 ? rows.length : 2;
+                tableStyle = node.getPluginData('userTableStyle') || null;
+                tableTheme = node.getPluginData('userTableTheme') || null;
             }
-            data.push({n:n,w:w,h:h,transform:[skewX,skewY,scaleX,scaleY],clipRC:[clipRow,clipColumn],tableRC:[tableRow,tableColumn],nodeType:nodeType,});
+            data.push({
+                n:n,w:w,h:h,transform:[skewX,skewY,scaleX,scaleY],
+                clipRC:[clipRow,clipColumn],
+                tableRC:[tableRow,tableColumn],
+                nodeType:nodeType,
+                tableStyle:tableStyle,
+                tableTheme:tableTheme,
+            });
         });
         postmessage([data,'selectInfo']);
     } else {
@@ -4908,6 +4929,7 @@ function addCompPro(node,layer,name,type,value){
 //修改表格样式
 function reTableStyle(table,style,comps){
     //console.log(style)
+    table.setPluginData('userTableStyle',JSON.stringify(style));
     if(comps){
         comps[0].forEach(item => {
             //console.log(comps[1])
@@ -5612,6 +5634,7 @@ function calculateThemeColors(themeColor, themeName, lightnessValue) {
  *   themeColor: HSL对象 {h, s, l} 或HSL字符串 "hsl(360, 100%, 50%)"
  */
 function reTableThemeByPreset(table, setdata) {
+    table.setPluginData('userTableTheme', JSON.stringify(setdata));
     if (!table || !setdata) return;
 
     const [themeName,themeColor] = setdata;

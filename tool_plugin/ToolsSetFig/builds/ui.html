@@ -4,7 +4,7 @@
   <meta name="description" content="网页内容简介，转发时显示">
   <title data-en-text="『YNYU_SET』 ToolsSet Fig">『云即·工具集（Figma版）』</title>
   <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -99,7 +99,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1070,11 +1070,29 @@ input[type="checkbox"]:checked + [data-qrcode-grid-view]::after{
   box-sizing: border-box;
 }
 
-[data-qrcode-grid]:active{
+[data-qrcode-grid]:active,.drag:active,.dragging{
   cursor:  url('../../../VI/drag_24.png'),grabbing;
 }
-[data-qrcode-grid].dragging{
-  cursor:  url('../../../VI/drag_24.png'),grabbing;
+
+.dragTop,.dragBottom{
+  position: relative;
+}
+
+.dragTop::after,.dragBottom::after{
+  content: '';
+  width: 100%;
+  height: 1px;
+  background: var(--themeColor);
+  position: absolute;
+  pointer-events: none; 
+}
+
+.dragTop::after{
+  top: -2px;
+}
+
+.dragBottom::after{
+  bottom: -2px;
 }
 
 [data-qrcode-grid-resize]{
@@ -1817,10 +1835,12 @@ input[type="checkbox"]:checked + [for="setheme-intime"]{
 
 [data-editor-mix]{
   height: calc(100% - 50px);
+  --setbox-h: 168px;
 }
 
 [data-editor-viewbox]{
   margin: 4px 0;
+  height: calc(100% - var(--setbox-h));
   min-height: 280px;
   box-sizing: border-box;
   border: 1px var(--boxBod) solid;
@@ -1836,7 +1856,8 @@ input[type="checkbox"]:checked + [for="setheme-intime"]{
 }
 
 [data-editor-setbox]{
-  min-height: 168px;
+  min-height: var(--setbox-h);
+  max-height: var(--setbox-h);
 }
 
 [data-editor-viewbox] img{
@@ -1925,8 +1946,8 @@ input[type="checkbox"]:checked + [data-editor-bg]{
 }
 
 [data-editor-setlist-title],[data-editor-setlist]{
-  min-width: 98px;
-  padding-right: 6px;
+  min-width: 120px;
+  padding-right: 8px;
   border-right: 1px var(--boxBod) dashed;
 }
 
@@ -1961,6 +1982,51 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   max-height: 50dvh;
   bottom: -140px;
   left: calc(100% - 4px);
+}
+
+[data-editor-setlist]{
+  overflow-x: hidden;
+  padding-top: 2px;
+}
+
+[data-editor-tag]{
+  background-color: var(--boxGry);
+  margin-bottom: 4px;
+}
+
+[data-editor-tag-name]{
+  text-align: center;
+  text-overflow: ellipsis;
+  height: 16px;
+}
+
+[data-editor-tag-view="false"] [data-editor-tag-name]{
+  opacity: 0.6;
+}
+
+[data-editor-tag] input[type="checkbox"]:checked + label .view{
+  display: block;
+}
+
+[data-editor-tag] .view,
+[data-editor-tag] input[type="checkbox"]:checked + label .unview{
+  display: none;
+}
+
+[data-editor-tag-more]{
+  border: 1px transparent solid;
+}
+
+[data-editor-tag-more="true"]{
+  --fill: var(--mainColor2);
+  --fill-op: 1;
+  border: 1px var(--boxBod) solid;
+}
+
+
+
+[data-editor-tag-more="true"] .op6{
+  opacity: 1;
 }
 
 [data-variable-type]{
@@ -3032,6 +3098,9 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   [data-tips]::after, btn-info{
     display: none;
   }
+  [data-editor-setlist-title],[data-editor-setlist]{
+    min-width: 98px;
+  }
   
 }
 
@@ -3637,16 +3706,17 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
             <div class="w100 df-cc" data-skill-btn data-btn="skill-main" data-selects-must style="border-radius: 20px;" data-en-text="Up Pixel">上传(栅格化)</div>
           </div>
           <div data-editor-mix class="df-ffc wh100 pos-r ovy noscrollbar">
-            <div data-editor-viewBox data-isfull="false" data-scroll class="ovy ovx noscrollbar df-lc wh100 tex-pixelbg"></div>
+            <div data-editor-viewBox data-isfull="false" data-scroll 
+            class="ovy ovx noscrollbar df-lc w100 tex-pixelbg"></div>
             <div data-editor-setbox class="w100 df-ffc">
               <div class="w100 df-lc">
-                <div data-editor-setlist-title class="df-sc pos-r">
+                <div data-editor-setlist-title class="df-sc bsb pos-r">
                   <div data-en-text="Filter" class="op6">调整</div>
                   <div data-btn="icon" data-editor-addset>
                     <btn-add></btn-add>
                   </div>
                 </div>
-                <div class="w100 df-sc">
+                <div class="w100 df-sc" style="height: 16px;">
                   <div class="df-lc gap4" style="padding-left: 4px; --fill-op: 0.6;">
                     <input type="file" id="edito-upset" accept=".json" style="display: none;">
                     <label for="edito-upset" class="pos-r" data-tips="auto" data-tips-x="center" data-tips-y="top"
@@ -3672,12 +3742,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   <div data-en-text="Value" class="op6" >属性</div>
                 </div>
               </div>
-              <div class="wh100 df-lc">
-                <div data-editor-setlist class="h100 df-ffc">
-                  <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
+              <div class="w100 df-lc" style="height: calc(100% - 16px);">
+                <div data-editor-setlist class="h100 bsb df-ffc ovy noscrollbar">
                 </div>
                 <div data-editor-setvalue class="wh100 df-ffc">
-                  <div class="df-cc wh100" data-en-text="Coming soon~">敬请期待~</div>
                 </div>
                 <div data-editor-setcode class="wh100 ovx scrollbar pos-r">
                   <textarea class="wh100" data-textarea-wrap="false" spellcheck="false" id="inputset-textarea" data-textarea="eg" ></textarea>
@@ -5379,23 +5447,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/other/jsQR_correct.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/other/dom_to_img.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/other/jsQR_correct.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/other/dom_to_img.js"></script>
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@39bd6c56e88e0ab3b6ad624f94b5e878f452c7da/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@a15b78f3ea7a6aa3d34cdac5826a462966892ed3/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -5925,6 +5993,544 @@ const State = (() => {
   }
 })();
 
+class EDITOR_TAB {
+  constructor() {
+    this.addset = getElementMix('data-editor-addset');
+    this.setlist = getElementMix('data-editor-setlist');
+    this.setvalue = getElementMix('data-editor-setvalue');
+    this.setcode = getElementMix('inputset-textarea');
+
+    this.editors = [
+      {
+        type:['色彩','Color'],
+        options:[
+          {
+            name:['HSL','HSL'],
+            editable:true,
+            pixel:true,
+            num: 3,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:'H'},
+                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'°'}
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:'S'},
+                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'%'}
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:'L'},
+                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'%'}
+                ]
+              }
+            ]
+          },
+          {
+            name:['反相','Invert'],
+            editable:true,
+            pixel:true,
+            num:1,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'RANG_NUM',min:0,max:100,default:100,unit:'%'}
+                ]
+              },
+            ]
+          },
+          {
+            name:['色彩平衡','Balance'],
+            editable:true,
+            pixel:true,
+            num:9,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'RADIO',
+                  option:[
+                    {main:false,text:['高光','Highlight'],value:'highlight'},
+                    {main:true,text:['中间调','Midtones'],value:'midtones'},
+                    {main:false,text:['阴影','Shadow'],value:'shadow'},
+                  ]}
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['青-红','C-R']},
+                  {type:'RANG_NUM',min:-100,max:100,default:0,unit:'%'}
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['品-绿','M-G']},
+                  {type:'RANG_NUM',min:-100,max:100,default:0,unit:'%'}
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['黄-蓝','Y-B']},
+                  {type:'RANG_NUM',min:-100,max:100,default:0,unit:'%'}
+                ]
+              },
+            ]
+          },
+        ]
+      },
+      {
+        type:['质感','Texture'],
+        options:[
+          {
+            name:['颗粒','Graininess'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'RADIO',
+                  option:[
+                    {main:false,text:['单色','Mono'],value:'mono'},
+                    {main:true,text:['彩色','Multi'],value:'multi'},
+                  ]},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['大小','Size']},
+                  {type:'RANG_NUM',min:0,max:10,default:0,unit:'x'},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['密度','Density']},
+                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                ]
+              }
+            ]
+          },
+          {
+            name:['降噪','Denoise'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['强度','Intensity']},
+                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                ]
+              }
+            ]
+          },
+          {
+            name:['清晰度','Sharpen'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['强度','Intensity']},
+                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                ]
+              }
+            ]
+          },
+        ]
+      },
+      {
+        type:['通道','Channel'],
+        options:[
+          {
+            name:['叠印','Ghosting'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['色调','Hue']},
+                  {type:'RANG_NUM',min:-180,max:180,default:0,unit:'°'},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['强度','Intensity']},
+                  {type:'RANG_NUM',min:0,max:100,default:50,unit:'%'},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['角度','Angle']},
+                  {type:'RANG_NUM',min:0,max:360,default:90,unit:'°'},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['偏移','Shift']},
+                  {type:'RANG_NUM',min:0,max:100,default:2,unit:'px'},
+                ]
+              },
+              {
+                class:'df-lc',
+                content:[
+                  {type:'TEXT',text:['模糊','Blur']},
+                  {type:'RANG_NUM',min:0,max:100,default:2,unit:'px'},
+                ]
+              },
+            ]
+          },
+          {
+            name:['渐变映射','GradientMap'],
+            editable:false,
+            pixel:true,
+            num:3,
+            layout:[]
+          },
+          {
+            name:['LUT','LUT'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[]
+          },
+          {
+            name:['通道提取','RGBA'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[]
+          },
+        ]
+      },
+      {
+        type:['变形','Transform'],
+        options:[
+          {
+            name:['贝塞尔曲线','Bezier'],
+            editable:false,
+            pixel:true,
+            num:1,
+            layout:[]
+          },
+          {
+            name:['透视','Perspective'],
+            editable:true,
+            pixel:true,
+            num:1,
+            layout:[]
+          },
+        ]
+      },
+
+    ]
+    this.editorsObj = this.buildTree();
+
+    this.finalEditors = []
+  }
+
+  buildTree() {
+    const tree = {};
+    this.editors.forEach(category => {
+      const categoryKey = category.type[1];
+
+      tree[categoryKey] = {
+        typeInfo: category.type,
+        options: {}
+      };
+
+      category.options.forEach(option => {
+        const optionKey = option.name[1];
+        tree[categoryKey][optionKey] = option;
+        tree[categoryKey][optionKey]['addnum'] = 0;
+        tree[categoryKey][optionKey]['reducenum'] = 0;
+      });
+    });
+
+    return tree;
+  }
+
+  buildDataCode() {
+    let data = [...Object.values(this.finalEditors)].sort((a, b) => a.index - b.index).map(({ index, ...rest }) => rest);
+    data = data.filter(item => item.checked == true).map(({ checked, ...rest }) => rest)
+    this.setcode.value = JSON.stringify(data,null,2);
+    return data
+  }
+
+  init(){
+
+    let addlistbox = document.createElement('div');
+    addlistbox.setAttribute('data-editor-addlist','');
+    addlistbox.setAttribute('data-select-options','');
+    addlistbox.className = 'df-ffc pos-a noscrollbar';
+
+    this.editors.forEach(editor => {
+      let type = this.addDiffLanguage(addlistbox,editor.type,'div',true);
+      type.setAttribute('data-option','type');
+      editor.options.forEach(info => {
+        let option = this.addDiffLanguage(addlistbox,info.name,'div',true);
+        option.setAttribute('data-option','option');
+        option.setAttribute('data-editor-editable',info.pixel);
+        option.setAttribute('data-editor-pixel',info.editable);
+        option.addEventListener('click',()=>{
+          let tree = this.editorsObj[editor.type[1]][info.name[1]]
+          if(tree.addnum - tree.reducenum < info.num){
+            this.addEditorTag(info,editor.type[1]);
+          }else{
+            tipsAll(['超出限定数量','Exceeding the limit quantity'],2000);
+          }
+        });
+      });
+
+    });
+
+    let editorSetBox = this.addset.parentNode;
+    editorSetBox.appendChild(addlistbox);
+
+    let draggedItem = null;
+    let afterElement = null;
+    this.setlist.addEventListener('dragstart', (e) => {
+      draggedItem = e.target;
+      e.target.classList.add('op2');
+    });
+    this.setlist.addEventListener('dragend', (e) => {
+      e.target.classList.remove('op2');
+      Array.from(this.setlist.children).forEach(child => {
+        child.classList.remove('dragTop');
+        child.classList.remove('dragBottom');
+      });
+      draggedItem = null;
+      afterElement = null;
+    });
+    this.setlist.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      Array.from(this.setlist.children).forEach(child => {
+        child.classList.remove('dragTop');
+        child.classList.remove('dragBottom');
+      });
+      afterElement = this.getDragAfterElement(e.clientY);
+      if(afterElement){
+        afterElement.classList.add('dragTop');
+      }else{
+        this.setlist.lastElementChild.classList.add('dragBottom');
+      }
+    });
+    this.setlist.addEventListener('drop', (e) => {
+      if (afterElement == null) {
+          this.setlist.appendChild(draggedItem);
+      } else {
+          this.setlist.insertBefore(draggedItem, afterElement);
+      }
+    });
+
+    this.addset.addEventListener('click',()=>{
+      addlistbox.style.display = 'flex';
+    });
+    document.addEventListener('mousedown',(e)=>{
+      if(!editorSetBox.contains(e.target)){
+        addlistbox.style.display = 'none';
+      };
+    });
+    window.addEventListener('resize',(e)=>{
+      addlistbox.style.display = 'none';
+    });
+  }
+
+  getDragAfterElement(y) {
+    const draggableElements = [...this.setlist.querySelectorAll('[data-editor-tag]')];
+
+    return draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+
+      const offset = y - box.top - box.height / 2;
+
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closest;
+      }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+  }
+
+  addEditorTag(info,type){
+
+    let id = info.name[1] + '#' + this.editorsObj[type][info.name[1]].addnum
+    this.finalEditors[id] = {type:info.name[1],value:null,index:null,checked:true}
+    let editorTag = document.createElement('div');
+    editorTag.className = 'w100 df-lc bod-r4 bsb pad2 pos-r gap2';
+    editorTag.setAttribute('data-editor-tag',id);
+    editorTag.setAttribute('draggable','true');
+    editorTag.setAttribute('data-editor-tag-more','false');
+    editorTag.setAttribute('data-editor-tag-view','true');
+    this.editorsObj[type][info.name[1]].addnum++
+    editorTag.setAttribute('data-editor-editable',info.pixel);
+    editorTag.setAttribute('data-editor-pixel',info.editable);
+
+    let btnMore = document.createElement('div');
+    btnMore.className = 'df-cc fl0 wh-14 op6';
+    btnMore.setAttribute('data-any','vw300');
+    btnMore.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="6.4" cy="6.4" r="2.4" fill-opacity="var(--fill-op,0.5)" fill="var(--fill,var(--mainColor))"/>
+    <circle cx="6.4" cy="13.6" r="2.4" fill-opacity="var(--fill-op,0.5)" fill="var(--fill,var(--mainColor))"/>
+    <circle cx="13.6" cy="6.4" r="2.4" fill-opacity="var(--fill-op,0.5)" fill="var(--fill,var(--mainColor))"/>
+    <circle cx="13.6" cy="13.6" r="2.4" fill-opacity="var(--fill-op,0.5)" fill="var(--fill,var(--mainColor))"/>
+    </svg>
+    `
+
+    editorTag.appendChild(btnMore);
+
+    let btnviewchk = document.createElement('input');
+    btnviewchk.type = 'checkbox';
+    btnviewchk.setAttribute('checked','')
+    btnviewchk.setAttribute('data-input','');
+    btnviewchk.id = 'chk_' + id;
+    let btnview = document.createElement('label');
+    btnview.setAttribute('for',btnviewchk.id);
+    btnview.className = 'df-cc fl0 wh-14 op6 pointer';
+    btnview.setAttribute('data-any','vw300');
+    btnview.innerHTML = `<svg class="view" width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path stroke="var(--bod,var(--mainColor))" d="M17 10C17 11.25 14.8125 15 10 15C5.1875 15 3 11.25 3 10C3 8.75 5.1875 5 10 5C14.8125 5 17 8.75 17 10Z" stroke-width="2"/>
+    <circle stroke="var(--bod,var(--mainColor))" cx="10" cy="10" r="2" stroke-width="2"/>
+    </svg>
+    <svg class="unview" width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path stroke="var(--bod,var(--mainColor))" d="M17 6C17 7.25 14.8125 11 10 11C5.1875 11 3 7.25 3 6" stroke-width="2" stroke-linecap="round"/>
+    <path stroke="var(--bod,var(--mainColor))" d="M12 11L13.5 13.5981" stroke-width="2" stroke-linecap="round"/>
+    <path stroke="var(--bod,var(--mainColor))" d="M16.15 8.78583L18.5 10.5" stroke-width="2" stroke-linecap="round"/>
+    <path stroke="var(--bod,var(--mainColor))" d="M8 11L6.5 13.5981" stroke-width="2" stroke-linecap="round"/>
+    <path stroke="var(--bod,var(--mainColor))" d="M3.85001 8.78583L1.5 10.5" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    `
+
+    editorTag.appendChild(btnviewchk);
+    editorTag.appendChild(btnview);
+
+    let editorName = this.addDiffLanguage(editorTag,info.name,'div');
+    editorName.setAttribute('data-editor-tag-name','');
+    editorName.className = 'fl1 ovh bod-r4';
+    editorTag.appendChild(editorName);
+
+    let btnreduce = document.createElement('div');
+    btnreduce.className = 'df-cc fl0 wh-14 op6 pointer';
+    btnreduce.setAttribute('data-any','vw300');
+    btnreduce.innerHTML = `<svg width="80%" height="80%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="10" cy="10" r="8" stroke="var(--bod,var(--mainColor))" stroke-width="2.5"/>
+    <path d="M6 10H14" stroke="var(--bod,var(--mainColor))" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    `
+    editorTag.appendChild(btnreduce);
+    btnMore.addEventListener('click',(e)=>{
+      if(editorTag.getAttribute('data-editor-tag-more') == 'false'){
+        Array.from(this.setlist.querySelectorAll('[data-editor-tag-more]')).forEach( item => {
+          item.setAttribute('data-editor-tag-more','false');
+        })
+        editorTag.setAttribute('data-editor-tag-more','true');
+        this.addEditorSet(info,id);
+      }
+    });
+    editorName.addEventListener('click',(e)=>{
+      if(editorTag.getAttribute('data-editor-tag-more') == 'false'){
+        Array.from(this.setlist.querySelectorAll('[data-editor-tag-more]')).forEach( item => {
+          item.setAttribute('data-editor-tag-more','false');
+        })
+        editorTag.setAttribute('data-editor-tag-more','true');
+        this.addEditorSet(info,id);
+      }
+    });
+    btnviewchk.addEventListener('change',()=>{
+      if(btnviewchk.checked){
+        editorTag.setAttribute('data-editor-tag-view','true');
+        this.finalEditors[id].checked = true;
+      }else{
+        editorTag.setAttribute('data-editor-tag-view','false');
+        this.finalEditors[id].checked = false;
+      }
+    });
+    btnreduce.addEventListener('click',()=>{
+      editorTag.remove();
+      delete this.finalEditors[id];
+      this.editorsObj[type][info.name[1]].reducenum++;
+      this.reTagIndex()
+
+    });
+
+    this.setlist.prepend(editorTag);
+    this.reTagIndex();
+    setTimeout(()=>{
+      btnMore.click();
+    },10)
+
+  }
+
+  addEditorSet(info,id){
+    console.log(info,id)
+    info.layout.forEach(line => {
+      let setline = document.createElement('div');
+      setline.className = line.class;
+
+    })
+  }
+
+  reTagIndex(){
+    let tags = this.setlist.querySelectorAll('[data-editor-tag]');
+    for(let i = 0; i < tags.length; i++){
+      this.finalEditors[tags[i].getAttribute('data-editor-tag')].index = tags.length - i;
+    };
+    this.buildDataCode();
+  }
+
+  addDiffLanguage(parent,texts,tagname,isRun){
+    let language = ROOT.getAttribute('data-language');
+    tagname = tagname ? tagname : 'div';
+    let diff = document.createElement(tagname);
+    let type = 'text';
+
+    let text = isRun ? texts[0] : language == 'Zh' ? texts[0] : texts[1] ;
+    switch (tagname){
+      case 'div':
+      diff.textContent = text;
+      diff.setAttribute('data-zh-' + type,texts[0]);
+      diff.setAttribute('data-en-' + type,texts[1]);
+      break
+      case 'input':
+      diff.value = text;
+      diff.setAttribute('data-input-must',texts[0]);
+      diff.setAttribute('data-input-must-en',texts[1]);
+      break
+      default :
+      diff.textContent = text;
+      diff.setAttribute('data-zh-' + type,texts[0]);
+      diff.setAttribute('data-en-' + type,texts[1]);
+    };
+    parent.appendChild(diff);
+    return diff;
+  };
+}
+
+let Editor = new EDITOR_TAB();
+Editor.init();
+
 function createImageObjectURL(data, format = 'png'){
   if (!data) return null;
   const blob = data instanceof Blob ? data : new Blob([data], {type: `image/${format}`});
@@ -6321,161 +6927,6 @@ function addSearchs(){
 
   loadFont(DOM.dailogSearchBox);
 };
-
-class EDITOR_TAB {
-  constructor() {
-    this.addset = getElementMix('data-editor-addset');
-    this.setlist = getElementMix('data-editor-setlist');
-    this.setvalue = getElementMix('data-editor-setvalue');
-    this.setcode = getElementMix('data-editor-setcode').querySelector('textarea');
-
-    this.editors = [
-      {
-        type:['色彩','Color'],
-        options:[
-          {
-            name:['HSL','HSL'],
-            editable:true,
-            pixel:true,
-          },
-          {
-            name:['反转','Invert'],
-            editable:true,
-            pixel:true,
-          },
-          {
-            name:['色彩平衡','Balance'],
-            editable:true,
-            pixel:true,
-          },
-        ]
-      },
-      {
-        type:['质感','Texture'],
-        options:[
-          {
-            name:['颗粒','Graininess'],
-            editable:false,
-            pixel:true,
-          },
-          {
-            name:['降噪','Denoise'],
-            editable:false,
-            pixel:true,
-          },
-          {
-            name:['清晰度','noise'],
-            editable:false,
-            pixel:true,
-          },
-        ]
-      },
-      {
-        type:['通道','Texture'],
-        options:[
-          {
-            name:['色散','Dispersion'],
-            editable:false,
-            pixel:true,
-          },
-          {
-            name:['渐变映射','noise'],
-            editable:true,
-            pixel:true,
-          },
-          {
-            name:['LUT','LUT'],
-            editable:true,
-            pixel:true,
-          },
-          {
-            name:['通道提取','RGBA'],
-            editable:true,
-            pixel:true,
-          },
-        ]
-      },
-      {
-        type:['变形','Transform'],
-        options:[
-          {
-            name:['贝塞尔曲线','Bessel'],
-            editable:true,
-            pixel:true,
-          },
-          {
-            name:['透视','Perspective'],
-            editable:true,
-            pixel:true,
-          },
-        ]
-      },
-
-    ]
-  }
-
-  init(){
-
-    let addlistbox = document.createElement('div');
-    addlistbox.setAttribute('data-editor-addlist','');
-    addlistbox.setAttribute('data-select-options','');
-    addlistbox.className = 'df-ffc pos-a noscrollbar';
-
-    this.editors.forEach(editor => {
-      let type = this.addDiffLanguage(addlistbox,editor.type,'div',true);
-      type.setAttribute('data-option','type');
-      editor.options.forEach(item => {
-        let option = this.addDiffLanguage(addlistbox,item.name,'div',true);
-        option.setAttribute('data-option','option');
-        option.setAttribute('data-editor-editable',item.pixel);
-        option.setAttribute('data-editor-pixel',item.editable);
-      });
-
-    });
-
-    let editorSetBox = getElementMix('data-editor-setlist-title');
-    editorSetBox.appendChild(addlistbox);
-
-    this.addset.addEventListener('click',()=>{
-      addlistbox.style.display = 'flex';
-    });
-    document.addEventListener('mousedown',(e)=>{
-      if(!editorSetBox.contains(e.target)){
-        addlistbox.style.display = 'none';
-      };
-    });
-  }
-
-  addDiffLanguage(parent,texts,tagname,isRun){
-    let language = ROOT.getAttribute('data-language');
-    tagname = tagname ? tagname : 'div';
-    let diff = document.createElement(tagname);
-    let type = 'text';
-
-    let text = isRun ? texts[0] : language == 'Zh' ? texts[0] : texts[1] ;
-    switch (tagname){
-      case 'div':
-      diff.textContent = text;
-      diff.setAttribute('data-zh-' + type,texts[0]);
-      diff.setAttribute('data-en-' + type,texts[1]);
-      break
-      case 'input':
-      diff.value = text;
-      diff.setAttribute('data-input-must',texts[0]);
-      diff.setAttribute('data-input-must-en',texts[1]);
-      break
-      default :
-      diff.textContent = text;
-      diff.setAttribute('data-zh-' + type,texts[0]);
-      diff.setAttribute('data-en-' + type,texts[1]);
-    };
-    parent.appendChild(diff);
-    return diff;
-  };
-}
-
-let Editor = new EDITOR_TAB();
-Editor.init();
 
 let tool = new TOOL_JS();
 
@@ -9434,7 +9885,7 @@ async function convertImageToQRCode(img = null, triggerType = 'upload'){
       try{
         const gridNumInput = DOM.qrcodeGridNum;
         let gridNum = gridNumInput ? (parseInt(gridNumInput.value) || 25) : 25;
-        if(gridNum < 10 || gridNum > 144) gridNum = 25;
+        if(gridNum < 10 || gridNum > 300) gridNum = 25;
 
         gridData = tool.PixelGridFromImageData(imageData, gridNum, {
           mode: 'binary',
@@ -10502,7 +10953,7 @@ function sendTable(mapOrGet){
 
   let data = '';
   let clone = true;
-  let reduce = false;
+  let reduce = true;
   let enters = getElementMix('input-linefeed').value;
   let nulls = getElementMix('input-nulldata').value;
   let datatype = getElementMix('data-mapget-type').getAttribute('data-radio-value');
@@ -10521,6 +10972,16 @@ function sendTable(mapOrGet){
   };
 
   toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
+  setTimeout(()=>{
+  if(Object.keys(data[0]).some(key => key.includes('#') && type == 'mapPro')){
+
+      tipsAll(['发现标签属性，一并映射','Found tag properties, mapping together'],3000);
+  }
+  if(Object.keys(data[0]).some(key => !key.includes('#') && type == 'mapTag')){
+
+      tipsAll(['发现组件属性，一并映射','Found component properties, mapping together'],3000);
+  }
+  },500);
 };
 
 function applyTableStyleStrategy(data){

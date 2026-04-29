@@ -149,7 +149,7 @@ function sendTable(mapOrGet){
   
   let data = '';
   let clone = true;
-  let reduce = false;
+  let reduce = true;
   let enters = getElementMix('input-linefeed').value;
   let nulls = getElementMix('input-nulldata').value;
   let datatype = getElementMix('data-mapget-type').getAttribute('data-radio-value');
@@ -168,6 +168,16 @@ function sendTable(mapOrGet){
   };
   //console.log(data);
   toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},type],PLUGINAPP);
+  setTimeout(()=>{
+  if(Object.keys(data[0]).some(key => key.includes('#') && type == 'mapPro')){
+      //toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},'mapTag'],PLUGINAPP);
+      tipsAll(['发现标签属性，一并映射','Found tag properties, mapping together'],3000);
+  }
+  if(Object.keys(data[0]).some(key => !key.includes('#') && type == 'mapTag')){
+      //toolMessage([{data:data,clone:clone,reduce:reduce,enters:enters,nulls:nulls},'mapPro'],PLUGINAPP);
+      tipsAll(['发现组件属性，一并映射','Found component properties, mapping together'],3000);
+  }
+  },500);
 };
 
 

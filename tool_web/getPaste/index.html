@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>getPaste</title>
+  <style>
+    body { font-family: system-ui; padding: 30px; background: #f8f9fa; }
+    #box { width: 100%; height: 80px; padding: 10px; font-size: 14px; border: 2px dashed #3b82f6; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <p style="color:#555; margin-bottom:6px;">👇 点击聚焦，然后 Ctrl+V。按 F12 打开控制台查看完整输出。</p>
+  <textarea id="box" placeholder="在此粘贴..."></textarea>
+
+  <script>
+    document.getElementById('box').addEventListener('paste', (e) => {
+      e.preventDefault(); // 阻止默认粘贴，方便纯调试
+      const dt = e.clipboardData;
+      if (!dt) return console.error('❌ 当前环境不支持 clipboardData');
+
+      console.clear();
+      console.group('📋 剪贴板全量数据报告');
+      
+      // 1. 打印浏览器实际暴露的类型列表
+      const availableTypes = Array.from(dt.types);
+      console.log('📦 实际存在的类型 (MIME):', availableTypes);
+      console.log('────────────────────────────────');
+
+      // 2. 遍历读取所有存在类型的内容
+      availableTypes.forEach(type => {
+        try {
+          const data = dt.getData(type);
+          console.group(`✅ [${type}]`);
+          console.log('📏 长度:', data.length);
+          // 超过 5000 字符自动截断，防止控制台卡顿
+          const preview = data;
+          console.log('📄 内容:\n', preview);
+          console.groupEnd();
+        } catch (err) {
+          console.warn(`⚠️ 读取 ${type} 失败:`, err.message);
+        }
+      });
+
+      console.log('────────────────────────────────');
+      
+      // 3. 探测 DataTransferItems（常用于二进制文件/特殊格式）
+      if (dt.items && dt.items.length > 0) {
+        console.group('📎 DataTransfer.items 底层信息');
+        for (let i = 0; i < dt.items.length; i++) {
+          const item = dt.items[i];
+          console.log(`Item ${i}: kind="${item.kind}", type="${item.type}"`);
+          if (item.kind === 'file') {
+            const file = item.getAsFile();
+            console.log(`   📁 文件: ${file.name} (${file.type}, ${file.size} bytes)`);
+          }
+        }
+        console.groupEnd();
+      }
+
+      // 4. 打印原始对象结构（供深度排查）
+      console.group('🛠 DataTransfer 原始属性');
+      console.log('dropEffect:', dt.dropEffect);
+      console.log('effectAllowed:', dt.effectAllowed);
+      console.log('files:', dt.files);
+      console.log('items:', dt.items);
+      console.groupEnd();
+      
+      console.groupEnd();
+    });
+  </script>
+</body>
+</html>
