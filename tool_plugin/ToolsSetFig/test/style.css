@@ -1872,7 +1872,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 }
 
 [data-editor-addlist]{
-  z-index: 20;
+  z-index: 19;
   display: none;
   width: 100px;
   max-height: 50dvh;
@@ -1934,6 +1934,12 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 
 [data-editor-tag-more="true"] .op6{
   opacity: 1;
+}
+
+[data-editor-setline-title]::after{
+  content: '▶ ';
+  opacity: 0.6;
+  padding-right: 2px;
 }
 
 [data-variable-type]{

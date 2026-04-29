@@ -600,13 +600,13 @@ figma.ui.onmessage = async (message) => {
         let sizes = data.map(item => item.s).filter(item => item !== null && item !== undefined && item !== '');
         data = data.map((item,index) => {
             let final = {name:item.name,w:item.w,h:item.h};
-            console.log(final)
+            //console.log(final)
             if(sizes.length > 0){
-                console.log(allSize[index])
+                //console.log(allSize[index])
                 final.s = allSize[index];
             }
             if(types.length > 0){
-                console.log(allType[index])
+                //console.log(allType[index])
                 final.type = allType[index];
             }
             return final;
@@ -3984,11 +3984,12 @@ function exportImgInfo(set){
                 format = 'JPEG';
             }else if(c.name.toLowerCase().includes('webp')){
                 format = 'WEBP';
-            }else{
-                format = 'PNG'
             };
             if(!format){
                 format = c.getPluginData('exportType');
+            };
+            if(!format){
+                format = 'PNG';
             };
             let size = null; 
             let sizeMatch = c.name.match(/\D*(\d+)[kK]/);
