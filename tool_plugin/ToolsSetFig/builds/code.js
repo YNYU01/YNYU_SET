@@ -682,7 +682,21 @@ figma.ui.onmessage = async (message) => {
     };
     //处理编辑图片
     if( type == 'editorPixel'){
-        console.log(info)
+        //console.log(info)
+        if(info[1].u8a){
+            let image = figma.createImage(info[0].u8a);
+            let node = figma.createRectangle();
+            node.resize(info[0].width, info[0].height);
+            node.fills = [
+                {   type: 'IMAGE',
+                    imageHash: image.hash, 
+                    scaleMode: 'FILL'
+                }
+            ];
+            node.name = info[1].name + '_edit';
+            node.x = info[1].x;
+            node.y = info[1].y;
+        }
     }
     //上传样式信息
     if( type == "getStyleInfo"){
@@ -3465,8 +3479,8 @@ function sendInfo(){
                 let rows = columns.length > 0 ? columns[0].children.filter(item => ['@th', '@td', '@tn'].some(tag => item.name.includes(tag))) : [];
                 tableColumn = columns.length > 0 ? columns.length : 2;
                 tableRow = rows.length > 0 ? rows.length : 2;
-                tableStyle = node.getPluginData('userTableStyle') || null;
-                tableTheme = node.getPluginData('userTableTheme') || null;
+                tableStyle = JSON.parse(node.getPluginData('userTableStyle')) || null;
+                tableTheme = JSON.parse(node.getPluginData('userTableTheme')) || null;
             }
             data.push({
                 n:n,w:w,h:h,transform:[skewX,skewY,scaleX,scaleY],
@@ -6886,7 +6900,7 @@ function splitText(safenode,oldnode,splitTag,splitKeys){
                 start2 = end2 + keyMove;
             };
 
-            console.log(lines2length,lines2)
+            //console.log(lines2length,lines2)
             try {
                 for(let ii = 0; ii < lines2.length; ii++){
                     let splitnode2 = splitnodes[i].clone();

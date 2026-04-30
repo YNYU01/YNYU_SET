@@ -1741,6 +1741,7 @@ input[type="checkbox"]:checked + [for="setheme-intime"]{
   box-sizing: border-box;
   border: 1px var(--boxBod) solid;
   position: relative;
+  display: grid;
 }
 
 [data-editor-viewbox]::after{
@@ -1756,9 +1757,9 @@ input[type="checkbox"]:checked + [for="setheme-intime"]{
   max-height: var(--setbox-h);
 }
 
-[data-editor-viewbox] img{
-  margin: auto;
+[data-editor-view-box]{
   pointer-events: none;
+  margin: auto;
   z-index: 1;
 }
 

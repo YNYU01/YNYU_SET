@@ -221,9 +221,7 @@ const State = (() => {
     variablesInfoFinal: [],
 
     // 编辑器信息
-    editorInfo: {
-      new: [], // {type:image(栅格化) | editors(可编辑)}
-    },
+    editorInfo: {},
     
     // 界面状态
     isResize: false,
@@ -957,12 +955,11 @@ class EDITOR_TAB {
     let img = this.viewbox.querySelector('img');
     if(!img) return;
     let editors = Object.values(this.finalEditors).sort((a, b) => a.index - b.index);
+      let  styles = '';
       for(let i = 0; i < editors.length; i++){
-        let  styles = '';
         switch (editors[i].type){
           case 'HSL': 
             styles += `hue-rotate(${editors[i].value[0]}deg) saturate(${100 + editors[i].value[1]}%) brightness(${100 + editors[i].value[2]}%)`;
-            
           ;break
       }
       img.style.filter = styles;
@@ -973,9 +970,15 @@ class EDITOR_TAB {
     let info = State.get('editorInfo');
     let img = this.viewbox.querySelector('img');
     if(!img) return; 
-    let scale = img.naturalWidth / img.width;
-    let imgdata = await tool.DomToImagedata(img,{scale:scale});
+    //let scale = img.naturalWidth / img.width;
+    let oldstyle = img.getAttribute('style') || '';
+    img.style.width = 'auto';
+    img.style.height = 'auto';
+    let imgdata = await tool.DomToImagedata(img.parentNode);
     toolMessage([[imgdata,info],'editorPixel'],PLUGINAPP);
+    setTimeout(()=>{
+      img.setAttribute('style',oldstyle);
+    },100)
   }
 
   addDiffLanguage(parent,texts,tagname,isRun){
@@ -1329,8 +1332,36 @@ function reSelectInfo(info){
     if (info[0].clipRC) {
       updateClipSettings(info[0].clipRC);
     }
+    // 更新表格行列
     if (info[0].tableRC) {
       updateTableSettings(info[0].tableRC);
+    }
+    //更新表格样式和主题
+    if(info[0].tableStyle){
+      //console.log(info[0].tableStyle)
+    }
+    if(info[0].tableTheme){
+      //console.log(info[0].tableTheme,info[0].tableTheme[1])
+      let colorType = getElementMix('data-table-theme-color').querySelector('[data-colortype-mode]');
+      let color = info[0].tableTheme[1];
+      let [h,s,l] = color.match(/\d+/g).map(Number);
+      switch (colorType.getAttribute('data-colortype-mode')){
+        case 'hex': color = rgbTohex(...hslTorgb(h,s,l,255));break;
+        case 'rgb': color = 'rgb(' + hslTorgb(h,s,l,255).join(',') + ')';break;
+      };
+      getElementMix('colorvalue-3').value = color;
+      let event = new Event('change',{bubbles:true});;
+      getElementMix('colorvalue-3').dispatchEvent(event);
+    }else{
+      let colorDefault = {
+        hsl: 'hsl(0,0%,53%)',
+        hex: '#888888',
+        rgb: 'rgb(136,136,136)'
+      };
+      let colorType = getElementMix('data-table-theme-color').querySelector('[data-colortype-mode]');
+      getElementMix('colorvalue-3').value = colorDefault[colorType.getAttribute('data-colortype-mode')];
+      let event = new Event('change',{bubbles:true});
+      getElementMix('colorvalue-3').dispatchEvent(event);
     }
   };
   
@@ -2951,9 +2982,10 @@ getElementMix('data-editor-clear').addEventListener('click',(e)=>{
   DOM.editorViewbox.innerHTML = '';
 });
 function addEditorView(info){
-  let editorInfo = State.get('editorInfo');
-  editorInfo = {...info,...editorInfo};
-  State.set('editorInfo',editorInfo);
+  State.set('editorInfo',info);
+
+  let box = document.createElement('div');
+  box.setAttribute('data-editor-view-box','');
   let viewimg = DOM.editorViewbox.querySelector('img');
   if(!viewimg){
     viewimg = document.createElement('img');
@@ -2961,7 +2993,8 @@ function addEditorView(info){
     viewimg.setAttribute('data-editor-view-name',info.name);
     viewimg.setAttribute('data-editor-view-width',info.w);
     viewimg.setAttribute('data-editor-view-height',info.h);
-    DOM.editorViewbox.appendChild(viewimg);
+    box.appendChild(viewimg);
+    DOM.editorViewbox.appendChild(box);
   };
   let ismaxW = info.width >= info.height ? 'true' : 'false';
   viewimg.setAttribute('data-ismaxW',ismaxW);

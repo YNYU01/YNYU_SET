@@ -1121,7 +1121,7 @@ function COMP_MAIN(){
     if (colortype === 'hsl') {
       const hslMatch = item.value.toLowerCase().replace('hsl(', '').replace(')', '').split(',');
       HSL = hslMatch.map(item => parseFloat(item.replace('%', '').trim()));
-      RGB = hslTorgb(HSL[0], HSL[1], HSL[2], 255);
+      RGB = hslTorgb(HSL[0], HSL[1], HSL[2]);
       HEX = rgbTohex(RGB[0], RGB[1], RGB[2]);
       HSV = hslTohsv(HSL[0], HSL[1], HSL[2]);
     } else {
@@ -1180,7 +1180,7 @@ function COMP_MAIN(){
     if (isNaN(newH)) {
       return;
     }
-    const newRGB = hslTorgb(newH, oldHSL[1], oldHSL[2], 255);
+    const newRGB = hslTorgb(newH, oldHSL[1], oldHSL[2]);
     const newHEX = rgbTohex(newRGB[0], newRGB[1], newRGB[2]);
     const newHSV = hslTohsv(newH, oldHSL[1], oldHSL[2]);
     
@@ -1263,7 +1263,7 @@ function COMP_MAIN(){
     
     if (colortype == 'hsl') {
       const newHSV = hslTohsv(oldColor[0], SS, VL);
-      const newRGB = hslTorgb(oldColor[0], SS, VL, 255);
+      const newRGB = hslTorgb(oldColor[0], SS, VL);
       const newHEX = rgbTohex(newRGB[0], newRGB[1], newRGB[2]);
       const colorinput1 = colorcomp.querySelector('[data-input="hex"]');
       const colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
@@ -1304,7 +1304,7 @@ function COMP_MAIN(){
       }
     } else {
       const newHSL = hsvTohsl(oldColor[0], SS, VL);
-      const newRGB = hslTorgb(newHSL[0], newHSL[1], newHSL[2], 255);
+      const newRGB = hslTorgb(newHSL[0], newHSL[1], newHSL[2]);
       const newHEX = rgbTohex(newRGB[0], newRGB[1], newRGB[2]);
       const colorinput1 = colorcomp.querySelector('[data-input="hex"]');
       const colorinput2 = colorcomp.querySelector('[data-input="rgb"]');
@@ -2533,7 +2533,7 @@ function rgbTohsl(r,g,b){
  * @param { 1 | 100 | 255} maxNum - 浮点数 | 百分数 | 十进制值（0-255）
  * @returns [R,G,B]
  */
-function hslTorgb(h, s, l,maxNum) {
+function hslTorgb(h, s, l,maxNum = 255) {
   //去掉符号
   s = s * 1 !== 'NaN' ? s : s.replace("%","") * 1;
   l = l * 1 !== 'NaN' ? l : l.replace("%","") * 1;
@@ -2681,7 +2681,7 @@ function getcolorTypeOrHex(colorStr,onlyType) {
       const h = values[0];
       const s = Math.max(0, Math.min(100, values[1]));
       const l = Math.max(0, Math.min(100, values[2]));
-      const rgb = hslTorgb(h, s, l, 255);
+      const rgb = hslTorgb(h, s, l);
         return rgbTohex(rgb[0], rgb[1], rgb[2]);
     }
   }

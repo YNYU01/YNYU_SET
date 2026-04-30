@@ -4,7 +4,7 @@
   <meta name="description" content="网页内容简介，转发时显示">
   <title data-en-text="『YNYU_SET』 ToolsSet Fig">『云即·工具集（Figma版）』</title>
   <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -99,7 +99,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -1845,6 +1845,7 @@ input[type="checkbox"]:checked + [for="setheme-intime"]{
   box-sizing: border-box;
   border: 1px var(--boxBod) solid;
   position: relative;
+  display: grid;
 }
 
 [data-editor-viewbox]::after{
@@ -1860,9 +1861,9 @@ input[type="checkbox"]:checked + [for="setheme-intime"]{
   max-height: var(--setbox-h);
 }
 
-[data-editor-viewbox] img{
-  margin: auto;
+[data-editor-view-box]{
   pointer-events: none;
+  margin: auto;
   z-index: 1;
 }
 
@@ -3718,7 +3719,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
           </div>
           <div data-editor-mix class="df-ffc wh100 pos-r ovy noscrollbar">
             <div data-editor-viewBox data-isfull="false" data-scroll 
-            class="ovy ovx noscrollbar df-lc w100 tex-pixelbg"></div>
+            class="ovy ovx noscrollbar w100 tex-pixelbg"></div>
             <div data-editor-setbox class="w100 df-ffc">
               <div class="w100 df-lc">
                 <div data-editor-setlist-title class="df-sc bsb pos-r">
@@ -5458,23 +5459,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/other/jsQR_correct.js"></script>
-  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/other/dom_to_img.js"></script-->
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/other/jsQR_correct.js"></script>
+  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/other/dom_to_img.js"></script-->
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@43f08b131c17bf25fa5626a3055cdb8246cc9e83/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@d2c9629496b05042338b70e1f28276a15b12efa1/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -5885,9 +5886,7 @@ const State = (() => {
     styleGroupInfoFinal: [],
     variablesInfoFinal: [],
 
-    editorInfo: {
-      new: [],
-    },
+    editorInfo: {},
 
     isResize: false,
     reStartW: null,
@@ -6611,12 +6610,11 @@ class EDITOR_TAB {
     let img = this.viewbox.querySelector('img');
     if(!img) return;
     let editors = Object.values(this.finalEditors).sort((a, b) => a.index - b.index);
+      let  styles = '';
       for(let i = 0; i < editors.length; i++){
-        let  styles = '';
         switch (editors[i].type){
           case 'HSL':
             styles += `hue-rotate(${editors[i].value[0]}deg) saturate(${100 + editors[i].value[1]}%) brightness(${100 + editors[i].value[2]}%)`;
-
           ;break
       }
       img.style.filter = styles;
@@ -6627,10 +6625,15 @@ class EDITOR_TAB {
     let info = State.get('editorInfo');
     let img = this.viewbox.querySelector('img');
     if(!img) return;
-    let scale = img.naturalWidth / img.width;
-    let imgdata = await tool.DomToImagedata(img,{scale:scale});
-    toolMessage([[imgdata,info],'editorPixel'],PLUGINAPP);
 
+    let oldstyle = img.getAttribute('style') || '';
+    img.style.width = 'auto';
+    img.style.height = 'auto';
+    let imgdata = await tool.DomToImagedata(img.parentNode);
+    toolMessage([[imgdata,info],'editorPixel'],PLUGINAPP);
+    setTimeout(()=>{
+      img.setAttribute('style',oldstyle);
+    },100)
   }
 
   addDiffLanguage(parent,texts,tagname,isRun){
@@ -6951,8 +6954,36 @@ function reSelectInfo(info){
     if (info[0].clipRC) {
       updateClipSettings(info[0].clipRC);
     }
+
     if (info[0].tableRC) {
       updateTableSettings(info[0].tableRC);
+    }
+
+    if(info[0].tableStyle){
+
+    }
+    if(info[0].tableTheme){
+      
+      let colorType = getElementMix('data-table-theme-color').querySelector('[data-colortype-mode]');
+      let color = info[0].tableTheme[1];
+      let [h,s,l] = color.match(/\d+/g).map(Number);
+      switch (colorType.getAttribute('data-colortype-mode')){
+        case 'hex': color = rgbTohex(...hslTorgb(h,s,l,255));break;
+        case 'rgb': color = 'rgb(' + hslTorgb(h,s,l,255).join(',') + ')';break;
+      };
+      getElementMix('colorvalue-3').value = color;
+      let event = new Event('change',{bubbles:true});;
+      getElementMix('colorvalue-3').dispatchEvent(event);
+    }else{
+      let colorDefault = {
+        hsl: 'hsl(0,0%,53%)',
+        hex: '#888888',
+        rgb: 'rgb(136,136,136)'
+      };
+      let colorType = getElementMix('data-table-theme-color').querySelector('[data-colortype-mode]');
+      getElementMix('colorvalue-3').value = colorDefault[colorType.getAttribute('data-colortype-mode')];
+      let event = new Event('change',{bubbles:true});;
+      getElementMix('colorvalue-3').dispatchEvent(event);
     }
   };
 
@@ -8494,9 +8525,10 @@ getElementMix('data-editor-clear').addEventListener('click',(e)=>{
   DOM.editorViewbox.innerHTML = '';
 });
 function addEditorView(info){
-  let editorInfo = State.get('editorInfo');
-  editorInfo = {...info,...editorInfo};
-  State.set('editorInfo',editorInfo);
+  State.set('editorInfo',info);
+
+  let box = document.createElement('div');
+  box.setAttribute('data-editor-view-box','');
   let viewimg = DOM.editorViewbox.querySelector('img');
   if(!viewimg){
     viewimg = document.createElement('img');
@@ -8504,7 +8536,8 @@ function addEditorView(info){
     viewimg.setAttribute('data-editor-view-name',info.name);
     viewimg.setAttribute('data-editor-view-width',info.w);
     viewimg.setAttribute('data-editor-view-height',info.h);
-    DOM.editorViewbox.appendChild(viewimg);
+    box.appendChild(viewimg);
+    DOM.editorViewbox.appendChild(box);
   };
   let ismaxW = info.width >= info.height ? 'true' : 'false';
   viewimg.setAttribute('data-ismaxW',ismaxW);
