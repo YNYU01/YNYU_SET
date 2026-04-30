@@ -696,6 +696,7 @@ figma.ui.onmessage = async (message) => {
             node.name = info[1].name + '_edit';
             node.x = info[1].x;
             node.y = info[1].y;
+            figma.currentPage.selection = [node]
         }
     }
     //上传样式信息

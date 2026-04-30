@@ -1,10 +1,39 @@
 /* AUTO-GENERATED FILE. DO NOT EDIT. */
 /* Source: tool_plugin/ToolsSetFig/log.md */
-/* Built: 2026-04-10T07:38:04.778Z */
+/* Built: 2026-04-30T17:07:05.189Z */
 
 (function () {
   'use strict';
   window.__TOOLSSET_HELP_LOGS__ = [
+  {
+    "title": [
+      "v0.1.9",
+      "v0.1.9"
+    ],
+    "date": "2026/5/1",
+    "items": [
+      [
+        "li",
+        "<span data-doc-key>🐞 修复：</span>表单页>修复获取组件属性时无法正确获取嵌套实例的属性的问题",
+        "<span data-doc-key>🐞 Fix:</span> Sheet page > Fixed issue where component properties of nested instances could not be retrieved correctly"
+      ],
+      [
+        "li",
+        "<span data-doc-key>🐞 修复：</span>表单页>修复映射内嵌重复实例组件属性时错位问题",
+        "<span data-doc-key>🐞 Fix:</span> Sheet page > Fixed misalignment when mapping properties of repeated nested instance components"
+      ],
+      [
+        "li",
+        "<span data-doc-key>⚡ 优化：</span>表单页>组件属性和标签属性的映射数据可以混合使用",
+        "<span data-doc-key>⚡ Optimize:</span> Sheet page > Mapping data for component properties and tag attributes can now be used together"
+      ],
+      [
+        "li",
+        "<span data-doc-key>⚡ 优化：</span>表单页>应用表格主题时，插件会记录色值和风格，便于再次选中修改，但需注意，手动修改的色值不会缓存",
+        "<span data-doc-key>⚡ Optimize:</span> Sheet page > When applying table themes, the plugin now records color values and styles for easier modification upon reselection (note: manually modified color values are not cached)"
+      ]
+    ]
+  },
   {
     "title": [
       "v0.1.8",
@@ -83,8 +112,8 @@
       ],
       [
         "li",
-        "<span data-doc-key>🐞 修复：</span>表单页>数据获取>标签属性, 当存在远程样式时会导致获取失败, 现已支持获取, 通过标签属性修改远程样式为本地样式约等于变量页的断链样式管理",
-        "<span data-doc-key>🐞 Fix:</span> Sheet page > Data get > Tag attributes, fixed failure to get when remote styles exist, now supported; modifying remote styles to local via tag attributes is roughly equivalent to unlink styles management in Variables page"
+        "modifying remote styles to local via tag attributes is roughly equivalent to unlink styles management in Variables page; 🐞 修复：表单页>数据获取>标签属性, 当存在远程样式时会导致获取失败, 现已支持获取, 通过标签属性修改远程样式为本地样式约等于变量页的断链样式管理",
+        "<span data-doc-key>🐞 Fix:</span> Sheet page > Data get > Tag attributes, fixed failure to get when remote styles exist, now supported"
       ]
     ]
   },
@@ -175,8 +204,8 @@
       ],
       [
         "li",
-        "<span data-doc-key>✨ 新增：</span>表单页>应用主题, 可以开启实时模式, 切换色值和主题风格时会直接应用, 但相对卡顿, 仅适用于必要的效果预览对比, 慎用",
-        "<span data-doc-key>✨ New:</span> Sheet page > Apply theme - can enable live mode; color/theme changes apply immediately (may be laggy, use only for preview when needed)"
+        "color/theme changes apply immediately (may be laggy, use only for preview when needed); ✨ 新增：表单页>应用主题, 可以开启实时模式, 切换色值和主题风格时会直接应用, 但相对卡顿, 仅适用于必要的效果预览对比, 慎用",
+        "<span data-doc-key>✨ New:</span> Sheet page > Apply theme - can enable live mode"
       ],
       [
         "li",
@@ -326,8 +355,8 @@
       ],
       [
         "li",
-        "📤 导出页>基本满足批量导出图片需求, 并指定预期大小来压缩图片, 为追求轻量化, 尺寸和后缀等建议使用原生功能管理, 并在上传时选择按导出设置上传, 按默认则只上传一倍图及PNG格式, 其他兼容格式的导出功能暂未开放, 预计0.2.0版本发布",
-        "📤 Export page > Basically meets batch image export needs, and supports compressing images by specifying the target size. For a lightweight workflow, it is recommended to manage dimensions and file formats with native features. When uploading, choose upload-by-export-settings; by default it uploads only 1x PNG. Other compatible export formats are not yet available and are expected in v0.2.0"
+        "by default it uploads only 1x PNG. Other compatible export formats are not yet available and are expected in v0.2.0; 📤 导出页>基本满足批量导出图片需求, 并指定预期大小来压缩图片, 为追求轻量化, 尺寸和后缀等建议使用原生功能管理, 并在上传时选择按导出设置上传, 按默认则只上传一倍图及PNG格式, 其他兼容格式的导出功能暂未开放, 预计0.2.0版本发布",
+        "📤 Export page > Basically meets batch image export needs, and supports compressing images by specifying the target size. For a lightweight workflow, it is recommended to manage dimensions and file formats with native features. When uploading, choose upload-by-export-settings"
       ],
       [
         "li",
