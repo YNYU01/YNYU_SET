@@ -222,9 +222,7 @@ const State = (() => {
 
     // 编辑器信息
     editorInfo: {
-      preview: '', // u8a
-      set: [], // {type:HSL | HUE | }
-      new: [], // {type:image | fills | node,content:[u8a | array]}
+      new: [], // {type:image(栅格化) | editors(可编辑)}
     },
     
     // 界面状态
@@ -351,10 +349,12 @@ const State = (() => {
 
 class EDITOR_TAB {
   constructor() {
+    this.viewbox = getElementMix('data-editor-viewbox');//预览窗口
     this.addset = getElementMix('data-editor-addset');//添加按钮
     this.setlist = getElementMix('data-editor-setlist');//调整列表
     this.setvalue = getElementMix('data-editor-setvalue');//属性窗口
     this.setcode = getElementMix('inputset-textarea');//代码编辑文本框
+    this.setapply = getElementMix('data-editor-apply');//应用按钮
     //调整项
     this.editors = [
       {
@@ -377,14 +377,14 @@ class EDITOR_TAB {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['纯度','S']},
-                  {type:'RANGE_NUM',min:-180,max:180,default:0,unit:'%'}
+                  {type:'RANGE_NUM',min:-100,max:100,default:0,unit:'%'}
                 ]
               },
               {
                 class:'df-lc',
                 content:[
                   {type:'TEXT',text:['亮度','L']},
-                  {type:'RANGE_NUM',min:-180,max:180,default:0,unit:'%'}
+                  {type:'RANGE_NUM',min:-100,max:100,default:0,unit:'%'}
                 ]
               }
             ]
@@ -398,6 +398,7 @@ class EDITOR_TAB {
               {
                 class:'df-lc',
                 content:[
+                  {type:'TEXT',text:['强度','Intensity']},
                   {type:'RANGE_NUM',min:0,max:100,default:100,unit:'%'}
                 ]
               },
@@ -711,6 +712,9 @@ class EDITOR_TAB {
     window.addEventListener('resize',(e)=>{
       addlistbox.style.display = 'none';
     });
+    this.setapply.addEventListener('click',()=>{
+      this.sendEditorData();
+    });
   }
 
   getDragAfterElement(y) {
@@ -811,8 +815,10 @@ class EDITOR_TAB {
         Array.from(this.setvalue.querySelectorAll('[data-editor-set-for]')).forEach( item => {
           item.style.display = 'none';
         });
-        this.addEditorSet(info,id);
-        this.setvalue.querySelector(`[data-editor-set-for="${id}"]`).display = 'flex';
+        if(!this.setvalue.querySelector(`[data-editor-set-for="${id}"]`)){
+          this.addEditorSet(info,id);
+        }
+        this.setvalue.querySelector(`[data-editor-set-for="${id}"]`).style.display = 'flex';
         editorTag.setAttribute('data-editor-tag-more','true');
       }
     }
@@ -849,10 +855,10 @@ class EDITOR_TAB {
     setbox.setAttribute('data-editor-set-for',id);
     setbox.className = 'wh100 df-ffc gap4 pad4 bsb ovy noscrollbar'
 
-    info.layout.forEach(line => {
+    info.layout.forEach((line,lineNum)=> {
       let setline = document.createElement('div');
       setline.className = line.class;
-      setline.setAttribute('data-editor-setline','');
+      setline.setAttribute('data-editor-setline',lineNum);
 
       line.content.forEach(node => {
         if(!this.finalEditors[id].value) this.finalEditors[id].value = [];
@@ -876,17 +882,24 @@ class EDITOR_TAB {
             radiobox.setAttribute('data-radio-value','');
 
             node.option.forEach(option => {
+              this.finalEditors[id][option.value] = [];
               let radio = this.addDiffLanguage(radiobox,option.text,'div');
               radio.className = 'df-cc';
-              radio.setAttribute('style','border: 1px solid var(--boxBod);')
+              radio.setAttribute('style','border: 1px solid var(--boxBod); padding: 0 4px;');
               radio.setAttribute('data-radio','');
               radio.setAttribute('data-radio-data',option.value);
-              radio.setAttribute('data-radio-main',option.main ? 'true' : 'false');
+              if(option.main){
+                radio.setAttribute('data-radio-main','true');
+                radiobox.setAttribute('data-radio-value',option.value);
+              }else{
+                radio.setAttribute('data-radio-main','false');
+              };
             });
             setline.appendChild(radiobox)
           ;break
           case 'RANGE_NUM':
             this.finalEditors[id].value.push(node.default);
+            setline.setAttribute('data-number','');
             let range = document.createElement('input');
             range.type = 'range'
             range.setAttribute('data-input','range');
@@ -904,7 +917,7 @@ class EDITOR_TAB {
             input.setAttribute('data-input-must',node.min + ',' + node.max);
             input.setAttribute('value',node.default);
             input.setAttribute('data-input-default',node.default);
-            input.setAttribute('style','width: 30px; flex: 0 0 auto;');
+            input.setAttribute('style','width: 5ch; flex: 0 0 auto; text-align: center;');
             setline.appendChild(input);
 
             let unit = document.createElement('div');
@@ -917,7 +930,7 @@ class EDITOR_TAB {
             btnreset.innerHTML = '<btn-reset></btn-reset>';
             btnreset.setAttribute('data-input-reset','')
             btnreset.setAttribute('data-btn','reset');
-            btnreset.setAttribute('data-any','vw300');
+            btnreset.setAttribute('data-any','vw330');
             setline.appendChild(btnreset);
 
           ;break
@@ -938,6 +951,31 @@ class EDITOR_TAB {
       this.finalEditors[tags[i].getAttribute('data-editor-tag')].index = tags.length - i;//倒序
     };
     this.buildDataCode();
+  }
+
+  run(){
+    let img = this.viewbox.querySelector('img');
+    if(!img) return;
+    let editors = Object.values(this.finalEditors).sort((a, b) => a.index - b.index);
+      for(let i = 0; i < editors.length; i++){
+        let  styles = '';
+        switch (editors[i].type){
+          case 'HSL': 
+            styles += `hue-rotate(${editors[i].value[0]}deg) saturate(${100 + editors[i].value[1]}%) brightness(${100 + editors[i].value[2]}%)`;
+            
+          ;break
+      }
+      img.style.filter = styles;
+    }
+  }
+
+  async sendEditorData(){
+    let info = State.get('editorInfo');
+    let img = this.viewbox.querySelector('img');
+    if(!img) return; 
+    let scale = img.naturalWidth / img.width;
+    let imgdata = await tool.DomToImagedata(img,{scale:scale});
+    toolMessage([[imgdata,info],'editorPixel'],PLUGINAPP);
   }
 
   addDiffLanguage(parent,texts,tagname,isRun){
@@ -2779,31 +2817,6 @@ function addTag(type,info){
   //重置文字样式
   loadFont(DOM.createTagsBox.parentNode);
 };
-
-//预览导出图片-放大
-getElementMix('fullimg').addEventListener('change',(e)=>{
-  if(e.target.checked){
-    DOM.dailogImgBox.setAttribute('data-isfull','true');
-  }else{
-    DOM.dailogImgBox.setAttribute('data-isfull','false');
-  };
-});
-getElementMix('fulleditor').addEventListener('change',(e)=>{
-  if(e.target.checked){
-    DOM.editorViewbox.setAttribute('data-isfull','true');
-  }else{
-    DOM.editorViewbox.setAttribute('data-isfull','false');
-  };
-});
-//编辑预览图
-function addEditorView(info){
-  let viewimg = DOM.editorViewbox.querySelector('img');
-  viewimg = viewimg ? viewimg : document.createElement('img');
-  let ismaxW = info.width >= info.height ? 'true' : 'false';
-  viewimg.setAttribute('data-ismaxW',ismaxW);
-  viewimg.src = URL.createObjectURL(new Blob([info.u8a],{type:'image/png'}));
-  DOM.editorViewbox.appendChild(viewimg);
-}
 //选中导出标签进行管理
 document.getElementById('exportset-pickall').addEventListener('change',(e)=>{
   let picks = DOM.exportTagsBox.querySelectorAll('[data-export-pick]');
@@ -2873,7 +2886,6 @@ getElementMix('data-export-overset').addEventListener('click',()=>{
   let infos = getSelectedExportImgInfo();
   toolMessage([infos,'oversetExportImgInfo'],PLUGINAPP);
 });
-
 //获取所选导出标签
 function getSelectedExportImgInfo(){
   let picks = DOM.exportTagsBox.querySelectorAll('[data-export-pick="true"]');
@@ -2892,7 +2904,6 @@ function getSelectedExportImgInfo(){
   });
   return infos;
 }
-
 //导出内容
 DOM.exportAnyBtn.addEventListener('click',()=>{
   let isFinal = []
@@ -2917,7 +2928,16 @@ DOM.exportAnyBtn.addEventListener('click',()=>{
     qualityspan.textContent = quality;
   };
 });
+//图片查看器放大图片
+getElementMix('fullimg').addEventListener('change',(e)=>{
+  if(e.target.checked){
+    DOM.dailogImgBox.setAttribute('data-isfull','true');
+  }else{
+    DOM.dailogImgBox.setAttribute('data-isfull','false');
+  };
+});
 
+//编辑预览图
 getElementMix('data-editor-setbg').addEventListener('change',(e)=>{
   showNext(e.target,'data-color-mix','flex');
   if(e.target.checked){
@@ -2926,7 +2946,35 @@ getElementMix('data-editor-setbg').addEventListener('change',(e)=>{
   }else{
     DOM.editorViewbox.style.setProperty('--bg','none')
   }
-})
+});
+getElementMix('data-editor-clear').addEventListener('click',(e)=>{
+  DOM.editorViewbox.innerHTML = '';
+});
+function addEditorView(info){
+  let editorInfo = State.get('editorInfo');
+  editorInfo = {...info,...editorInfo};
+  State.set('editorInfo',editorInfo);
+  let viewimg = DOM.editorViewbox.querySelector('img');
+  if(!viewimg){
+    viewimg = document.createElement('img');
+    viewimg.setAttribute('data-editor-view-id',info.id);
+    viewimg.setAttribute('data-editor-view-name',info.name);
+    viewimg.setAttribute('data-editor-view-width',info.w);
+    viewimg.setAttribute('data-editor-view-height',info.h);
+    DOM.editorViewbox.appendChild(viewimg);
+  };
+  let ismaxW = info.width >= info.height ? 'true' : 'false';
+  viewimg.setAttribute('data-ismaxW',ismaxW);
+  viewimg.src = URL.createObjectURL(new Blob([info.u8a],{type:'image/png'}));
+};
+//预览导出图片-放大
+getElementMix('fulleditor').addEventListener('change',(e)=>{
+  if(e.target.checked){
+    DOM.editorViewbox.setAttribute('data-isfull','true');
+  }else{
+    DOM.editorViewbox.setAttribute('data-isfull','false');
+  };
+});
 
 //管理断链样式
 DOM.btnLinkstyle.addEventListener('click',()=>{
@@ -5418,6 +5466,12 @@ function getUserNumber(node){
     const divisor = matrixSum || 1; // 避免除零
     convolve.setAttribute('kernelMatrix', matrix.join(' '));
     convolve.setAttribute('divisor', divisor);
+  };
+  if(node.getAttribute('data-editor-setline') !== null){
+    let id = node.parentNode.getAttribute('data-editor-set-for');
+    let lineNum = node.getAttribute('data-editor-setline');
+    Editor.finalEditors[id].value[lineNum] = number * 1;
+    Editor.run();
   }
 };
 
@@ -5558,6 +5612,7 @@ function getUserSelect(node){
 
 function getUserRadio(node){
   let userRadio= node.getAttribute('data-radio-value');
+  //console.log(userRadio)
   if(userRadio){
     if(node.getAttribute('data-pixelscale-set') !== null){
       DOM.pixelScale.value = userRadio;
@@ -5644,6 +5699,12 @@ function getUserRadio(node){
       getElementMix('upload-tablearea').setAttribute('data-eg',typeEg[userRadio.toLowerCase()]);
       getElementMix('upload-tablearea').setAttribute('data-eg-en',typeEg[userRadio.toLowerCase()]);
     };
+
+    if(node.parentNode.getAttribute('data-editor-setline') !== null){
+      let id = node.parentNode.parentNode.getAttribute('data-editor-set-for');
+      let lineNum = node.parentNode.getAttribute('data-editor-setline');
+      Editor.finalEditors[id].value[lineNum] = userRadio;
+    }
   };
 };
 

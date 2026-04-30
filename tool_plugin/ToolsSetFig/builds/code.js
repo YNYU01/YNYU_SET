@@ -664,7 +664,7 @@ figma.ui.onmessage = async (message) => {
             let c = b[0];
             let [w,h,x,y] = getSafeMain(c);
             let maxWH = Math.max(w,h);
-            let scale = maxWH >= 1024 ? 1024/maxWH : 1;
+            let scale = maxWH >= 4096 ? 4096/maxWH : 1;
             let info = {
                 id: c.id,
                 name: c.name,
@@ -680,6 +680,10 @@ figma.ui.onmessage = async (message) => {
             postmessage([info,'editorView'])
         };
     };
+    //处理编辑图片
+    if( type == 'editorPixel'){
+        console.log(info)
+    }
     //上传样式信息
     if( type == "getStyleInfo"){
         getStyle('paint',true);

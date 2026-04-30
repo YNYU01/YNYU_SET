@@ -767,7 +767,7 @@ function COMP_MAIN(){
     const min = info.split(',')[0] * 1;
     const maxVal = max !== null ? max : 0;
     const minVal = min !== null ? min : 0;
-    console.log(maxVal,minVal)
+    //console.log(maxVal,minVal)
 
     if(isNaN(item.value) || item.value == ''){
       item.value = 0;
