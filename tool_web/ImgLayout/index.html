@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雪景照片拼图生成器</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --primary-btn: #007bff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        /* 控制面板样式 */
+        .controls {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            box-sizing: border-box; /* 防止padding撑大宽度 */
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: #555;
+            margin-right: 15px;
+            white-space: nowrap;
+            width: 100px; /* 稍微加宽标签 */
+        }
+
+        .input-group input[type="file"] {
+            flex-grow: 1;
+            min-width: 0; /* 防止内容溢出 */
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-btn);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 预览区域容器 */
+        #preview-container {
+            width: 60%;
+            max-width: 500px;
+            aspect-ratio: 9 / 16;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            background: #000;
+            overflow: hidden; /* 防止canvas溢出 */
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <div class="input-group">
+            <label>1. 背景图:</label>
+            <!-- 确保ID唯一 -->
+            <input type="file" id="bg-upload" accept="image/*">
+        </div>
+        
+        <div class="input-group">
+            <label>2. 照片 1:</label>
+            <input type="file" class="img-upload" accept="image/*">
+        </div>
+        
+        <div class="input-group">
+            <label>3. 照片 2:</label>
+            <input type="file" class="img-upload" accept="image/*">
+        </div>
+        
+        <div class="input-group">
+            <label>4. 照片 3:</label>
+            <input type="file" class="img-upload" accept="image/*">
+        </div>
+        
+        <div class="input-group">
+            <label>5. 照片 4:</label>
+            <input type="file" class="img-upload" accept="image/*">
+        </div>
+        
+        <div class="input-group">
+            <label>6. 照片 5:</label>
+            <input type="file" class="img-upload" accept="image/*">
+        </div>
+
+        <!-- 显式添加 type="button" 防止表单提交 -->
+        <button id="download-btn" type="button">导出图片</button>
+    </div>
+
+    <div id="preview-container">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        /**
+         * ==========================================
+         * ⚙️ 全局配置参数
+         * ==========================================
+         */
+        const CONFIG = {
+            width: 1280,
+            height: 2276,
+            rainbow: {
+                x: 350,
+                y: 60,
+                width: 580,
+                itemHeight: 360,
+                gap: 70,
+                colors: ['#00000011', '#00000011', '#00000011', '#00000011', '#00000011']
+            },
+            padding: 30,
+            placeholderColor: '#000000'
+        };
+
+        // DOM 元素
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const bgInput = document.getElementById('bg-upload');
+        const imgInputs = document.querySelectorAll('.img-upload');
+        const downloadBtn = document.getElementById('download-btn');
+
+        let bgImage = null;
+        let images = [null, null, null, null, null, null];
+
+        // 设置 Canvas 实际分辨率
+        canvas.width = CONFIG.width;
+        canvas.height = CONFIG.height;
+
+        /**
+         * 工具函数：加载图片
+         */
+        function loadImage(src) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => resolve(null);
+                img.src = src;
+            });
+        }
+
+/**
+ * 工具函数：图片 Cover 模式填充（居中裁剪）
+ * 逻辑：计算原图需要裁剪的区域(sx, sy, sw, sh)，然后绘制到目标区域(x, y, w, h)
+ */
+function drawImageFill(ctx, img, x, y, w, h) {
+    if (!img) {
+        ctx.fillStyle = CONFIG.placeholderColor;
+        ctx.fillRect(x, y, w, h);
+        return;
+    }
+
+    // 1. 计算宽高比
+    const imgRatio = img.width / img.height;   // 原图比例
+    const boxRatio = w / h;                    // 目标容器比例
+
+    // 2. 计算源图片的裁剪区域 (Source Rect)
+    let sx = 0, sy = 0, sw = img.width, sh = img.height;
+
+    if (imgRatio > boxRatio) {
+        // 情况A：原图比容器“更宽”
+        // 策略：高度填满，宽度居中裁剪
+        sh = img.height;
+        sw = sh * boxRatio; // 按容器比例计算需要的宽度
+        sx = (img.width - sw) / 2; // 计算X轴偏移量以实现居中
+    } else {
+        // 情况B：原图比容器“更高” (或者比例相同)
+        // 策略：宽度填满，高度居中裁剪
+        sw = img.width;
+        sh = sw / boxRatio; // 按容器比例计算需要的高度
+        sy = (img.height - sh) / 2; // 计算Y轴偏移量以实现居中
+    }
+
+    // 3. 执行绘制
+    // 参数说明：图片对象, 源X, 源Y, 源宽, 源高, 目标X, 目标Y, 目标宽, 目标高
+    ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+
+
+        /**
+         * 工具函数：绘制图片 
+         */
+        function drawImageFill2(ctx, img, x, y, w, h) {
+            if (!img) {
+                ctx.fillStyle = CONFIG.placeholderColor;
+                ctx.fillRect(x, y, w, h);
+                return;
+            }
+            
+            const ratio = Math.max(w / img.width, h / img.height);
+        const cx = (w - img.width * ratio) / 2;
+        const cy = (h - img.height * ratio) / 2;
+        console.log(ratio,img.width - w*ratio,img.height - h/ratio, x,y,w,h)
+        ctx.drawImage(img,0,0,img.width - w*ratio,img.height - h/ratio, x,y,w,h);
+        }
+
+        /**
+         * 主绘制函数
+         */
+        async function render() {
+            // 1. 清空画布
+            ctx.clearRect(0, 0, CONFIG.width, CONFIG.height);
+
+            // 2. 绘制背景
+            if (bgImage) {
+                // 背景图也强制铺满全屏
+                drawImageFill(ctx, bgImage, 0, 0, CONFIG.width, CONFIG.height);
+            } else {
+                ctx.fillStyle = '#1a1a1a';
+                ctx.fillRect(0, 0, CONFIG.width, CONFIG.height);
+            }
+            
+            // 创建彩虹渐变
+            const gradient = ctx.createLinearGradient(0, CONFIG.rainbow.y, 0, CONFIG.rainbow.y + 2120);
+            gradient.addColorStop(0.0, '#661A66'); // 原: #4C2A4C (调整为更鲜艳的紫红色)
+gradient.addColorStop(0.2, '#663399'); // 原: #5D4A7D (调整为更纯净的蓝紫色)
+gradient.addColorStop(0.4, '#22DDEE'); // 原: #428EB2 (调整为更明亮的青蓝色)
+gradient.addColorStop(0.6, '#FFD700'); // 原: #E1C246 (调整为更耀眼的金黄色)
+gradient.addColorStop(0.8, '#DD2040'); // 原: #E0004D (调整为更强烈的橙红色)
+gradient.addColorStop(1.0, '#993399'); // 原: #804480 (调整为更浓郁的紫色)
+
+
+            ctx.fillStyle = gradient;
+            roundRect(ctx, CONFIG.rainbow.x, CONFIG.rainbow.y, CONFIG.rainbow.width, 2120, 0);
+            ctx.fill();
+
+            // 3. 绘制彩虹条容器及内部图片
+            const r = CONFIG.rainbow;
+
+            r.colors.forEach((color, index) => {
+                const currentY = r.y + (index * (r.itemHeight + r.gap));
+
+                // 绘制彩虹背景条
+                ctx.fillStyle = color;
+                roundRect(ctx, r.x, currentY, r.width, r.itemHeight, 0);
+                ctx.fill();
+
+                // 计算图片区域
+                const imgX = r.x + CONFIG.padding;
+                const imgY = currentY + CONFIG.padding;
+                const imgW = r.width - (CONFIG.padding * 2);
+                const imgH = r.itemHeight - (CONFIG.padding * 2);
+
+                // 使用新的填充函数
+                drawImageFill(ctx, images[index], imgX, imgY, imgW, imgH);
+            });
+        }
+
+        // 辅助函数：绘制圆角矩形路径
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        /**
+         * 事件监听
+         */
+        bgInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                // 释放旧的 URL 对象以防内存泄漏
+                if(bgImage && bgImage.src.startsWith('blob:')) URL.revokeObjectURL(bgImage.src);
+                bgImage = await loadImage(URL.createObjectURL(file));
+                render();
+            }
+        });
+
+        imgInputs.forEach((input, index) => {
+            input.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                     // 释放旧的 URL 对象
+                    if(images[index] && images[index].src.startsWith('blob:')) URL.revokeObjectURL(images[index].src);
+                    images[index] = await loadImage(URL.createObjectURL(file));
+                    render();
+                }
+            });
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'puzzle-result.png';
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+        });
+
+        // 初始渲染
+        render();
+    </script>
+</body>
+</html>
+</html>
