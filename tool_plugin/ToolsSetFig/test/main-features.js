@@ -21,6 +21,8 @@ const SKILL_STRATEGIES = {
   'Merge Character': () => mergeText('character'),
   'Merge Keep Style': () => mergeText('all'),
   'Create Paint Style': () => createPaintStyle(),
+  'Add Slice': () => autoClip(),
+  'Slice@1x': () => autoClip(true),
 };
 
 // 带数据通信的双击功能映射
@@ -91,7 +93,7 @@ DOM.skillBtnMain.forEach(btn => {
 
 // 更多功能 > 返回裁切方案以栅格化
 function sendPixel(name){
-  let mix = DOM.skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+  let mix = getElementMix('data-pixel-mix').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
   let s = DOM.pixelScale.value;
   let cuts = [];
   tipsAll(MESSAGES.READING, State.get('selectNodeInfo').length * 800);
@@ -375,3 +377,10 @@ function createPaintStyle(){
   if(styleAll.length === 0) return;
   toolMessage([styleAll,'createPaintStyle'],PLUGINAPP);
 };
+
+// 更多功能 > 自动裁切
+function autoClip(isPixel = false){
+  let mode = getElementMix('data-autoclip-mode-set').getAttribute('data-radio-value');
+  let size = getElementMix('data-pixel-mix-autoclip').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+  toolMessage([[mode,size,isPixel],'autoClip'],PLUGINAPP);
+}

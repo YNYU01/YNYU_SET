@@ -21,6 +21,10 @@ let SKILL_SEC_INFO = [
     name: ["宫格裁切","clip by grid"],
   },
   {
+    id: 'AutoClipByTag',
+    name: ["标签裁切","auto clip by tag"],
+  },
+  {
     id: 'SplitText',
     name: ["拆分文本","split text"],
   },
