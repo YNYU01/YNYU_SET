@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html data-theme="dark" data-language="En" data-plugin="widget">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_style.css"  >
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/publics/run.js"></script>
+  <style>
+    :root{
+      --mainFontSize:12px;
+      --mainFontSize-mini:10px;
+      --pointer:url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/pointer_24.png'),auto;
+    }
+    html{
+      cursor: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@ba19c5d927f0c9cc1bb1647b224fb58667102074/VI/cursor_16.png'),auto;
+    }
+
+    * {
+      cursor: inherit;
+    }
+
+    input[type="text"],textarea{
+      cursor: text;
+    }
+     
+    #tableInput-scroll { 
+      font-family: 'Roboto Mono', monospace; 
+    }
+    /*--按钮类*/
+    [data-btn]{
+      max-width: 580px;
+      padding: 2px 0;
+      border: 1px solid var(--boxBod);
+      box-sizing: border-box;
+      cursor: var(--pointer,pointer);
+      position: relative;
+    }
+
+    [data-btn]:disabled{
+      background: var(--boxGry);
+      transform: translateY(1px);
+      cursor: default;
+      opacity: 0.6;
+    }
+
+    [data-btn]:hover{
+      background: var(--boxGry);
+    }
+
+    [data-btn]:active{
+      transform: translateY(1px);
+    }
+
+    [data-btn="op"]{
+      border: none;
+      background: none;
+    }
+
+    [data-btn="op"]:hover{
+      background: none;
+      opacity: 0.5;
+    }
+
+    [data-btn="main"]{
+      border-radius: 20px;
+      background: var(--boxGry);
+    }
+
+    [data-input-unit]{
+      height: 20px;
+      width: 18px;
+      flex: 0 0 auto;
+      padding: 0 0 0 0.5ch;
+      background: var(--boxGry);
+      margin-left: -0.5ch;
+      border-radius: 0 4px 4px 0;
+    }
+
+    [data-input-unit="auto"]{
+      width: fit-content;
+      padding:0 0.5ch 0 1ch;
+    }
+
+    #bottom{
+      border-top: 1px solid var(--boxBod);
+      background-image: url('https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/VI/logo_graph_bod.png'), linear-gradient(rgba(20, 20, 20, 0.2), rgba(20, 20, 20, 0.2));
+      background-size: 300px auto;
+      background-repeat: repeat-x;
+      background-position: 0 0;
+      background-color: var(--boxBak);
+      animation: bgMove 40s linear infinite;
+    }
+    @keyframes bgMove {
+      0% {
+        background-position-x: 0;
+      }
+      100% {
+        background-position-x: -300px;
+      }
+    }
+
+  </style>
+</head>
+<body class="ovy">
+  <div class="df-ffc" style="--boxBak: #171717; padding:12px 12px 6px 12px;">
+  
+  </div>
+
+  <div id="bottom" class="df-sc pad10 bsb">
+    <div style="height: 18px; --fill: var(--mainColor);">
+      <set-en-home></set-en-home>
+    </div>
+    <div class="font-s10 op6">©2024-2025 @YNYU www.ynyuset.cn</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@de30e231ecca2aebcb5f047c510989598a99bc97/publics/graph.js"></script>
+
+  <script>
+
+    window.onmessage = (event) => {
+      const { type, data } = event.data.pluginMessage || {};
+      
+    };
+  </script>
+</body>
+</html>
