@@ -1,10 +1,34 @@
 /* AUTO-GENERATED FILE. DO NOT EDIT. */
 /* Source: tool_plugin/ToolsSetFig/log.md */
-/* Built: 2026-04-30T17:07:05.189Z */
+/* Built: 2026-06-07T15:28:00.110Z */
 
 (function () {
   'use strict';
   window.__TOOLSSET_HELP_LOGS__ = [
+  {
+    "title": [
+      "v0.1.10",
+      "v0.1.10"
+    ],
+    "date": "2026/6/7",
+    "items": [
+      [
+        "li",
+        "supports custom slice naming prefix, generated slices will be named as prefix + number; allows choosing to add slices before the selected object / to the parent of the selected object / to the page;  新增：更多功能>标签裁切, 可根据多种标签自动计算出合适的切图范围, 添加切片, 并给切片设置好导出参数; 可设置切片命名前缀, 生成的切片将命名为前缀+序号; 可选择将切片添加到所选对象前/所选对象的父级/页面",
+        "<span data-doc-key>✨ New:</span> More Tools > Tag Slicing, automatically calculates the optimal slicing range based on multiple tags, adds slices, and sets export parameters"
+      ],
+      [
+        "li",
+        "<span data-doc-key>修复：</span>表单页>表格样式，修复设置填充会导致描边改动的问题",
+        "<span data-doc-key>🐞 Fix:</span> Sheet page > Table styles, fixed issue where setting fill would unexpectedly modify stroke"
+      ],
+      [
+        "li",
+        "<span data-doc-key>修复：</span>表单页>表格主题，修复选种表格没有正常切换主题风格的问题",
+        "<span data-doc-key>🐞 Fix:</span> Sheet page > Table themes, fixed issue where selecting a table did not correctly switch theme styles"
+      ]
+    ]
+  },
   {
     "title": [
       "v0.1.9",
@@ -29,7 +53,7 @@
       ],
       [
         "li",
-        "<span data-doc-key>⚡ 优化：</span>表单页>应用表格主题时，插件会记录色值和风格，便于再次选中修改，但需注意，手动修改的色值不会缓存",
+        "<span data-doc-key>⚡ 优化：</span>表单页>应用表格主题时, 插件会记录色值和风格, 便于再次选中修改, 但需注意, 手动修改的色值不会缓存",
         "<span data-doc-key>⚡ Optimize:</span> Sheet page > When applying table themes, the plugin now records color values and styles for easier modification upon reselection (note: manually modified color values are not cached)"
       ]
     ]

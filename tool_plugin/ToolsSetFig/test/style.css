@@ -875,6 +875,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-transform-center-box] [data-radio-main="true"]{
   color: transparent;
+  --fill: transparent;
   background: var(--themeColor);
 }
 

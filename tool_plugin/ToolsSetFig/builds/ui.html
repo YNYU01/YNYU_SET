@@ -4,7 +4,7 @@
   <meta name="description" content="网页内容简介，转发时显示">
   <title data-en-text="『YNYU_SET』 ToolsSet Fig">『云即·工具集（Figma版）』</title>
   <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -99,7 +99,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -279,18 +279,21 @@ p [data-highlight]{
   padding:0 0.5ch 0 1ch;
 }
 
-[data-selects="false"] [data-pixel-mix] [data-select-options]{
+[data-selects="false"] [data-pixel-mix] [data-select-options],
+[data-selects="false"] [data-pixel-mix-autoclip] [data-select-options]{
   visibility: hidden;
 }
 
-[data-pixel-mix] [data-select-options]{
+[data-pixel-mix] [data-select-options],
+[data-pixel-mix-autoclip] [data-select-options]{
   white-space: nowrap;
   top: 24px;
   flex-wrap: wrap;
   width: 170;
 }
 
-[data-pixel-mix] [data-option="option"]{
+[data-pixel-mix] [data-option="option"],
+[data-pixel-mix-autoclip] [data-option="option"]{
   width: 56px;
   padding: 0.5ch;
   box-sizing: border-box;
@@ -976,6 +979,7 @@ input[type="checkbox"]:checked + .btn-moreset{
 
 [data-transform-center-box] [data-radio-main="true"]{
   color: transparent;
+  --fill: transparent;
   background: var(--themeColor);
 }
 
@@ -4635,8 +4639,8 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
                     <div data-pixel-mix class="df-lc pos-r gap4" data-select data-select-close data-select-value="≤ 4096px" style="width: 90px; z-index:2;">
-                      <input id="select-value-2" type="text" data-select-input readonly value="≤4096">
-                      <input id="select-show-2" data-select-pick="≤4096" type="checkbox">
+                      <input id="select-value-2" type="text" data-select-input readonly value="≤ 4096px">
+                      <input id="select-show-2" data-select-pick="≤ 4096px" type="checkbox">
                       <label for="select-show-2" class="show-next wh100 pos-a" style="top:0; right: 0;"></label>
                       <div data-select-options class="df-lc pos-a noscrollbar" style="display: none;">
                         <div data-option="option" data-option-main="true" data-option-value="≤ 4096px">≤ 4096px</div>
@@ -4705,17 +4709,56 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       </div>
                     </div>
                     <div data-transform-center-module class="df-ffc df-cc fl1 gap4 mar-l10" >
-                      <div data-skill-btnname-top data-any="vw240" data-en-text="Scale center">缩放中心</div>
+                      <div data-skill-btnname-top data-any="vw240" data-en-text="Scale Center" style="white-space: nowrap;">缩放中心</div>
                       <div data-transform-center-box data-radio-value="CC" class="w100" >
-                        <div data-radio data-radio-data="TL" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="TC" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="TR" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="CL" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="CC" data-radio-main="true" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="CR" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="BL" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="BC" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="BR" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="TL" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <defs>
+                              <rect id="center-point" x="6" y="6"  width="2" height="2" fill-opacity="0.5" fill="var(--fill,var(--mainColor))"></rect>
+                            </defs>
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="TC" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="TR" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="CL" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="CC" data-radio-main="true" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="CR" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="BL" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="BC" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="BR" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
                       </div>
                     </div>                    
                   </div>
@@ -4841,6 +4884,93 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Image@2x Clip">栅格化裁切</div>
                       <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Component Clip">组件化裁切</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fl1" data-skill-sec="AutoClipByTag">
+                  <div data-skill-star="false">
+                    <btn-star></btn-star>
+                  </div>
+                  <!--
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
+                    <div data-pixel-mix-autoclip class="df-lc pos-r gap4" data-select data-select-close data-select-value="≤ 1024px" style="width: 90px; z-index:2;">
+                      <input id="select-value-5" type="text" data-select-input readonly value="≤ 1024px">
+                      <input id="select-show-5" data-select-pick="≤ 1024px" type="checkbox">
+                      <label for="select-show-5" class="show-next wh100 pos-a" style="top:0; right: 0;"></label>
+                      <div data-select-options class="df-lc pos-a noscrollbar" style="display: none;">
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 4096px">≤ 4096px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 2048px">≤ 2048px</div>
+                        <div data-option="option" data-option-main="true" data-option-value="≤ 1024px">≤ 1024px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 512px">≤ 512px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 256px">≤ 256px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 128px">≤ 128px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 64px">≤ 64px</div>
+                        <div data-option="option" data-option-main="false" data-option-value="≤ 32px">≤ 32px</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Slice Mode">切片模式</div>
+                    <div class="df-lc fl1 gap4" data-autoclip-mode-set data-radio-value="0">
+                      <div class="df-cc" data-radio data-radio-main="true" data-radio-data="0" data-en-text="Rows" style="padding: 0 4px;">上下</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="1" data-en-text="Columns" style="padding: 0 4px;">左右</div>
+                      <div class="df-cc" data-radio data-radio-main="false" data-radio-data="2" data-en-text="Grid" style="padding: 0 4px;">宫格</div>
+                    </div>
+                  </div>
+                  <div class="df-sc" data-skill-line>
+                      <div class="df-lc w100" data-skill-more>
+                        <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Slice@1x">栅格化切片</div>
+                        <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Add Slice">添加切片</div>
+                      </div>
+                  </div>
+                  -->
+                  <div class="df-ffc bod-d gap4 pad4 mar-b4">
+                    <div class="font-s10 op6" 
+                    data-en-text="<span style='color:var(--themeColor2)'>@slice:fix</span> Marks fixed slice positions;<br>
+                    <span style='color:var(--themeColor2)'>@slice:safe</span> Indicates non-truncatable areas;<br>
+                    <span style='color:var(--themeColor2)'>@slice:module</span> Defines module boundaries to prevent slices from crossing modules;">
+                    <span style='color:var(--themeColor2)'>@slice:fix</span> 固定切图位;<br>
+                    <span style='color:var(--themeColor2)'>@slice:safe</span> 不可截断区域;<br>
+                    <span style='color:var(--themeColor2)'>@slice:module</span> 模块区域,可避免跨模块切图；
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Final Size">目标尺寸</div>
+                    <div data-autoclip-max class="df-lc" data-int-value="1200" >
+                      <input id="input-autoclip-max" type="text" value="1200" data-input data-input-type="int" data-input-must="1,4096" style="text-align: center; max-width: 8ch;">
+                      <div class="df-cc" data-input-unit>px</div>
+                    </div>
+                    <div class="df-lc" style="flex: 0 0 auto; width: 40px;">
+                      <input id="input-autoclip-scale" type="text" value="1"
+                      data-input data-input-type="float" data-input-must="0.1,20" 
+                      style="flex: 0 0 auto; width: 32px; text-align: center;"/>
+                      <div class="df-cc" data-input-unit>x</div>
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Prefix">命名前缀</div>
+                    <div data-autoclip-max class="df-lc fl1" data-int-value="1200" >
+                      <input id="input-autoclip-prefix" type="text" value="切片-" data-en-input="slice-" data-input data-input-type="text" data-input-must="切片-" data-input-must-en="slice-">
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Insert">切片位置</div>
+                    <div class="df-lc fl1 gap2" data-autoclip-insert data-radio-value="1">
+                      <div data-radio="" data-radio-data="before" data-en-text="Before" data-radio-main="true" class="df-cc">
+                        对象前
+                      </div>
+                      <div data-radio="" data-radio-data="parent" data-en-text="Parent" data-radio-main="false" class="df-cc">
+                        父级
+                      </div>
+                      <div data-radio="" data-radio-data="page" data-en-text="Page" data-radio-main="false" class="df-cc">
+                        页面
+                      </div>
+                    </div>
+                  </div>
+                  <div class="df-sc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Add Slice">添加切片</div>
                     </div>
                   </div>
                 </div>
@@ -5459,23 +5589,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/other/jsQR_correct.js"></script>
-  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/other/dom_to_img.js"></script-->
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/jsQR_correct.js"></script>
+  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/dom_to_img.js"></script-->
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@50b6bc1c5ecd008482ca0d055b1ee070adbc8c18/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -5499,6 +5629,10 @@ let SKILL_SEC_INFO = [
   {
     id: 'ClipByGrid',
     name: ["宫格裁切","clip by grid"],
+  },
+  {
+    id: 'AutoClipByTag',
+    name: ["标签裁切","auto clip by tag"],
   },
   {
     id: 'SplitText',
@@ -5562,7 +5696,7 @@ let HELP_DATA = {
   sheet: richDoc.doc.toolsset.sheet.help,
 };
 
-const LOCAL_PLUGIN_VERSION = '0.1.9';
+const LOCAL_PLUGIN_VERSION = '0.1.10';
 
 const UI_SIZES = {
   MINI: [208, 460],
@@ -6966,13 +7100,16 @@ function reSelectInfo(info){
 
       let colorType = getElementMix('data-table-theme-color').querySelector('[data-colortype-mode]');
       let color = info[0].tableTheme[1];
+      let theme = info[0].tableTheme[0];
+      let btnTheme = getElementMix(`data-en-text="${theme}"`);
+      btnTheme.click()
       let [h,s,l] = color.match(/\d+/g).map(Number);
       switch (colorType.getAttribute('data-colortype-mode')){
         case 'hex': color = rgbTohex(...hslTorgb(h,s,l,255));break;
         case 'rgb': color = 'rgb(' + hslTorgb(h,s,l,255).join(',') + ')';break;
       };
       getElementMix('colorvalue-3').value = color;
-      let event = new Event('change',{bubbles:true});;
+      let event = new Event('change',{bubbles:true});
       getElementMix('colorvalue-3').dispatchEvent(event);
     }else{
       let colorDefault = {
@@ -6984,6 +7121,7 @@ function reSelectInfo(info){
       getElementMix('colorvalue-3').value = colorDefault[colorType.getAttribute('data-colortype-mode')];
       let event = new Event('change',{bubbles:true});
       getElementMix('colorvalue-3').dispatchEvent(event);
+      getElementMix(`data-en-text="Normal"`).click();
     }
   };
 
@@ -11034,6 +11172,8 @@ const SKILL_STRATEGIES = {
   'Merge Character': () => mergeText('character'),
   'Merge Keep Style': () => mergeText('all'),
   'Create Paint Style': () => createPaintStyle(),
+  'Add Slice': () => autoClip(),
+
 };
 
 const SKILL_DBLCLICK_STRATEGIES = {
@@ -11089,7 +11229,7 @@ DOM.skillBtnMain.forEach(btn => {
 });
 
 function sendPixel(name){
-  let mix = DOM.skillAllBox.querySelector('[data-pixel-mix]').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+  let mix = getElementMix('data-pixel-mix').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
   let s = DOM.pixelScale.value;
   let cuts = [];
   tipsAll(MESSAGES.READING, State.get('selectNodeInfo').length * 800);
@@ -11180,11 +11320,17 @@ function applyTableStyleStrategy(data){
   let styleBodId = null;
   if(data && data[0]){
     styleFillId = data[0];
+    if(data[0] == 'null'){
+      styleFillId = null;
+    }
   }else{
     styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
   }
   if(data && data[1]){
     styleBodId = data[1];
+    if(data[1] == 'null'){
+      styleBodId = null;
+    }
   }else{
     styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
   }
@@ -11231,7 +11377,7 @@ DOM.tableStyleSetFill.querySelectorAll('[data-radio-data]').forEach(item => {
   let selects = ROOT.getAttribute('data-selects');
   if(selects == 'true'){
     item.addEventListener('click',()=>{
-      applyTableStyleStrategy([item.getAttribute('data-radio-data'),null]);
+      applyTableStyleStrategy([item.getAttribute('data-radio-data'),'null']);
     });
   }
 });
@@ -11239,7 +11385,7 @@ DOM.tableStyleSetBod.querySelectorAll('[data-radio-data]').forEach(item => {
   let selects = ROOT.getAttribute('data-selects');
   if(selects == 'true'){
     item.addEventListener('click',()=>{
-      applyTableStyleStrategy([null,item.getAttribute('data-radio-data')]);
+      applyTableStyleStrategy(['null',item.getAttribute('data-radio-data')]);
     });
   }
 });
@@ -11358,6 +11504,21 @@ function createPaintStyle(){
   if(styleAll.length === 0) return;
   toolMessage([styleAll,'createPaintStyle'],PLUGINAPP);
 };
+
+function autoClip(){
+  let prefix = getElementMix('input-autoclip-prefix').value;
+  let scale = getElementMix('input-autoclip-scale').value;
+  let maxsize = getElementMix('input-autoclip-max').value;
+  let insert = getElementMix('data-autoclip-insert').getAttribute('data-radio-valu');
+  let data = {
+    prefix:prefix,
+    scale:scale,
+    maxsize:maxsize,
+    insert:insert
+  }
+
+  toolMessage([data,'autoClip'],PLUGINAPP);
+}
 
   
 

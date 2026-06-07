@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Html2zy - 页面快照工具",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "将当前页面或指定元素转化为快照，记录实际的宽、高、位置、样式等信息",
   "permissions": [
     "activeTab",
@@ -24,7 +24,8 @@
         "content.js"
       ],
       "css": ["styles/content.css"],
-      "run_at": "document_idle"
+      "run_at": "document_idle",
+      "all_frames": true
     }
   ],
   "background": {

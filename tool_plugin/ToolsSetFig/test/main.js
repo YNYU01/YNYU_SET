@@ -1344,13 +1344,16 @@ function reSelectInfo(info){
       //console.log(info[0].tableTheme,info[0].tableTheme[1])
       let colorType = getElementMix('data-table-theme-color').querySelector('[data-colortype-mode]');
       let color = info[0].tableTheme[1];
+      let theme = info[0].tableTheme[0];
+      let btnTheme = getElementMix(`data-en-text="${theme}"`);
+      btnTheme.click()
       let [h,s,l] = color.match(/\d+/g).map(Number);
       switch (colorType.getAttribute('data-colortype-mode')){
         case 'hex': color = rgbTohex(...hslTorgb(h,s,l,255));break;
         case 'rgb': color = 'rgb(' + hslTorgb(h,s,l,255).join(',') + ')';break;
       };
       getElementMix('colorvalue-3').value = color;
-      let event = new Event('change',{bubbles:true});;
+      let event = new Event('change',{bubbles:true});
       getElementMix('colorvalue-3').dispatchEvent(event);
     }else{
       let colorDefault = {
@@ -1362,6 +1365,7 @@ function reSelectInfo(info){
       getElementMix('colorvalue-3').value = colorDefault[colorType.getAttribute('data-colortype-mode')];
       let event = new Event('change',{bubbles:true});
       getElementMix('colorvalue-3').dispatchEvent(event);
+      getElementMix(`data-en-text="Normal"`).click();
     }
   };
   

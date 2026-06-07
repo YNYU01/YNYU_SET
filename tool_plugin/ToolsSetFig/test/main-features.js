@@ -22,7 +22,7 @@ const SKILL_STRATEGIES = {
   'Merge Keep Style': () => mergeText('all'),
   'Create Paint Style': () => createPaintStyle(),
   'Add Slice': () => autoClip(),
-  'Slice@1x': () => autoClip(true),
+  //'Slice@1x': () => autoClip(true),
 };
 
 // 带数据通信的双击功能映射
@@ -189,11 +189,17 @@ function applyTableStyleStrategy(data){
   let styleBodId = null;
   if(data && data[0]){
     styleFillId = data[0];
+    if(data[0] == 'null'){
+      styleFillId = null;
+    }
   }else{
     styleFillId = DOM.tableStyleSetFill.getAttribute('data-radio-value');
   }
   if(data && data[1]){
     styleBodId = data[1];
+    if(data[1] == 'null'){
+      styleBodId = null;
+    }
   }else{
     styleBodId = DOM.tableStyleSetBod.getAttribute('data-radio-value');
   }
@@ -240,7 +246,7 @@ DOM.tableStyleSetFill.querySelectorAll('[data-radio-data]').forEach(item => {
   let selects = ROOT.getAttribute('data-selects');
   if(selects == 'true'){
     item.addEventListener('click',()=>{
-      applyTableStyleStrategy([item.getAttribute('data-radio-data'),null]);
+      applyTableStyleStrategy([item.getAttribute('data-radio-data'),'null']);
     });
   }
 });
@@ -248,7 +254,7 @@ DOM.tableStyleSetBod.querySelectorAll('[data-radio-data]').forEach(item => {
   let selects = ROOT.getAttribute('data-selects');
   if(selects == 'true'){
     item.addEventListener('click',()=>{
-      applyTableStyleStrategy([null,item.getAttribute('data-radio-data')]);
+      applyTableStyleStrategy(['null',item.getAttribute('data-radio-data')]);
     });
   }
 });
@@ -379,8 +385,19 @@ function createPaintStyle(){
 };
 
 // 更多功能 > 自动裁切
-function autoClip(isPixel = false){
-  let mode = getElementMix('data-autoclip-mode-set').getAttribute('data-radio-value');
-  let size = getElementMix('data-pixel-mix-autoclip').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
-  toolMessage([[mode,size,isPixel],'autoClip'],PLUGINAPP);
+function autoClip(){
+  let prefix = getElementMix('input-autoclip-prefix').value;
+  let scale = getElementMix('input-autoclip-scale').value;
+  let maxsize = getElementMix('input-autoclip-max').value;
+  let insert = getElementMix('data-autoclip-insert').getAttribute('data-radio-valu');
+  let data = {
+    prefix:prefix,
+    scale:scale,
+    maxsize:maxsize,
+    insert:insert
+  }
+  //let mode = getElementMix('data-autoclip-mode-set').getAttribute('data-radio-value');
+  //let size = getElementMix('data-pixel-mix-autoclip').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+  //toolMessage([[mode,size,isPixel],'autoClip'],PLUGINAPP);
+  toolMessage([data,'autoClip'],PLUGINAPP);
 }

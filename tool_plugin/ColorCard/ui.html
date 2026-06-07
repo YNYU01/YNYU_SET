@@ -121,7 +121,12 @@
   <script>
 
     window.onmessage = (event) => {
-      const { type, data } = event.data.pluginMessage || {};
+      console.log('Received message:', event);
+      const {data, type} = event.data.pluginMessage || { data: null, type: null };
+      if (type === 'getPixels') {
+        console.log('Received pixels:', data);
+        // 这里可以处理接收到的像素数据，例如显示在页面上或进行其他操作
+      }
       
     };
   </script>

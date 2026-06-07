@@ -1,8 +1,14 @@
+### v0.1.10 2026/6/7
+- ✨ New: More Tools > Tag Slicing, automatically calculates the optimal slicing range based on multiple tags, adds slices, and sets export parameters; supports custom slice naming prefix, generated slices will be named as prefix + number; allows choosing to add slices before the selected object / to the parent of the selected object / to the page;  新增：更多功能>标签裁切, 可根据多种标签自动计算出合适的切图范围, 添加切片, 并给切片设置好导出参数; 可设置切片命名前缀, 生成的切片将命名为前缀+序号; 可选择将切片添加到所选对象前/所选对象的父级/页面
+- 🐞 Fix: Sheet page > Table styles, fixed issue where setting fill would unexpectedly modify stroke;  修复：表单页>表格样式，修复设置填充会导致描边改动的问题
+- 🐞 Fix: Sheet page > Table themes, fixed issue where selecting a table did not correctly switch theme styles;  修复：表单页>表格主题，修复选种表格没有正常切换主题风格的问题
+
+
 ### v0.1.9 2026/5/1
 - 🐞 Fix: Sheet page > Fixed issue where component properties of nested instances could not be retrieved correctly; 🐞 修复：表单页>修复获取组件属性时无法正确获取嵌套实例的属性的问题
 - 🐞 Fix: Sheet page > Fixed misalignment when mapping properties of repeated nested instance components; 🐞 修复：表单页>修复映射内嵌重复实例组件属性时错位问题
 - ⚡ Optimize: Sheet page > Mapping data for component properties and tag attributes can now be used together; ⚡ 优化：表单页>组件属性和标签属性的映射数据可以混合使用
-- ⚡ Optimize: Sheet page > When applying table themes, the plugin now records color values and styles for easier modification upon reselection (note: manually modified color values are not cached); ⚡ 优化：表单页>应用表格主题时，插件会记录色值和风格，便于再次选中修改，但需注意，手动修改的色值不会缓存
+- ⚡ Optimize: Sheet page > When applying table themes, the plugin now records color values and styles for easier modification upon reselection (note: manually modified color values are not cached); ⚡ 优化：表单页>应用表格主题时, 插件会记录色值和风格, 便于再次选中修改, 但需注意, 手动修改的色值不会缓存
 
 ### v0.1.8 2026/4/10
 - 🐞 Fix: Sheet page > Tag attributes, fixed mismatch between reading order and mapping order; 🐞 修复：表单页>标签属性读取/映射, 修复读取顺序和映射顺序不匹配的问题

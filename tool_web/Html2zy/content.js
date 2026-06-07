@@ -1636,20 +1636,24 @@
    * 用于后续的定位和截图
    * 注意：如果选择器是 [data-h2zy]，只会为已有该属性的元素注入（不会导致死循环）
    */
-  function injectDataH2zyToElements(selector) {
+  function injectDataH2zyToElements(selector,isHash) {
     try {
       const elements = document.querySelectorAll(selector);
+      let hash = [];
       let injectedCount = 0;
       elements.forEach((element, index) => {
         // 检查元素是否已有data-h2zy属性，没有才设置
         // 这样可以避免在选择器是 [data-h2zy] 时导致死循环
         if (!element.hasAttribute('data-h2zy')) {
-          const hash = injectDataH2zy(element, index);
+          hash.push(injectDataH2zy(element, index));
           if (hash) {
             injectedCount++;
           }
         }
       });
+      if(isHash){
+        return hash;
+      }
       return injectedCount;
     } catch (error) {
       console.error('注入data-h2zy失败:', error);
@@ -1739,14 +1743,18 @@
   function snapshotBySelector(selector, options = {}) {
     try {
       const allElements = document.querySelectorAll(selector);
+      let newHashs = [];
       if (allElements.length === 0) {
+        console.log(selector);
         throw new Error(getMessage([`未找到匹配选择器 "${selector}" 的元素`,`No elements found matching selector "${selector}"`]));
       }
 
       // 读取到匹配元素时自动注入data-h2zy属性，方便后续定位和截图
       if (options.injectDataH2zy !== false) {
-        injectDataH2zyToElements(selector);
+        newHashs = injectDataH2zyToElements(selector,true);
       }
+
+      let hashsSet = new Set(newHashs);
 
       // 快速扫描：仅保留自身及所有祖先都非 display:none 的元素（避免扫到不可见元素的子元素）
       const indicesToProcess = [];
@@ -1788,7 +1796,7 @@
         const dataH2zy = element.getAttribute('data-h2zy');
         const selectorIndex = i; // 在完整选择器结果中的索引，供后续定位/截图使用
 
-        if (dataH2zy && globalElementsData[dataH2zy]) {
+        if (dataH2zy && globalElementsData[dataH2zy] && !hashsSet.has(dataH2zy)) {
           const existingData = globalElementsData[dataH2zy];
           existingData.selector = selector;
           existingData.index = selectorIndex;

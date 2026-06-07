@@ -54,6 +54,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "pako": "^2.1.0",
     "upng-js": "^2.1.0"
   }
 }

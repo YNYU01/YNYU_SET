@@ -1548,17 +1548,56 @@
                       </div>
                     </div>
                     <div data-transform-center-module class="df-ffc df-cc fl1 gap4 mar-l10" >
-                      <div data-skill-btnname-top data-any="vw240" data-en-text="Scale center">缩放中心</div>
+                      <div data-skill-btnname-top data-any="vw240" data-en-text="Scale Center" style="white-space: nowrap;">缩放中心</div>
                       <div data-transform-center-box data-radio-value="CC" class="w100" >
-                        <div data-radio data-radio-data="TL" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="TC" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="TR" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="CL" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="CC" data-radio-main="true" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="CR" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="BL" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="BC" data-radio-main="false" class="df-cc">▪</div>
-                        <div data-radio data-radio-data="BR" data-radio-main="false" class="df-cc">▪</div>
+                        <div data-radio data-radio-data="TL" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <defs>
+                              <rect id="center-point" x="6" y="6"  width="2" height="2" fill-opacity="0.5" fill="var(--fill,var(--mainColor))"></rect>
+                            </defs>
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="TC" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="TR" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="CL" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="CC" data-radio-main="true" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="CR" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="BL" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="BC" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
+                        <div data-radio data-radio-data="BR" data-radio-main="false" class="df-cc">
+                          <svg width="14" height="14" viewBox="0 0 14 14">
+                            <use href="#center-point"/>
+                          </svg>
+                        </div>
                       </div>
                     </div>                    
                   </div>
@@ -1691,6 +1730,7 @@
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
+                  <!--
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
                     <div data-pixel-mix-autoclip class="df-lc pos-r gap4" data-select data-select-close data-select-value="≤ 1024px" style="width: 90px; z-index:2;">
@@ -1722,6 +1762,55 @@
                         <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Slice@1x">栅格化切片</div>
                         <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Add Slice">添加切片</div>
                       </div>
+                  </div>
+                  -->
+                  <div class="df-ffc bod-d gap4 pad4 mar-b4">
+                    <div class="font-s10 op6" 
+                    data-en-text="<span style='color:var(--themeColor2)'>@slice:fix</span> Marks fixed slice positions;<br>
+                    <span style='color:var(--themeColor2)'>@slice:safe</span> Indicates non-truncatable areas;<br>
+                    <span style='color:var(--themeColor2)'>@slice:module</span> Defines module boundaries to prevent slices from crossing modules;">
+                    <span style='color:var(--themeColor2)'>@slice:fix</span> 固定切图位;<br>
+                    <span style='color:var(--themeColor2)'>@slice:safe</span> 不可截断区域;<br>
+                    <span style='color:var(--themeColor2)'>@slice:module</span> 模块区域,可避免跨模块切图；
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Final Size">目标尺寸</div>
+                    <div data-autoclip-max class="df-lc" data-int-value="1200" >
+                      <input id="input-autoclip-max" type="text" value="1200" data-input data-input-type="int" data-input-must="1,4096" style="text-align: center; max-width: 8ch;">
+                      <div class="df-cc" data-input-unit>px</div>
+                    </div>
+                    <div class="df-lc" style="flex: 0 0 auto; width: 40px;">
+                      <input id="input-autoclip-scale" type="text" value="1"
+                      data-input data-input-type="float" data-input-must="0.1,20" 
+                      style="flex: 0 0 auto; width: 32px; text-align: center;"/>
+                      <div class="df-cc" data-input-unit>x</div>
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Prefix">命名前缀</div>
+                    <div data-autoclip-max class="df-lc fl1" data-int-value="1200" >
+                      <input id="input-autoclip-prefix" type="text" value="切片-" data-en-input="slice-" data-input data-input-type="text" data-input-must="切片-" data-input-must-en="slice-">
+                    </div>
+                  </div>
+                  <div class="df-lc" data-skill-line>
+                    <div data-any="vw240" data-skill-btnname data-en-text="Insert">切片位置</div>
+                    <div class="df-lc fl1 gap2" data-autoclip-insert data-radio-value="1">
+                      <div data-radio="" data-radio-data="before" data-en-text="Before" data-radio-main="true" class="df-cc">
+                        对象前
+                      </div>
+                      <div data-radio="" data-radio-data="parent" data-en-text="Parent" data-radio-main="false" class="df-cc">
+                        父级
+                      </div>
+                      <div data-radio="" data-radio-data="page" data-en-text="Page" data-radio-main="false" class="df-cc">
+                        页面
+                      </div>
+                    </div>
+                  </div>
+                  <div class="df-sc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Add Slice">添加切片</div>
+                    </div>
                   </div>
                 </div>
                 <div class="fl1"  data-skill-sec="AlterImageFill">

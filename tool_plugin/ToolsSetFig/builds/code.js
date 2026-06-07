@@ -90,6 +90,349 @@ let localStyles = {paint:null,text:null,effect:null,grid:null};
 let localVariable;
 let IMG_TYPE = ['png','jpg','jpeg','webp'];
 
+class AutoClip {
+    constructor(node, data) {
+      this.node = node;
+      this.nodeBound = this.node.absoluteBoundingBox;
+  
+      this.data = data || {};
+      this.prefix = this.data.prefix || "切片";
+      this.scale = this.data.scale * 1 || 1;
+      this.maxsize = this.data.maxsize || 1200;
+      this.maxsize = this.maxsize/this.scale; //按倍率换算
+      this.insert = this.data.insert || "before";//before|parent|page
+      
+      this.safePoints = []; // 存储安全区坐标
+      this.fixPoints = []
+    }
+  
+    // 初步判断裁切点
+    clip() {
+      let c = this.node;
+      let nodeBound = this.nodeBound;
+      let totalHeight = Math.floor(nodeBound.height);
+      let fixPoints = [];//固定切片
+      let safePoints = [];//不可裁切范围
+      let moduleBreaks = [];//长图模块
+  
+      //统一遍历收集标签
+      let sliceNodes = c.findAll(item => item.name.includes('@slice:'));
+      sliceNodes.forEach(item => {
+        let bound = item.absoluteBoundingBox;
+        // 统一计算边界，应用防越界取整
+        let startY = Math.max(0, Math.floor(bound.y - nodeBound.y));
+        let endY = Math.min(totalHeight, Math.ceil(bound.y - nodeBound.y + bound.height));
+        
+        // 根据后缀分发到不同的变量中
+        if (item.name.includes('@slice:fix')) {
+          fixPoints.push([startY, endY]);
+        } else if (item.name.includes('@slice:module')) {
+          if (endY < totalHeight) { 
+            moduleBreaks.push(endY);
+          }
+        } else if (item.name.includes('@slice:safe')) {
+          safePoints.push([startY, endY]);
+        }
+      });
+      //处理最终点位
+      this.safePoints = this.mergeIntervals(safePoints.sort((a, b) => a[0] - b[0]));
+      //console.log(this.safePoints)
+      fixPoints.sort((a, b) => a[0] - b[0]);
+      this.fixPoints = fixPoints;
+      moduleBreaks.sort((a, b) => a - b);
+  
+      let finalClipPoint = [];
+      let lastY = 0; 
+  
+      // 遍历固定切片之间的间隙
+      for (let i = 0; i < fixPoints.length; i++) {
+        let currentStart = fixPoints[i][0];
+        let currentEnd = fixPoints[i][1];
+  
+        let gapHeight = currentStart - lastY;
+        if (gapHeight > 0) {
+          this.processGapWithBreaks(finalClipPoint, lastY, currentStart, moduleBreaks);
+        }
+  
+        finalClipPoint.push([currentStart, currentEnd]);
+        lastY = currentEnd;
+      }
+  
+      // 处理最后一段剩余空间
+      if (lastY < totalHeight) {
+        this.processGapWithBreaks(finalClipPoint, lastY, totalHeight, moduleBreaks);
+      }
+      if(finalClipPoint.length > 1){
+        let last = finalClipPoint[finalClipPoint.length - 1]
+        let last2 = finalClipPoint[finalClipPoint.length - 2]
+        if(last[1] - last2[0] <= this.maxsize){
+          finalClipPoint.pop();
+          finalClipPoint[finalClipPoint.length - 1] = [last2[0],last[1]]
+        }
+      }
+      //console.log("最终切片坐标:", finalClipPoint);
+      this.addSlice(finalClipPoint);
+      return finalClipPoint;
+    }
+  
+    // 带断点感知的空隙处理
+    processGapWithBreaks(finalClipPoint, startY, endY, breaks) {
+      // 找出落在当前 [startY, endY] 范围内的所有断点
+      let localBreaks = breaks.filter(b => b > startY && b < endY);
+      
+      // 如果没有断点，或者用户没开启，直接走原来的逻辑
+      if (localBreaks.length === 0) {
+        this.processGap(finalClipPoint, startY, endY);
+        return;
+      }
+  
+      // 有断点，按断点把空隙切开，逐段处理
+      let currentY = startY;
+      for (let b of localBreaks) {
+        this.processGap(finalClipPoint, currentY, b);
+        currentY = b;
+      }
+      // 处理断点到空隙末尾的剩余部分
+      if (currentY < endY) {
+        this.processGap(finalClipPoint, currentY, endY);
+      }
+    }
+  
+    // 处理空白间隙
+    processGap(finalClipPoint, startY, endY) {
+      let gapHeight = endY - startY;
+      if (gapHeight <= 0) return;
+  
+      if (gapHeight <= this.maxsize) {
+        finalClipPoint.push([startY, endY]);
+      } else {
+        let clips = this.clipmode === 'even' 
+          ? this.evenClip(startY, endY) 
+          : this.boundClip(startY, endY);
+        
+        if (clips && clips.length > 0) {
+          finalClipPoint.push(...clips);
+        }
+      }
+    }
+  
+    // 等分裁切
+    evenClip(startY, endY) {
+      let totalH = endY - startY;
+      let num = Math.ceil(totalH / this.maxsize);
+      let singleH = this.snapToEven(totalH / num); 
+      if (singleH <= 0) singleH = 2; 
+      
+      let clips = [];
+      let currentY = startY;
+      
+      for (let i = 0; i < num; i++) {
+        let nextY = currentY + singleH;
+        if (i === num - 1) nextY = endY; 
+        clips.push([currentY, nextY]);
+        currentY = nextY;
+      }
+      return clips;
+    }
+  
+    // 边界裁切（贪心装箱算法）
+    boundClip(startY, endY) {
+        // 提取当前空隙内的安全区，构建 Block 列表
+        let blocks = [];
+        let currentY = startY;
+        
+        // 筛选出落在当前 [startY, endY] 范围内的安全区
+        let localSafePoints = this.safePoints.filter(
+            safe => safe[0] >= startY && safe[1] <= endY
+        );
+        let localFixPoints = this.fixPoints.filter(
+            fix => fix[0] >= startY && fix[1] <= endY
+        );
+    
+        if (localSafePoints.length === 0) {
+            return this.evenClip(startY, endY);
+        }
+    
+        // 用 fix 挖空 safe
+        localSafePoints = this.subtractSafeWithFix(localSafePoints, localFixPoints);
+
+        for (let safe of localSafePoints) {
+            // 安全区前面的空隙
+            if (safe[0] > currentY) {
+            blocks.push({ startY: currentY, endY: safe[0], height: safe[0] - currentY, isSafe: false });
+            }
+            // 安全区本身
+            blocks.push({ startY: safe[0], endY: safe[1], height: safe[1] - safe[0], isSafe: true });
+            currentY = safe[1];
+        }
+        
+        // 最后一个安全区到空隙底部的剩余空间
+        if (currentY < endY) {
+            blocks.push({ startY: currentY, endY: endY, height: endY - currentY, isSafe: false });
+        }
+    
+        // 贪心装箱逻辑
+        let results = [];
+        let currentBin = [];
+        let currentHeight = 0;
+    
+        for (let block of blocks) {
+            // 如果单个安全区超过最大高度，直接忽略
+            if (block.isSafe && block.height > this.maxsize) {
+                console.warn(`安全区高度(${block.height})超限，已忽略`);
+                continue;
+            }
+    
+            if (currentHeight + block.height <= this.maxsize) {
+                // 放得下，继续装包
+                currentBin.push(block);
+                currentHeight += block.height;
+            } else {
+                // 放不下了，把当前背包切一刀
+                if (currentBin.length > 0) {
+                    results.push([currentBin[0].startY, currentBin[currentBin.length - 1].endY]);
+                };
+                currentBin = [];
+                currentHeight = 0;
+                // 重置背包，装入当前块
+                // 如果当前块本身就超过了 maxsize，必须强制切割
+                if (block.height > this.maxsize) {
+                    //console.log(666)
+                    let forceClips = this.evenClip(block.startY, block.endY);
+                    if (forceClips && forceClips.length > 0) {
+                        results.push(...forceClips);
+                    }
+                } else {
+                    // 没超限，正常装入新背包
+                    currentBin.push(block);
+                    currentHeight = block.height;
+                }
+            }
+        }
+    
+        // 3. 处理最后剩下的背包
+        if (currentBin.length > 0) {
+            results.push([currentBin[0].startY, currentBin[currentBin.length - 1].endY]);
+        }
+    
+        return results;
+    }
+    //========工具函数========
+    
+    snapToEven(size) {
+      let rounded = Math.round(size);
+      if (rounded < 2) return rounded; 
+      return rounded & ~1; 
+    }
+  
+    addSlice(clipPoints){
+      let slices = [];
+      let nodeBound = this.nodeBound;
+      //console.log(clipPoints)
+      clipPoints.forEach((points, index) => {
+        let slice = figma.createSlice();
+        slice.name = this.prefix + (index + 1);
+        slice.resize(nodeBound.width, (points[1] - points[0]));
+        slice.x = nodeBound.x;
+        slice.y = nodeBound.y + points[0];
+        slice.exportSettings = [{
+          format: 'JPG',
+          constraint: { type: 'SCALE', value: this.scale },
+        }];
+        slices.push(slice);
+      });
+      
+      if (slices.length == 0) return;
+  
+      let group = figma.group(slices, figma.currentPage);
+      let parent = this.node.parent;
+      let layerIndex = parent.children.findIndex(node => node.id == this.node.id);
+      
+      if(this.insert == 'before'){
+        parent.insertChild(layerIndex + 1, group);
+      }
+      if(this.insert == 'parent' && parent.type !== 'PAGE'){
+        parent.appendChild(group);
+      }
+      figma.ungroup(group);
+      figma.currentPage.selection = slices;
+    }
+  
+    // 区间合并，避免重叠
+    mergeIntervals(intervals) {
+        //console.log(intervals)
+        if (intervals.length < 1) return intervals;
+        
+        let merged = [];
+        let current = intervals[0];
+        
+        for (let i = 1; i < intervals.length; i++) {
+          let next = intervals[i];
+          // 如果当前区间的终点 > 下一个区间的起点，说明有重叠或相邻
+          if (current[1] > next[0]) {
+            // 合并：取两者终点的最大值
+            current = [current[0], Math.max(current[1], next[1])];
+          } else {
+            // 无重叠，将当前区间推入结果，更新 current
+            merged.push(current);
+            current = next;
+          }
+        }
+        merged.push(current);
+
+        let finalResult = [];
+        for (let interval of merged) {
+          let height = interval[1] - interval[0];
+          //console.log(height)
+          if (height > this.maxsize) {
+            // 超出最大值：调用均匀裁切，并将返回的数组展开推入结果
+            finalResult.push(...this.evenClip(interval[0], interval[1]));
+          } else {
+            // 未超出最大值：作为安全区原样保留
+            finalResult.push(interval);
+          }
+        }
+        
+        return finalResult;
+      }
+
+    // 用 fix 区间去挖空 safe 区间
+    subtractSafeWithFix(safePoints, fixPoints) {
+        if (!fixPoints || fixPoints.length === 0) return safePoints;
+
+        let result = [];
+        for (let safe of safePoints) {
+        let currentStart = safe[0];
+        let currentEnd = safe[1];
+        let fragments = [safe]; // 初始化当前 safe 的碎片
+
+        for (let fix of fixPoints) {
+            let newFragments = [];
+            for (let frag of fragments) {
+            // 如果 fix 和当前碎片完全不重叠
+            if (fix[1] <= frag[0] || fix[0] >= frag[1]) {
+                newFragments.push(frag);
+            } else {
+                // 有重叠，进行切割
+                // 1. 保留 fix 左侧的部分
+                if (fix[0] > frag[0]) {
+                newFragments.push([frag[0], fix[0]]);
+                }
+                // 2. 保留 fix 右侧的部分
+                if (fix[1] < frag[1]) {
+                newFragments.push([fix[1], frag[1]]);
+                }
+                // 中间被 fix 覆盖的部分直接丢弃（被挖空了）
+            }
+            }
+            fragments = newFragments;
+        }
+        result.push(...fragments);
+        }
+        return result;
+    }
+}
+
 //==========核心功能==========
 
 figma.ui.onmessage = async (message) => { 
@@ -2247,6 +2590,16 @@ figma.ui.onmessage = async (message) => {
             clipsframe.name = clipsframe.name.replace('@clip','@clip-final');
         };
     };
+    //标签裁切，长图用
+    if( type == 'autoClip'){
+        let a = figma.currentPage;
+        let b = a.selection;
+        if(b.length == 1){
+          let node = b[0];
+          let autoClip = new AutoClip(node,info);
+          autoClip.clip();
+        }
+    };
     //清除调整
     if( type == 'Clear Filter'){
         let b = getSelectionMix();
@@ -3480,8 +3833,10 @@ function sendInfo(){
                 let rows = columns.length > 0 ? columns[0].children.filter(item => ['@th', '@td', '@tn'].some(tag => item.name.includes(tag))) : [];
                 tableColumn = columns.length > 0 ? columns.length : 2;
                 tableRow = rows.length > 0 ? rows.length : 2;
-                tableStyle = JSON.parse(node.getPluginData('userTableStyle')) || null;
-                tableTheme = JSON.parse(node.getPluginData('userTableTheme')) || null;
+                let userTableStyle = node.getPluginData('userTableStyle') || '[]';
+                let userTableTheme = node.getPluginData('userTableTheme');
+                tableStyle = JSON.parse(userTableStyle) || null;
+                tableTheme = userTableTheme ? JSON.parse(userTableTheme) : null;
             }
             data.push({
                 n:n,w:w,h:h,transform:[skewX,skewY,scaleX,scaleY],
