@@ -4,11 +4,12 @@
   <meta name="description" content="网页内容简介，转发时显示">
   <title data-en-text="『YNYU_SET』 ToolsSet Fig">『云即·工具集（Figma版）』</title>
   <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
 let userSkillStar = [];
+let userSkillShowline = [];
 
 if (!IS_PLUGIN_ENV) {
 
@@ -31,11 +32,25 @@ if (!IS_PLUGIN_ENV) {
         userSkillStar = [];
       }
     }
+
+    const savedUserSkillShowline = storageMix.get('userSkillShowline');
+    console.log(savedUserSkillShowline)
+    if (savedUserSkillShowline) {
+      try {
+        userSkillShowline = JSON.parse(savedUserSkillShowline);
+        if (Array.isArray(userSkillShowline) && userSkillShowline.length > 0 && typeof setShowline === 'function') {
+          setShowline(userSkillShowline);
+        }
+      } catch(e) {
+        console.warn('Failed to parse userSkillShowline:', e);
+      }
+    }
   });
 } else {
 
   toolMessage(['tabPick','getlocal'],PLUGINAPP);
   toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
+  toolMessage(['userSkillShowline','getlocal'],PLUGINAPP);
 }
 toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
 toolMessage(['toolsSetFig_users','getlocal'],PLUGINAPP);
@@ -68,7 +83,7 @@ window.addEventListener('message',(message)=>{
       switch (type){
         case 'tabPick': viewPage(info);break
         case 'userSkillStar':userSkillStar = info || []; moveSkillStar(userSkillStar);break
-
+        case 'userSkillShowline': userSkillShowline = info || []; setShowline(userSkillShowline);break
         case 'toolsSetFig_user':
           if(typeof AuthManager !== 'undefined') {
             AuthManager.setCurrentUser(info);
@@ -99,7 +114,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -2591,6 +2606,9 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   margin-top: -6px;
 }
 
+[data-skill-title-show]{
+  transform: rotate(var(--show-r,-90deg));
+}
 
 [data-skill-title]{
   font-size: 11px;
@@ -2598,7 +2616,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
   height: 14px;
   gap: 4px;
   margin-bottom: 1ch;
-  align-items: baseline;
+  
 }
 
 [data-skill-title] [data-tips]{
@@ -2612,6 +2630,7 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 
 [data-skill-btnname],[data-skill-btnname-top]{
   font-size: 10px;
+  white-space: nowrap;
 }
 
 [data-skill-btnname]::after{
@@ -2622,6 +2641,15 @@ input[type="checkbox"]:checked + [for="editor-inputset"]{
 [data-skill-btnname-top]::after{
   content: ' ▼';
   opacity: 0.6;
+}
+
+[data-showline="false"] {
+  --show-r:0;
+}
+
+[data-showline="false"] [data-skill-line],
+[data-showline="false"] [data-skill-tips]{
+  display: none;
 }
 
 [data-skill-line]{
@@ -3111,9 +3139,6 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   [data-any="vw300"]{
     display: none;
   }
-  [data-tips]::after, btn-info{
-    display: none;
-  }
   [data-editor-setlist-title],[data-editor-setlist]{
     min-width: 98px;
   }
@@ -3127,6 +3152,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   [data-clip-view] {
     height: 160px;
   }
+  
 }
 
 @media (min-width:300px) {
@@ -3135,6 +3161,9 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
   [data-radio-main="true"] [data-mapget-typename],
   [data-mapget-set] [data-radio]:hover [data-mapget-typename]{
     display: block;
+  }
+  [data-any="un300"]{
+    display: none;
   }
 }
 
@@ -3428,24 +3457,21 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
               <div data-mode-id="upload" class="df-cc">
                 <div class="df-ffc df-cc gap4">
                   <input id="input-user-img" type="file" accept=".jpg,.jpeg,.jfif,.webp,.png,.apng,.gif" style="display: none;" multiple/>
-                  <label for="input-user-img" class="wh-40 pos-r" data-tips="auto" data-tips-y="top" data-tips-x="left"
-                  data-tips-text="可上传1~10张大图, 支持常见图片格式" data-tips-text-en="Upload 1~10 large images (common formats)" >
+                  <label for="input-user-img" class="wh-40 pos-r">
                     <btn-user-img  data-btn="icon" ></btn-user-img>
                   </label>
                   <div data-btn-name data-any="vw300" data-en-text="Cut large image">大图自动切片</div>
                 </div>
                 <div class="df-ffc df-cc gap4">
                   <input id="input-user-table" type="file" accept=".csv,.xlsx"  style="display: none;"/>
-                  <label for="input-user-table" class="wh-40 pos-r" data-tips="auto" data-tips-y="top" data-tips-x="center"
-                  data-tips-text="上传单个表格, 需按一定格式填写" data-tips-text-en="Upload 1 table in the prescribed format" >
+                  <label for="input-user-table" class="wh-40 pos-r" >
                     <btn-user-table data-btn="icon"></btn-user-table>
                   </label>
                   <div data-btn-name data-any="vw300" data-en-text="Table to frame">表格创建画板</div>
                 </div>
                 <div class="df-ffc df-cc gap4">
                   <input id="input-user-zy" type="file" accept=".md,.zy,.sketch,.svg,.xml,.json,.zip,.rar,.7z" style="display: none;"/>
-                  <label for="input-user-zy" class="wh-40 pos-r" data-tips="auto" data-tips-y="top" data-tips-x="right"
-                  style="--xx: 36px;" data-tips-text="上传由云即系列插件生成的图层信息文件" data-tips-text-en="Upload .zy (by YN+) or other compatible file" >
+                  <label for="input-user-zy" class="wh-40 pos-r" >
                     <btn-user-zy data-btn="icon"></btn-user-zy>
                   </label>
                   <div data-btn-name data-any="vw300" data-en-text="Layers frome .zy">兼容格式导入</div>
@@ -4632,11 +4658,11 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 </div>
               </div>
               <div class="w100 df" data-skill-col="2" data-skillmodule-zh="像素&变换" data-skillmodule="Pixel &amp; Transform">
-                <div class="fl1" data-skill-sec="InSituRasterize">
+                <div class="fl1" data-skill-sec="InSituRasterize" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div class="df-lc" data-skill-line>
+                  <!--div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
                     <div data-pixel-mix class="df-lc pos-r gap4" data-select data-select-close data-select-value="≤ 4096px" style="width: 90px; z-index:2;">
                       <input id="select-value-2" type="text" data-select-input readonly value="≤ 4096px">
@@ -4653,7 +4679,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                         <div data-option="option" data-option-main="false" data-option-value="≤ 32px">≤ 32px</div>
                       </div>
                     </div>
-                  </div>
+                  </div-->
                   <div class="df-sc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale">像素倍率</div>
                     <div class="df-lc" style="flex: 0 0 auto; width: 50px;">
@@ -4685,7 +4711,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec="UniformScale">
+                <div class="fl1"  data-skill-sec="UniformScale" data-showline="true">
                   <div data-skill-star="false">
                       <btn-star></btn-star>
                   </div>
@@ -4763,7 +4789,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>                    
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec="EaseTransform">
+                <div class="fl1"  data-skill-sec="EaseTransform" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -4805,7 +4831,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       </div>
                     </div>
                   </div>
-                  <div class="w100 df-cc mar-b4">
+                  <div class="w100 df-cc mar-b4" data-skill-tips>
                     <span data-skill-gap>
                       <span>----</span>
                       <span data-any="vw240"
@@ -4815,7 +4841,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       <span>----</span>
                     </span>
                   </div>
-                  <div class="df-lc" data-skill-line="">
+                  <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale X">左右缩放</div>
                     <div data-scaleset-x data-number data-number-value="100" class="df-lc fl1">
                       <input data-input="range" type="range" min="1" max="200" value="100">
@@ -4827,7 +4853,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       </div>
                     </div>
                   </div>
-                  <div class="df-lc" data-skill-line="">
+                  <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale Y">上下缩放</div>
                     <div data-scaleset-y data-number data-number-value="100" class="df-lc fl1">
                       <input data-input="range" type="range" min="1" max="200" value="100">
@@ -4844,7 +4870,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     <div data-reset-all class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="All Reset">重置全部</div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec="ClipByGrid">
+                <div class="fl1"  data-skill-sec="ClipByGrid" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -4887,7 +4913,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                 </div>
-                <div class="fl1" data-skill-sec="AutoClipByTag">
+                <div class="fl1" data-skill-sec="AutoClipByTag" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -4925,15 +4951,54 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       </div>
                   </div>
                   -->
-                  <div class="df-ffc bod-d gap4 pad4 mar-b4">
-                    <div class="font-s10 op6" >
-                      <span data-en-text="Name eg: ">命名示例: </span>xxx @slice:xxx<br>
-                    <span style='color:var(--themeColor2)'>@slice:fix</span>
-                    <span data-en-text="Marks fixed slice positions">固定切图位;</span><br>
-                    <span style='color:var(--themeColor2)'>@slice:safe</span>
-                    <span data-en-text="Indicates non-truncatable areas">不可截断区域;</span><br>
-                    <span style='color:var(--themeColor2)'>@slice:module</span>
-                    <span data-en-text="Defines module boundaries to prevent slices from crossing modules">模块区域,可避免跨模块切图；</span>
+                  <div class="df-ffc bod-d gap4 pad4 mar-b4" data-skill-tips>
+                    <span class="op6">
+                      <span data-en-text="Click '+' | Manual Naming eg: ">点击+号 | 手动命名, 示例: </span>
+                      xxx @slice:xxx
+                    </span>
+                    <div class="df-lc gap2">
+                      <div class="pos-r" data-any="un300" data-tips="auto" data-tips-x="light" data-tips-y="top"
+                        data-tips-text-en="Fixed slice positions" data-tips-text="固定切图位">
+                        <div class="wh-14 pad2 bsb df-cc"><btn-info style="opacity: 0.6;"></btn-info></div>
+                      </div>
+                      <div class="wh-12 fl0" data-btn="op" data-addtag="@slice:fix">
+                        <btn-add></btn-add>
+                      </div>
+                      <div style='color:var(--themeColor2)'>@slice:fix</div>
+                      <div class="op6" data-any="vw300" data-en-text="Fixed slice positions">固定切图位</div>
+                    </div>
+                    <div class="df-lc gap2">
+                      <div class="pos-r" data-any="un300" data-tips="auto" data-tips-x="light" data-tips-y="top"
+                        data-tips-text-en="Non-Truncatable areas" data-tips-text="不可截断区域">
+                        <div class="wh-14 pad2 bsb df-cc"><btn-info style="opacity: 0.6;"></btn-info></div>
+                      </div>
+                      <div class="wh-12 fl0" data-btn="op" data-addtag="@slice:safe">
+                        <btn-add></btn-add>
+                      </div>
+                      <div style='color:var(--themeColor2)'>@slice:safe</div>
+                      <div class="op6" data-any="vw300" data-en-text="Non-Truncatable areas">不可截断区域</div>
+                    </div>
+                    <div class="df-lc gap2">
+                      <div class="pos-r" data-any="un300" data-tips="auto" data-tips-x="light" data-tips-y="top"
+                        data-tips-text-en="Truncate slices by module" data-tips-text="切图限定在模块内">
+                        <div class="wh-14 pad2 bsb df-cc"><btn-info style="opacity: 0.6;"></btn-info></div>
+                      </div>
+                      <div class="wh-12 fl0" data-btn="op" data-addtag="@slice:module">
+                        <btn-add></btn-add>
+                      </div>
+                      <div style='color:var(--themeColor2)'>@slice:module</div>
+                      <div class="op6" data-any="vw300" data-en-text="Truncate slices by module">将切图限定在模块内</div>
+                    </div>
+                    <div class="df-lc gap2">
+                      <div class="pos-r" data-any="un300" data-tips="auto" data-tips-x="light" data-tips-y="top"
+                        data-tips-text-en="Need to hide when slicing" data-tips-text="切图时需隐藏的元素">
+                        <div class="wh-14 pad2 bsb df-cc"><btn-info style="opacity: 0.6;"></btn-info></div>
+                      </div>
+                      <div class="wh-12 fl0" data-btn="op" data-addtag="@slice:hide">
+                        <btn-add></btn-add>
+                      </div>
+                      <div style='color:var(--themeColor2)'>@slice:hide</div>
+                      <div class="op6" data-any="vw300" data-en-text="Need to hide when slicing">切图时需隐藏的元素</div>
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
@@ -4950,7 +5015,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       <div class="df-cc" data-input-unit>x</div>
                     </div>
                     <div style="width: 4px;"></div>
-                    <div class="wh-14 df-cc pos-r" data-tips="auto" data-tips-x="right" data-tips-y="top"
+                    <div class="wh-12 df-cc pos-r" data-any="vw300" data-tips="auto" data-tips-x="right" data-tips-y="top"
                     data-tips-text="切片大小=目标尺寸÷缩放倍率"
                     data-tips-text-en="Slice Size = Final Size ÷ Scale Factor">
                       <btn-info style="opacity: 0.6;"></btn-info>
@@ -4958,16 +5023,22 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Prefix">命名前缀</div>
-                    <div data-autoclip-max class="df-lc fl1" data-int-value="1200" >
-                      <input id="input-autoclip-prefix" type="text" value="切片-" data-en-input="slice-" data-input data-input-type="text" data-input-must="切片-" data-input-must-en="slice-">
-                    </div>
-                    <div data-btn="op" data-autoclip-getname class="wh-22 df-cc bod-r4">
-                      <btn-getbyselect></btn-getbyselect>
+                    <div class="df-lc fl1 gap2" >
+                      <input id="input-autoclip-prefix" type="text" value="切片" data-en-input="slice" data-input data-input-type="text" data-input-must="切片" data-input-must-en="slice">
+                      <input id="input-autoclip-hyphen" type="text" value="-" data-input data-input-type="text" style="width: 4ch; height: 23px; flex: 0 auto; text-align: center;">
+                      <div class="df-cc" data-input-unit style="height: 23px; padding-right: 6px;">&nbsp;Num</div>
+                      <div data-btn="op" data-autoclip-getname class="wh-20 df-cc bod-r4 mar-l4">
+                        <btn-getbyselect></btn-getbyselect>
+                      </div>
+                      <div data-input-reset data-btn="reset">
+                        <btn-reset></btn-reset>
+                      </div>
+                      <div style="width: 4px;"></div>
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Insert">切片位置</div>
-                    <div class="df-lc fl1 gap2" data-autoclip-insert data-radio-value="1">
+                    <div class="df-lc fl1 gap2" data-autoclip-insert data-radio-value="before">
                       <div data-radio="" data-radio-data="before" data-en-text="Before" data-radio-main="true" class="df-cc">
                         对象前
                       </div>
@@ -4979,13 +5050,19 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       </div>
                     </div>
                   </div>
-                  <div class="df-sc" data-skill-line>
+                  <div class="df-lc" data-skill-line>
                     <div class="df-lc w100" data-skill-more>
                       <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Add Slice">添加切片</div>
                     </div>
                   </div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Hide Hidden-tag">隐藏:hide元素</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Show Hidden-tag">显示:hide元素</div>  
+                    </div>
+                  </div>
                 </div>
-                <div class="fl1"  data-skill-sec="AlterImageFill">
+                <div class="fl1"  data-skill-sec="AlterImageFill" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -5021,11 +5098,11 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
               <div class="w100 df" data-skill-col="3" data-skillmodule-zh="文本&图层" data-skillmodule="Text & Layer">
-                <div class="fl1"  data-skill-sec="SplitText">
+                <div class="fl1"  data-skill-sec="SplitText" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div class="df-ffc bod-d gap4 pad4 mar-b4" >
+                  <div class="df-ffc bod-d gap4 pad4 mar-b4" data-skill-tips>
                     <div class="font-s10 op6" data-en-text="All different style parameters, even automatic line wrapping, will be used as split conditions">
                       所有不一样的样式参数, 甚至自动换行, 都会作为拆分条件
                     </div>
@@ -5033,7 +5110,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   <div class="df-sc" data-skill-line>
                     <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Split By SVG">按SVG拆分</div>
                   </div>
-                  <div class="df-ffc bod-d gap4 pad4 mar-b4" >
+                  <div class="df-ffc bod-d gap4 pad4 mar-b4" data-skill-tips>
                     <div data-split-tags class="w100 df-lc">
                       <div data-split-tag data-check-checked="true" class="df-lc">
                         <div style="width: 14px; height: 14px;">
@@ -5112,7 +5189,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Split By Symbol">按关键词拆分</div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec="MergeText">
+                <div class="fl1"  data-skill-sec="MergeText" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -5142,7 +5219,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec="LayersLayout">
+                <div class="fl1"  data-skill-sec="LayersLayout" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -5163,6 +5240,10 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="To Auto Layout">转自动布局</div>
                       <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Absolute & Fill">自适应容器</div>  
                     </div>
+                    <div class="df-lc w100" data-skill-more>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-en-text="Int Size">整数尺寸</div>
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-en-text="Even Size">双数尺寸</div>  
+                    </div>
                     <div data-skill-gap>
                       <span>----</span>
                       <span data-any="vw240" data-en-text="For components(may with auto layout)">
@@ -5182,7 +5263,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
               <div class="w100 df" data-skill-col="4" data-skillmodule-zh="矢量&生成" data-skillmodule="Vector & Generate">
-                <div class="fl1"  data-skill-sec="GetPath">
+                <div class="fl1"  data-skill-sec="GetPath" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -5193,7 +5274,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec="GetEditableSVG">
+                <div class="fl1"  data-skill-sec="GetEditableSVG" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -5204,7 +5285,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec="QRcodeToSVG">
+                <div class="fl1"  data-skill-sec="QRcodeToSVG" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -5288,7 +5369,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       </div>
                     </div>
                   </div>
-                  <div data-qrcode-view-box class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
+                  <div data-qrcode-view-box data-skill-tips class="w100 df-lc pos-r tex-pixelbg mar-b8 ovh">
                     <div class="wh100 bsb pos-a pad10 df-cc" style="top: 0; left: 0; z-index: 1;">
                       <div data-qrcode-grid class="w100 pos-r bsb qrcode-grid">
                         <div data-qrcode-grid-resize="true" class="fl0 bsb pos-a"></div>
@@ -5310,7 +5391,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       <btn-scan></btn-scan>
                     </div>
                   </div>
-                  <div data-skill-more  class="df-lc pos-r bod-d pad10 gap10 bsb mar-b4">
+                  <div data-skill-more data-skill-tips  class="df-lc pos-r bod-d pad10 gap10 bsb mar-b4">
                     <div class="df-ffc gap4 fl1">
                       <div class="df-lc gap4">
                         <input type="checkbox" id="check-qrcode-image" checked>
@@ -5340,14 +5421,16 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       <btn-reup></btn-reup>
                     </div>
                   </div>
-                  <div class="df-cc" data-skill-more data-selects-must="false">
-                    <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
+                  <div class="df-ffc df-cc" data-skill-line>
+                    <div class="df-cc" data-skill-more data-selects-must="false">
+                      <div class="df-cc" data-skill-btn data-btn="skill-main" data-btn-dblclick data-selects-must="false" data-en-text="Create New QRcode">生成新二维码</div>
+                    </div>
                   </div>
                 </div>
                 <div class="fl1" data-any="vw470" data-skill-sec data-skill-cover="end"></div>
               </div>
               <div class="w100 df" data-skill-col="5" data-skillmodule-zh="样式&原型" data-skillmodule="Style & Prototype">
-                <div class="fl1"  data-skill-sec="ShadowAsStroke">
+                <div class="fl1"  data-skill-sec="ShadowAsStroke" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -5393,11 +5476,11 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     </div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec="AutoFillBorder">
+                <div class="fl1"  data-skill-sec="AutoFillBorder" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div data-autobod-tags class="df-lc gap4 bod-d pad4 mar-b4" style="flex-wrap: wrap;">
+                  <div data-autobod-tags data-skill-tips class="df-lc gap4 bod-d pad4 mar-b4" style="flex-wrap: wrap;">
                     <div data-autobod-tag data-check-checked="true" class="df-ffc bsb pointer" draggable="true">
                       <input type="checkbox" id="autobod_chk_0" checked>
                       <label for="autobod_chk_0" class="df-ffc df-cc gap4">
@@ -5516,7 +5599,7 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                     <div class="df-cc" data-skill-btn data-btn="skill-main" data-en-text="Border Example( Coming soon~ )">生成示例（敬请期待~）</div>
                   </div>
                 </div>
-                <div class="fl1"  data-skill-sec="PaintStyle">
+                <div class="fl1"  data-skill-sec="PaintStyle" data-showline="true">
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
@@ -5600,23 +5683,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/jsQR_correct.js"></script>
-  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/dom_to_img.js"></script-->
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/other/jsQR_correct.js"></script>
+  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/other/dom_to_img.js"></script-->
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@83774872db26957dbfe2a69c077135a4d0675ab8/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -5728,7 +5811,8 @@ const DELAY = {
   TIPS_INTERVAL: 12000,
   SIDEBAR_CLOSE: 280,
   FIND_BOX_REMOVE: 2000,
-  CONVERT_TAGS: 100
+  CONVERT_TAGS: 100,
+  SEND_INTIME: 300,
 };
 
 const MESSAGES = {
@@ -6997,7 +7081,7 @@ function addSkillTitle(){
 
       let node = document.createElement('div');
       node.setAttribute('data-skill-title','');
-      node.className = 'df-lc';
+      node.className = 'df-lc pointer';
       let layerindex = Array.from(secnode.parentNode.children).findIndex(item => item == secnode);
       let num = document.createElement('div');
       num.textContent = (layerindex + 1) + '.';
@@ -7012,6 +7096,28 @@ function addSkillTitle(){
       let text = languge == 'Zh' ? info.name[0] : info.name[1];
       name.innerHTML = text;
       node.appendChild(name);
+      let btnshow = document.createElement('div');
+      btnshow.className = 'df-cc fl0 wh-14 op6';
+      btnshow.setAttribute('data-skill-title-show','');
+      btnshow.innerHTML = `<svg width="80%" height="80%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path  d="M12 15L6 10L12 5Z" fill="var(--fill,var(--mainColor))" />
+      <rect x="1" y="1" width="18" height="18" rx="2" stroke="var(--fill,var(--mainColor))" stroke-width="2"/>
+      </svg>
+      `
+
+      node.appendChild(btnshow);
+
+      node.addEventListener('click',()=>{
+        let isShow = secnode.getAttribute('data-showline') == 'true';
+        secnode.setAttribute('data-showline',!isShow);
+
+        if(isShow){
+          userSkillShowline.push(secid);
+        }else{
+          userSkillShowline = userSkillShowline.filter(item => item != secid);
+        }
+        storageMix.set('userSkillShowline',JSON.stringify(userSkillShowline));
+      });
       secnode.prepend(node);
 
       if (secnode.parentNode) {
@@ -7020,6 +7126,14 @@ function addSkillTitle(){
     };
   });
 };
+
+function setShowline(names){
+  DOM.skillSecNode.forEach(secnode =>{
+    if(names.includes(secnode.getAttribute('data-skill-sec'))){
+      secnode.setAttribute('data-showline','false');
+    }
+  });
+}
 
 function updateSelectInfoDisplay(info){
   DOM.selectInfoBox.forEach(item => {
@@ -9230,6 +9344,13 @@ getElementMix('data-autoclip-getname').addEventListener('click',()=>{
   }
 });
 
+document.querySelectorAll('[data-addtag]').forEach(btn => {
+  btn.addEventListener('click',()=>{
+    let tag = btn.getAttribute('data-addtag');
+    toolMessage([tag,'addTag'],PLUGINAPP);
+  });
+});
+
 getElementMix('data-split-tags').querySelectorAll('[type="checkbox"]').forEach(check => {
   check.addEventListener('change',()=>{
     if(check.checked){
@@ -10886,22 +11007,22 @@ function getUserNumber(node){
   if(node.getAttribute('data-skewset-x') !== null){
 
     if(State.get('allReset')) return;
-    sendTransform();
+    debounce(sendTransform(),DELAY.SEND_INTIME);
   };
   if(node.getAttribute('data-skewset-y') !== null){
 
     if(State.get('allReset')) return;
-    sendTransform();
+    debounce(sendTransform(),DELAY.SEND_INTIME);
   };
   if(node.getAttribute('data-scaleset-x') !== null){
 
     if(State.get('allReset')) return;
-    sendTransform();
+    debounce(sendTransform(),DELAY.SEND_INTIME);
   };
   if(node.getAttribute('data-scaleset-y') !== null){
 
     if(State.get('allReset')) return;
-    sendTransform();
+    debounce(sendTransform(),DELAY.SEND_INTIME);
   };
   if(node.getAttribute('data-qrcode-brightness') !== null){
     getElementMix('data-qrcode-view').style.setProperty('--brightness',number/100);
@@ -11248,7 +11369,7 @@ DOM.skillBtnMain.forEach(btn => {
 });
 
 function sendPixel(name){
-  let mix = getElementMix('data-pixel-mix').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+  let mix = 4096;
   let s = DOM.pixelScale.value;
   let cuts = [];
   tipsAll(MESSAGES.READING, State.get('selectNodeInfo').length * 800);

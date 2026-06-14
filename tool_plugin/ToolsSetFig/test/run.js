@@ -1,5 +1,6 @@
 let ISWORK_TIME = true;
 let userSkillStar = [];
+let userSkillShowline = [];
 
 //========== 初始化插件界面偏好(可滞后) ==========
 // 非插件环境：直接从storageMix同步获取（延迟到window.load确保函数已定义）
@@ -25,11 +26,25 @@ if (!IS_PLUGIN_ENV) {
         userSkillStar = [];
       }
     }
+    // 初始化userSkillShowline
+    const savedUserSkillShowline = storageMix.get('userSkillShowline');
+    console.log(savedUserSkillShowline)
+    if (savedUserSkillShowline) {
+      try {
+        userSkillShowline = JSON.parse(savedUserSkillShowline);
+        if (Array.isArray(userSkillShowline) && userSkillShowline.length > 0 && typeof setShowline === 'function') {
+          setShowline(userSkillShowline);
+        }
+      } catch(e) {
+        console.warn('Failed to parse userSkillShowline:', e);
+      }
+    }
   });
 } else {
   // 插件环境：异步获取
   toolMessage(['tabPick','getlocal'],PLUGINAPP);
   toolMessage(['userSkillStar','getlocal'],PLUGINAPP);
+  toolMessage(['userSkillShowline','getlocal'],PLUGINAPP);
 }
 toolMessage(['toolsSetFig_user','getlocal'],PLUGINAPP);
 toolMessage(['toolsSetFig_users','getlocal'],PLUGINAPP);
@@ -62,7 +77,7 @@ window.addEventListener('message',(message)=>{
       switch (type){
         case 'tabPick': viewPage(info);break
         case 'userSkillStar':userSkillStar = info || []; moveSkillStar(userSkillStar);break
-        
+        case 'userSkillShowline': userSkillShowline = info || []; setShowline(userSkillShowline);break
         case 'toolsSetFig_user': 
           if(typeof AuthManager !== 'undefined') {
             AuthManager.setCurrentUser(info);

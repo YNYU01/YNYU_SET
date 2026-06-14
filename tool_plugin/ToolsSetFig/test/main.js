@@ -1220,7 +1220,7 @@ function addSkillTitle(){
       
       let node = document.createElement('div');
       node.setAttribute('data-skill-title','');
-      node.className = 'df-lc';
+      node.className = 'df-lc pointer';
       let layerindex = Array.from(secnode.parentNode.children).findIndex(item => item == secnode);
       let num = document.createElement('div');
       num.textContent = (layerindex + 1) + '.';
@@ -1235,6 +1235,28 @@ function addSkillTitle(){
       let text = languge == 'Zh' ? info.name[0] : info.name[1];
       name.innerHTML = text;
       node.appendChild(name);
+      let btnshow = document.createElement('div');
+      btnshow.className = 'df-cc fl0 wh-14 op6';
+      btnshow.setAttribute('data-skill-title-show','');
+      btnshow.innerHTML = `<svg width="80%" height="80%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path  d="M12 15L6 10L12 5Z" fill="var(--fill,var(--mainColor))" />
+      <rect x="1" y="1" width="18" height="18" rx="2" stroke="var(--fill,var(--mainColor))" stroke-width="2"/>
+      </svg>
+      `
+      
+      node.appendChild(btnshow);
+
+      node.addEventListener('click',()=>{
+        let isShow = secnode.getAttribute('data-showline') == 'true';
+        secnode.setAttribute('data-showline',!isShow);
+        //将false的secid添加到userSkillShowline中，true的从userSkillShowline中移除
+        if(isShow){
+          userSkillShowline.push(secid);
+        }else{
+          userSkillShowline = userSkillShowline.filter(item => item != secid);
+        }
+        storageMix.set('userSkillShowline',JSON.stringify(userSkillShowline));
+      });
       secnode.prepend(node);
       //重置文字样式
       if (secnode.parentNode) {
@@ -1243,6 +1265,14 @@ function addSkillTitle(){
     };
   });
 };
+//设置二级功能显隐偏好
+function setShowline(names){
+  DOM.skillSecNode.forEach(secnode =>{
+    if(names.includes(secnode.getAttribute('data-skill-sec'))){
+      secnode.setAttribute('data-showline','false');
+    }
+  });
+}
 
 // ========== 选中图层信息处理辅助函数 ==========
 // 更新选中信息的显示
@@ -3550,7 +3580,7 @@ DOM.pixelScale.addEventListener('change',()=>{
     });
   };
 });
-// 填入选中对象的
+// 填入选中对象的名称（自动裁切标签专用）
 getElementMix('data-autoclip-getname').addEventListener('click',()=>{
   let input = getElementMix('input-autoclip-prefix');
   let name = State.get('selectNodeInfo')[0].n;
@@ -3558,6 +3588,14 @@ getElementMix('data-autoclip-getname').addEventListener('click',()=>{
     input.value = tool.TextMaxLength(name, 10);
   }
 });
+//给选中对象添加对应标签
+document.querySelectorAll('[data-addtag]').forEach(btn => {
+  btn.addEventListener('click',()=>{
+    let tag = btn.getAttribute('data-addtag');
+    toolMessage([tag,'addTag'],PLUGINAPP);
+  });
+});
+
 //拆分文本条件标签选中
 getElementMix('data-split-tags').querySelectorAll('[type="checkbox"]').forEach(check => {
   check.addEventListener('change',()=>{
@@ -5470,22 +5508,22 @@ function getUserNumber(node){
   if(node.getAttribute('data-skewset-x') !== null){
     //node.parentNode.parentNode.parentNode.style.setProperty('--skewX',number)
     if(State.get('allReset')) return;
-    sendTransform();
+    debounce(sendTransform(),DELAY.SEND_INTIME);
   };
   if(node.getAttribute('data-skewset-y') !== null){
     //node.parentNode.parentNode.parentNode.style.setProperty('--skewY',number)
     if(State.get('allReset')) return;
-    sendTransform();
+    debounce(sendTransform(),DELAY.SEND_INTIME);
   };
   if(node.getAttribute('data-scaleset-x') !== null){
     //node.parentNode.parentNode.parentNode.style.setProperty('--scaleX',number)
     if(State.get('allReset')) return;
-    sendTransform();
+    debounce(sendTransform(),DELAY.SEND_INTIME);
   };
   if(node.getAttribute('data-scaleset-y') !== null){
     //node.parentNode.parentNode.parentNode.style.setProperty('--scaleY',number)
     if(State.get('allReset')) return;
-    sendTransform();
+    debounce(sendTransform(),DELAY.SEND_INTIME);
   };
   if(node.getAttribute('data-qrcode-brightness') !== null){
     getElementMix('data-qrcode-view').style.setProperty('--brightness',number/100);

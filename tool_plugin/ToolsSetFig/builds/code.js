@@ -347,7 +347,7 @@ class AutoClip {
       let group = figma.group(slices, figma.currentPage);
       let parent = this.node.parent;
       let layerIndex = parent.children.findIndex(node => node.id == this.node.id);
-      console.log(this.insert,layerIndex,parent);
+      //console.log(this.insert,layerIndex,parent);
       
       if(parent.layoutMode && parent.layoutMode !== 'NONE'){
         //如果父级是自动布局，只能插入到页面
@@ -465,6 +465,7 @@ figma.ui.onmessage = async (message) => {
     };
     //设置用户偏好
     if ( type == "setlocal"){
+        //console.log(info)
         if(info[1] === null || info[1] === undefined){
             // 如果值为 null，则删除该键
             figma.clientStorage.deleteAsync(info[0]);
@@ -2411,9 +2412,8 @@ figma.ui.onmessage = async (message) => {
     //斜切拉伸
     if( type == 'transformMix'){
         let b = getSelectionMix();
-        
         b.forEach(item => {
-            
+            //console.log(info)
             let oldWH;
             if(!item.getPluginData('oldWH')){
                 item.setPluginData('oldWH',JSON.stringify([item.width,item.height]));
@@ -2427,8 +2427,12 @@ figma.ui.onmessage = async (message) => {
             let scaleY = item.relativeTransform[1][1];
             let y = item.relativeTransform[1][2];
             if(item.type !== 'TEXT'){
-                if(info.w !== oldWH[0] * info.w/100 && info.h !== oldWH[1] * info.h/100){
-                    item.resize(oldWH[0] * info.w/100,oldWH[1] * info.h/100);
+                let newW = oldWH[0] * info.w/100;
+                let newH = oldWH[1] * info.h/100;
+                //console.log(newW, newH);
+                if(item.width !== newW || item.height !== newH){
+                    //console.log(666);
+                    item.resize(newW, newH);
                 }
             };
             //console.log(scaleX,scaleY)
@@ -2613,6 +2617,39 @@ figma.ui.onmessage = async (message) => {
           let autoClip = new AutoClip(node,info);
           autoClip.clip();
         }
+    };
+    if( type == 'Show Hidden-tag'){
+        let b = getSelectionMix();
+        b.forEach(item => {
+            let tags = item.findAll(child => child.name.includes('@slice:hide'));
+            tags.forEach(tag => {
+                tag.opacity = 1;
+            });
+        });
+    };
+    if( type == 'Hide Hidden-tag'){
+        let b = getSelectionMix();
+        b.forEach(item => {
+            let tags = item.findAll(child => child.name.includes('@slice:hide'));
+            tags.forEach(tag => {
+                tag.opacity = 0;
+            });
+        });
+    };
+    //添加标签
+    if( type == 'addTag'){
+        let b = getSelectionMix();
+        b.forEach(item => {
+            let oldName = item.name;
+            if(item.type == 'TEXT'){
+                if(item.autoRename){
+                    oldName = 'Text';
+                };
+            };
+            if(!item.name.includes(info)){
+                item.name = TextMaxLength(oldName, 20, '...') + ' ' + info;
+            };
+        });
     };
     //清除调整
     if( type == 'Clear Filter'){
@@ -3254,6 +3291,29 @@ figma.ui.onmessage = async (message) => {
         
             });
     };
+    //整数、双数尺寸
+    if( type == 'Int Size'){
+        let b = getSelectionMix();
+        b.forEach(item => {
+            if('resize' in item){
+                let newW = info ? Math.ceil(item.width) : Math.round(item.width);
+                let newH = info ? Math.ceil(item.height) : Math.round(item.height);
+                item.resize(newW, newH);
+            }
+        });
+    };
+    if( type == 'Even Size'){
+        let b = getSelectionMix();
+        b.forEach(item => {
+            if('resize' in item){
+                let newW = Math.floor(item.width);
+                let newH = Math.floor(item.height);
+                if(newW % 2 !== 0) newW = info ? newW + 1 : newW - 1;
+                if(newH % 2 !== 0) newH = info ? newH + 1 : newH - 1;
+                item.resize(newW, newH);
+            }
+        });
+    };
     //填充组件到容器
     if( type == 'Clone to Fill'){
         let a = figma.currentPage;
@@ -3823,11 +3883,11 @@ function sendInfo(){
             let nodeType = node.type;
             let w = node.absoluteRenderBounds ? node.absoluteRenderBounds.width : node.absoluteBoundingBox.width;
             let h = node.absoluteRenderBounds ? node.absoluteRenderBounds.height : node.absoluteBoundingBox.height;
-            let transform = node.absoluteTransform;
+            let transform = node.relativeTransform;
             let scaleX = node.getPluginData('oldWH') ? Math.round(node.width/JSON.parse(node.getPluginData('oldWH'))[0]*100) : 100;// Math.floor(transform[0][0] * 100);
             let scaleY = node.getPluginData('oldWH') ? Math.round(node.height/JSON.parse(node.getPluginData('oldWH'))[1]*100) : 100;//Math.floor(transform[1][1] * 100);
             let skewX = Math.round(Math.atan(transform[0][1])/(Math.PI/180));
-            let skewY = Math.round(node.rotation);
+            let skewY = Math.round(Math.atan(transform[1][0])/(Math.PI/180));
             //console.log([skewX,skewY])
             let clipColumn = 0;
             let clipRow = 0;
@@ -4242,9 +4302,8 @@ function fullInFrameSafe(keynode,frame){
 /**
  * 中英文字数限制兼容
  */
-function TextMaxLength(text,max,add){
+function TextMaxLength(text,max,add = ''){
     let newtext = text.toString();
-    add = add ? add : '';
     let lengthE = newtext.replace(/[\u4e00-\u9fa5]/g,'').length*1;
     let lengthZ = newtext.replace(/[^\u4e00-\u9fa5]/g,'').length*2;
     if(lengthZ > lengthE){

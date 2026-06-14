@@ -110,7 +110,8 @@ const DELAY = {
   TIPS_INTERVAL: 12000,
   SIDEBAR_CLOSE: 280,  // 侧边栏关闭动画延迟
   FIND_BOX_REMOVE: 2000,  // 查找框移除延迟
-  CONVERT_TAGS: 100  // 转换标签延迟
+  CONVERT_TAGS: 100,  // 转换标签延迟
+  SEND_INTIME: 300, // 斜切拉伸等实时通信的防抖延迟
 };
 
 // 提示消息常量
