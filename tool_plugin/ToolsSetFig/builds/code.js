@@ -347,12 +347,26 @@ class AutoClip {
       let group = figma.group(slices, figma.currentPage);
       let parent = this.node.parent;
       let layerIndex = parent.children.findIndex(node => node.id == this.node.id);
+      console.log(this.insert,layerIndex,parent);
       
-      if(this.insert == 'before'){
-        parent.insertChild(layerIndex + 1, group);
-      }
-      if(this.insert == 'parent' && parent.type !== 'PAGE'){
-        parent.appendChild(group);
+      if(parent.layoutMode && parent.layoutMode !== 'NONE'){
+        //如果父级是自动布局，只能插入到页面
+        figma.clientStorage.getAsync('userLanguage')
+        .then(data => {
+            let text = data == 'Zh' ? '父级为自动布局，已强制插入到页面根节点' : 'Parent is auto layout, forced to insert into page root';
+            figma.notify(text,{timeout:3000});
+        });
+      }else{
+        if(this.insert == 'before'){
+            parent.insertChild(layerIndex + 1, group);
+            group.x = this.node.x;
+            group.y = this.node.y;
+        }
+        if(this.insert == 'parent' && parent.type !== 'PAGE'){
+            parent.appendChild(group);
+            group.x = this.node.x;
+            group.y = this.node.y;
+        }
       }
       figma.ungroup(group);
       figma.currentPage.selection = slices;
@@ -567,8 +581,8 @@ figma.ui.onmessage = async (message) => {
                             ];
                             let safes = setobj.safes;
                             let allFills = {};
-                            safes.forEach(safa => {
-                                let [x,y,w,h,name] = safa;
+                            safes.forEach(safeinfo => {
+                                let [x,y,w,h,name] = safeinfo;
                                 let key = name;
                                 if(key && !allFills[key]) allFills[key] = areaFills[Object.keys(allFills).length % areaFills.length];
                                 name = name + '@safe';
@@ -1988,9 +2002,9 @@ figma.ui.onmessage = async (message) => {
                                 //克隆最后一个
                                 for(let i = 0; i < C; i++){
                                     let clone = comps[oldindex].clone();
-                                    let safaMain = getSafeMain(comps[oldindex]);
-                                    clone.x = safaMain[2];
-                                    clone.y = safaMain[3] + (safaMain[1] * 1.2 * (i + 1));
+                                    let safeMain = getSafeMain(comps[oldindex]);
+                                    clone.x = safeMain[2];
+                                    clone.y = safeMain[3] + (safeMain[1] * 1.2 * (i + 1));
                                     b[0].appendChild(clone);
                                     
                                     comps.push(clone);
@@ -2465,7 +2479,7 @@ figma.ui.onmessage = async (message) => {
                     b[0].layoutGrids = newgrids;
                 };
                 let gridset = addFrame([...main,b[0].name + ' @clip',[]])
-                fullInFrameSafa(b[0],gridset);
+                fullInFrameSafe(b[0],gridset);
                 final = gridset;
                 a.selection = [gridset];
             } else {
@@ -2526,8 +2540,8 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         if(b.length == 1 && b[0].layoutGrids && b[0].layoutGrids.length > 0 && b[0].name.split(' ').includes('@clip')){
             let RC = getClipGrids(b[0]);
-            let safaMain = getSafeMain(b[0]);
-            let cuts = clipGridsToCut(RC,[safaMain[0],safaMain[1]]);
+            let safeMain = getSafeMain(b[0]);
+            let cuts = clipGridsToCut(RC,[safeMain[0],safeMain[1]]);
             toPixel(cuts,false,true);
         };
     };
@@ -2535,22 +2549,22 @@ figma.ui.onmessage = async (message) => {
         let b = getSelectionMix();
         if(b.length == 1 && b[0].layoutGrids && b[0].layoutGrids.length > 0 && b[0].name.split(' ').includes('@clip')){
             let RC = getClipGrids(b[0]);
-            let safaMain = getSafeMain(b[0]);
-            let cuts = clipGridsToCut(RC,[safaMain[0],safaMain[1]]);
+            let safeMain = getSafeMain(b[0]);
+            let cuts = clipGridsToCut(RC,[safeMain[0],safeMain[1]]);
             let layerIndex = b[0].parent.children.findIndex(item => item.id == b[0].id)
-            let clipsframe = addFrame([...safaMain,b[0].name,[]]);
+            let clipsframe = addFrame([...safeMain,b[0].name,[]]);
             b[0].parent.insertChild((layerIndex + 1),clipsframe);
             
-            clipsframe.x = safaMain[0] + safaMain[2] + 30;
-            clipsframe.y = safaMain[1] + safaMain[3] + 30;
+            clipsframe.x = safeMain[0] + safeMain[2] + 30;
+            clipsframe.y = safeMain[1] + safeMain[3] + 30;
             let comp;
             if(b[0].type == 'COMPONENT'){
                 comp = b[0].clone();;
             } else {
                 comp = figma.createComponentFromNode(b[0].clone());
                 b[0].parent.insertChild((layerIndex + 1),comp);
-                comp.x = safaMain[0] + safaMain[2] + 30;
-                comp.y = safaMain[3];
+                comp.x = safeMain[0] + safeMain[2] + 30;
+                comp.y = safeMain[3];
             };
             //必须全部为可缩放约束
             comp.children.forEach(item => {
@@ -3149,7 +3163,7 @@ figma.ui.onmessage = async (message) => {
                 frame = addFrame([...safeMain,node.name,[]]);
             }
             if(frame){
-                fullInFrameSafa(node,frame);
+                fullInFrameSafe(node,frame);
                 selects.push(frame);
             }
         });
@@ -3208,7 +3222,7 @@ figma.ui.onmessage = async (message) => {
                         console.error(error);
                     }
                 }else{
-                    layoutNode = fullInFrameSafa(item,addFrame([],item));
+                    layoutNode = fullInFrameSafe(item,addFrame([],item));
                 };
             };
 
@@ -3434,7 +3448,7 @@ figma.ui.onmessage = async (message) => {
             console.log(svgcode)
             let safeMain = getSafeMain(b[i]);
             let box = addFrame([...safeMain,b[i].name,[]]);
-            fullInFrameSafa(b[i],box);
+            fullInFrameSafe(b[i],box);
             let newnode = figma.createNodeFromSvg(svgcode);
             box.appendChild(newnode);
             [newnode.x,newnode.y] = [0,0]
@@ -3902,8 +3916,8 @@ function postmessage(data){
  * @param {[object] | null} info -新建页面的设置项，命名、背景色、页码
  */
 function addPageMix(info = [{name: null,fill: null,index: null}]){
-    let safaPage = figma.currentPage.clone();
-    safaPage.children.forEach(item => {
+    let safePage = figma.currentPage.clone();
+    safePage.children.forEach(item => {
         item.remove();
     });
     let finals = [];
@@ -3912,7 +3926,7 @@ function addPageMix(info = [{name: null,fill: null,index: null}]){
         try{
             newpage = figma.createPage();
         } catch(e){
-            newpage = safaPage.clone();
+            newpage = safePage.clone();
         }
         newpage.name = item.name ? item.name : 'New Page';
         if(item.fill) newpage.fills = [toRGB(item.fill,true)];
@@ -3929,7 +3943,7 @@ function addPageMix(info = [{name: null,fill: null,index: null}]){
             finals.push(newpage)
         };
     });
-    safaPage.remove();
+    safePage.remove();
     return finals;
 };
 
@@ -4136,7 +4150,7 @@ function toPixel(info,isOverWrite,isClip){
     for(let i = 0; i < final.length; i++){
         let safeMain = getSafeMain(final[i]);
         let box = addFrame([...safeMain,final[i].name,[]]);
-        fullInFrameSafa(final[i],box);
+        fullInFrameSafe(final[i],box);
         setTimeout(()=>{
             if(isClip){
                 addCutArea(box,[{x: 0, y: 0, w: safeMain[0], h: safeMain[1], s: 2}]);
@@ -4164,10 +4178,21 @@ function addFrame(info,cloneNode){
  * @returns {Array} - [w,h,x,y]
  */
 function getSafeMain(node){
-    let w = node.absoluteRenderBounds ? node.absoluteRenderBounds.width : node.absoluteBoundingBox.width;
-    let h = node.absoluteRenderBounds ? node.absoluteRenderBounds.height : node.absoluteBoundingBox.height;
-    let x = node.absoluteRenderBounds ? node.absoluteRenderBounds.x : node.absoluteBoundingBox.x;
-    let y = node.absoluteRenderBounds ? node.absoluteRenderBounds.y : node.absoluteBoundingBox.y;
+    let [w,h,x,y] = [node.width,node.height,node.x,node.y];
+    let renders = ('absoluteRenderBounds' in node) ? node.absoluteRenderBounds : null;
+    let bounds = node.absoluteBoundingBox;
+    
+    if(renders){
+        //Object.keys(renders).map(key => renders[key] == bounds[key]).includes(false)
+        if(renders.x !== bounds.x || renders.y !== bounds.y){
+            w = renders.width;
+            h = renders.height;
+            //计算render坐标相对于bounds的偏移，得到更准确的x,y
+            x = renders.x - bounds.x + node.x;
+            y = renders.y - bounds.y + node.y;
+        }
+    }
+    /*
     if(node.parent !== figma.currentPage){
         let transform = node.parent.absoluteTransform;
         let key1 = transform[0][0] == 1 ? true : false;
@@ -4178,12 +4203,12 @@ function getSafeMain(node){
             x -= node.x;
             y += node.y;
         };
-    };
+    };*/
     //console.log([w,h,x,y])
     return [w,h,x,y]
 };
 //将目标安全地放进一个画板里
-function fullInFrameSafa(keynode,frame){
+function fullInFrameSafe(keynode,frame){
     let layerIndex = keynode.parent.children.findIndex(item => item.id == keynode.id);
     keynode.parent.insertChild((layerIndex + 1),frame);
     

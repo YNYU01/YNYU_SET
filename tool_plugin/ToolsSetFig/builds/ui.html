@@ -4,7 +4,7 @@
   <meta name="description" content="网页内容简介，转发时显示">
   <title data-en-text="『YNYU_SET』 ToolsSet Fig">『云即·工具集（Figma版）』</title>
   <link rel="icon" href="https://www.ynyuset.cn/VI/ICON_YNYUSET_DEV.png" type="image/png">
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/run.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/run.js"></script>
   <!-- INLINE_RUN -->
   <script>
 let ISWORK_TIME = true;
@@ -99,7 +99,7 @@ function toolMessage(data,app){
 
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/builds/yn_style.css"  >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/builds/yn_style.css"  >
   <!-- INLINE_CSS -->
   <style>
 @font-face {
@@ -4926,17 +4926,19 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                   </div>
                   -->
                   <div class="df-ffc bod-d gap4 pad4 mar-b4">
-                    <div class="font-s10 op6" 
-                    data-en-text="<span style='color:var(--themeColor2)'>@slice:fix</span> Marks fixed slice positions;<br>
-                    <span style='color:var(--themeColor2)'>@slice:safe</span> Indicates non-truncatable areas;<br>
-                    <span style='color:var(--themeColor2)'>@slice:module</span> Defines module boundaries to prevent slices from crossing modules;">
-                    <span style='color:var(--themeColor2)'>@slice:fix</span> 固定切图位;<br>
-                    <span style='color:var(--themeColor2)'>@slice:safe</span> 不可截断区域;<br>
-                    <span style='color:var(--themeColor2)'>@slice:module</span> 模块区域,可避免跨模块切图；
+                    <div class="font-s10 op6" >
+                      <span data-en-text="Name eg: ">命名示例: </span>xxx @slice:xxx<br>
+                    <span style='color:var(--themeColor2)'>@slice:fix</span>
+                    <span data-en-text="Marks fixed slice positions">固定切图位;</span><br>
+                    <span style='color:var(--themeColor2)'>@slice:safe</span>
+                    <span data-en-text="Indicates non-truncatable areas">不可截断区域;</span><br>
+                    <span style='color:var(--themeColor2)'>@slice:module</span>
+                    <span data-en-text="Defines module boundaries to prevent slices from crossing modules">模块区域,可避免跨模块切图；</span>
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Final Size">目标尺寸</div>
+                    ≤
                     <div data-autoclip-max class="df-lc" data-int-value="1200" >
                       <input id="input-autoclip-max" type="text" value="1200" data-input data-input-type="int" data-input-must="1,4096" style="text-align: center; max-width: 8ch;">
                       <div class="df-cc" data-input-unit>px</div>
@@ -4947,11 +4949,20 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
                       style="flex: 0 0 auto; width: 32px; text-align: center;"/>
                       <div class="df-cc" data-input-unit>x</div>
                     </div>
+                    <div style="width: 4px;"></div>
+                    <div class="wh-14 df-cc pos-r" data-tips="auto" data-tips-x="right" data-tips-y="top"
+                    data-tips-text="切片大小=目标尺寸÷缩放倍率"
+                    data-tips-text-en="Slice Size = Final Size ÷ Scale Factor">
+                      <btn-info style="opacity: 0.6;"></btn-info>
+                    </div>
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Prefix">命名前缀</div>
                     <div data-autoclip-max class="df-lc fl1" data-int-value="1200" >
                       <input id="input-autoclip-prefix" type="text" value="切片-" data-en-input="slice-" data-input data-input-type="text" data-input-must="切片-" data-input-must-en="slice-">
+                    </div>
+                    <div data-btn="op" data-autoclip-getname class="wh-22 df-cc bod-r4">
+                      <btn-getbyselect></btn-getbyselect>
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
@@ -5589,23 +5600,23 @@ input[type="checkbox"]:checked + * + * + [data-skewscale-view-box] [data-skewsca
     </defs>
   </svg>
   
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/builds/yn_icon.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/builds/yn_comp.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/builds/yn_tool.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/graph.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/help_data.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/compressor.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/UPNG.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/jszip.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/marked.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/qrcode.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/jsQR.js"></script>
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/jsQR_correct.js"></script>
-  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/dom_to_img.js"></script-->
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/builds/yn_icon.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/builds/yn_comp.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/builds/yn_tool.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/graph.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/help_data.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/UPNG.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/jszip.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/jsQR_correct.js"></script>
+  <!--script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/dom_to_img.js"></script-->
   <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@6afb585e4e0ce266cb0002389e722535ff1ea758/publics/other/supabase-js@2.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@9ed4d30e175977db4f6335d4cfdba7786a72dde2/publics/other/supabase-js@2.js"></script>
   <!-- INLINE_JS -->
   <script>
 
@@ -9211,6 +9222,14 @@ DOM.pixelScale.addEventListener('change',()=>{
   };
 });
 
+getElementMix('data-autoclip-getname').addEventListener('click',()=>{
+  let input = getElementMix('input-autoclip-prefix');
+  let name = State.get('selectNodeInfo')[0].n;
+  if(name){
+    input.value = tool.TextMaxLength(name, 10);
+  }
+});
+
 getElementMix('data-split-tags').querySelectorAll('[type="checkbox"]').forEach(check => {
   check.addEventListener('change',()=>{
     if(check.checked){
@@ -11509,7 +11528,7 @@ function autoClip(){
   let prefix = getElementMix('input-autoclip-prefix').value;
   let scale = getElementMix('input-autoclip-scale').value;
   let maxsize = getElementMix('input-autoclip-max').value;
-  let insert = getElementMix('data-autoclip-insert').getAttribute('data-radio-valu');
+  let insert = getElementMix('data-autoclip-insert').getAttribute('data-radio-value');
   let data = {
     prefix:prefix,
     scale:scale,

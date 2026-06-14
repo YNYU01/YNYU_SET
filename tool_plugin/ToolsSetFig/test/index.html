@@ -1475,7 +1475,7 @@
                   <div data-skill-star="false">
                     <btn-star></btn-star>
                   </div>
-                  <div class="df-lc" data-skill-line>
+                  <!--div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Slice Size">切片大小</div>
                     <div data-pixel-mix class="df-lc pos-r gap4" data-select data-select-close data-select-value="≤ 4096px" style="width: 90px; z-index:2;">
                       <input id="select-value-2" type="text" data-select-input readonly value="≤ 4096px">
@@ -1492,7 +1492,7 @@
                         <div data-option="option" data-option-main="false" data-option-value="≤ 32px">≤ 32px</div>
                       </div>
                     </div>
-                  </div>
+                  </div-->
                   <div class="df-sc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Scale">像素倍率</div>
                     <div class="df-lc" style="flex: 0 0 auto; width: 50px;">
@@ -1765,17 +1765,19 @@
                   </div>
                   -->
                   <div class="df-ffc bod-d gap4 pad4 mar-b4">
-                    <div class="font-s10 op6" 
-                    data-en-text="<span style='color:var(--themeColor2)'>@slice:fix</span> Marks fixed slice positions;<br>
-                    <span style='color:var(--themeColor2)'>@slice:safe</span> Indicates non-truncatable areas;<br>
-                    <span style='color:var(--themeColor2)'>@slice:module</span> Defines module boundaries to prevent slices from crossing modules;">
-                    <span style='color:var(--themeColor2)'>@slice:fix</span> 固定切图位;<br>
-                    <span style='color:var(--themeColor2)'>@slice:safe</span> 不可截断区域;<br>
-                    <span style='color:var(--themeColor2)'>@slice:module</span> 模块区域,可避免跨模块切图；
+                    <div class="font-s10 op6" >
+                      <span data-en-text="Name eg: ">命名示例: </span>xxx @slice:xxx<br>
+                    <span style='color:var(--themeColor2)'>@slice:fix</span>
+                    <span data-en-text="Marks fixed slice positions">固定切图位;</span><br>
+                    <span style='color:var(--themeColor2)'>@slice:safe</span>
+                    <span data-en-text="Indicates non-truncatable areas">不可截断区域;</span><br>
+                    <span style='color:var(--themeColor2)'>@slice:module</span>
+                    <span data-en-text="Defines module boundaries to prevent slices from crossing modules">模块区域,可避免跨模块切图；</span>
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Final Size">目标尺寸</div>
+                    ≤
                     <div data-autoclip-max class="df-lc" data-int-value="1200" >
                       <input id="input-autoclip-max" type="text" value="1200" data-input data-input-type="int" data-input-must="1,4096" style="text-align: center; max-width: 8ch;">
                       <div class="df-cc" data-input-unit>px</div>
@@ -1786,11 +1788,27 @@
                       style="flex: 0 0 auto; width: 32px; text-align: center;"/>
                       <div class="df-cc" data-input-unit>x</div>
                     </div>
+                    <div style="width: 4px;"></div>
+                    <div class="wh-14 df-cc pos-r" data-tips="auto" data-tips-x="right" data-tips-y="top"
+                    data-tips-text="切片大小=目标尺寸÷缩放倍率"
+                    data-tips-text-en="Slice Size = Final Size ÷ Scale Factor">
+                      <btn-info style="opacity: 0.6;"></btn-info>
+                    </div>
                   </div>
                   <div class="df-lc" data-skill-line>
                     <div data-any="vw240" data-skill-btnname data-en-text="Prefix">命名前缀</div>
-                    <div data-autoclip-max class="df-lc fl1" data-int-value="1200" >
-                      <input id="input-autoclip-prefix" type="text" value="切片-" data-en-input="slice-" data-input data-input-type="text" data-input-must="切片-" data-input-must-en="slice-">
+                    <div class="df-lc fl1 gap2" >
+                      <input id="input-autoclip-prefix" type="text" value="切片" data-en-input="slice" data-input data-input-type="text" data-input-must="切片" data-input-must-en="slice">
+                      <input id="input-autoclip-hyphen" type="text" value="-" data-input data-input-type="text" style="width: 4ch; height: 23px; flex: 0 auto; text-align: center;">
+                      <div class="df-cc" data-input-unit style="height: 23px; padding-right: 6px;">&nbsp;Num</div>
+                      <div data-btn="op" data-autoclip-getname class="wh-20 df-cc bod-r4 mar-l4">
+                        <btn-getbyselect></btn-getbyselect>
+                      </div>
+                      <div data-input-reset data-btn="reset">
+                        <btn-reset></btn-reset>
+                      </div>
+                      <div style="width: 4px;"></div>
+
                     </div>
                   </div>
                   <div class="df-lc" data-skill-line>

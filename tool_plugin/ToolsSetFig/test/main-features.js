@@ -93,7 +93,7 @@ DOM.skillBtnMain.forEach(btn => {
 
 // 更多功能 > 返回裁切方案以栅格化
 function sendPixel(name){
-  let mix = getElementMix('data-pixel-mix').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
+  let mix = 4096;// getElementMix('data-pixel-mix').getAttribute('data-select-value').split('≤ ')[1].split('px')[0]*1;
   let s = DOM.pixelScale.value;
   let cuts = [];
   tipsAll(MESSAGES.READING, State.get('selectNodeInfo').length * 800);
@@ -389,7 +389,7 @@ function autoClip(){
   let prefix = getElementMix('input-autoclip-prefix').value;
   let scale = getElementMix('input-autoclip-scale').value;
   let maxsize = getElementMix('input-autoclip-max').value;
-  let insert = getElementMix('data-autoclip-insert').getAttribute('data-radio-valu');
+  let insert = getElementMix('data-autoclip-insert').getAttribute('data-radio-value');
   let data = {
     prefix:prefix,
     scale:scale,

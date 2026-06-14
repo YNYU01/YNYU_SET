@@ -3550,7 +3550,14 @@ DOM.pixelScale.addEventListener('change',()=>{
     });
   };
 });
-
+// 填入选中对象的
+getElementMix('data-autoclip-getname').addEventListener('click',()=>{
+  let input = getElementMix('input-autoclip-prefix');
+  let name = State.get('selectNodeInfo')[0].n;
+  if(name){
+    input.value = tool.TextMaxLength(name, 10);
+  }
+});
 //拆分文本条件标签选中
 getElementMix('data-split-tags').querySelectorAll('[type="checkbox"]').forEach(check => {
   check.addEventListener('change',()=>{

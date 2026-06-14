@@ -986,7 +986,12 @@ function COMP_MAIN(){
             break;
         }
       }
-      node.parentNode.setAttribute('data-number-value', defaultValue);
+      if(node.parentNode.getAttribute('data-number-value') !== null){
+        node.parentNode.setAttribute('data-number-value', defaultValue);
+      };
+      if(node.parentNode.getAttribute('data-text-value') !== null){
+        node.parentNode.setAttribute('data-text-value', defaultValue);
+      };
       node.value = defaultValue;
     });
   });
