@@ -1,6 +1,6 @@
 /* AUTO-GENERATED FILE. DO NOT EDIT. */
 /* Source: tool_plugin/ToolsSetFig/log.md */
-/* Built: 2026-06-14T11:31:37.170Z */
+/* Built: 2026-06-21T10:01:48.623Z */
 
 (function () {
   'use strict';
@@ -14,27 +14,27 @@
     "items": [
       [
         "li",
-        "<span data-doc-key>修复：</span>更多功能>修复栅格化功能（基于切片）和标签裁切功能的切片错位问题",
+        "<span data-doc-key>🐞 修复：</span>更多功能>修复栅格化功能（基于切片）和标签裁切功能的切片错位问题",
         "<span data-doc-key>🐞 Fix:</span> More Tools > Rasterize (Slice-based) & Clip By Tag, fixed slice misalignment issue"
       ],
       [
         "li",
-        "<span data-doc-key>优化：</span>更多功能>复杂的切图情景将由标签裁切功能负责，原栅格化功能简化",
+        "<span data-doc-key>⚡ 优化：</span>更多功能>复杂的切图情景将由标签裁切功能负责，原栅格化功能简化",
         "<span data-doc-key>⚡ Optimize:</span> More Tools > Complex slicing scenarios will now be handled by Clip By Tag, and the original Rasterize function is simplified"
       ],
       [
         "li",
-        "selecting child elements and clicking the \"+\" tag button will append the tag after the name;新增：更多功能>标签裁切，可从选中对象获取命名作为前缀，并支持修改序号连接符; 可选中子元素并点击\"+\"标签按钮，将在命名后面添加标签",
-        "<span data-doc-key>✨ New:</span> More Tools > Clip By Tag, can get the name from the selection as a prefix, and supports modifying the index connector"
+        "<span data-doc-key>✨ 新增：</span>更多功能>标签裁切，可从选中对象获取命名作为前缀，并支持修改序号连接符; 可选中子元素并点击\"+\"标签按钮，将在命名后面添加标签",
+        "<span data-doc-key>✨ New:</span> More Tools > Clip By Tag, can get the name from the selection as a prefix, and supports modifying the index connector. Selecting child elements and clicking the \"+\" tag button will append the tag after the name"
       ],
       [
         "li",
-        "<span data-doc-key>修复：</span>更多功能>斜切拉伸，修复拉伸未生效问题（文本元素是本身不支持拉伸）",
+        "<span data-doc-key>🐞 修复：</span>更多功能>斜切拉伸，修复拉伸未生效问题（文本元素是本身不支持拉伸）",
         "<span data-doc-key>🐞 Fix:</span> More Tools > Ease Transform, fixed issue where stretching did not take effect (text elements do not natively support stretching)"
       ],
       [
         "li",
-        "<span data-doc-key>优化：</span>更多功能>点击功能模块顶栏的名称区域，可以显/隐功能菜单，并记录偏好",
+        "<span data-doc-key>⚡ 优化：</span>更多功能>点击功能模块顶栏的名称区域，可以显/隐功能菜单，并记录偏好",
         "<span data-doc-key>⚡ Optimize:</span> More Tools > Clicking the name area on the top bar of a function module can show/hide the function menu, and the preference will be recorded"
       ]
     ]
@@ -48,17 +48,17 @@
     "items": [
       [
         "li",
-        "supports custom slice naming prefix, generated slices will be named as prefix + number; allows choosing to add slices before the selected object / to the parent of the selected object / to the page;  新增：更多功能>标签裁切, 可根据多种标签自动计算出合适的切图范围, 添加切片, 并给切片设置好导出参数; 可设置切片命名前缀, 生成的切片将命名为前缀+序号; 可选择将切片添加到所选对象前/所选对象的父级/页面",
-        "<span data-doc-key>✨ New:</span> More Tools > Auto Clip By Tag, automatically calculates the optimal slicing range based on multiple tags, adds slices, and sets export parameters"
+        "<span data-doc-key>✨ 新增：</span>更多功能>标签裁切, 可根据多种标签自动计算出合适的切图范围, 添加切片, 并给切片设置好导出参数; 可设置切片命名前缀, 生成的切片将命名为前缀+序号; 可选择将切片添加到所选对象前/所选对象的父级/页面",
+        "<span data-doc-key>✨ New:</span> More Tools > Auto Clip By Tag, automatically calculates the optimal slicing range based on multiple tags, adds slices, and sets export parameters. Supports custom slice naming prefix, generated slices will be named as prefix + number. Allows choosing to add slices before the selected object / to the parent of the selected object / to the page"
       ],
       [
         "li",
-        "<span data-doc-key>修复：</span>表单页>表格样式，修复设置填充会导致描边改动的问题",
+        "<span data-doc-key>🐞 修复：</span>表单页>表格样式，修复设置填充会导致描边改动的问题",
         "<span data-doc-key>🐞 Fix:</span> Sheet page > Table styles, fixed issue where setting fill would unexpectedly modify stroke"
       ],
       [
         "li",
-        "<span data-doc-key>修复：</span>表单页>表格主题，修复选中表格没有正常切换主题风格的问题",
+        "<span data-doc-key>🐞 修复：</span>表单页>表格主题，修复选中表格没有正常切换主题风格的问题",
         "<span data-doc-key>🐞 Fix:</span> Sheet page > Table themes, fixed issue where selecting a table did not correctly switch theme styles"
       ]
     ]
@@ -170,8 +170,8 @@
       ],
       [
         "li",
-        "modifying remote styles to local via tag attributes is roughly equivalent to unlink styles management in Variables page; 🐞 修复：表单页>数据获取>标签属性, 当存在远程样式时会导致获取失败, 现已支持获取, 通过标签属性修改远程样式为本地样式约等于变量页的断链样式管理",
-        "<span data-doc-key>🐞 Fix:</span> Sheet page > Data get > Tag attributes, fixed failure to get when remote styles exist, now supported"
+        "<span data-doc-key>🐞 修复：</span>表单页>数据获取>标签属性, 当存在远程样式时会导致获取失败, 现已支持获取, 通过标签属性修改远程样式为本地样式约等于变量页的断链样式管理",
+        "<span data-doc-key>🐞 Fix:</span> Sheet page > Data get > Tag attributes, fixed failure to get when remote styles exist, now supported. modifying remote styles to local via tag attributes is roughly equivalent to unlink styles management in Variables page"
       ]
     ]
   },
@@ -199,8 +199,8 @@
       ],
       [
         "li",
-        "<span data-doc-key>✨ New:</span> Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame 新增：创建页>创建画布时如选中一个元素, 会填充到画布中",
-        "<span data-doc-key>✨ New:</span> Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame 新增：创建页>创建画布时如选中一个元素, 会填充到画布中"
+        "<span data-doc-key>✨ 新增：</span>创建页>创建画布时如选中一个元素, 会填充到画布中",
+        "<span data-doc-key>✨ New:</span> Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame"
       ]
     ]
   },
@@ -262,8 +262,8 @@
       ],
       [
         "li",
-        "color/theme changes apply immediately (may be laggy, use only for preview when needed); ✨ 新增：表单页>应用主题, 可以开启实时模式, 切换色值和主题风格时会直接应用, 但相对卡顿, 仅适用于必要的效果预览对比, 慎用",
-        "<span data-doc-key>✨ New:</span> Sheet page > Apply theme - can enable live mode"
+        "<span data-doc-key>✨ 新增：</span>表单页>应用主题, 可以开启实时模式, 切换色值和主题风格时会直接应用, 但相对卡顿, 仅适用于必要的效果预览对比, 慎用",
+        "<span data-doc-key>✨ New:</span> Sheet page > Apply theme - can enable live mode. color/theme changes apply immediately (may be laggy, use only for preview when needed)"
       ],
       [
         "li",
@@ -355,8 +355,8 @@
       ],
       [
         "li",
-        "<span data-doc-key>🔄 修改:</span> 表单页>行列数量, 原输入数值加减行+输入数值加减列, 改为输入行列数值设置行列+加减行",
-        "<span data-doc-key>🔄 Change:</span> Sheet page > Row/Column count - Changed from input value add/subtract rows + input value add/subtract columns to input row/column values to set rows/columns + add/subtract rows"
+        "<span data-doc-key>⚡ 优化:</span> 表单页>行列数量, 原输入数值加减行+输入数值加减列, 改为输入行列数值设置行列+加减行",
+        "<span data-doc-key>⚡ Optimize:</span> Sheet page > Row/Column count - Changed from input value add/subtract rows + input value add/subtract columns to input row/column values to set rows/columns + add/subtract rows"
       ]
     ]
   },

@@ -1,15 +1,15 @@
 ### v0.1.11 2026/6/14
-- 🐞 Fix: More Tools > Rasterize (Slice-based) & Clip By Tag, fixed slice misalignment issue;修复：更多功能>修复栅格化功能（基于切片）和标签裁切功能的切片错位问题
-- ⚡ Optimize: More Tools > Complex slicing scenarios will now be handled by Clip By Tag, and the original Rasterize function is simplified;优化：更多功能>复杂的切图情景将由标签裁切功能负责，原栅格化功能简化
-- ✨ New: More Tools > Clip By Tag, can get the name from the selection as a prefix, and supports modifying the index connector; selecting child elements and clicking the "+" tag button will append the tag after the name;新增：更多功能>标签裁切，可从选中对象获取命名作为前缀，并支持修改序号连接符; 可选中子元素并点击"+"标签按钮，将在命名后面添加标签
-- 🐞 Fix: More Tools > Ease Transform, fixed issue where stretching did not take effect (text elements do not natively support stretching);修复：更多功能>斜切拉伸，修复拉伸未生效问题（文本元素是本身不支持拉伸）
-- ⚡ Optimize: More Tools > Clicking the name area on the top bar of a function module can show/hide the function menu, and the preference will be recorded;优化：更多功能>点击功能模块顶栏的名称区域，可以显/隐功能菜单，并记录偏好
+- 🐞 Fix: More Tools > Rasterize (Slice-based) & Clip By Tag, fixed slice misalignment issue; 🐞 修复：更多功能>修复栅格化功能（基于切片）和标签裁切功能的切片错位问题
+- ⚡ Optimize: More Tools > Complex slicing scenarios will now be handled by Clip By Tag, and the original Rasterize function is simplified; ⚡ 优化：更多功能>复杂的切图情景将由标签裁切功能负责，原栅格化功能简化
+- ✨ New: More Tools > Clip By Tag, can get the name from the selection as a prefix, and supports modifying the index connector. Selecting child elements and clicking the "+" tag button will append the tag after the name;  ✨ 新增：更多功能>标签裁切，可从选中对象获取命名作为前缀，并支持修改序号连接符; 可选中子元素并点击"+"标签按钮，将在命名后面添加标签
+- 🐞 Fix: More Tools > Ease Transform, fixed issue where stretching did not take effect (text elements do not natively support stretching); 🐞 修复：更多功能>斜切拉伸，修复拉伸未生效问题（文本元素是本身不支持拉伸）
+- ⚡ Optimize: More Tools > Clicking the name area on the top bar of a function module can show/hide the function menu, and the preference will be recorded; ⚡ 优化：更多功能>点击功能模块顶栏的名称区域，可以显/隐功能菜单，并记录偏好
 
 
 ### v0.1.10 2026/6/7
-- ✨ New: More Tools > Auto Clip By Tag, automatically calculates the optimal slicing range based on multiple tags, adds slices, and sets export parameters; supports custom slice naming prefix, generated slices will be named as prefix + number; allows choosing to add slices before the selected object / to the parent of the selected object / to the page;  新增：更多功能>标签裁切, 可根据多种标签自动计算出合适的切图范围, 添加切片, 并给切片设置好导出参数; 可设置切片命名前缀, 生成的切片将命名为前缀+序号; 可选择将切片添加到所选对象前/所选对象的父级/页面
-- 🐞 Fix: Sheet page > Table styles, fixed issue where setting fill would unexpectedly modify stroke;  修复：表单页>表格样式，修复设置填充会导致描边改动的问题
-- 🐞 Fix: Sheet page > Table themes, fixed issue where selecting a table did not correctly switch theme styles;  修复：表单页>表格主题，修复选中表格没有正常切换主题风格的问题
+- ✨ New: More Tools > Auto Clip By Tag, automatically calculates the optimal slicing range based on multiple tags, adds slices, and sets export parameters. Supports custom slice naming prefix, generated slices will be named as prefix + number. Allows choosing to add slices before the selected object / to the parent of the selected object / to the page; ✨ 新增：更多功能>标签裁切, 可根据多种标签自动计算出合适的切图范围, 添加切片, 并给切片设置好导出参数; 可设置切片命名前缀, 生成的切片将命名为前缀+序号; 可选择将切片添加到所选对象前/所选对象的父级/页面
+- 🐞 Fix: Sheet page > Table styles, fixed issue where setting fill would unexpectedly modify stroke; 🐞 修复：表单页>表格样式，修复设置填充会导致描边改动的问题
+- 🐞 Fix: Sheet page > Table themes, fixed issue where selecting a table did not correctly switch theme styles; 🐞 修复：表单页>表格主题，修复选中表格没有正常切换主题风格的问题
 
 
 ### v0.1.9 2026/5/1
@@ -33,13 +33,13 @@
 - ✨ New: Export page > Manage render queue, clicking "Override Settings" syncs modified export settings and naming to local settings (won't trigger cache if format/size is from naming), use with caution; ✨ 新增：导出页>管理渲染队列, 当目标文件格式和目标文件大小是从命名中获取时不会触发缓存, 或者想将修改过的导出设置和命名同步到本地设置, 此时可以点击覆盖设置, 需谨慎使用
 - ✨ New: Variables page > Unlink styles management (Beta), now open for testing, allows migrating styles across files by comparing unlinked styles with current file style names and re-establishing associations; ✨ 新增：变量页>断链样式管理, 现已开放测试, 可用于跨文件迁移样式, 将断开链接的样式与当前文件样式名比对并重新建立关联
 - 🐞 Fix: More Tools page > Split text, fixed segmentation misalignment when splitting by keywords; 🐞 修复：更多功能页>拆分文本, 修复按关键词拆分时分段错位的问题
-- 🐞 Fix: Sheet page > Data get > Tag attributes, fixed failure to get when remote styles exist, now supported; modifying remote styles to local via tag attributes is roughly equivalent to unlink styles management in Variables page; 🐞 修复：表单页>数据获取>标签属性, 当存在远程样式时会导致获取失败, 现已支持获取, 通过标签属性修改远程样式为本地样式约等于变量页的断链样式管理
+- 🐞 Fix: Sheet page > Data get > Tag attributes, fixed failure to get when remote styles exist, now supported. modifying remote styles to local via tag attributes is roughly equivalent to unlink styles management in Variables page; 🐞 修复：表单页>数据获取>标签属性, 当存在远程样式时会导致获取失败, 现已支持获取, 通过标签属性修改远程样式为本地样式约等于变量页的断链样式管理
 
 ### v0.1.6 2026/3/27
 - 🐞 Fix: Sheet page > Data mapping > Settings - fixed incorrect placeholder behavior for empty values when mapping text properties; 🐞 修复：表单页>数据映射>高级设置, 修复文本属性映射时空值占位符异常问题
 - ⚡ Optimize: Sheet page > Data mapping > Settings - non-auto-layout instances now also clone/reduce based on data length; ⚡ 优化：表单页>数据映射>高级设置, 非自动布局也支持根据数据长短增减实例
 - ⚡ Optimize: Variables page > Added tabs to switch and manage styles set vs unlink styles; ⚡ 优化：变量页>新增标签以切换管理样式组和断链样式
-- ✨ New: Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame 新增：创建页>创建画布时如选中一个元素, 会填充到画布中
+- ✨ New: Create page > When creating frame with one selected layer, the layer will be auto-filled into the frame; ✨ 新增：创建页>创建画布时如选中一个元素, 会填充到画布中
 
 ### v0.1.5 2026/3/3
 - 🐞 Fix: More Tools page > Skew/Stretch caused rotation value to reset; 🐞 修复：更多功能页>斜切拉伸会导致旋转值重置的问题
@@ -52,7 +52,7 @@
 - 🐞 Fix: More Tools page > In-place rasterize not working; 🐞 修复：更多功能页>原地栅格化失效问题
 - 🐞 Fix: More Tools page > Skew/stretch had no effect on text, and clicking the All Reset button caused crash; 🐞 修复：更多功能页>斜切拉伸对文字无效以及点击重置全部会导致错误崩溃的问题
 - 🐞 Fix: Create page > MD to layer - width incorrectly falling back to 100px; 🐞 修复：创建页>md格式转图层, 宽度异常回退为100px的问题
-- ✨ New: Sheet page > Apply theme - can enable live mode; color/theme changes apply immediately (may be laggy, use only for preview when needed); ✨ 新增：表单页>应用主题, 可以开启实时模式, 切换色值和主题风格时会直接应用, 但相对卡顿, 仅适用于必要的效果预览对比, 慎用
+- ✨ New: Sheet page > Apply theme - can enable live mode. color/theme changes apply immediately (may be laggy, use only for preview when needed); ✨ 新增：表单页>应用主题, 可以开启实时模式, 切换色值和主题风格时会直接应用, 但相对卡顿, 仅适用于必要的效果预览对比, 慎用
 - ✨ New: Sidebar > Click version number to jump to changelog; ✨ 新增：侧边栏>点击版本号可直达版本日志
 - ⚡ Optimize: Create page > Get artboard info from layer - width/height rounded to 2 decimals to avoid float precision; ⚡ 优化：创建页>从图层获取画板信息, 宽高仅保留两个小数点, 避免浮点数精度问题
 - ⚡ Optimize: Sheet page > Theme settings - gray theme colors no longer generate saturated palette; ⚡ 优化：表单页>主题设置, 主题色为灰色系时不会再生成带饱和度的配色
@@ -71,7 +71,7 @@
 - ⚡ Optimize: Sheet page > Double-click to fill sample data - Fill samples based on selected data type; ⚡ 优化: 表单页>双击填充示例数据, 按所选数据类型填充示例
 - ⚡ Optimize: Sheet page > Data validation and generation settings - Merged into advanced settings and hidden by default; ⚡ 优化: 表单页>数据校验, 生成设置, 合并到高级设置并默认隐藏
 - ✨ New: Sheet page > Table component source - Can toggle header option to generate tables without headers; ✨ 新增: 表单页>表格组件来源, 可以开/关表头选项, 生成不带表头的表格
-- 🔄 Change: Sheet page > Row/Column count - Changed from input value add/subtract rows + input value add/subtract columns to input row/column values to set rows/columns + add/subtract rows; 🔄 修改: 表单页>行列数量, 原输入数值加减行+输入数值加减列, 改为输入行列数值设置行列+加减行
+- ⚡ Optimize: Sheet page > Row/Column count - Changed from input value add/subtract rows + input value add/subtract columns to input row/column values to set rows/columns + add/subtract rows; ⚡ 优化: 表单页>行列数量, 原输入数值加减行+输入数值加减列, 改为输入行列数值设置行列+加减行
 
 ### v0.1.1 2026/1/2
 - 🐞 Fix: Sheet page > Apply Preset - Fixed issue where applying table styles on the sheet page was not working properly; 🐞 修复: 表单页>应用表格样式时, 不能正常运行的问题
