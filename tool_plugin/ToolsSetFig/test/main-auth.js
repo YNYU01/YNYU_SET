@@ -1393,7 +1393,7 @@ const PublicConfigManager = {
 
     const now = Date.now();
     const timeDiff = now - cachedTimestamp;
-    const oneHour = 60 * 60 * 1000; // 1小时的毫秒数
+    const oneHour = 60 * 1000; // 1分钟的毫秒数
 
     // 检查是否超过1小时
     if (timeDiff > oneHour) {
@@ -1612,6 +1612,6 @@ async function updateHelpdata() {
     //哈希值没变则无需更新
   }else{
     //console.log(helpData.hash)
-    HELP_DATA = {...helpData}
+    HELP_DATA = helpData
   }
 }
