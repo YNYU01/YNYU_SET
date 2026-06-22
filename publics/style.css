@@ -885,6 +885,51 @@ input[type="checkbox"]:checked + label + [data-doc-radiobox]{
   font-size: 24px;
   margin-bottom: 5px;
 }
+
+[data-page-main="false"] + div [data-log-show]{
+  display: none;
+}
+
+[data-log-show]{
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 14px 4px 4px 14px;
+  border: 1px solid var(--boxBod);
+  background: var(--boxBak);
+}
+
+input[type="checkbox"]:checked + [data-btn="tag"]{
+  background: var(--themeColor);
+  color: #2b2b2b;
+  transform: rotate(6deg);
+}
+[data-btn="tag"]::before{
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--boxBak);
+}
+
+[data-language="Zh"] [data-btn="tag"]{
+  font-size: 13px;
+}
+
+[data-log-fix="false"] [data-log-key="fix"],
+[data-log-optimize="false"] [data-log-key="optimize"],
+[data-log-new="false"] [data-log-key="new"]{
+  display: none;
+}
+
+[data-log-key="fix"]{
+  order: 1;
+}
+[data-log-key="optimize"]{
+  order: 2;
+}
+[data-log-key="new"]{
+  order: 3;
+}
  
 [data-doc-date]{
   margin: 0 0 10px 1ch;
@@ -2694,6 +2739,13 @@ input[type="checkbox"]:checked + [for="show-addlocalfont-rule"]{
 [data-btn="op"]:hover{
   background: none;
   opacity: 0.5;
+}
+
+[data-btn="tag"]{ 
+  border-radius: 14px 4px 4px 14px;;
+  border: none;
+  background: var(--boxGry);
+  padding: 0 4px;
 }
 
 /*按钮类--*/

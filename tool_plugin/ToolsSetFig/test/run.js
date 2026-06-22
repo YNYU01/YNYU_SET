@@ -28,7 +28,7 @@ if (!IS_PLUGIN_ENV) {
     }
     // 初始化userSkillShowline
     const savedUserSkillShowline = storageMix.get('userSkillShowline');
-    console.log(savedUserSkillShowline)
+    //console.log(savedUserSkillShowline)
     if (savedUserSkillShowline) {
       try {
         userSkillShowline = JSON.parse(savedUserSkillShowline);

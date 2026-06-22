@@ -119,7 +119,7 @@
     </div>
     <div data-doc-list-mix-mask class="h100 fl0" style="width: 220px; border-right: 1px solid var(--boxBod);"></div>
     <div class="fl1 h100 df-ffc pos-r">
-      <div data-doc-content data-page-id="content1" class="ovy wh100 fl1 noscrollbar">
+      <div data-doc-content data-page-id="content1" class="ovy wh100 fl1 noscrollbar pos-r">
         <div data-page-name="创建" data-page-name-en="create" data-page-main="true" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
         <div data-page-name="导出" data-page-name-en="export" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
         <div data-page-name="编辑" data-page-name-en="editor" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
@@ -128,7 +128,7 @@
         <div data-page-name="更多功能" data-page-name-en="more tools" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
 
       </div>
-      <div data-doc-content data-page-id="content2" class="ovy wh100 fl1 noscrollbar" style="display: none;">
+      <div data-doc-content data-page-id="content2" class="ovy wh100 fl1 noscrollbar pos-r" style="display: none;">
         <div data-page-name="数据转图层" data-page-name-en="data to layer" data-page-main="true" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
         <div data-page-name="批量修改" data-page-name-en="batch modify" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
         <div data-page-name="兼容格式" data-page-name-en="compatible format" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
@@ -138,6 +138,32 @@
         <div data-page-name="文本处理" data-page-name-en="text processing" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
         <div data-page-name="矢量处理" data-page-name-en="vector processing" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>        
         <div data-page-name="日志" data-page-name-en="log" data-page-main="false" data-page-tabclass="tab-top show-next2" class="df-ffc"></div>
+        
+        <div class="df bsb pad10" style="right: 120px; min-height: 40px; top:0; position: fixed;">
+          <div class="df-lc gap4" data-log-show >
+            <input type="checkbox" data-input data-log-show-chk="fix" id="log-show-fix" checked>
+            <label for="log-show-fix" class="df-lc gap2" data-btn="tag" data-en-text="Fix"
+            style="--themeColor:#f17979;" >
+              修复
+            </label>
+            <input type="checkbox" data-input data-log-show-chk="optimize" id="log-show-optimize" checked>
+            <label for="log-show-optimize" class="df-lc gap2" data-btn="tag" data-en-text="Optimize"
+            style="--themeColor:#dd9e4c;" >
+              优化
+            </label>
+            <input type="checkbox" data-input data-log-show-chk="new" id="log-show-new" checked>
+            <label for="log-show-new" class="df-lc gap2" data-btn="tag" data-en-text="New"
+            style="--themeColor:#60a0f3;" >
+              新增
+            </label>
+            <div class="df-cc wh-20">
+              <svg viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <path fill="var(--fill,var(--mainColor))" d="M707.101 84a57.559 57.559 0 0 1 35 11.862c25.211 19.31 29.98 55.384 10.65 80.57l-240.649 313.56v367.325a43.64 43.64 0 0 1-4.632 19.566l-0.52 1.006c-11.374 21.277-37.858 29.316-59.157 17.954L340.92 838.83c-26.222-13.989-42.598-41.272-42.598-70.97V491.217L55.933 176.51a57.432 57.432 0 0 1-11.922-33.893L44 141.467C44 109.729 69.754 84 101.522 84z m192.987 694.197c16.52 0 29.912 13.38 29.912 29.883 0 16.268-13.012 29.5-29.206 29.874l-0.706 0.008H614.771c-16.52 0-29.911-13.378-29.911-29.882 0-16.268 13.012-29.5 29.205-29.875l0.706-0.008h285.317z m0-160.906c16.52 0 29.912 13.378 29.912 29.882 0 16.268-13.012 29.5-29.206 29.875l-0.706 0.008H614.771c-16.52 0-29.911-13.38-29.911-29.883 0-16.268 13.012-29.5 29.205-29.874l0.706-0.008h285.317z m0-160.907c16.52 0 29.912 13.379 29.912 29.883 0 16.268-13.012 29.5-29.206 29.874l-0.706 0.008H614.771c-16.52 0-29.911-13.379-29.911-29.882 0-16.268 13.012-29.5 29.205-29.875l0.706-0.008h285.317z" >
+                </path>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="pos-a df-cc" style="--svg-w: 800px; --bod-w: 0.5; opacity: 0.1; z-index: -1;">
         <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
@@ -145,7 +171,7 @@
         <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
         <logo-graph-bod style="width: var(--svg-w); height: calc(var(--svg-w)/827 * 1072);"></logo-graph-bod>
       </div>
-      <div data-doc-content-top class="df pos-a" style="right: 40px; min-height: 40px; padding:10px; box-sizing: border-box;">
+      <div class="df pos-a" style="right: 40px; min-height: 40px; padding:10px; box-sizing: border-box;">
         <div data-doc-search class="df-lc gap4" data-btn onclick="getElementMix('data-dailogsearch').style.display = 'flex'">
           Ctrl+K
           <btn-search></btn-search>

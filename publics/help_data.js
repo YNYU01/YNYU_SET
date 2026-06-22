@@ -71,8 +71,8 @@ class RICH_DOC {
                 ]},
                 {set:[],items:[
                   ["li",
-                  "可上传1~10张大图, 支持常见图片格式, 完成后立即生成对应标签记录",
-                  "Upload 1–10 large images (common formats), each file immediately becomes a tag entry"],
+                  "可上传多张大图, 支持常见图片格式, 完成后立即生成对应标签记录",
+                  "Upload some large images (common formats), each file immediately becomes a tag entry"],
                 ]}
               ]
             },
@@ -80,12 +80,12 @@ class RICH_DOC {
               layout:[
                 {set:[],items:[
                   ["p",
-                  "当需求提供试算表时直接上传, 每一行都会转换为画板配置",
+                  "上传或输入表格数据, 一行对应一个画板的配置",
                   "Feed spreadsheet specs directly—each row becomes a frame configuration"],
                 ]},
                 {set:[],items:[
                   ["li",
-                  "上传单个表格, 需按一定格式填写, name/w/h为必填项",
+                  "上传单个表格, 需按示例格式填写, name/w/h为必填项",
                   "Upload 1 table in the prescribed format, name/w/h are required fields"],
                 ]}
               ]
@@ -219,14 +219,17 @@ class RICH_DOC {
           type:['功能','function'],
           help:[
             ["p",
-            "导出页聚合/++ Image | .zy | Rich Text ++/三种输出方式, 统一管理渲染任务",
+            "导出页包含/++ Image | .zy | Rich Text ++/三种输出方式, 统一管理渲染任务",
             "The Export page consolidates /++ Image | .zy | Rich Text ++/ outputs so every rendering job stays organized"],
             ["li",
-            "上传或拖拽所选对象后生成导出标签, /++ 渲染队列 ++/支持单选、全选、重新上传",
-            "Uploading or dragging the selection produces export tags; the /++ render queue ++/ supports single, bulk and re-upload actions"],
+            "上传分为默认上传和按导出设置上传, 默认是@1x.png, 如命名包含123k|jpg等字眼时, 优先级最高",
+            "Uploads use the default @1x.png format or follow export settings. Filename keywords (e.g., '123k', 'jpg') always take the highest priority"],
             ["li",
-            "每条记录保留名称、尺寸、倍率等信息, 修改会自动保存, 方便下次复用",
-            "Each record stores name, size and scale; edits are automatically saved for easy reuse"],
+            "上传所选对象后生成导出标签, /++ 渲染队列 ++/支持通过复选框管理: 删除、重新上传、覆盖设置",
+            "Uploading the selection produces export tags; the /++ render queue ++/ supports delete, over-set and re-upload actions by tick"],
+            ["li",
+            "每条记录保留名称、尺寸、倍率等信息, 修改会自动保存, 方便下次复用（已改为按需覆盖设置）",
+            "Each record stores name, size and scale; edits are automatically saved for easy reuse(Old,changed to active click over-set)"],
             ["li",
             "Image可自定义缩放与格式, .zy可与YN系列工具互通, Rich Text生成可复制的标签化描述",
             "Image exports accept custom scaling and formats, .zy stays compatible with other YN tools, Rich Text outputs copy-ready tagged descriptions"],
@@ -234,7 +237,7 @@ class RICH_DOC {
             "预览区支持缩放检查、批量删除或下载, 也能快速定位失败记录并重试",
             "The preview area offers zoom inspection, bulk delete/download, and quick retries for failed jobs"],
             ["li",
-            "导出动作会按所选类型进行处理, 完成后显示状态提示与预计体积",
+            "导出完成后显示状态提示与预计体积",
             "The export action processes according to the selected type and reports status plus estimated file size on completion"],
           ],
           list:[
@@ -422,7 +425,7 @@ class RICH_DOC {
             "独立预览区支持切换背景色、缩放、重置, 便于对比原图与效果",
             "An independent preview area lets you change background, zoom and reset to compare before/after"],
             ["li",
-            "一次仅处理一个选区, 应用后可写回原对象或另存新节点, 也可清空栈重新开始",
+            "一次仅处理一个选中对象, 应用后可写回原对象或另存新节点, 也可清空栈重新开始",
             "It handles one selection at a time; after applying you can write back to the node, save a new one, or clear the stack to restart"],
           ],
           list:[
@@ -595,23 +598,20 @@ class RICH_DOC {
           type:['功能','function'],
           help:[
             ["p",
-            "变量页整合样式与变量, 打造/++ 检测 → 新建 → 刷新 → 应用 ++/闭环",
-            "The Variable page unifies styles and variables to form a /++ detect → create → refresh → apply ++/ loop"],
+            "变量页用于管理样式组 | 断链样式 | 变量，作为官方变量功能的平替",
+            "The Variables page manages style groups, broken styles, and variables as an alternative to the official Variables feature"],
             ["li",
-            "可在样式与变量视图间切换, 扫描当前文件收集Paint/Text/Effect样式及Variable Collection",
-            "Toggle between Style and Variable views to scan the file for paint/text/effect styles plus variable collections"],
+            "首次使用可通过点击添加示例进行功能逻辑理解，仅包含@set标签的样式组会被视为可切换的样式组",
+            "For first-time users, click 'Add Examples' to understand how the feature works. Please note that only style groups containing the @set tag will be recognized as switchable style groups"],
             ["li",
-            "支持一键生成演示用Paint Style与Variable Collection, 适合空文件或教学场景",
-            "Generate demo paint styles and variable collections with one click for empty files or teaching demos"],
+            "创建的本地表格会添加一页/++ xxx@localsheet ++/来存放, 后续可编辑本地表格并通过表格批量更新样式",
+            "Created local tables will be stored in a newly added page named /++ xxx@localsheet ++/. You can later edit these tables to batch-update styles"],
             ["li",
-            "会创建本地/++ xxx@localsheet ++/表格保存快照, Sheet与Variable可双向同步",
-            "It creates a local /++ xxx@localsheet ++/ table as a snapshot, enabling two-way sync between the sheet and variables"],
+            "可扫描断链样式，批量重链、覆盖或新建, 适合跨文件同步样式和复杂的样式组管理",
+            "It can scan for broken styles and perform batch relinking, overwriting, or creation. This is ideal for cross-file style syncing and managing complex style groups"],
             ["li",
-            "扩展工具可扫描断链样式、批量重链或覆盖, 也能按所选组件匹配变量组",
-            "Extended tools scan broken styles, relink or overwrite in bulk, and match variable sets for the current selection"],
-            ["li",
-            "刷新时会重新读取文档并保留上次设置与搜索条件, 减少重复操作",
-            "Refreshing re-reads the document while keeping previous settings and filters to avoid repetitive steps"],
+            "手动操作后可通过刷新按钮更新插件的状态缓存，也可直接重启插件",
+            "After manual operations, you can click the refresh button to update the plugin's state cache, or simply restart the plugin"],
           ],
           list:[
             {title:['类型切换','Type selector'],
@@ -1335,7 +1335,7 @@ class RICH_DOC {
               layout:[
                 {set:[],items:[
                   ["p",
-                  "调换两个图层的位置，并考虑自动布局和位置中心点",
+                  "调换两个图层的位置, 并考虑自动布局和位置中心点",
                   "Swaps positions of two layers, considering auto layout and position center"],
                 ]}
               ]
@@ -1484,7 +1484,7 @@ class RICH_DOC {
       listease:[],
       vfontx:[],
     };
-    // `toolsset` 是对象（key -> item），不能直接用 `map`
+    // `toolsset` 是对象（key -> item）, 不能直接用 `map`
     Object.keys(this.doc.toolsset).forEach(key => {
       const items = this.doc.toolsset[key];
       if(!items) return;
@@ -1624,9 +1624,9 @@ class RICH_DOC {
     let tabs = document.querySelectorAll('[data-tab-sec]');//被标记为需要填充二级元素的元素
     let cards = document.querySelectorAll('[data-doc-card]');
     let logs = document.querySelectorAll('[data-doc-log]');
-    //默认在生成时先排序一次搜索标签，后面监听language再排序；
+    //默认在生成时先排序一次搜索标签, 后面监听language再排序；
     this.reSortSearch();
-    //先在tab后添加radio容器，由css控制显隐
+    //先在tab后添加radio容器, 由css控制显隐
     for(let tabBox of tabs){
       let tabLabel = tabBox.querySelectorAll('label');
       for(let label of tabLabel){
@@ -1861,9 +1861,9 @@ class RICH_DOC {
       };
       
       log.items.forEach(item => {
-        // 结构约定：['code', lang, codeText]
+        // 结构约定: ['code', lang, codeText]
         // code 块不参与中英文切换
-        // （兼容旧结构：['code', lang, zhCode, enCode]）
+        // （兼容旧结构: ['code', lang, zhCode, enCode]）
         if(item[0] == 'code'){
           let lang = item[1] || '';
           let codeText = item[2] ?? '';
@@ -1880,7 +1880,7 @@ class RICH_DOC {
           if(lang){
             code.className = `language-${lang}`;
           }
-          // 用 textContent 保证内容安全，Prism 会自行写入高亮后的 innerHTML
+          // 用 textContent 保证内容安全, Prism 会自行写入高亮后的 innerHTML
           code.textContent = String(codeText ?? '');
           pre.appendChild(code);
           box.appendChild(pre);
@@ -1893,6 +1893,9 @@ class RICH_DOC {
         line.setAttribute('data-doc-line',item[0]);
         if(item[0] == 'li'){
           line.setAttribute('data-li-style','2');
+        };
+        if(item[3]){ 
+          line.setAttribute('data-log-key', item[3]);
         }
         let span = document.createElement('span');
         span.innerHTML = this.toHighlight(item[1]);

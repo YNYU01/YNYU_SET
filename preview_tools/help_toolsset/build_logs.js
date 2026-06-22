@@ -25,12 +25,15 @@ function parseToolsSetFigLogMd(mdText) {
    * - "✨ New: ..." -> "<span data-doc-key>✨ New:</span> ..."
    * - "🐞 修复: ..." -> "<span data-doc-key>🐞 修复:</span> ..."
    */
-  const wrapDocKey = (s) => {
+  const wrapDocKey = (s,isKeyWord = false) => {
     const str = String(s ?? '');
     // optional emoji/prefix + keyword + ":" / "："
     const m = str.match(/^(\s*(?:[^\w\s]+[\s]*)?(?:New|Fix|Optimize|Change|新增|修复|优化|修改)\s*[:：])/u);
     if (!m) return str;
     const key = m[1];
+    if(isKeyWord){
+      return [`<span data-doc-key>${key}</span>${str.slice(key.length)}`, key.split(' ')[1].replace(/[:：]/, '').toLocaleLowerCase()];
+    }
     return `<span data-doc-key>${key}</span>${str.slice(key.length)}`;
   };
 
@@ -57,7 +60,7 @@ function parseToolsSetFigLogMd(mdText) {
 
   for (const rawLine of lines) {
     const line = (rawLine ?? '').replace(/\r$/, '');
-    const trimmed = line.trim();
+    const trimmed = line.trim().replace(/，/g, ', ').replace(/。/g, '. ').replace(/；/g, '; ');
 
     // fenced code block: ```lang
     if (trimmed.startsWith('```')) {
@@ -112,7 +115,7 @@ function parseToolsSetFigLogMd(mdText) {
         zh = body.slice(idx + 1).trim();
       }
 
-      current.items.push(['li', wrapDocKey(zh), wrapDocKey(en)]);
+      current.items.push(['li', wrapDocKey(zh), ...wrapDocKey(en,true) ]);
     }
   }
 

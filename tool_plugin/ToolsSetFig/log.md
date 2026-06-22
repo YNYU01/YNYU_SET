@@ -1,15 +1,15 @@
 ### v0.1.11 2026/6/14
 - 🐞 Fix: More Tools > Rasterize (Slice-based) & Clip By Tag, fixed slice misalignment issue; 🐞 修复：更多功能>修复栅格化功能（基于切片）和标签裁切功能的切片错位问题
-- ⚡ Optimize: More Tools > Complex slicing scenarios will now be handled by Clip By Tag, and the original Rasterize function is simplified; ⚡ 优化：更多功能>复杂的切图情景将由标签裁切功能负责，原栅格化功能简化
-- ✨ New: More Tools > Clip By Tag, can get the name from the selection as a prefix, and supports modifying the index connector. Selecting child elements and clicking the "+" tag button will append the tag after the name;  ✨ 新增：更多功能>标签裁切，可从选中对象获取命名作为前缀，并支持修改序号连接符; 可选中子元素并点击"+"标签按钮，将在命名后面添加标签
-- 🐞 Fix: More Tools > Ease Transform, fixed issue where stretching did not take effect (text elements do not natively support stretching); 🐞 修复：更多功能>斜切拉伸，修复拉伸未生效问题（文本元素是本身不支持拉伸）
-- ⚡ Optimize: More Tools > Clicking the name area on the top bar of a function module can show/hide the function menu, and the preference will be recorded; ⚡ 优化：更多功能>点击功能模块顶栏的名称区域，可以显/隐功能菜单，并记录偏好
+- ⚡ Optimize: More Tools > Complex slicing scenarios will now be handled by Clip By Tag, and the original Rasterize function is simplified; ⚡ 优化：更多功能>复杂的切图情景将由标签裁切功能负责, 原栅格化功能简化
+- ✨ New: More Tools > Clip By Tag, can get the name from the selection as a prefix, and supports modifying the index connector. Selecting child elements and clicking the "+" tag button will append the tag after the name;  ✨ 新增：更多功能>标签裁切, 可从选中对象获取命名作为前缀, 并支持修改序号连接符; 可选中子元素并点击"+"标签按钮, 将在命名后面添加标签
+- 🐞 Fix: More Tools > Ease Transform, fixed issue where stretching did not take effect (text elements do not natively support stretching); 🐞 修复：更多功能>斜切拉伸, 修复拉伸未生效问题（文本元素是本身不支持拉伸）
+- ⚡ Optimize: More Tools > Clicking the name area on the top bar of a function module can show/hide the function menu, and the preference will be recorded; ⚡ 优化：更多功能>点击功能模块顶栏的名称区域, 可以显/隐功能菜单, 并记录偏好
 
 
 ### v0.1.10 2026/6/7
 - ✨ New: More Tools > Auto Clip By Tag, automatically calculates the optimal slicing range based on multiple tags, adds slices, and sets export parameters. Supports custom slice naming prefix, generated slices will be named as prefix + number. Allows choosing to add slices before the selected object / to the parent of the selected object / to the page; ✨ 新增：更多功能>标签裁切, 可根据多种标签自动计算出合适的切图范围, 添加切片, 并给切片设置好导出参数; 可设置切片命名前缀, 生成的切片将命名为前缀+序号; 可选择将切片添加到所选对象前/所选对象的父级/页面
-- 🐞 Fix: Sheet page > Table styles, fixed issue where setting fill would unexpectedly modify stroke; 🐞 修复：表单页>表格样式，修复设置填充会导致描边改动的问题
-- 🐞 Fix: Sheet page > Table themes, fixed issue where selecting a table did not correctly switch theme styles; 🐞 修复：表单页>表格主题，修复选中表格没有正常切换主题风格的问题
+- 🐞 Fix: Sheet page > Table styles, fixed issue where setting fill would unexpectedly modify stroke; 🐞 修复：表单页>表格样式, 修复设置填充会导致描边改动的问题
+- 🐞 Fix: Sheet page > Table themes, fixed issue where selecting a table did not correctly switch theme styles; 🐞 修复：表单页>表格主题, 修复选中表格没有正常切换主题风格的问题
 
 
 ### v0.1.9 2026/5/1

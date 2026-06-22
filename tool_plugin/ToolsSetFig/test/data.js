@@ -78,6 +78,7 @@ let TO_USER_TIPS_TV = {
 
 let richDoc = new RICH_DOC();
 
+//支持服务器热更新{hash:,data...},比对哈希值，不同则更新
 let HELP_DATA = {
   create: richDoc.doc.toolsset.create.help,
   export: richDoc.doc.toolsset.export.help,

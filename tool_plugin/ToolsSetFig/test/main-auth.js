@@ -1059,6 +1059,8 @@ async function initAuthModule() {
   PublicConfigManager.loadOnce().then(() => {
     // 加载完成后更新版本信息
     updateVersionInfo();
+    // 加载帮助数据
+    updateHelpdata();
   }).catch(err => {
     console.warn('[PublicConfig] Failed to load public config:', err);
   });
@@ -1420,7 +1422,7 @@ const PublicConfigManager = {
     if (cached && !this._shouldRefresh(cached.timestamp)) {
       // 缓存有效，直接使用
       // 但如果缓存中没有 latest_version_updated_at（旧缓存），需要重新拉取
-      if (cached.data && cached.data['latest_version'] && !cached.data['latest_version_updated_at']) {
+      if (cached.data && cached.data['latest_version'] && !cached.data['latest_version_updated_at'] && !cached.data['help_data']) {
         // 继续执行下面的刷新逻辑
       } else {
         this._dataMap = cached.data || {};
@@ -1481,6 +1483,7 @@ const PublicConfigManager = {
       if (Array.isArray(data)) {
         data.forEach((row) => {
           if (!row || !row.key) return;
+          //console.log(row)
           let parsedValue = row.value;
           // 如果 value 是 JSON 字符串，尝试解析
           if (typeof row.value === 'string' && row.value.trim().startsWith('{')) {
@@ -1495,7 +1498,7 @@ const PublicConfigManager = {
           // 为版本号单独存储更新时间
           if (row.key === 'latest_version' && row.updated_at) {
             this._dataMap['latest_version_updated_at'] = row.updated_at;
-          }
+          };
         });
       } else {
         console.warn('[PublicConfig] No data returned from Supabase');
@@ -1559,6 +1562,11 @@ const PublicConfigManager = {
     };
   },
 
+  async getHeledata() {
+    await this.loadOnce();
+    return this._dataMap['help_data'] || null
+  },
+
   // 获取所有配置数据（用于调试）
   async getAll() {
     await this.loadOnce();
@@ -1593,5 +1601,17 @@ async function updateVersionInfo() {
     }
   } catch (e) {
     console.warn('[PublicConfig] Failed to update version info:', e);
+  }
+}
+
+async function updateHelpdata() {
+  let helpData = await PublicConfigManager.getHeledata();
+  //console.log(helpData)
+  let helpScript = document.querySelector('[data-help-script]')
+  if(helpScript.getAttribute('src').includes(helpData.hash)){
+    //哈希值没变则无需更新
+  }else{
+    //console.log(helpData.hash)
+    HELP_DATA = {...helpData}
   }
 }
