@@ -3585,7 +3585,7 @@ getElementMix('data-autoclip-getname').addEventListener('click',()=>{
   let input = getElementMix('input-autoclip-prefix');
   let name = State.get('selectNodeInfo')[0].n;
   if(name){
-    input.value = tool.TextMaxLength(name, 10);
+    input.value = tool.TextMaxLength(name, 20);
   }
 });
 //给选中对象添加对应标签

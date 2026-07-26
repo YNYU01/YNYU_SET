@@ -97,6 +97,7 @@ class AutoClip {
   
       this.data = data || {};
       this.prefix = this.data.prefix || "切片";
+      this.hyphen = this.data.hyphen || '-';//必须带连接符
       this.scale = this.data.scale * 1 || 1;
       this.maxsize = this.data.maxsize || 1200;
       this.maxsize = this.maxsize/this.scale; //按倍率换算
@@ -112,9 +113,11 @@ class AutoClip {
       let nodeBound = this.nodeBound;
       let totalHeight = Math.floor(nodeBound.height);
       let fixPoints = [];//固定切片
+      let fixMap = {}; //记录固定切片的命名
       let safePoints = [];//不可裁切范围
       let moduleBreaks = [];//长图模块
-  
+      let hideRanges = []; //记录 hide 元素的坐标范围
+
       //统一遍历收集标签
       let sliceNodes = c.findAll(item => item.name.includes('@slice:'));
       sliceNodes.forEach(item => {
@@ -126,12 +129,18 @@ class AutoClip {
         // 根据后缀分发到不同的变量中
         if (item.name.includes('@slice:fix')) {
           fixPoints.push([startY, endY]);
+          fixMap[startY] = item.name.replace(/@slice:[^ ]+/g, '').trim();
         } else if (item.name.includes('@slice:module')) {
           if (endY < totalHeight) { 
             moduleBreaks.push(endY);
           }
         } else if (item.name.includes('@slice:safe')) {
           safePoints.push([startY, endY]);
+        }
+        
+        if (item.name.includes('@slice:hide')) {
+            if(['bg','tab','top'].every(key => !item.name.includes(key)))
+            hideRanges.push([startY, endY]);
         }
       });
       //处理最终点位
@@ -171,7 +180,7 @@ class AutoClip {
         }
       }
       //console.log("最终切片坐标:", finalClipPoint);
-      this.addSlice(finalClipPoint);
+      this.addSlice(finalClipPoint,fixMap,hideRanges);
       return finalClipPoint;
     }
   
@@ -325,13 +334,25 @@ class AutoClip {
       return rounded & ~1; 
     }
   
-    addSlice(clipPoints){
+    addSlice(clipPoints,fixMap,hideRanges){
       let slices = [];
       let nodeBound = this.nodeBound;
       //console.log(clipPoints)
       clipPoints.forEach((points, index) => {
         let slice = figma.createSlice();
-        slice.name = this.prefix + (index + 1);
+        slice.name = this.prefix + this.hyphen + (index + 1);
+        if(fixMap[points[0]]){
+            slice.name += ' ' + fixMap[points[0]];
+        };
+        
+        let hasHide = hideRanges.some(range => 
+            points[0] < range[0] && points[1] > range[1]
+        );
+
+        if(hasHide){
+             slice.name += ' @box';
+        };
+
         slice.resize(nodeBound.width, (points[1] - points[0]));
         slice.x = nodeBound.x;
         slice.y = nodeBound.y + points[0];

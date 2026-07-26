@@ -387,11 +387,13 @@ function createPaintStyle(){
 // 更多功能 > 自动裁切
 function autoClip(){
   let prefix = getElementMix('input-autoclip-prefix').value;
+  let hyphen = getElementMix('input-autoclip-hyphen').value;
   let scale = getElementMix('input-autoclip-scale').value;
   let maxsize = getElementMix('input-autoclip-max').value;
   let insert = getElementMix('data-autoclip-insert').getAttribute('data-radio-value');
   let data = {
     prefix:prefix,
+    hyphen:hyphen,
     scale:scale,
     maxsize:maxsize,
     insert:insert
