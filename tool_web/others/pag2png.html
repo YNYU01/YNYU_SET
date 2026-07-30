@@ -25,7 +25,8 @@
   .file-item.active { background: #0f3460; border-left: 3px solid #e94560; }
   .file-item .name { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
   .file-item .info { font-size: 11px; color: #888; }
-  .file-item .remove-btn { background: none; border: none; color: #666; cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 4px; }
+  .file-item .remove-btn { background: none; border: none; color: #666; cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 4px; display: none; }
+  .file-item:hover .remove-btn { display: block; }
   .file-item .remove-btn:hover { color: #e94560; background: rgba(233,69,96,0.1); }
 
   /* 右侧主区域 */
@@ -41,32 +42,23 @@
   .control-group { display: flex; align-items: center; gap: 8px; }
   .control-group label { font-size: 13px; color: #aaa; white-space: nowrap; }
   .control-group input[type="number"] { width: 70px; padding: 6px 8px; background: #1a1a2e; border: 1px solid #333; border-radius: 4px; color: #e0e0e0; font-size: 13px; text-align: center; }
-  .control-group input[type="number"]:focus { outline: none; border-color: #e94560; }
   .control-group select { padding: 6px 10px; background: #1a1a2e; border: 1px solid #333; border-radius: 4px; color: #e0e0e0; font-size: 13px; }
-
   .slider-container { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 10px; }
   .slider-container input[type="range"] { flex: 1; accent-color: #e94560; }
   .slider-container .frame-label { font-size: 13px; color: #e94560; min-width: 80px; text-align: right; font-variant-numeric: tabular-nums; }
-
   .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
   .btn-primary { background: #e94560; color: #fff; }
   .btn-primary:hover { background: #c73650; }
   .btn-primary:disabled { background: #555; cursor: not-allowed; }
   .btn-secondary { background: #0f3460; color: #e0e0e0; }
-  .btn-secondary:hover { background: #1a4a8a; }
-
   .progress-bar { width: 100%; height: 4px; background: #333; border-radius: 2px; margin-top: 8px; overflow: hidden; display: none; }
   .progress-bar .fill { height: 100%; background: #e94560; transition: width 0.1s; width: 0%; }
-
   .status { font-size: 12px; color: #888; margin-top: 6px; }
 
   /* 加载状态 */
-  .loading-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 10; }
+  .loading-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 10; }
   .spinner { width: 36px; height: 36px; border: 3px solid #333; border-top-color: #e94560; border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .file-item .remove-btn { display: none; }
-  .file-item:hover .remove-btn { display: block; }
 </style>
 </head>
 <body>
@@ -93,9 +85,7 @@
     <div class="preview-area" id="previewArea">
       <div class="preview-placeholder" id="placeholder">请先导入 .pag 文件</div>
       <canvas id="pagCanvas" style="display:none;"></canvas>
-      <div class="loading-overlay" id="loadingOverlay" style="display:none;">
-        <div class="spinner"></div>
-      </div>
+      <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
     </div>
 
     <div class="controls">
@@ -144,319 +134,294 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', async () => {
+  // ===== 全局状态 =====
+  let PAG = null;
+  const files = []; 
+  let activeIndex = -1;
+  let isPlaying = false;
+  let animFrameId = null;
 
+  // ===== DOM 元素 =====
+  const importBtn = document.getElementById('importBtn');
+  const fileInput = document.getElementById('fileInput');
+  const fileListEl = document.getElementById('fileList');
+  const canvas = document.getElementById('pagCanvas');
+  const placeholder = document.getElementById('placeholder');
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  const frameSlider = document.getElementById('frameSlider');
+  const frameLabel = document.getElementById('frameLabel');
+  const playBtn = document.getElementById('playBtn');
+  const exportMode = document.getElementById('exportMode');
+  const singleFrameGroup = document.getElementById('singleFrameGroup');
+  const rangeGroup = document.getElementById('rangeGroup');
+  const singleFrameInput = document.getElementById('singleFrame');
+  const startFrameInput = document.getElementById('startFrame');
+  const endFrameInput = document.getElementById('endFrame');
+  const exportFormat = document.getElementById('exportFormat');
+  const exportBtn = document.getElementById('exportBtn');
+  const progressBar = document.getElementById('progressBar');
+  const progressFill = document.getElementById('progressFill');
+  const statusText = document.getElementById('statusText');
 
-// ===== 全局状态 =====
-let PAG = null;
-const files = []; // { name, buffer, pagFile, pagView, totalFrames, frameRate, width, height }
-let activeIndex = -1;
-let isPlaying = false;
-let animFrameId = null;
+  // ===== 动态加载 PAG SDK =====
+  function loadPAGSDK() {
+    return new Promise((resolve, reject) => {
+      if (window.PAG) { resolve(window.PAG); return; }
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/libpag@latest/lib/libpag.min.js';
+      script.onload = () => resolve(window.PAG);
+      script.onerror = () => reject(new Error('PAG SDK 加载失败'));
+      document.head.appendChild(script);
+    });
+  }
 
-// ===== DOM 元素 =====
-const importBtn = document.getElementById('importBtn');
-const fileInput = document.getElementById('fileInput');
-const fileListEl = document.getElementById('fileList');
-const canvas = document.getElementById('pagCanvas');
-const placeholder = document.getElementById('placeholder');
-const loadingOverlay = document.getElementById('loadingOverlay');
-const frameSlider = document.getElementById('frameSlider');
-const frameLabel = document.getElementById('frameLabel');
-const playBtn = document.getElementById('playBtn');
-const exportMode = document.getElementById('exportMode');
-const singleFrameGroup = document.getElementById('singleFrameGroup');
-const rangeGroup = document.getElementById('rangeGroup');
-const singleFrameInput = document.getElementById('singleFrame');
-const startFrameInput = document.getElementById('startFrame');
-const endFrameInput = document.getElementById('endFrame');
-const exportFormat = document.getElementById('exportFormat');
-const exportBtn = document.getElementById('exportBtn');
-const progressBar = document.getElementById('progressBar');
-const progressFill = document.getElementById('progressFill');
-const statusText = document.getElementById('statusText');
+  async function initPAG() {
+    if (PAG) return PAG;
+    showLoading(true);
+    try {
+      PAG = await loadPAGSDK();
+      setStatus('PAG 引擎初始化完成');
+    } catch (e) {
+      setStatus('❌ PAG 引擎初始化失败: ' + e.message);
+    } finally {
+      showLoading(false);
+    }
+    return PAG;
+  }
 
-// ===== 动态加载 PAG SDK =====
-function loadPAGSDK() {
-  return new Promise((resolve, reject) => {
-    if (window.PAG) {
-      resolve(window.PAG);
+  // ===== 导入文件 =====
+  importBtn.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', async (e) => {
+    if (!e.target.files.length) return;
+    await initPAG();
+    if (!PAG) return;
+
+    for (const file of e.target.files) {
+      await loadPagFile(file);
+    }
+    fileInput.value = '';
+  });
+
+  async function loadPagFile(file) {
+    showLoading(true);
+    setStatus(`正在加载: ${file.name} ...`);
+    try {
+      const buffer = await file.arrayBuffer();
+      const pagFile = await PAG.PAGFile.load(buffer);
+      const width = pagFile.width();
+      const height = pagFile.height();
+      const duration = pagFile.duration(); 
+      const frameRate = pagFile.frameRate();
+      const totalFrames = Math.round((duration / 1000000) * frameRate);
+
+      const entry = {
+        name: file.name,
+        buffer,
+        pagFile,
+        pagView: null,
+        totalFrames,
+        frameRate,
+        width,
+        height,
+      };
+
+      files.push(entry);
+      renderFileList();
+
+      if (files.length === 1) {
+        await selectFile(0);
+      }
+
+      setStatus(`✅ 已加载: ${file.name} (${width}×${height}, ${totalFrames}帧, ${frameRate}fps)`);
+    } catch (e) {
+      setStatus(`❌ 加载失败: ${file.name} - ${e.message}`);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  // ===== 文件列表渲染 =====
+  function renderFileList() {
+    if (files.length === 0) {
+      fileListEl.innerHTML = '<div class="preview-placeholder" style="padding:24px;font-size:13px;">暂无文件，点击上方按钮导入</div>';
       return;
     }
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/libpag@latest/lib/libpag.min.js';
-    script.onload = () => resolve(window.PAG);
-    script.onerror = () => reject(new Error('PAG SDK 加载失败'));
-    document.head.appendChild(script);
-  });
-}
-
-// ===== 初始化 PAG =====
-async function initPAG() {
-  if (PAG) return PAG;
-  showLoading(true);
-  try {
-    PAG = await PAGInit({
-      locateFile: (file) => `https://cdn.jsdelivr.net/npm/libpag@latest/lib/${file}`
-    });
-    setStatus('PAG 引擎初始化完成');
-  } catch (e) {
-    setStatus('❌ PAG 引擎初始化失败: ' + e.message);
-  } finally {
-    showLoading(false);
-  }
-  return PAG;
-}
-
-// ===== 导入文件 =====
-importBtn.addEventListener('click', () => fileInput.click());
-fileInput.addEventListener('change', async (e) => {
-  if (!e.target.files.length) return;
-  await initPAG();
-  if (!PAG) return;
-
-  for (const file of e.target.files) {
-    await loadPagFile(file);
-  }
-  fileInput.value = '';
-});
-
-async function loadPagFile(file) {
-  showLoading(true);
-  setStatus(`正在加载: ${file.name} ...`);
-  try {
-    const buffer = await file.arrayBuffer();
-    const pagFile = await PAG.PAGFile.load(buffer);
-    const width = pagFile.width();
-    const height = pagFile.height();
-    const duration = pagFile.duration(); // 微秒
-    const frameRate = pagFile.frameRate();
-    const totalFrames = Math.round((duration / 1000000) * frameRate);
-
-    const entry = {
-      name: file.name,
-      buffer,
-      pagFile,
-      pagView: null,
-      totalFrames,
-      frameRate,
-      width,
-      height,
-    };
-
-    files.push(entry);
-    renderFileList();
-
-    // 自动选中第一个或刚导入的
-    if (files.length === 1) {
-      await selectFile(0);
-    }
-
-    setStatus(`✅ 已加载: ${file.name} (${width}×${height}, ${totalFrames}帧, ${frameRate}fps)`);
-  } catch (e) {
-    setStatus(`❌ 加载失败: ${file.name} - ${e.message}`);
-  } finally {
-    showLoading(false);
-  }
-}
-
-// ===== 文件列表渲染 =====
-function renderFileList() {
-  if (files.length === 0) {
-    fileListEl.innerHTML = '<div class="preview-placeholder" style="padding:24px;font-size:13px;">暂无文件，点击上方按钮导入</div>';
-    return;
-  }
-  fileListEl.innerHTML = files.map((f, i) => `
-    <div class="file-item ${i === activeIndex ? 'active' : ''}" data-index="${i}">
-      <div>
-        <div class="name" title="${f.name}">${f.name}</div>
-        <div class="info">${f.width}×${f.height} · ${f.totalFrames}帧 · ${f.frameRate}fps</div>
+    fileListEl.innerHTML = files.map((f, i) => `
+      <div class="file-item ${i === activeIndex ? 'active' : ''}" data-index="${i}">
+        <div>
+          <div class="name" title="${f.name}">${f.name}</div>
+          <div class="info">${f.width}×${f.height} · ${f.totalFrames}帧 · ${f.frameRate}fps</div>
+        </div>
+        <button class="remove-btn" data-remove="${i}" title="移除">✕</button>
       </div>
-      <button class="remove-btn" data-remove="${i}" title="移除">✕</button>
-    </div>
-  `).join('');
+    `).join('');
 
-  // 绑定点击事件
-  fileListEl.querySelectorAll('.file-item').forEach(el => {
-    el.addEventListener('click', (e) => {
-      if (e.target.dataset.remove !== undefined) return;
-      selectFile(parseInt(el.dataset.index));
+    fileListEl.querySelectorAll('.file-item').forEach(el => {
+      el.addEventListener('click', (e) => {
+        if (e.target.dataset.remove !== undefined) return;
+        selectFile(parseInt(el.dataset.index));
+      });
     });
-  });
-  fileListEl.querySelectorAll('.remove-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      removeFile(parseInt(btn.dataset.remove));
+    fileListEl.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeFile(parseInt(btn.dataset.remove));
+      });
     });
-  });
-}
-
-async function removeFile(index) {
-  // 销毁当前 view
-  if (files[index].pagView) {
-    files[index].pagView.destroy();
-  }
-  files.splice(index, 1);
-  if (activeIndex >= files.length) activeIndex = files.length - 1;
-  renderFileList();
-  if (files.length === 0) {
-    canvas.style.display = 'none';
-    placeholder.style.display = 'block';
-    playBtn.disabled = true;
-    exportBtn.disabled = true;
-    frameSlider.disabled = true;
-    activeIndex = -1;
-  } else {
-    await selectFile(activeIndex);
-  }
-}
-
-// ===== 选中文件并预览 =====
-async function selectFile(index) {
-  // 停止当前播放
-  stopPlay();
-
-  // 销毁旧的 view
-  if (activeIndex >= 0 && files[activeIndex]?.pagView) {
-    files[activeIndex].pagView.destroy();
-    files[activeIndex].pagView = null;
   }
 
-  activeIndex = index;
-  const entry = files[index];
-  if (!entry) return;
+  async function removeFile(index) {
+    if (files[index].pagView) files[index].pagView.destroy();
+    files.splice(index, 1);
+    if (activeIndex >= files.length) activeIndex = files.length - 1;
+    renderFileList();
+    if (files.length === 0) {
+      canvas.style.display = 'none';
+      placeholder.style.display = 'block';
+      playBtn.disabled = true;
+      exportBtn.disabled = true;
+      frameSlider.disabled = true;
+      activeIndex = -1;
+    } else {
+      await selectFile(activeIndex);
+    }
+  }
 
-  // 设置 canvas 尺寸
-  canvas.width = entry.width;
-  canvas.height = entry.height;
-  canvas.style.display = 'block';
-  placeholder.style.display = 'none';
-
-  // 创建 PAGView
-  entry.pagView = await PAG.PAGView.init(entry.pagFile, canvas, { useScale: false });
-
-  // 设置控件
-  frameSlider.max = entry.totalFrames - 1;
-  frameSlider.value = 0;
-  frameSlider.disabled = false;
-  singleFrameInput.max = entry.totalFrames - 1;
-  startFrameInput.max = entry.totalFrames - 1;
-  endFrameInput.max = entry.totalFrames - 1;
-  endFrameInput.value = entry.totalFrames - 1;
-  playBtn.disabled = false;
-  exportBtn.disabled = false;
-  updateFrameLabel(0, entry.totalFrames);
-
-  renderFileList();
-}
-
-// ===== 帧滑块控制 =====
-frameSlider.addEventListener('input', async () => {
-  const frame = parseInt(frameSlider.value);
-  const entry = files[activeIndex];
-  if (!entry?.pagView) return;
-  await seekToFrame(frame);
-  updateFrameLabel(frame, entry.totalFrames);
-});
-
-async function seekToFrame(frame) {
-  const entry = files[activeIndex];
-  if (!entry?.pagView) return;
-  const progress = entry.totalFrames > 1 ? frame / (entry.totalFrames - 1) : 0;
-  await entry.pagView.setProgress(progress);
-  await entry.pagView.flush();
-}
-
-function updateFrameLabel(current, total) {
-  frameLabel.textContent = `${current} / ${total - 1}`;
-}
-
-// ===== 播放控制 =====
-playBtn.addEventListener('click', () => {
-  if (isPlaying) {
+  // ===== 选中文件并预览 =====
+  async function selectFile(index) {
     stopPlay();
-  } else {
-    startPlay();
-  }
-});
-
-function startPlay() {
-  const entry = files[activeIndex];
-  if (!entry?.pagView) return;
-  isPlaying = true;
-  playBtn.textContent = '⏸ 暂停';
-  entry.pagView.play();
-
-  const updateLoop = () => {
-    if (!isPlaying) return;
-    const progress = entry.pagView.getProgress();
-    const frame = Math.round(progress * (entry.totalFrames - 1));
-    frameSlider.value = frame;
-    updateFrameLabel(frame, entry.totalFrames);
-    animFrameId = requestAnimationFrame(updateLoop);
-  };
-  updateLoop();
-}
-
-function stopPlay() {
-  isPlaying = false;
-  playBtn.textContent = '▶ 播放';
-  if (animFrameId) {
-    cancelAnimationFrame(animFrameId);
-    animFrameId = null;
-  }
-  const entry = files[activeIndex];
-  if (entry?.pagView) {
-    entry.pagView.pause();
-  }
-}
-
-// ===== 导出模式切换 =====
-exportMode.addEventListener('change', () => {
-  if (exportMode.value === 'single') {
-    singleFrameGroup.style.display = 'flex';
-    rangeGroup.style.display = 'none';
-  } else {
-    singleFrameGroup.style.display = 'none';
-    rangeGroup.style.display = 'flex';
-  }
-});
-
-// ===== 导出帧 =====
-exportBtn.addEventListener('click', async () => {
-  const entry = files[activeIndex];
-  if (!entry?.pagView) return;
-
-  stopPlay();
-
-  const format = exportFormat.value;
-  const mimeType = `image/${format}`;
-  const quality = format === 'png' ? undefined : 0.92;
-  const ext = format === 'jpeg' ? 'jpg' : format;
-  const baseName = entry.name.replace(/\.pag$/i, '');
-
-  if (exportMode.value === 'single') {
-    // 单帧导出
-    const frame = parseInt(singleFrameInput.value) || 0;
-    await seekToFrame(frame);
-    await exportCanvasFrame(canvas, `${baseName}_frame_${padZero(frame)}.${ext}`, mimeType, quality);
-    setStatus(`✅ 已导出第 ${frame} 帧`);
-  } else {
-    // 区间导出
-    const start = parseInt(startFrameInput.value) || 0;
-    const end = parseInt(endFrameInput.value) || entry.totalFrames - 1;
-    if (start > end) {
-      setStatus('❌ 起始帧不能大于结束帧');
-      return;
+    if (activeIndex >= 0 && files[activeIndex]?.pagView) {
+      files[activeIndex].pagView.destroy();
+      files[activeIndex].pagView = null;
     }
 
-    const total = end - start + 1;
-    exportBtn.disabled = true;
-    progressBar.style.display = 'block';
-    setStatus(`正在导出 ${total} 帧...`);
+    activeIndex = index;
+    const entry = files[index];
+    if (!entry) return;
 
-    // 使用 JSZip 打包（如果帧数多）或直接逐个下载
-    if (total > 1) {
-      // 动态加载 JSZip
+    canvas.width = entry.width;
+    canvas.height = entry.height;
+    canvas.style.display = 'block';
+    placeholder.style.display = 'none';
+
+    entry.pagView = await PAG.PAGView.init(entry.pagFile, canvas, { useScale: false });
+
+    frameSlider.max = entry.totalFrames - 1;
+    frameSlider.value = 0;
+    frameSlider.disabled = false;
+    singleFrameInput.max = entry.totalFrames - 1;
+    startFrameInput.max = entry.totalFrames - 1;
+    endFrameInput.max = entry.totalFrames - 1;
+    endFrameInput.value = entry.totalFrames - 1;
+    playBtn.disabled = false;
+    exportBtn.disabled = false;
+    updateFrameLabel(0, entry.totalFrames);
+
+    renderFileList();
+  }
+
+  // ===== 帧滑块控制 =====
+  frameSlider.addEventListener('input', async () => {
+    const frame = parseInt(frameSlider.value);
+    const entry = files[activeIndex];
+    if (!entry?.pagView) return;
+    await seekToFrame(frame);
+    updateFrameLabel(frame, entry.totalFrames);
+  });
+
+  async function seekToFrame(frame) {
+    const entry = files[activeIndex];
+    if (!entry?.pagView) return;
+    const progress = entry.totalFrames > 1 ? frame / (entry.totalFrames - 1) : 0;
+    await entry.pagView.setProgress(progress);
+    await entry.pagView.flush();
+  }
+
+  function updateFrameLabel(current, total) {
+    frameLabel.textContent = `${current} / ${total - 1}`;
+  }
+
+  // ===== 播放控制 =====
+  playBtn.addEventListener('click', () => {
+    if (isPlaying) stopPlay();
+    else startPlay();
+  });
+
+  function startPlay() {
+    const entry = files[activeIndex];
+    if (!entry?.pagView) return;
+    isPlaying = true;
+    playBtn.textContent = '⏸ 暂停';
+    entry.pagView.play();
+
+    const updateLoop = () => {
+      if (!isPlaying) return;
+      const progress = entry.pagView.getProgress();
+      const frame = Math.round(progress * (entry.totalFrames - 1));
+      frameSlider.value = frame;
+      updateFrameLabel(frame, entry.totalFrames);
+      animFrameId = requestAnimationFrame(updateLoop);
+    };
+    updateLoop();
+  }
+
+  function stopPlay() {
+    isPlaying = false;
+    playBtn.textContent = '▶ 播放';
+    if (animFrameId) {
+      cancelAnimationFrame(animFrameId);
+      animFrameId = null;
+    }
+    const entry = files[activeIndex];
+    if (entry?.pagView) entry.pagView.pause();
+  }
+
+  // ===== 导出模式切换 =====
+  exportMode.addEventListener('change', () => {
+    if (exportMode.value === 'single') {
+      singleFrameGroup.style.display = 'flex';
+      rangeGroup.style.display = 'none';
+    } else {
+      singleFrameGroup.style.display = 'none';
+      rangeGroup.style.display = 'flex';
+    }
+  });
+
+  // ===== 导出帧 =====
+  exportBtn.addEventListener('click', async () => {
+    const entry = files[activeIndex];
+    if (!entry?.pagView) return;
+
+    stopPlay();
+
+    const format = exportFormat.value;
+    const mimeType = `image/${format}`;
+    const quality = format === 'png' ? undefined : 0.92;
+    const ext = format === 'jpeg' ? 'jpg' : format;
+    const baseName = entry.name.replace(/\.pag$/i, '');
+
+    if (exportMode.value === 'single') {
+      // 单帧导出
+      const frame = parseInt(singleFrameInput.value) || 0;
+      await seekToFrame(frame);
+      await exportCanvasFrame(canvas, `${baseName}_frame_${padZero(frame)}.${ext}`, mimeType, quality);
+      setStatus(`✅ 已导出第 ${frame} 帧`);
+    } else {
+      // 区间导出
+      const start = parseInt(startFrameInput.value) || 0;
+            const end = parseInt(endFrameInput.value) || entry.totalFrames - 1;
+      if (start > end) {
+        setStatus('❌ 起始帧不能大于结束帧');
+        return;
+      }
+
+      const total = end - start + 1;
+      exportBtn.disabled = true;
+      progressBar.style.display = 'block';
+      setStatus(`正在导出 ${total} 帧...`);
+
+      // 动态加载 JSZip（用于打包多帧图片）
       await loadScript('https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js');
       const zip = new JSZip();
       const folder = zip.folder(baseName);
@@ -468,7 +433,7 @@ exportBtn.addEventListener('click', async () => {
         const progress = ((frame - start + 1) / total) * 100;
         progressFill.style.width = `${progress}%`;
         setStatus(`正在导出... ${frame - start + 1} / ${total} 帧`);
-        // 让出主线程
+        // 让出主线程，防止浏览器假死
         await sleep(10);
       }
 
@@ -477,66 +442,66 @@ exportBtn.addEventListener('click', async () => {
       });
       downloadBlob(zipBlob, `${baseName}_frames.zip`);
       setStatus(`✅ 已导出 ${total} 帧到 ZIP 文件`);
-    } else {
-      await seekToFrame(start);
-      await exportCanvasFrame(canvas, `${baseName}_frame_${padZero(start)}.${ext}`, mimeType, quality);
-      setStatus(`✅ 已导出第 ${start} 帧`);
+
+      exportBtn.disabled = false;
+      setTimeout(() => { 
+        progressBar.style.display = 'none'; 
+        progressFill.style.width = '0%'; 
+      }, 1500);
     }
+  });
 
-    exportBtn.disabled = false;
-    setTimeout(() => { progressBar.style.display = 'none'; progressFill.style.width = '0%'; }, 1500);
+  // ===== 工具函数 =====
+  function canvasToBlob(cvs, mimeType, quality) {
+    return new Promise((resolve) => {
+      cvs.toBlob((blob) => resolve(blob), mimeType, quality);
+    });
   }
-});
 
-// ===== 工具函数 =====
-function canvasToBlob(cvs, mimeType, quality) {
-  return new Promise((resolve) => {
-    cvs.toBlob((blob) => resolve(blob), mimeType, quality);
-  });
-}
+  async function exportCanvasFrame(cvs, filename, mimeType, quality) {
+    const blob = await canvasToBlob(cvs, mimeType, quality);
+    downloadBlob(blob, filename);
+  }
 
-async function exportCanvasFrame(cvs, filename, mimeType, quality) {
-  const blob = await canvasToBlob(cvs, mimeType, quality);
-  downloadBlob(blob, filename);
-}
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
 
-function downloadBlob(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
 
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
-    const s = document.createElement('script');
-    s.src = src;
-    s.onload = resolve;
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
-}
+  function padZero(n) {
+    return String(n).padStart(5, '0');
+  }
 
-function padZero(n) {
-  return String(n).padStart(5, '0');
-}
+  function sleep(ms) {
+    return new Promise(r => setTimeout(r, ms));
+  }
 
-function sleep(ms) {
-  return new Promise(r => setTimeout(r, ms));
-}
+  function showLoading(show) {
+    loadingOverlay.style.display = show ? 'flex' : 'none';
+  }
 
-function showLoading(show) {
-  loadingOverlay.style.display = show ? 'flex' : 'none';
-}
+  function setStatus(text) {
+    statusText.textContent = text;
+  }
 
-function setStatus(text) {
-  statusText.textContent = text;
-}
+}); // DOMContentLoaded 结束
 </script>
 </body>
 </html>
