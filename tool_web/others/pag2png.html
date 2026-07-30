@@ -169,7 +169,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     return new Promise((resolve, reject) => {
       if (window.PAG) { resolve(window.PAG); return; }
       const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/libpag@latest/lib/libpag.min.js';
+      script.src = 'https://unpkg.com/libpag@latest/lib/libpag.min.js';
+
       script.onload = () => resolve(window.PAG);
       script.onerror = () => reject(new Error('PAG SDK 加载失败'));
       document.head.appendChild(script);
