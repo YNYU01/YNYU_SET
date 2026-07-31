@@ -471,26 +471,26 @@ exportWebP.addEventListener('click', async () => {
     let ffmpeg = null;
 
     try {
-        // 1. 单例模式加载 FFmpeg (使用官方标准包+jsdelivr国内稳定镜像)
-        if (!window.FFmpegInstance) {
-            setStatus(`正在加载编码核心 (首次约 26MB，请稍候)...`);
-            // 替换为官方稳定的ffmpeg包，jsdelivr全国内节点支持CORS
-            await loadScript('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js');
-            const { createFFmpeg } = FFmpeg;
-            
-            window.FFmpegInstance = createFFmpeg({ 
-                log: false,
-                // 修正为官方存在的@ffmpeg/core包路径，同时显式指定worker路径，避免自动推断失败
-                corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
-                workerPath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.worker.js'
-            });
-            await window.FFmpegInstance.load();
-        }
-        ffmpeg = window.FFmpegInstance;
+        // 1. 单例模式加载 FFmpeg (适配GitHub Pages)
+      if (!window.FFmpegInstance) {
+          setStatus(`正在加载编码核心 (首次约 26MB，请稍候)...`);
+          await loadScript('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js');
+          const { createFFmpeg } = FFmpeg;
+          
+          window.FFmpegInstance = createFFmpeg({ 
+              log: false,
+              // 替换为官方存在的标准core包，显式指定worker路径
+              corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+              workerPath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.worker.js'
+          });
+          await window.FFmpegInstance.load();
+      }
+      ffmpeg = window.FFmpegInstance;
 
-        if (!ffmpeg.isLoaded()) {
-            await ffmpeg.load();
-        }
+      if (!ffmpeg.isLoaded()) {
+          await ffmpeg.load();
+      }
+
 
 
         setStatus(`开始渲染并写入 ${exportTotalFrames} 帧...`);
