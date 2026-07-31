@@ -108,7 +108,7 @@
         </div>
         <div class="control-group" id="singleFrameGroup">
           <label>帧号</label>
-          <input type="number" id="singleFrame" value="0" min="0">
+          <input type="number" id="singleFrame" value="1" min="0">
         </div>
         <div class="control-group" id="rangeGroup" style="display:none;">
           <label>起始帧</label>
@@ -125,6 +125,8 @@
           </select>
         </div>
         <button class="btn btn-primary" id="exportBtn" disabled>导出帧</button>
+        <button class="btn btn-primary" id="exportWebP" disabled>另存为webP</button>
+
       </div>
 
       <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
@@ -133,14 +135,14 @@
   </div>
 </div>
 
+<script type="module" src="https://cdn.jsdelivr.net/npm/libpag@latest/lib/libpag.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   // ===== 全局状态 =====
-  let PAG = null;
   const files = []; 
   let activeIndex = -1;
   let isPlaying = false;
-  let animFrameId = null;
+  let animFrameId = null; 
 
   // ===== DOM 元素 =====
   const importBtn = document.getElementById('importBtn');
@@ -160,43 +162,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const endFrameInput = document.getElementById('endFrame');
   const exportFormat = document.getElementById('exportFormat');
   const exportBtn = document.getElementById('exportBtn');
+  const exportWebP = document.getElementById('exportWebP');
   const progressBar = document.getElementById('progressBar');
   const progressFill = document.getElementById('progressFill');
   const statusText = document.getElementById('statusText');
-
-  // ===== 动态加载 PAG SDK =====
-  function loadPAGSDK() {
-    return new Promise((resolve, reject) => {
-      if (window.PAG) { resolve(window.PAG); return; }
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/libpag@latest/lib/libpag.min.js';
-
-      script.onload = () => resolve(window.PAG);
-      script.onerror = () => reject(new Error('PAG SDK 加载失败'));
-      document.head.appendChild(script);
-    });
-  }
-
-  async function initPAG() {
-    if (PAG) return PAG;
-    showLoading(true);
-    try {
-      PAG = await loadPAGSDK();
-      setStatus('PAG 引擎初始化完成');
-    } catch (e) {
-      setStatus('❌ PAG 引擎初始化失败: ' + e.message);
-    } finally {
-      showLoading(false);
-    }
-    return PAG;
-  }
+  let PAG = null;
 
   // ===== 导入文件 =====
   importBtn.addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', async (e) => {
     if (!e.target.files.length) return;
-    await initPAG();
-    if (!PAG) return;
+     PAG = await window.libpag.PAGInit();
 
     for (const file of e.target.files) {
       await loadPagFile(file);
@@ -317,6 +293,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     endFrameInput.value = entry.totalFrames - 1;
     playBtn.disabled = false;
     exportBtn.disabled = false;
+    exportWebP.disabled = false;
     updateFrameLabel(0, entry.totalFrames);
 
     renderFileList();
@@ -452,7 +429,156 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // ===== 工具函数 =====
+// 导出webP
+exportWebP.addEventListener('click', async () => {
+    const entry = files[activeIndex];
+    if (!entry || !entry.pagView) {
+        setStatus('❌ 请先导入并选择一个 .pag 文件');
+        return;
+    }
+
+    const totalFrames = entry.totalFrames;
+    const fps = entry.frameRate || 30;
+    
+    let startFrame = parseInt(startFrameInput.value) || 0;
+    let endFrame = parseInt(endFrameInput.value) || (totalFrames - 1);
+
+    // 边界检查
+    startFrame = Math.max(0, startFrame);
+    endFrame = Math.min(totalFrames - 1, endFrame);
+    
+    if (startFrame > endFrame) {
+        setStatus('❌ 起始帧不能大于结束帧');
+        return;
+    }
+
+    const exportTotalFrames = endFrame - startFrame + 1;
+    const MAX_FRAMES_WARNING = 150; // 建议限制帧数，防止 OOM
+
+    if (exportTotalFrames > MAX_FRAMES_WARNING) {
+        if (!confirm(`⚠️ 警告：即将导出 ${exportTotalFrames} 帧。\nFFmpeg WASM 需将所有帧暂存内存，可能导致浏览器崩溃。\n建议分段导出。\n是否继续？`)) {
+            return;
+        }
+    }
+
+    const btn = exportWebP;
+    const originalText = btn.innerText;
+    btn.disabled = true;
+    btn.innerText = '初始化引擎...';
+    progressBar.style.display = 'block';
+    progressFill.style.width = '0%';
+
+    let ffmpeg = null;
+
+    try {
+        // 1. 单例模式加载 FFmpeg
+        if (!window.FFmpegInstance) {
+            setStatus(`正在加载编码核心 (首次约 26MB，请稍候)...`);
+            await loadScript('https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js');
+            const { createFFmpeg } = FFmpeg;
+            
+            window.FFmpegInstance = createFFmpeg({ 
+                log: false,
+                corePath: 'https://unpkg.com/@ffmpeg/core-st@0.11.0/dist/ffmpeg-core.js',
+              });
+            await window.FFmpegInstance.load();
+        }
+        ffmpeg = window.FFmpegInstance;
+        
+        if (!ffmpeg.isLoaded()) {
+            await ffmpeg.load();
+        }
+
+        setStatus(`开始渲染并写入 ${exportTotalFrames} 帧...`);
+        btn.innerText = '渲染中...';
+
+        // 2. 逐帧渲染并写入 FS
+        for (let i = startFrame; i <= endFrame; i++) {
+            await seekToFrame(i);
+            
+            // 获取 PNG Blob (无损中间格式)
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            if (!blob) throw new Error('Canvas 读取失败');
+            
+            const frameName = `frame_${String(i - startFrame).padStart(4, '0')}.png`;
+            
+            // 写入虚拟文件系统
+            ffmpeg.FS('writeFile', frameName, await FFmpeg.fetchFile(blob));
+
+            // 更新进度并让出主线程
+            const progress = ((i - startFrame + 1) / exportTotalFrames) * 100;
+            progressFill.style.width = `${progress}%`;
+            setStatus(`渲染进度: ${i - startFrame + 1} / ${exportTotalFrames}`);
+            
+            if (i % 5 === 0) await sleep(0); // 防止 UI 卡死
+        }
+
+        setStatus(`FFmpeg 正在编码动态 WebP...`);
+        btn.innerText = '编码中...';
+
+        // 3. 执行编码命令
+        await ffmpeg.run(
+            '-framerate', String(fps),
+            '-i', 'frame_%04d.png',
+            '-c:v', 'libwebp',
+            '-q:v', '75',       // 质量 0-100
+            '-loop', '0',       // 无限循环
+            '-preset', 'picture', // 适合图文类动画
+            '-y',               // 覆盖输出
+            'output.webp'
+        );
+
+        // 4. 读取结果
+        const data = ffmpeg.FS('readFile', 'output.webp');
+        const webpBlob = new Blob([data], { type: 'image/webp' });
+
+        if (!webpBlob || webpBlob.size === 0) {
+            throw new Error("WebP 编码返回为空");
+        }
+
+        // 5. 触发下载
+        const baseName = entry.name ? entry.name.replace(/\.pag$/i, '') : 'animation';
+        const url = URL.createObjectURL(webpBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${baseName}_anim.webp`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        setStatus(`✅ 导出成功！大小: ${(webpBlob.size / 1024).toFixed(1)} KB`);
+
+    } catch (error) {
+        console.error('导出失败:', error);
+        setStatus(`❌ 导出失败: ${error.message}`);
+    } finally {
+        // 6. 关键：清理虚拟文件系统，释放内存
+        if (ffmpeg && ffmpeg.isLoaded()) {
+            try {
+                const filesInFS = ffmpeg.FS('readdir', '/');
+                filesInFS.forEach(filename => {
+                    if (filename.startsWith('frame_') || filename === 'output.webp') {
+                        try { ffmpeg.FS('unlink', filename); } catch(e) {}
+                    }
+                });
+            } catch (e) {
+                console.warn('清理 FS 失败', e);
+            }
+        }
+
+        btn.disabled = false;
+        btn.innerText = originalText;
+        setTimeout(() => {
+            progressBar.style.display = 'none';
+            progressFill.style.width = '0%';
+        }, 1500);
+    }
+});
+
+
+
+// ===== 工具函数 =====
   function canvasToBlob(cvs, mimeType, quality) {
     return new Promise((resolve) => {
       cvs.toBlob((blob) => resolve(blob), mimeType, quality);
