@@ -25,7 +25,8 @@
     "lint:colorcard": "eslint --ext .ts,.tsx --ignore-pattern node_modules tool_plugin/ColorCard/widget-src",
     "lint:colorcard:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix tool_plugin/ColorCard/widget-src",
     "tsc:colorcard": "tsc --noEmit -p tool_plugin/ColorCard/widget-src",
-    "sync:html2zy": "node tool_web/Html2zy/sync-builds.js"
+    "sync:html2zy": "node tool_web/Html2zy/sync-builds.js",
+    "build:pag2png": "cd tool_web/others/pag2png && npx vite build"
   },
   "repository": {
     "type": "git",
@@ -54,6 +55,9 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@ffmpeg/core": "^0.12.10",
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
     "pako": "^2.1.0",
     "upng-js": "^2.1.0"
   }

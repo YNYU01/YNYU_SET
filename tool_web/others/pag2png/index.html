@@ -473,27 +473,17 @@ exportWebP.addEventListener('click', async () => {
     try {
         // 1. 单例模式加载 FFmpeg (适配GitHub Pages)
       if (!window.FFmpegInstance) {
-          // 1. 加载本地主库
-          await loadScript('./ffmpeg.min.js'); 
+          setStatus(`正在加载编码核心 (首次约 26MB，请稍候)...`);
+          await loadScript('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js');
           const { createFFmpeg } = FFmpeg;
           
-          // 2. 配置本地核心路径
           window.FFmpegInstance = createFFmpeg({ 
               log: false,
-              // 指向本地文件
-              corePath: './ffmpeg-core.js',
-              workerPath: './ffmpeg-core.worker.js'
+              // 替换为官方存在的标准core包，显式指定worker路径
+              corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+              workerPath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.worker.js'
           });
-          
-          try {
-              await window.FFmpegInstance.load();
-              setStatus('✅ 本地核心加载成功');
-          } catch (e) {
-              console.error(e);
-              // 如果依然报 SharedArrayBuffer 错误，说明浏览器限制未解除
-              // 此时建议降级到单线程模式（见下文补充）
-              setStatus('❌ 加载失败: ' + e.message);
-          }
+          await window.FFmpegInstance.load();
       }
       ffmpeg = window.FFmpegInstance;
 
