@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           [rgba], 
           img.width, 
           img.height, 
-          256 * pngQuality
+          256
         );
         
         resolve(new Blob([compressedData], { type: 'image/png' }));
@@ -461,36 +461,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.log(e)
         // 压缩出错时，兜底返回原生 blob
         resolve(blob);
-      }function canvasToBlob(cvs, mimeType, quality = 0.8, pngQuality = 0.8) {
-  return new Promise((resolve) => {
-    // 直接调用原生 toBlob
-    cvs.toBlob(async (blob) => {
-      // 核心判断：如果不是 PNG，或者压缩失败，直接返回原生 blob
-      if (mimeType !== 'image/png' || !blob) {
-        return resolve(blob);
       }
-
-      // 是 PNG，才进行二次压缩
-      try {
-        const buffer = await blob.arrayBuffer();
-        const img = UPNG.decode(buffer);
-        const rgba = UPNG.toRGBA8(img)[0];
-        
-        const compressedData = UPNG.encode(
-          [rgba], 
-          img.width, 
-          img.height, 
-          256 * pngQuality
-        );
-        
-        resolve(new Blob([compressedData], { type: 'image/png' }));
-      } catch (e) {
-        // 压缩出错时，兜底返回原生 blob
-        resolve(blob);
-      }
-    }, mimeType, quality);
-  });
-}
     }, mimeType, quality);
   });
 }
