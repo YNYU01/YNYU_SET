@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           [rgba], 
           img.width, 
           img.height, 
-          256
+          0
         );
         
         resolve(new Blob([compressedData], { type: 'image/png' }));
