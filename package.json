@@ -60,5 +60,10 @@
     "@ffmpeg/util": "^0.12.2",
     "pako": "^2.1.0",
     "upng-js": "^2.1.0"
-  }
+  },
+  "files": [
+    "tool_web/others/pag2png/ffmpeg-core.js",
+    "tool_web/others/pag2png/ffmpeg-core.wasm",
+    "tool_web/others/pag2png/ffmpeg-core.worker.js"
+  ]
 }
