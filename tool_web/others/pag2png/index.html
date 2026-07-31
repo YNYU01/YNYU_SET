@@ -7,7 +7,7 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; min-height: 100vh; }
-  
+
   .header { background: #16213e; padding: 16px 24px; border-bottom: 1px solid #0f3460; display: flex; align-items: center; gap: 12px; }
   .header h1 { font-size: 18px; color: #e94560; }
   .header .subtitle { font-size: 13px; color: #888; }
@@ -135,6 +135,9 @@
   </div>
 </div>
 
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b6c4c875055e80201669ff66d5b8c65193e0484/publics/other/compressor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b6c4c875055e80201669ff66d5b8c65193e0484/publics/other/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net.cn/gh/YNYU01/YNYU_SET@1b6c4c875055e80201669ff66d5b8c65193e0484/publics/other/UPNG.js"></script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/libpag@latest/lib/libpag.min.js"></script>
 <script type="module" >
 document.addEventListener('DOMContentLoaded', async () => {
@@ -431,7 +434,34 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 // ===== 工具函数 =====
-  function canvasToBlob(cvs, mimeType, quality = 0.8, pngQuality = 0.8) {
+    function canvasToBlob(cvs, mimeType, quality = 0.5, pngQuality = 0.5) {
+  return new Promise((resolve) => {
+    // 直接调用原生 toBlob
+    cvs.toBlob(async (blob) => {
+      // 核心判断：如果不是 PNG，或者压缩失败，直接返回原生 blob
+      if (mimeType !== 'image/png' || !blob) {
+        return resolve(blob);
+      }
+
+      // 是 PNG，才进行二次压缩
+      try {
+        const buffer = await blob.arrayBuffer();
+        const img = UPNG.decode(buffer);
+        const rgba = UPNG.toRGBA8(img)[0];
+        
+        const compressedData = UPNG.encode(
+          [rgba], 
+          img.width, 
+          img.height, 
+          256 * pngQuality
+        );
+        
+        resolve(new Blob([compressedData], { type: 'image/png' }));
+      } catch (e) {
+      console.log(e)
+        // 压缩出错时，兜底返回原生 blob
+        resolve(blob);
+      }function canvasToBlob(cvs, mimeType, quality = 0.8, pngQuality = 0.8) {
   return new Promise((resolve) => {
     // 直接调用原生 toBlob
     cvs.toBlob(async (blob) => {
@@ -458,6 +488,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 压缩出错时，兜底返回原生 blob
         resolve(blob);
       }
+    }, mimeType, quality);
+  });
+}
     }, mimeType, quality);
   });
 }
