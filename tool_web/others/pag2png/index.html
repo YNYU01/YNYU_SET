@@ -476,12 +476,15 @@ exportWebP.addEventListener('click', async () => {
           setStatus(`正在加载编码核心 (首次约 26MB，请稍候)...`);
           await loadScript('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js');
           const { createFFmpeg } = FFmpeg;
+
+          let hash = '974bb2bb31302935363754946f41dc4d5f5c6962'
+          let urlHash = `https://cdn.jsdelivr.net/gh/YNYU01/YNYU_SET@${hash}/tool_web/others/pag2png/`
           
           window.FFmpegInstance = createFFmpeg({ 
               log: false,
               // 替换为官方存在的标准core包，显式指定worker路径
-              corePath: './ffmpeg-core.js',
-              workerPath: './ffmpeg-core.worker.js',
+              corePath: urlHash + 'ffmpeg-core.js',
+              workerPath: urlHash +'ffmpeg-core.worker.js',
               thread: false
             });
           await window.FFmpegInstance.load();
