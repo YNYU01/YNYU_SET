@@ -474,15 +474,16 @@ exportWebP.addEventListener('click', async () => {
         // 1. 单例模式加载 FFmpeg (适配GitHub Pages)
       if (!window.FFmpegInstance) {
           setStatus(`正在加载编码核心 (首次约 26MB，请稍候)...`);
-          await loadScript('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js');
+          await loadScript('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js');
           const { createFFmpeg } = FFmpeg;
           
           window.FFmpegInstance = createFFmpeg({ 
               log: false,
               // 替换为官方存在的标准core包，显式指定worker路径
-              corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
-              workerPath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.worker.js'
-          });
+              corePath: './ffmpeg-core.js',
+              workerPath: './ffmpeg-core.worker.js',
+              thread: false
+            });
           await window.FFmpegInstance.load();
       }
       ffmpeg = window.FFmpegInstance;
