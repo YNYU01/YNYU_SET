@@ -125,7 +125,7 @@
           </select>
         </div>
         <button class="btn btn-primary" id="exportBtn" disabled>导出帧</button>
-        <button class="btn btn-primary" id="exportWebP" disabled>另存为webP</button>
+        <button class="btn btn-primary" id="exportWebP" disabled style="opacity: 0;">另存为webP</button>
 
       </div>
 
@@ -477,16 +477,18 @@ exportWebP.addEventListener('click', async () => {
           await loadScript('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js');
           const { createFFmpeg } = FFmpeg;
 
-          let hash = '9f02fe75b7a5740178c648dde21fddd075379cd7'
-          let urlHash = `https://cdn.jsdelivr.net/gh/YNYU01/YNYU_SET@${hash}/tool_web/others/pag2png/`
+          let hash = 'c3765c766ef4977e9cb1de787a4080effc223a8a'
+          //let urlHash = `https://cdn.jsdelivr.net/gh/YNYU01/YNYU_SET@${hash}/tool_web/others/pag2png/`
+          let urlHash = 'https://cdn.jsdelivr.net/npm/ynyu-ffmpeg-core@1.3.0/'
           
           window.FFmpegInstance = createFFmpeg({ 
               log: false,
               // 替换为官方存在的标准core包，显式指定worker路径
               corePath: urlHash + 'ffmpeg-core.js',
-              wasmPath: urlHash + 'ffmpeg-core.wasm',
-              workerPath: urlHash +'ffmpeg-core.worker.js',
-              thread: false
+              //wasmPath: urlHash + 'ffmpeg-core.wasm',
+              //workerPath: urlHash +'ffmpeg-core.worker.js',
+              //thread: false,
+              TOTAL_MEMORY: 1073741824
             });
           await window.FFmpegInstance.load();
       }
