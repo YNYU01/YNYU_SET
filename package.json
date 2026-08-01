@@ -40,6 +40,7 @@
   },
   "homepage": "https://github.com/YNYU01/YNYU_SET#readme",
   "devDependencies": {
+    "@ffmpeg/core": "^0.12.10",
     "@figma/plugin-typings": "^1.116.0",
     "@figma/widget-typings": "^1.12.1",
     "@mastergo/plugin-typings": "^1.21.0",
@@ -55,7 +56,6 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@ffmpeg/core": "^0.12.10",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "pako": "^2.1.0",
