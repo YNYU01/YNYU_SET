@@ -2,116 +2,225 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>WebP 动画 RIFF 极简测试</title>
+    <title>WebP 动画终极修复 (兼容 VP8X)</title>
     <style>
-        body { font-family: sans-serif; padding: 40px; text-align: center; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
-        img { margin-top: 20px; border: 1px solid #ccc; max-width: 300px; }
+        body { font-family: sans-serif; padding: 40px; text-align: center; background-color: #f0f2f5; }
+        button { padding: 12px 24px; font-size: 16px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; transition: 0.2s; }
+        button:hover { background: #0056b3; }
+        .log { margin-top: 20px; text-align: left; background: #2d2d2d; color: #00ff00; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .preview { margin-top: 20px; border: 1px dashed #999; display: inline-block; background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
     </style>
 </head>
 <body>
-    <h2>WebP 动画 RIFF 拼接测试</h2>
-    <button id="btn">点击生成 WebP 动画</button>
-    <div id="result"></div>
+    <h2>WebP 动画生成器 (已适配 VP8X & 强制无损)</h2>
+    <p>点击按钮生成包含多帧的动画并自动下载</p>
+    <button id="btn">生成并下载 WebP 动画</button>
+    
+    <div class="preview">
+        <img id="resultImg" style="display:none; width: 200px; height: 200px;" />
+    </div>
+
+    <div class="log" id="log">等待操作...</div>
 
     <script>
-        // 1. 极简构造一个合法的静态 WebP 二进制数据
-        // 注意：这是一个最小化的 VP8L (无损) 图像数据块
-        // 实际业务中，这里会被 canvas.toBlob() 输出的真实数据替换
-        function createFakeStaticWebP(r, g, b) {
-            // 这里硬编码了一个 1x1 像素的合法 VP8L WebP 结构
-            // 仅用于测试 RIFF 容器拼接是否合法
-            const vp8lData = new Uint8Array([
-                0x56, 0x50, 0x38, 0x4C, // 'VP8L'
-                0x09, 0x00, 0x00, 0x00, // Size: 9 bytes
-                0x2F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 // VP8L Payload
-            ]);
-            return vp8lData;
+        const logDiv = document.getElementById('log');
+        const resultImg = document.getElementById('resultImg');
+        
+        function log(msg) {
+            logDiv.innerHTML += msg + "<br>";
+            console.log(msg);
+            logDiv.scrollTop = logDiv.scrollHeight;
         }
 
-        // 2. 构建标准的 RIFF Chunk
+        // 辅助函数：将字符串转为 Uint8Array
+        function strToBytes(str) {
+            return new TextEncoder().encode(str);
+        }
+
+        // 辅助函数：构建 RIFF Chunk (处理奇偶校验补位)
         function buildChunk(fourCC, data) {
             const size = data.length;
-            const padding = size % 2; 
+            const padding = size % 2 === 1 ? 1 : 0;
             const chunk = new Uint8Array(8 + size + padding);
-            for (let i = 0; i < 4; i++) chunk[i] = fourCC.charCodeAt(i);
-            const view = new DataView(chunk.buffer);
-            view.setUint32(4, size, true); // 小端序写入 Size
+            
+            chunk.set(strToBytes(fourCC), 0);
+            new DataView(chunk.buffer).setUint32(4, size, true);
             chunk.set(data, 8);
+            
             return chunk;
         }
 
-        // 3. 核心拼装逻辑
-        async function encodeTestAnimation() {
-            const width = 100;
-            const height = 100;
-            const frameDuration = 500; // 500ms 切换一次，方便肉眼观察
+        // 核心函数：从静态 WebP 中提取有效的帧数据
+        function extractFrameData(buffer) {
+            const view = new DataView(buffer);
+            const bytes = new Uint8Array(buffer);
 
-            // 获取两帧假数据
-            const frame1 = createFakeStaticWebP(255, 0, 0);
-            const frame2 = createFakeStaticWebP(0, 255, 0);
-
-            const chunks = [];
-
-            // 3.1 构建 VP8X 扩展头
-            // Flags: 0x10 表示包含动画
-            // 宽高需要减去 1，并用 24位小端序写入
-            const vp8xPayload = new Uint8Array([
-                0x10, 0x00, 0x00, 0x00, // Flags
-                (width - 1) & 0xFF, ((width - 1) >> 8) & 0xFF, ((width - 1) >> 16) & 0xFF, // Width - 1
-                (height - 1) & 0xFF, ((height - 1) >> 8) & 0xFF, ((height - 1) >> 16) & 0xFF // Height - 1
-            ]);
-            chunks.push(buildChunk('VP8X', vp8xPayload));
-
-            // 3.2 构建 ANIM 全局控制块
-            const animPayload = new Uint8Array([
-                0xFF, 0xFF, 0xFF, 0xFF, // 背景色 (BGRA)
-                0x00, 0x00              // 循环次数 (0 = 无限循环)
-            ]);
-            chunks.push(buildChunk('ANIM', animPayload));
-
-            // 3.3 构建 ANMF 动画帧块
-            for (const frame of [frame1, frame2]) {
-                const frameHeader = new Uint8Array([
-                    0x00, 0x00, 0x00, 0x00, // Frame X, Y 坐标 (0,0)
-                    (width - 1) & 0xFF, ((width - 1) >> 8) & 0xFF, ((width - 1) >> 16) & 0xFF, // Width - 1
-                    (height - 1) & 0xFF, ((height - 1) >> 8) & 0xFF, ((height - 1) >> 16) & 0xFF, // Height - 1
-                    frameDuration & 0xFF, (frameDuration >> 8) & 0xFF, (frameDuration >> 16) & 0xFF, // Duration
-                    0x00 // Flags (0x00 = 覆盖绘制)
-                ]);
-                
-                const anmfPayload = new Uint8Array(frameHeader.length + frame.length);
-                anmfPayload.set(frameHeader);
-                anmfPayload.set(frame, frameHeader.length);
-                chunks.push(buildChunk('ANMF', anmfPayload));
+            if (String.fromCharCode(...bytes.slice(0, 4)) !== 'RIFF' ||
+                String.fromCharCode(...bytes.slice(8, 12)) !== 'WEBP') {
+                throw new Error("不是合法的 WebP 文件");
             }
 
-            // 4. 拼装最终的 RIFF 文件头
-            const totalChunkSize = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
-            const riffHeader = new ArrayBuffer(12);
-            const headerView = new DataView(riffHeader);
-            headerView.setUint32(0, 0x46464952, false); // 'RIFF'
-            headerView.setUint32(4, totalChunkSize + 4, true); // 文件大小 - 8
-            headerView.setUint32(8, 0x50424557, false); // 'WEBP'
+            let offset = 12;
+            while (offset < bytes.length) {
+                const type = String.fromCharCode(bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3]);
+                const size = view.getUint32(offset + 4, true);
+                
+                if (type === 'VP8 ' || type === 'VP8L' || type === 'ANMF') {
+                    log(`找到目标块: ${type}, 大小: ${size}`);
+                    return bytes.slice(offset, offset + 8 + size + (size % 2));
+                }
+                
+                offset += 8 + size + (size % 2);
+            }
 
-            // 5. 合并并展示
-            const blob = new Blob([riffHeader, ...chunks], { type: 'image/webp' });
-            const url = URL.createObjectURL(blob);
-            
-            const img = document.createElement('img');
-            img.src = url;
-            document.getElementById('result').innerHTML = '';
-            document.getElementById('result').appendChild(img);
-            
-            // 顺便提供下载
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'test-animation.webp';
-            a.innerText = ' (右键另存为下载)';
-            document.getElementById('result').appendChild(a);
+            throw new Error("未找到有效的图像帧数据 (VP8/VP8L)");
         }
 
-        document.getElementById('btn').addEventListener('click', encodeTestAnimation);
+        async function generateAndDownload() {
+            try {
+                log("--- 开始生成 ---");
+                resultImg.style.display = 'none';
+                
+                // 1. 准备多帧数据 (这里演示生成 4 帧)
+                //const colors = ['red', 'blue', 'green', 'orange']; 
+                // 生成 100 帧的彩虹渐变色数组
+let colors = [];
+for (let i = 0; i < 100; i++) {
+    colors.push(`hsl(${(i / 100) * 360}, 100%, 50%)`);
+}
+
+                const frameDataArray = [];
+
+                for (let i = 0; i < colors.length; i++) {
+                    log(`正在生成第 ${i + 1} 帧 (${colors[i]})...`);
+                    const blob = await createCanvasBlob(colors[i]);
+                    const buffer = await blob.arrayBuffer();
+                    const frameData = extractFrameData(buffer);
+                    frameDataArray.push(frameData);
+                }
+
+                // 2. 封装为 ANMF 块 (每帧 500ms)
+                const anmfChunks = [];
+                for (let i = 0; i < frameDataArray.length; i++) {
+                    anmfChunks.push(wrapAsAnmf(frameDataArray[i], 50));
+                }
+
+                // 3. 组装最终文件
+                const header = buildWebpHeader();
+                
+                // 计算总大小：头部 + 所有帧的大小
+                let totalSize = header.length;
+                for (let i = 0; i < anmfChunks.length; i++) {
+                    totalSize += anmfChunks[i].length;
+                }
+
+                const finalBuffer = new Uint8Array(totalSize);
+                
+                // 写入头部
+                finalBuffer.set(header, 0);
+                
+                // 【关键】使用循环依次写入每一帧，确保 Offset 正确累加
+                let currentOffset = header.length;
+                for (let i = 0; i < anmfChunks.length; i++) {
+                    finalBuffer.set(anmfChunks[i], currentOffset);
+                    currentOffset += anmfChunks[i].length;
+                }
+
+                // 4. 修正最外层的 RIFF 文件大小
+                const riffView = new DataView(finalBuffer.buffer);
+                riffView.setUint32(4, totalSize - 8, true);
+
+                // 5. 下载与预览
+                const blob = new Blob([finalBuffer], {type: 'image/webp'});
+                downloadBlob(blob, 'multi_frame_animation.webp');
+                
+                const url = URL.createObjectURL(blob);
+                resultImg.src = url;
+                resultImg.style.display = 'block';
+                
+                log(`✅ 生成成功！共 ${colors.length} 帧，请检查下方预览及下载文件。`);
+
+            } catch (e) {
+                log("❌ 错误: " + e.message);
+                console.error(e);
+            }
+        }
+
+        async function createCanvasBlob(color) {
+            const c = new OffscreenCanvas(100, 100);
+            const ctx = c.getContext('2d');
+            
+            ctx.clearRect(0, 0, 100, 100);
+            
+            ctx.beginPath();
+            ctx.arc(50, 50, 40, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+           
+            const blob = await c.convertToBlob({ 
+                type: 'image/webp', 
+                quality: 1.0,
+                lossless: true 
+            });
+            return await blob;
+        }
+
+        // 【完全保留你原本成功的函数】
+        function wrapAsAnmf(payload, durationMs) {
+            const descSize = 16;
+            const anmfContent = new Uint8Array(descSize + payload.length);
+            
+            const w = 99; 
+            const h = 99;
+            anmfContent[6] = w & 0xFF; anmfContent[7] = (w >> 8) & 0xFF; anmfContent[8] = (w >> 16) & 0xFF;
+            anmfContent[9] = h & 0xFF; anmfContent[10] = (h >> 8) & 0xFF; anmfContent[11] = (h >> 16) & 0xFF;
+
+            const d = durationMs - 1; 
+            anmfContent[12] = d & 0xFF; anmfContent[13] = (d >> 8) & 0xFF; anmfContent[14] = (d >> 16) & 0xFF;
+            
+            anmfContent[15] = 0; 
+
+            anmfContent.set(payload, descSize);
+            return buildChunk('ANMF', anmfContent);
+        }
+
+        // 【完全保留你原本成功的函数】
+        function buildWebpHeader() {
+            const vp8xPayload = new Uint8Array(10);
+            vp8xPayload[0] = 0x02; 
+            
+            vp8xPayload[4] = 99; vp8xPayload[5] = 0; vp8xPayload[6] = 0;
+            vp8xPayload[7] = 99; vp8xPayload[8] = 0; vp8xPayload[9] = 0;
+
+            const vp8xChunk = buildChunk('VP8X', vp8xPayload);
+
+            const animPayload = new Uint8Array(6);
+            animPayload[0] = 0; animPayload[1] = 0; animPayload[2] = 0; animPayload[3] = 0; 
+            animPayload[4] = 0; animPayload[5] = 0; 
+            const animChunk = buildChunk('ANIM', animPayload);
+
+            const header = new Uint8Array(12 + vp8xChunk.length + animChunk.length);
+            header.set(strToBytes('RIFF'), 0);
+            header.set(strToBytes('WEBP'), 8);
+            
+            header.set(vp8xChunk, 12);
+            header.set(animChunk, 12 + vp8xChunk.length);
+
+            return header;
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        document.getElementById('btn').onclick = generateAndDownload;
     </script>
 </body>
 </html>
